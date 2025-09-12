@@ -4,7 +4,7 @@
     "license": "Apache-2.0",
     "version": "0.5.10",
     "type": "module",
-    "main": "./dist/@waldiez.umd.cjs",
+    "main": "./dist/@waldiez.cjs",
     "module": "./dist/@waldiez.js",
     "types": "./dist/index.d.ts",
     "exports": {

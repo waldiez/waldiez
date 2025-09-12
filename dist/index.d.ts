@@ -3991,7 +3991,7 @@ export declare type WaldiezStepByStep = {
      * of type `debug_input_request`.
      * Separate from the normal chat's `activeRequest` to decouple UIs.
      */
-    pendingControlInput: {
+    pendingControlInput?: {
         request_id: string;
         prompt: string;
     } | null;
@@ -3999,7 +3999,7 @@ export declare type WaldiezStepByStep = {
      * Active user's input request. For replying to messages
      * of type `input_request` (Not for control messages)
      */
-    activeRequest: WaldiezActiveRequest | null;
+    activeRequest?: WaldiezActiveRequest | null;
     /** Handlers for step-specific actions */
     handlers: WaldiezStepHandlers;
 };

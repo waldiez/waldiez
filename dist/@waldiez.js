@@ -3,33 +3,18 @@
  * Copyright 2024 - 2026 Waldiez & contributors
  */
 
-import { nanoid } from "nanoid";
-import JSZip from "jszip";
 import * as React from "react";
-import React__default, { createContext, useContext, useState, useEffect, useLayoutEffect, useRef, useCallback, memo, forwardRef, useMemo, useImperativeHandle } from "react";
-import { jsx, jsxs, Fragment } from "react/jsx-runtime";
+import React__default, { createContext, useContext, useState, useEffect, Component, createElement, useCallback, useRef, useLayoutEffect, memo, forwardRef, useMemo, useImperativeHandle } from "react";
 import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, getSimpleBezierPath, Position, BaseEdge, EdgeLabelRenderer, Handle, NodeResizer, ReactFlow, Controls, Background, BackgroundVariant, ReactFlowProvider } from "@xyflow/react";
-import { ErrorBoundary } from "react-error-boundary";
-import { useHotkeys, HotkeysProvider } from "react-hotkeys-hook";
 import MonacoEditor, { loader } from "@monaco-editor/react";
-import { motion } from "framer-motion";
 import * as ReactDOM from "react-dom";
 import ReactDOM__default, { createPortal } from "react-dom";
-import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStepForward, FaStop as FaStop$1, FaPlusCircle, FaHourglassHalf, FaCog, FaCommentDots, FaCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
 import ReactSelect from "react-select";
-import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaBug, FaPlay, FaStop, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
+import { ResponsiveContainer } from "recharts";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
-import { shallow } from "zustand/shallow";
-import { useStoreWithEqualityFn } from "zustand/traditional";
-import diff from "microdiff";
-import { temporal } from "zundo";
-import { createStore } from "zustand";
-import { ResponsiveContainer } from "recharts";
-import { MdTimeline, MdIosShare, MdMessage } from "react-icons/md";
-import { GiNestEggs, GiShakingHands } from "react-icons/gi";
-import { GoAlert, GoChevronDown, GoChevronUp } from "react-icons/go";
+import { motion } from "framer-motion";
 class WaldiezAgentData {
   systemMessage;
   humanInputMode;
@@ -129,6 +114,15 @@ function stripAnsi(string) {
   }
   return string.replace(regex, "");
 }
+const urlAlphabet = "useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict";
+let nanoid = (size2 = 21) => {
+  let id = "";
+  let bytes = crypto.getRandomValues(new Uint8Array(size2 |= 0));
+  while (size2--) {
+    id += urlAlphabet[bytes[size2] & 63];
+  }
+  return id;
+};
 class WaldiezChatUsingAutoReplyHandler {
   canHandle(type) {
     return type === "using_auto_reply";
@@ -1169,10 +1163,10 @@ const getCrypto = () => {
 };
 const sha256 = async (message) => {
   try {
-    const crypto = getCrypto();
+    const crypto2 = getCrypto();
     const msgBuffer = new TextEncoder().encode(message);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
-    return Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    const hashBuffer = await crypto2.subtle.digest("SHA-256", msgBuffer);
+    return Array.from(new Uint8Array(hashBuffer)).map((b2) => b2.toString(16).padStart(2, "0")).join("");
   } catch (error) {
     console.error("Error computing SHA-256 hash:", error);
     throw new Error("Failed to compute SHA-256 hash. Ensure you are using a supported environment.");
@@ -1198,19 +1192,19 @@ const toBufferSource = (input) => {
 };
 const hmacSha256 = async (key, message, outputFormat = "") => {
   try {
-    const crypto = getCrypto();
+    const crypto2 = getCrypto();
     const keyBuffer = toBufferSource(key);
     const messageBuffer = new TextEncoder().encode(message);
-    const cryptoKey = await crypto.subtle.importKey(
+    const cryptoKey = await crypto2.subtle.importKey(
       "raw",
       keyBuffer,
       { name: "HMAC", hash: "SHA-256" },
       false,
       ["sign"]
     );
-    const signature = await crypto.subtle.sign("HMAC", cryptoKey, messageBuffer);
+    const signature = await crypto2.subtle.sign("HMAC", cryptoKey, messageBuffer);
     if (outputFormat === "hex") {
-      return Array.from(new Uint8Array(signature)).map((b) => b.toString(16).padStart(2, "0")).join("");
+      return Array.from(new Uint8Array(signature)).map((b2) => b2.toString(16).padStart(2, "0")).join("");
     }
     return new Uint8Array(signature);
   } catch (error) {
@@ -1219,6 +1213,2337 @@ const hmacSha256 = async (key, message, outputFormat = "") => {
     );
   }
 };
+var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
+function getDefaultExportFromCjs(x) {
+  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
+}
+function commonjsRequire(path) {
+  throw new Error('Could not dynamically require "' + path + '". Please configure the dynamicRequireTargets or/and ignoreDynamicRequires option of @rollup/plugin-commonjs appropriately for this require call to work.');
+}
+var jszip_min = { exports: {} };
+/*!
+
+JSZip v3.10.1 - A JavaScript class for generating and reading zip files
+<http://stuartk.com/jszip>
+
+(c) 2009-2016 Stuart Knightley <stuart [at] stuartk.com>
+Dual licenced under the MIT license or GPLv3. See https://raw.github.com/Stuk/jszip/main/LICENSE.markdown.
+
+JSZip uses the library pako released under the MIT license :
+https://github.com/nodeca/pako/blob/main/LICENSE
+*/
+var hasRequiredJszip_min;
+function requireJszip_min() {
+  if (hasRequiredJszip_min) return jszip_min.exports;
+  hasRequiredJszip_min = 1;
+  (function(module, exports) {
+    !(function(e) {
+      module.exports = e();
+    })(function() {
+      return (function s(a, o, h) {
+        function u(r, e2) {
+          if (!o[r]) {
+            if (!a[r]) {
+              var t = "function" == typeof commonjsRequire && commonjsRequire;
+              if (!e2 && t) return t(r, true);
+              if (l) return l(r, true);
+              var n = new Error("Cannot find module '" + r + "'");
+              throw n.code = "MODULE_NOT_FOUND", n;
+            }
+            var i = o[r] = { exports: {} };
+            a[r][0].call(i.exports, function(e3) {
+              var t2 = a[r][1][e3];
+              return u(t2 || e3);
+            }, i, i.exports, s, a, o, h);
+          }
+          return o[r].exports;
+        }
+        for (var l = "function" == typeof commonjsRequire && commonjsRequire, e = 0; e < h.length; e++) u(h[e]);
+        return u;
+      })({ 1: [function(e, t, r) {
+        var d = e("./utils"), c = e("./support"), p = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+        r.encode = function(e2) {
+          for (var t2, r2, n, i, s, a, o, h = [], u = 0, l = e2.length, f = l, c2 = "string" !== d.getTypeOf(e2); u < e2.length; ) f = l - u, n = c2 ? (t2 = e2[u++], r2 = u < l ? e2[u++] : 0, u < l ? e2[u++] : 0) : (t2 = e2.charCodeAt(u++), r2 = u < l ? e2.charCodeAt(u++) : 0, u < l ? e2.charCodeAt(u++) : 0), i = t2 >> 2, s = (3 & t2) << 4 | r2 >> 4, a = 1 < f ? (15 & r2) << 2 | n >> 6 : 64, o = 2 < f ? 63 & n : 64, h.push(p.charAt(i) + p.charAt(s) + p.charAt(a) + p.charAt(o));
+          return h.join("");
+        }, r.decode = function(e2) {
+          var t2, r2, n, i, s, a, o = 0, h = 0, u = "data:";
+          if (e2.substr(0, u.length) === u) throw new Error("Invalid base64 input, it looks like a data url.");
+          var l, f = 3 * (e2 = e2.replace(/[^A-Za-z0-9+/=]/g, "")).length / 4;
+          if (e2.charAt(e2.length - 1) === p.charAt(64) && f--, e2.charAt(e2.length - 2) === p.charAt(64) && f--, f % 1 != 0) throw new Error("Invalid base64 input, bad content length.");
+          for (l = c.uint8array ? new Uint8Array(0 | f) : new Array(0 | f); o < e2.length; ) t2 = p.indexOf(e2.charAt(o++)) << 2 | (i = p.indexOf(e2.charAt(o++))) >> 4, r2 = (15 & i) << 4 | (s = p.indexOf(e2.charAt(o++))) >> 2, n = (3 & s) << 6 | (a = p.indexOf(e2.charAt(o++))), l[h++] = t2, 64 !== s && (l[h++] = r2), 64 !== a && (l[h++] = n);
+          return l;
+        };
+      }, { "./support": 30, "./utils": 32 }], 2: [function(e, t, r) {
+        var n = e("./external"), i = e("./stream/DataWorker"), s = e("./stream/Crc32Probe"), a = e("./stream/DataLengthProbe");
+        function o(e2, t2, r2, n2, i2) {
+          this.compressedSize = e2, this.uncompressedSize = t2, this.crc32 = r2, this.compression = n2, this.compressedContent = i2;
+        }
+        o.prototype = { getContentWorker: function() {
+          var e2 = new i(n.Promise.resolve(this.compressedContent)).pipe(this.compression.uncompressWorker()).pipe(new a("data_length")), t2 = this;
+          return e2.on("end", function() {
+            if (this.streamInfo.data_length !== t2.uncompressedSize) throw new Error("Bug : uncompressed data size mismatch");
+          }), e2;
+        }, getCompressedWorker: function() {
+          return new i(n.Promise.resolve(this.compressedContent)).withStreamInfo("compressedSize", this.compressedSize).withStreamInfo("uncompressedSize", this.uncompressedSize).withStreamInfo("crc32", this.crc32).withStreamInfo("compression", this.compression);
+        } }, o.createWorkerFrom = function(e2, t2, r2) {
+          return e2.pipe(new s()).pipe(new a("uncompressedSize")).pipe(t2.compressWorker(r2)).pipe(new a("compressedSize")).withStreamInfo("compression", t2);
+        }, t.exports = o;
+      }, { "./external": 6, "./stream/Crc32Probe": 25, "./stream/DataLengthProbe": 26, "./stream/DataWorker": 27 }], 3: [function(e, t, r) {
+        var n = e("./stream/GenericWorker");
+        r.STORE = { magic: "\0\0", compressWorker: function() {
+          return new n("STORE compression");
+        }, uncompressWorker: function() {
+          return new n("STORE decompression");
+        } }, r.DEFLATE = e("./flate");
+      }, { "./flate": 7, "./stream/GenericWorker": 28 }], 4: [function(e, t, r) {
+        var n = e("./utils");
+        var o = (function() {
+          for (var e2, t2 = [], r2 = 0; r2 < 256; r2++) {
+            e2 = r2;
+            for (var n2 = 0; n2 < 8; n2++) e2 = 1 & e2 ? 3988292384 ^ e2 >>> 1 : e2 >>> 1;
+            t2[r2] = e2;
+          }
+          return t2;
+        })();
+        t.exports = function(e2, t2) {
+          return void 0 !== e2 && e2.length ? "string" !== n.getTypeOf(e2) ? (function(e3, t3, r2, n2) {
+            var i = o, s = n2 + r2;
+            e3 ^= -1;
+            for (var a = n2; a < s; a++) e3 = e3 >>> 8 ^ i[255 & (e3 ^ t3[a])];
+            return -1 ^ e3;
+          })(0 | t2, e2, e2.length, 0) : (function(e3, t3, r2, n2) {
+            var i = o, s = n2 + r2;
+            e3 ^= -1;
+            for (var a = n2; a < s; a++) e3 = e3 >>> 8 ^ i[255 & (e3 ^ t3.charCodeAt(a))];
+            return -1 ^ e3;
+          })(0 | t2, e2, e2.length, 0) : 0;
+        };
+      }, { "./utils": 32 }], 5: [function(e, t, r) {
+        r.base64 = false, r.binary = false, r.dir = false, r.createFolders = true, r.date = null, r.compression = null, r.compressionOptions = null, r.comment = null, r.unixPermissions = null, r.dosPermissions = null;
+      }, {}], 6: [function(e, t, r) {
+        var n = null;
+        n = "undefined" != typeof Promise ? Promise : e("lie"), t.exports = { Promise: n };
+      }, { lie: 37 }], 7: [function(e, t, r) {
+        var n = "undefined" != typeof Uint8Array && "undefined" != typeof Uint16Array && "undefined" != typeof Uint32Array, i = e("pako"), s = e("./utils"), a = e("./stream/GenericWorker"), o = n ? "uint8array" : "array";
+        function h(e2, t2) {
+          a.call(this, "FlateWorker/" + e2), this._pako = null, this._pakoAction = e2, this._pakoOptions = t2, this.meta = {};
+        }
+        r.magic = "\b\0", s.inherits(h, a), h.prototype.processChunk = function(e2) {
+          this.meta = e2.meta, null === this._pako && this._createPako(), this._pako.push(s.transformTo(o, e2.data), false);
+        }, h.prototype.flush = function() {
+          a.prototype.flush.call(this), null === this._pako && this._createPako(), this._pako.push([], true);
+        }, h.prototype.cleanUp = function() {
+          a.prototype.cleanUp.call(this), this._pako = null;
+        }, h.prototype._createPako = function() {
+          this._pako = new i[this._pakoAction]({ raw: true, level: this._pakoOptions.level || -1 });
+          var t2 = this;
+          this._pako.onData = function(e2) {
+            t2.push({ data: e2, meta: t2.meta });
+          };
+        }, r.compressWorker = function(e2) {
+          return new h("Deflate", e2);
+        }, r.uncompressWorker = function() {
+          return new h("Inflate", {});
+        };
+      }, { "./stream/GenericWorker": 28, "./utils": 32, pako: 38 }], 8: [function(e, t, r) {
+        function A(e2, t2) {
+          var r2, n2 = "";
+          for (r2 = 0; r2 < t2; r2++) n2 += String.fromCharCode(255 & e2), e2 >>>= 8;
+          return n2;
+        }
+        function n(e2, t2, r2, n2, i2, s2) {
+          var a, o, h = e2.file, u = e2.compression, l = s2 !== O2.utf8encode, f = I.transformTo("string", s2(h.name)), c = I.transformTo("string", O2.utf8encode(h.name)), d = h.comment, p = I.transformTo("string", s2(d)), m = I.transformTo("string", O2.utf8encode(d)), _ = c.length !== h.name.length, g = m.length !== d.length, b2 = "", v = "", y = "", w = h.dir, k = h.date, x = { crc32: 0, compressedSize: 0, uncompressedSize: 0 };
+          t2 && !r2 || (x.crc32 = e2.crc32, x.compressedSize = e2.compressedSize, x.uncompressedSize = e2.uncompressedSize);
+          var S2 = 0;
+          t2 && (S2 |= 8), l || !_ && !g || (S2 |= 2048);
+          var z = 0, C = 0;
+          w && (z |= 16), "UNIX" === i2 ? (C = 798, z |= (function(e3, t3) {
+            var r3 = e3;
+            return e3 || (r3 = t3 ? 16893 : 33204), (65535 & r3) << 16;
+          })(h.unixPermissions, w)) : (C = 20, z |= (function(e3) {
+            return 63 & (e3 || 0);
+          })(h.dosPermissions)), a = k.getUTCHours(), a <<= 6, a |= k.getUTCMinutes(), a <<= 5, a |= k.getUTCSeconds() / 2, o = k.getUTCFullYear() - 1980, o <<= 4, o |= k.getUTCMonth() + 1, o <<= 5, o |= k.getUTCDate(), _ && (v = A(1, 1) + A(B2(f), 4) + c, b2 += "up" + A(v.length, 2) + v), g && (y = A(1, 1) + A(B2(p), 4) + m, b2 += "uc" + A(y.length, 2) + y);
+          var E2 = "";
+          return E2 += "\n\0", E2 += A(S2, 2), E2 += u.magic, E2 += A(a, 2), E2 += A(o, 2), E2 += A(x.crc32, 4), E2 += A(x.compressedSize, 4), E2 += A(x.uncompressedSize, 4), E2 += A(f.length, 2), E2 += A(b2.length, 2), { fileRecord: R2.LOCAL_FILE_HEADER + E2 + f + b2, dirRecord: R2.CENTRAL_FILE_HEADER + A(C, 2) + E2 + A(p.length, 2) + "\0\0\0\0" + A(z, 4) + A(n2, 4) + f + b2 + p };
+        }
+        var I = e("../utils"), i = e("../stream/GenericWorker"), O2 = e("../utf8"), B2 = e("../crc32"), R2 = e("../signature");
+        function s(e2, t2, r2, n2) {
+          i.call(this, "ZipFileWorker"), this.bytesWritten = 0, this.zipComment = t2, this.zipPlatform = r2, this.encodeFileName = n2, this.streamFiles = e2, this.accumulate = false, this.contentBuffer = [], this.dirRecords = [], this.currentSourceOffset = 0, this.entriesCount = 0, this.currentFile = null, this._sources = [];
+        }
+        I.inherits(s, i), s.prototype.push = function(e2) {
+          var t2 = e2.meta.percent || 0, r2 = this.entriesCount, n2 = this._sources.length;
+          this.accumulate ? this.contentBuffer.push(e2) : (this.bytesWritten += e2.data.length, i.prototype.push.call(this, { data: e2.data, meta: { currentFile: this.currentFile, percent: r2 ? (t2 + 100 * (r2 - n2 - 1)) / r2 : 100 } }));
+        }, s.prototype.openedSource = function(e2) {
+          this.currentSourceOffset = this.bytesWritten, this.currentFile = e2.file.name;
+          var t2 = this.streamFiles && !e2.file.dir;
+          if (t2) {
+            var r2 = n(e2, t2, false, this.currentSourceOffset, this.zipPlatform, this.encodeFileName);
+            this.push({ data: r2.fileRecord, meta: { percent: 0 } });
+          } else this.accumulate = true;
+        }, s.prototype.closedSource = function(e2) {
+          this.accumulate = false;
+          var t2 = this.streamFiles && !e2.file.dir, r2 = n(e2, t2, true, this.currentSourceOffset, this.zipPlatform, this.encodeFileName);
+          if (this.dirRecords.push(r2.dirRecord), t2) this.push({ data: (function(e3) {
+            return R2.DATA_DESCRIPTOR + A(e3.crc32, 4) + A(e3.compressedSize, 4) + A(e3.uncompressedSize, 4);
+          })(e2), meta: { percent: 100 } });
+          else for (this.push({ data: r2.fileRecord, meta: { percent: 0 } }); this.contentBuffer.length; ) this.push(this.contentBuffer.shift());
+          this.currentFile = null;
+        }, s.prototype.flush = function() {
+          for (var e2 = this.bytesWritten, t2 = 0; t2 < this.dirRecords.length; t2++) this.push({ data: this.dirRecords[t2], meta: { percent: 100 } });
+          var r2 = this.bytesWritten - e2, n2 = (function(e3, t3, r3, n3, i2) {
+            var s2 = I.transformTo("string", i2(n3));
+            return R2.CENTRAL_DIRECTORY_END + "\0\0\0\0" + A(e3, 2) + A(e3, 2) + A(t3, 4) + A(r3, 4) + A(s2.length, 2) + s2;
+          })(this.dirRecords.length, r2, e2, this.zipComment, this.encodeFileName);
+          this.push({ data: n2, meta: { percent: 100 } });
+        }, s.prototype.prepareNextSource = function() {
+          this.previous = this._sources.shift(), this.openedSource(this.previous.streamInfo), this.isPaused ? this.previous.pause() : this.previous.resume();
+        }, s.prototype.registerPrevious = function(e2) {
+          this._sources.push(e2);
+          var t2 = this;
+          return e2.on("data", function(e3) {
+            t2.processChunk(e3);
+          }), e2.on("end", function() {
+            t2.closedSource(t2.previous.streamInfo), t2._sources.length ? t2.prepareNextSource() : t2.end();
+          }), e2.on("error", function(e3) {
+            t2.error(e3);
+          }), this;
+        }, s.prototype.resume = function() {
+          return !!i.prototype.resume.call(this) && (!this.previous && this._sources.length ? (this.prepareNextSource(), true) : this.previous || this._sources.length || this.generatedError ? void 0 : (this.end(), true));
+        }, s.prototype.error = function(e2) {
+          var t2 = this._sources;
+          if (!i.prototype.error.call(this, e2)) return false;
+          for (var r2 = 0; r2 < t2.length; r2++) try {
+            t2[r2].error(e2);
+          } catch (e3) {
+          }
+          return true;
+        }, s.prototype.lock = function() {
+          i.prototype.lock.call(this);
+          for (var e2 = this._sources, t2 = 0; t2 < e2.length; t2++) e2[t2].lock();
+        }, t.exports = s;
+      }, { "../crc32": 4, "../signature": 23, "../stream/GenericWorker": 28, "../utf8": 31, "../utils": 32 }], 9: [function(e, t, r) {
+        var u = e("../compressions"), n = e("./ZipFileWorker");
+        r.generateWorker = function(e2, a, t2) {
+          var o = new n(a.streamFiles, t2, a.platform, a.encodeFileName), h = 0;
+          try {
+            e2.forEach(function(e3, t3) {
+              h++;
+              var r2 = (function(e4, t4) {
+                var r3 = e4 || t4, n3 = u[r3];
+                if (!n3) throw new Error(r3 + " is not a valid compression method !");
+                return n3;
+              })(t3.options.compression, a.compression), n2 = t3.options.compressionOptions || a.compressionOptions || {}, i = t3.dir, s = t3.date;
+              t3._compressWorker(r2, n2).withStreamInfo("file", { name: e3, dir: i, date: s, comment: t3.comment || "", unixPermissions: t3.unixPermissions, dosPermissions: t3.dosPermissions }).pipe(o);
+            }), o.entriesCount = h;
+          } catch (e3) {
+            o.error(e3);
+          }
+          return o;
+        };
+      }, { "../compressions": 3, "./ZipFileWorker": 8 }], 10: [function(e, t, r) {
+        function n() {
+          if (!(this instanceof n)) return new n();
+          if (arguments.length) throw new Error("The constructor with parameters has been removed in JSZip 3.0, please check the upgrade guide.");
+          this.files = /* @__PURE__ */ Object.create(null), this.comment = null, this.root = "", this.clone = function() {
+            var e2 = new n();
+            for (var t2 in this) "function" != typeof this[t2] && (e2[t2] = this[t2]);
+            return e2;
+          };
+        }
+        (n.prototype = e("./object")).loadAsync = e("./load"), n.support = e("./support"), n.defaults = e("./defaults"), n.version = "3.10.1", n.loadAsync = function(e2, t2) {
+          return new n().loadAsync(e2, t2);
+        }, n.external = e("./external"), t.exports = n;
+      }, { "./defaults": 5, "./external": 6, "./load": 11, "./object": 15, "./support": 30 }], 11: [function(e, t, r) {
+        var u = e("./utils"), i = e("./external"), n = e("./utf8"), s = e("./zipEntries"), a = e("./stream/Crc32Probe"), l = e("./nodejsUtils");
+        function f(n2) {
+          return new i.Promise(function(e2, t2) {
+            var r2 = n2.decompressed.getContentWorker().pipe(new a());
+            r2.on("error", function(e3) {
+              t2(e3);
+            }).on("end", function() {
+              r2.streamInfo.crc32 !== n2.decompressed.crc32 ? t2(new Error("Corrupted zip : CRC32 mismatch")) : e2();
+            }).resume();
+          });
+        }
+        t.exports = function(e2, o) {
+          var h = this;
+          return o = u.extend(o || {}, { base64: false, checkCRC32: false, optimizedBinaryString: false, createFolders: false, decodeFileName: n.utf8decode }), l.isNode && l.isStream(e2) ? i.Promise.reject(new Error("JSZip can't accept a stream when loading a zip file.")) : u.prepareContent("the loaded zip file", e2, true, o.optimizedBinaryString, o.base64).then(function(e3) {
+            var t2 = new s(o);
+            return t2.load(e3), t2;
+          }).then(function(e3) {
+            var t2 = [i.Promise.resolve(e3)], r2 = e3.files;
+            if (o.checkCRC32) for (var n2 = 0; n2 < r2.length; n2++) t2.push(f(r2[n2]));
+            return i.Promise.all(t2);
+          }).then(function(e3) {
+            for (var t2 = e3.shift(), r2 = t2.files, n2 = 0; n2 < r2.length; n2++) {
+              var i2 = r2[n2], s2 = i2.fileNameStr, a2 = u.resolve(i2.fileNameStr);
+              h.file(a2, i2.decompressed, { binary: true, optimizedBinaryString: true, date: i2.date, dir: i2.dir, comment: i2.fileCommentStr.length ? i2.fileCommentStr : null, unixPermissions: i2.unixPermissions, dosPermissions: i2.dosPermissions, createFolders: o.createFolders }), i2.dir || (h.file(a2).unsafeOriginalName = s2);
+            }
+            return t2.zipComment.length && (h.comment = t2.zipComment), h;
+          });
+        };
+      }, { "./external": 6, "./nodejsUtils": 14, "./stream/Crc32Probe": 25, "./utf8": 31, "./utils": 32, "./zipEntries": 33 }], 12: [function(e, t, r) {
+        var n = e("../utils"), i = e("../stream/GenericWorker");
+        function s(e2, t2) {
+          i.call(this, "Nodejs stream input adapter for " + e2), this._upstreamEnded = false, this._bindStream(t2);
+        }
+        n.inherits(s, i), s.prototype._bindStream = function(e2) {
+          var t2 = this;
+          (this._stream = e2).pause(), e2.on("data", function(e3) {
+            t2.push({ data: e3, meta: { percent: 0 } });
+          }).on("error", function(e3) {
+            t2.isPaused ? this.generatedError = e3 : t2.error(e3);
+          }).on("end", function() {
+            t2.isPaused ? t2._upstreamEnded = true : t2.end();
+          });
+        }, s.prototype.pause = function() {
+          return !!i.prototype.pause.call(this) && (this._stream.pause(), true);
+        }, s.prototype.resume = function() {
+          return !!i.prototype.resume.call(this) && (this._upstreamEnded ? this.end() : this._stream.resume(), true);
+        }, t.exports = s;
+      }, { "../stream/GenericWorker": 28, "../utils": 32 }], 13: [function(e, t, r) {
+        var i = e("readable-stream").Readable;
+        function n(e2, t2, r2) {
+          i.call(this, t2), this._helper = e2;
+          var n2 = this;
+          e2.on("data", function(e3, t3) {
+            n2.push(e3) || n2._helper.pause(), r2 && r2(t3);
+          }).on("error", function(e3) {
+            n2.emit("error", e3);
+          }).on("end", function() {
+            n2.push(null);
+          });
+        }
+        e("../utils").inherits(n, i), n.prototype._read = function() {
+          this._helper.resume();
+        }, t.exports = n;
+      }, { "../utils": 32, "readable-stream": 16 }], 14: [function(e, t, r) {
+        t.exports = { isNode: "undefined" != typeof Buffer, newBufferFrom: function(e2, t2) {
+          if (Buffer.from && Buffer.from !== Uint8Array.from) return Buffer.from(e2, t2);
+          if ("number" == typeof e2) throw new Error('The "data" argument must not be a number');
+          return new Buffer(e2, t2);
+        }, allocBuffer: function(e2) {
+          if (Buffer.alloc) return Buffer.alloc(e2);
+          var t2 = new Buffer(e2);
+          return t2.fill(0), t2;
+        }, isBuffer: function(e2) {
+          return Buffer.isBuffer(e2);
+        }, isStream: function(e2) {
+          return e2 && "function" == typeof e2.on && "function" == typeof e2.pause && "function" == typeof e2.resume;
+        } };
+      }, {}], 15: [function(e, t, r) {
+        function s(e2, t2, r2) {
+          var n2, i2 = u.getTypeOf(t2), s2 = u.extend(r2 || {}, f);
+          s2.date = s2.date || /* @__PURE__ */ new Date(), null !== s2.compression && (s2.compression = s2.compression.toUpperCase()), "string" == typeof s2.unixPermissions && (s2.unixPermissions = parseInt(s2.unixPermissions, 8)), s2.unixPermissions && 16384 & s2.unixPermissions && (s2.dir = true), s2.dosPermissions && 16 & s2.dosPermissions && (s2.dir = true), s2.dir && (e2 = g(e2)), s2.createFolders && (n2 = _(e2)) && b2.call(this, n2, true);
+          var a2 = "string" === i2 && false === s2.binary && false === s2.base64;
+          r2 && void 0 !== r2.binary || (s2.binary = !a2), (t2 instanceof c && 0 === t2.uncompressedSize || s2.dir || !t2 || 0 === t2.length) && (s2.base64 = false, s2.binary = true, t2 = "", s2.compression = "STORE", i2 = "string");
+          var o2 = null;
+          o2 = t2 instanceof c || t2 instanceof l ? t2 : p.isNode && p.isStream(t2) ? new m(e2, t2) : u.prepareContent(e2, t2, s2.binary, s2.optimizedBinaryString, s2.base64);
+          var h2 = new d(e2, o2, s2);
+          this.files[e2] = h2;
+        }
+        var i = e("./utf8"), u = e("./utils"), l = e("./stream/GenericWorker"), a = e("./stream/StreamHelper"), f = e("./defaults"), c = e("./compressedObject"), d = e("./zipObject"), o = e("./generate"), p = e("./nodejsUtils"), m = e("./nodejs/NodejsStreamInputAdapter"), _ = function(e2) {
+          "/" === e2.slice(-1) && (e2 = e2.substring(0, e2.length - 1));
+          var t2 = e2.lastIndexOf("/");
+          return 0 < t2 ? e2.substring(0, t2) : "";
+        }, g = function(e2) {
+          return "/" !== e2.slice(-1) && (e2 += "/"), e2;
+        }, b2 = function(e2, t2) {
+          return t2 = void 0 !== t2 ? t2 : f.createFolders, e2 = g(e2), this.files[e2] || s.call(this, e2, null, { dir: true, createFolders: t2 }), this.files[e2];
+        };
+        function h(e2) {
+          return "[object RegExp]" === Object.prototype.toString.call(e2);
+        }
+        var n = { load: function() {
+          throw new Error("This method has been removed in JSZip 3.0, please check the upgrade guide.");
+        }, forEach: function(e2) {
+          var t2, r2, n2;
+          for (t2 in this.files) n2 = this.files[t2], (r2 = t2.slice(this.root.length, t2.length)) && t2.slice(0, this.root.length) === this.root && e2(r2, n2);
+        }, filter: function(r2) {
+          var n2 = [];
+          return this.forEach(function(e2, t2) {
+            r2(e2, t2) && n2.push(t2);
+          }), n2;
+        }, file: function(e2, t2, r2) {
+          if (1 !== arguments.length) return e2 = this.root + e2, s.call(this, e2, t2, r2), this;
+          if (h(e2)) {
+            var n2 = e2;
+            return this.filter(function(e3, t3) {
+              return !t3.dir && n2.test(e3);
+            });
+          }
+          var i2 = this.files[this.root + e2];
+          return i2 && !i2.dir ? i2 : null;
+        }, folder: function(r2) {
+          if (!r2) return this;
+          if (h(r2)) return this.filter(function(e3, t3) {
+            return t3.dir && r2.test(e3);
+          });
+          var e2 = this.root + r2, t2 = b2.call(this, e2), n2 = this.clone();
+          return n2.root = t2.name, n2;
+        }, remove: function(r2) {
+          r2 = this.root + r2;
+          var e2 = this.files[r2];
+          if (e2 || ("/" !== r2.slice(-1) && (r2 += "/"), e2 = this.files[r2]), e2 && !e2.dir) delete this.files[r2];
+          else for (var t2 = this.filter(function(e3, t3) {
+            return t3.name.slice(0, r2.length) === r2;
+          }), n2 = 0; n2 < t2.length; n2++) delete this.files[t2[n2].name];
+          return this;
+        }, generate: function() {
+          throw new Error("This method has been removed in JSZip 3.0, please check the upgrade guide.");
+        }, generateInternalStream: function(e2) {
+          var t2, r2 = {};
+          try {
+            if ((r2 = u.extend(e2 || {}, { streamFiles: false, compression: "STORE", compressionOptions: null, type: "", platform: "DOS", comment: null, mimeType: "application/zip", encodeFileName: i.utf8encode })).type = r2.type.toLowerCase(), r2.compression = r2.compression.toUpperCase(), "binarystring" === r2.type && (r2.type = "string"), !r2.type) throw new Error("No output type specified.");
+            u.checkSupport(r2.type), "darwin" !== r2.platform && "freebsd" !== r2.platform && "linux" !== r2.platform && "sunos" !== r2.platform || (r2.platform = "UNIX"), "win32" === r2.platform && (r2.platform = "DOS");
+            var n2 = r2.comment || this.comment || "";
+            t2 = o.generateWorker(this, r2, n2);
+          } catch (e3) {
+            (t2 = new l("error")).error(e3);
+          }
+          return new a(t2, r2.type || "string", r2.mimeType);
+        }, generateAsync: function(e2, t2) {
+          return this.generateInternalStream(e2).accumulate(t2);
+        }, generateNodeStream: function(e2, t2) {
+          return (e2 = e2 || {}).type || (e2.type = "nodebuffer"), this.generateInternalStream(e2).toNodejsStream(t2);
+        } };
+        t.exports = n;
+      }, { "./compressedObject": 2, "./defaults": 5, "./generate": 9, "./nodejs/NodejsStreamInputAdapter": 12, "./nodejsUtils": 14, "./stream/GenericWorker": 28, "./stream/StreamHelper": 29, "./utf8": 31, "./utils": 32, "./zipObject": 35 }], 16: [function(e, t, r) {
+        t.exports = e("stream");
+      }, { stream: void 0 }], 17: [function(e, t, r) {
+        var n = e("./DataReader");
+        function i(e2) {
+          n.call(this, e2);
+          for (var t2 = 0; t2 < this.data.length; t2++) e2[t2] = 255 & e2[t2];
+        }
+        e("../utils").inherits(i, n), i.prototype.byteAt = function(e2) {
+          return this.data[this.zero + e2];
+        }, i.prototype.lastIndexOfSignature = function(e2) {
+          for (var t2 = e2.charCodeAt(0), r2 = e2.charCodeAt(1), n2 = e2.charCodeAt(2), i2 = e2.charCodeAt(3), s = this.length - 4; 0 <= s; --s) if (this.data[s] === t2 && this.data[s + 1] === r2 && this.data[s + 2] === n2 && this.data[s + 3] === i2) return s - this.zero;
+          return -1;
+        }, i.prototype.readAndCheckSignature = function(e2) {
+          var t2 = e2.charCodeAt(0), r2 = e2.charCodeAt(1), n2 = e2.charCodeAt(2), i2 = e2.charCodeAt(3), s = this.readData(4);
+          return t2 === s[0] && r2 === s[1] && n2 === s[2] && i2 === s[3];
+        }, i.prototype.readData = function(e2) {
+          if (this.checkOffset(e2), 0 === e2) return [];
+          var t2 = this.data.slice(this.zero + this.index, this.zero + this.index + e2);
+          return this.index += e2, t2;
+        }, t.exports = i;
+      }, { "../utils": 32, "./DataReader": 18 }], 18: [function(e, t, r) {
+        var n = e("../utils");
+        function i(e2) {
+          this.data = e2, this.length = e2.length, this.index = 0, this.zero = 0;
+        }
+        i.prototype = { checkOffset: function(e2) {
+          this.checkIndex(this.index + e2);
+        }, checkIndex: function(e2) {
+          if (this.length < this.zero + e2 || e2 < 0) throw new Error("End of data reached (data length = " + this.length + ", asked index = " + e2 + "). Corrupted zip ?");
+        }, setIndex: function(e2) {
+          this.checkIndex(e2), this.index = e2;
+        }, skip: function(e2) {
+          this.setIndex(this.index + e2);
+        }, byteAt: function() {
+        }, readInt: function(e2) {
+          var t2, r2 = 0;
+          for (this.checkOffset(e2), t2 = this.index + e2 - 1; t2 >= this.index; t2--) r2 = (r2 << 8) + this.byteAt(t2);
+          return this.index += e2, r2;
+        }, readString: function(e2) {
+          return n.transformTo("string", this.readData(e2));
+        }, readData: function() {
+        }, lastIndexOfSignature: function() {
+        }, readAndCheckSignature: function() {
+        }, readDate: function() {
+          var e2 = this.readInt(4);
+          return new Date(Date.UTC(1980 + (e2 >> 25 & 127), (e2 >> 21 & 15) - 1, e2 >> 16 & 31, e2 >> 11 & 31, e2 >> 5 & 63, (31 & e2) << 1));
+        } }, t.exports = i;
+      }, { "../utils": 32 }], 19: [function(e, t, r) {
+        var n = e("./Uint8ArrayReader");
+        function i(e2) {
+          n.call(this, e2);
+        }
+        e("../utils").inherits(i, n), i.prototype.readData = function(e2) {
+          this.checkOffset(e2);
+          var t2 = this.data.slice(this.zero + this.index, this.zero + this.index + e2);
+          return this.index += e2, t2;
+        }, t.exports = i;
+      }, { "../utils": 32, "./Uint8ArrayReader": 21 }], 20: [function(e, t, r) {
+        var n = e("./DataReader");
+        function i(e2) {
+          n.call(this, e2);
+        }
+        e("../utils").inherits(i, n), i.prototype.byteAt = function(e2) {
+          return this.data.charCodeAt(this.zero + e2);
+        }, i.prototype.lastIndexOfSignature = function(e2) {
+          return this.data.lastIndexOf(e2) - this.zero;
+        }, i.prototype.readAndCheckSignature = function(e2) {
+          return e2 === this.readData(4);
+        }, i.prototype.readData = function(e2) {
+          this.checkOffset(e2);
+          var t2 = this.data.slice(this.zero + this.index, this.zero + this.index + e2);
+          return this.index += e2, t2;
+        }, t.exports = i;
+      }, { "../utils": 32, "./DataReader": 18 }], 21: [function(e, t, r) {
+        var n = e("./ArrayReader");
+        function i(e2) {
+          n.call(this, e2);
+        }
+        e("../utils").inherits(i, n), i.prototype.readData = function(e2) {
+          if (this.checkOffset(e2), 0 === e2) return new Uint8Array(0);
+          var t2 = this.data.subarray(this.zero + this.index, this.zero + this.index + e2);
+          return this.index += e2, t2;
+        }, t.exports = i;
+      }, { "../utils": 32, "./ArrayReader": 17 }], 22: [function(e, t, r) {
+        var n = e("../utils"), i = e("../support"), s = e("./ArrayReader"), a = e("./StringReader"), o = e("./NodeBufferReader"), h = e("./Uint8ArrayReader");
+        t.exports = function(e2) {
+          var t2 = n.getTypeOf(e2);
+          return n.checkSupport(t2), "string" !== t2 || i.uint8array ? "nodebuffer" === t2 ? new o(e2) : i.uint8array ? new h(n.transformTo("uint8array", e2)) : new s(n.transformTo("array", e2)) : new a(e2);
+        };
+      }, { "../support": 30, "../utils": 32, "./ArrayReader": 17, "./NodeBufferReader": 19, "./StringReader": 20, "./Uint8ArrayReader": 21 }], 23: [function(e, t, r) {
+        r.LOCAL_FILE_HEADER = "PK", r.CENTRAL_FILE_HEADER = "PK", r.CENTRAL_DIRECTORY_END = "PK", r.ZIP64_CENTRAL_DIRECTORY_LOCATOR = "PK\x07", r.ZIP64_CENTRAL_DIRECTORY_END = "PK", r.DATA_DESCRIPTOR = "PK\x07\b";
+      }, {}], 24: [function(e, t, r) {
+        var n = e("./GenericWorker"), i = e("../utils");
+        function s(e2) {
+          n.call(this, "ConvertWorker to " + e2), this.destType = e2;
+        }
+        i.inherits(s, n), s.prototype.processChunk = function(e2) {
+          this.push({ data: i.transformTo(this.destType, e2.data), meta: e2.meta });
+        }, t.exports = s;
+      }, { "../utils": 32, "./GenericWorker": 28 }], 25: [function(e, t, r) {
+        var n = e("./GenericWorker"), i = e("../crc32");
+        function s() {
+          n.call(this, "Crc32Probe"), this.withStreamInfo("crc32", 0);
+        }
+        e("../utils").inherits(s, n), s.prototype.processChunk = function(e2) {
+          this.streamInfo.crc32 = i(e2.data, this.streamInfo.crc32 || 0), this.push(e2);
+        }, t.exports = s;
+      }, { "../crc32": 4, "../utils": 32, "./GenericWorker": 28 }], 26: [function(e, t, r) {
+        var n = e("../utils"), i = e("./GenericWorker");
+        function s(e2) {
+          i.call(this, "DataLengthProbe for " + e2), this.propName = e2, this.withStreamInfo(e2, 0);
+        }
+        n.inherits(s, i), s.prototype.processChunk = function(e2) {
+          if (e2) {
+            var t2 = this.streamInfo[this.propName] || 0;
+            this.streamInfo[this.propName] = t2 + e2.data.length;
+          }
+          i.prototype.processChunk.call(this, e2);
+        }, t.exports = s;
+      }, { "../utils": 32, "./GenericWorker": 28 }], 27: [function(e, t, r) {
+        var n = e("../utils"), i = e("./GenericWorker");
+        function s(e2) {
+          i.call(this, "DataWorker");
+          var t2 = this;
+          this.dataIsReady = false, this.index = 0, this.max = 0, this.data = null, this.type = "", this._tickScheduled = false, e2.then(function(e3) {
+            t2.dataIsReady = true, t2.data = e3, t2.max = e3 && e3.length || 0, t2.type = n.getTypeOf(e3), t2.isPaused || t2._tickAndRepeat();
+          }, function(e3) {
+            t2.error(e3);
+          });
+        }
+        n.inherits(s, i), s.prototype.cleanUp = function() {
+          i.prototype.cleanUp.call(this), this.data = null;
+        }, s.prototype.resume = function() {
+          return !!i.prototype.resume.call(this) && (!this._tickScheduled && this.dataIsReady && (this._tickScheduled = true, n.delay(this._tickAndRepeat, [], this)), true);
+        }, s.prototype._tickAndRepeat = function() {
+          this._tickScheduled = false, this.isPaused || this.isFinished || (this._tick(), this.isFinished || (n.delay(this._tickAndRepeat, [], this), this._tickScheduled = true));
+        }, s.prototype._tick = function() {
+          if (this.isPaused || this.isFinished) return false;
+          var e2 = null, t2 = Math.min(this.max, this.index + 16384);
+          if (this.index >= this.max) return this.end();
+          switch (this.type) {
+            case "string":
+              e2 = this.data.substring(this.index, t2);
+              break;
+            case "uint8array":
+              e2 = this.data.subarray(this.index, t2);
+              break;
+            case "array":
+            case "nodebuffer":
+              e2 = this.data.slice(this.index, t2);
+          }
+          return this.index = t2, this.push({ data: e2, meta: { percent: this.max ? this.index / this.max * 100 : 0 } });
+        }, t.exports = s;
+      }, { "../utils": 32, "./GenericWorker": 28 }], 28: [function(e, t, r) {
+        function n(e2) {
+          this.name = e2 || "default", this.streamInfo = {}, this.generatedError = null, this.extraStreamInfo = {}, this.isPaused = true, this.isFinished = false, this.isLocked = false, this._listeners = { data: [], end: [], error: [] }, this.previous = null;
+        }
+        n.prototype = { push: function(e2) {
+          this.emit("data", e2);
+        }, end: function() {
+          if (this.isFinished) return false;
+          this.flush();
+          try {
+            this.emit("end"), this.cleanUp(), this.isFinished = true;
+          } catch (e2) {
+            this.emit("error", e2);
+          }
+          return true;
+        }, error: function(e2) {
+          return !this.isFinished && (this.isPaused ? this.generatedError = e2 : (this.isFinished = true, this.emit("error", e2), this.previous && this.previous.error(e2), this.cleanUp()), true);
+        }, on: function(e2, t2) {
+          return this._listeners[e2].push(t2), this;
+        }, cleanUp: function() {
+          this.streamInfo = this.generatedError = this.extraStreamInfo = null, this._listeners = [];
+        }, emit: function(e2, t2) {
+          if (this._listeners[e2]) for (var r2 = 0; r2 < this._listeners[e2].length; r2++) this._listeners[e2][r2].call(this, t2);
+        }, pipe: function(e2) {
+          return e2.registerPrevious(this);
+        }, registerPrevious: function(e2) {
+          if (this.isLocked) throw new Error("The stream '" + this + "' has already been used.");
+          this.streamInfo = e2.streamInfo, this.mergeStreamInfo(), this.previous = e2;
+          var t2 = this;
+          return e2.on("data", function(e3) {
+            t2.processChunk(e3);
+          }), e2.on("end", function() {
+            t2.end();
+          }), e2.on("error", function(e3) {
+            t2.error(e3);
+          }), this;
+        }, pause: function() {
+          return !this.isPaused && !this.isFinished && (this.isPaused = true, this.previous && this.previous.pause(), true);
+        }, resume: function() {
+          if (!this.isPaused || this.isFinished) return false;
+          var e2 = this.isPaused = false;
+          return this.generatedError && (this.error(this.generatedError), e2 = true), this.previous && this.previous.resume(), !e2;
+        }, flush: function() {
+        }, processChunk: function(e2) {
+          this.push(e2);
+        }, withStreamInfo: function(e2, t2) {
+          return this.extraStreamInfo[e2] = t2, this.mergeStreamInfo(), this;
+        }, mergeStreamInfo: function() {
+          for (var e2 in this.extraStreamInfo) Object.prototype.hasOwnProperty.call(this.extraStreamInfo, e2) && (this.streamInfo[e2] = this.extraStreamInfo[e2]);
+        }, lock: function() {
+          if (this.isLocked) throw new Error("The stream '" + this + "' has already been used.");
+          this.isLocked = true, this.previous && this.previous.lock();
+        }, toString: function() {
+          var e2 = "Worker " + this.name;
+          return this.previous ? this.previous + " -> " + e2 : e2;
+        } }, t.exports = n;
+      }, {}], 29: [function(e, t, r) {
+        var h = e("../utils"), i = e("./ConvertWorker"), s = e("./GenericWorker"), u = e("../base64"), n = e("../support"), a = e("../external"), o = null;
+        if (n.nodestream) try {
+          o = e("../nodejs/NodejsStreamOutputAdapter");
+        } catch (e2) {
+        }
+        function l(e2, o2) {
+          return new a.Promise(function(t2, r2) {
+            var n2 = [], i2 = e2._internalType, s2 = e2._outputType, a2 = e2._mimeType;
+            e2.on("data", function(e3, t3) {
+              n2.push(e3), o2 && o2(t3);
+            }).on("error", function(e3) {
+              n2 = [], r2(e3);
+            }).on("end", function() {
+              try {
+                var e3 = (function(e4, t3, r3) {
+                  switch (e4) {
+                    case "blob":
+                      return h.newBlob(h.transformTo("arraybuffer", t3), r3);
+                    case "base64":
+                      return u.encode(t3);
+                    default:
+                      return h.transformTo(e4, t3);
+                  }
+                })(s2, (function(e4, t3) {
+                  var r3, n3 = 0, i3 = null, s3 = 0;
+                  for (r3 = 0; r3 < t3.length; r3++) s3 += t3[r3].length;
+                  switch (e4) {
+                    case "string":
+                      return t3.join("");
+                    case "array":
+                      return Array.prototype.concat.apply([], t3);
+                    case "uint8array":
+                      for (i3 = new Uint8Array(s3), r3 = 0; r3 < t3.length; r3++) i3.set(t3[r3], n3), n3 += t3[r3].length;
+                      return i3;
+                    case "nodebuffer":
+                      return Buffer.concat(t3);
+                    default:
+                      throw new Error("concat : unsupported type '" + e4 + "'");
+                  }
+                })(i2, n2), a2);
+                t2(e3);
+              } catch (e4) {
+                r2(e4);
+              }
+              n2 = [];
+            }).resume();
+          });
+        }
+        function f(e2, t2, r2) {
+          var n2 = t2;
+          switch (t2) {
+            case "blob":
+            case "arraybuffer":
+              n2 = "uint8array";
+              break;
+            case "base64":
+              n2 = "string";
+          }
+          try {
+            this._internalType = n2, this._outputType = t2, this._mimeType = r2, h.checkSupport(n2), this._worker = e2.pipe(new i(n2)), e2.lock();
+          } catch (e3) {
+            this._worker = new s("error"), this._worker.error(e3);
+          }
+        }
+        f.prototype = { accumulate: function(e2) {
+          return l(this, e2);
+        }, on: function(e2, t2) {
+          var r2 = this;
+          return "data" === e2 ? this._worker.on(e2, function(e3) {
+            t2.call(r2, e3.data, e3.meta);
+          }) : this._worker.on(e2, function() {
+            h.delay(t2, arguments, r2);
+          }), this;
+        }, resume: function() {
+          return h.delay(this._worker.resume, [], this._worker), this;
+        }, pause: function() {
+          return this._worker.pause(), this;
+        }, toNodejsStream: function(e2) {
+          if (h.checkSupport("nodestream"), "nodebuffer" !== this._outputType) throw new Error(this._outputType + " is not supported by this method");
+          return new o(this, { objectMode: "nodebuffer" !== this._outputType }, e2);
+        } }, t.exports = f;
+      }, { "../base64": 1, "../external": 6, "../nodejs/NodejsStreamOutputAdapter": 13, "../support": 30, "../utils": 32, "./ConvertWorker": 24, "./GenericWorker": 28 }], 30: [function(e, t, r) {
+        if (r.base64 = true, r.array = true, r.string = true, r.arraybuffer = "undefined" != typeof ArrayBuffer && "undefined" != typeof Uint8Array, r.nodebuffer = "undefined" != typeof Buffer, r.uint8array = "undefined" != typeof Uint8Array, "undefined" == typeof ArrayBuffer) r.blob = false;
+        else {
+          var n = new ArrayBuffer(0);
+          try {
+            r.blob = 0 === new Blob([n], { type: "application/zip" }).size;
+          } catch (e2) {
+            try {
+              var i = new (self.BlobBuilder || self.WebKitBlobBuilder || self.MozBlobBuilder || self.MSBlobBuilder)();
+              i.append(n), r.blob = 0 === i.getBlob("application/zip").size;
+            } catch (e3) {
+              r.blob = false;
+            }
+          }
+        }
+        try {
+          r.nodestream = !!e("readable-stream").Readable;
+        } catch (e2) {
+          r.nodestream = false;
+        }
+      }, { "readable-stream": 16 }], 31: [function(e, t, s) {
+        for (var o = e("./utils"), h = e("./support"), r = e("./nodejsUtils"), n = e("./stream/GenericWorker"), u = new Array(256), i = 0; i < 256; i++) u[i] = 252 <= i ? 6 : 248 <= i ? 5 : 240 <= i ? 4 : 224 <= i ? 3 : 192 <= i ? 2 : 1;
+        u[254] = u[254] = 1;
+        function a() {
+          n.call(this, "utf-8 decode"), this.leftOver = null;
+        }
+        function l() {
+          n.call(this, "utf-8 encode");
+        }
+        s.utf8encode = function(e2) {
+          return h.nodebuffer ? r.newBufferFrom(e2, "utf-8") : (function(e3) {
+            var t2, r2, n2, i2, s2, a2 = e3.length, o2 = 0;
+            for (i2 = 0; i2 < a2; i2++) 55296 == (64512 & (r2 = e3.charCodeAt(i2))) && i2 + 1 < a2 && 56320 == (64512 & (n2 = e3.charCodeAt(i2 + 1))) && (r2 = 65536 + (r2 - 55296 << 10) + (n2 - 56320), i2++), o2 += r2 < 128 ? 1 : r2 < 2048 ? 2 : r2 < 65536 ? 3 : 4;
+            for (t2 = h.uint8array ? new Uint8Array(o2) : new Array(o2), i2 = s2 = 0; s2 < o2; i2++) 55296 == (64512 & (r2 = e3.charCodeAt(i2))) && i2 + 1 < a2 && 56320 == (64512 & (n2 = e3.charCodeAt(i2 + 1))) && (r2 = 65536 + (r2 - 55296 << 10) + (n2 - 56320), i2++), r2 < 128 ? t2[s2++] = r2 : (r2 < 2048 ? t2[s2++] = 192 | r2 >>> 6 : (r2 < 65536 ? t2[s2++] = 224 | r2 >>> 12 : (t2[s2++] = 240 | r2 >>> 18, t2[s2++] = 128 | r2 >>> 12 & 63), t2[s2++] = 128 | r2 >>> 6 & 63), t2[s2++] = 128 | 63 & r2);
+            return t2;
+          })(e2);
+        }, s.utf8decode = function(e2) {
+          return h.nodebuffer ? o.transformTo("nodebuffer", e2).toString("utf-8") : (function(e3) {
+            var t2, r2, n2, i2, s2 = e3.length, a2 = new Array(2 * s2);
+            for (t2 = r2 = 0; t2 < s2; ) if ((n2 = e3[t2++]) < 128) a2[r2++] = n2;
+            else if (4 < (i2 = u[n2])) a2[r2++] = 65533, t2 += i2 - 1;
+            else {
+              for (n2 &= 2 === i2 ? 31 : 3 === i2 ? 15 : 7; 1 < i2 && t2 < s2; ) n2 = n2 << 6 | 63 & e3[t2++], i2--;
+              1 < i2 ? a2[r2++] = 65533 : n2 < 65536 ? a2[r2++] = n2 : (n2 -= 65536, a2[r2++] = 55296 | n2 >> 10 & 1023, a2[r2++] = 56320 | 1023 & n2);
+            }
+            return a2.length !== r2 && (a2.subarray ? a2 = a2.subarray(0, r2) : a2.length = r2), o.applyFromCharCode(a2);
+          })(e2 = o.transformTo(h.uint8array ? "uint8array" : "array", e2));
+        }, o.inherits(a, n), a.prototype.processChunk = function(e2) {
+          var t2 = o.transformTo(h.uint8array ? "uint8array" : "array", e2.data);
+          if (this.leftOver && this.leftOver.length) {
+            if (h.uint8array) {
+              var r2 = t2;
+              (t2 = new Uint8Array(r2.length + this.leftOver.length)).set(this.leftOver, 0), t2.set(r2, this.leftOver.length);
+            } else t2 = this.leftOver.concat(t2);
+            this.leftOver = null;
+          }
+          var n2 = (function(e3, t3) {
+            var r3;
+            for ((t3 = t3 || e3.length) > e3.length && (t3 = e3.length), r3 = t3 - 1; 0 <= r3 && 128 == (192 & e3[r3]); ) r3--;
+            return r3 < 0 ? t3 : 0 === r3 ? t3 : r3 + u[e3[r3]] > t3 ? r3 : t3;
+          })(t2), i2 = t2;
+          n2 !== t2.length && (h.uint8array ? (i2 = t2.subarray(0, n2), this.leftOver = t2.subarray(n2, t2.length)) : (i2 = t2.slice(0, n2), this.leftOver = t2.slice(n2, t2.length))), this.push({ data: s.utf8decode(i2), meta: e2.meta });
+        }, a.prototype.flush = function() {
+          this.leftOver && this.leftOver.length && (this.push({ data: s.utf8decode(this.leftOver), meta: {} }), this.leftOver = null);
+        }, s.Utf8DecodeWorker = a, o.inherits(l, n), l.prototype.processChunk = function(e2) {
+          this.push({ data: s.utf8encode(e2.data), meta: e2.meta });
+        }, s.Utf8EncodeWorker = l;
+      }, { "./nodejsUtils": 14, "./stream/GenericWorker": 28, "./support": 30, "./utils": 32 }], 32: [function(e, t, a) {
+        var o = e("./support"), h = e("./base64"), r = e("./nodejsUtils"), u = e("./external");
+        function n(e2) {
+          return e2;
+        }
+        function l(e2, t2) {
+          for (var r2 = 0; r2 < e2.length; ++r2) t2[r2] = 255 & e2.charCodeAt(r2);
+          return t2;
+        }
+        e("setimmediate"), a.newBlob = function(t2, r2) {
+          a.checkSupport("blob");
+          try {
+            return new Blob([t2], { type: r2 });
+          } catch (e2) {
+            try {
+              var n2 = new (self.BlobBuilder || self.WebKitBlobBuilder || self.MozBlobBuilder || self.MSBlobBuilder)();
+              return n2.append(t2), n2.getBlob(r2);
+            } catch (e3) {
+              throw new Error("Bug : can't construct the Blob.");
+            }
+          }
+        };
+        var i = { stringifyByChunk: function(e2, t2, r2) {
+          var n2 = [], i2 = 0, s2 = e2.length;
+          if (s2 <= r2) return String.fromCharCode.apply(null, e2);
+          for (; i2 < s2; ) "array" === t2 || "nodebuffer" === t2 ? n2.push(String.fromCharCode.apply(null, e2.slice(i2, Math.min(i2 + r2, s2)))) : n2.push(String.fromCharCode.apply(null, e2.subarray(i2, Math.min(i2 + r2, s2)))), i2 += r2;
+          return n2.join("");
+        }, stringifyByChar: function(e2) {
+          for (var t2 = "", r2 = 0; r2 < e2.length; r2++) t2 += String.fromCharCode(e2[r2]);
+          return t2;
+        }, applyCanBeUsed: { uint8array: (function() {
+          try {
+            return o.uint8array && 1 === String.fromCharCode.apply(null, new Uint8Array(1)).length;
+          } catch (e2) {
+            return false;
+          }
+        })(), nodebuffer: (function() {
+          try {
+            return o.nodebuffer && 1 === String.fromCharCode.apply(null, r.allocBuffer(1)).length;
+          } catch (e2) {
+            return false;
+          }
+        })() } };
+        function s(e2) {
+          var t2 = 65536, r2 = a.getTypeOf(e2), n2 = true;
+          if ("uint8array" === r2 ? n2 = i.applyCanBeUsed.uint8array : "nodebuffer" === r2 && (n2 = i.applyCanBeUsed.nodebuffer), n2) for (; 1 < t2; ) try {
+            return i.stringifyByChunk(e2, r2, t2);
+          } catch (e3) {
+            t2 = Math.floor(t2 / 2);
+          }
+          return i.stringifyByChar(e2);
+        }
+        function f(e2, t2) {
+          for (var r2 = 0; r2 < e2.length; r2++) t2[r2] = e2[r2];
+          return t2;
+        }
+        a.applyFromCharCode = s;
+        var c = {};
+        c.string = { string: n, array: function(e2) {
+          return l(e2, new Array(e2.length));
+        }, arraybuffer: function(e2) {
+          return c.string.uint8array(e2).buffer;
+        }, uint8array: function(e2) {
+          return l(e2, new Uint8Array(e2.length));
+        }, nodebuffer: function(e2) {
+          return l(e2, r.allocBuffer(e2.length));
+        } }, c.array = { string: s, array: n, arraybuffer: function(e2) {
+          return new Uint8Array(e2).buffer;
+        }, uint8array: function(e2) {
+          return new Uint8Array(e2);
+        }, nodebuffer: function(e2) {
+          return r.newBufferFrom(e2);
+        } }, c.arraybuffer = { string: function(e2) {
+          return s(new Uint8Array(e2));
+        }, array: function(e2) {
+          return f(new Uint8Array(e2), new Array(e2.byteLength));
+        }, arraybuffer: n, uint8array: function(e2) {
+          return new Uint8Array(e2);
+        }, nodebuffer: function(e2) {
+          return r.newBufferFrom(new Uint8Array(e2));
+        } }, c.uint8array = { string: s, array: function(e2) {
+          return f(e2, new Array(e2.length));
+        }, arraybuffer: function(e2) {
+          return e2.buffer;
+        }, uint8array: n, nodebuffer: function(e2) {
+          return r.newBufferFrom(e2);
+        } }, c.nodebuffer = { string: s, array: function(e2) {
+          return f(e2, new Array(e2.length));
+        }, arraybuffer: function(e2) {
+          return c.nodebuffer.uint8array(e2).buffer;
+        }, uint8array: function(e2) {
+          return f(e2, new Uint8Array(e2.length));
+        }, nodebuffer: n }, a.transformTo = function(e2, t2) {
+          if (t2 = t2 || "", !e2) return t2;
+          a.checkSupport(e2);
+          var r2 = a.getTypeOf(t2);
+          return c[r2][e2](t2);
+        }, a.resolve = function(e2) {
+          for (var t2 = e2.split("/"), r2 = [], n2 = 0; n2 < t2.length; n2++) {
+            var i2 = t2[n2];
+            "." === i2 || "" === i2 && 0 !== n2 && n2 !== t2.length - 1 || (".." === i2 ? r2.pop() : r2.push(i2));
+          }
+          return r2.join("/");
+        }, a.getTypeOf = function(e2) {
+          return "string" == typeof e2 ? "string" : "[object Array]" === Object.prototype.toString.call(e2) ? "array" : o.nodebuffer && r.isBuffer(e2) ? "nodebuffer" : o.uint8array && e2 instanceof Uint8Array ? "uint8array" : o.arraybuffer && e2 instanceof ArrayBuffer ? "arraybuffer" : void 0;
+        }, a.checkSupport = function(e2) {
+          if (!o[e2.toLowerCase()]) throw new Error(e2 + " is not supported by this platform");
+        }, a.MAX_VALUE_16BITS = 65535, a.MAX_VALUE_32BITS = -1, a.pretty = function(e2) {
+          var t2, r2, n2 = "";
+          for (r2 = 0; r2 < (e2 || "").length; r2++) n2 += "\\x" + ((t2 = e2.charCodeAt(r2)) < 16 ? "0" : "") + t2.toString(16).toUpperCase();
+          return n2;
+        }, a.delay = function(e2, t2, r2) {
+          setImmediate(function() {
+            e2.apply(r2 || null, t2 || []);
+          });
+        }, a.inherits = function(e2, t2) {
+          function r2() {
+          }
+          r2.prototype = t2.prototype, e2.prototype = new r2();
+        }, a.extend = function() {
+          var e2, t2, r2 = {};
+          for (e2 = 0; e2 < arguments.length; e2++) for (t2 in arguments[e2]) Object.prototype.hasOwnProperty.call(arguments[e2], t2) && void 0 === r2[t2] && (r2[t2] = arguments[e2][t2]);
+          return r2;
+        }, a.prepareContent = function(r2, e2, n2, i2, s2) {
+          return u.Promise.resolve(e2).then(function(n3) {
+            return o.blob && (n3 instanceof Blob || -1 !== ["[object File]", "[object Blob]"].indexOf(Object.prototype.toString.call(n3))) && "undefined" != typeof FileReader ? new u.Promise(function(t2, r3) {
+              var e3 = new FileReader();
+              e3.onload = function(e4) {
+                t2(e4.target.result);
+              }, e3.onerror = function(e4) {
+                r3(e4.target.error);
+              }, e3.readAsArrayBuffer(n3);
+            }) : n3;
+          }).then(function(e3) {
+            var t2 = a.getTypeOf(e3);
+            return t2 ? ("arraybuffer" === t2 ? e3 = a.transformTo("uint8array", e3) : "string" === t2 && (s2 ? e3 = h.decode(e3) : n2 && true !== i2 && (e3 = (function(e4) {
+              return l(e4, o.uint8array ? new Uint8Array(e4.length) : new Array(e4.length));
+            })(e3))), e3) : u.Promise.reject(new Error("Can't read the data of '" + r2 + "'. Is it in a supported JavaScript type (String, Blob, ArrayBuffer, etc) ?"));
+          });
+        };
+      }, { "./base64": 1, "./external": 6, "./nodejsUtils": 14, "./support": 30, setimmediate: 54 }], 33: [function(e, t, r) {
+        var n = e("./reader/readerFor"), i = e("./utils"), s = e("./signature"), a = e("./zipEntry"), o = e("./support");
+        function h(e2) {
+          this.files = [], this.loadOptions = e2;
+        }
+        h.prototype = { checkSignature: function(e2) {
+          if (!this.reader.readAndCheckSignature(e2)) {
+            this.reader.index -= 4;
+            var t2 = this.reader.readString(4);
+            throw new Error("Corrupted zip or bug: unexpected signature (" + i.pretty(t2) + ", expected " + i.pretty(e2) + ")");
+          }
+        }, isSignature: function(e2, t2) {
+          var r2 = this.reader.index;
+          this.reader.setIndex(e2);
+          var n2 = this.reader.readString(4) === t2;
+          return this.reader.setIndex(r2), n2;
+        }, readBlockEndOfCentral: function() {
+          this.diskNumber = this.reader.readInt(2), this.diskWithCentralDirStart = this.reader.readInt(2), this.centralDirRecordsOnThisDisk = this.reader.readInt(2), this.centralDirRecords = this.reader.readInt(2), this.centralDirSize = this.reader.readInt(4), this.centralDirOffset = this.reader.readInt(4), this.zipCommentLength = this.reader.readInt(2);
+          var e2 = this.reader.readData(this.zipCommentLength), t2 = o.uint8array ? "uint8array" : "array", r2 = i.transformTo(t2, e2);
+          this.zipComment = this.loadOptions.decodeFileName(r2);
+        }, readBlockZip64EndOfCentral: function() {
+          this.zip64EndOfCentralSize = this.reader.readInt(8), this.reader.skip(4), this.diskNumber = this.reader.readInt(4), this.diskWithCentralDirStart = this.reader.readInt(4), this.centralDirRecordsOnThisDisk = this.reader.readInt(8), this.centralDirRecords = this.reader.readInt(8), this.centralDirSize = this.reader.readInt(8), this.centralDirOffset = this.reader.readInt(8), this.zip64ExtensibleData = {};
+          for (var e2, t2, r2, n2 = this.zip64EndOfCentralSize - 44; 0 < n2; ) e2 = this.reader.readInt(2), t2 = this.reader.readInt(4), r2 = this.reader.readData(t2), this.zip64ExtensibleData[e2] = { id: e2, length: t2, value: r2 };
+        }, readBlockZip64EndOfCentralLocator: function() {
+          if (this.diskWithZip64CentralDirStart = this.reader.readInt(4), this.relativeOffsetEndOfZip64CentralDir = this.reader.readInt(8), this.disksCount = this.reader.readInt(4), 1 < this.disksCount) throw new Error("Multi-volumes zip are not supported");
+        }, readLocalFiles: function() {
+          var e2, t2;
+          for (e2 = 0; e2 < this.files.length; e2++) t2 = this.files[e2], this.reader.setIndex(t2.localHeaderOffset), this.checkSignature(s.LOCAL_FILE_HEADER), t2.readLocalPart(this.reader), t2.handleUTF8(), t2.processAttributes();
+        }, readCentralDir: function() {
+          var e2;
+          for (this.reader.setIndex(this.centralDirOffset); this.reader.readAndCheckSignature(s.CENTRAL_FILE_HEADER); ) (e2 = new a({ zip64: this.zip64 }, this.loadOptions)).readCentralPart(this.reader), this.files.push(e2);
+          if (this.centralDirRecords !== this.files.length && 0 !== this.centralDirRecords && 0 === this.files.length) throw new Error("Corrupted zip or bug: expected " + this.centralDirRecords + " records in central dir, got " + this.files.length);
+        }, readEndOfCentral: function() {
+          var e2 = this.reader.lastIndexOfSignature(s.CENTRAL_DIRECTORY_END);
+          if (e2 < 0) throw !this.isSignature(0, s.LOCAL_FILE_HEADER) ? new Error("Can't find end of central directory : is this a zip file ? If it is, see https://stuk.github.io/jszip/documentation/howto/read_zip.html") : new Error("Corrupted zip: can't find end of central directory");
+          this.reader.setIndex(e2);
+          var t2 = e2;
+          if (this.checkSignature(s.CENTRAL_DIRECTORY_END), this.readBlockEndOfCentral(), this.diskNumber === i.MAX_VALUE_16BITS || this.diskWithCentralDirStart === i.MAX_VALUE_16BITS || this.centralDirRecordsOnThisDisk === i.MAX_VALUE_16BITS || this.centralDirRecords === i.MAX_VALUE_16BITS || this.centralDirSize === i.MAX_VALUE_32BITS || this.centralDirOffset === i.MAX_VALUE_32BITS) {
+            if (this.zip64 = true, (e2 = this.reader.lastIndexOfSignature(s.ZIP64_CENTRAL_DIRECTORY_LOCATOR)) < 0) throw new Error("Corrupted zip: can't find the ZIP64 end of central directory locator");
+            if (this.reader.setIndex(e2), this.checkSignature(s.ZIP64_CENTRAL_DIRECTORY_LOCATOR), this.readBlockZip64EndOfCentralLocator(), !this.isSignature(this.relativeOffsetEndOfZip64CentralDir, s.ZIP64_CENTRAL_DIRECTORY_END) && (this.relativeOffsetEndOfZip64CentralDir = this.reader.lastIndexOfSignature(s.ZIP64_CENTRAL_DIRECTORY_END), this.relativeOffsetEndOfZip64CentralDir < 0)) throw new Error("Corrupted zip: can't find the ZIP64 end of central directory");
+            this.reader.setIndex(this.relativeOffsetEndOfZip64CentralDir), this.checkSignature(s.ZIP64_CENTRAL_DIRECTORY_END), this.readBlockZip64EndOfCentral();
+          }
+          var r2 = this.centralDirOffset + this.centralDirSize;
+          this.zip64 && (r2 += 20, r2 += 12 + this.zip64EndOfCentralSize);
+          var n2 = t2 - r2;
+          if (0 < n2) this.isSignature(t2, s.CENTRAL_FILE_HEADER) || (this.reader.zero = n2);
+          else if (n2 < 0) throw new Error("Corrupted zip: missing " + Math.abs(n2) + " bytes.");
+        }, prepareReader: function(e2) {
+          this.reader = n(e2);
+        }, load: function(e2) {
+          this.prepareReader(e2), this.readEndOfCentral(), this.readCentralDir(), this.readLocalFiles();
+        } }, t.exports = h;
+      }, { "./reader/readerFor": 22, "./signature": 23, "./support": 30, "./utils": 32, "./zipEntry": 34 }], 34: [function(e, t, r) {
+        var n = e("./reader/readerFor"), s = e("./utils"), i = e("./compressedObject"), a = e("./crc32"), o = e("./utf8"), h = e("./compressions"), u = e("./support");
+        function l(e2, t2) {
+          this.options = e2, this.loadOptions = t2;
+        }
+        l.prototype = { isEncrypted: function() {
+          return 1 == (1 & this.bitFlag);
+        }, useUTF8: function() {
+          return 2048 == (2048 & this.bitFlag);
+        }, readLocalPart: function(e2) {
+          var t2, r2;
+          if (e2.skip(22), this.fileNameLength = e2.readInt(2), r2 = e2.readInt(2), this.fileName = e2.readData(this.fileNameLength), e2.skip(r2), -1 === this.compressedSize || -1 === this.uncompressedSize) throw new Error("Bug or corrupted zip : didn't get enough information from the central directory (compressedSize === -1 || uncompressedSize === -1)");
+          if (null === (t2 = (function(e3) {
+            for (var t3 in h) if (Object.prototype.hasOwnProperty.call(h, t3) && h[t3].magic === e3) return h[t3];
+            return null;
+          })(this.compressionMethod))) throw new Error("Corrupted zip : compression " + s.pretty(this.compressionMethod) + " unknown (inner file : " + s.transformTo("string", this.fileName) + ")");
+          this.decompressed = new i(this.compressedSize, this.uncompressedSize, this.crc32, t2, e2.readData(this.compressedSize));
+        }, readCentralPart: function(e2) {
+          this.versionMadeBy = e2.readInt(2), e2.skip(2), this.bitFlag = e2.readInt(2), this.compressionMethod = e2.readString(2), this.date = e2.readDate(), this.crc32 = e2.readInt(4), this.compressedSize = e2.readInt(4), this.uncompressedSize = e2.readInt(4);
+          var t2 = e2.readInt(2);
+          if (this.extraFieldsLength = e2.readInt(2), this.fileCommentLength = e2.readInt(2), this.diskNumberStart = e2.readInt(2), this.internalFileAttributes = e2.readInt(2), this.externalFileAttributes = e2.readInt(4), this.localHeaderOffset = e2.readInt(4), this.isEncrypted()) throw new Error("Encrypted zip are not supported");
+          e2.skip(t2), this.readExtraFields(e2), this.parseZIP64ExtraField(e2), this.fileComment = e2.readData(this.fileCommentLength);
+        }, processAttributes: function() {
+          this.unixPermissions = null, this.dosPermissions = null;
+          var e2 = this.versionMadeBy >> 8;
+          this.dir = !!(16 & this.externalFileAttributes), 0 == e2 && (this.dosPermissions = 63 & this.externalFileAttributes), 3 == e2 && (this.unixPermissions = this.externalFileAttributes >> 16 & 65535), this.dir || "/" !== this.fileNameStr.slice(-1) || (this.dir = true);
+        }, parseZIP64ExtraField: function() {
+          if (this.extraFields[1]) {
+            var e2 = n(this.extraFields[1].value);
+            this.uncompressedSize === s.MAX_VALUE_32BITS && (this.uncompressedSize = e2.readInt(8)), this.compressedSize === s.MAX_VALUE_32BITS && (this.compressedSize = e2.readInt(8)), this.localHeaderOffset === s.MAX_VALUE_32BITS && (this.localHeaderOffset = e2.readInt(8)), this.diskNumberStart === s.MAX_VALUE_32BITS && (this.diskNumberStart = e2.readInt(4));
+          }
+        }, readExtraFields: function(e2) {
+          var t2, r2, n2, i2 = e2.index + this.extraFieldsLength;
+          for (this.extraFields || (this.extraFields = {}); e2.index + 4 < i2; ) t2 = e2.readInt(2), r2 = e2.readInt(2), n2 = e2.readData(r2), this.extraFields[t2] = { id: t2, length: r2, value: n2 };
+          e2.setIndex(i2);
+        }, handleUTF8: function() {
+          var e2 = u.uint8array ? "uint8array" : "array";
+          if (this.useUTF8()) this.fileNameStr = o.utf8decode(this.fileName), this.fileCommentStr = o.utf8decode(this.fileComment);
+          else {
+            var t2 = this.findExtraFieldUnicodePath();
+            if (null !== t2) this.fileNameStr = t2;
+            else {
+              var r2 = s.transformTo(e2, this.fileName);
+              this.fileNameStr = this.loadOptions.decodeFileName(r2);
+            }
+            var n2 = this.findExtraFieldUnicodeComment();
+            if (null !== n2) this.fileCommentStr = n2;
+            else {
+              var i2 = s.transformTo(e2, this.fileComment);
+              this.fileCommentStr = this.loadOptions.decodeFileName(i2);
+            }
+          }
+        }, findExtraFieldUnicodePath: function() {
+          var e2 = this.extraFields[28789];
+          if (e2) {
+            var t2 = n(e2.value);
+            return 1 !== t2.readInt(1) ? null : a(this.fileName) !== t2.readInt(4) ? null : o.utf8decode(t2.readData(e2.length - 5));
+          }
+          return null;
+        }, findExtraFieldUnicodeComment: function() {
+          var e2 = this.extraFields[25461];
+          if (e2) {
+            var t2 = n(e2.value);
+            return 1 !== t2.readInt(1) ? null : a(this.fileComment) !== t2.readInt(4) ? null : o.utf8decode(t2.readData(e2.length - 5));
+          }
+          return null;
+        } }, t.exports = l;
+      }, { "./compressedObject": 2, "./compressions": 3, "./crc32": 4, "./reader/readerFor": 22, "./support": 30, "./utf8": 31, "./utils": 32 }], 35: [function(e, t, r) {
+        function n(e2, t2, r2) {
+          this.name = e2, this.dir = r2.dir, this.date = r2.date, this.comment = r2.comment, this.unixPermissions = r2.unixPermissions, this.dosPermissions = r2.dosPermissions, this._data = t2, this._dataBinary = r2.binary, this.options = { compression: r2.compression, compressionOptions: r2.compressionOptions };
+        }
+        var s = e("./stream/StreamHelper"), i = e("./stream/DataWorker"), a = e("./utf8"), o = e("./compressedObject"), h = e("./stream/GenericWorker");
+        n.prototype = { internalStream: function(e2) {
+          var t2 = null, r2 = "string";
+          try {
+            if (!e2) throw new Error("No output type specified.");
+            var n2 = "string" === (r2 = e2.toLowerCase()) || "text" === r2;
+            "binarystring" !== r2 && "text" !== r2 || (r2 = "string"), t2 = this._decompressWorker();
+            var i2 = !this._dataBinary;
+            i2 && !n2 && (t2 = t2.pipe(new a.Utf8EncodeWorker())), !i2 && n2 && (t2 = t2.pipe(new a.Utf8DecodeWorker()));
+          } catch (e3) {
+            (t2 = new h("error")).error(e3);
+          }
+          return new s(t2, r2, "");
+        }, async: function(e2, t2) {
+          return this.internalStream(e2).accumulate(t2);
+        }, nodeStream: function(e2, t2) {
+          return this.internalStream(e2 || "nodebuffer").toNodejsStream(t2);
+        }, _compressWorker: function(e2, t2) {
+          if (this._data instanceof o && this._data.compression.magic === e2.magic) return this._data.getCompressedWorker();
+          var r2 = this._decompressWorker();
+          return this._dataBinary || (r2 = r2.pipe(new a.Utf8EncodeWorker())), o.createWorkerFrom(r2, e2, t2);
+        }, _decompressWorker: function() {
+          return this._data instanceof o ? this._data.getContentWorker() : this._data instanceof h ? this._data : new i(this._data);
+        } };
+        for (var u = ["asText", "asBinary", "asNodeBuffer", "asUint8Array", "asArrayBuffer"], l = function() {
+          throw new Error("This method has been removed in JSZip 3.0, please check the upgrade guide.");
+        }, f = 0; f < u.length; f++) n.prototype[u[f]] = l;
+        t.exports = n;
+      }, { "./compressedObject": 2, "./stream/DataWorker": 27, "./stream/GenericWorker": 28, "./stream/StreamHelper": 29, "./utf8": 31 }], 36: [function(e, l, t) {
+        (function(t2) {
+          var r, n, e2 = t2.MutationObserver || t2.WebKitMutationObserver;
+          if (e2) {
+            var i = 0, s = new e2(u), a = t2.document.createTextNode("");
+            s.observe(a, { characterData: true }), r = function() {
+              a.data = i = ++i % 2;
+            };
+          } else if (t2.setImmediate || void 0 === t2.MessageChannel) r = "document" in t2 && "onreadystatechange" in t2.document.createElement("script") ? function() {
+            var e3 = t2.document.createElement("script");
+            e3.onreadystatechange = function() {
+              u(), e3.onreadystatechange = null, e3.parentNode.removeChild(e3), e3 = null;
+            }, t2.document.documentElement.appendChild(e3);
+          } : function() {
+            setTimeout(u, 0);
+          };
+          else {
+            var o = new t2.MessageChannel();
+            o.port1.onmessage = u, r = function() {
+              o.port2.postMessage(0);
+            };
+          }
+          var h = [];
+          function u() {
+            var e3, t3;
+            n = true;
+            for (var r2 = h.length; r2; ) {
+              for (t3 = h, h = [], e3 = -1; ++e3 < r2; ) t3[e3]();
+              r2 = h.length;
+            }
+            n = false;
+          }
+          l.exports = function(e3) {
+            1 !== h.push(e3) || n || r();
+          };
+        }).call(this, "undefined" != typeof commonjsGlobal ? commonjsGlobal : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {});
+      }, {}], 37: [function(e, t, r) {
+        var i = e("immediate");
+        function u() {
+        }
+        var l = {}, s = ["REJECTED"], a = ["FULFILLED"], n = ["PENDING"];
+        function o(e2) {
+          if ("function" != typeof e2) throw new TypeError("resolver must be a function");
+          this.state = n, this.queue = [], this.outcome = void 0, e2 !== u && d(this, e2);
+        }
+        function h(e2, t2, r2) {
+          this.promise = e2, "function" == typeof t2 && (this.onFulfilled = t2, this.callFulfilled = this.otherCallFulfilled), "function" == typeof r2 && (this.onRejected = r2, this.callRejected = this.otherCallRejected);
+        }
+        function f(t2, r2, n2) {
+          i(function() {
+            var e2;
+            try {
+              e2 = r2(n2);
+            } catch (e3) {
+              return l.reject(t2, e3);
+            }
+            e2 === t2 ? l.reject(t2, new TypeError("Cannot resolve promise with itself")) : l.resolve(t2, e2);
+          });
+        }
+        function c(e2) {
+          var t2 = e2 && e2.then;
+          if (e2 && ("object" == typeof e2 || "function" == typeof e2) && "function" == typeof t2) return function() {
+            t2.apply(e2, arguments);
+          };
+        }
+        function d(t2, e2) {
+          var r2 = false;
+          function n2(e3) {
+            r2 || (r2 = true, l.reject(t2, e3));
+          }
+          function i2(e3) {
+            r2 || (r2 = true, l.resolve(t2, e3));
+          }
+          var s2 = p(function() {
+            e2(i2, n2);
+          });
+          "error" === s2.status && n2(s2.value);
+        }
+        function p(e2, t2) {
+          var r2 = {};
+          try {
+            r2.value = e2(t2), r2.status = "success";
+          } catch (e3) {
+            r2.status = "error", r2.value = e3;
+          }
+          return r2;
+        }
+        (t.exports = o).prototype.finally = function(t2) {
+          if ("function" != typeof t2) return this;
+          var r2 = this.constructor;
+          return this.then(function(e2) {
+            return r2.resolve(t2()).then(function() {
+              return e2;
+            });
+          }, function(e2) {
+            return r2.resolve(t2()).then(function() {
+              throw e2;
+            });
+          });
+        }, o.prototype.catch = function(e2) {
+          return this.then(null, e2);
+        }, o.prototype.then = function(e2, t2) {
+          if ("function" != typeof e2 && this.state === a || "function" != typeof t2 && this.state === s) return this;
+          var r2 = new this.constructor(u);
+          this.state !== n ? f(r2, this.state === a ? e2 : t2, this.outcome) : this.queue.push(new h(r2, e2, t2));
+          return r2;
+        }, h.prototype.callFulfilled = function(e2) {
+          l.resolve(this.promise, e2);
+        }, h.prototype.otherCallFulfilled = function(e2) {
+          f(this.promise, this.onFulfilled, e2);
+        }, h.prototype.callRejected = function(e2) {
+          l.reject(this.promise, e2);
+        }, h.prototype.otherCallRejected = function(e2) {
+          f(this.promise, this.onRejected, e2);
+        }, l.resolve = function(e2, t2) {
+          var r2 = p(c, t2);
+          if ("error" === r2.status) return l.reject(e2, r2.value);
+          var n2 = r2.value;
+          if (n2) d(e2, n2);
+          else {
+            e2.state = a, e2.outcome = t2;
+            for (var i2 = -1, s2 = e2.queue.length; ++i2 < s2; ) e2.queue[i2].callFulfilled(t2);
+          }
+          return e2;
+        }, l.reject = function(e2, t2) {
+          e2.state = s, e2.outcome = t2;
+          for (var r2 = -1, n2 = e2.queue.length; ++r2 < n2; ) e2.queue[r2].callRejected(t2);
+          return e2;
+        }, o.resolve = function(e2) {
+          if (e2 instanceof this) return e2;
+          return l.resolve(new this(u), e2);
+        }, o.reject = function(e2) {
+          var t2 = new this(u);
+          return l.reject(t2, e2);
+        }, o.all = function(e2) {
+          var r2 = this;
+          if ("[object Array]" !== Object.prototype.toString.call(e2)) return this.reject(new TypeError("must be an array"));
+          var n2 = e2.length, i2 = false;
+          if (!n2) return this.resolve([]);
+          var s2 = new Array(n2), a2 = 0, t2 = -1, o2 = new this(u);
+          for (; ++t2 < n2; ) h2(e2[t2], t2);
+          return o2;
+          function h2(e3, t3) {
+            r2.resolve(e3).then(function(e4) {
+              s2[t3] = e4, ++a2 !== n2 || i2 || (i2 = true, l.resolve(o2, s2));
+            }, function(e4) {
+              i2 || (i2 = true, l.reject(o2, e4));
+            });
+          }
+        }, o.race = function(e2) {
+          var t2 = this;
+          if ("[object Array]" !== Object.prototype.toString.call(e2)) return this.reject(new TypeError("must be an array"));
+          var r2 = e2.length, n2 = false;
+          if (!r2) return this.resolve([]);
+          var i2 = -1, s2 = new this(u);
+          for (; ++i2 < r2; ) a2 = e2[i2], t2.resolve(a2).then(function(e3) {
+            n2 || (n2 = true, l.resolve(s2, e3));
+          }, function(e3) {
+            n2 || (n2 = true, l.reject(s2, e3));
+          });
+          var a2;
+          return s2;
+        };
+      }, { immediate: 36 }], 38: [function(e, t, r) {
+        var n = {};
+        (0, e("./lib/utils/common").assign)(n, e("./lib/deflate"), e("./lib/inflate"), e("./lib/zlib/constants")), t.exports = n;
+      }, { "./lib/deflate": 39, "./lib/inflate": 40, "./lib/utils/common": 41, "./lib/zlib/constants": 44 }], 39: [function(e, t, r) {
+        var a = e("./zlib/deflate"), o = e("./utils/common"), h = e("./utils/strings"), i = e("./zlib/messages"), s = e("./zlib/zstream"), u = Object.prototype.toString, l = 0, f = -1, c = 0, d = 8;
+        function p(e2) {
+          if (!(this instanceof p)) return new p(e2);
+          this.options = o.assign({ level: f, method: d, chunkSize: 16384, windowBits: 15, memLevel: 8, strategy: c, to: "" }, e2 || {});
+          var t2 = this.options;
+          t2.raw && 0 < t2.windowBits ? t2.windowBits = -t2.windowBits : t2.gzip && 0 < t2.windowBits && t2.windowBits < 16 && (t2.windowBits += 16), this.err = 0, this.msg = "", this.ended = false, this.chunks = [], this.strm = new s(), this.strm.avail_out = 0;
+          var r2 = a.deflateInit2(this.strm, t2.level, t2.method, t2.windowBits, t2.memLevel, t2.strategy);
+          if (r2 !== l) throw new Error(i[r2]);
+          if (t2.header && a.deflateSetHeader(this.strm, t2.header), t2.dictionary) {
+            var n2;
+            if (n2 = "string" == typeof t2.dictionary ? h.string2buf(t2.dictionary) : "[object ArrayBuffer]" === u.call(t2.dictionary) ? new Uint8Array(t2.dictionary) : t2.dictionary, (r2 = a.deflateSetDictionary(this.strm, n2)) !== l) throw new Error(i[r2]);
+            this._dict_set = true;
+          }
+        }
+        function n(e2, t2) {
+          var r2 = new p(t2);
+          if (r2.push(e2, true), r2.err) throw r2.msg || i[r2.err];
+          return r2.result;
+        }
+        p.prototype.push = function(e2, t2) {
+          var r2, n2, i2 = this.strm, s2 = this.options.chunkSize;
+          if (this.ended) return false;
+          n2 = t2 === ~~t2 ? t2 : true === t2 ? 4 : 0, "string" == typeof e2 ? i2.input = h.string2buf(e2) : "[object ArrayBuffer]" === u.call(e2) ? i2.input = new Uint8Array(e2) : i2.input = e2, i2.next_in = 0, i2.avail_in = i2.input.length;
+          do {
+            if (0 === i2.avail_out && (i2.output = new o.Buf8(s2), i2.next_out = 0, i2.avail_out = s2), 1 !== (r2 = a.deflate(i2, n2)) && r2 !== l) return this.onEnd(r2), !(this.ended = true);
+            0 !== i2.avail_out && (0 !== i2.avail_in || 4 !== n2 && 2 !== n2) || ("string" === this.options.to ? this.onData(h.buf2binstring(o.shrinkBuf(i2.output, i2.next_out))) : this.onData(o.shrinkBuf(i2.output, i2.next_out)));
+          } while ((0 < i2.avail_in || 0 === i2.avail_out) && 1 !== r2);
+          return 4 === n2 ? (r2 = a.deflateEnd(this.strm), this.onEnd(r2), this.ended = true, r2 === l) : 2 !== n2 || (this.onEnd(l), !(i2.avail_out = 0));
+        }, p.prototype.onData = function(e2) {
+          this.chunks.push(e2);
+        }, p.prototype.onEnd = function(e2) {
+          e2 === l && ("string" === this.options.to ? this.result = this.chunks.join("") : this.result = o.flattenChunks(this.chunks)), this.chunks = [], this.err = e2, this.msg = this.strm.msg;
+        }, r.Deflate = p, r.deflate = n, r.deflateRaw = function(e2, t2) {
+          return (t2 = t2 || {}).raw = true, n(e2, t2);
+        }, r.gzip = function(e2, t2) {
+          return (t2 = t2 || {}).gzip = true, n(e2, t2);
+        };
+      }, { "./utils/common": 41, "./utils/strings": 42, "./zlib/deflate": 46, "./zlib/messages": 51, "./zlib/zstream": 53 }], 40: [function(e, t, r) {
+        var c = e("./zlib/inflate"), d = e("./utils/common"), p = e("./utils/strings"), m = e("./zlib/constants"), n = e("./zlib/messages"), i = e("./zlib/zstream"), s = e("./zlib/gzheader"), _ = Object.prototype.toString;
+        function a(e2) {
+          if (!(this instanceof a)) return new a(e2);
+          this.options = d.assign({ chunkSize: 16384, windowBits: 0, to: "" }, e2 || {});
+          var t2 = this.options;
+          t2.raw && 0 <= t2.windowBits && t2.windowBits < 16 && (t2.windowBits = -t2.windowBits, 0 === t2.windowBits && (t2.windowBits = -15)), !(0 <= t2.windowBits && t2.windowBits < 16) || e2 && e2.windowBits || (t2.windowBits += 32), 15 < t2.windowBits && t2.windowBits < 48 && 0 == (15 & t2.windowBits) && (t2.windowBits |= 15), this.err = 0, this.msg = "", this.ended = false, this.chunks = [], this.strm = new i(), this.strm.avail_out = 0;
+          var r2 = c.inflateInit2(this.strm, t2.windowBits);
+          if (r2 !== m.Z_OK) throw new Error(n[r2]);
+          this.header = new s(), c.inflateGetHeader(this.strm, this.header);
+        }
+        function o(e2, t2) {
+          var r2 = new a(t2);
+          if (r2.push(e2, true), r2.err) throw r2.msg || n[r2.err];
+          return r2.result;
+        }
+        a.prototype.push = function(e2, t2) {
+          var r2, n2, i2, s2, a2, o2, h = this.strm, u = this.options.chunkSize, l = this.options.dictionary, f = false;
+          if (this.ended) return false;
+          n2 = t2 === ~~t2 ? t2 : true === t2 ? m.Z_FINISH : m.Z_NO_FLUSH, "string" == typeof e2 ? h.input = p.binstring2buf(e2) : "[object ArrayBuffer]" === _.call(e2) ? h.input = new Uint8Array(e2) : h.input = e2, h.next_in = 0, h.avail_in = h.input.length;
+          do {
+            if (0 === h.avail_out && (h.output = new d.Buf8(u), h.next_out = 0, h.avail_out = u), (r2 = c.inflate(h, m.Z_NO_FLUSH)) === m.Z_NEED_DICT && l && (o2 = "string" == typeof l ? p.string2buf(l) : "[object ArrayBuffer]" === _.call(l) ? new Uint8Array(l) : l, r2 = c.inflateSetDictionary(this.strm, o2)), r2 === m.Z_BUF_ERROR && true === f && (r2 = m.Z_OK, f = false), r2 !== m.Z_STREAM_END && r2 !== m.Z_OK) return this.onEnd(r2), !(this.ended = true);
+            h.next_out && (0 !== h.avail_out && r2 !== m.Z_STREAM_END && (0 !== h.avail_in || n2 !== m.Z_FINISH && n2 !== m.Z_SYNC_FLUSH) || ("string" === this.options.to ? (i2 = p.utf8border(h.output, h.next_out), s2 = h.next_out - i2, a2 = p.buf2string(h.output, i2), h.next_out = s2, h.avail_out = u - s2, s2 && d.arraySet(h.output, h.output, i2, s2, 0), this.onData(a2)) : this.onData(d.shrinkBuf(h.output, h.next_out)))), 0 === h.avail_in && 0 === h.avail_out && (f = true);
+          } while ((0 < h.avail_in || 0 === h.avail_out) && r2 !== m.Z_STREAM_END);
+          return r2 === m.Z_STREAM_END && (n2 = m.Z_FINISH), n2 === m.Z_FINISH ? (r2 = c.inflateEnd(this.strm), this.onEnd(r2), this.ended = true, r2 === m.Z_OK) : n2 !== m.Z_SYNC_FLUSH || (this.onEnd(m.Z_OK), !(h.avail_out = 0));
+        }, a.prototype.onData = function(e2) {
+          this.chunks.push(e2);
+        }, a.prototype.onEnd = function(e2) {
+          e2 === m.Z_OK && ("string" === this.options.to ? this.result = this.chunks.join("") : this.result = d.flattenChunks(this.chunks)), this.chunks = [], this.err = e2, this.msg = this.strm.msg;
+        }, r.Inflate = a, r.inflate = o, r.inflateRaw = function(e2, t2) {
+          return (t2 = t2 || {}).raw = true, o(e2, t2);
+        }, r.ungzip = o;
+      }, { "./utils/common": 41, "./utils/strings": 42, "./zlib/constants": 44, "./zlib/gzheader": 47, "./zlib/inflate": 49, "./zlib/messages": 51, "./zlib/zstream": 53 }], 41: [function(e, t, r) {
+        var n = "undefined" != typeof Uint8Array && "undefined" != typeof Uint16Array && "undefined" != typeof Int32Array;
+        r.assign = function(e2) {
+          for (var t2 = Array.prototype.slice.call(arguments, 1); t2.length; ) {
+            var r2 = t2.shift();
+            if (r2) {
+              if ("object" != typeof r2) throw new TypeError(r2 + "must be non-object");
+              for (var n2 in r2) r2.hasOwnProperty(n2) && (e2[n2] = r2[n2]);
+            }
+          }
+          return e2;
+        }, r.shrinkBuf = function(e2, t2) {
+          return e2.length === t2 ? e2 : e2.subarray ? e2.subarray(0, t2) : (e2.length = t2, e2);
+        };
+        var i = { arraySet: function(e2, t2, r2, n2, i2) {
+          if (t2.subarray && e2.subarray) e2.set(t2.subarray(r2, r2 + n2), i2);
+          else for (var s2 = 0; s2 < n2; s2++) e2[i2 + s2] = t2[r2 + s2];
+        }, flattenChunks: function(e2) {
+          var t2, r2, n2, i2, s2, a;
+          for (t2 = n2 = 0, r2 = e2.length; t2 < r2; t2++) n2 += e2[t2].length;
+          for (a = new Uint8Array(n2), t2 = i2 = 0, r2 = e2.length; t2 < r2; t2++) s2 = e2[t2], a.set(s2, i2), i2 += s2.length;
+          return a;
+        } }, s = { arraySet: function(e2, t2, r2, n2, i2) {
+          for (var s2 = 0; s2 < n2; s2++) e2[i2 + s2] = t2[r2 + s2];
+        }, flattenChunks: function(e2) {
+          return [].concat.apply([], e2);
+        } };
+        r.setTyped = function(e2) {
+          e2 ? (r.Buf8 = Uint8Array, r.Buf16 = Uint16Array, r.Buf32 = Int32Array, r.assign(r, i)) : (r.Buf8 = Array, r.Buf16 = Array, r.Buf32 = Array, r.assign(r, s));
+        }, r.setTyped(n);
+      }, {}], 42: [function(e, t, r) {
+        var h = e("./common"), i = true, s = true;
+        try {
+          String.fromCharCode.apply(null, [0]);
+        } catch (e2) {
+          i = false;
+        }
+        try {
+          String.fromCharCode.apply(null, new Uint8Array(1));
+        } catch (e2) {
+          s = false;
+        }
+        for (var u = new h.Buf8(256), n = 0; n < 256; n++) u[n] = 252 <= n ? 6 : 248 <= n ? 5 : 240 <= n ? 4 : 224 <= n ? 3 : 192 <= n ? 2 : 1;
+        function l(e2, t2) {
+          if (t2 < 65537 && (e2.subarray && s || !e2.subarray && i)) return String.fromCharCode.apply(null, h.shrinkBuf(e2, t2));
+          for (var r2 = "", n2 = 0; n2 < t2; n2++) r2 += String.fromCharCode(e2[n2]);
+          return r2;
+        }
+        u[254] = u[254] = 1, r.string2buf = function(e2) {
+          var t2, r2, n2, i2, s2, a = e2.length, o = 0;
+          for (i2 = 0; i2 < a; i2++) 55296 == (64512 & (r2 = e2.charCodeAt(i2))) && i2 + 1 < a && 56320 == (64512 & (n2 = e2.charCodeAt(i2 + 1))) && (r2 = 65536 + (r2 - 55296 << 10) + (n2 - 56320), i2++), o += r2 < 128 ? 1 : r2 < 2048 ? 2 : r2 < 65536 ? 3 : 4;
+          for (t2 = new h.Buf8(o), i2 = s2 = 0; s2 < o; i2++) 55296 == (64512 & (r2 = e2.charCodeAt(i2))) && i2 + 1 < a && 56320 == (64512 & (n2 = e2.charCodeAt(i2 + 1))) && (r2 = 65536 + (r2 - 55296 << 10) + (n2 - 56320), i2++), r2 < 128 ? t2[s2++] = r2 : (r2 < 2048 ? t2[s2++] = 192 | r2 >>> 6 : (r2 < 65536 ? t2[s2++] = 224 | r2 >>> 12 : (t2[s2++] = 240 | r2 >>> 18, t2[s2++] = 128 | r2 >>> 12 & 63), t2[s2++] = 128 | r2 >>> 6 & 63), t2[s2++] = 128 | 63 & r2);
+          return t2;
+        }, r.buf2binstring = function(e2) {
+          return l(e2, e2.length);
+        }, r.binstring2buf = function(e2) {
+          for (var t2 = new h.Buf8(e2.length), r2 = 0, n2 = t2.length; r2 < n2; r2++) t2[r2] = e2.charCodeAt(r2);
+          return t2;
+        }, r.buf2string = function(e2, t2) {
+          var r2, n2, i2, s2, a = t2 || e2.length, o = new Array(2 * a);
+          for (r2 = n2 = 0; r2 < a; ) if ((i2 = e2[r2++]) < 128) o[n2++] = i2;
+          else if (4 < (s2 = u[i2])) o[n2++] = 65533, r2 += s2 - 1;
+          else {
+            for (i2 &= 2 === s2 ? 31 : 3 === s2 ? 15 : 7; 1 < s2 && r2 < a; ) i2 = i2 << 6 | 63 & e2[r2++], s2--;
+            1 < s2 ? o[n2++] = 65533 : i2 < 65536 ? o[n2++] = i2 : (i2 -= 65536, o[n2++] = 55296 | i2 >> 10 & 1023, o[n2++] = 56320 | 1023 & i2);
+          }
+          return l(o, n2);
+        }, r.utf8border = function(e2, t2) {
+          var r2;
+          for ((t2 = t2 || e2.length) > e2.length && (t2 = e2.length), r2 = t2 - 1; 0 <= r2 && 128 == (192 & e2[r2]); ) r2--;
+          return r2 < 0 ? t2 : 0 === r2 ? t2 : r2 + u[e2[r2]] > t2 ? r2 : t2;
+        };
+      }, { "./common": 41 }], 43: [function(e, t, r) {
+        t.exports = function(e2, t2, r2, n) {
+          for (var i = 65535 & e2 | 0, s = e2 >>> 16 & 65535 | 0, a = 0; 0 !== r2; ) {
+            for (r2 -= a = 2e3 < r2 ? 2e3 : r2; s = s + (i = i + t2[n++] | 0) | 0, --a; ) ;
+            i %= 65521, s %= 65521;
+          }
+          return i | s << 16 | 0;
+        };
+      }, {}], 44: [function(e, t, r) {
+        t.exports = { Z_NO_FLUSH: 0, Z_PARTIAL_FLUSH: 1, Z_SYNC_FLUSH: 2, Z_FULL_FLUSH: 3, Z_FINISH: 4, Z_BLOCK: 5, Z_TREES: 6, Z_OK: 0, Z_STREAM_END: 1, Z_NEED_DICT: 2, Z_ERRNO: -1, Z_STREAM_ERROR: -2, Z_DATA_ERROR: -3, Z_BUF_ERROR: -5, Z_NO_COMPRESSION: 0, Z_BEST_SPEED: 1, Z_BEST_COMPRESSION: 9, Z_DEFAULT_COMPRESSION: -1, Z_FILTERED: 1, Z_HUFFMAN_ONLY: 2, Z_RLE: 3, Z_FIXED: 4, Z_DEFAULT_STRATEGY: 0, Z_BINARY: 0, Z_TEXT: 1, Z_UNKNOWN: 2, Z_DEFLATED: 8 };
+      }, {}], 45: [function(e, t, r) {
+        var o = (function() {
+          for (var e2, t2 = [], r2 = 0; r2 < 256; r2++) {
+            e2 = r2;
+            for (var n = 0; n < 8; n++) e2 = 1 & e2 ? 3988292384 ^ e2 >>> 1 : e2 >>> 1;
+            t2[r2] = e2;
+          }
+          return t2;
+        })();
+        t.exports = function(e2, t2, r2, n) {
+          var i = o, s = n + r2;
+          e2 ^= -1;
+          for (var a = n; a < s; a++) e2 = e2 >>> 8 ^ i[255 & (e2 ^ t2[a])];
+          return -1 ^ e2;
+        };
+      }, {}], 46: [function(e, t, r) {
+        var h, c = e("../utils/common"), u = e("./trees"), d = e("./adler32"), p = e("./crc32"), n = e("./messages"), l = 0, f = 4, m = 0, _ = -2, g = -1, b2 = 4, i = 2, v = 8, y = 9, s = 286, a = 30, o = 19, w = 2 * s + 1, k = 15, x = 3, S2 = 258, z = S2 + x + 1, C = 42, E2 = 113, A = 1, I = 2, O2 = 3, B2 = 4;
+        function R2(e2, t2) {
+          return e2.msg = n[t2], t2;
+        }
+        function T(e2) {
+          return (e2 << 1) - (4 < e2 ? 9 : 0);
+        }
+        function D(e2) {
+          for (var t2 = e2.length; 0 <= --t2; ) e2[t2] = 0;
+        }
+        function F2(e2) {
+          var t2 = e2.state, r2 = t2.pending;
+          r2 > e2.avail_out && (r2 = e2.avail_out), 0 !== r2 && (c.arraySet(e2.output, t2.pending_buf, t2.pending_out, r2, e2.next_out), e2.next_out += r2, t2.pending_out += r2, e2.total_out += r2, e2.avail_out -= r2, t2.pending -= r2, 0 === t2.pending && (t2.pending_out = 0));
+        }
+        function N2(e2, t2) {
+          u._tr_flush_block(e2, 0 <= e2.block_start ? e2.block_start : -1, e2.strstart - e2.block_start, t2), e2.block_start = e2.strstart, F2(e2.strm);
+        }
+        function U2(e2, t2) {
+          e2.pending_buf[e2.pending++] = t2;
+        }
+        function P(e2, t2) {
+          e2.pending_buf[e2.pending++] = t2 >>> 8 & 255, e2.pending_buf[e2.pending++] = 255 & t2;
+        }
+        function L(e2, t2) {
+          var r2, n2, i2 = e2.max_chain_length, s2 = e2.strstart, a2 = e2.prev_length, o2 = e2.nice_match, h2 = e2.strstart > e2.w_size - z ? e2.strstart - (e2.w_size - z) : 0, u2 = e2.window, l2 = e2.w_mask, f2 = e2.prev, c2 = e2.strstart + S2, d2 = u2[s2 + a2 - 1], p2 = u2[s2 + a2];
+          e2.prev_length >= e2.good_match && (i2 >>= 2), o2 > e2.lookahead && (o2 = e2.lookahead);
+          do {
+            if (u2[(r2 = t2) + a2] === p2 && u2[r2 + a2 - 1] === d2 && u2[r2] === u2[s2] && u2[++r2] === u2[s2 + 1]) {
+              s2 += 2, r2++;
+              do {
+              } while (u2[++s2] === u2[++r2] && u2[++s2] === u2[++r2] && u2[++s2] === u2[++r2] && u2[++s2] === u2[++r2] && u2[++s2] === u2[++r2] && u2[++s2] === u2[++r2] && u2[++s2] === u2[++r2] && u2[++s2] === u2[++r2] && s2 < c2);
+              if (n2 = S2 - (c2 - s2), s2 = c2 - S2, a2 < n2) {
+                if (e2.match_start = t2, o2 <= (a2 = n2)) break;
+                d2 = u2[s2 + a2 - 1], p2 = u2[s2 + a2];
+              }
+            }
+          } while ((t2 = f2[t2 & l2]) > h2 && 0 != --i2);
+          return a2 <= e2.lookahead ? a2 : e2.lookahead;
+        }
+        function j(e2) {
+          var t2, r2, n2, i2, s2, a2, o2, h2, u2, l2, f2 = e2.w_size;
+          do {
+            if (i2 = e2.window_size - e2.lookahead - e2.strstart, e2.strstart >= f2 + (f2 - z)) {
+              for (c.arraySet(e2.window, e2.window, f2, f2, 0), e2.match_start -= f2, e2.strstart -= f2, e2.block_start -= f2, t2 = r2 = e2.hash_size; n2 = e2.head[--t2], e2.head[t2] = f2 <= n2 ? n2 - f2 : 0, --r2; ) ;
+              for (t2 = r2 = f2; n2 = e2.prev[--t2], e2.prev[t2] = f2 <= n2 ? n2 - f2 : 0, --r2; ) ;
+              i2 += f2;
+            }
+            if (0 === e2.strm.avail_in) break;
+            if (a2 = e2.strm, o2 = e2.window, h2 = e2.strstart + e2.lookahead, u2 = i2, l2 = void 0, l2 = a2.avail_in, u2 < l2 && (l2 = u2), r2 = 0 === l2 ? 0 : (a2.avail_in -= l2, c.arraySet(o2, a2.input, a2.next_in, l2, h2), 1 === a2.state.wrap ? a2.adler = d(a2.adler, o2, l2, h2) : 2 === a2.state.wrap && (a2.adler = p(a2.adler, o2, l2, h2)), a2.next_in += l2, a2.total_in += l2, l2), e2.lookahead += r2, e2.lookahead + e2.insert >= x) for (s2 = e2.strstart - e2.insert, e2.ins_h = e2.window[s2], e2.ins_h = (e2.ins_h << e2.hash_shift ^ e2.window[s2 + 1]) & e2.hash_mask; e2.insert && (e2.ins_h = (e2.ins_h << e2.hash_shift ^ e2.window[s2 + x - 1]) & e2.hash_mask, e2.prev[s2 & e2.w_mask] = e2.head[e2.ins_h], e2.head[e2.ins_h] = s2, s2++, e2.insert--, !(e2.lookahead + e2.insert < x)); ) ;
+          } while (e2.lookahead < z && 0 !== e2.strm.avail_in);
+        }
+        function Z(e2, t2) {
+          for (var r2, n2; ; ) {
+            if (e2.lookahead < z) {
+              if (j(e2), e2.lookahead < z && t2 === l) return A;
+              if (0 === e2.lookahead) break;
+            }
+            if (r2 = 0, e2.lookahead >= x && (e2.ins_h = (e2.ins_h << e2.hash_shift ^ e2.window[e2.strstart + x - 1]) & e2.hash_mask, r2 = e2.prev[e2.strstart & e2.w_mask] = e2.head[e2.ins_h], e2.head[e2.ins_h] = e2.strstart), 0 !== r2 && e2.strstart - r2 <= e2.w_size - z && (e2.match_length = L(e2, r2)), e2.match_length >= x) if (n2 = u._tr_tally(e2, e2.strstart - e2.match_start, e2.match_length - x), e2.lookahead -= e2.match_length, e2.match_length <= e2.max_lazy_match && e2.lookahead >= x) {
+              for (e2.match_length--; e2.strstart++, e2.ins_h = (e2.ins_h << e2.hash_shift ^ e2.window[e2.strstart + x - 1]) & e2.hash_mask, r2 = e2.prev[e2.strstart & e2.w_mask] = e2.head[e2.ins_h], e2.head[e2.ins_h] = e2.strstart, 0 != --e2.match_length; ) ;
+              e2.strstart++;
+            } else e2.strstart += e2.match_length, e2.match_length = 0, e2.ins_h = e2.window[e2.strstart], e2.ins_h = (e2.ins_h << e2.hash_shift ^ e2.window[e2.strstart + 1]) & e2.hash_mask;
+            else n2 = u._tr_tally(e2, 0, e2.window[e2.strstart]), e2.lookahead--, e2.strstart++;
+            if (n2 && (N2(e2, false), 0 === e2.strm.avail_out)) return A;
+          }
+          return e2.insert = e2.strstart < x - 1 ? e2.strstart : x - 1, t2 === f ? (N2(e2, true), 0 === e2.strm.avail_out ? O2 : B2) : e2.last_lit && (N2(e2, false), 0 === e2.strm.avail_out) ? A : I;
+        }
+        function W(e2, t2) {
+          for (var r2, n2, i2; ; ) {
+            if (e2.lookahead < z) {
+              if (j(e2), e2.lookahead < z && t2 === l) return A;
+              if (0 === e2.lookahead) break;
+            }
+            if (r2 = 0, e2.lookahead >= x && (e2.ins_h = (e2.ins_h << e2.hash_shift ^ e2.window[e2.strstart + x - 1]) & e2.hash_mask, r2 = e2.prev[e2.strstart & e2.w_mask] = e2.head[e2.ins_h], e2.head[e2.ins_h] = e2.strstart), e2.prev_length = e2.match_length, e2.prev_match = e2.match_start, e2.match_length = x - 1, 0 !== r2 && e2.prev_length < e2.max_lazy_match && e2.strstart - r2 <= e2.w_size - z && (e2.match_length = L(e2, r2), e2.match_length <= 5 && (1 === e2.strategy || e2.match_length === x && 4096 < e2.strstart - e2.match_start) && (e2.match_length = x - 1)), e2.prev_length >= x && e2.match_length <= e2.prev_length) {
+              for (i2 = e2.strstart + e2.lookahead - x, n2 = u._tr_tally(e2, e2.strstart - 1 - e2.prev_match, e2.prev_length - x), e2.lookahead -= e2.prev_length - 1, e2.prev_length -= 2; ++e2.strstart <= i2 && (e2.ins_h = (e2.ins_h << e2.hash_shift ^ e2.window[e2.strstart + x - 1]) & e2.hash_mask, r2 = e2.prev[e2.strstart & e2.w_mask] = e2.head[e2.ins_h], e2.head[e2.ins_h] = e2.strstart), 0 != --e2.prev_length; ) ;
+              if (e2.match_available = 0, e2.match_length = x - 1, e2.strstart++, n2 && (N2(e2, false), 0 === e2.strm.avail_out)) return A;
+            } else if (e2.match_available) {
+              if ((n2 = u._tr_tally(e2, 0, e2.window[e2.strstart - 1])) && N2(e2, false), e2.strstart++, e2.lookahead--, 0 === e2.strm.avail_out) return A;
+            } else e2.match_available = 1, e2.strstart++, e2.lookahead--;
+          }
+          return e2.match_available && (n2 = u._tr_tally(e2, 0, e2.window[e2.strstart - 1]), e2.match_available = 0), e2.insert = e2.strstart < x - 1 ? e2.strstart : x - 1, t2 === f ? (N2(e2, true), 0 === e2.strm.avail_out ? O2 : B2) : e2.last_lit && (N2(e2, false), 0 === e2.strm.avail_out) ? A : I;
+        }
+        function M(e2, t2, r2, n2, i2) {
+          this.good_length = e2, this.max_lazy = t2, this.nice_length = r2, this.max_chain = n2, this.func = i2;
+        }
+        function H() {
+          this.strm = null, this.status = 0, this.pending_buf = null, this.pending_buf_size = 0, this.pending_out = 0, this.pending = 0, this.wrap = 0, this.gzhead = null, this.gzindex = 0, this.method = v, this.last_flush = -1, this.w_size = 0, this.w_bits = 0, this.w_mask = 0, this.window = null, this.window_size = 0, this.prev = null, this.head = null, this.ins_h = 0, this.hash_size = 0, this.hash_bits = 0, this.hash_mask = 0, this.hash_shift = 0, this.block_start = 0, this.match_length = 0, this.prev_match = 0, this.match_available = 0, this.strstart = 0, this.match_start = 0, this.lookahead = 0, this.prev_length = 0, this.max_chain_length = 0, this.max_lazy_match = 0, this.level = 0, this.strategy = 0, this.good_match = 0, this.nice_match = 0, this.dyn_ltree = new c.Buf16(2 * w), this.dyn_dtree = new c.Buf16(2 * (2 * a + 1)), this.bl_tree = new c.Buf16(2 * (2 * o + 1)), D(this.dyn_ltree), D(this.dyn_dtree), D(this.bl_tree), this.l_desc = null, this.d_desc = null, this.bl_desc = null, this.bl_count = new c.Buf16(k + 1), this.heap = new c.Buf16(2 * s + 1), D(this.heap), this.heap_len = 0, this.heap_max = 0, this.depth = new c.Buf16(2 * s + 1), D(this.depth), this.l_buf = 0, this.lit_bufsize = 0, this.last_lit = 0, this.d_buf = 0, this.opt_len = 0, this.static_len = 0, this.matches = 0, this.insert = 0, this.bi_buf = 0, this.bi_valid = 0;
+        }
+        function G2(e2) {
+          var t2;
+          return e2 && e2.state ? (e2.total_in = e2.total_out = 0, e2.data_type = i, (t2 = e2.state).pending = 0, t2.pending_out = 0, t2.wrap < 0 && (t2.wrap = -t2.wrap), t2.status = t2.wrap ? C : E2, e2.adler = 2 === t2.wrap ? 0 : 1, t2.last_flush = l, u._tr_init(t2), m) : R2(e2, _);
+        }
+        function K(e2) {
+          var t2 = G2(e2);
+          return t2 === m && (function(e3) {
+            e3.window_size = 2 * e3.w_size, D(e3.head), e3.max_lazy_match = h[e3.level].max_lazy, e3.good_match = h[e3.level].good_length, e3.nice_match = h[e3.level].nice_length, e3.max_chain_length = h[e3.level].max_chain, e3.strstart = 0, e3.block_start = 0, e3.lookahead = 0, e3.insert = 0, e3.match_length = e3.prev_length = x - 1, e3.match_available = 0, e3.ins_h = 0;
+          })(e2.state), t2;
+        }
+        function Y2(e2, t2, r2, n2, i2, s2) {
+          if (!e2) return _;
+          var a2 = 1;
+          if (t2 === g && (t2 = 6), n2 < 0 ? (a2 = 0, n2 = -n2) : 15 < n2 && (a2 = 2, n2 -= 16), i2 < 1 || y < i2 || r2 !== v || n2 < 8 || 15 < n2 || t2 < 0 || 9 < t2 || s2 < 0 || b2 < s2) return R2(e2, _);
+          8 === n2 && (n2 = 9);
+          var o2 = new H();
+          return (e2.state = o2).strm = e2, o2.wrap = a2, o2.gzhead = null, o2.w_bits = n2, o2.w_size = 1 << o2.w_bits, o2.w_mask = o2.w_size - 1, o2.hash_bits = i2 + 7, o2.hash_size = 1 << o2.hash_bits, o2.hash_mask = o2.hash_size - 1, o2.hash_shift = ~~((o2.hash_bits + x - 1) / x), o2.window = new c.Buf8(2 * o2.w_size), o2.head = new c.Buf16(o2.hash_size), o2.prev = new c.Buf16(o2.w_size), o2.lit_bufsize = 1 << i2 + 6, o2.pending_buf_size = 4 * o2.lit_bufsize, o2.pending_buf = new c.Buf8(o2.pending_buf_size), o2.d_buf = 1 * o2.lit_bufsize, o2.l_buf = 3 * o2.lit_bufsize, o2.level = t2, o2.strategy = s2, o2.method = r2, K(e2);
+        }
+        h = [new M(0, 0, 0, 0, function(e2, t2) {
+          var r2 = 65535;
+          for (r2 > e2.pending_buf_size - 5 && (r2 = e2.pending_buf_size - 5); ; ) {
+            if (e2.lookahead <= 1) {
+              if (j(e2), 0 === e2.lookahead && t2 === l) return A;
+              if (0 === e2.lookahead) break;
+            }
+            e2.strstart += e2.lookahead, e2.lookahead = 0;
+            var n2 = e2.block_start + r2;
+            if ((0 === e2.strstart || e2.strstart >= n2) && (e2.lookahead = e2.strstart - n2, e2.strstart = n2, N2(e2, false), 0 === e2.strm.avail_out)) return A;
+            if (e2.strstart - e2.block_start >= e2.w_size - z && (N2(e2, false), 0 === e2.strm.avail_out)) return A;
+          }
+          return e2.insert = 0, t2 === f ? (N2(e2, true), 0 === e2.strm.avail_out ? O2 : B2) : (e2.strstart > e2.block_start && (N2(e2, false), e2.strm.avail_out), A);
+        }), new M(4, 4, 8, 4, Z), new M(4, 5, 16, 8, Z), new M(4, 6, 32, 32, Z), new M(4, 4, 16, 16, W), new M(8, 16, 32, 32, W), new M(8, 16, 128, 128, W), new M(8, 32, 128, 256, W), new M(32, 128, 258, 1024, W), new M(32, 258, 258, 4096, W)], r.deflateInit = function(e2, t2) {
+          return Y2(e2, t2, v, 15, 8, 0);
+        }, r.deflateInit2 = Y2, r.deflateReset = K, r.deflateResetKeep = G2, r.deflateSetHeader = function(e2, t2) {
+          return e2 && e2.state ? 2 !== e2.state.wrap ? _ : (e2.state.gzhead = t2, m) : _;
+        }, r.deflate = function(e2, t2) {
+          var r2, n2, i2, s2;
+          if (!e2 || !e2.state || 5 < t2 || t2 < 0) return e2 ? R2(e2, _) : _;
+          if (n2 = e2.state, !e2.output || !e2.input && 0 !== e2.avail_in || 666 === n2.status && t2 !== f) return R2(e2, 0 === e2.avail_out ? -5 : _);
+          if (n2.strm = e2, r2 = n2.last_flush, n2.last_flush = t2, n2.status === C) if (2 === n2.wrap) e2.adler = 0, U2(n2, 31), U2(n2, 139), U2(n2, 8), n2.gzhead ? (U2(n2, (n2.gzhead.text ? 1 : 0) + (n2.gzhead.hcrc ? 2 : 0) + (n2.gzhead.extra ? 4 : 0) + (n2.gzhead.name ? 8 : 0) + (n2.gzhead.comment ? 16 : 0)), U2(n2, 255 & n2.gzhead.time), U2(n2, n2.gzhead.time >> 8 & 255), U2(n2, n2.gzhead.time >> 16 & 255), U2(n2, n2.gzhead.time >> 24 & 255), U2(n2, 9 === n2.level ? 2 : 2 <= n2.strategy || n2.level < 2 ? 4 : 0), U2(n2, 255 & n2.gzhead.os), n2.gzhead.extra && n2.gzhead.extra.length && (U2(n2, 255 & n2.gzhead.extra.length), U2(n2, n2.gzhead.extra.length >> 8 & 255)), n2.gzhead.hcrc && (e2.adler = p(e2.adler, n2.pending_buf, n2.pending, 0)), n2.gzindex = 0, n2.status = 69) : (U2(n2, 0), U2(n2, 0), U2(n2, 0), U2(n2, 0), U2(n2, 0), U2(n2, 9 === n2.level ? 2 : 2 <= n2.strategy || n2.level < 2 ? 4 : 0), U2(n2, 3), n2.status = E2);
+          else {
+            var a2 = v + (n2.w_bits - 8 << 4) << 8;
+            a2 |= (2 <= n2.strategy || n2.level < 2 ? 0 : n2.level < 6 ? 1 : 6 === n2.level ? 2 : 3) << 6, 0 !== n2.strstart && (a2 |= 32), a2 += 31 - a2 % 31, n2.status = E2, P(n2, a2), 0 !== n2.strstart && (P(n2, e2.adler >>> 16), P(n2, 65535 & e2.adler)), e2.adler = 1;
+          }
+          if (69 === n2.status) if (n2.gzhead.extra) {
+            for (i2 = n2.pending; n2.gzindex < (65535 & n2.gzhead.extra.length) && (n2.pending !== n2.pending_buf_size || (n2.gzhead.hcrc && n2.pending > i2 && (e2.adler = p(e2.adler, n2.pending_buf, n2.pending - i2, i2)), F2(e2), i2 = n2.pending, n2.pending !== n2.pending_buf_size)); ) U2(n2, 255 & n2.gzhead.extra[n2.gzindex]), n2.gzindex++;
+            n2.gzhead.hcrc && n2.pending > i2 && (e2.adler = p(e2.adler, n2.pending_buf, n2.pending - i2, i2)), n2.gzindex === n2.gzhead.extra.length && (n2.gzindex = 0, n2.status = 73);
+          } else n2.status = 73;
+          if (73 === n2.status) if (n2.gzhead.name) {
+            i2 = n2.pending;
+            do {
+              if (n2.pending === n2.pending_buf_size && (n2.gzhead.hcrc && n2.pending > i2 && (e2.adler = p(e2.adler, n2.pending_buf, n2.pending - i2, i2)), F2(e2), i2 = n2.pending, n2.pending === n2.pending_buf_size)) {
+                s2 = 1;
+                break;
+              }
+              s2 = n2.gzindex < n2.gzhead.name.length ? 255 & n2.gzhead.name.charCodeAt(n2.gzindex++) : 0, U2(n2, s2);
+            } while (0 !== s2);
+            n2.gzhead.hcrc && n2.pending > i2 && (e2.adler = p(e2.adler, n2.pending_buf, n2.pending - i2, i2)), 0 === s2 && (n2.gzindex = 0, n2.status = 91);
+          } else n2.status = 91;
+          if (91 === n2.status) if (n2.gzhead.comment) {
+            i2 = n2.pending;
+            do {
+              if (n2.pending === n2.pending_buf_size && (n2.gzhead.hcrc && n2.pending > i2 && (e2.adler = p(e2.adler, n2.pending_buf, n2.pending - i2, i2)), F2(e2), i2 = n2.pending, n2.pending === n2.pending_buf_size)) {
+                s2 = 1;
+                break;
+              }
+              s2 = n2.gzindex < n2.gzhead.comment.length ? 255 & n2.gzhead.comment.charCodeAt(n2.gzindex++) : 0, U2(n2, s2);
+            } while (0 !== s2);
+            n2.gzhead.hcrc && n2.pending > i2 && (e2.adler = p(e2.adler, n2.pending_buf, n2.pending - i2, i2)), 0 === s2 && (n2.status = 103);
+          } else n2.status = 103;
+          if (103 === n2.status && (n2.gzhead.hcrc ? (n2.pending + 2 > n2.pending_buf_size && F2(e2), n2.pending + 2 <= n2.pending_buf_size && (U2(n2, 255 & e2.adler), U2(n2, e2.adler >> 8 & 255), e2.adler = 0, n2.status = E2)) : n2.status = E2), 0 !== n2.pending) {
+            if (F2(e2), 0 === e2.avail_out) return n2.last_flush = -1, m;
+          } else if (0 === e2.avail_in && T(t2) <= T(r2) && t2 !== f) return R2(e2, -5);
+          if (666 === n2.status && 0 !== e2.avail_in) return R2(e2, -5);
+          if (0 !== e2.avail_in || 0 !== n2.lookahead || t2 !== l && 666 !== n2.status) {
+            var o2 = 2 === n2.strategy ? (function(e3, t3) {
+              for (var r3; ; ) {
+                if (0 === e3.lookahead && (j(e3), 0 === e3.lookahead)) {
+                  if (t3 === l) return A;
+                  break;
+                }
+                if (e3.match_length = 0, r3 = u._tr_tally(e3, 0, e3.window[e3.strstart]), e3.lookahead--, e3.strstart++, r3 && (N2(e3, false), 0 === e3.strm.avail_out)) return A;
+              }
+              return e3.insert = 0, t3 === f ? (N2(e3, true), 0 === e3.strm.avail_out ? O2 : B2) : e3.last_lit && (N2(e3, false), 0 === e3.strm.avail_out) ? A : I;
+            })(n2, t2) : 3 === n2.strategy ? (function(e3, t3) {
+              for (var r3, n3, i3, s3, a3 = e3.window; ; ) {
+                if (e3.lookahead <= S2) {
+                  if (j(e3), e3.lookahead <= S2 && t3 === l) return A;
+                  if (0 === e3.lookahead) break;
+                }
+                if (e3.match_length = 0, e3.lookahead >= x && 0 < e3.strstart && (n3 = a3[i3 = e3.strstart - 1]) === a3[++i3] && n3 === a3[++i3] && n3 === a3[++i3]) {
+                  s3 = e3.strstart + S2;
+                  do {
+                  } while (n3 === a3[++i3] && n3 === a3[++i3] && n3 === a3[++i3] && n3 === a3[++i3] && n3 === a3[++i3] && n3 === a3[++i3] && n3 === a3[++i3] && n3 === a3[++i3] && i3 < s3);
+                  e3.match_length = S2 - (s3 - i3), e3.match_length > e3.lookahead && (e3.match_length = e3.lookahead);
+                }
+                if (e3.match_length >= x ? (r3 = u._tr_tally(e3, 1, e3.match_length - x), e3.lookahead -= e3.match_length, e3.strstart += e3.match_length, e3.match_length = 0) : (r3 = u._tr_tally(e3, 0, e3.window[e3.strstart]), e3.lookahead--, e3.strstart++), r3 && (N2(e3, false), 0 === e3.strm.avail_out)) return A;
+              }
+              return e3.insert = 0, t3 === f ? (N2(e3, true), 0 === e3.strm.avail_out ? O2 : B2) : e3.last_lit && (N2(e3, false), 0 === e3.strm.avail_out) ? A : I;
+            })(n2, t2) : h[n2.level].func(n2, t2);
+            if (o2 !== O2 && o2 !== B2 || (n2.status = 666), o2 === A || o2 === O2) return 0 === e2.avail_out && (n2.last_flush = -1), m;
+            if (o2 === I && (1 === t2 ? u._tr_align(n2) : 5 !== t2 && (u._tr_stored_block(n2, 0, 0, false), 3 === t2 && (D(n2.head), 0 === n2.lookahead && (n2.strstart = 0, n2.block_start = 0, n2.insert = 0))), F2(e2), 0 === e2.avail_out)) return n2.last_flush = -1, m;
+          }
+          return t2 !== f ? m : n2.wrap <= 0 ? 1 : (2 === n2.wrap ? (U2(n2, 255 & e2.adler), U2(n2, e2.adler >> 8 & 255), U2(n2, e2.adler >> 16 & 255), U2(n2, e2.adler >> 24 & 255), U2(n2, 255 & e2.total_in), U2(n2, e2.total_in >> 8 & 255), U2(n2, e2.total_in >> 16 & 255), U2(n2, e2.total_in >> 24 & 255)) : (P(n2, e2.adler >>> 16), P(n2, 65535 & e2.adler)), F2(e2), 0 < n2.wrap && (n2.wrap = -n2.wrap), 0 !== n2.pending ? m : 1);
+        }, r.deflateEnd = function(e2) {
+          var t2;
+          return e2 && e2.state ? (t2 = e2.state.status) !== C && 69 !== t2 && 73 !== t2 && 91 !== t2 && 103 !== t2 && t2 !== E2 && 666 !== t2 ? R2(e2, _) : (e2.state = null, t2 === E2 ? R2(e2, -3) : m) : _;
+        }, r.deflateSetDictionary = function(e2, t2) {
+          var r2, n2, i2, s2, a2, o2, h2, u2, l2 = t2.length;
+          if (!e2 || !e2.state) return _;
+          if (2 === (s2 = (r2 = e2.state).wrap) || 1 === s2 && r2.status !== C || r2.lookahead) return _;
+          for (1 === s2 && (e2.adler = d(e2.adler, t2, l2, 0)), r2.wrap = 0, l2 >= r2.w_size && (0 === s2 && (D(r2.head), r2.strstart = 0, r2.block_start = 0, r2.insert = 0), u2 = new c.Buf8(r2.w_size), c.arraySet(u2, t2, l2 - r2.w_size, r2.w_size, 0), t2 = u2, l2 = r2.w_size), a2 = e2.avail_in, o2 = e2.next_in, h2 = e2.input, e2.avail_in = l2, e2.next_in = 0, e2.input = t2, j(r2); r2.lookahead >= x; ) {
+            for (n2 = r2.strstart, i2 = r2.lookahead - (x - 1); r2.ins_h = (r2.ins_h << r2.hash_shift ^ r2.window[n2 + x - 1]) & r2.hash_mask, r2.prev[n2 & r2.w_mask] = r2.head[r2.ins_h], r2.head[r2.ins_h] = n2, n2++, --i2; ) ;
+            r2.strstart = n2, r2.lookahead = x - 1, j(r2);
+          }
+          return r2.strstart += r2.lookahead, r2.block_start = r2.strstart, r2.insert = r2.lookahead, r2.lookahead = 0, r2.match_length = r2.prev_length = x - 1, r2.match_available = 0, e2.next_in = o2, e2.input = h2, e2.avail_in = a2, r2.wrap = s2, m;
+        }, r.deflateInfo = "pako deflate (from Nodeca project)";
+      }, { "../utils/common": 41, "./adler32": 43, "./crc32": 45, "./messages": 51, "./trees": 52 }], 47: [function(e, t, r) {
+        t.exports = function() {
+          this.text = 0, this.time = 0, this.xflags = 0, this.os = 0, this.extra = null, this.extra_len = 0, this.name = "", this.comment = "", this.hcrc = 0, this.done = false;
+        };
+      }, {}], 48: [function(e, t, r) {
+        t.exports = function(e2, t2) {
+          var r2, n, i, s, a, o, h, u, l, f, c, d, p, m, _, g, b2, v, y, w, k, x, S2, z, C;
+          r2 = e2.state, n = e2.next_in, z = e2.input, i = n + (e2.avail_in - 5), s = e2.next_out, C = e2.output, a = s - (t2 - e2.avail_out), o = s + (e2.avail_out - 257), h = r2.dmax, u = r2.wsize, l = r2.whave, f = r2.wnext, c = r2.window, d = r2.hold, p = r2.bits, m = r2.lencode, _ = r2.distcode, g = (1 << r2.lenbits) - 1, b2 = (1 << r2.distbits) - 1;
+          e: do {
+            p < 15 && (d += z[n++] << p, p += 8, d += z[n++] << p, p += 8), v = m[d & g];
+            t: for (; ; ) {
+              if (d >>>= y = v >>> 24, p -= y, 0 === (y = v >>> 16 & 255)) C[s++] = 65535 & v;
+              else {
+                if (!(16 & y)) {
+                  if (0 == (64 & y)) {
+                    v = m[(65535 & v) + (d & (1 << y) - 1)];
+                    continue t;
+                  }
+                  if (32 & y) {
+                    r2.mode = 12;
+                    break e;
+                  }
+                  e2.msg = "invalid literal/length code", r2.mode = 30;
+                  break e;
+                }
+                w = 65535 & v, (y &= 15) && (p < y && (d += z[n++] << p, p += 8), w += d & (1 << y) - 1, d >>>= y, p -= y), p < 15 && (d += z[n++] << p, p += 8, d += z[n++] << p, p += 8), v = _[d & b2];
+                r: for (; ; ) {
+                  if (d >>>= y = v >>> 24, p -= y, !(16 & (y = v >>> 16 & 255))) {
+                    if (0 == (64 & y)) {
+                      v = _[(65535 & v) + (d & (1 << y) - 1)];
+                      continue r;
+                    }
+                    e2.msg = "invalid distance code", r2.mode = 30;
+                    break e;
+                  }
+                  if (k = 65535 & v, p < (y &= 15) && (d += z[n++] << p, (p += 8) < y && (d += z[n++] << p, p += 8)), h < (k += d & (1 << y) - 1)) {
+                    e2.msg = "invalid distance too far back", r2.mode = 30;
+                    break e;
+                  }
+                  if (d >>>= y, p -= y, (y = s - a) < k) {
+                    if (l < (y = k - y) && r2.sane) {
+                      e2.msg = "invalid distance too far back", r2.mode = 30;
+                      break e;
+                    }
+                    if (S2 = c, (x = 0) === f) {
+                      if (x += u - y, y < w) {
+                        for (w -= y; C[s++] = c[x++], --y; ) ;
+                        x = s - k, S2 = C;
+                      }
+                    } else if (f < y) {
+                      if (x += u + f - y, (y -= f) < w) {
+                        for (w -= y; C[s++] = c[x++], --y; ) ;
+                        if (x = 0, f < w) {
+                          for (w -= y = f; C[s++] = c[x++], --y; ) ;
+                          x = s - k, S2 = C;
+                        }
+                      }
+                    } else if (x += f - y, y < w) {
+                      for (w -= y; C[s++] = c[x++], --y; ) ;
+                      x = s - k, S2 = C;
+                    }
+                    for (; 2 < w; ) C[s++] = S2[x++], C[s++] = S2[x++], C[s++] = S2[x++], w -= 3;
+                    w && (C[s++] = S2[x++], 1 < w && (C[s++] = S2[x++]));
+                  } else {
+                    for (x = s - k; C[s++] = C[x++], C[s++] = C[x++], C[s++] = C[x++], 2 < (w -= 3); ) ;
+                    w && (C[s++] = C[x++], 1 < w && (C[s++] = C[x++]));
+                  }
+                  break;
+                }
+              }
+              break;
+            }
+          } while (n < i && s < o);
+          n -= w = p >> 3, d &= (1 << (p -= w << 3)) - 1, e2.next_in = n, e2.next_out = s, e2.avail_in = n < i ? i - n + 5 : 5 - (n - i), e2.avail_out = s < o ? o - s + 257 : 257 - (s - o), r2.hold = d, r2.bits = p;
+        };
+      }, {}], 49: [function(e, t, r) {
+        var I = e("../utils/common"), O2 = e("./adler32"), B2 = e("./crc32"), R2 = e("./inffast"), T = e("./inftrees"), D = 1, F2 = 2, N2 = 0, U2 = -2, P = 1, n = 852, i = 592;
+        function L(e2) {
+          return (e2 >>> 24 & 255) + (e2 >>> 8 & 65280) + ((65280 & e2) << 8) + ((255 & e2) << 24);
+        }
+        function s() {
+          this.mode = 0, this.last = false, this.wrap = 0, this.havedict = false, this.flags = 0, this.dmax = 0, this.check = 0, this.total = 0, this.head = null, this.wbits = 0, this.wsize = 0, this.whave = 0, this.wnext = 0, this.window = null, this.hold = 0, this.bits = 0, this.length = 0, this.offset = 0, this.extra = 0, this.lencode = null, this.distcode = null, this.lenbits = 0, this.distbits = 0, this.ncode = 0, this.nlen = 0, this.ndist = 0, this.have = 0, this.next = null, this.lens = new I.Buf16(320), this.work = new I.Buf16(288), this.lendyn = null, this.distdyn = null, this.sane = 0, this.back = 0, this.was = 0;
+        }
+        function a(e2) {
+          var t2;
+          return e2 && e2.state ? (t2 = e2.state, e2.total_in = e2.total_out = t2.total = 0, e2.msg = "", t2.wrap && (e2.adler = 1 & t2.wrap), t2.mode = P, t2.last = 0, t2.havedict = 0, t2.dmax = 32768, t2.head = null, t2.hold = 0, t2.bits = 0, t2.lencode = t2.lendyn = new I.Buf32(n), t2.distcode = t2.distdyn = new I.Buf32(i), t2.sane = 1, t2.back = -1, N2) : U2;
+        }
+        function o(e2) {
+          var t2;
+          return e2 && e2.state ? ((t2 = e2.state).wsize = 0, t2.whave = 0, t2.wnext = 0, a(e2)) : U2;
+        }
+        function h(e2, t2) {
+          var r2, n2;
+          return e2 && e2.state ? (n2 = e2.state, t2 < 0 ? (r2 = 0, t2 = -t2) : (r2 = 1 + (t2 >> 4), t2 < 48 && (t2 &= 15)), t2 && (t2 < 8 || 15 < t2) ? U2 : (null !== n2.window && n2.wbits !== t2 && (n2.window = null), n2.wrap = r2, n2.wbits = t2, o(e2))) : U2;
+        }
+        function u(e2, t2) {
+          var r2, n2;
+          return e2 ? (n2 = new s(), (e2.state = n2).window = null, (r2 = h(e2, t2)) !== N2 && (e2.state = null), r2) : U2;
+        }
+        var l, f, c = true;
+        function j(e2) {
+          if (c) {
+            var t2;
+            for (l = new I.Buf32(512), f = new I.Buf32(32), t2 = 0; t2 < 144; ) e2.lens[t2++] = 8;
+            for (; t2 < 256; ) e2.lens[t2++] = 9;
+            for (; t2 < 280; ) e2.lens[t2++] = 7;
+            for (; t2 < 288; ) e2.lens[t2++] = 8;
+            for (T(D, e2.lens, 0, 288, l, 0, e2.work, { bits: 9 }), t2 = 0; t2 < 32; ) e2.lens[t2++] = 5;
+            T(F2, e2.lens, 0, 32, f, 0, e2.work, { bits: 5 }), c = false;
+          }
+          e2.lencode = l, e2.lenbits = 9, e2.distcode = f, e2.distbits = 5;
+        }
+        function Z(e2, t2, r2, n2) {
+          var i2, s2 = e2.state;
+          return null === s2.window && (s2.wsize = 1 << s2.wbits, s2.wnext = 0, s2.whave = 0, s2.window = new I.Buf8(s2.wsize)), n2 >= s2.wsize ? (I.arraySet(s2.window, t2, r2 - s2.wsize, s2.wsize, 0), s2.wnext = 0, s2.whave = s2.wsize) : (n2 < (i2 = s2.wsize - s2.wnext) && (i2 = n2), I.arraySet(s2.window, t2, r2 - n2, i2, s2.wnext), (n2 -= i2) ? (I.arraySet(s2.window, t2, r2 - n2, n2, 0), s2.wnext = n2, s2.whave = s2.wsize) : (s2.wnext += i2, s2.wnext === s2.wsize && (s2.wnext = 0), s2.whave < s2.wsize && (s2.whave += i2))), 0;
+        }
+        r.inflateReset = o, r.inflateReset2 = h, r.inflateResetKeep = a, r.inflateInit = function(e2) {
+          return u(e2, 15);
+        }, r.inflateInit2 = u, r.inflate = function(e2, t2) {
+          var r2, n2, i2, s2, a2, o2, h2, u2, l2, f2, c2, d, p, m, _, g, b2, v, y, w, k, x, S2, z, C = 0, E2 = new I.Buf8(4), A = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15];
+          if (!e2 || !e2.state || !e2.output || !e2.input && 0 !== e2.avail_in) return U2;
+          12 === (r2 = e2.state).mode && (r2.mode = 13), a2 = e2.next_out, i2 = e2.output, h2 = e2.avail_out, s2 = e2.next_in, n2 = e2.input, o2 = e2.avail_in, u2 = r2.hold, l2 = r2.bits, f2 = o2, c2 = h2, x = N2;
+          e: for (; ; ) switch (r2.mode) {
+            case P:
+              if (0 === r2.wrap) {
+                r2.mode = 13;
+                break;
+              }
+              for (; l2 < 16; ) {
+                if (0 === o2) break e;
+                o2--, u2 += n2[s2++] << l2, l2 += 8;
+              }
+              if (2 & r2.wrap && 35615 === u2) {
+                E2[r2.check = 0] = 255 & u2, E2[1] = u2 >>> 8 & 255, r2.check = B2(r2.check, E2, 2, 0), l2 = u2 = 0, r2.mode = 2;
+                break;
+              }
+              if (r2.flags = 0, r2.head && (r2.head.done = false), !(1 & r2.wrap) || (((255 & u2) << 8) + (u2 >> 8)) % 31) {
+                e2.msg = "incorrect header check", r2.mode = 30;
+                break;
+              }
+              if (8 != (15 & u2)) {
+                e2.msg = "unknown compression method", r2.mode = 30;
+                break;
+              }
+              if (l2 -= 4, k = 8 + (15 & (u2 >>>= 4)), 0 === r2.wbits) r2.wbits = k;
+              else if (k > r2.wbits) {
+                e2.msg = "invalid window size", r2.mode = 30;
+                break;
+              }
+              r2.dmax = 1 << k, e2.adler = r2.check = 1, r2.mode = 512 & u2 ? 10 : 12, l2 = u2 = 0;
+              break;
+            case 2:
+              for (; l2 < 16; ) {
+                if (0 === o2) break e;
+                o2--, u2 += n2[s2++] << l2, l2 += 8;
+              }
+              if (r2.flags = u2, 8 != (255 & r2.flags)) {
+                e2.msg = "unknown compression method", r2.mode = 30;
+                break;
+              }
+              if (57344 & r2.flags) {
+                e2.msg = "unknown header flags set", r2.mode = 30;
+                break;
+              }
+              r2.head && (r2.head.text = u2 >> 8 & 1), 512 & r2.flags && (E2[0] = 255 & u2, E2[1] = u2 >>> 8 & 255, r2.check = B2(r2.check, E2, 2, 0)), l2 = u2 = 0, r2.mode = 3;
+            case 3:
+              for (; l2 < 32; ) {
+                if (0 === o2) break e;
+                o2--, u2 += n2[s2++] << l2, l2 += 8;
+              }
+              r2.head && (r2.head.time = u2), 512 & r2.flags && (E2[0] = 255 & u2, E2[1] = u2 >>> 8 & 255, E2[2] = u2 >>> 16 & 255, E2[3] = u2 >>> 24 & 255, r2.check = B2(r2.check, E2, 4, 0)), l2 = u2 = 0, r2.mode = 4;
+            case 4:
+              for (; l2 < 16; ) {
+                if (0 === o2) break e;
+                o2--, u2 += n2[s2++] << l2, l2 += 8;
+              }
+              r2.head && (r2.head.xflags = 255 & u2, r2.head.os = u2 >> 8), 512 & r2.flags && (E2[0] = 255 & u2, E2[1] = u2 >>> 8 & 255, r2.check = B2(r2.check, E2, 2, 0)), l2 = u2 = 0, r2.mode = 5;
+            case 5:
+              if (1024 & r2.flags) {
+                for (; l2 < 16; ) {
+                  if (0 === o2) break e;
+                  o2--, u2 += n2[s2++] << l2, l2 += 8;
+                }
+                r2.length = u2, r2.head && (r2.head.extra_len = u2), 512 & r2.flags && (E2[0] = 255 & u2, E2[1] = u2 >>> 8 & 255, r2.check = B2(r2.check, E2, 2, 0)), l2 = u2 = 0;
+              } else r2.head && (r2.head.extra = null);
+              r2.mode = 6;
+            case 6:
+              if (1024 & r2.flags && (o2 < (d = r2.length) && (d = o2), d && (r2.head && (k = r2.head.extra_len - r2.length, r2.head.extra || (r2.head.extra = new Array(r2.head.extra_len)), I.arraySet(r2.head.extra, n2, s2, d, k)), 512 & r2.flags && (r2.check = B2(r2.check, n2, d, s2)), o2 -= d, s2 += d, r2.length -= d), r2.length)) break e;
+              r2.length = 0, r2.mode = 7;
+            case 7:
+              if (2048 & r2.flags) {
+                if (0 === o2) break e;
+                for (d = 0; k = n2[s2 + d++], r2.head && k && r2.length < 65536 && (r2.head.name += String.fromCharCode(k)), k && d < o2; ) ;
+                if (512 & r2.flags && (r2.check = B2(r2.check, n2, d, s2)), o2 -= d, s2 += d, k) break e;
+              } else r2.head && (r2.head.name = null);
+              r2.length = 0, r2.mode = 8;
+            case 8:
+              if (4096 & r2.flags) {
+                if (0 === o2) break e;
+                for (d = 0; k = n2[s2 + d++], r2.head && k && r2.length < 65536 && (r2.head.comment += String.fromCharCode(k)), k && d < o2; ) ;
+                if (512 & r2.flags && (r2.check = B2(r2.check, n2, d, s2)), o2 -= d, s2 += d, k) break e;
+              } else r2.head && (r2.head.comment = null);
+              r2.mode = 9;
+            case 9:
+              if (512 & r2.flags) {
+                for (; l2 < 16; ) {
+                  if (0 === o2) break e;
+                  o2--, u2 += n2[s2++] << l2, l2 += 8;
+                }
+                if (u2 !== (65535 & r2.check)) {
+                  e2.msg = "header crc mismatch", r2.mode = 30;
+                  break;
+                }
+                l2 = u2 = 0;
+              }
+              r2.head && (r2.head.hcrc = r2.flags >> 9 & 1, r2.head.done = true), e2.adler = r2.check = 0, r2.mode = 12;
+              break;
+            case 10:
+              for (; l2 < 32; ) {
+                if (0 === o2) break e;
+                o2--, u2 += n2[s2++] << l2, l2 += 8;
+              }
+              e2.adler = r2.check = L(u2), l2 = u2 = 0, r2.mode = 11;
+            case 11:
+              if (0 === r2.havedict) return e2.next_out = a2, e2.avail_out = h2, e2.next_in = s2, e2.avail_in = o2, r2.hold = u2, r2.bits = l2, 2;
+              e2.adler = r2.check = 1, r2.mode = 12;
+            case 12:
+              if (5 === t2 || 6 === t2) break e;
+            case 13:
+              if (r2.last) {
+                u2 >>>= 7 & l2, l2 -= 7 & l2, r2.mode = 27;
+                break;
+              }
+              for (; l2 < 3; ) {
+                if (0 === o2) break e;
+                o2--, u2 += n2[s2++] << l2, l2 += 8;
+              }
+              switch (r2.last = 1 & u2, l2 -= 1, 3 & (u2 >>>= 1)) {
+                case 0:
+                  r2.mode = 14;
+                  break;
+                case 1:
+                  if (j(r2), r2.mode = 20, 6 !== t2) break;
+                  u2 >>>= 2, l2 -= 2;
+                  break e;
+                case 2:
+                  r2.mode = 17;
+                  break;
+                case 3:
+                  e2.msg = "invalid block type", r2.mode = 30;
+              }
+              u2 >>>= 2, l2 -= 2;
+              break;
+            case 14:
+              for (u2 >>>= 7 & l2, l2 -= 7 & l2; l2 < 32; ) {
+                if (0 === o2) break e;
+                o2--, u2 += n2[s2++] << l2, l2 += 8;
+              }
+              if ((65535 & u2) != (u2 >>> 16 ^ 65535)) {
+                e2.msg = "invalid stored block lengths", r2.mode = 30;
+                break;
+              }
+              if (r2.length = 65535 & u2, l2 = u2 = 0, r2.mode = 15, 6 === t2) break e;
+            case 15:
+              r2.mode = 16;
+            case 16:
+              if (d = r2.length) {
+                if (o2 < d && (d = o2), h2 < d && (d = h2), 0 === d) break e;
+                I.arraySet(i2, n2, s2, d, a2), o2 -= d, s2 += d, h2 -= d, a2 += d, r2.length -= d;
+                break;
+              }
+              r2.mode = 12;
+              break;
+            case 17:
+              for (; l2 < 14; ) {
+                if (0 === o2) break e;
+                o2--, u2 += n2[s2++] << l2, l2 += 8;
+              }
+              if (r2.nlen = 257 + (31 & u2), u2 >>>= 5, l2 -= 5, r2.ndist = 1 + (31 & u2), u2 >>>= 5, l2 -= 5, r2.ncode = 4 + (15 & u2), u2 >>>= 4, l2 -= 4, 286 < r2.nlen || 30 < r2.ndist) {
+                e2.msg = "too many length or distance symbols", r2.mode = 30;
+                break;
+              }
+              r2.have = 0, r2.mode = 18;
+            case 18:
+              for (; r2.have < r2.ncode; ) {
+                for (; l2 < 3; ) {
+                  if (0 === o2) break e;
+                  o2--, u2 += n2[s2++] << l2, l2 += 8;
+                }
+                r2.lens[A[r2.have++]] = 7 & u2, u2 >>>= 3, l2 -= 3;
+              }
+              for (; r2.have < 19; ) r2.lens[A[r2.have++]] = 0;
+              if (r2.lencode = r2.lendyn, r2.lenbits = 7, S2 = { bits: r2.lenbits }, x = T(0, r2.lens, 0, 19, r2.lencode, 0, r2.work, S2), r2.lenbits = S2.bits, x) {
+                e2.msg = "invalid code lengths set", r2.mode = 30;
+                break;
+              }
+              r2.have = 0, r2.mode = 19;
+            case 19:
+              for (; r2.have < r2.nlen + r2.ndist; ) {
+                for (; g = (C = r2.lencode[u2 & (1 << r2.lenbits) - 1]) >>> 16 & 255, b2 = 65535 & C, !((_ = C >>> 24) <= l2); ) {
+                  if (0 === o2) break e;
+                  o2--, u2 += n2[s2++] << l2, l2 += 8;
+                }
+                if (b2 < 16) u2 >>>= _, l2 -= _, r2.lens[r2.have++] = b2;
+                else {
+                  if (16 === b2) {
+                    for (z = _ + 2; l2 < z; ) {
+                      if (0 === o2) break e;
+                      o2--, u2 += n2[s2++] << l2, l2 += 8;
+                    }
+                    if (u2 >>>= _, l2 -= _, 0 === r2.have) {
+                      e2.msg = "invalid bit length repeat", r2.mode = 30;
+                      break;
+                    }
+                    k = r2.lens[r2.have - 1], d = 3 + (3 & u2), u2 >>>= 2, l2 -= 2;
+                  } else if (17 === b2) {
+                    for (z = _ + 3; l2 < z; ) {
+                      if (0 === o2) break e;
+                      o2--, u2 += n2[s2++] << l2, l2 += 8;
+                    }
+                    l2 -= _, k = 0, d = 3 + (7 & (u2 >>>= _)), u2 >>>= 3, l2 -= 3;
+                  } else {
+                    for (z = _ + 7; l2 < z; ) {
+                      if (0 === o2) break e;
+                      o2--, u2 += n2[s2++] << l2, l2 += 8;
+                    }
+                    l2 -= _, k = 0, d = 11 + (127 & (u2 >>>= _)), u2 >>>= 7, l2 -= 7;
+                  }
+                  if (r2.have + d > r2.nlen + r2.ndist) {
+                    e2.msg = "invalid bit length repeat", r2.mode = 30;
+                    break;
+                  }
+                  for (; d--; ) r2.lens[r2.have++] = k;
+                }
+              }
+              if (30 === r2.mode) break;
+              if (0 === r2.lens[256]) {
+                e2.msg = "invalid code -- missing end-of-block", r2.mode = 30;
+                break;
+              }
+              if (r2.lenbits = 9, S2 = { bits: r2.lenbits }, x = T(D, r2.lens, 0, r2.nlen, r2.lencode, 0, r2.work, S2), r2.lenbits = S2.bits, x) {
+                e2.msg = "invalid literal/lengths set", r2.mode = 30;
+                break;
+              }
+              if (r2.distbits = 6, r2.distcode = r2.distdyn, S2 = { bits: r2.distbits }, x = T(F2, r2.lens, r2.nlen, r2.ndist, r2.distcode, 0, r2.work, S2), r2.distbits = S2.bits, x) {
+                e2.msg = "invalid distances set", r2.mode = 30;
+                break;
+              }
+              if (r2.mode = 20, 6 === t2) break e;
+            case 20:
+              r2.mode = 21;
+            case 21:
+              if (6 <= o2 && 258 <= h2) {
+                e2.next_out = a2, e2.avail_out = h2, e2.next_in = s2, e2.avail_in = o2, r2.hold = u2, r2.bits = l2, R2(e2, c2), a2 = e2.next_out, i2 = e2.output, h2 = e2.avail_out, s2 = e2.next_in, n2 = e2.input, o2 = e2.avail_in, u2 = r2.hold, l2 = r2.bits, 12 === r2.mode && (r2.back = -1);
+                break;
+              }
+              for (r2.back = 0; g = (C = r2.lencode[u2 & (1 << r2.lenbits) - 1]) >>> 16 & 255, b2 = 65535 & C, !((_ = C >>> 24) <= l2); ) {
+                if (0 === o2) break e;
+                o2--, u2 += n2[s2++] << l2, l2 += 8;
+              }
+              if (g && 0 == (240 & g)) {
+                for (v = _, y = g, w = b2; g = (C = r2.lencode[w + ((u2 & (1 << v + y) - 1) >> v)]) >>> 16 & 255, b2 = 65535 & C, !(v + (_ = C >>> 24) <= l2); ) {
+                  if (0 === o2) break e;
+                  o2--, u2 += n2[s2++] << l2, l2 += 8;
+                }
+                u2 >>>= v, l2 -= v, r2.back += v;
+              }
+              if (u2 >>>= _, l2 -= _, r2.back += _, r2.length = b2, 0 === g) {
+                r2.mode = 26;
+                break;
+              }
+              if (32 & g) {
+                r2.back = -1, r2.mode = 12;
+                break;
+              }
+              if (64 & g) {
+                e2.msg = "invalid literal/length code", r2.mode = 30;
+                break;
+              }
+              r2.extra = 15 & g, r2.mode = 22;
+            case 22:
+              if (r2.extra) {
+                for (z = r2.extra; l2 < z; ) {
+                  if (0 === o2) break e;
+                  o2--, u2 += n2[s2++] << l2, l2 += 8;
+                }
+                r2.length += u2 & (1 << r2.extra) - 1, u2 >>>= r2.extra, l2 -= r2.extra, r2.back += r2.extra;
+              }
+              r2.was = r2.length, r2.mode = 23;
+            case 23:
+              for (; g = (C = r2.distcode[u2 & (1 << r2.distbits) - 1]) >>> 16 & 255, b2 = 65535 & C, !((_ = C >>> 24) <= l2); ) {
+                if (0 === o2) break e;
+                o2--, u2 += n2[s2++] << l2, l2 += 8;
+              }
+              if (0 == (240 & g)) {
+                for (v = _, y = g, w = b2; g = (C = r2.distcode[w + ((u2 & (1 << v + y) - 1) >> v)]) >>> 16 & 255, b2 = 65535 & C, !(v + (_ = C >>> 24) <= l2); ) {
+                  if (0 === o2) break e;
+                  o2--, u2 += n2[s2++] << l2, l2 += 8;
+                }
+                u2 >>>= v, l2 -= v, r2.back += v;
+              }
+              if (u2 >>>= _, l2 -= _, r2.back += _, 64 & g) {
+                e2.msg = "invalid distance code", r2.mode = 30;
+                break;
+              }
+              r2.offset = b2, r2.extra = 15 & g, r2.mode = 24;
+            case 24:
+              if (r2.extra) {
+                for (z = r2.extra; l2 < z; ) {
+                  if (0 === o2) break e;
+                  o2--, u2 += n2[s2++] << l2, l2 += 8;
+                }
+                r2.offset += u2 & (1 << r2.extra) - 1, u2 >>>= r2.extra, l2 -= r2.extra, r2.back += r2.extra;
+              }
+              if (r2.offset > r2.dmax) {
+                e2.msg = "invalid distance too far back", r2.mode = 30;
+                break;
+              }
+              r2.mode = 25;
+            case 25:
+              if (0 === h2) break e;
+              if (d = c2 - h2, r2.offset > d) {
+                if ((d = r2.offset - d) > r2.whave && r2.sane) {
+                  e2.msg = "invalid distance too far back", r2.mode = 30;
+                  break;
+                }
+                p = d > r2.wnext ? (d -= r2.wnext, r2.wsize - d) : r2.wnext - d, d > r2.length && (d = r2.length), m = r2.window;
+              } else m = i2, p = a2 - r2.offset, d = r2.length;
+              for (h2 < d && (d = h2), h2 -= d, r2.length -= d; i2[a2++] = m[p++], --d; ) ;
+              0 === r2.length && (r2.mode = 21);
+              break;
+            case 26:
+              if (0 === h2) break e;
+              i2[a2++] = r2.length, h2--, r2.mode = 21;
+              break;
+            case 27:
+              if (r2.wrap) {
+                for (; l2 < 32; ) {
+                  if (0 === o2) break e;
+                  o2--, u2 |= n2[s2++] << l2, l2 += 8;
+                }
+                if (c2 -= h2, e2.total_out += c2, r2.total += c2, c2 && (e2.adler = r2.check = r2.flags ? B2(r2.check, i2, c2, a2 - c2) : O2(r2.check, i2, c2, a2 - c2)), c2 = h2, (r2.flags ? u2 : L(u2)) !== r2.check) {
+                  e2.msg = "incorrect data check", r2.mode = 30;
+                  break;
+                }
+                l2 = u2 = 0;
+              }
+              r2.mode = 28;
+            case 28:
+              if (r2.wrap && r2.flags) {
+                for (; l2 < 32; ) {
+                  if (0 === o2) break e;
+                  o2--, u2 += n2[s2++] << l2, l2 += 8;
+                }
+                if (u2 !== (4294967295 & r2.total)) {
+                  e2.msg = "incorrect length check", r2.mode = 30;
+                  break;
+                }
+                l2 = u2 = 0;
+              }
+              r2.mode = 29;
+            case 29:
+              x = 1;
+              break e;
+            case 30:
+              x = -3;
+              break e;
+            case 31:
+              return -4;
+            case 32:
+            default:
+              return U2;
+          }
+          return e2.next_out = a2, e2.avail_out = h2, e2.next_in = s2, e2.avail_in = o2, r2.hold = u2, r2.bits = l2, (r2.wsize || c2 !== e2.avail_out && r2.mode < 30 && (r2.mode < 27 || 4 !== t2)) && Z(e2, e2.output, e2.next_out, c2 - e2.avail_out) ? (r2.mode = 31, -4) : (f2 -= e2.avail_in, c2 -= e2.avail_out, e2.total_in += f2, e2.total_out += c2, r2.total += c2, r2.wrap && c2 && (e2.adler = r2.check = r2.flags ? B2(r2.check, i2, c2, e2.next_out - c2) : O2(r2.check, i2, c2, e2.next_out - c2)), e2.data_type = r2.bits + (r2.last ? 64 : 0) + (12 === r2.mode ? 128 : 0) + (20 === r2.mode || 15 === r2.mode ? 256 : 0), (0 == f2 && 0 === c2 || 4 === t2) && x === N2 && (x = -5), x);
+        }, r.inflateEnd = function(e2) {
+          if (!e2 || !e2.state) return U2;
+          var t2 = e2.state;
+          return t2.window && (t2.window = null), e2.state = null, N2;
+        }, r.inflateGetHeader = function(e2, t2) {
+          var r2;
+          return e2 && e2.state ? 0 == (2 & (r2 = e2.state).wrap) ? U2 : ((r2.head = t2).done = false, N2) : U2;
+        }, r.inflateSetDictionary = function(e2, t2) {
+          var r2, n2 = t2.length;
+          return e2 && e2.state ? 0 !== (r2 = e2.state).wrap && 11 !== r2.mode ? U2 : 11 === r2.mode && O2(1, t2, n2, 0) !== r2.check ? -3 : Z(e2, t2, n2, n2) ? (r2.mode = 31, -4) : (r2.havedict = 1, N2) : U2;
+        }, r.inflateInfo = "pako inflate (from Nodeca project)";
+      }, { "../utils/common": 41, "./adler32": 43, "./crc32": 45, "./inffast": 48, "./inftrees": 50 }], 50: [function(e, t, r) {
+        var D = e("../utils/common"), F2 = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258, 0, 0], N2 = [16, 16, 16, 16, 16, 16, 16, 16, 17, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 19, 20, 20, 20, 20, 21, 21, 21, 21, 16, 72, 78], U2 = [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577, 0, 0], P = [16, 16, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, 25, 26, 26, 27, 27, 28, 28, 29, 29, 64, 64];
+        t.exports = function(e2, t2, r2, n, i, s, a, o) {
+          var h, u, l, f, c, d, p, m, _, g = o.bits, b2 = 0, v = 0, y = 0, w = 0, k = 0, x = 0, S2 = 0, z = 0, C = 0, E2 = 0, A = null, I = 0, O2 = new D.Buf16(16), B2 = new D.Buf16(16), R2 = null, T = 0;
+          for (b2 = 0; b2 <= 15; b2++) O2[b2] = 0;
+          for (v = 0; v < n; v++) O2[t2[r2 + v]]++;
+          for (k = g, w = 15; 1 <= w && 0 === O2[w]; w--) ;
+          if (w < k && (k = w), 0 === w) return i[s++] = 20971520, i[s++] = 20971520, o.bits = 1, 0;
+          for (y = 1; y < w && 0 === O2[y]; y++) ;
+          for (k < y && (k = y), b2 = z = 1; b2 <= 15; b2++) if (z <<= 1, (z -= O2[b2]) < 0) return -1;
+          if (0 < z && (0 === e2 || 1 !== w)) return -1;
+          for (B2[1] = 0, b2 = 1; b2 < 15; b2++) B2[b2 + 1] = B2[b2] + O2[b2];
+          for (v = 0; v < n; v++) 0 !== t2[r2 + v] && (a[B2[t2[r2 + v]]++] = v);
+          if (d = 0 === e2 ? (A = R2 = a, 19) : 1 === e2 ? (A = F2, I -= 257, R2 = N2, T -= 257, 256) : (A = U2, R2 = P, -1), b2 = y, c = s, S2 = v = E2 = 0, l = -1, f = (C = 1 << (x = k)) - 1, 1 === e2 && 852 < C || 2 === e2 && 592 < C) return 1;
+          for (; ; ) {
+            for (p = b2 - S2, _ = a[v] < d ? (m = 0, a[v]) : a[v] > d ? (m = R2[T + a[v]], A[I + a[v]]) : (m = 96, 0), h = 1 << b2 - S2, y = u = 1 << x; i[c + (E2 >> S2) + (u -= h)] = p << 24 | m << 16 | _ | 0, 0 !== u; ) ;
+            for (h = 1 << b2 - 1; E2 & h; ) h >>= 1;
+            if (0 !== h ? (E2 &= h - 1, E2 += h) : E2 = 0, v++, 0 == --O2[b2]) {
+              if (b2 === w) break;
+              b2 = t2[r2 + a[v]];
+            }
+            if (k < b2 && (E2 & f) !== l) {
+              for (0 === S2 && (S2 = k), c += y, z = 1 << (x = b2 - S2); x + S2 < w && !((z -= O2[x + S2]) <= 0); ) x++, z <<= 1;
+              if (C += 1 << x, 1 === e2 && 852 < C || 2 === e2 && 592 < C) return 1;
+              i[l = E2 & f] = k << 24 | x << 16 | c - s | 0;
+            }
+          }
+          return 0 !== E2 && (i[c + E2] = b2 - S2 << 24 | 64 << 16 | 0), o.bits = k, 0;
+        };
+      }, { "../utils/common": 41 }], 51: [function(e, t, r) {
+        t.exports = { 2: "need dictionary", 1: "stream end", 0: "", "-1": "file error", "-2": "stream error", "-3": "data error", "-4": "insufficient memory", "-5": "buffer error", "-6": "incompatible version" };
+      }, {}], 52: [function(e, t, r) {
+        var i = e("../utils/common"), o = 0, h = 1;
+        function n(e2) {
+          for (var t2 = e2.length; 0 <= --t2; ) e2[t2] = 0;
+        }
+        var s = 0, a = 29, u = 256, l = u + 1 + a, f = 30, c = 19, _ = 2 * l + 1, g = 15, d = 16, p = 7, m = 256, b2 = 16, v = 17, y = 18, w = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0], k = [0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13], x = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 7], S2 = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15], z = new Array(2 * (l + 2));
+        n(z);
+        var C = new Array(2 * f);
+        n(C);
+        var E2 = new Array(512);
+        n(E2);
+        var A = new Array(256);
+        n(A);
+        var I = new Array(a);
+        n(I);
+        var O2, B2, R2, T = new Array(f);
+        function D(e2, t2, r2, n2, i2) {
+          this.static_tree = e2, this.extra_bits = t2, this.extra_base = r2, this.elems = n2, this.max_length = i2, this.has_stree = e2 && e2.length;
+        }
+        function F2(e2, t2) {
+          this.dyn_tree = e2, this.max_code = 0, this.stat_desc = t2;
+        }
+        function N2(e2) {
+          return e2 < 256 ? E2[e2] : E2[256 + (e2 >>> 7)];
+        }
+        function U2(e2, t2) {
+          e2.pending_buf[e2.pending++] = 255 & t2, e2.pending_buf[e2.pending++] = t2 >>> 8 & 255;
+        }
+        function P(e2, t2, r2) {
+          e2.bi_valid > d - r2 ? (e2.bi_buf |= t2 << e2.bi_valid & 65535, U2(e2, e2.bi_buf), e2.bi_buf = t2 >> d - e2.bi_valid, e2.bi_valid += r2 - d) : (e2.bi_buf |= t2 << e2.bi_valid & 65535, e2.bi_valid += r2);
+        }
+        function L(e2, t2, r2) {
+          P(e2, r2[2 * t2], r2[2 * t2 + 1]);
+        }
+        function j(e2, t2) {
+          for (var r2 = 0; r2 |= 1 & e2, e2 >>>= 1, r2 <<= 1, 0 < --t2; ) ;
+          return r2 >>> 1;
+        }
+        function Z(e2, t2, r2) {
+          var n2, i2, s2 = new Array(g + 1), a2 = 0;
+          for (n2 = 1; n2 <= g; n2++) s2[n2] = a2 = a2 + r2[n2 - 1] << 1;
+          for (i2 = 0; i2 <= t2; i2++) {
+            var o2 = e2[2 * i2 + 1];
+            0 !== o2 && (e2[2 * i2] = j(s2[o2]++, o2));
+          }
+        }
+        function W(e2) {
+          var t2;
+          for (t2 = 0; t2 < l; t2++) e2.dyn_ltree[2 * t2] = 0;
+          for (t2 = 0; t2 < f; t2++) e2.dyn_dtree[2 * t2] = 0;
+          for (t2 = 0; t2 < c; t2++) e2.bl_tree[2 * t2] = 0;
+          e2.dyn_ltree[2 * m] = 1, e2.opt_len = e2.static_len = 0, e2.last_lit = e2.matches = 0;
+        }
+        function M(e2) {
+          8 < e2.bi_valid ? U2(e2, e2.bi_buf) : 0 < e2.bi_valid && (e2.pending_buf[e2.pending++] = e2.bi_buf), e2.bi_buf = 0, e2.bi_valid = 0;
+        }
+        function H(e2, t2, r2, n2) {
+          var i2 = 2 * t2, s2 = 2 * r2;
+          return e2[i2] < e2[s2] || e2[i2] === e2[s2] && n2[t2] <= n2[r2];
+        }
+        function G2(e2, t2, r2) {
+          for (var n2 = e2.heap[r2], i2 = r2 << 1; i2 <= e2.heap_len && (i2 < e2.heap_len && H(t2, e2.heap[i2 + 1], e2.heap[i2], e2.depth) && i2++, !H(t2, n2, e2.heap[i2], e2.depth)); ) e2.heap[r2] = e2.heap[i2], r2 = i2, i2 <<= 1;
+          e2.heap[r2] = n2;
+        }
+        function K(e2, t2, r2) {
+          var n2, i2, s2, a2, o2 = 0;
+          if (0 !== e2.last_lit) for (; n2 = e2.pending_buf[e2.d_buf + 2 * o2] << 8 | e2.pending_buf[e2.d_buf + 2 * o2 + 1], i2 = e2.pending_buf[e2.l_buf + o2], o2++, 0 === n2 ? L(e2, i2, t2) : (L(e2, (s2 = A[i2]) + u + 1, t2), 0 !== (a2 = w[s2]) && P(e2, i2 -= I[s2], a2), L(e2, s2 = N2(--n2), r2), 0 !== (a2 = k[s2]) && P(e2, n2 -= T[s2], a2)), o2 < e2.last_lit; ) ;
+          L(e2, m, t2);
+        }
+        function Y2(e2, t2) {
+          var r2, n2, i2, s2 = t2.dyn_tree, a2 = t2.stat_desc.static_tree, o2 = t2.stat_desc.has_stree, h2 = t2.stat_desc.elems, u2 = -1;
+          for (e2.heap_len = 0, e2.heap_max = _, r2 = 0; r2 < h2; r2++) 0 !== s2[2 * r2] ? (e2.heap[++e2.heap_len] = u2 = r2, e2.depth[r2] = 0) : s2[2 * r2 + 1] = 0;
+          for (; e2.heap_len < 2; ) s2[2 * (i2 = e2.heap[++e2.heap_len] = u2 < 2 ? ++u2 : 0)] = 1, e2.depth[i2] = 0, e2.opt_len--, o2 && (e2.static_len -= a2[2 * i2 + 1]);
+          for (t2.max_code = u2, r2 = e2.heap_len >> 1; 1 <= r2; r2--) G2(e2, s2, r2);
+          for (i2 = h2; r2 = e2.heap[1], e2.heap[1] = e2.heap[e2.heap_len--], G2(e2, s2, 1), n2 = e2.heap[1], e2.heap[--e2.heap_max] = r2, e2.heap[--e2.heap_max] = n2, s2[2 * i2] = s2[2 * r2] + s2[2 * n2], e2.depth[i2] = (e2.depth[r2] >= e2.depth[n2] ? e2.depth[r2] : e2.depth[n2]) + 1, s2[2 * r2 + 1] = s2[2 * n2 + 1] = i2, e2.heap[1] = i2++, G2(e2, s2, 1), 2 <= e2.heap_len; ) ;
+          e2.heap[--e2.heap_max] = e2.heap[1], (function(e3, t3) {
+            var r3, n3, i3, s3, a3, o3, h3 = t3.dyn_tree, u3 = t3.max_code, l2 = t3.stat_desc.static_tree, f2 = t3.stat_desc.has_stree, c2 = t3.stat_desc.extra_bits, d2 = t3.stat_desc.extra_base, p2 = t3.stat_desc.max_length, m2 = 0;
+            for (s3 = 0; s3 <= g; s3++) e3.bl_count[s3] = 0;
+            for (h3[2 * e3.heap[e3.heap_max] + 1] = 0, r3 = e3.heap_max + 1; r3 < _; r3++) p2 < (s3 = h3[2 * h3[2 * (n3 = e3.heap[r3]) + 1] + 1] + 1) && (s3 = p2, m2++), h3[2 * n3 + 1] = s3, u3 < n3 || (e3.bl_count[s3]++, a3 = 0, d2 <= n3 && (a3 = c2[n3 - d2]), o3 = h3[2 * n3], e3.opt_len += o3 * (s3 + a3), f2 && (e3.static_len += o3 * (l2[2 * n3 + 1] + a3)));
+            if (0 !== m2) {
+              do {
+                for (s3 = p2 - 1; 0 === e3.bl_count[s3]; ) s3--;
+                e3.bl_count[s3]--, e3.bl_count[s3 + 1] += 2, e3.bl_count[p2]--, m2 -= 2;
+              } while (0 < m2);
+              for (s3 = p2; 0 !== s3; s3--) for (n3 = e3.bl_count[s3]; 0 !== n3; ) u3 < (i3 = e3.heap[--r3]) || (h3[2 * i3 + 1] !== s3 && (e3.opt_len += (s3 - h3[2 * i3 + 1]) * h3[2 * i3], h3[2 * i3 + 1] = s3), n3--);
+            }
+          })(e2, t2), Z(s2, u2, e2.bl_count);
+        }
+        function X2(e2, t2, r2) {
+          var n2, i2, s2 = -1, a2 = t2[1], o2 = 0, h2 = 7, u2 = 4;
+          for (0 === a2 && (h2 = 138, u2 = 3), t2[2 * (r2 + 1) + 1] = 65535, n2 = 0; n2 <= r2; n2++) i2 = a2, a2 = t2[2 * (n2 + 1) + 1], ++o2 < h2 && i2 === a2 || (o2 < u2 ? e2.bl_tree[2 * i2] += o2 : 0 !== i2 ? (i2 !== s2 && e2.bl_tree[2 * i2]++, e2.bl_tree[2 * b2]++) : o2 <= 10 ? e2.bl_tree[2 * v]++ : e2.bl_tree[2 * y]++, s2 = i2, u2 = (o2 = 0) === a2 ? (h2 = 138, 3) : i2 === a2 ? (h2 = 6, 3) : (h2 = 7, 4));
+        }
+        function V2(e2, t2, r2) {
+          var n2, i2, s2 = -1, a2 = t2[1], o2 = 0, h2 = 7, u2 = 4;
+          for (0 === a2 && (h2 = 138, u2 = 3), n2 = 0; n2 <= r2; n2++) if (i2 = a2, a2 = t2[2 * (n2 + 1) + 1], !(++o2 < h2 && i2 === a2)) {
+            if (o2 < u2) for (; L(e2, i2, e2.bl_tree), 0 != --o2; ) ;
+            else 0 !== i2 ? (i2 !== s2 && (L(e2, i2, e2.bl_tree), o2--), L(e2, b2, e2.bl_tree), P(e2, o2 - 3, 2)) : o2 <= 10 ? (L(e2, v, e2.bl_tree), P(e2, o2 - 3, 3)) : (L(e2, y, e2.bl_tree), P(e2, o2 - 11, 7));
+            s2 = i2, u2 = (o2 = 0) === a2 ? (h2 = 138, 3) : i2 === a2 ? (h2 = 6, 3) : (h2 = 7, 4);
+          }
+        }
+        n(T);
+        var q = false;
+        function J2(e2, t2, r2, n2) {
+          P(e2, (s << 1) + (n2 ? 1 : 0), 3), (function(e3, t3, r3, n3) {
+            M(e3), U2(e3, r3), U2(e3, ~r3), i.arraySet(e3.pending_buf, e3.window, t3, r3, e3.pending), e3.pending += r3;
+          })(e2, t2, r2);
+        }
+        r._tr_init = function(e2) {
+          q || ((function() {
+            var e3, t2, r2, n2, i2, s2 = new Array(g + 1);
+            for (n2 = r2 = 0; n2 < a - 1; n2++) for (I[n2] = r2, e3 = 0; e3 < 1 << w[n2]; e3++) A[r2++] = n2;
+            for (A[r2 - 1] = n2, n2 = i2 = 0; n2 < 16; n2++) for (T[n2] = i2, e3 = 0; e3 < 1 << k[n2]; e3++) E2[i2++] = n2;
+            for (i2 >>= 7; n2 < f; n2++) for (T[n2] = i2 << 7, e3 = 0; e3 < 1 << k[n2] - 7; e3++) E2[256 + i2++] = n2;
+            for (t2 = 0; t2 <= g; t2++) s2[t2] = 0;
+            for (e3 = 0; e3 <= 143; ) z[2 * e3 + 1] = 8, e3++, s2[8]++;
+            for (; e3 <= 255; ) z[2 * e3 + 1] = 9, e3++, s2[9]++;
+            for (; e3 <= 279; ) z[2 * e3 + 1] = 7, e3++, s2[7]++;
+            for (; e3 <= 287; ) z[2 * e3 + 1] = 8, e3++, s2[8]++;
+            for (Z(z, l + 1, s2), e3 = 0; e3 < f; e3++) C[2 * e3 + 1] = 5, C[2 * e3] = j(e3, 5);
+            O2 = new D(z, w, u + 1, l, g), B2 = new D(C, k, 0, f, g), R2 = new D(new Array(0), x, 0, c, p);
+          })(), q = true), e2.l_desc = new F2(e2.dyn_ltree, O2), e2.d_desc = new F2(e2.dyn_dtree, B2), e2.bl_desc = new F2(e2.bl_tree, R2), e2.bi_buf = 0, e2.bi_valid = 0, W(e2);
+        }, r._tr_stored_block = J2, r._tr_flush_block = function(e2, t2, r2, n2) {
+          var i2, s2, a2 = 0;
+          0 < e2.level ? (2 === e2.strm.data_type && (e2.strm.data_type = (function(e3) {
+            var t3, r3 = 4093624447;
+            for (t3 = 0; t3 <= 31; t3++, r3 >>>= 1) if (1 & r3 && 0 !== e3.dyn_ltree[2 * t3]) return o;
+            if (0 !== e3.dyn_ltree[18] || 0 !== e3.dyn_ltree[20] || 0 !== e3.dyn_ltree[26]) return h;
+            for (t3 = 32; t3 < u; t3++) if (0 !== e3.dyn_ltree[2 * t3]) return h;
+            return o;
+          })(e2)), Y2(e2, e2.l_desc), Y2(e2, e2.d_desc), a2 = (function(e3) {
+            var t3;
+            for (X2(e3, e3.dyn_ltree, e3.l_desc.max_code), X2(e3, e3.dyn_dtree, e3.d_desc.max_code), Y2(e3, e3.bl_desc), t3 = c - 1; 3 <= t3 && 0 === e3.bl_tree[2 * S2[t3] + 1]; t3--) ;
+            return e3.opt_len += 3 * (t3 + 1) + 5 + 5 + 4, t3;
+          })(e2), i2 = e2.opt_len + 3 + 7 >>> 3, (s2 = e2.static_len + 3 + 7 >>> 3) <= i2 && (i2 = s2)) : i2 = s2 = r2 + 5, r2 + 4 <= i2 && -1 !== t2 ? J2(e2, t2, r2, n2) : 4 === e2.strategy || s2 === i2 ? (P(e2, 2 + (n2 ? 1 : 0), 3), K(e2, z, C)) : (P(e2, 4 + (n2 ? 1 : 0), 3), (function(e3, t3, r3, n3) {
+            var i3;
+            for (P(e3, t3 - 257, 5), P(e3, r3 - 1, 5), P(e3, n3 - 4, 4), i3 = 0; i3 < n3; i3++) P(e3, e3.bl_tree[2 * S2[i3] + 1], 3);
+            V2(e3, e3.dyn_ltree, t3 - 1), V2(e3, e3.dyn_dtree, r3 - 1);
+          })(e2, e2.l_desc.max_code + 1, e2.d_desc.max_code + 1, a2 + 1), K(e2, e2.dyn_ltree, e2.dyn_dtree)), W(e2), n2 && M(e2);
+        }, r._tr_tally = function(e2, t2, r2) {
+          return e2.pending_buf[e2.d_buf + 2 * e2.last_lit] = t2 >>> 8 & 255, e2.pending_buf[e2.d_buf + 2 * e2.last_lit + 1] = 255 & t2, e2.pending_buf[e2.l_buf + e2.last_lit] = 255 & r2, e2.last_lit++, 0 === t2 ? e2.dyn_ltree[2 * r2]++ : (e2.matches++, t2--, e2.dyn_ltree[2 * (A[r2] + u + 1)]++, e2.dyn_dtree[2 * N2(t2)]++), e2.last_lit === e2.lit_bufsize - 1;
+        }, r._tr_align = function(e2) {
+          P(e2, 2, 3), L(e2, m, z), (function(e3) {
+            16 === e3.bi_valid ? (U2(e3, e3.bi_buf), e3.bi_buf = 0, e3.bi_valid = 0) : 8 <= e3.bi_valid && (e3.pending_buf[e3.pending++] = 255 & e3.bi_buf, e3.bi_buf >>= 8, e3.bi_valid -= 8);
+          })(e2);
+        };
+      }, { "../utils/common": 41 }], 53: [function(e, t, r) {
+        t.exports = function() {
+          this.input = null, this.next_in = 0, this.avail_in = 0, this.total_in = 0, this.output = null, this.next_out = 0, this.avail_out = 0, this.total_out = 0, this.msg = "", this.state = null, this.data_type = 2, this.adler = 0;
+        };
+      }, {}], 54: [function(e, t, r) {
+        (function(e2) {
+          !(function(r2, n) {
+            if (!r2.setImmediate) {
+              var i, s, t2, a, o = 1, h = {}, u = false, l = r2.document, e3 = Object.getPrototypeOf && Object.getPrototypeOf(r2);
+              e3 = e3 && e3.setTimeout ? e3 : r2, i = "[object process]" === {}.toString.call(r2.process) ? function(e4) {
+                process.nextTick(function() {
+                  c(e4);
+                });
+              } : (function() {
+                if (r2.postMessage && !r2.importScripts) {
+                  var e4 = true, t3 = r2.onmessage;
+                  return r2.onmessage = function() {
+                    e4 = false;
+                  }, r2.postMessage("", "*"), r2.onmessage = t3, e4;
+                }
+              })() ? (a = "setImmediate$" + Math.random() + "$", r2.addEventListener ? r2.addEventListener("message", d, false) : r2.attachEvent("onmessage", d), function(e4) {
+                r2.postMessage(a + e4, "*");
+              }) : r2.MessageChannel ? ((t2 = new MessageChannel()).port1.onmessage = function(e4) {
+                c(e4.data);
+              }, function(e4) {
+                t2.port2.postMessage(e4);
+              }) : l && "onreadystatechange" in l.createElement("script") ? (s = l.documentElement, function(e4) {
+                var t3 = l.createElement("script");
+                t3.onreadystatechange = function() {
+                  c(e4), t3.onreadystatechange = null, s.removeChild(t3), t3 = null;
+                }, s.appendChild(t3);
+              }) : function(e4) {
+                setTimeout(c, 0, e4);
+              }, e3.setImmediate = function(e4) {
+                "function" != typeof e4 && (e4 = new Function("" + e4));
+                for (var t3 = new Array(arguments.length - 1), r3 = 0; r3 < t3.length; r3++) t3[r3] = arguments[r3 + 1];
+                var n2 = { callback: e4, args: t3 };
+                return h[o] = n2, i(o), o++;
+              }, e3.clearImmediate = f;
+            }
+            function f(e4) {
+              delete h[e4];
+            }
+            function c(e4) {
+              if (u) setTimeout(c, 0, e4);
+              else {
+                var t3 = h[e4];
+                if (t3) {
+                  u = true;
+                  try {
+                    !(function(e5) {
+                      var t4 = e5.callback, r3 = e5.args;
+                      switch (r3.length) {
+                        case 0:
+                          t4();
+                          break;
+                        case 1:
+                          t4(r3[0]);
+                          break;
+                        case 2:
+                          t4(r3[0], r3[1]);
+                          break;
+                        case 3:
+                          t4(r3[0], r3[1], r3[2]);
+                          break;
+                        default:
+                          t4.apply(n, r3);
+                      }
+                    })(t3);
+                  } finally {
+                    f(e4), u = false;
+                  }
+                }
+              }
+            }
+            function d(e4) {
+              e4.source === r2 && "string" == typeof e4.data && 0 === e4.data.indexOf(a) && c(+e4.data.slice(a.length));
+            }
+          })("undefined" == typeof self ? void 0 === e2 ? this : e2 : self);
+        }).call(this, "undefined" != typeof commonjsGlobal ? commonjsGlobal : "undefined" != typeof self ? self : "undefined" != typeof window ? window : {});
+      }, {}] }, {}, [10])(10);
+    });
+  })(jszip_min);
+  return jszip_min.exports;
+}
+var jszip_minExports = /* @__PURE__ */ requireJszip_min();
+const JSZip = /* @__PURE__ */ getDefaultExportFromCjs(jszip_minExports);
 const BASE_EXTENSION = ".waldiez";
 const isAppleDevice = () => {
   if ("userAgentData" in navigator && typeof navigator.userAgentData === "object") {
@@ -4092,6 +6417,327 @@ const TOOL_ICONS = {
   searxng_search: searxng
 };
 const WALDIEZ_ICON = generic;
+var jsxRuntime = { exports: {} };
+var reactJsxRuntime_production = {};
+/**
+ * @license React
+ * react-jsx-runtime.production.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var hasRequiredReactJsxRuntime_production;
+function requireReactJsxRuntime_production() {
+  if (hasRequiredReactJsxRuntime_production) return reactJsxRuntime_production;
+  hasRequiredReactJsxRuntime_production = 1;
+  var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
+  function jsxProd(type, config, maybeKey) {
+    var key = null;
+    void 0 !== maybeKey && (key = "" + maybeKey);
+    void 0 !== config.key && (key = "" + config.key);
+    if ("key" in config) {
+      maybeKey = {};
+      for (var propName in config)
+        "key" !== propName && (maybeKey[propName] = config[propName]);
+    } else maybeKey = config;
+    config = maybeKey.ref;
+    return {
+      $$typeof: REACT_ELEMENT_TYPE,
+      type,
+      key,
+      ref: void 0 !== config ? config : null,
+      props: maybeKey
+    };
+  }
+  reactJsxRuntime_production.Fragment = REACT_FRAGMENT_TYPE;
+  reactJsxRuntime_production.jsx = jsxProd;
+  reactJsxRuntime_production.jsxs = jsxProd;
+  return reactJsxRuntime_production;
+}
+var reactJsxRuntime_development = {};
+/**
+ * @license React
+ * react-jsx-runtime.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var hasRequiredReactJsxRuntime_development;
+function requireReactJsxRuntime_development() {
+  if (hasRequiredReactJsxRuntime_development) return reactJsxRuntime_development;
+  hasRequiredReactJsxRuntime_development = 1;
+  "production" !== process.env.NODE_ENV && (function() {
+    function getComponentNameFromType(type) {
+      if (null == type) return null;
+      if ("function" === typeof type)
+        return type.$$typeof === REACT_CLIENT_REFERENCE ? null : type.displayName || type.name || null;
+      if ("string" === typeof type) return type;
+      switch (type) {
+        case REACT_FRAGMENT_TYPE:
+          return "Fragment";
+        case REACT_PROFILER_TYPE:
+          return "Profiler";
+        case REACT_STRICT_MODE_TYPE:
+          return "StrictMode";
+        case REACT_SUSPENSE_TYPE:
+          return "Suspense";
+        case REACT_SUSPENSE_LIST_TYPE:
+          return "SuspenseList";
+        case REACT_ACTIVITY_TYPE:
+          return "Activity";
+      }
+      if ("object" === typeof type)
+        switch ("number" === typeof type.tag && console.error(
+          "Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue."
+        ), type.$$typeof) {
+          case REACT_PORTAL_TYPE:
+            return "Portal";
+          case REACT_CONTEXT_TYPE:
+            return (type.displayName || "Context") + ".Provider";
+          case REACT_CONSUMER_TYPE:
+            return (type._context.displayName || "Context") + ".Consumer";
+          case REACT_FORWARD_REF_TYPE:
+            var innerType = type.render;
+            type = type.displayName;
+            type || (type = innerType.displayName || innerType.name || "", type = "" !== type ? "ForwardRef(" + type + ")" : "ForwardRef");
+            return type;
+          case REACT_MEMO_TYPE:
+            return innerType = type.displayName || null, null !== innerType ? innerType : getComponentNameFromType(type.type) || "Memo";
+          case REACT_LAZY_TYPE:
+            innerType = type._payload;
+            type = type._init;
+            try {
+              return getComponentNameFromType(type(innerType));
+            } catch (x) {
+            }
+        }
+      return null;
+    }
+    function testStringCoercion(value) {
+      return "" + value;
+    }
+    function checkKeyStringCoercion(value) {
+      try {
+        testStringCoercion(value);
+        var JSCompiler_inline_result = false;
+      } catch (e) {
+        JSCompiler_inline_result = true;
+      }
+      if (JSCompiler_inline_result) {
+        JSCompiler_inline_result = console;
+        var JSCompiler_temp_const = JSCompiler_inline_result.error;
+        var JSCompiler_inline_result$jscomp$0 = "function" === typeof Symbol && Symbol.toStringTag && value[Symbol.toStringTag] || value.constructor.name || "Object";
+        JSCompiler_temp_const.call(
+          JSCompiler_inline_result,
+          "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.",
+          JSCompiler_inline_result$jscomp$0
+        );
+        return testStringCoercion(value);
+      }
+    }
+    function getTaskName(type) {
+      if (type === REACT_FRAGMENT_TYPE) return "<>";
+      if ("object" === typeof type && null !== type && type.$$typeof === REACT_LAZY_TYPE)
+        return "<...>";
+      try {
+        var name = getComponentNameFromType(type);
+        return name ? "<" + name + ">" : "<...>";
+      } catch (x) {
+        return "<...>";
+      }
+    }
+    function getOwner() {
+      var dispatcher = ReactSharedInternals.A;
+      return null === dispatcher ? null : dispatcher.getOwner();
+    }
+    function UnknownOwner() {
+      return Error("react-stack-top-frame");
+    }
+    function hasValidKey(config) {
+      if (hasOwnProperty.call(config, "key")) {
+        var getter = Object.getOwnPropertyDescriptor(config, "key").get;
+        if (getter && getter.isReactWarning) return false;
+      }
+      return void 0 !== config.key;
+    }
+    function defineKeyPropWarningGetter(props, displayName) {
+      function warnAboutAccessingKey() {
+        specialPropKeyWarningShown || (specialPropKeyWarningShown = true, console.error(
+          "%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)",
+          displayName
+        ));
+      }
+      warnAboutAccessingKey.isReactWarning = true;
+      Object.defineProperty(props, "key", {
+        get: warnAboutAccessingKey,
+        configurable: true
+      });
+    }
+    function elementRefGetterWithDeprecationWarning() {
+      var componentName = getComponentNameFromType(this.type);
+      didWarnAboutElementRef[componentName] || (didWarnAboutElementRef[componentName] = true, console.error(
+        "Accessing element.ref was removed in React 19. ref is now a regular prop. It will be removed from the JSX Element type in a future release."
+      ));
+      componentName = this.props.ref;
+      return void 0 !== componentName ? componentName : null;
+    }
+    function ReactElement(type, key, self2, source, owner, props, debugStack, debugTask) {
+      self2 = props.ref;
+      type = {
+        $$typeof: REACT_ELEMENT_TYPE,
+        type,
+        key,
+        props,
+        _owner: owner
+      };
+      null !== (void 0 !== self2 ? self2 : null) ? Object.defineProperty(type, "ref", {
+        enumerable: false,
+        get: elementRefGetterWithDeprecationWarning
+      }) : Object.defineProperty(type, "ref", { enumerable: false, value: null });
+      type._store = {};
+      Object.defineProperty(type._store, "validated", {
+        configurable: false,
+        enumerable: false,
+        writable: true,
+        value: 0
+      });
+      Object.defineProperty(type, "_debugInfo", {
+        configurable: false,
+        enumerable: false,
+        writable: true,
+        value: null
+      });
+      Object.defineProperty(type, "_debugStack", {
+        configurable: false,
+        enumerable: false,
+        writable: true,
+        value: debugStack
+      });
+      Object.defineProperty(type, "_debugTask", {
+        configurable: false,
+        enumerable: false,
+        writable: true,
+        value: debugTask
+      });
+      Object.freeze && (Object.freeze(type.props), Object.freeze(type));
+      return type;
+    }
+    function jsxDEVImpl(type, config, maybeKey, isStaticChildren, source, self2, debugStack, debugTask) {
+      var children = config.children;
+      if (void 0 !== children)
+        if (isStaticChildren)
+          if (isArrayImpl(children)) {
+            for (isStaticChildren = 0; isStaticChildren < children.length; isStaticChildren++)
+              validateChildKeys(children[isStaticChildren]);
+            Object.freeze && Object.freeze(children);
+          } else
+            console.error(
+              "React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead."
+            );
+        else validateChildKeys(children);
+      if (hasOwnProperty.call(config, "key")) {
+        children = getComponentNameFromType(type);
+        var keys = Object.keys(config).filter(function(k) {
+          return "key" !== k;
+        });
+        isStaticChildren = 0 < keys.length ? "{key: someKey, " + keys.join(": ..., ") + ": ...}" : "{key: someKey}";
+        didWarnAboutKeySpread[children + isStaticChildren] || (keys = 0 < keys.length ? "{" + keys.join(": ..., ") + ": ...}" : "{}", console.error(
+          'A props object containing a "key" prop is being spread into JSX:\n  let props = %s;\n  <%s {...props} />\nReact keys must be passed directly to JSX without using spread:\n  let props = %s;\n  <%s key={someKey} {...props} />',
+          isStaticChildren,
+          children,
+          keys,
+          children
+        ), didWarnAboutKeySpread[children + isStaticChildren] = true);
+      }
+      children = null;
+      void 0 !== maybeKey && (checkKeyStringCoercion(maybeKey), children = "" + maybeKey);
+      hasValidKey(config) && (checkKeyStringCoercion(config.key), children = "" + config.key);
+      if ("key" in config) {
+        maybeKey = {};
+        for (var propName in config)
+          "key" !== propName && (maybeKey[propName] = config[propName]);
+      } else maybeKey = config;
+      children && defineKeyPropWarningGetter(
+        maybeKey,
+        "function" === typeof type ? type.displayName || type.name || "Unknown" : type
+      );
+      return ReactElement(
+        type,
+        children,
+        self2,
+        source,
+        getOwner(),
+        maybeKey,
+        debugStack,
+        debugTask
+      );
+    }
+    function validateChildKeys(node) {
+      "object" === typeof node && null !== node && node.$$typeof === REACT_ELEMENT_TYPE && node._store && (node._store.validated = 1);
+    }
+    var React2 = React__default, REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler");
+    var REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_ACTIVITY_TYPE = Symbol.for("react.activity"), REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), ReactSharedInternals = React2.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, hasOwnProperty = Object.prototype.hasOwnProperty, isArrayImpl = Array.isArray, createTask = console.createTask ? console.createTask : function() {
+      return null;
+    };
+    React2 = {
+      react_stack_bottom_frame: function(callStackForError) {
+        return callStackForError();
+      }
+    };
+    var specialPropKeyWarningShown;
+    var didWarnAboutElementRef = {};
+    var unknownOwnerDebugStack = React2.react_stack_bottom_frame.bind(
+      React2,
+      UnknownOwner
+    )();
+    var unknownOwnerDebugTask = createTask(getTaskName(UnknownOwner));
+    var didWarnAboutKeySpread = {};
+    reactJsxRuntime_development.Fragment = REACT_FRAGMENT_TYPE;
+    reactJsxRuntime_development.jsx = function(type, config, maybeKey, source, self2) {
+      var trackActualOwner = 1e4 > ReactSharedInternals.recentlyCreatedOwnerStacks++;
+      return jsxDEVImpl(
+        type,
+        config,
+        maybeKey,
+        false,
+        source,
+        self2,
+        trackActualOwner ? Error("react-stack-top-frame") : unknownOwnerDebugStack,
+        trackActualOwner ? createTask(getTaskName(type)) : unknownOwnerDebugTask
+      );
+    };
+    reactJsxRuntime_development.jsxs = function(type, config, maybeKey, source, self2) {
+      var trackActualOwner = 1e4 > ReactSharedInternals.recentlyCreatedOwnerStacks++;
+      return jsxDEVImpl(
+        type,
+        config,
+        maybeKey,
+        true,
+        source,
+        self2,
+        trackActualOwner ? Error("react-stack-top-frame") : unknownOwnerDebugStack,
+        trackActualOwner ? createTask(getTaskName(type)) : unknownOwnerDebugTask
+      );
+    };
+  })();
+  return reactJsxRuntime_development;
+}
+var hasRequiredJsxRuntime;
+function requireJsxRuntime() {
+  if (hasRequiredJsxRuntime) return jsxRuntime.exports;
+  hasRequiredJsxRuntime = 1;
+  if (process.env.NODE_ENV === "production") {
+    jsxRuntime.exports = /* @__PURE__ */ requireReactJsxRuntime_production();
+  } else {
+    jsxRuntime.exports = /* @__PURE__ */ requireReactJsxRuntime_development();
+  }
+  return jsxRuntime.exports;
+}
+var jsxRuntimeExports = /* @__PURE__ */ requireJsxRuntime();
 const WaldiezThemeContext = createContext(void 0);
 const useWaldiezTheme = () => {
   const context = useContext(WaldiezThemeContext);
@@ -4183,7 +6829,7 @@ const WaldiezThemeProvider = ({ children, initialDark }) => {
     });
     return () => observer.disconnect();
   }, [initialDark]);
-  return /* @__PURE__ */ jsx(WaldiezThemeContext.Provider, { value: { isDark, toggleTheme, setTheme }, children });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezThemeContext.Provider, { value: { isDark, toggleTheme, setTheme }, children });
 };
 const INITIAL_AGENT_SIZE = {
   user: {
@@ -7031,26 +9677,322 @@ const getFlowJson = (item) => {
   }
   return flowJson;
 };
-if (typeof Promise.withResolvers === "undefined") {
-  if (typeof window !== "undefined") {
-    window.Promise.withResolvers = function() {
-      let resolve, reject;
-      const promise = new Promise((res, rej) => {
-        resolve = res;
-        reject = rej;
-      });
-      return { promise, resolve, reject };
-    };
-  } else {
-    global.Promise.withResolvers = function() {
-      let resolve, reject;
-      const promise = new Promise((res, rej) => {
-        resolve = res;
-        reject = rej;
-      });
-      return { promise, resolve, reject };
+const ErrorBoundaryContext = createContext(null);
+const initialState$1 = {
+  didCatch: false,
+  error: null
+};
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.resetErrorBoundary = this.resetErrorBoundary.bind(this);
+    this.state = initialState$1;
+  }
+  static getDerivedStateFromError(error) {
+    return {
+      didCatch: true,
+      error
     };
   }
+  resetErrorBoundary() {
+    const {
+      error
+    } = this.state;
+    if (error !== null) {
+      var _this$props$onReset, _this$props;
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+      (_this$props$onReset = (_this$props = this.props).onReset) === null || _this$props$onReset === void 0 ? void 0 : _this$props$onReset.call(_this$props, {
+        args,
+        reason: "imperative-api"
+      });
+      this.setState(initialState$1);
+    }
+  }
+  componentDidCatch(error, info) {
+    var _this$props$onError, _this$props2;
+    (_this$props$onError = (_this$props2 = this.props).onError) === null || _this$props$onError === void 0 ? void 0 : _this$props$onError.call(_this$props2, error, info);
+  }
+  componentDidUpdate(prevProps, prevState) {
+    const {
+      didCatch
+    } = this.state;
+    const {
+      resetKeys
+    } = this.props;
+    if (didCatch && prevState.error !== null && hasArrayChanged(prevProps.resetKeys, resetKeys)) {
+      var _this$props$onReset2, _this$props3;
+      (_this$props$onReset2 = (_this$props3 = this.props).onReset) === null || _this$props$onReset2 === void 0 ? void 0 : _this$props$onReset2.call(_this$props3, {
+        next: resetKeys,
+        prev: prevProps.resetKeys,
+        reason: "keys"
+      });
+      this.setState(initialState$1);
+    }
+  }
+  render() {
+    const {
+      children,
+      fallbackRender: fallbackRender2,
+      FallbackComponent,
+      fallback
+    } = this.props;
+    const {
+      didCatch,
+      error
+    } = this.state;
+    let childToRender = children;
+    if (didCatch) {
+      const props = {
+        error,
+        resetErrorBoundary: this.resetErrorBoundary
+      };
+      if (typeof fallbackRender2 === "function") {
+        childToRender = fallbackRender2(props);
+      } else if (FallbackComponent) {
+        childToRender = createElement(FallbackComponent, props);
+      } else if (fallback !== void 0) {
+        childToRender = fallback;
+      } else {
+        throw error;
+      }
+    }
+    return createElement(ErrorBoundaryContext.Provider, {
+      value: {
+        didCatch,
+        error,
+        resetErrorBoundary: this.resetErrorBoundary
+      }
+    }, childToRender);
+  }
+}
+function hasArrayChanged() {
+  let a = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
+  let b2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : [];
+  return a.length !== b2.length || a.some((item, index2) => !Object.is(item, b2[index2]));
+}
+const G = ["shift", "alt", "meta", "mod", "ctrl", "control"], O = {
+  esc: "escape",
+  return: "enter",
+  left: "arrowleft",
+  right: "arrowright",
+  up: "arrowup",
+  down: "arrowdown",
+  ShiftLeft: "shift",
+  ShiftRight: "shift",
+  AltLeft: "alt",
+  AltRight: "alt",
+  MetaLeft: "meta",
+  MetaRight: "meta",
+  OSLeft: "meta",
+  OSRight: "meta",
+  ControlLeft: "ctrl",
+  ControlRight: "ctrl"
+};
+function S(t) {
+  return (O[t.trim()] || t.trim()).toLowerCase().replace(/key|digit|numpad/, "");
+}
+function J(t) {
+  return G.includes(t);
+}
+function b(t, r = ",") {
+  return t.toLowerCase().split(r);
+}
+function R(t, r = "+", n = ">", f = false, l) {
+  let u = [], c = false;
+  t.includes(n) ? (c = true, u = t.toLocaleLowerCase().split(n).map((i) => S(i))) : u = t.toLocaleLowerCase().split(r).map((i) => S(i));
+  const d = {
+    alt: u.includes("alt"),
+    ctrl: u.includes("ctrl") || u.includes("control"),
+    shift: u.includes("shift"),
+    meta: u.includes("meta"),
+    mod: u.includes("mod"),
+    useKey: f
+  }, a = u.filter((i) => !G.includes(i));
+  return {
+    ...d,
+    keys: a,
+    description: l,
+    isSequence: c
+  };
+}
+typeof document < "u" && (document.addEventListener("keydown", (t) => {
+  t.code !== void 0 && Q([S(t.code)]);
+}), document.addEventListener("keyup", (t) => {
+  t.code !== void 0 && U([S(t.code)]);
+})), typeof window < "u" && (window.addEventListener("blur", () => {
+  E.clear();
+}), window.addEventListener("contextmenu", () => {
+  setTimeout(() => {
+    E.clear();
+  }, 0);
+}));
+const E = /* @__PURE__ */ new Set();
+function B(t) {
+  return Array.isArray(t);
+}
+function ee(t, r = ",") {
+  return (B(t) ? t : t.split(r)).every((f) => E.has(f.trim().toLowerCase()));
+}
+function Q(t) {
+  const r = Array.isArray(t) ? t : [t];
+  E.has("meta") && E.forEach((n) => !J(n) && E.delete(n.toLowerCase())), r.forEach((n) => E.add(n.toLowerCase()));
+}
+function U(t) {
+  const r = Array.isArray(t) ? t : [t];
+  t === "meta" ? E.clear() : r.forEach((n) => E.delete(n.toLowerCase()));
+}
+function te(t, r, n) {
+  (typeof n == "function" && n(t, r) || n === true) && t.preventDefault();
+}
+function re(t, r, n) {
+  return typeof n == "function" ? n(t, r) : n === true || n === void 0;
+}
+function ne(t) {
+  return V(t, ["input", "textarea", "select"]);
+}
+function V(t, r = false) {
+  const { target: n, composed: f } = t;
+  let l;
+  return ce(n) && f ? l = t.composedPath()[0] && t.composedPath()[0].tagName : l = n && n.tagName, B(r) ? !!(l && r && r.some((u) => u.toLowerCase() === l.toLowerCase())) : !!(l && r && r);
+}
+function ce(t) {
+  return !!t.tagName && !t.tagName.startsWith("-") && t.tagName.includes("-");
+}
+function ue(t, r) {
+  return t.length === 0 && r ? (console.warn(
+    'A hotkey has the "scopes" option set, however no active scopes were found. If you want to use the global scopes feature, you need to wrap your app in a <HotkeysProvider>'
+  ), true) : r ? t.some((n) => r.includes(n)) || t.includes("*") : true;
+}
+const oe = (t, r, n = false) => {
+  const { alt: f, meta: l, mod: u, shift: c, ctrl: d, keys: a, useKey: i } = r, { code: w, key: e, ctrlKey: s, metaKey: y, shiftKey: k, altKey: K } = t, h = S(w);
+  if (i && (a == null ? void 0 : a.length) === 1 && a.includes(e))
+    return true;
+  if (!(a != null && a.includes(h)) && !["ctrl", "control", "unknown", "meta", "alt", "shift", "os"].includes(h))
+    return false;
+  if (!n) {
+    if (f !== K && h !== "alt" || c !== k && h !== "shift")
+      return false;
+    if (u) {
+      if (!y && !s)
+        return false;
+    } else if (l !== y && h !== "meta" && h !== "os" || d !== s && h !== "ctrl" && h !== "control")
+      return false;
+  }
+  return a && a.length === 1 && a.includes(h) ? true : a ? ee(a) : !a;
+}, X = createContext(void 0), ae = () => useContext(X);
+function fe({ addHotkey: t, removeHotkey: r, children: n }) {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(X.Provider, { value: { addHotkey: t, removeHotkey: r }, children: n });
+}
+function N(t, r) {
+  return t && r && typeof t == "object" && typeof r == "object" ? Object.keys(t).length === Object.keys(r).length && // @ts-expect-error TS7053
+  Object.keys(t).reduce((n, f) => n && N(t[f], r[f]), true) : t === r;
+}
+const Y = createContext({
+  hotkeys: [],
+  activeScopes: [],
+  // This array has to be empty instead of containing '*' as default, to check if the provider is set or not
+  toggleScope: () => {
+  },
+  enableScope: () => {
+  },
+  disableScope: () => {
+  }
+}), le = () => useContext(Y), he = ({ initiallyActiveScopes: t = ["*"], children: r }) => {
+  const [n, f] = useState(t), [l, u] = useState([]), c = useCallback((e) => {
+    f((s) => s.includes("*") ? [e] : Array.from(/* @__PURE__ */ new Set([...s, e])));
+  }, []), d = useCallback((e) => {
+    f((s) => s.filter((y) => y !== e));
+  }, []), a = useCallback((e) => {
+    f((s) => s.includes(e) ? s.filter((y) => y !== e) : s.includes("*") ? [e] : Array.from(/* @__PURE__ */ new Set([...s, e])));
+  }, []), i = useCallback((e) => {
+    u((s) => [...s, e]);
+  }, []), w = useCallback((e) => {
+    u((s) => s.filter((y) => !N(y, e)));
+  }, []);
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    Y.Provider,
+    {
+      value: { activeScopes: n, hotkeys: l, enableScope: c, disableScope: d, toggleScope: a },
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(fe, { addHotkey: i, removeHotkey: w, children: r })
+    }
+  );
+};
+function se(t) {
+  const r = useRef(void 0);
+  return N(r.current, t) || (r.current = t), r.current;
+}
+const F = (t) => {
+  t.stopPropagation(), t.preventDefault(), t.stopImmediatePropagation();
+}, ie = typeof window < "u" ? useLayoutEffect : useEffect;
+function we(t, r, n, f) {
+  const l = useRef(null), u = useRef(false), c = n instanceof Array ? f instanceof Array ? void 0 : f : n, d = B(t) ? t.join(c == null ? void 0 : c.delimiter) : t, a = n instanceof Array ? n : f instanceof Array ? f : void 0, i = useCallback(r, a ?? []), w = useRef(i);
+  a ? w.current = i : w.current = r;
+  const e = se(c), { activeScopes: s } = le(), y = ae();
+  return ie(() => {
+    if ((e == null ? void 0 : e.enabled) === false || !ue(s, e == null ? void 0 : e.scopes))
+      return;
+    let k = [], K;
+    const h = (o, M = false) => {
+      var j;
+      if (!(ne(o) && !V(o, e == null ? void 0 : e.enableOnFormTags))) {
+        if (l.current !== null) {
+          const L = l.current.getRootNode();
+          if ((L instanceof Document || L instanceof ShadowRoot) && L.activeElement !== l.current && !l.current.contains(L.activeElement)) {
+            F(o);
+            return;
+          }
+        }
+        (j = o.target) != null && j.isContentEditable && !(e != null && e.enableOnContentEditable) || b(d, e == null ? void 0 : e.delimiter).forEach((L) => {
+          var D, I, p, $;
+          if (L.includes((e == null ? void 0 : e.splitKey) ?? "+") && L.includes((e == null ? void 0 : e.sequenceSplitKey) ?? ">")) {
+            console.warn(`Hotkey ${L} contains both ${(e == null ? void 0 : e.splitKey) ?? "+"} and ${(e == null ? void 0 : e.sequenceSplitKey) ?? ">"} which is not supported.`);
+            return;
+          }
+          const g = R(L, e == null ? void 0 : e.splitKey, e == null ? void 0 : e.sequenceSplitKey, e == null ? void 0 : e.useKey, e == null ? void 0 : e.description);
+          if (g.isSequence) {
+            K = setTimeout(() => {
+              k = [];
+            }, (e == null ? void 0 : e.sequenceTimeoutMs) ?? 1e3);
+            const P = g.useKey ? o.key : S(o.code);
+            if (J(P.toLowerCase()))
+              return;
+            k.push(P);
+            const Z = (D = g.keys) == null ? void 0 : D[k.length - 1];
+            if (P !== Z) {
+              k = [], K && clearTimeout(K);
+              return;
+            }
+            k.length === ((I = g.keys) == null ? void 0 : I.length) && (w.current(o, g), K && clearTimeout(K), k = []);
+          } else if (oe(o, g, e == null ? void 0 : e.ignoreModifiers) || (p = g.keys) != null && p.includes("*")) {
+            if (($ = e == null ? void 0 : e.ignoreEventWhen) != null && $.call(e, o) || M && u.current)
+              return;
+            if (te(o, g, e == null ? void 0 : e.preventDefault), !re(o, g, e == null ? void 0 : e.enabled)) {
+              F(o);
+              return;
+            }
+            w.current(o, g), M || (u.current = true);
+          }
+        });
+      }
+    }, T = (o) => {
+      o.code !== void 0 && (Q(S(o.code)), ((e == null ? void 0 : e.keydown) === void 0 && (e == null ? void 0 : e.keyup) !== true || e != null && e.keydown) && h(o));
+    }, x = (o) => {
+      o.code !== void 0 && (U(S(o.code)), u.current = false, e != null && e.keyup && h(o, true));
+    }, C = l.current || (c == null ? void 0 : c.document) || document;
+    return C.addEventListener("keyup", x, c == null ? void 0 : c.eventListenerOptions), C.addEventListener("keydown", T, c == null ? void 0 : c.eventListenerOptions), y && b(d, e == null ? void 0 : e.delimiter).forEach(
+      (o) => y.addHotkey(
+        R(o, e == null ? void 0 : e.splitKey, e == null ? void 0 : e.sequenceSplitKey, e == null ? void 0 : e.useKey, e == null ? void 0 : e.description)
+      )
+    ), () => {
+      C.removeEventListener("keyup", x, c == null ? void 0 : c.eventListenerOptions), C.removeEventListener("keydown", T, c == null ? void 0 : c.eventListenerOptions), y && b(d, e == null ? void 0 : e.delimiter).forEach(
+        (o) => y.removeHotkey(
+          R(o, e == null ? void 0 : e.splitKey, e == null ? void 0 : e.sequenceSplitKey, e == null ? void 0 : e.useKey, e == null ? void 0 : e.description)
+        )
+      ), k = [], K && clearTimeout(K);
+    };
+  }, [d, e, s]), l;
 }
 const botVariants = [
   {
@@ -7093,8 +10035,8 @@ const bots = [
   { src: AGENT_ICONS.user_proxy, alt: "User Waldiez" }
 ];
 const ErrorPage = ({ error }) => {
-  return /* @__PURE__ */ jsxs("div", { className: "waldiez-error-container", "data-testid": "error-boundary", children: [
-    /* @__PURE__ */ jsx("div", { className: "waldiez-bots-row", children: bots.map((bot, idx) => /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "waldiez-error-container", "data-testid": "error-boundary", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "waldiez-bots-row", children: bots.map((bot, idx) => /* @__PURE__ */ jsxRuntimeExports.jsx(
       motion.img,
       {
         src: bot.src,
@@ -7106,7 +10048,7 @@ const ErrorPage = ({ error }) => {
       },
       bot.alt
     )) }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       motion.div,
       {
         className: "waldiez-error-sign",
@@ -7121,10 +10063,10 @@ const ErrorPage = ({ error }) => {
           duration: 1.2,
           delay: 0.5
         },
-        children: /* @__PURE__ */ jsx("span", { children: "🚨 ERROR" })
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "🚨 ERROR" })
       }
     ),
-    /* @__PURE__ */ jsxs(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
       motion.div,
       {
         className: "waldiez-error-message",
@@ -7132,9 +10074,9 @@ const ErrorPage = ({ error }) => {
         animate: { opacity: 1, y: 0 },
         transition: { delay: 1.3 },
         children: [
-          /* @__PURE__ */ jsx("div", { className: "waldiez-error-title", children: "Oops, something went wrong!" }),
-          /* @__PURE__ */ jsx("div", { className: "waldiez-error-desc", children: "The Waldiez team is on the case. Please wait while we investigate..." }),
-          /* @__PURE__ */ jsx("div", { className: "waldiez-refresh-btn-container", children: /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "waldiez-error-title", children: "Oops, something went wrong!" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "waldiez-error-desc", children: "The Waldiez team is on the case. Please wait while we investigate..." }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "waldiez-refresh-btn-container", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               onClick: () => window.location.reload(),
@@ -7145,11 +10087,11 @@ const ErrorPage = ({ error }) => {
               children: "Refresh Page"
             }
           ) }),
-          error && /* @__PURE__ */ jsxs("div", { className: "waldiez-error-details", children: [
-            /* @__PURE__ */ jsx("strong", { children: "Error:" }),
+          error && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "waldiez-error-details", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Error:" }),
             " ",
             error.message,
-            error.stack && /* @__PURE__ */ jsx("pre", { children: error.stack })
+            error.stack && /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { children: error.stack })
           ] })
         ]
       }
@@ -7227,7 +10169,7 @@ const Snackbar = ({
   };
   const showDetails = details && !(typeof details === "string" && details.length <= 50);
   return createPortal(
-    /* @__PURE__ */ jsxs(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
         className: `snackbar show ${level} ${details ? "with-details" : ""}`,
@@ -7236,12 +10178,12 @@ const Snackbar = ({
         id: `${flowId}-snackbar`,
         "data-testid": "snackbar",
         children: [
-          /* @__PURE__ */ jsx("div", { className: "message", "data-testid": "snackbar-message", children: message }),
-          details && (!showDetails ? /* @__PURE__ */ jsx("span", { className: "details-content", "data-testid": "snackbar-details", children: details }) : /* @__PURE__ */ jsxs("details", { children: [
-            /* @__PURE__ */ jsx("summary", { children: "Details" }),
-            /* @__PURE__ */ jsx("div", { className: "details-content", "data-testid": "snackbar-details", children: getErrorMessage(details) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "message", "data-testid": "snackbar-message", children: message }),
+          details && (!showDetails ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "details-content", "data-testid": "snackbar-details", children: details }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("details", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("summary", { children: "Details" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "details-content", "data-testid": "snackbar-details", children: getErrorMessage(details) })
           ] })),
-          withCloseButton && /* @__PURE__ */ jsx(
+          withCloseButton && /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               className: "close",
@@ -7310,10 +10252,10 @@ const SnackbarProvider = ({ children }) => {
       timeouts.current = {};
     };
   }, [active, handleClose]);
-  return /* @__PURE__ */ jsxs(SnackbarContext.Provider, { value: { enqueueSnackbar }, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(SnackbarContext.Provider, { value: { enqueueSnackbar }, children: [
     children,
     Object.entries(active).map(
-      ([flowId, snackbar]) => snackbar ? /* @__PURE__ */ jsx(Snackbar, { ...snackbar, onClose: () => handleClose(flowId) }, snackbar.id) : null
+      ([flowId, snackbar]) => snackbar ? /* @__PURE__ */ jsxRuntimeExports.jsx(Snackbar, { ...snackbar, onClose: () => handleClose(flowId) }, snackbar.id) : null
     )
   ] });
 };
@@ -7369,7 +10311,7 @@ function createContextScope(scopeName, createContextScopeDeps = []) {
       const { scope, children, ...context } = props;
       const Context = scope?.[scopeName]?.[index2] || BaseContext;
       const value = React.useMemo(() => context, Object.values(context));
-      return /* @__PURE__ */ jsx(Context.Provider, { value, children });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
     };
     Provider2.displayName = rootComponentName + "Provider";
     function useContext2(consumerName, scope) {
@@ -7433,9 +10375,9 @@ function createSlot(ownerName) {
           return child;
         }
       });
-      return /* @__PURE__ */ jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: React.isValidElement(newElement) ? React.cloneElement(newElement, void 0, newChildren) : null });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: React.isValidElement(newElement) ? React.cloneElement(newElement, void 0, newChildren) : null });
     }
-    return /* @__PURE__ */ jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
   });
   Slot2.displayName = `${ownerName}.Slot`;
   return Slot2;
@@ -7461,7 +10403,7 @@ var SLOTTABLE_IDENTIFIER = Symbol("radix.slottable");
 // @__NO_SIDE_EFFECTS__
 function createSlottable(ownerName) {
   const Slottable2 = ({ children }) => {
-    return /* @__PURE__ */ jsx(Fragment, { children });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
   };
   Slottable2.displayName = `${ownerName}.Slottable`;
   Slottable2.__radixId = SLOTTABLE_IDENTIFIER;
@@ -7534,7 +10476,7 @@ var Primitive = NODES.reduce((primitive, node) => {
     if (typeof window !== "undefined") {
       window[Symbol.for("radix-ui")] = true;
     }
-    return /* @__PURE__ */ jsx(Comp, { ...primitiveProps, ref: forwardedRef });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
   });
   Node2.displayName = `Primitive.${node}`;
   return { ...primitive, [node]: Node2 };
@@ -7648,7 +10590,7 @@ var DismissableLayer = React.forwardRef(
       document.addEventListener(CONTEXT_UPDATE, handleUpdate);
       return () => document.removeEventListener(CONTEXT_UPDATE, handleUpdate);
     }, []);
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       Primitive.div,
       {
         ...layerProps,
@@ -7682,7 +10624,7 @@ var DismissableLayerBranch = React.forwardRef((props, forwardedRef) => {
       };
     }
   }, [context.branches]);
-  return /* @__PURE__ */ jsx(Primitive.div, { ...props, ref: composedRefs });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive.div, { ...props, ref: composedRefs });
 });
 DismissableLayerBranch.displayName = BRANCH_NAME;
 function usePointerDownOutside(onPointerDownOutside, ownerDocument = globalThis?.document) {
@@ -8232,7 +11174,7 @@ const flip$2 = function(options) {
             };
           }
         }
-        let resetPlacement = (_overflowsData$filter = overflowsData.filter((d) => d.overflows[0] <= 0).sort((a, b) => a.overflows[1] - b.overflows[1])[0]) == null ? void 0 : _overflowsData$filter.placement;
+        let resetPlacement = (_overflowsData$filter = overflowsData.filter((d) => d.overflows[0] <= 0).sort((a, b2) => a.overflows[1] - b2.overflows[1])[0]) == null ? void 0 : _overflowsData$filter.placement;
         if (!resetPlacement) {
           switch (fallbackStrategy) {
             case "bestFit": {
@@ -8245,7 +11187,7 @@ const flip$2 = function(options) {
                   currentSideAxis === "y";
                 }
                 return true;
-              }).map((d) => [d.placement, d.overflows.filter((overflow2) => overflow2 > 0).reduce((acc, overflow2) => acc + overflow2, 0)]).sort((a, b) => a[1] - b[1])[0]) == null ? void 0 : _overflowsData$filter2[0];
+              }).map((d) => [d.placement, d.overflows.filter((overflow2) => overflow2 > 0).reduce((acc, overflow2) => acc + overflow2, 0)]).sort((a, b2) => a[1] - b2[1])[0]) == null ? void 0 : _overflowsData$filter2[0];
               if (placement2) {
                 resetPlacement = placement2;
               }
@@ -9204,8 +12146,8 @@ const platform = {
   isElement,
   isRTL
 };
-function rectsAreEqual(a, b) {
-  return a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+function rectsAreEqual(a, b2) {
+  return a.x === b2.x && a.y === b2.y && a.width === b2.width && a.height === b2.height;
 }
 function observeMove(element, onMove) {
   let io = null;
@@ -9375,25 +12317,25 @@ var isClient = typeof document !== "undefined";
 var noop = function noop2() {
 };
 var index = isClient ? useLayoutEffect : noop;
-function deepEqual(a, b) {
-  if (a === b) {
+function deepEqual(a, b2) {
+  if (a === b2) {
     return true;
   }
-  if (typeof a !== typeof b) {
+  if (typeof a !== typeof b2) {
     return false;
   }
-  if (typeof a === "function" && a.toString() === b.toString()) {
+  if (typeof a === "function" && a.toString() === b2.toString()) {
     return true;
   }
   let length;
   let i;
   let keys;
-  if (a && b && typeof a === "object") {
+  if (a && b2 && typeof a === "object") {
     if (Array.isArray(a)) {
       length = a.length;
-      if (length !== b.length) return false;
+      if (length !== b2.length) return false;
       for (i = length; i-- !== 0; ) {
-        if (!deepEqual(a[i], b[i])) {
+        if (!deepEqual(a[i], b2[i])) {
           return false;
         }
       }
@@ -9401,11 +12343,11 @@ function deepEqual(a, b) {
     }
     keys = Object.keys(a);
     length = keys.length;
-    if (length !== Object.keys(b).length) {
+    if (length !== Object.keys(b2).length) {
       return false;
     }
     for (i = length; i-- !== 0; ) {
-      if (!{}.hasOwnProperty.call(b, keys[i])) {
+      if (!{}.hasOwnProperty.call(b2, keys[i])) {
         return false;
       }
     }
@@ -9414,13 +12356,13 @@ function deepEqual(a, b) {
       if (key === "_owner" && a.$$typeof) {
         continue;
       }
-      if (!deepEqual(a[key], b[key])) {
+      if (!deepEqual(a[key], b2[key])) {
         return false;
       }
     }
     return true;
   }
-  return a !== a && b !== b;
+  return a !== a && b2 !== b2;
 }
 function getDPR(element) {
   if (typeof window === "undefined") {
@@ -9653,7 +12595,7 @@ const arrow = (options, deps) => ({
 var NAME$1 = "Arrow";
 var Arrow$1 = React.forwardRef((props, forwardedRef) => {
   const { children, width = 10, height = 5, ...arrowProps } = props;
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     Primitive.svg,
     {
       ...arrowProps,
@@ -9662,7 +12604,7 @@ var Arrow$1 = React.forwardRef((props, forwardedRef) => {
       height,
       viewBox: "0 0 30 10",
       preserveAspectRatio: "none",
-      children: props.asChild ? children : /* @__PURE__ */ jsx("polygon", { points: "0,0 30,0 15,10" })
+      children: props.asChild ? children : /* @__PURE__ */ jsxRuntimeExports.jsx("polygon", { points: "0,0 30,0 15,10" })
     }
   );
 });
@@ -9708,7 +12650,7 @@ var [PopperProvider, usePopperContext] = createPopperContext(POPPER_NAME);
 var Popper = (props) => {
   const { __scopePopper, children } = props;
   const [anchor, setAnchor] = React.useState(null);
-  return /* @__PURE__ */ jsx(PopperProvider, { scope: __scopePopper, anchor, onAnchorChange: setAnchor, children });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(PopperProvider, { scope: __scopePopper, anchor, onAnchorChange: setAnchor, children });
 };
 Popper.displayName = POPPER_NAME;
 var ANCHOR_NAME = "PopperAnchor";
@@ -9726,7 +12668,7 @@ var PopperAnchor = React.forwardRef(
         context.onAnchorChange(anchorRef.current);
       }
     });
-    return virtualRef ? null : /* @__PURE__ */ jsx(Primitive.div, { ...anchorProps, ref: composedRefs });
+    return virtualRef ? null : /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive.div, { ...anchorProps, ref: composedRefs });
   }
 );
 PopperAnchor.displayName = ANCHOR_NAME;
@@ -9819,7 +12761,7 @@ var PopperContent = React.forwardRef(
     useLayoutEffect2(() => {
       if (content) setContentZIndex(window.getComputedStyle(content).zIndex);
     }, [content]);
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       "div",
       {
         ref: refs.setFloating,
@@ -9843,7 +12785,7 @@ var PopperContent = React.forwardRef(
           }
         },
         dir: props.dir,
-        children: /* @__PURE__ */ jsx(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           PopperContentProvider,
           {
             scope: __scopePopper,
@@ -9852,7 +12794,7 @@ var PopperContent = React.forwardRef(
             arrowX,
             arrowY,
             shouldHideArrow: cannotCenterArrow,
-            children: /* @__PURE__ */ jsx(
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(
               Primitive.div,
               {
                 "data-side": placedSide,
@@ -9889,7 +12831,7 @@ var PopperArrow = React.forwardRef(function PopperArrow2(props, forwardedRef) {
     // we have to use an extra wrapper because `ResizeObserver` (used by `useSize`)
     // doesn't report size as we'd expect on SVG elements.
     // it reports their bounding box which is effectively the largest path inside the SVG.
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       "span",
       {
         ref: contentContext.onArrowChange,
@@ -9912,7 +12854,7 @@ var PopperArrow = React.forwardRef(function PopperArrow2(props, forwardedRef) {
           }[contentContext.placedSide],
           visibility: contentContext.shouldHideArrow ? "hidden" : void 0
         },
-        children: /* @__PURE__ */ jsx(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           Root$2,
           {
             ...arrowProps,
@@ -9977,7 +12919,7 @@ var Portal$1 = React.forwardRef((props, forwardedRef) => {
   const [mounted, setMounted] = React.useState(false);
   useLayoutEffect2(() => setMounted(true), []);
   const container = containerProp || mounted && globalThis?.document?.body;
-  return container ? ReactDOM__default.createPortal(/* @__PURE__ */ jsx(Primitive.div, { ...portalProps, ref: forwardedRef }), container) : null;
+  return container ? ReactDOM__default.createPortal(/* @__PURE__ */ jsxRuntimeExports.jsx(Primitive.div, { ...portalProps, ref: forwardedRef }), container) : null;
 });
 Portal$1.displayName = PORTAL_NAME$1;
 function useStateMachine(initialState2, machine) {
@@ -10182,7 +13124,7 @@ var VISUALLY_HIDDEN_STYLES = Object.freeze({
 var NAME = "VisuallyHidden";
 var VisuallyHidden = React.forwardRef(
   (props, forwardedRef) => {
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       Primitive.span,
       {
         ...props,
@@ -10217,7 +13159,7 @@ var TooltipProvider = (props) => {
     const skipDelayTimer = skipDelayTimerRef.current;
     return () => window.clearTimeout(skipDelayTimer);
   }, []);
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     TooltipProviderContextProvider,
     {
       scope: __scopeTooltip,
@@ -10308,7 +13250,7 @@ var Tooltip = (props) => {
       }
     };
   }, []);
-  return /* @__PURE__ */ jsx(Root2, { ...popperScope, children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(Root2, { ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
     TooltipContextProvider,
     {
       scope: __scopeTooltip,
@@ -10352,7 +13294,7 @@ var TooltipTrigger = React.forwardRef(
     React.useEffect(() => {
       return () => document.removeEventListener("pointerup", handlePointerUp);
     }, [handlePointerUp]);
-    return /* @__PURE__ */ jsx(Anchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       Primitive.button,
       {
         "aria-describedby": context.open ? context.contentId : void 0,
@@ -10394,7 +13336,7 @@ var [PortalProvider, usePortalContext] = createTooltipContext(PORTAL_NAME, {
 var TooltipPortal = (props) => {
   const { __scopeTooltip, forceMount, children, container } = props;
   const context = useTooltipContext(PORTAL_NAME, __scopeTooltip);
-  return /* @__PURE__ */ jsx(PortalProvider, { scope: __scopeTooltip, forceMount, children: /* @__PURE__ */ jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsx(Portal$1, { asChild: true, container, children }) }) });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider, { scope: __scopeTooltip, forceMount, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { asChild: true, container, children }) }) });
 };
 TooltipPortal.displayName = PORTAL_NAME;
 var CONTENT_NAME = "TooltipContent";
@@ -10403,7 +13345,7 @@ var TooltipContent = React.forwardRef(
     const portalContext = usePortalContext(CONTENT_NAME, props.__scopeTooltip);
     const { forceMount = portalContext.forceMount, side = "top", ...contentProps } = props;
     const context = useTooltipContext(CONTENT_NAME, props.__scopeTooltip);
-    return /* @__PURE__ */ jsx(Presence, { present: forceMount || context.open, children: context.disableHoverableContent ? /* @__PURE__ */ jsx(TooltipContentImpl, { side, ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ jsx(TooltipContentHoverable, { side, ...contentProps, ref: forwardedRef }) });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: context.disableHoverableContent ? /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentImpl, { side, ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentHoverable, { side, ...contentProps, ref: forwardedRef }) });
   }
 );
 var TooltipContentHoverable = React.forwardRef((props, forwardedRef) => {
@@ -10465,7 +13407,7 @@ var TooltipContentHoverable = React.forwardRef((props, forwardedRef) => {
       return () => document.removeEventListener("pointermove", handleTrackPointerGrace);
     }
   }, [trigger, content, pointerGraceArea, onClose, handleRemoveGraceArea]);
-  return /* @__PURE__ */ jsx(TooltipContentImpl, { ...props, ref: composedRefs });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentImpl, { ...props, ref: composedRefs });
 });
 var [VisuallyHiddenContentContextProvider, useVisuallyHiddenContentContext] = createTooltipContext(TOOLTIP_NAME, { isInside: false });
 var Slottable = /* @__PURE__ */ createSlottable("TooltipContent");
@@ -10496,7 +13438,7 @@ var TooltipContentImpl = React.forwardRef(
         return () => window.removeEventListener("scroll", handleScroll, { capture: true });
       }
     }, [context.trigger, onClose]);
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       DismissableLayer,
       {
         asChild: true,
@@ -10505,7 +13447,7 @@ var TooltipContentImpl = React.forwardRef(
         onPointerDownOutside,
         onFocusOutside: (event) => event.preventDefault(),
         onDismiss: onClose,
-        children: /* @__PURE__ */ jsxs(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
           Content,
           {
             "data-state": context.stateAttribute,
@@ -10524,8 +13466,8 @@ var TooltipContentImpl = React.forwardRef(
               }
             },
             children: [
-              /* @__PURE__ */ jsx(Slottable, { children }),
-              /* @__PURE__ */ jsx(VisuallyHiddenContentContextProvider, { scope: __scopeTooltip, isInside: true, children: /* @__PURE__ */ jsx(Root$1, { id: context.contentId, role: "tooltip", children: ariaLabel || children }) })
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Slottable, { children }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(VisuallyHiddenContentContextProvider, { scope: __scopeTooltip, isInside: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Root$1, { id: context.contentId, role: "tooltip", children: ariaLabel || children }) })
             ]
           }
         )
@@ -10543,7 +13485,7 @@ var TooltipArrow = React.forwardRef(
       ARROW_NAME,
       __scopeTooltip
     );
-    return visuallyHiddenContentContext.isInside ? null : /* @__PURE__ */ jsx(Arrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
+    return visuallyHiddenContentContext.isInside ? null : /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
   }
 );
 TooltipArrow.displayName = ARROW_NAME;
@@ -10621,11 +13563,11 @@ function isPointInPolygon(point, polygon) {
 }
 function getHull(points) {
   const newPoints = points.slice();
-  newPoints.sort((a, b) => {
-    if (a.x < b.x) return -1;
-    else if (a.x > b.x) return 1;
-    else if (a.y < b.y) return -1;
-    else if (a.y > b.y) return 1;
+  newPoints.sort((a, b2) => {
+    if (a.x < b2.x) return -1;
+    else if (a.x > b2.x) return 1;
+    else if (a.y < b2.y) return -1;
+    else if (a.y > b2.y) return 1;
     else return 0;
   });
   return getHullPresorted(newPoints);
@@ -10668,6 +13610,193 @@ var Trigger = TooltipTrigger;
 var Portal = TooltipPortal;
 var Content2 = TooltipContent;
 var Arrow2 = TooltipArrow;
+var DefaultContext = {
+  color: void 0,
+  size: void 0,
+  className: void 0,
+  style: void 0,
+  attr: void 0
+};
+var IconContext = React__default.createContext && /* @__PURE__ */ React__default.createContext(DefaultContext);
+var _excluded = ["attr", "size", "title"];
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+  var key, i;
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  for (var key in source) {
+    if (Object.prototype.hasOwnProperty.call(source, key)) {
+      if (excluded.indexOf(key) >= 0) continue;
+      target[key] = source[key];
+    }
+  }
+  return target;
+}
+function _extends() {
+  _extends = Object.assign ? Object.assign.bind() : function(target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  };
+  return _extends.apply(this, arguments);
+}
+function ownKeys(e, r) {
+  var t = Object.keys(e);
+  if (Object.getOwnPropertySymbols) {
+    var o = Object.getOwnPropertySymbols(e);
+    r && (o = o.filter(function(r2) {
+      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
+    })), t.push.apply(t, o);
+  }
+  return t;
+}
+function _objectSpread(e) {
+  for (var r = 1; r < arguments.length; r++) {
+    var t = null != arguments[r] ? arguments[r] : {};
+    r % 2 ? ownKeys(Object(t), true).forEach(function(r2) {
+      _defineProperty(e, r2, t[r2]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function(r2) {
+      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
+    });
+  }
+  return e;
+}
+function _defineProperty(obj, key, value) {
+  key = _toPropertyKey(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+function _toPropertyKey(t) {
+  var i = _toPrimitive(t, "string");
+  return "symbol" == typeof i ? i : i + "";
+}
+function _toPrimitive(t, r) {
+  if ("object" != typeof t || !t) return t;
+  var e = t[Symbol.toPrimitive];
+  if (void 0 !== e) {
+    var i = e.call(t, r);
+    if ("object" != typeof i) return i;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return ("string" === r ? String : Number)(t);
+}
+function Tree2Element(tree) {
+  return tree && tree.map((node, i) => /* @__PURE__ */ React__default.createElement(node.tag, _objectSpread({
+    key: i
+  }, node.attr), Tree2Element(node.child)));
+}
+function GenIcon(data) {
+  return (props) => /* @__PURE__ */ React__default.createElement(IconBase, _extends({
+    attr: _objectSpread({}, data.attr)
+  }, props), Tree2Element(data.child));
+}
+function IconBase(props) {
+  var elem = (conf) => {
+    var {
+      attr,
+      size: size2,
+      title
+    } = props, svgProps = _objectWithoutProperties(props, _excluded);
+    var computedSize = size2 || conf.size || "1em";
+    var className;
+    if (conf.className) className = conf.className;
+    if (props.className) className = (className ? className + " " : "") + props.className;
+    return /* @__PURE__ */ React__default.createElement("svg", _extends({
+      stroke: "currentColor",
+      fill: "currentColor",
+      strokeWidth: "0"
+    }, conf.attr, attr, svgProps, {
+      className,
+      style: _objectSpread(_objectSpread({
+        color: props.color || conf.color
+      }, conf.style), props.style),
+      height: computedSize,
+      width: computedSize,
+      xmlns: "http://www.w3.org/2000/svg"
+    }), title && /* @__PURE__ */ React__default.createElement("title", null, title), props.children);
+  };
+  return IconContext !== void 0 ? /* @__PURE__ */ React__default.createElement(IconContext.Consumer, null, (conf) => elem(conf)) : elem(DefaultContext);
+}
+function FaCircle(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z" }, "child": [] }] })(props);
+}
+function FaCloudUploadAlt(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 640 512" }, "child": [{ "tag": "path", "attr": { "d": "M537.6 226.6c4.1-10.7 6.4-22.4 6.4-34.6 0-53-43-96-96-96-19.7 0-38.1 6-53.3 16.2C367 64.2 315.3 32 256 32c-88.4 0-160 71.6-160 160 0 2.7.1 5.4.2 8.1C40.2 219.8 0 273.2 0 336c0 79.5 64.5 144 144 144h368c70.7 0 128-57.3 128-128 0-61.9-44-113.6-102.4-125.4zM393.4 288H328v112c0 8.8-7.2 16-16 16h-48c-8.8 0-16-7.2-16-16V288h-65.4c-14.3 0-21.4-17.2-11.3-27.3l105.4-105.4c6.2-6.2 16.4-6.2 22.6 0l105.4 105.4c10.1 10.1 2.9 27.3-11.3 27.3z" }, "child": [] }] })(props);
+}
+function FaCog(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z" }, "child": [] }] })(props);
+}
+function FaCommentDots(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32zM128 272c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm128 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm128 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32z" }, "child": [] }] })(props);
+}
+function FaCopy$1(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M320 448v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V120c0-13.255 10.745-24 24-24h72v296c0 30.879 25.121 56 56 56h168zm0-344V0H152c-13.255 0-24 10.745-24 24v368c0 13.255 10.745 24 24 24h272c13.255 0 24-10.745 24-24V128H344c-13.2 0-24-10.8-24-24zm120.971-31.029L375.029 7.029A24 24 0 0 0 358.059 0H352v96h96v-6.059a24 24 0 0 0-7.029-16.97z" }, "child": [] }] })(props);
+}
+function FaEdit(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 576 512" }, "child": [{ "tag": "path", "attr": { "d": "M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z" }, "child": [] }] })(props);
+}
+function FaEyeSlash(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 640 512" }, "child": [{ "tag": "path", "attr": { "d": "M320 400c-75.85 0-137.25-58.71-142.9-133.11L72.2 185.82c-13.79 17.3-26.48 35.59-36.72 55.59a32.35 32.35 0 0 0 0 29.19C89.71 376.41 197.07 448 320 448c26.91 0 52.87-4 77.89-10.46L346 397.39a144.13 144.13 0 0 1-26 2.61zm313.82 58.1l-110.55-85.44a331.25 331.25 0 0 0 81.25-102.07 32.35 32.35 0 0 0 0-29.19C550.29 135.59 442.93 64 320 64a308.15 308.15 0 0 0-147.32 37.7L45.46 3.37A16 16 0 0 0 23 6.18L3.37 31.45A16 16 0 0 0 6.18 53.9l588.36 454.73a16 16 0 0 0 22.46-2.81l19.64-25.27a16 16 0 0 0-2.82-22.45zm-183.72-142l-39.3-30.38A94.75 94.75 0 0 0 416 256a94.76 94.76 0 0 0-121.31-92.21A47.65 47.65 0 0 1 304 192a46.64 46.64 0 0 1-1.54 10l-73.61-56.89A142.31 142.31 0 0 1 320 112a143.92 143.92 0 0 1 144 144c0 21.63-5.29 41.79-13.9 60.11z" }, "child": [] }] })(props);
+}
+function FaEye(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 576 512" }, "child": [{ "tag": "path", "attr": { "d": "M572.52 241.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400a144 144 0 1 1 144-144 143.93 143.93 0 0 1-144 144zm0-240a95.31 95.31 0 0 0-25.31 3.79 47.85 47.85 0 0 1-66.9 66.9A95.78 95.78 0 1 0 288 160z" }, "child": [] }] })(props);
+}
+function FaFileExport(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 576 512" }, "child": [{ "tag": "path", "attr": { "d": "M384 121.9c0-6.3-2.5-12.4-7-16.9L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128zM571 308l-95.7-96.4c-10.1-10.1-27.4-3-27.4 11.3V288h-64v64h64v65.2c0 14.3 17.3 21.4 27.4 11.3L571 332c6.6-6.6 6.6-17.4 0-24zm-379 28v-32c0-8.8 7.2-16 16-16h176V160H248c-13.2 0-24-10.8-24-24V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V352H208c-8.8 0-16-7.2-16-16z" }, "child": [] }] })(props);
+}
+function FaFileImport$1(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M16 288c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h112v-64zm489-183L407.1 7c-4.5-4.5-10.6-7-17-7H384v128h128v-6.1c0-6.3-2.5-12.4-7-16.9zm-153 31V0H152c-13.3 0-24 10.7-24 24v264h128v-65.2c0-14.3 17.3-21.4 27.4-11.3L379 308c6.6 6.7 6.6 17.4 0 24l-95.7 96.4c-10.1 10.1-27.4 3-27.4-11.3V352H128v136c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H376c-13.2 0-24-10.8-24-24z" }, "child": [] }] })(props);
+}
+function FaHourglassHalf(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 384 512" }, "child": [{ "tag": "path", "attr": { "d": "M360 0H24C10.745 0 0 10.745 0 24v16c0 13.255 10.745 24 24 24 0 90.965 51.016 167.734 120.842 192C75.016 280.266 24 357.035 24 448c-13.255 0-24 10.745-24 24v16c0 13.255 10.745 24 24 24h336c13.255 0 24-10.745 24-24v-16c0-13.255-10.745-24-24-24 0-90.965-51.016-167.734-120.842-192C308.984 231.734 360 154.965 360 64c13.255 0 24-10.745 24-24V24c0-13.255-10.745-24-24-24zm-75.078 384H99.08c17.059-46.797 52.096-80 92.92-80 40.821 0 75.862 33.196 92.922 80zm.019-256H99.078C91.988 108.548 88 86.748 88 64h208c0 22.805-3.987 44.587-11.059 64z" }, "child": [] }] })(props);
+}
+function FaInfoCircle(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z" }, "child": [] }] })(props);
+}
+function FaPlusCircle(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z" }, "child": [] }] })(props);
+}
+function FaPlus(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" }, "child": [] }] })(props);
+}
+function FaSave(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z" }, "child": [] }] })(props);
+}
+function FaStepForward(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M384 44v424c0 6.6-5.4 12-12 12h-48c-6.6 0-12-5.4-12-12V291.6l-195.5 181C95.9 489.7 64 475.4 64 448V64c0-27.4 31.9-41.7 52.5-24.6L312 219.3V44c0-6.6 5.4-12 12-12h48c6.6 0 12 5.4 12 12z" }, "child": [] }] })(props);
+}
+function FaStop$1(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z" }, "child": [] }] })(props);
+}
+function FaTools(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M501.1 395.7L384 278.6c-23.1-23.1-57.6-27.6-85.4-13.9L192 158.1V96L64 0 0 64l96 128h62.1l106.6 106.6c-13.6 27.8-9.2 62.3 13.9 85.4l117.1 117.1c14.6 14.6 38.2 14.6 52.7 0l52.7-52.7c14.5-14.6 14.5-38.2 0-52.7zM331.7 225c28.3 0 54.9 11 74.9 31l19.4 19.4c15.8-6.9 30.8-16.5 43.8-29.5 37.1-37.1 49.7-89.3 37.9-136.7-2.2-9-13.5-12.1-20.1-5.5l-74.4 74.4-67.9-11.3L334 98.9l74.4-74.4c6.6-6.6 3.4-17.9-5.7-20.2-47.4-11.7-99.6.9-136.6 37.9-28.5 28.5-41.9 66.1-41.2 103.6l82.1 82.1c8.1-1.9 16.5-2.9 24.7-2.9zm-103.9 82l-56.7-56.7L18.7 402.8c-25 25-25 65.5 0 90.5s65.5 25 90.5 0l123.6-123.6c-7.6-19.9-9.9-41.6-5-62.7zM64 472c-13.2 0-24-10.8-24-24 0-13.3 10.7-24 24-24s24 10.7 24 24c0 13.2-10.7 24-24 24z" }, "child": [] }] })(props);
+}
+function FaTrash$1(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z" }, "child": [] }] })(props);
+}
 function usePrevious(value) {
   const ref = React.useRef({ value, previous: value });
   return React.useMemo(() => {
@@ -10725,7 +13854,7 @@ function CheckboxProvider(props) {
     bubbleInput,
     setBubbleInput
   };
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     CheckboxProviderImpl,
     {
       scope: __scopeCheckbox,
@@ -10759,7 +13888,7 @@ var CheckboxTrigger = React.forwardRef(
         return () => form.removeEventListener("reset", reset);
       }
     }, [control, setChecked]);
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       Primitive.button,
       {
         type: "button",
@@ -10801,7 +13930,7 @@ var Checkbox = React.forwardRef(
       form,
       ...checkboxProps
     } = props;
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       CheckboxProvider,
       {
         __scopeCheckbox,
@@ -10813,8 +13942,8 @@ var Checkbox = React.forwardRef(
         name,
         form,
         value,
-        internal_do_not_use_render: ({ isFormControl }) => /* @__PURE__ */ jsxs(Fragment, { children: [
-          /* @__PURE__ */ jsx(
+        internal_do_not_use_render: ({ isFormControl }) => /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             CheckboxTrigger,
             {
               ...checkboxProps,
@@ -10822,7 +13951,7 @@ var Checkbox = React.forwardRef(
               __scopeCheckbox
             }
           ),
-          isFormControl && /* @__PURE__ */ jsx(
+          isFormControl && /* @__PURE__ */ jsxRuntimeExports.jsx(
             CheckboxBubbleInput,
             {
               __scopeCheckbox
@@ -10839,11 +13968,11 @@ var CheckboxIndicator = React.forwardRef(
   (props, forwardedRef) => {
     const { __scopeCheckbox, forceMount, ...indicatorProps } = props;
     const context = useCheckboxContext(INDICATOR_NAME, __scopeCheckbox);
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       Presence,
       {
         present: forceMount || isIndeterminate(context.checked) || context.checked === true,
-        children: /* @__PURE__ */ jsx(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           Primitive.span,
           {
             "data-state": getState(context.checked),
@@ -10895,7 +14024,7 @@ var CheckboxBubbleInput = React.forwardRef(
       }
     }, [bubbleInput, prevChecked, checked, hasConsumerStoppedPropagationRef]);
     const defaultCheckedRef = React.useRef(isIndeterminate(checked) ? false : checked);
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       Primitive.input,
       {
         type: "checkbox",
@@ -10937,13 +14066,13 @@ function getState(checked) {
 }
 const CheckboxInput = memo(({ id, label, isChecked, onCheckedChange }) => {
   const ariaLabel = typeof label === "string" ? label : "Label for checkbox";
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
       className: "flex-align-center margin-bottom-10 margin-top-5",
       "data-testid": `checkbox-input-container-${id}`,
       children: [
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           Checkbox,
           {
             className: "checkbox-root",
@@ -10952,10 +14081,10 @@ const CheckboxInput = memo(({ id, label, isChecked, onCheckedChange }) => {
             onCheckedChange,
             "data-testid": id,
             "aria-label": ariaLabel,
-            children: /* @__PURE__ */ jsx(CheckboxIndicator, { className: "checkbox-indicator", children: "✓" })
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(CheckboxIndicator, { className: "checkbox-indicator", children: "✓" })
           }
         ),
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "label",
           {
             className: "clickable no-padding padding-10 margin-top--5",
@@ -10972,19 +14101,19 @@ const InfoCheckbox = memo((props) => {
   const { id, label, info, checked, onChange } = props;
   const labelElement = typeof label === "function" ? label() : label;
   const infoElement = typeof info === "function" ? info() : info;
-  return /* @__PURE__ */ jsx("div", { className: "info-checkbox-container", children: /* @__PURE__ */ jsxs("div", { className: "info-checkbox-wrapper", children: [
-    /* @__PURE__ */ jsx(CheckboxInput, { id, label: labelElement, isChecked: checked, onCheckedChange: onChange }),
-    /* @__PURE__ */ jsx(Provider, { delayDuration: 100, children: /* @__PURE__ */ jsxs(Root3, { children: [
-      /* @__PURE__ */ jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info-checkbox-container", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info-checkbox-wrapper", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(CheckboxInput, { id, label: labelElement, isChecked: checked, onCheckedChange: onChange }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Provider, { delayDuration: 100, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
           "aria-label": "More info",
           className: "tooltip-button inline-flex items-center justify-center cursor-help",
-          children: /* @__PURE__ */ jsx(FaInfoCircle, {})
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaInfoCircle, {})
         }
       ) }),
-      /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsxs(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Portal, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
         Content2,
         {
           side: "top",
@@ -10994,7 +14123,7 @@ const InfoCheckbox = memo((props) => {
           className: "tooltip-content",
           children: [
             infoElement,
-            /* @__PURE__ */ jsx(Arrow2, { className: "fill-[var(--info-tooltip-bg)]" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-[var(--info-tooltip-bg)]" })
           ]
         }
       ) })
@@ -11004,7 +14133,7 @@ const InfoCheckbox = memo((props) => {
 InfoCheckbox.displayName = "InfoCheckbox";
 const Select = forwardRef(
   (props, ref) => {
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       ReactSelect,
       {
         ref,
@@ -11174,8 +14303,8 @@ const AfterWork = memo(
     );
     const infoLabelAfter = isForGroupChat ? "the chat ends" : "the Agent has no more work to do";
     const infoText = "Check this to handle conversation continuation when no further options are available. If no agent is selected and no tool calls have output, we will use this property to determine the next action.";
-    return /* @__PURE__ */ jsxs("div", { className: "waldiez-after-work", children: [
-      /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "waldiez-after-work", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoCheckbox,
         {
           label: `Include an action to perform after ${infoLabelAfter}?`,
@@ -11185,11 +14314,11 @@ const AfterWork = memo(
           onChange: onEnabledChange
         }
       ),
-      enabled && /* @__PURE__ */ jsxs("div", { className: "flex-align-center flex-column margin-bottom-10", children: [
-        /* @__PURE__ */ jsxs("div", { className: "full-width margin-bottom-10", children: [
-          /* @__PURE__ */ jsx("label", { htmlFor: "afterWorkTargetType", children: "Action to perform after work:" }),
-          /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-          /* @__PURE__ */ jsx(
+      enabled && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center flex-column margin-bottom-10", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "full-width margin-bottom-10", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "afterWorkTargetType", children: "Action to perform after work:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             Select,
             {
               inputId: "afterWorkTargetType",
@@ -11200,10 +14329,10 @@ const AfterWork = memo(
             }
           )
         ] }),
-        selectedTargetType === "AgentTarget" && /* @__PURE__ */ jsxs("div", { className: "full-width margin-bottom-10", children: [
-          /* @__PURE__ */ jsx("label", { htmlFor: "afterWorkTargetId", children: "Agent to pass the floor to:" }),
-          /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-          /* @__PURE__ */ jsx(
+        selectedTargetType === "AgentTarget" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "full-width margin-bottom-10", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "afterWorkTargetId", children: "Agent to pass the floor to:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             Select,
             {
               inputId: "afterWorkTargetId",
@@ -11216,10 +14345,10 @@ const AfterWork = memo(
             }
           )
         ] }),
-        selectedTargetType === "RandomAgentTarget" && /* @__PURE__ */ jsxs("div", { className: "full-width", children: [
-          /* @__PURE__ */ jsx("label", { htmlFor: "afterWorkTargetIds", children: "Agents to choose from:" }),
-          /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-          /* @__PURE__ */ jsx(
+        selectedTargetType === "RandomAgentTarget" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "full-width", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "afterWorkTargetIds", children: "Agents to choose from:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             Select,
             {
               inputId: "afterWorkTargetIds",
@@ -11240,6 +14369,84 @@ const AfterWork = memo(
   }
 );
 AfterWork.displayName = "AfterWork";
+function FaGithub(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 496 512" }, "child": [{ "tag": "path", "attr": { "d": "M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z" }, "child": [] }] })(props);
+}
+function FaPython(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6zM286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3zM167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4zm-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3.1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3z" }, "child": [] }] })(props);
+}
+function FaBars(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z" }, "child": [] }] })(props);
+}
+function FaBug(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M256 0c53 0 96 43 96 96l0 3.6c0 15.7-12.7 28.4-28.4 28.4l-135.1 0c-15.7 0-28.4-12.7-28.4-28.4l0-3.6c0-53 43-96 96-96zM41.4 105.4c12.5-12.5 32.8-12.5 45.3 0l64 64c.7 .7 1.3 1.4 1.9 2.1c14.2-7.3 30.4-11.4 47.5-11.4l112 0c17.1 0 33.2 4.1 47.5 11.4c.6-.7 1.2-1.4 1.9-2.1l64-64c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-64 64c-.7 .7-1.4 1.3-2.1 1.9c6.2 12 10.1 25.3 11.1 39.5l64.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c0 24.6-5.5 47.8-15.4 68.6c2.2 1.3 4.2 2.9 6 4.8l64 64c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0l-63.1-63.1c-24.5 21.8-55.8 36.2-90.3 39.6L272 240c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 239.2c-34.5-3.4-65.8-17.8-90.3-39.6L86.6 502.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l64-64c1.9-1.9 3.9-3.4 6-4.8C101.5 367.8 96 344.6 96 320l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64.3 0c1.1-14.1 5-27.5 11.1-39.5c-.7-.6-1.4-1.2-2.1-1.9l-64-64c-12.5-12.5-12.5-32.8 0-45.3z" }, "child": [] }] })(props);
+}
+function FaChevronDown(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" }, "child": [] }] })(props);
+}
+function FaChevronUp(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z" }, "child": [] }] })(props);
+}
+function FaCirclePlay(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM188.3 147.1c-7.6 4.2-12.3 12.3-12.3 20.9l0 176c0 8.7 4.7 16.7 12.3 20.9s16.8 4.1 24.3-.5l144-88c7.1-4.4 11.5-12.1 11.5-20.5s-4.4-16.1-11.5-20.5l-144-88c-7.4-4.5-16.7-4.7-24.3-.5z" }, "child": [] }] })(props);
+}
+function FaCircleXmark(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" }, "child": [] }] })(props);
+}
+function FaCode(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 640 512" }, "child": [{ "tag": "path", "attr": { "d": "M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z" }, "child": [] }] })(props);
+}
+function FaCompress(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M160 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96zM32 320c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM352 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 320c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0z" }, "child": [] }] })(props);
+}
+function FaCopy(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z" }, "child": [] }] })(props);
+}
+function FaExpand(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z" }, "child": [] }] })(props);
+}
+function FaFileImport(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M128 64c0-35.3 28.7-64 64-64L352 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-112 174.1 0-39 39c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l39 39L128 288l0-224zm0 224l0 48L24 336c-13.3 0-24-10.7-24-24s10.7-24 24-24l104 0zM512 128l-128 0L384 0 512 128z" }, "child": [] }] })(props);
+}
+function FaGear(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z" }, "child": [] }] })(props);
+}
+function FaLock(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M144 144l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192l0-48C80 64.5 144.5 0 224 0s144 64.5 144 144l0 48 16 0c35.3 0 64 28.7 64 64l0 192c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 256c0-35.3 28.7-64 64-64l16 0z" }, "child": [] }] })(props);
+}
+function FaMoon(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 384 512" }, "child": [{ "tag": "path", "attr": { "d": "M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z" }, "child": [] }] })(props);
+}
+function FaPlay(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 384 512" }, "child": [{ "tag": "path", "attr": { "d": "M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z" }, "child": [] }] })(props);
+}
+function FaRobot(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 640 512" }, "child": [{ "tag": "path", "attr": { "d": "M320 0c17.7 0 32 14.3 32 32l0 64 120 0c39.8 0 72 32.2 72 72l0 272c0 39.8-32.2 72-72 72l-304 0c-39.8 0-72-32.2-72-72l0-272c0-39.8 32.2-72 72-72l120 0 0-64c0-17.7 14.3-32 32-32zM208 384c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zm96 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l32 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-32 0zM264 256a40 40 0 1 0 -80 0 40 40 0 1 0 80 0zm152 40a40 40 0 1 0 0-80 40 40 0 1 0 0 80zM48 224l16 0 0 192-16 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm544 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-16 0 0-192 16 0z" }, "child": [] }] })(props);
+}
+function FaStop(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 384 512" }, "child": [{ "tag": "path", "attr": { "d": "M0 128C0 92.7 28.7 64 64 64H320c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z" }, "child": [] }] })(props);
+}
+function FaSun(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z" }, "child": [] }] })(props);
+}
+function FaTrashCan(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" }, "child": [] }] })(props);
+}
+function FaTrash(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M135.2 17.7L128 32 32 32C14.3 32 0 46.3 0 64S14.3 96 32 96l384 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-96 0-7.2-14.3C307.4 6.8 296.3 0 284.2 0L163.8 0c-12.1 0-23.2 6.8-28.6 17.7zM416 128L32 128 53.2 467c1.6 25.3 22.6 45 47.9 45l245.8 0c25.3 0 46.3-19.7 47.9-45L416 128z" }, "child": [] }] })(props);
+}
+function FaX(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 384 512" }, "child": [{ "tag": "path", "attr": { "d": "M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z" }, "child": [] }] })(props);
+}
+function FaXmark(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 384 512" }, "child": [{ "tag": "path", "attr": { "d": "M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" }, "child": [] }] })(props);
+}
+function FaRegFileCode(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 384 512" }, "child": [{ "tag": "path", "attr": { "d": "M64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16l160 0 0 80c0 17.7 14.3 32 32 32l80 0 0 288c0 8.8-7.2 16-16 16L64 464zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-293.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0L64 0zm97 289c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0L79 303c-9.4 9.4-9.4 24.6 0 33.9l48 48c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-31-31 31-31zM257 255c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l31 31-31 31c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l48-48c9.4-9.4 9.4-24.6 0-33.9l-48-48z" }, "child": [] }] })(props);
+}
+function FaRegUser(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 448 512" }, "child": [{ "tag": "path", "attr": { "d": "M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464l349.5 0c-8.9-63.3-63.3-112-129-112l-91.4 0c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3z" }, "child": [] }] })(props);
+}
 const ImageModal = ({ isOpen, imageUrl, onClose }) => {
   const [imageError, setImageError] = useState(false);
   useEffect(() => {
@@ -11265,11 +14472,11 @@ const ImageModal = ({ isOpen, imageUrl, onClose }) => {
   const onImageError = () => {
     setImageError(true);
   };
-  return /* @__PURE__ */ jsxs("div", { className: `image-modal ${isOpen ? "open" : ""}`, onClick: onClose, "data-testid": "modal-overlay", children: [
-    imageError ? /* @__PURE__ */ jsxs("div", { className: "modal-error-message", children: [
-      /* @__PURE__ */ jsx("p", { children: "The image could not be displayed in full size." }),
-      /* @__PURE__ */ jsx("p", { children: "It may still be available in the chat or might have been removed." })
-    ] }) : /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `image-modal ${isOpen ? "open" : ""}`, onClick: onClose, "data-testid": "modal-overlay", children: [
+    imageError ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-error-message", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "The image could not be displayed in full size." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "It may still be available in the chat or might have been removed." })
+    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(
       "img",
       {
         src: imageUrl,
@@ -11279,7 +14486,7 @@ const ImageModal = ({ isOpen, imageUrl, onClose }) => {
         onError: onImageError
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       "button",
       {
         type: "button",
@@ -11287,7 +14494,7 @@ const ImageModal = ({ isOpen, imageUrl, onClose }) => {
         className: "modal-close",
         onClick: onClose,
         "data-testid": "modal-close",
-        children: /* @__PURE__ */ jsx(FaX, { size: 12 })
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaX, { size: 12 })
       }
     )
   ] });
@@ -11332,7 +14539,7 @@ const ImageWithRetry = ({ src, alt = "Chat image", className, onClick }) => {
       registerImage(imgRef.current, src);
     }
   }, [src, registerImage]);
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "img",
     {
       ref: imgRef,
@@ -11415,19 +14622,19 @@ const Markdown = ({ content, isDarkMode = false, onImageClick }) => {
     return preprocessContent(content);
   }, [content]);
   if (!shouldRenderMarkdown) {
-    return /* @__PURE__ */ jsx("span", { children: content });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: content });
   }
   const themeClass = isDarkMode ? "markdown-dark" : "markdown-light";
-  return /* @__PURE__ */ jsx("div", { className: `markdown-renderer ${themeClass}`, children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `markdown-renderer ${themeClass}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
     ReactMarkdown,
     {
       remarkPlugins: [remarkGfm],
       rehypePlugins: [rehypeHighlight],
       components: {
         // Custom rendering for links
-        a: ({ children, ...props }) => /* @__PURE__ */ jsx("a", { ...props, target: "_blank", rel: "noopener noreferrer", className: "markdown-link", children }),
+        a: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("a", { ...props, target: "_blank", rel: "noopener noreferrer", className: "markdown-link", children }),
         // Custom rendering for images with preview capability
-        img: ({ src, alt, ...props }) => /* @__PURE__ */ jsx(
+        img: ({ src, alt, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx(
           "img",
           {
             src,
@@ -11438,48 +14645,48 @@ const Markdown = ({ content, isDarkMode = false, onImageClick }) => {
           }
         ),
         // Heading components
-        h1: ({ children, ...props }) => /* @__PURE__ */ jsx("h1", { className: "markdown-h1", ...props, children }),
-        h2: ({ children, ...props }) => /* @__PURE__ */ jsx("h2", { className: "markdown-h2", ...props, children }),
-        h3: ({ children, ...props }) => /* @__PURE__ */ jsx("h3", { className: "markdown-h3", ...props, children }),
-        h4: ({ children, ...props }) => /* @__PURE__ */ jsx("h4", { className: "markdown-h4", ...props, children }),
-        h5: ({ children, ...props }) => /* @__PURE__ */ jsx("h5", { className: "markdown-h5", ...props, children }),
-        h6: ({ children, ...props }) => /* @__PURE__ */ jsx("h6", { className: "markdown-h6", ...props, children }),
+        h1: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "markdown-h1", ...props, children }),
+        h2: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "markdown-h2", ...props, children }),
+        h3: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "markdown-h3", ...props, children }),
+        h4: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "markdown-h4", ...props, children }),
+        h5: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h5", { className: "markdown-h5", ...props, children }),
+        h6: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h6", { className: "markdown-h6", ...props, children }),
         // List items
-        ul: ({ children, ...props }) => /* @__PURE__ */ jsx("ul", { className: "markdown-ul", ...props, children }),
-        ol: ({ children, ...props }) => /* @__PURE__ */ jsx("ol", { className: "markdown-ol", ...props, children }),
-        li: ({ children, ...props }) => /* @__PURE__ */ jsx("li", { className: "markdown-li", ...props, children }),
+        ul: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "markdown-ul", ...props, children }),
+        ol: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { className: "markdown-ol", ...props, children }),
+        li: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { className: "markdown-li", ...props, children }),
         // Block elements
-        blockquote: ({ children, ...props }) => /* @__PURE__ */ jsx("blockquote", { className: "markdown-blockquote", ...props, children }),
+        blockquote: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("blockquote", { className: "markdown-blockquote", ...props, children }),
         // Table components
-        table: ({ children, ...props }) => /* @__PURE__ */ jsx("table", { className: "markdown-table", ...props, children }),
-        thead: ({ children, ...props }) => /* @__PURE__ */ jsx("thead", { className: "markdown-thead", ...props, children }),
-        tbody: ({ children, ...props }) => /* @__PURE__ */ jsx("tbody", { className: "markdown-tbody", ...props, children }),
-        tr: ({ children, ...props }) => /* @__PURE__ */ jsx("tr", { className: "markdown-tr", ...props, children }),
-        th: ({ children, ...props }) => /* @__PURE__ */ jsx("th", { className: "markdown-th", ...props, children }),
-        td: ({ children, ...props }) => /* @__PURE__ */ jsx("td", { className: "markdown-td", ...props, children }),
+        table: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("table", { className: "markdown-table", ...props, children }),
+        thead: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "markdown-thead", ...props, children }),
+        tbody: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "markdown-tbody", ...props, children }),
+        tr: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { className: "markdown-tr", ...props, children }),
+        th: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "markdown-th", ...props, children }),
+        td: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "markdown-td", ...props, children }),
         // Custom code block rendering
         code: ({ children, className, ...props }) => {
           const isInline = !className;
           if (isInline) {
-            return /* @__PURE__ */ jsx("code", { className: "markdown-inline-code", ...props, children });
+            return /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "markdown-inline-code", ...props, children });
           }
-          return /* @__PURE__ */ jsx("code", { className: `markdown-code ${className || ""}`, ...props, children });
+          return /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: `markdown-code ${className || ""}`, ...props, children });
         },
         // Pre tag wrapper for code blocks
         pre: ({ children, ...props }) => {
           const language = findLanguageInChildren(children);
           if (language) {
-            return /* @__PURE__ */ jsxs("div", { className: "markdown-code-block-wrapper", children: [
-              /* @__PURE__ */ jsx("div", { className: "markdown-code-block-header", children: /* @__PURE__ */ jsx("span", { className: "markdown-code-language", children: language }) }),
-              /* @__PURE__ */ jsx("pre", { className: "markdown-pre", ...props, children })
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "markdown-code-block-wrapper", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "markdown-code-block-header", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "markdown-code-language", children: language }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "markdown-pre", ...props, children })
             ] });
           }
-          return /* @__PURE__ */ jsx("pre", { className: "markdown-pre", ...props, children });
+          return /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "markdown-pre", ...props, children });
         },
         // Paragraph
-        p: ({ children, ...props }) => /* @__PURE__ */ jsx("p", { className: "markdown-p", ...props, children }),
+        p: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "markdown-p", ...props, children }),
         // Horizontal rule
-        hr: (props) => /* @__PURE__ */ jsx("hr", { className: "markdown-hr", ...props })
+        hr: (props) => /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { className: "markdown-hr", ...props })
       },
       children: processedContent
     }
@@ -11493,7 +14700,7 @@ const parseStructuredContent = (items, isDarkMode, onImageClick) => {
       return null;
     }
     if (item.type === "text" && item.text.trim().length > 0) {
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         Markdown,
         {
           content: item.text,
@@ -11504,7 +14711,7 @@ const parseStructuredContent = (items, isDarkMode, onImageClick) => {
       );
     }
     if (item.type === "image_url" && item.image_url?.url) {
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         ImageWithRetry,
         {
           src: item.image_url.url,
@@ -11515,7 +14722,7 @@ const parseStructuredContent = (items, isDarkMode, onImageClick) => {
       );
     }
     if (item.type === "image" && item.image?.url) {
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         ImageWithRetry,
         {
           src: item.image.url,
@@ -11531,7 +14738,7 @@ const parseStructuredContent = (items, isDarkMode, onImageClick) => {
   if (children.length === 0) {
     return null;
   }
-  return /* @__PURE__ */ jsx("div", { className: "structured-content", children });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "structured-content", children });
 };
 const parseTextWithImages = (text, isDarkMode, onImageClick) => {
   const regex2 = /\[Image:\s*(.+?)\]/g;
@@ -11543,7 +14750,7 @@ const parseTextWithImages = (text, isDarkMode, onImageClick) => {
     const textBefore = text.slice(lastIdx, match.index);
     if (textBefore) {
       parts.push(
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           Markdown,
           {
             content: textBefore,
@@ -11556,7 +14763,7 @@ const parseTextWithImages = (text, isDarkMode, onImageClick) => {
     }
     if (url) {
       parts.push(
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           ImageWithRetry,
           {
             src: url,
@@ -11571,9 +14778,9 @@ const parseTextWithImages = (text, isDarkMode, onImageClick) => {
   }
   const remainingText = text.slice(lastIdx);
   if (remainingText) {
-    parts.push(/* @__PURE__ */ jsx("span", { children: remainingText }, "text-end"));
+    parts.push(/* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: remainingText }, "text-end"));
   }
-  return /* @__PURE__ */ jsx("div", { className: "content-with-images", children: parts });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "content-with-images", children: parts });
 };
 const parseMessageContent = (data, isDarkMode, onImageClick) => {
   if (typeof data === "string") {
@@ -11656,22 +14863,22 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
     setTimeout(scrollToBottom, 100);
     setTimeout(scrollToBottom, 300);
   }, [messages.length]);
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx("div", { className: "chat-container", ref: chatContainer, children: messages.map((msg, index2) => {
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "chat-container", ref: chatContainer, children: messages.map((msg, index2) => {
       const processedMsg = processMessage(msg);
       if (!processedMsg.node) {
         return null;
       }
       const messageClass = getMessageClass(processedMsg);
       const showAvatar = messageClass === "user-message" || messageClass === "assistant-message";
-      return /* @__PURE__ */ jsxs(
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs(
         "div",
         {
           className: `message-bubble ${getMessageClass(processedMsg)}`,
           "data-testid": "rf-chat-message",
           children: [
-            /* @__PURE__ */ jsx("div", { className: `message-header ${showAvatar && messageClass}`, children: messageClass === "assistant-message" ? /* @__PURE__ */ jsxs(Fragment, { children: [
-              showAvatar && /* @__PURE__ */ jsx("div", { className: "avatar-container", children: /* @__PURE__ */ jsx("div", { className: "avatar assistant-avatar", children: /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `message-header ${showAvatar && messageClass}`, children: messageClass === "assistant-message" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+              showAvatar && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "avatar-container", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "avatar assistant-avatar", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "img",
                 {
                   src: WALDIEZ_ICON,
@@ -11679,23 +14886,23 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
                   className: "avatar-image"
                 }
               ) }) }),
-              processedMsg.sender && /* @__PURE__ */ jsx("span", { className: "message-sender", children: processedMsg.sender }),
-              /* @__PURE__ */ jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() })
-            ] }) : messageClass === "user-message" ? /* @__PURE__ */ jsxs(Fragment, { children: [
-              /* @__PURE__ */ jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() }),
-              processedMsg.sender && /* @__PURE__ */ jsx("span", { className: "message-sender", children: processedMsg.sender }),
-              showAvatar && /* @__PURE__ */ jsx("div", { className: "avatar-container", children: /* @__PURE__ */ jsx("div", { className: "avatar user-avatar", children: /* @__PURE__ */ jsx(FaRegUser, { size: 24 }) }) })
-            ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
-              processedMsg.sender && /* @__PURE__ */ jsx("span", { className: "message-sender", children: processedMsg.sender }),
-              /* @__PURE__ */ jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() })
+              processedMsg.sender && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "message-sender", children: processedMsg.sender }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() })
+            ] }) : messageClass === "user-message" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() }),
+              processedMsg.sender && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "message-sender", children: processedMsg.sender }),
+              showAvatar && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "avatar-container", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "avatar user-avatar", children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaRegUser, { size: 24 }) }) })
+            ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+              processedMsg.sender && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "message-sender", children: processedMsg.sender }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() })
             ] }) }),
-            /* @__PURE__ */ jsx("div", { className: "message-content", children: processedMsg.node })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "message-content", children: processedMsg.node })
           ]
         },
         getMessageKey(msg, index2)
       );
     }) }),
-    /* @__PURE__ */ jsx(ImageModal, { isOpen: Boolean(previewImage), imageUrl: previewImage, onClose: closeImagePreview })
+    /* @__PURE__ */ jsxRuntimeExports.jsx(ImageModal, { isOpen: Boolean(previewImage), imageUrl: previewImage, onClose: closeImagePreview })
   ] });
 };
 ChatUI.displayName = "ChatUI";
@@ -11718,12 +14925,12 @@ const Collapsible = memo((props) => {
   }, []);
   const containerClassName = `collapsible ${fullWidth ? "full-width" : ""} ${className}`.trim();
   const headerClassName = `collapsible-header ${className}`.trim();
-  return /* @__PURE__ */ jsxs("div", { className: containerClassName, "data-testid": dataTestId, children: [
-    /* @__PURE__ */ jsxs("div", { className: headerClassName, onClick: onToggle, children: [
-      /* @__PURE__ */ jsx("span", { children: title }),
-      /* @__PURE__ */ jsx("span", { className: "margin-left-5", "aria-hidden": "true", children: isOpen ? "▲" : "▼" })
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: containerClassName, "data-testid": dataTestId, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: headerClassName, onClick: onToggle, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: title }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "margin-left-5", "aria-hidden": "true", children: isOpen ? "▲" : "▼" })
     ] }),
-    isOpen && /* @__PURE__ */ jsx("div", { className: `collapsible-content ${contentClassName || ""}`, children })
+    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `collapsible-content ${contentClassName || ""}`, children })
   ] });
 });
 Collapsible.displayName = "Collapsible";
@@ -11820,26 +15027,26 @@ const useDict = (props) => {
 const InfoLabel = ({ htmlFor, label, info, children }) => {
   const labelElement = typeof label === "function" ? label() : label;
   const infoElement = typeof info === "function" ? info() : info;
-  return /* @__PURE__ */ jsxs("div", { className: "flex-align-center flex-row gap-1", children: [
-    /* @__PURE__ */ jsxs("div", { className: "flex-align-center items-center gap-2", children: [
-      /* @__PURE__ */ jsx("label", { htmlFor, className: "text-sm info-label", children: labelElement }),
-      /* @__PURE__ */ jsx(Provider, { delayDuration: 100, children: /* @__PURE__ */ jsxs(Root3, { children: [
-        /* @__PURE__ */ jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center flex-row gap-1", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center items-center gap-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor, className: "text-sm info-label", children: labelElement }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Provider, { delayDuration: 100, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             type: "button",
             "aria-label": "More info",
             className: "tooltip-button inline-flex items-center justify-center cursor-help",
-            children: /* @__PURE__ */ jsx(FaInfoCircle, {})
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaInfoCircle, {})
           }
         ) }),
-        /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsxs(Content2, { side: "top", align: "center", className: "tooltip-content", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(Portal, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2, { side: "top", align: "center", className: "tooltip-content", children: [
           infoElement,
-          /* @__PURE__ */ jsx(Arrow2, { className: "fill-[var(--background-color)]" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-[var(--background-color)]" })
         ] }) })
       ] }) })
     ] }),
-    children && /* @__PURE__ */ jsx("div", { children })
+    children && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children })
   ] });
 };
 InfoLabel.displayName = "InfoLabel";
@@ -11858,10 +15065,10 @@ const Dict = (props) => {
     onNewEntryValueChange,
     isDirty
   } = useDict(props);
-  return /* @__PURE__ */ jsxs("div", { className: "dict-entries-view", children: [
-    viewLabelInfo ? /* @__PURE__ */ jsx(InfoLabel, { htmlFor: `dict-entry-${itemsType}`, label: viewLabel, info: viewLabelInfo }) : /* @__PURE__ */ jsx("label", { className: "margin-bottom-5", children: viewLabel }),
-    /* @__PURE__ */ jsx("div", { className: "dict-entries-list", children: Object.entries(items).map(([key, value], index2) => /* @__PURE__ */ jsxs("div", { className: "dict-entry", children: [
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "dict-entries-view", children: [
+    viewLabelInfo ? /* @__PURE__ */ jsxRuntimeExports.jsx(InfoLabel, { htmlFor: `dict-entry-${itemsType}`, label: viewLabel, info: viewLabelInfo }) : /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "margin-bottom-5", children: viewLabel }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "dict-entries-list", children: Object.entries(items).map(([key, value], index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "dict-entry", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           type: "text",
@@ -11872,7 +15079,7 @@ const Dict = (props) => {
         },
         `${key}-${value}-${index2}`
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           type: areValuesSecret ? visible[key] ? "text" : "password" : "text",
@@ -11884,7 +15091,7 @@ const Dict = (props) => {
         },
         `${value}-${index2}-${key}`
       ),
-      areValuesSecret && /* @__PURE__ */ jsx(
+      areValuesSecret && /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -11893,10 +15100,10 @@ const Dict = (props) => {
           title: "Toggle visibility",
           id: `visibility-${itemsType}-${index2}`,
           "data-testid": `visibility-${itemsType}-${index2}`,
-          children: visible[key] ? /* @__PURE__ */ jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsx(FaEye, {})
+          children: visible[key] ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaEye, {})
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -11905,10 +15112,10 @@ const Dict = (props) => {
           className: "trash-button",
           id: `delete-dict-item-${itemsType}-${index2}`,
           "data-testid": `delete-dict-item-${itemsType}-${index2}`,
-          children: /* @__PURE__ */ jsx(FaTrash, {})
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaTrash$1, {})
         }
       ),
-      isDirty(index2) && /* @__PURE__ */ jsx(
+      isDirty(index2) && /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           onClick: onSaveEntry,
@@ -11917,12 +15124,12 @@ const Dict = (props) => {
           "data-testid": `save-dict-item-${itemsType}-${index2}`,
           type: "button",
           className: "save-button",
-          children: /* @__PURE__ */ jsx(FaSave, {})
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaSave, {})
         }
       )
     ] }, key)) }),
-    /* @__PURE__ */ jsxs("div", { className: "add-dict-entry-view", children: [
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "add-dict-entry-view", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           type: "text",
@@ -11933,7 +15140,7 @@ const Dict = (props) => {
           onChange: onNewEntryKeyChange
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           placeholder: "Value",
@@ -11944,7 +15151,7 @@ const Dict = (props) => {
           onChange: onNewEntryValueChange
         }
       ),
-      areValuesSecret && /* @__PURE__ */ jsx(
+      areValuesSecret && /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -11953,10 +15160,10 @@ const Dict = (props) => {
           title: "Toggle visibility",
           id: `visibility-${itemsType}-new`,
           "data-testid": `visibility-${itemsType}-new`,
-          children: visible["_NEW"] ? /* @__PURE__ */ jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsx(FaEye, {})
+          children: visible["_NEW"] ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaEye, {})
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           onClick: onAddEntry,
@@ -11966,7 +15173,7 @@ const Dict = (props) => {
           "data-testid": `add-new-dict-${itemsType}-item`,
           disabled: newEntry.key === "",
           type: "button",
-          children: /* @__PURE__ */ jsx(FaPlus, {})
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaPlus, {})
         }
       )
     ] })
@@ -12070,7 +15277,7 @@ const DropZone = (props) => {
   const { flowId, multiple = false } = props;
   const { onFileDragOver, onFileDragLeave, onOpenUploadDialog, onFileDrop } = useDropZone(props);
   const instruction = multiple ? "Drop files here or click to upload" : "Drop a file here or click to upload";
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
       className: "drop_zone clickable",
@@ -12079,9 +15286,9 @@ const DropZone = (props) => {
       onClick: onOpenUploadDialog,
       onDragLeave: onFileDragLeave,
       "data-testid": `drop-zone-${flowId}`,
-      children: /* @__PURE__ */ jsxs("div", { className: "drop_zone_content", children: [
-        /* @__PURE__ */ jsx("div", { className: "drop_zone_icon", children: /* @__PURE__ */ jsx(FaCloudUploadAlt, {}) }),
-        /* @__PURE__ */ jsx("div", { className: "drop_zone_text", children: instruction })
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "drop_zone_content", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "drop_zone_icon", children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCloudUploadAlt, {}) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "drop_zone_text", children: instruction })
       ] })
     }
   );
@@ -12090,7 +15297,7 @@ DropZone.displayName = "DropZone";
 const Editor = (props) => {
   const { value, onChange, darkMode } = props;
   const theme = darkMode ? "vs-dark" : "vs-light";
-  return /* @__PURE__ */ jsx("div", { className: "code-editor", children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "code-editor", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
     MonacoEditor,
     {
       defaultLanguage: "python",
@@ -12151,7 +15358,7 @@ const TextareaInput = ({ value, onChange, autoFocus = false, ...props }) => {
       });
     }
   }, [value]);
-  return /* @__PURE__ */ jsx("textarea", { ref, value, onChange: handleChange, ...props });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("textarea", { ref, value, onChange: handleChange, ...props });
 };
 TextareaInput.displayName = "TextareaInput";
 const availabilityTypeOptions = [
@@ -12210,9 +15417,9 @@ const HandoffAvailability = (props) => {
     },
     [currentAvailability, onDataChange]
   );
-  const renderExpressionInput = () => /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
-    /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: "expression-input", children: "Expression" }),
-    /* @__PURE__ */ jsx(
+  const renderExpressionInput = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-top-10", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: "expression-input", children: "Expression" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextareaInput,
       {
         rows: 2,
@@ -12225,9 +15432,9 @@ const HandoffAvailability = (props) => {
       }
     )
   ] });
-  const renderStringInput = () => /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
-    /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: "string-input", children: "Variable Name" }),
-    /* @__PURE__ */ jsx(
+  const renderStringInput = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-top-10", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: "string-input", children: "Variable Name" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       "input",
       {
         type: "text",
@@ -12240,22 +15447,22 @@ const HandoffAvailability = (props) => {
       }
     )
   ] });
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-    /* @__PURE__ */ jsxs("div", { className: "info margin-bottom-5", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info margin-bottom-5", children: [
       "You can optionally handle the availability of this transition by checking a variable or using an expression.",
-      /* @__PURE__ */ jsxs("ul", { children: [
-        /* @__PURE__ */ jsxs("li", { children: [
-          /* @__PURE__ */ jsx("strong", { children: "Check a variable" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Check a variable" }),
           ": Confirm if a certain variable (like",
           " ",
-          /* @__PURE__ */ jsx("code", { children: "order_is_found" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "order_is_found" }),
           ") is set and is truthy."
         ] }),
-        /* @__PURE__ */ jsxs("li", { children: [
-          /* @__PURE__ */ jsx("strong", { children: "Use Expression" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Use Expression" }),
           ": Write a short logic rule using variables, like:",
-          /* @__PURE__ */ jsx("br", {}),
-          /* @__PURE__ */ jsxs("code", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("code", { children: [
             "$",
             "{",
             "is_logged_in",
@@ -12268,7 +15475,7 @@ const HandoffAvailability = (props) => {
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       CheckboxInput,
       {
         label: "Enable Availability Check",
@@ -12279,9 +15486,9 @@ const HandoffAvailability = (props) => {
         "aria-label": "Enable availability check"
       }
     ) }),
-    available.type !== "none" && /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
-      /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: "select-availability-type", children: "Availability Type" }),
-      /* @__PURE__ */ jsx(
+    available.type !== "none" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-top-10", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: "select-availability-type", children: "Availability Type" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: availabilityTypeOptions,
@@ -12339,17 +15546,17 @@ const TextInput = memo((props) => {
   );
   const renderLabel = () => {
     if (labelInfo) {
-      return /* @__PURE__ */ jsx(InfoLabel, { label, info: labelInfo, htmlFor: `id-${name}` });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(InfoLabel, { label, info: labelInfo, htmlFor: `id-${name}` });
     }
     if (typeof label === "string") {
-      return /* @__PURE__ */ jsx("label", { htmlFor: `id-${name}`, className: labelClassName, children: label });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `id-${name}`, className: labelClassName, children: label });
     }
     return label;
   };
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     renderLabel(),
-    /* @__PURE__ */ jsxs("div", { className: `text-input-container flex-align-center ${className}`, children: [
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `text-input-container flex-align-center ${className}`, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           className: inputClassName,
@@ -12368,7 +15575,7 @@ const TextInput = memo((props) => {
           autoComplete: "off"
         }
       ),
-      isPassword && /* @__PURE__ */ jsx(
+      isPassword && /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -12377,7 +15584,7 @@ const TextInput = memo((props) => {
           title: visible ? "Hide password" : "Show password",
           "aria-label": visible ? "Hide password" : "Show password",
           "data-testid": `visibility-${dataTestId}`,
-          children: visible ? /* @__PURE__ */ jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsx(FaEye, {})
+          children: visible ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaEye, {})
         }
       )
     ] })
@@ -12465,10 +15672,10 @@ const HandoffCondition = (props) => {
     const updater = fieldUpdaters[conditionType];
     switch (conditionType) {
       case "string_llm":
-        return /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
-          /* @__PURE__ */ jsx("label", { children: "LLM Prompt:" }),
-          /* @__PURE__ */ jsx("div", { className: "margin-top-5" }),
-          /* @__PURE__ */ jsx(
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { children: "LLM Prompt:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-5" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             TextareaInput,
             {
               rows: 2,
@@ -12481,9 +15688,9 @@ const HandoffCondition = (props) => {
           )
         ] });
       case "context_str_llm":
-        return /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
-          /* @__PURE__ */ jsx("label", { children: "Prompt:" }),
-          /* @__PURE__ */ jsx(
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { children: "Prompt:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             TextareaInput,
             {
               rows: 2,
@@ -12497,7 +15704,7 @@ const HandoffCondition = (props) => {
           )
         ] });
       case "string_context":
-        return /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+        return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           TextInput,
           {
             name: "variable-name",
@@ -12510,9 +15717,9 @@ const HandoffCondition = (props) => {
           }
         ) });
       case "expression_context":
-        return /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
-          /* @__PURE__ */ jsx("label", { children: "Expression:" }),
-          /* @__PURE__ */ jsx(
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { children: "Expression:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             TextareaInput,
             {
               rows: 2,
@@ -12529,20 +15736,20 @@ const HandoffCondition = (props) => {
         return null;
     }
   }, [currentHandoffCondition, fieldUpdaters]);
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-    /* @__PURE__ */ jsxs("div", { className: "info margin-bottom-5", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info margin-bottom-5", children: [
       "You can control when this transition happens. Conditions allow you to check values or evaluate logic based on the current context. There are four types of conditions you can choose from:",
-      /* @__PURE__ */ jsxs("ul", { className: "no-margin", children: [
-        /* @__PURE__ */ jsxs("li", { children: [
-          /* @__PURE__ */ jsx("strong", { children: "Static LLM prompt" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "no-margin", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Static LLM prompt" }),
           ": A fixed message sent to a language model (LLM) to decide whether the transition should happen."
         ] }),
-        /* @__PURE__ */ jsxs("li", { children: [
-          /* @__PURE__ */ jsx("strong", { children: "Dynamic LLM prompt" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Dynamic LLM prompt" }),
           ": A message that includes context variables, like the user's name or order count. It's sent to the LLM for evaluation.",
-          /* @__PURE__ */ jsx("br", {}),
-          /* @__PURE__ */ jsx("em", { children: "Example:" }),
-          /* @__PURE__ */ jsx("ul", { children: /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsxs("code", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("em", { children: "Example:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("code", { children: [
             '"User is ',
             "{",
             "user_name",
@@ -12554,28 +15761,28 @@ const HandoffCondition = (props) => {
             ' orders."'
           ] }) }) })
         ] }),
-        /* @__PURE__ */ jsxs("li", { children: [
-          /* @__PURE__ */ jsx("strong", { children: "Variable check" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Variable check" }),
           ": Simply checks if a specific variable exists and is truthy."
         ] }),
-        /* @__PURE__ */ jsxs("li", { children: [
-          /* @__PURE__ */ jsx("strong", { children: "Expression check" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Expression check" }),
           ": Allows you to write a small logic expression using context variables. You can use operators like ",
-          /* @__PURE__ */ jsx("code", { children: "and" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "and" }),
           ", ",
-          /* @__PURE__ */ jsx("code", { children: "or" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "or" }),
           ",",
           " ",
-          /* @__PURE__ */ jsx("code", { children: "not" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "not" }),
           ", as well as comparison signs like ",
-          /* @__PURE__ */ jsx("code", { children: ">" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: ">" }),
           ", ",
-          /* @__PURE__ */ jsx("code", { children: "==" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "==" }),
           ", etc.",
-          /* @__PURE__ */ jsx("br", {}),
-          /* @__PURE__ */ jsx("em", { children: "Examples:" }),
-          /* @__PURE__ */ jsxs("ul", { children: [
-            /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsxs("code", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("em", { children: "Examples:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("code", { children: [
               "not $",
               "{",
               "logged_in",
@@ -12589,7 +15796,7 @@ const HandoffCondition = (props) => {
               "guest_checkout",
               "}"
             ] }) }),
-            /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsxs("code", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("code", { children: [
               "len($",
               "{",
               "orders",
@@ -12603,9 +15810,9 @@ const HandoffCondition = (props) => {
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
-      /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: "select-condition-type", children: "Condition Type" }),
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-top-10", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: "select-condition-type", children: "Condition Type" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: conditionTypeOptions,
@@ -12812,7 +16019,7 @@ const useHandoffs = (id, data, agents, edges, onDataChange) => {
         order: orderedTargets.length
       });
     }
-    return orderedTargets.sort((a, b) => a.order - b.order);
+    return orderedTargets.sort((a, b2) => a.order - b2.order);
   }, [data.handoffs, groupEdges, nestedChats, getTransitionTargetName]);
   const onMoveTransitionTargetUp = useCallback(
     (index2) => {
@@ -12860,25 +16067,25 @@ const Handoffs = memo((props) => {
     onMoveTransitionTargetUp
   } = useHandoffs(id, data, agents, edges, onDataChange);
   const hasHandoffs = orderedTransitionTargets.length > 0 || !!data.afterWork;
-  return /* @__PURE__ */ jsxs("div", { className: "handoffs-container", "data-testid": `handoffs-container-${id}`, children: [
-    /* @__PURE__ */ jsx("div", { className: "info margin-left--5", children: "Handoffs control where the conversation flow goes from this agent. They include connections to other agents, nested chats, and what happens after the agent's work is done." }),
-    /* @__PURE__ */ jsx("div", { className: "handoffs-list", children: !hasHandoffs ? /* @__PURE__ */ jsx("div", { className: "no-handoffs-message", children: `This agent has no handoffs configured. You can add connections to other agents in the flow editor, configure nested chats in the agent settings, or set what happens after the agent's work is done in the "Afterwards" tab.` }) : /* @__PURE__ */ jsxs("div", { className: "handoffs-items", children: [
-      orderedTransitionTargets.length > 0 && /* @__PURE__ */ jsxs("div", { className: "handoffs-section", children: [
-        /* @__PURE__ */ jsx("h4", { className: "handoffs-section-title", children: "Handoffs" }),
-        /* @__PURE__ */ jsxs("p", { className: "handoff-order-instructions", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "handoffs-container", "data-testid": `handoffs-container-${id}`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info margin-left--5", children: "Handoffs control where the conversation flow goes from this agent. They include connections to other agents, nested chats, and what happens after the agent's work is done." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "handoffs-list", children: !hasHandoffs ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "no-handoffs-message", children: `This agent has no handoffs configured. You can add connections to other agents in the flow editor, configure nested chats in the agent settings, or set what happens after the agent's work is done in the "Afterwards" tab.` }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "handoffs-items", children: [
+      orderedTransitionTargets.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "handoffs-section", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "handoffs-section-title", children: "Handoffs" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "handoff-order-instructions", children: [
           "If the group's speakers selection mode allows it (e.g. set to",
           " ",
-          /* @__PURE__ */ jsx("em", { children: /* @__PURE__ */ jsx("b", { children: "default" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("em", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "default" }) }),
           "), you can use the up and down arrows to reorder handoffs. The ordering will then determine the sequence in which handoffs are processed."
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "ordered-items-list", children: orderedTransitionTargets.map((item, index2) => /* @__PURE__ */ jsxs(
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "ordered-items-list", children: orderedTransitionTargets.map((item, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
           "div",
           {
             className: "ordered-item",
             "data-testid": `handoff-item-${index2}`,
             children: [
-              /* @__PURE__ */ jsxs("div", { className: "reorder-buttons", children: [
-                index2 > 0 && /* @__PURE__ */ jsx(
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "reorder-buttons", children: [
+                index2 > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "button",
                   {
                     type: "button",
@@ -12890,7 +16097,7 @@ const Handoffs = memo((props) => {
                     children: "↑"
                   }
                 ),
-                index2 < orderedTransitionTargets.length - 1 && /* @__PURE__ */ jsx(
+                index2 < orderedTransitionTargets.length - 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "button",
                   {
                     type: "button",
@@ -12904,11 +16111,11 @@ const Handoffs = memo((props) => {
                 )
               ] }),
               " ",
-              /* @__PURE__ */ jsxs("div", { className: "ordered-item-content", children: [
-                /* @__PURE__ */ jsx("div", { className: "order-badge", children: index2 + 1 }),
-                /* @__PURE__ */ jsx("div", { className: "handoff-type", children: item.targetType === "AgentTarget" ? "Agent Connection" : item.targetType === "NestedChatTarget" ? "Nested Chat" : item.targetType }),
-                /* @__PURE__ */ jsxs("div", { className: "handoff-target", children: [
-                  /* @__PURE__ */ jsx("span", { className: "target-label", children: "Target:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ordered-item-content", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "order-badge", children: index2 + 1 }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "handoff-type", children: item.targetType === "AgentTarget" ? "Agent Connection" : item.targetType === "NestedChatTarget" ? "Nested Chat" : item.targetType }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "handoff-target", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "target-label", children: "Target:" }),
                   " ",
                   item.value
                 ] })
@@ -12918,21 +16125,21 @@ const Handoffs = memo((props) => {
           `handoff-${index2}`
         )) })
       ] }),
-      data.afterWork && /* @__PURE__ */ jsxs("div", { className: "handoffs-section", children: [
-        /* @__PURE__ */ jsx("h4", { className: "handoffs-section-title", children: "After Work" }),
-        /* @__PURE__ */ jsx(
+      data.afterWork && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "handoffs-section", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "handoffs-section-title", children: "After Work" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "div",
           {
             className: "ordered-item after-work-handoff",
             "data-testid": "handoff-after-work-item",
-            children: /* @__PURE__ */ jsxs("div", { className: "ordered-item-content", children: [
-              /* @__PURE__ */ jsx("div", { className: "handoff-type", children: "AfterWork" }),
-              /* @__PURE__ */ jsxs("div", { className: "handoff-target", children: [
-                /* @__PURE__ */ jsx("span", { className: "target-label", children: "Target:" }),
+            children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ordered-item-content", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "handoff-type", children: "AfterWork" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "handoff-target", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "target-label", children: "Target:" }),
                 " ",
                 getTransitionTargetName(data.afterWork)
               ] }),
-              /* @__PURE__ */ jsx("div", { className: "handoff-info", children: /* @__PURE__ */ jsx("em", { children: "AfterWork handoff always executes last" }) })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "handoff-info", children: /* @__PURE__ */ jsxRuntimeExports.jsx("em", { children: "AfterWork handoff always executes last" }) })
             ] })
           }
         )
@@ -13058,7 +16265,7 @@ const MessageInput = (props) => {
     onUpdateContextEntries
   } = useMessageInput(props);
   const getLabelView = () => {
-    return current.type !== "none" && current.type !== "rag_message_generator" && notNoneLabel && (notNoneLabelInfo ? /* @__PURE__ */ jsx(InfoLabel, { label: notNoneLabel, info: notNoneLabelInfo, htmlFor: "message-input" }) : /* @__PURE__ */ jsx("label", { htmlFor: "message-input", children: notNoneLabel }));
+    return current.type !== "none" && current.type !== "rag_message_generator" && notNoneLabel && (notNoneLabelInfo ? /* @__PURE__ */ jsxRuntimeExports.jsx(InfoLabel, { label: notNoneLabel, info: notNoneLabelInfo, htmlFor: "message-input" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "message-input", children: notNoneLabel }));
   };
   const labelView = getLabelView();
   const useDict2 = includeContext && current.type !== "rag_message_generator" && current.type !== "none";
@@ -13066,10 +16273,10 @@ const MessageInput = (props) => {
   if (skipNone === true) {
     selectOptions = selectOptions.filter((option) => option.value !== "none");
   }
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx("label", { htmlFor: `message-select-test-${selectTestId}`, children: selectLabel }),
-    /* @__PURE__ */ jsx("div", { className: "margin-bottom-5" }),
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `message-select-test-${selectTestId}`, children: selectLabel }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-5" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       Select,
       {
         options: selectOptions,
@@ -13088,7 +16295,7 @@ const MessageInput = (props) => {
       }
     ),
     labelView,
-    current.type === "string" && /* @__PURE__ */ jsx("div", { className: "full-width", children: /* @__PURE__ */ jsx(
+    current.type === "string" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "full-width", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextareaInput,
       {
         placeholder: "Enter the message",
@@ -13099,10 +16306,10 @@ const MessageInput = (props) => {
         "data-testid": "message-text"
       }
     ) }),
-    current.type === "rag_message_generator" && /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("div", { className: "info margin-bottom-20", children: "Use the RAG user's `sender.message_generator` method to generate a message." }),
-      /* @__PURE__ */ jsx("label", { children: "Problem:" }),
-      /* @__PURE__ */ jsx("div", { className: "full-width", children: /* @__PURE__ */ jsx(
+    current.type === "rag_message_generator" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info margin-bottom-20", children: "Use the RAG user's `sender.message_generator` method to generate a message." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { children: "Problem:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "full-width", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         TextareaInput,
         {
           placeholder: "Enter the problem",
@@ -13114,7 +16321,7 @@ const MessageInput = (props) => {
         }
       ) })
     ] }),
-    current.type === "method" && /* @__PURE__ */ jsx(
+    current.type === "method" && /* @__PURE__ */ jsxRuntimeExports.jsx(
       Editor,
       {
         value: current.content ?? defaultContent,
@@ -13122,7 +16329,7 @@ const MessageInput = (props) => {
         darkMode
       }
     ),
-    useDict2 && /* @__PURE__ */ jsx(
+    useDict2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
       Dict,
       {
         items: current.context,
@@ -13134,7 +16341,7 @@ const MessageInput = (props) => {
         onUpdate: onUpdateContextEntries
       }
     ),
-    !skipCarryoverOption && (current.type === "string" || current.type === "rag_message_generator") && /* @__PURE__ */ jsx(
+    !skipCarryoverOption && (current.type === "string" || current.type === "rag_message_generator") && /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "Carryover ",
@@ -13146,14 +16353,14 @@ const MessageInput = (props) => {
     )
   ] });
 };
-const carryOverInfo = /* @__PURE__ */ jsxs("div", { children: [
-  /* @__PURE__ */ jsx("div", { children: "This should not be checked if this is the first message in the flow." }),
-  /* @__PURE__ */ jsx("br", {}),
+const carryOverInfo = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "This should not be checked if this is the first message in the flow." }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
   "Append the context's last carryover to the message.",
-  /* @__PURE__ */ jsx("br", {}),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
   "Example final message:",
-  /* @__PURE__ */ jsx("br", {}),
-  /* @__PURE__ */ jsx("pre", { children: '"Write a blogpost.\\nContext:\\n" + carryover' })
+  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { children: '"Write a blogpost.\\nContext:\\n" + carryover' })
 ] });
 const messageTypeOptions = [
   { label: "None", value: "none" },
@@ -13170,10 +16377,10 @@ const MessageOptionsMapping = {
 MessageInput.displayName = "MessageInput";
 const renderConfirmationContent = (props) => {
   const { onSaveAndClose, hideConfirmation, handleSaveAndClose, handleCloseModal } = props;
-  return /* @__PURE__ */ jsx("div", { className: "modal-confirmation padding-10", children: /* @__PURE__ */ jsxs("div", { className: "modal-confirmation-content", children: [
-    /* @__PURE__ */ jsx("h4", { className: "warning", children: "Are you sure you want to close this modal? Any unsaved changes will be lost." }),
-    /* @__PURE__ */ jsx("div", { className: "modal-actions", children: onSaveAndClose ? /* @__PURE__ */ jsxs(Fragment, { children: [
-      /* @__PURE__ */ jsx("div", { className: "modal-actions flex-center margin-top--10 margin-bottom--10", children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-confirmation padding-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-confirmation-content", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "warning", children: "Are you sure you want to close this modal? Any unsaved changes will be lost." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-actions", children: onSaveAndClose ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-actions flex-center margin-top--10 margin-bottom--10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           className: "secondary",
@@ -13184,8 +16391,8 @@ const renderConfirmationContent = (props) => {
           children: "Don't Close"
         }
       ) }),
-      /* @__PURE__ */ jsxs("div", { className: "modal-actions flex-center margin-top--10 margin-bottom--10", children: [
-        /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions flex-center margin-top--10 margin-bottom--10", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             className: "save margin-right-10",
@@ -13196,7 +16403,7 @@ const renderConfirmationContent = (props) => {
             children: "Save & Close"
           }
         ),
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             className: "primary",
@@ -13208,8 +16415,8 @@ const renderConfirmationContent = (props) => {
           }
         )
       ] })
-    ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
-      /* @__PURE__ */ jsx(
+    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           className: "modal-action-cancel",
@@ -13220,7 +16427,7 @@ const renderConfirmationContent = (props) => {
           children: "Don't Close"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           className: "modal-action-submit",
@@ -13571,8 +16778,8 @@ const Modal = forwardRef((props, ref) => {
       left: position.x
     }
   };
-  const modalContent = /* @__PURE__ */ jsxs("div", { id: `${flowId}-modal`, className: "modal-root", children: [
-    !noBackdrop && !isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && /* @__PURE__ */ jsx(
+  const modalContent = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { id: `${flowId}-modal`, className: "modal-root", children: [
+    !noBackdrop && !isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && /* @__PURE__ */ jsxRuntimeExports.jsx(
       "div",
       {
         className: "modal-backdrop",
@@ -13587,7 +16794,7 @@ const Modal = forwardRef((props, ref) => {
         }
       }
     ),
-    /* @__PURE__ */ jsxs(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
         ref: modalRef,
@@ -13597,34 +16804,34 @@ const Modal = forwardRef((props, ref) => {
         className: modalClasses,
         style: modalStyle,
         children: [
-          !props.noHeader && /* @__PURE__ */ jsxs("div", { className: "modal-header", ref: dragRef, onMouseDown, children: [
-            !isMinimized && beforeTitle && /* @__PURE__ */ jsx("div", { children: beforeTitle }),
-            /* @__PURE__ */ jsxs("h3", { className: "modal-title font-semibold truncate", children: [
+          !props.noHeader && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-header", ref: dragRef, onMouseDown, children: [
+            !isMinimized && beforeTitle && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: beforeTitle }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "modal-title font-semibold truncate", children: [
               title,
-              hasUnsavedChanges && /* @__PURE__ */ jsx("span", { style: { color: "#f97316", marginLeft: "0.25rem" }, children: "*" })
+              hasUnsavedChanges && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#f97316", marginLeft: "0.25rem" }, children: "*" })
             ] }),
-            /* @__PURE__ */ jsxs("div", { className: "modal-header-actions", children: [
-              hasMinimizeBtn && /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-header-actions", children: [
+              hasMinimizeBtn && /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "div",
                 {
                   className: "modal-minimize-btn clickable",
                   role: "button",
                   title: isMinimized ? "Restore" : "Minimize",
                   onClick: onToggleMinimize,
-                  children: isMinimized ? /* @__PURE__ */ jsx(FaChevronUp, {}) : /* @__PURE__ */ jsx(FaChevronDown, {})
+                  children: isMinimized ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaChevronUp, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaChevronDown, {})
                 }
               ),
-              hasMaximizeBtn && /* @__PURE__ */ jsx(
+              hasMaximizeBtn && /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "div",
                 {
                   className: "modal-fullscreen-btn clickable",
                   role: "button",
                   title: isFullScreen ? "Restore" : "Maximize",
                   onClick: onToggleFullScreen,
-                  children: isFullScreen ? /* @__PURE__ */ jsx(FaCompress, {}) : /* @__PURE__ */ jsx(FaExpand, {})
+                  children: isFullScreen ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaCompress, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaExpand, {})
                 }
               ),
-              hasCloseBtn && /* @__PURE__ */ jsx(
+              hasCloseBtn && /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "div",
                 {
                   className: "modal-close-btn clickable",
@@ -13632,12 +16839,12 @@ const Modal = forwardRef((props, ref) => {
                   title: "Close",
                   "data-testid": "modal-close-btn",
                   onClick: handleCloseModal,
-                  children: /* @__PURE__ */ jsx(FaCircleXmark, {})
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCircleXmark, {})
                 }
               )
             ] })
           ] }),
-          /* @__PURE__ */ jsx("div", { className: `modal-content ${isMinimized ? "hidden" : ""}`, children: showConfirmation ? renderConfirmationContent({
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `modal-content ${isMinimized ? "hidden" : ""}`, children: showConfirmation ? renderConfirmationContent({
             onSaveAndClose,
             hideConfirmation,
             handleSaveAndClose,
@@ -13669,7 +16876,7 @@ function createCollection(name) {
     const { scope, children } = props;
     const ref = React__default.useRef(null);
     const itemMap = React__default.useRef(/* @__PURE__ */ new Map()).current;
-    return /* @__PURE__ */ jsx(CollectionProviderImpl, { scope, itemMap, collectionRef: ref, children });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionProviderImpl, { scope, itemMap, collectionRef: ref, children });
   };
   CollectionProvider.displayName = PROVIDER_NAME2;
   const COLLECTION_SLOT_NAME = name + "CollectionSlot";
@@ -13679,7 +16886,7 @@ function createCollection(name) {
       const { scope, children } = props;
       const context = useCollectionContext(COLLECTION_SLOT_NAME, scope);
       const composedRefs = useComposedRefs(forwardedRef, context.collectionRef);
-      return /* @__PURE__ */ jsx(CollectionSlotImpl, { ref: composedRefs, children });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionSlotImpl, { ref: composedRefs, children });
     }
   );
   CollectionSlot.displayName = COLLECTION_SLOT_NAME;
@@ -13696,7 +16903,7 @@ function createCollection(name) {
         context.itemMap.set(ref, { ref, ...itemData });
         return () => void context.itemMap.delete(ref);
       });
-      return /* @__PURE__ */ jsx(CollectionItemSlotImpl, { ...{ [ITEM_DATA_ATTR]: "" }, ref: composedRefs, children });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionItemSlotImpl, { ...{ [ITEM_DATA_ATTR]: "" }, ref: composedRefs, children });
     }
   );
   CollectionItemSlot.displayName = ITEM_SLOT_NAME;
@@ -13708,7 +16915,7 @@ function createCollection(name) {
       const orderedNodes = Array.from(collectionNode.querySelectorAll(`[${ITEM_DATA_ATTR}]`));
       const items = Array.from(context.itemMap.values());
       const orderedItems = items.sort(
-        (a, b) => orderedNodes.indexOf(a.ref.current) - orderedNodes.indexOf(b.ref.current)
+        (a, b2) => orderedNodes.indexOf(a.ref.current) - orderedNodes.indexOf(b2.ref.current)
       );
       return orderedItems;
     }, [context.collectionRef, context.itemMap]);
@@ -13797,7 +17004,7 @@ var Slider = React.forwardRef(
         }
       });
     }
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       SliderProvider,
       {
         scope: props.__scopeSlider,
@@ -13810,7 +17017,7 @@ var Slider = React.forwardRef(
         values,
         orientation,
         form,
-        children: /* @__PURE__ */ jsx(Collection.Provider, { scope: props.__scopeSlider, children: /* @__PURE__ */ jsx(Collection.Slot, { scope: props.__scopeSlider, children: /* @__PURE__ */ jsx(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Provider, { scope: props.__scopeSlider, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Slot, { scope: props.__scopeSlider, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           SliderOrientation,
           {
             "aria-disabled": disabled,
@@ -13879,7 +17086,7 @@ var SliderHorizontal = React.forwardRef(
       rectRef.current = rect;
       return value(pointerPosition - rect.left);
     }
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       SliderOrientationProvider,
       {
         scope: props.__scopeSlider,
@@ -13887,7 +17094,7 @@ var SliderHorizontal = React.forwardRef(
         endEdge: isSlidingFromLeft ? "right" : "left",
         direction: isSlidingFromLeft ? 1 : -1,
         size: "width",
-        children: /* @__PURE__ */ jsx(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           SliderImpl,
           {
             dir: direction,
@@ -13945,7 +17152,7 @@ var SliderVertical = React.forwardRef(
       rectRef.current = rect;
       return value(pointerPosition - rect.top);
     }
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       SliderOrientationProvider,
       {
         scope: props.__scopeSlider,
@@ -13953,7 +17160,7 @@ var SliderVertical = React.forwardRef(
         endEdge: isSlidingFromBottom ? "top" : "bottom",
         size: "height",
         direction: isSlidingFromBottom ? 1 : -1,
-        children: /* @__PURE__ */ jsx(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           SliderImpl,
           {
             "data-orientation": "vertical",
@@ -13999,7 +17206,7 @@ var SliderImpl = React.forwardRef(
       ...sliderProps
     } = props;
     const context = useSliderContext(SLIDER_NAME, __scopeSlider);
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       Primitive.span,
       {
         ...sliderProps,
@@ -14046,7 +17253,7 @@ var SliderTrack = React.forwardRef(
   (props, forwardedRef) => {
     const { __scopeSlider, ...trackProps } = props;
     const context = useSliderContext(TRACK_NAME, __scopeSlider);
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       Primitive.span,
       {
         "data-disabled": context.disabled ? "" : void 0,
@@ -14072,7 +17279,7 @@ var SliderRange = React.forwardRef(
     );
     const offsetStart = valuesCount > 1 ? Math.min(...percentages) : 0;
     const offsetEnd = 100 - Math.max(...percentages);
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       Primitive.span,
       {
         "data-orientation": context.orientation,
@@ -14099,7 +17306,7 @@ var SliderThumb = React.forwardRef(
       () => thumb ? getItems().findIndex((item) => item.ref.current === thumb) : -1,
       [getItems, thumb]
     );
-    return /* @__PURE__ */ jsx(SliderThumbImpl, { ...props, ref: composedRefs, index: index2 });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(SliderThumbImpl, { ...props, ref: composedRefs, index: index2 });
   }
 );
 var SliderThumbImpl = React.forwardRef(
@@ -14124,7 +17331,7 @@ var SliderThumbImpl = React.forwardRef(
         };
       }
     }, [thumb, context.thumbs]);
-    return /* @__PURE__ */ jsxs(
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "span",
       {
         style: {
@@ -14133,7 +17340,7 @@ var SliderThumbImpl = React.forwardRef(
           [orientation.startEdge]: `calc(${percent}% + ${thumbInBoundsOffset}px)`
         },
         children: [
-          /* @__PURE__ */ jsx(Collection.ItemSlot, { scope: props.__scopeSlider, children: /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.ItemSlot, { scope: props.__scopeSlider, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             Primitive.span,
             {
               role: "slider",
@@ -14153,7 +17360,7 @@ var SliderThumbImpl = React.forwardRef(
               })
             }
           ) }),
-          isFormControl && /* @__PURE__ */ jsx(
+          isFormControl && /* @__PURE__ */ jsxRuntimeExports.jsx(
             SliderBubbleInput,
             {
               name: name ?? (context.name ? context.name + (context.values.length > 1 ? "[]" : "") : void 0),
@@ -14186,7 +17393,7 @@ var SliderBubbleInput = React.forwardRef(
         input.dispatchEvent(event);
       }
     }, [prevValue, value]);
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       Primitive.input,
       {
         style: { display: "none" },
@@ -14201,7 +17408,7 @@ SliderBubbleInput.displayName = BUBBLE_INPUT_NAME;
 function getNextSortedValues(prevValues = [], nextValue, atIndex) {
   const nextValues = [...prevValues];
   nextValues[atIndex] = nextValue;
-  return nextValues.sort((a, b) => a - b);
+  return nextValues.sort((a, b2) => a - b2);
 }
 function convertValueToPercentage(value, min2, max2) {
   const maxSteps = max2 - min2;
@@ -14313,11 +17520,11 @@ const NumberInput = memo((props) => {
   );
   const getLabelValue = useCallback(() => {
     if ((value === max2 || value === null) && (setNullOnUpper || onUpperLabel !== null)) {
-      return /* @__PURE__ */ jsx("span", { className: "margin-left-5", children: onUpperLabel ?? "No limit" });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "margin-left-5", children: onUpperLabel ?? "No limit" });
     } else if ((value === min2 || value === null) && (setNullOnLower || onLowerLabel !== null)) {
-      return /* @__PURE__ */ jsx("span", { className: "margin-left-5", children: onLowerLabel ?? "Not set" });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "margin-left-5", children: onLowerLabel ?? "Not set" });
     } else {
-      return /* @__PURE__ */ jsx("span", { className: "margin-left-5 margin-bottom-5", children: /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "margin-left-5 margin-bottom-5", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           id: `id-for-${name}`,
@@ -14350,17 +17557,17 @@ const NumberInput = memo((props) => {
   ]);
   const renderLabel = useMemo(() => {
     if (labelInfo) {
-      return /* @__PURE__ */ jsx("div", { className: "number-input-info-label-wrapper", children: /* @__PURE__ */ jsx(InfoLabel, { htmlFor: `id-for-${name}`, label, info: labelInfo, children: getLabelValue() }) });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "number-input-info-label-wrapper", children: /* @__PURE__ */ jsxRuntimeExports.jsx(InfoLabel, { htmlFor: `id-for-${name}`, label, info: labelInfo, children: getLabelValue() }) });
     }
-    return /* @__PURE__ */ jsx("div", { className: "number-input-label-wrapper", children: /* @__PURE__ */ jsxs("label", { htmlFor: `id-for-${name}`, children: [
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "number-input-label-wrapper", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: `id-for-${name}`, children: [
       label,
       " ",
       getLabelValue()
     ] }) });
   }, [name, label, getLabelValue, labelInfo]);
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
     renderLabel,
-    /* @__PURE__ */ jsxs(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(
       Root,
       {
         className: "slider-root",
@@ -14371,8 +17578,8 @@ const NumberInput = memo((props) => {
         onValueChange: handleSliderChange,
         disabled,
         children: [
-          /* @__PURE__ */ jsx(Track, { className: "slider-track", children: /* @__PURE__ */ jsx(Range, { className: "slider-range" }) }),
-          /* @__PURE__ */ jsx(Thumb, { className: "slider-thumb" })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Track, { className: "slider-track", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Range, { className: "slider-range" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Thumb, { className: "slider-thumb" })
         ]
       }
     )
@@ -14598,7 +17805,7 @@ const FloatingPanel = ({
     zIndex: 1e6,
     minWidth: 260
   };
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
       ref: rootRef,
@@ -14606,7 +17813,7 @@ const FloatingPanel = ({
       style: isCollapsed ? collapsedStyle : expandedStyle,
       "aria-expanded": !isCollapsed,
       children: [
-        /* @__PURE__ */ jsxs(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
           "div",
           {
             className: `fp-header ${headerClassName}`,
@@ -14620,7 +17827,7 @@ const FloatingPanel = ({
             role: "toolbar",
             "aria-label": "Panel header",
             children: [
-              headerLeft && /* @__PURE__ */ jsx(
+              headerLeft && /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "div",
                 {
                   className: "fp-left",
@@ -14632,9 +17839,9 @@ const FloatingPanel = ({
                   children: headerLeft
                 }
               ),
-              /* @__PURE__ */ jsx("div", { className: "fp-title", title: typeof title === "string" ? title : void 0, children: title }),
-              /* @__PURE__ */ jsxs("div", { className: "fp-right", style: { display: "flex", alignItems: "center", gap: 0 }, children: [
-                /* @__PURE__ */ jsx(
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fp-title", title: typeof title === "string" ? title : void 0, children: title }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "fp-right", style: { display: "flex", alignItems: "center", gap: 0 }, children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "button",
                   {
                     title: isCollapsed ? "Expand" : "Collapse",
@@ -14642,7 +17849,7 @@ const FloatingPanel = ({
                     onClick: toggleCollapsed,
                     className: "fp-toggle",
                     "aria-label": isCollapsed ? "Expand panel" : "Collapse panel",
-                    children: isCollapsed ? /* @__PURE__ */ jsx(FaChevronUp, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronDown, { size: 14 })
+                    children: isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaChevronUp, { size: 14 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaChevronDown, { size: 14 })
                   }
                 ),
                 headerRight
@@ -14650,7 +17857,7 @@ const FloatingPanel = ({
             ]
           }
         ),
-        !isCollapsed && /* @__PURE__ */ jsx("div", { className: "fp-content", children: children ?? /* @__PURE__ */ jsx("div", { style: { padding: 12 }, children: "Your content here…" }) })
+        !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fp-content", children: children ?? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { padding: 12 }, children: "Your content here…" }) })
       ]
     }
   );
@@ -14674,10 +17881,10 @@ const ResumeSpinner = () => {
     const t = setTimeout(() => setPhase("done"), 2e3);
     return () => clearTimeout(t);
   }, []);
-  return phase === "spin" ? /* @__PURE__ */ jsxs("div", { className: "flex-align-center items-center gap-2", children: [
-    /* @__PURE__ */ jsx("span", { className: "animate-spin inline-block", children: "⏳" }),
-    /* @__PURE__ */ jsx("span", { children: "Resuming a previously stored state…" })
-  ] }) : /* @__PURE__ */ jsx("div", { children: "✅ Resume complete!" });
+  return phase === "spin" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center items-center gap-2", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "animate-spin inline-block", children: "⏳" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Resuming a previously stored state…" })
+  ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "✅ Resume complete!" });
 };
 const getParticipants = (ev) => {
   const sender = ev.sender || ev.content.sender;
@@ -14694,46 +17901,46 @@ const renderEvent = (ev) => {
   switch (ev.type) {
     case "empty": {
       const c = ev;
-      return /* @__PURE__ */ jsx("div", { className: "text-gray-700 font-large", children: c.content });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-700 font-large", children: c.content });
     }
     case "text": {
       const c = ev.content;
       const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("div", { className: "text-amber-500 font-semibold", children: [
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-amber-500 font-semibold", children: [
           sender,
           " ",
-          /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: "→" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400", children: "→" }),
           " ",
           recipient
         ] }),
-        typeof c.content === "string" ? /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.content }) : typeof c.content === "object" ? /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: JSON.stringify(c.content) }) : /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: String(c.content) })
+        typeof c.content === "string" ? /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.content }) : typeof c.content === "object" ? /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: JSON.stringify(c.content) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: String(c.content) })
       ] });
     }
     case "post_carryover_processing": {
       const c = ev.content;
       const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("div", { className: "text-pink-500 font-semibold", children: [
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-pink-500 font-semibold", children: [
           sender,
           " ",
-          /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: "→" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400", children: "→" }),
           " ",
           recipient
         ] }),
-        /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.message })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.message })
       ] });
     }
     case "group_chat_run_chat": {
       const c = ev.content;
-      return /* @__PURE__ */ jsxs("div", { className: "text-green-600 font-semibold", children: [
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-green-600 font-semibold", children: [
         "Next speaker: ",
         ev.speaker || c.speaker
       ] });
     }
     case "using_auto_reply": {
       const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxs("div", { className: "text-gray-700", children: [
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700", children: [
         "sender=",
         sender,
         ", recipient=",
@@ -14743,24 +17950,24 @@ const renderEvent = (ev) => {
     case "tool_call": {
       const c = ev.content;
       const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("div", { className: "text-gray-700 mb-1", children: [
-          /* @__PURE__ */ jsx("span", { className: "font-medium", children: sender }),
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700 mb-1", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: sender }),
           " ",
-          /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: "→" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400", children: "→" }),
           " ",
-          /* @__PURE__ */ jsx("span", { className: "font-medium", children: recipient })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: recipient })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-1", children: c.tool_calls?.map((tc, i) => {
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1", children: c.tool_calls?.map((tc, i) => {
           const args = tc.function.arguments && tc.function.arguments !== "{}" ? tc.function.arguments : "none";
-          return /* @__PURE__ */ jsxs("div", { className: "flex-align-center items-start gap-2", children: [
-            /* @__PURE__ */ jsx("span", { children: "🔧" }),
-            /* @__PURE__ */ jsxs("div", { children: [
-              /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center items-start gap-2", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "🔧" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-semibold", children: [
                 "Calling: ",
                 tc.function.name
               ] }),
-              /* @__PURE__ */ jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
                 "args: ",
                 args
               ] })
@@ -14772,16 +17979,16 @@ const renderEvent = (ev) => {
     case "execute_function": {
       const c = ev.content;
       const { recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-semibold", children: [
           "⚡ Executing: ",
           c.func_name
         ] }),
-        /* @__PURE__ */ jsxs("div", { className: "text-sm text-gray-700", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm text-gray-700", children: [
           "→ Target: ",
           recipient
         ] }),
-        /* @__PURE__ */ jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
           "→ Args: ",
           formatArgs(ev.arguments || c.arguments)
         ] })
@@ -14791,13 +17998,13 @@ const renderEvent = (ev) => {
       const c = ev.content ? ev.content : ev;
       const ok = !!c.is_exec_success;
       const transferred = typeof c.content === "object" && c.content && "agent_name" in c.content ? c.content.agent_name : void 0;
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("div", { className: ok ? "text-green-600 font-semibold" : "text-red-600 font-semibold", children: [
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: ok ? "text-green-600 font-semibold" : "text-red-600 font-semibold", children: [
           ok ? "✅ Success" : "❌ Failed",
           ": ",
           c.func_name
         ] }),
-        transferred && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
+        transferred && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm", children: [
           "→ Transferred to: ",
           transferred
         ] })
@@ -14806,18 +18013,18 @@ const renderEvent = (ev) => {
     case "input_request":
     case "debug_input_request": {
       const c = ev.content ? ev.content : ev;
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "👤 Provide your input:" }),
-        c.prompt && /* @__PURE__ */ jsx("div", { className: "text-sm", children: c.prompt })
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold", children: "👤 Provide your input:" }),
+        c.prompt && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: c.prompt })
       ] });
     }
     case "tool_response": {
       const c = ev.content ? ev.content : ev;
       const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("div", { children: "🔄 Tool Response:" }),
-        /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words", children: c.content }),
-        /* @__PURE__ */ jsxs("div", { className: "text-xs", children: [
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "🔄 Tool Response:" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap break-words", children: c.content }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs", children: [
           "→ From: ",
           sender,
           " to ",
@@ -14827,9 +18034,9 @@ const renderEvent = (ev) => {
     }
     case "termination": {
       const c = ev.content ? ev.content : ev;
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "Termination met" }),
-        c.termination_reason && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold", children: "Termination met" }),
+        c.termination_reason && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm", children: [
           "→ Termination_reason: ",
           c.termination_reason
         ] })
@@ -14837,32 +18044,32 @@ const renderEvent = (ev) => {
     }
     case "termination_and_human_reply_no_input": {
       const c = ev.content ? ev.content : ev;
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "No human input" }),
-        c.no_human_input_msg && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold", children: "No human input" }),
+        c.no_human_input_msg && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm", children: [
           "→ Message: ",
           c.no_human_input_msg
         ] })
       ] });
     }
     case "run_completion":
-      return /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "🏁 Run completed" });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold", children: "🏁 Run completed" });
     case "generate_code_execution_reply":
-      return /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "💻 Code executed" });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold", children: "💻 Code executed" });
     case "group_chat_resume":
-      return /* @__PURE__ */ jsx(ResumeSpinner, {});
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(ResumeSpinner, {});
     case "info":
-      return /* @__PURE__ */ jsx("div", { className: "info", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
     case "error":
       if (!ev.content && ev.error) {
-        return /* @__PURE__ */ jsx("div", { className: "error", children: ev.error });
+        return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "error", children: ev.error });
       }
-      return /* @__PURE__ */ jsx("div", { className: "error", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "error", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
     default:
-      return /* @__PURE__ */ jsxs("div", { className: "text-amber-700", children: [
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-amber-700", children: [
         "⚠️ Unknown event type: ",
-        /* @__PURE__ */ jsx("span", { className: "font-mono", children: ev.type }),
-        /* @__PURE__ */ jsxs("pre", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono", children: ev.type }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("pre", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
           "Raw event: ",
           JSON.stringify(ev, null, 2)
         ] })
@@ -14882,18 +18089,18 @@ const EventConsole = ({ events, printRaw, autoScroll, className }) => {
       el.scrollTop = el.scrollHeight;
     }
   }, [events, autoScroll]);
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
       className: ["flex-align-center flex-column full-height json", className].filter(Boolean).join(" "),
       "data-testid": "events-console",
-      children: /* @__PURE__ */ jsx(
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         "div",
         {
           ref: listRef,
           className: "flex-1 full-width overflow-auto p-3 space-y-3 text-sm font-mono leading-5",
-          children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: ev.type === "empty" ? "center" : "entry", children: [
-            printRaw && /* @__PURE__ */ jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
+          children: events.map((ev, idx) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: ev.type === "empty" ? "center" : "entry", children: [
+            printRaw && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
               "Raw event: ",
               JSON.stringify(ev, null, 2)
             ] }),
@@ -14904,6 +18111,399 @@ const EventConsole = ({ events, printRaw, autoScroll, className }) => {
     }
   );
 };
+const isIterable = (obj) => Symbol.iterator in obj;
+const hasIterableEntries = (value) => (
+  // HACK: avoid checking entries type
+  "entries" in value
+);
+const compareEntries = (valueA, valueB) => {
+  const mapA = valueA instanceof Map ? valueA : new Map(valueA.entries());
+  const mapB = valueB instanceof Map ? valueB : new Map(valueB.entries());
+  if (mapA.size !== mapB.size) {
+    return false;
+  }
+  for (const [key, value] of mapA) {
+    if (!mapB.has(key) || !Object.is(value, mapB.get(key))) {
+      return false;
+    }
+  }
+  return true;
+};
+const compareIterables = (valueA, valueB) => {
+  const iteratorA = valueA[Symbol.iterator]();
+  const iteratorB = valueB[Symbol.iterator]();
+  let nextA = iteratorA.next();
+  let nextB = iteratorB.next();
+  while (!nextA.done && !nextB.done) {
+    if (!Object.is(nextA.value, nextB.value)) {
+      return false;
+    }
+    nextA = iteratorA.next();
+    nextB = iteratorB.next();
+  }
+  return !!nextA.done && !!nextB.done;
+};
+function shallow(valueA, valueB) {
+  if (Object.is(valueA, valueB)) {
+    return true;
+  }
+  if (typeof valueA !== "object" || valueA === null || typeof valueB !== "object" || valueB === null) {
+    return false;
+  }
+  if (Object.getPrototypeOf(valueA) !== Object.getPrototypeOf(valueB)) {
+    return false;
+  }
+  if (isIterable(valueA) && isIterable(valueB)) {
+    if (hasIterableEntries(valueA) && hasIterableEntries(valueB)) {
+      return compareEntries(valueA, valueB);
+    }
+    return compareIterables(valueA, valueB);
+  }
+  return compareEntries(
+    { entries: () => Object.entries(valueA) },
+    { entries: () => Object.entries(valueB) }
+  );
+}
+var withSelector = { exports: {} };
+var withSelector_production = {};
+var shim = { exports: {} };
+var useSyncExternalStoreShim_production = {};
+/**
+ * @license React
+ * use-sync-external-store-shim.production.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var hasRequiredUseSyncExternalStoreShim_production;
+function requireUseSyncExternalStoreShim_production() {
+  if (hasRequiredUseSyncExternalStoreShim_production) return useSyncExternalStoreShim_production;
+  hasRequiredUseSyncExternalStoreShim_production = 1;
+  var React2 = React__default;
+  function is(x, y) {
+    return x === y && (0 !== x || 1 / x === 1 / y) || x !== x && y !== y;
+  }
+  var objectIs = "function" === typeof Object.is ? Object.is : is, useState2 = React2.useState, useEffect2 = React2.useEffect, useLayoutEffect3 = React2.useLayoutEffect, useDebugValue = React2.useDebugValue;
+  function useSyncExternalStore$2(subscribe, getSnapshot) {
+    var value = getSnapshot(), _useState = useState2({ inst: { value, getSnapshot } }), inst = _useState[0].inst, forceUpdate = _useState[1];
+    useLayoutEffect3(
+      function() {
+        inst.value = value;
+        inst.getSnapshot = getSnapshot;
+        checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+      },
+      [subscribe, value, getSnapshot]
+    );
+    useEffect2(
+      function() {
+        checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+        return subscribe(function() {
+          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+        });
+      },
+      [subscribe]
+    );
+    useDebugValue(value);
+    return value;
+  }
+  function checkIfSnapshotChanged(inst) {
+    var latestGetSnapshot = inst.getSnapshot;
+    inst = inst.value;
+    try {
+      var nextValue = latestGetSnapshot();
+      return !objectIs(inst, nextValue);
+    } catch (error) {
+      return true;
+    }
+  }
+  function useSyncExternalStore$1(subscribe, getSnapshot) {
+    return getSnapshot();
+  }
+  var shim2 = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1 : useSyncExternalStore$2;
+  useSyncExternalStoreShim_production.useSyncExternalStore = void 0 !== React2.useSyncExternalStore ? React2.useSyncExternalStore : shim2;
+  return useSyncExternalStoreShim_production;
+}
+var useSyncExternalStoreShim_development = {};
+/**
+ * @license React
+ * use-sync-external-store-shim.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var hasRequiredUseSyncExternalStoreShim_development;
+function requireUseSyncExternalStoreShim_development() {
+  if (hasRequiredUseSyncExternalStoreShim_development) return useSyncExternalStoreShim_development;
+  hasRequiredUseSyncExternalStoreShim_development = 1;
+  "production" !== process.env.NODE_ENV && (function() {
+    function is(x, y) {
+      return x === y && (0 !== x || 1 / x === 1 / y) || x !== x && y !== y;
+    }
+    function useSyncExternalStore$2(subscribe, getSnapshot) {
+      didWarnOld18Alpha || void 0 === React2.startTransition || (didWarnOld18Alpha = true, console.error(
+        "You are using an outdated, pre-release alpha of React 18 that does not support useSyncExternalStore. The use-sync-external-store shim will not work correctly. Upgrade to a newer pre-release."
+      ));
+      var value = getSnapshot();
+      if (!didWarnUncachedGetSnapshot) {
+        var cachedValue = getSnapshot();
+        objectIs(value, cachedValue) || (console.error(
+          "The result of getSnapshot should be cached to avoid an infinite loop"
+        ), didWarnUncachedGetSnapshot = true);
+      }
+      cachedValue = useState2({
+        inst: { value, getSnapshot }
+      });
+      var inst = cachedValue[0].inst, forceUpdate = cachedValue[1];
+      useLayoutEffect3(
+        function() {
+          inst.value = value;
+          inst.getSnapshot = getSnapshot;
+          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+        },
+        [subscribe, value, getSnapshot]
+      );
+      useEffect2(
+        function() {
+          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+          return subscribe(function() {
+            checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+          });
+        },
+        [subscribe]
+      );
+      useDebugValue(value);
+      return value;
+    }
+    function checkIfSnapshotChanged(inst) {
+      var latestGetSnapshot = inst.getSnapshot;
+      inst = inst.value;
+      try {
+        var nextValue = latestGetSnapshot();
+        return !objectIs(inst, nextValue);
+      } catch (error) {
+        return true;
+      }
+    }
+    function useSyncExternalStore$1(subscribe, getSnapshot) {
+      return getSnapshot();
+    }
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
+    var React2 = React__default, objectIs = "function" === typeof Object.is ? Object.is : is, useState2 = React2.useState, useEffect2 = React2.useEffect, useLayoutEffect3 = React2.useLayoutEffect, useDebugValue = React2.useDebugValue, didWarnOld18Alpha = false, didWarnUncachedGetSnapshot = false, shim2 = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1 : useSyncExternalStore$2;
+    useSyncExternalStoreShim_development.useSyncExternalStore = void 0 !== React2.useSyncExternalStore ? React2.useSyncExternalStore : shim2;
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
+  })();
+  return useSyncExternalStoreShim_development;
+}
+var hasRequiredShim;
+function requireShim() {
+  if (hasRequiredShim) return shim.exports;
+  hasRequiredShim = 1;
+  if (process.env.NODE_ENV === "production") {
+    shim.exports = /* @__PURE__ */ requireUseSyncExternalStoreShim_production();
+  } else {
+    shim.exports = /* @__PURE__ */ requireUseSyncExternalStoreShim_development();
+  }
+  return shim.exports;
+}
+/**
+ * @license React
+ * use-sync-external-store-shim/with-selector.production.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var hasRequiredWithSelector_production;
+function requireWithSelector_production() {
+  if (hasRequiredWithSelector_production) return withSelector_production;
+  hasRequiredWithSelector_production = 1;
+  var React2 = React__default, shim2 = /* @__PURE__ */ requireShim();
+  function is(x, y) {
+    return x === y && (0 !== x || 1 / x === 1 / y) || x !== x && y !== y;
+  }
+  var objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore = shim2.useSyncExternalStore, useRef2 = React2.useRef, useEffect2 = React2.useEffect, useMemo2 = React2.useMemo, useDebugValue = React2.useDebugValue;
+  withSelector_production.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual2) {
+    var instRef = useRef2(null);
+    if (null === instRef.current) {
+      var inst = { hasValue: false, value: null };
+      instRef.current = inst;
+    } else inst = instRef.current;
+    instRef = useMemo2(
+      function() {
+        function memoizedSelector(nextSnapshot) {
+          if (!hasMemo) {
+            hasMemo = true;
+            memoizedSnapshot = nextSnapshot;
+            nextSnapshot = selector(nextSnapshot);
+            if (void 0 !== isEqual2 && inst.hasValue) {
+              var currentSelection = inst.value;
+              if (isEqual2(currentSelection, nextSnapshot))
+                return memoizedSelection = currentSelection;
+            }
+            return memoizedSelection = nextSnapshot;
+          }
+          currentSelection = memoizedSelection;
+          if (objectIs(memoizedSnapshot, nextSnapshot)) return currentSelection;
+          var nextSelection = selector(nextSnapshot);
+          if (void 0 !== isEqual2 && isEqual2(currentSelection, nextSelection))
+            return memoizedSnapshot = nextSnapshot, currentSelection;
+          memoizedSnapshot = nextSnapshot;
+          return memoizedSelection = nextSelection;
+        }
+        var hasMemo = false, memoizedSnapshot, memoizedSelection, maybeGetServerSnapshot = void 0 === getServerSnapshot ? null : getServerSnapshot;
+        return [
+          function() {
+            return memoizedSelector(getSnapshot());
+          },
+          null === maybeGetServerSnapshot ? void 0 : function() {
+            return memoizedSelector(maybeGetServerSnapshot());
+          }
+        ];
+      },
+      [getSnapshot, getServerSnapshot, selector, isEqual2]
+    );
+    var value = useSyncExternalStore(subscribe, instRef[0], instRef[1]);
+    useEffect2(
+      function() {
+        inst.hasValue = true;
+        inst.value = value;
+      },
+      [value]
+    );
+    useDebugValue(value);
+    return value;
+  };
+  return withSelector_production;
+}
+var withSelector_development = {};
+/**
+ * @license React
+ * use-sync-external-store-shim/with-selector.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var hasRequiredWithSelector_development;
+function requireWithSelector_development() {
+  if (hasRequiredWithSelector_development) return withSelector_development;
+  hasRequiredWithSelector_development = 1;
+  "production" !== process.env.NODE_ENV && (function() {
+    function is(x, y) {
+      return x === y && (0 !== x || 1 / x === 1 / y) || x !== x && y !== y;
+    }
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
+    var React2 = React__default, shim2 = /* @__PURE__ */ requireShim(), objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore = shim2.useSyncExternalStore, useRef2 = React2.useRef, useEffect2 = React2.useEffect, useMemo2 = React2.useMemo, useDebugValue = React2.useDebugValue;
+    withSelector_development.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual2) {
+      var instRef = useRef2(null);
+      if (null === instRef.current) {
+        var inst = { hasValue: false, value: null };
+        instRef.current = inst;
+      } else inst = instRef.current;
+      instRef = useMemo2(
+        function() {
+          function memoizedSelector(nextSnapshot) {
+            if (!hasMemo) {
+              hasMemo = true;
+              memoizedSnapshot = nextSnapshot;
+              nextSnapshot = selector(nextSnapshot);
+              if (void 0 !== isEqual2 && inst.hasValue) {
+                var currentSelection = inst.value;
+                if (isEqual2(currentSelection, nextSnapshot))
+                  return memoizedSelection = currentSelection;
+              }
+              return memoizedSelection = nextSnapshot;
+            }
+            currentSelection = memoizedSelection;
+            if (objectIs(memoizedSnapshot, nextSnapshot))
+              return currentSelection;
+            var nextSelection = selector(nextSnapshot);
+            if (void 0 !== isEqual2 && isEqual2(currentSelection, nextSelection))
+              return memoizedSnapshot = nextSnapshot, currentSelection;
+            memoizedSnapshot = nextSnapshot;
+            return memoizedSelection = nextSelection;
+          }
+          var hasMemo = false, memoizedSnapshot, memoizedSelection, maybeGetServerSnapshot = void 0 === getServerSnapshot ? null : getServerSnapshot;
+          return [
+            function() {
+              return memoizedSelector(getSnapshot());
+            },
+            null === maybeGetServerSnapshot ? void 0 : function() {
+              return memoizedSelector(maybeGetServerSnapshot());
+            }
+          ];
+        },
+        [getSnapshot, getServerSnapshot, selector, isEqual2]
+      );
+      var value = useSyncExternalStore(subscribe, instRef[0], instRef[1]);
+      useEffect2(
+        function() {
+          inst.hasValue = true;
+          inst.value = value;
+        },
+        [value]
+      );
+      useDebugValue(value);
+      return value;
+    };
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
+  })();
+  return withSelector_development;
+}
+var hasRequiredWithSelector;
+function requireWithSelector() {
+  if (hasRequiredWithSelector) return withSelector.exports;
+  hasRequiredWithSelector = 1;
+  if (process.env.NODE_ENV === "production") {
+    withSelector.exports = /* @__PURE__ */ requireWithSelector_production();
+  } else {
+    withSelector.exports = /* @__PURE__ */ requireWithSelector_development();
+  }
+  return withSelector.exports;
+}
+var withSelectorExports = /* @__PURE__ */ requireWithSelector();
+const useSyncExternalStoreExports = /* @__PURE__ */ getDefaultExportFromCjs(withSelectorExports);
+const createStoreImpl = (createState) => {
+  let state;
+  const listeners = /* @__PURE__ */ new Set();
+  const setState = (partial, replace) => {
+    const nextState = typeof partial === "function" ? partial(state) : partial;
+    if (!Object.is(nextState, state)) {
+      const previousState = state;
+      state = (replace != null ? replace : typeof nextState !== "object" || nextState === null) ? nextState : Object.assign({}, state, nextState);
+      listeners.forEach((listener) => listener(state, previousState));
+    }
+  };
+  const getState2 = () => state;
+  const getInitialState = () => initialState2;
+  const subscribe = (listener) => {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+  };
+  const api = { setState, getState: getState2, getInitialState, subscribe };
+  const initialState2 = state = createState(setState, getState2, api);
+  return api;
+};
+const createStore = ((createState) => createState ? createStoreImpl(createState) : createStoreImpl);
+const { useSyncExternalStoreWithSelector } = useSyncExternalStoreExports;
+const identity = (arg) => arg;
+function useStoreWithEqualityFn(api, selector = identity, equalityFn) {
+  const slice = useSyncExternalStoreWithSelector(
+    api.subscribe,
+    api.getState,
+    api.getInitialState,
+    selector,
+    equalityFn
+  );
+  React__default.useDebugValue(slice);
+  return slice;
+}
 const WaldiezContext = createContext(null);
 function useWaldiez(selector, equalityFn) {
   const store = useContext(WaldiezContext);
@@ -14919,6 +18519,151 @@ const useWaldiezHistory = (selector) => {
     throw new Error("Missing WaldiezContext.Provider in the tree");
   }
   return useStoreWithEqualityFn(store.temporal, selector, shallow);
+};
+const richTypes = { Date: true, RegExp: true, String: true, Number: true };
+function diff(obj, newObj, options = { cyclesFix: true }, _stack = []) {
+  let diffs = [];
+  const isObjArray = Array.isArray(obj);
+  for (const key in obj) {
+    const objKey = obj[key];
+    const path = isObjArray ? +key : key;
+    if (!(key in newObj)) {
+      diffs.push({
+        type: "REMOVE",
+        path: [path],
+        oldValue: obj[key]
+      });
+      continue;
+    }
+    const newObjKey = newObj[key];
+    const areCompatibleObjects = typeof objKey === "object" && typeof newObjKey === "object" && Array.isArray(objKey) === Array.isArray(newObjKey);
+    if (objKey && newObjKey && areCompatibleObjects && !richTypes[Object.getPrototypeOf(objKey)?.constructor?.name] && (!options.cyclesFix || !_stack.includes(objKey))) {
+      diffs.push.apply(diffs, diff(objKey, newObjKey, options, options.cyclesFix ? _stack.concat([objKey]) : []).map((difference) => {
+        difference.path.unshift(path);
+        return difference;
+      }));
+    } else if (objKey !== newObjKey && // treat NaN values as equivalent
+    !(Number.isNaN(objKey) && Number.isNaN(newObjKey)) && !(areCompatibleObjects && (isNaN(objKey) ? objKey + "" === newObjKey + "" : +objKey === +newObjKey))) {
+      diffs.push({
+        path: [path],
+        type: "CHANGE",
+        value: newObjKey,
+        oldValue: objKey
+      });
+    }
+  }
+  const isNewObjArray = Array.isArray(newObj);
+  for (const key in newObj) {
+    if (!(key in obj)) {
+      diffs.push({
+        type: "CREATE",
+        path: [isNewObjArray ? +key : key],
+        value: newObj[key]
+      });
+    }
+  }
+  return diffs;
+}
+var temporalStateCreator = (userSet, userGet, options) => {
+  const stateCreator = (set, get) => {
+    return {
+      pastStates: options?.pastStates || [],
+      futureStates: options?.futureStates || [],
+      undo: (steps = 1) => {
+        if (get().pastStates.length) {
+          const currentState = options?.partialize?.(userGet()) || userGet();
+          const statesToApply = get().pastStates.splice(-steps, steps);
+          const nextState = statesToApply.shift();
+          userSet(nextState);
+          set({
+            pastStates: get().pastStates,
+            futureStates: get().futureStates.concat(
+              options?.diff?.(currentState, nextState) || currentState,
+              statesToApply.reverse()
+            )
+          });
+        }
+      },
+      redo: (steps = 1) => {
+        if (get().futureStates.length) {
+          const currentState = options?.partialize?.(userGet()) || userGet();
+          const statesToApply = get().futureStates.splice(-steps, steps);
+          const nextState = statesToApply.shift();
+          userSet(nextState);
+          set({
+            pastStates: get().pastStates.concat(
+              options?.diff?.(currentState, nextState) || currentState,
+              statesToApply.reverse()
+            ),
+            futureStates: get().futureStates
+          });
+        }
+      },
+      clear: () => set({ pastStates: [], futureStates: [] }),
+      isTracking: true,
+      pause: () => set({ isTracking: false }),
+      resume: () => set({ isTracking: true }),
+      setOnSave: (_onSave) => set({ _onSave }),
+      // Internal properties
+      _onSave: options?.onSave,
+      _handleSet: (pastState, replace, currentState, deltaState) => {
+        if (options?.limit && get().pastStates.length >= options?.limit) {
+          get().pastStates.shift();
+        }
+        get()._onSave?.(pastState, currentState);
+        set({
+          pastStates: get().pastStates.concat(deltaState || pastState),
+          futureStates: []
+        });
+      }
+    };
+  };
+  return stateCreator;
+};
+var temporal = (config, options) => {
+  const configWithTemporal = (set, get, store) => {
+    store.temporal = createStore(
+      options?.wrapTemporal?.(temporalStateCreator(set, get, options)) || temporalStateCreator(set, get, options)
+    );
+    const curriedHandleSet = options?.handleSet?.(
+      store.temporal.getState()._handleSet
+    ) || store.temporal.getState()._handleSet;
+    const temporalHandleSet = (pastState) => {
+      if (!store.temporal.getState().isTracking) return;
+      const currentState = options?.partialize?.(get()) || get();
+      const deltaState = options?.diff?.(pastState, currentState);
+      if (
+        // Don't call handleSet if state hasn't changed, as determined by diff fn or equality fn
+        !// If the user has provided a diff function but nothing has been changed, deltaState will be null
+        (deltaState === null || // If the user has provided an equality function, use it
+        options?.equality?.(pastState, currentState))
+      ) {
+        curriedHandleSet(
+          pastState,
+          void 0,
+          currentState,
+          deltaState
+        );
+      }
+    };
+    const setState = store.setState;
+    store.setState = (...args) => {
+      const pastState = options?.partialize?.(get()) || get();
+      setState(...args);
+      temporalHandleSet(pastState);
+    };
+    return config(
+      // Modify the set function to call the userlandSet function
+      (...args) => {
+        const pastState = options?.partialize?.(get()) || get();
+        set(...args);
+        temporalHandleSet(pastState);
+      },
+      get,
+      store
+    );
+  };
+  return configWithTemporal;
 };
 const getAgentNode = (agentType, position, parentId) => {
   const newAgent = WaldiezAgent.create(agentType);
@@ -15280,9 +19025,9 @@ const updateNestedEdges = (get, set) => {
 };
 const resetSyncEdgeOrders = (get, set) => {
   const edges = get().edges;
-  const sorted = edges.slice().sort((a, b) => {
+  const sorted = edges.slice().sort((a, b2) => {
     const aOrder = a.data?.order ?? -1;
-    const bOrder = b.data?.order ?? -1;
+    const bOrder = b2.data?.order ?? -1;
     return aOrder - bOrder;
   });
   const usedOrders = /* @__PURE__ */ new Set();
@@ -16305,7 +20050,7 @@ class WaldiezFlowStore {
         remainingEdges.push(edge);
       }
     });
-    const sortedEdgesUsed = usedEdges.sort((a, b) => (a.data?.order ?? 0) - (b.data?.order ?? 0));
+    const sortedEdgesUsed = usedEdges.sort((a, b2) => (a.data?.order ?? 0) - (b2.data?.order ?? 0));
     return { used: sortedEdgesUsed, remaining: remainingEdges };
   };
   /**
@@ -17336,7 +21081,7 @@ function WaldiezProvider({ children, ...props }) {
     });
     return storeRef.current;
   }, [flowId]);
-  return /* @__PURE__ */ jsx(WaldiezContext.Provider, { value: store, children });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezContext.Provider, { value: store, children });
 }
 const eventToActivity = (e) => {
   if (!e) {
@@ -17524,14 +21269,14 @@ const StepByStepView = ({ flowId, stepByStep }) => {
     return null;
   }
   const mayClose = canClose || !!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error";
-  const headerLeft = /* @__PURE__ */ jsxs("div", { className: "header", children: [
-    /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
-    /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Run" }),
-    badgeText && /* @__PURE__ */ jsx("div", { className: `badge ${badgeText}`, children: badgeText }),
-    !badgeText && !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
-    !badgeText && stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Running" })
+  const headerLeft = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "header", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(FaBug, { className: "icon-bug", size: 18 }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "title", children: "Step-by-step Run" }),
+    badgeText && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `badge ${badgeText}`, children: badgeText }),
+    !badgeText && !stepByStep?.active && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "badge", children: "Finished" }),
+    !badgeText && stepByStep?.active && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "badge", children: "Running" })
   ] });
-  const headerRight = mayClose ? /* @__PURE__ */ jsx(
+  const headerRight = mayClose ? /* @__PURE__ */ jsxRuntimeExports.jsx(
     "button",
     {
       title: "Close",
@@ -17539,10 +21284,10 @@ const StepByStepView = ({ flowId, stepByStep }) => {
       onClick: stepByStep?.handlers?.close,
       className: "header-toggle",
       "aria-label": "Close panel",
-      children: /* @__PURE__ */ jsx(FaX, { size: 14 })
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaX, { size: 14 })
     }
   ) : void 0;
-  return /* @__PURE__ */ jsx("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
     FloatingPanel,
     {
       flowId,
@@ -17553,9 +21298,9 @@ const StepByStepView = ({ flowId, stepByStep }) => {
       minHeight: 320,
       minWidth: 420,
       maxWidth: "80vw",
-      children: /* @__PURE__ */ jsxs("div", { className: "content", children: [
-        stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
-          /* @__PURE__ */ jsxs(
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "content", children: [
+        stepByStep?.pendingControlInput && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "controls", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "button",
             {
               className: "btn btn-primary",
@@ -17563,13 +21308,13 @@ const StepByStepView = ({ flowId, stepByStep }) => {
               onClick: () => onControl("continue"),
               disabled: !stepByStep?.pendingControlInput,
               children: [
-                /* @__PURE__ */ jsx(FaStepForward, {}),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(FaStepForward, {}),
                 " ",
-                /* @__PURE__ */ jsx("span", { children: "Continue" })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Continue" })
               ]
             }
           ),
-          /* @__PURE__ */ jsxs(
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "button",
             {
               className: "btn btn-secondary",
@@ -17577,13 +21322,13 @@ const StepByStepView = ({ flowId, stepByStep }) => {
               onClick: () => onControl("run"),
               disabled: !stepByStep?.pendingControlInput,
               children: [
-                /* @__PURE__ */ jsx(FaPlay, {}),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(FaPlay, {}),
                 " ",
-                /* @__PURE__ */ jsx("span", { children: "Run" })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Run" })
               ]
             }
           ),
-          /* @__PURE__ */ jsxs(
+          /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "button",
             {
               className: "btn btn-danger",
@@ -17591,18 +21336,18 @@ const StepByStepView = ({ flowId, stepByStep }) => {
               onClick: () => onControl("quit"),
               disabled: !stepByStep?.pendingControlInput,
               children: [
-                /* @__PURE__ */ jsx(FaStop, {}),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(FaStop, {}),
                 " ",
-                /* @__PURE__ */ jsx("span", { children: "Quit" })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Quit" })
               ]
             }
           )
         ] }),
-        stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
-          /* @__PURE__ */ jsx("div", { className: "card-title", children: "Waiting for input" }),
-          /* @__PURE__ */ jsx("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
-          /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
-            /* @__PURE__ */ jsx(
+        stepByStep?.activeRequest && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card card--pending", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "card-title", children: "Waiting for input" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "input-row", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
               {
                 className: "input",
@@ -17616,10 +21361,10 @@ const StepByStepView = ({ flowId, stepByStep }) => {
                 autoComplete: "off"
               }
             ),
-            /* @__PURE__ */ jsx("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
           ] })
         ] }),
-        reducedHistory.length > 0 ? /* @__PURE__ */ jsx("div", { className: "event-history", children: /* @__PURE__ */ jsx(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx("div", { className: "event-history", children: /* @__PURE__ */ jsx(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
+        reducedHistory.length > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "event-history", children: /* @__PURE__ */ jsxRuntimeExports.jsx(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "event-history", children: /* @__PURE__ */ jsxRuntimeExports.jsx(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
       ] })
     }
   ) });
@@ -17689,8 +21434,8 @@ const StringList = memo((props) => {
   );
   const renderItems = useMemo(
     () => items.map((item, index2) => {
-      return /* @__PURE__ */ jsxs("div", { className: "list-entry", children: [
-        /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "list-entry", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
           {
             placeholder,
@@ -17702,7 +21447,7 @@ const StringList = memo((props) => {
             "data-testid": `list-entry-item-${itemsType}-${index2}`
           }
         ),
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             type: "button",
@@ -17713,7 +21458,7 @@ const StringList = memo((props) => {
             id: `delete-list-entry-${itemsType}-${index2}`,
             "aria-label": `Delete item: ${item}`,
             "data-testid": `delete-list-entry-${itemsType}-${index2}`,
-            children: /* @__PURE__ */ jsx(FaTrash, {})
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaTrash$1, {})
           }
         )
       ] }, `${itemsType}-${index2}`);
@@ -17721,11 +21466,11 @@ const StringList = memo((props) => {
     [items, itemsType, placeholder, onEntryChange, onDeleteEntry]
   );
   const isAddDisabled = !newEntry.trim();
-  return /* @__PURE__ */ jsxs("div", { className: "list-entries-view", children: [
-    viewLabelInfo ? /* @__PURE__ */ jsx(InfoLabel, { label: viewLabel, info: viewLabelInfo, htmlFor: "list-entries" }) : /* @__PURE__ */ jsx("label", { className: "list-entries-label", htmlFor: "list-entries", children: labelElement }),
-    items.length > 0 && /* @__PURE__ */ jsx("div", { className: "list-entries-list", children: renderItems }),
-    /* @__PURE__ */ jsx("div", { className: "list-entries-list", children: /* @__PURE__ */ jsxs("div", { className: "add-list-entry-view", children: [
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "list-entries-view", children: [
+    viewLabelInfo ? /* @__PURE__ */ jsxRuntimeExports.jsx(InfoLabel, { label: viewLabel, info: viewLabelInfo, htmlFor: "list-entries" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "list-entries-label", htmlFor: "list-entries", children: labelElement }),
+    items.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "list-entries-list", children: renderItems }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "list-entries-list", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "add-list-entry-view", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           placeholder,
@@ -17738,7 +21483,7 @@ const StringList = memo((props) => {
           id: `new-list-entry-${itemsType}`
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -17749,7 +21494,7 @@ const StringList = memo((props) => {
           "aria-label": "Add item",
           id: `add-list-entry-${itemsType}-button`,
           "data-testid": `add-list-entry-${itemsType}-button`,
-          children: /* @__PURE__ */ jsx(FaPlus, {})
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaPlus, {})
         }
       )
     ] }) })
@@ -17758,7 +21503,7 @@ const StringList = memo((props) => {
 StringList.displayName = "StringList";
 const TabItem = memo((props) => {
   const { id, children } = props;
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
       className: "tab-panel",
@@ -17794,7 +21539,7 @@ const TabItems = memo((props) => {
       const isActive = activeTab === index2;
       const className = isActive ? "tab-btn--active" : "";
       const tabId = tab.props.id;
-      return /* @__PURE__ */ jsx("li", { role: "tab", "aria-selected": isActive, children: /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("li", { role: "tab", "aria-selected": isActive, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         "div",
         {
           role: "button",
@@ -17811,143 +21556,13 @@ const TabItems = memo((props) => {
     [tabs, activeTab, handleTabClick]
   );
   const activeTabContent = tabs[activeTab] || null;
-  return /* @__PURE__ */ jsxs("div", { className: "tabs", children: [
-    /* @__PURE__ */ jsx("nav", { className: "tab-list-wrapper", children: /* @__PURE__ */ jsx("ul", { className: "tab-list", role: "tablist", "aria-orientation": "horizontal", children: tabButtons }) }),
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tabs", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "tab-list-wrapper", children: /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "tab-list", role: "tablist", "aria-orientation": "horizontal", children: tabButtons }) }),
     activeTabContent
   ] });
 });
 TabItem.displayName = "TabItem";
 TabItems.displayName = "TabItems";
-var DefaultContext = {
-  color: void 0,
-  size: void 0,
-  className: void 0,
-  style: void 0,
-  attr: void 0
-};
-var IconContext = React__default.createContext && /* @__PURE__ */ React__default.createContext(DefaultContext);
-var _excluded = ["attr", "size", "title"];
-function _objectWithoutProperties(source, excluded) {
-  if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose(source, excluded);
-  var key, i;
-  if (Object.getOwnPropertySymbols) {
-    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
-    for (i = 0; i < sourceSymbolKeys.length; i++) {
-      key = sourceSymbolKeys[i];
-      if (excluded.indexOf(key) >= 0) continue;
-      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
-      target[key] = source[key];
-    }
-  }
-  return target;
-}
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  for (var key in source) {
-    if (Object.prototype.hasOwnProperty.call(source, key)) {
-      if (excluded.indexOf(key) >= 0) continue;
-      target[key] = source[key];
-    }
-  }
-  return target;
-}
-function _extends() {
-  _extends = Object.assign ? Object.assign.bind() : function(target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return _extends.apply(this, arguments);
-}
-function ownKeys(e, r) {
-  var t = Object.keys(e);
-  if (Object.getOwnPropertySymbols) {
-    var o = Object.getOwnPropertySymbols(e);
-    r && (o = o.filter(function(r2) {
-      return Object.getOwnPropertyDescriptor(e, r2).enumerable;
-    })), t.push.apply(t, o);
-  }
-  return t;
-}
-function _objectSpread(e) {
-  for (var r = 1; r < arguments.length; r++) {
-    var t = null != arguments[r] ? arguments[r] : {};
-    r % 2 ? ownKeys(Object(t), true).forEach(function(r2) {
-      _defineProperty(e, r2, t[r2]);
-    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function(r2) {
-      Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
-    });
-  }
-  return e;
-}
-function _defineProperty(obj, key, value) {
-  key = _toPropertyKey(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, { value, enumerable: true, configurable: true, writable: true });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-function _toPropertyKey(t) {
-  var i = _toPrimitive(t, "string");
-  return "symbol" == typeof i ? i : i + "";
-}
-function _toPrimitive(t, r) {
-  if ("object" != typeof t || !t) return t;
-  var e = t[Symbol.toPrimitive];
-  if (void 0 !== e) {
-    var i = e.call(t, r);
-    if ("object" != typeof i) return i;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return ("string" === r ? String : Number)(t);
-}
-function Tree2Element(tree) {
-  return tree && tree.map((node, i) => /* @__PURE__ */ React__default.createElement(node.tag, _objectSpread({
-    key: i
-  }, node.attr), Tree2Element(node.child)));
-}
-function GenIcon(data) {
-  return (props) => /* @__PURE__ */ React__default.createElement(IconBase, _extends({
-    attr: _objectSpread({}, data.attr)
-  }, props), Tree2Element(data.child));
-}
-function IconBase(props) {
-  var elem = (conf) => {
-    var {
-      attr,
-      size: size2,
-      title
-    } = props, svgProps = _objectWithoutProperties(props, _excluded);
-    var computedSize = size2 || conf.size || "1em";
-    var className;
-    if (conf.className) className = conf.className;
-    if (props.className) className = (className ? className + " " : "") + props.className;
-    return /* @__PURE__ */ React__default.createElement("svg", _extends({
-      stroke: "currentColor",
-      fill: "currentColor",
-      strokeWidth: "0"
-    }, conf.attr, attr, svgProps, {
-      className,
-      style: _objectSpread(_objectSpread({
-        color: props.color || conf.color
-      }, conf.style), props.style),
-      height: computedSize,
-      width: computedSize,
-      xmlns: "http://www.w3.org/2000/svg"
-    }), title && /* @__PURE__ */ React__default.createElement("title", null, title), props.children);
-  };
-  return IconContext !== void 0 ? /* @__PURE__ */ React__default.createElement(IconContext.Consumer, null, (conf) => elem(conf)) : elem(DefaultContext);
-}
 function FiActivity(props) {
   return GenIcon({ "attr": { "viewBox": "0 0 24 24", "fill": "none", "stroke": "currentColor", "strokeWidth": "2", "strokeLinecap": "round", "strokeLinejoin": "round" }, "child": [{ "tag": "polyline", "attr": { "points": "22 12 18 12 15 21 9 3 6 12 2 12" }, "child": [] }] })(props);
 }
@@ -18009,17 +21624,17 @@ const TimelineChart = ({
   const axisColor = darkMode ? "#9CA3AF" : "#64748b";
   const costLineColor = "#8B5CF6";
   const textColor = darkMode ? "#F3F4F6" : "#333";
-  return /* @__PURE__ */ jsxs("div", { className: "relative", children: [
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       "svg",
       {
         width,
         height,
         onMouseMove: handleMouseMove,
         onMouseLeave: () => setHoveredItem(null),
-        children: /* @__PURE__ */ jsxs("g", { transform: `translate(${margin.left}, ${margin.top})`, children: [
-          [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxs("g", { children: [
-            /* @__PURE__ */ jsx(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { transform: `translate(${margin.left}, ${margin.top})`, children: [
+          [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "line",
               {
                 x1: chartWidth * ratio,
@@ -18031,7 +21646,7 @@ const TimelineChart = ({
                 strokeWidth: 1
               }
             ),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "line",
               {
                 x1: 0,
@@ -18063,8 +21678,8 @@ const TimelineChart = ({
                 itemY = yScale(0) - 10;
               }
             }
-            return /* @__PURE__ */ jsxs("g", { children: [
-              /* @__PURE__ */ jsx(
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "rect",
                 {
                   x: xScale(item.start),
@@ -18080,7 +21695,7 @@ const TimelineChart = ({
                   onMouseEnter: () => setHoveredItem({ ...item, index: i })
                 }
               ),
-              item.type === "gap" && /* @__PURE__ */ jsx(
+              item.type === "gap" && /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "text",
                 {
                   x: xScale(item.start + item.duration / 2),
@@ -18096,8 +21711,8 @@ const TimelineChart = ({
               )
             ] }, item.id);
           }),
-          /* @__PURE__ */ jsx("path", { d: costLinePath, fill: "none", stroke: costLineColor, strokeWidth: 2 }),
-          data.cost_timeline.map((d, i) => /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: costLinePath, fill: "none", stroke: costLineColor, strokeWidth: 2 }),
+          data.cost_timeline.map((d, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
             "circle",
             {
               cx: xScale(d.time),
@@ -18115,10 +21730,10 @@ const TimelineChart = ({
             },
             `dot-${i}`
           )),
-          /* @__PURE__ */ jsxs("g", { transform: `translate(0, ${chartHeight})`, children: [
-            /* @__PURE__ */ jsx("line", { x1: 0, y1: 0, x2: chartWidth, y2: 0, stroke: axisColor }),
-            [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxs("g", { children: [
-              /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { transform: `translate(0, ${chartHeight})`, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: 0, y1: 0, x2: chartWidth, y2: 0, stroke: axisColor }),
+            [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "line",
                 {
                   x1: chartWidth * ratio,
@@ -18128,7 +21743,7 @@ const TimelineChart = ({
                   stroke: axisColor
                 }
               ),
-              /* @__PURE__ */ jsxs(
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
                 "text",
                 {
                   x: chartWidth * ratio,
@@ -18143,7 +21758,7 @@ const TimelineChart = ({
                 }
               )
             ] }, `x-tick-${ratio}`)),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "text",
               {
                 x: chartWidth / 2,
@@ -18156,10 +21771,10 @@ const TimelineChart = ({
               }
             )
           ] }),
-          /* @__PURE__ */ jsxs("g", { transform: `translate(${chartWidth}, 0)`, children: [
-            /* @__PURE__ */ jsx("line", { x1: 0, y1: 0, x2: 0, y2: chartHeight, stroke: costLineColor }),
-            [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxs("g", { children: [
-              /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { transform: `translate(${chartWidth}, 0)`, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: 0, y1: 0, x2: 0, y2: chartHeight, stroke: costLineColor }),
+            [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "line",
                 {
                   x1: 0,
@@ -18169,7 +21784,7 @@ const TimelineChart = ({
                   stroke: costLineColor
                 }
               ),
-              /* @__PURE__ */ jsxs(
+              /* @__PURE__ */ jsxRuntimeExports.jsxs(
                 "text",
                 {
                   x: 20,
@@ -18185,7 +21800,7 @@ const TimelineChart = ({
                 }
               )
             ] }, `y-tick-${ratio}`)),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "text",
               {
                 x: 120,
@@ -18203,7 +21818,7 @@ const TimelineChart = ({
         ] })
       }
     ),
-    hoveredItem && /* @__PURE__ */ jsx(
+    hoveredItem && /* @__PURE__ */ jsxRuntimeExports.jsx(
       "div",
       {
         className: "absolute pointer-events-none",
@@ -18212,24 +21827,24 @@ const TimelineChart = ({
           top: mousePos.y - 10,
           transform: mousePos.x > width / 2 ? "translateX(-100%)" : void 0
         },
-        children: /* @__PURE__ */ jsx("div", { className: "card", children: /* @__PURE__ */ jsxs("div", { className: "card-content padding-10", children: [
-          hoveredItem.type === "session" && /* @__PURE__ */ jsxs(Fragment, { children: [
-            /* @__PURE__ */ jsx("div", { className: "font-semibold text-sm", children: hoveredItem.agent.replace(/_/g, " ") }),
-            /* @__PURE__ */ jsxs("div", { className: "text-xs space-y-0_5", children: [
-              /* @__PURE__ */ jsxs("div", { children: [
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "card", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card-content padding-10", children: [
+          hoveredItem.type === "session" && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold text-sm", children: hoveredItem.agent.replace(/_/g, " ") }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs space-y-0_5", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 "LLM: ",
-                /* @__PURE__ */ jsx("span", { className: "font-medium", children: hoveredItem.llm_model })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: hoveredItem.llm_model })
               ] }),
-              /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 "Cost: $",
                 hoveredItem.cost.toFixed(6)
               ] }),
-              /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 "Duration: ",
                 hoveredItem.duration.toFixed(2),
                 "s"
               ] }),
-              hoveredItem.tokens > 0 && /* @__PURE__ */ jsxs("div", { children: [
+              hoveredItem.tokens > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 "Tokens: ",
                 hoveredItem.prompt_tokens.toLocaleString(),
                 " in +",
@@ -18237,46 +21852,46 @@ const TimelineChart = ({
                 hoveredItem.completion_tokens.toLocaleString(),
                 " out"
               ] }),
-              /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 "Cache: ",
                 hoveredItem.is_cached ? "Cached" : "Fresh"
               ] }),
-              hoveredItem.real_start_time && /* @__PURE__ */ jsxs("div", { children: [
+              hoveredItem.real_start_time && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 "Started: ",
                 hoveredItem.real_start_time
               ] })
             ] })
           ] }),
-          hoveredItem.type === "gap" && /* @__PURE__ */ jsxs(Fragment, { children: [
-            /* @__PURE__ */ jsx("div", { className: "font-semibold text-sm", children: hoveredItem.label }),
-            /* @__PURE__ */ jsxs("div", { className: "text-xs space-y-0_5", children: [
-              /* @__PURE__ */ jsxs("div", { children: [
+          hoveredItem.type === "gap" && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold text-sm", children: hoveredItem.label }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs space-y-0_5", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 "Type: ",
                 hoveredItem.gap_type.replace(/_/g, " ")
               ] }),
-              /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 "Original Duration: ",
                 hoveredItem.real_duration?.toFixed(1),
                 "s"
               ] }),
-              hoveredItem.compressed && /* @__PURE__ */ jsxs("div", { children: [
+              hoveredItem.compressed && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 "Compressed to: ",
                 hoveredItem.duration.toFixed(1),
                 "s"
               ] })
             ] })
           ] }),
-          hoveredItem.type === "cost_point" && /* @__PURE__ */ jsxs(Fragment, { children: [
-            /* @__PURE__ */ jsxs("div", { className: "font-semibold text-sm", children: [
+          hoveredItem.type === "cost_point" && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-semibold text-sm", children: [
               "Cumulative Cost: $",
               hoveredItem.cost_data.cumulative_cost.toFixed(6)
             ] }),
-            /* @__PURE__ */ jsxs("div", { className: "text-xs space-y-0_5", children: [
-              /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs space-y-0_5", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 "Session Cost: $",
                 hoveredItem.cost_data.session_cost.toFixed(6)
               ] }),
-              /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 "Session: ",
                 hoveredItem.cost_data.session_id
               ] })
@@ -18301,8 +21916,8 @@ const Timeline = ({ data, height = 400 }) => {
       }
     }
   }, []);
-  return /* @__PURE__ */ jsxs("div", { className: "full-width padding-10", children: [
-    /* @__PURE__ */ jsx("div", { className: "timeline-grid margin-bottom-10", children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "full-width padding-10", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "timeline-grid margin-bottom-10", children: [
       { label: "Sessions", value: data.summary.total_sessions, icon: FiActivity },
       {
         label: "Total Cost",
@@ -18321,19 +21936,19 @@ const Timeline = ({ data, height = 400 }) => {
         value: `$${data.summary.avg_cost_per_session.toFixed(6)}`,
         icon: FiDollarSign
       }
-    ].map(({ label, value, icon: Icon }) => /* @__PURE__ */ jsx("div", { className: "card", children: /* @__PURE__ */ jsx("div", { className: "card-content", children: /* @__PURE__ */ jsxs("div", { className: "timeline-top", children: [
-      /* @__PURE__ */ jsx(Icon, { className: "timeline-icon" }),
-      /* @__PURE__ */ jsxs("div", { className: "timeline-top-content", children: [
-        /* @__PURE__ */ jsx("p", { className: "timeline-label", children: label }),
-        /* @__PURE__ */ jsx("p", { className: "timeline-value", children: value })
+    ].map(({ label, value, icon: Icon }) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "card", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "card-content", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "timeline-top", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(Icon, { className: "timeline-icon" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "timeline-top-content", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "timeline-label", children: label }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "timeline-value", children: value })
       ] })
     ] }) }) }, label)) }),
-    /* @__PURE__ */ jsxs("div", { className: "card", children: [
-      /* @__PURE__ */ jsxs("div", { className: "card-header", children: [
-        /* @__PURE__ */ jsx("h3", { className: "card-title", children: "Session Activity Timeline with Cumulative Cost" }),
-        /* @__PURE__ */ jsxs("p", { className: "card-description", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card-header", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "card-title", children: "Session Activity Timeline with Cumulative Cost" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "card-description", children: [
           "Interactive timeline showing agent sessions and cost accumulation (human input periods compressed)",
-          data.summary.compression_info.gaps_compressed > 0 && /* @__PURE__ */ jsxs("span", { className: "badge badge-secondary", style: { marginLeft: "0.5rem" }, children: [
+          data.summary.compression_info.gaps_compressed > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "badge badge-secondary", style: { marginLeft: "0.5rem" }, children: [
             data.summary.compression_info.gaps_compressed,
             " gaps compressed,",
             data.summary.compression_info.time_saved.toFixed(1),
@@ -18341,8 +21956,8 @@ const Timeline = ({ data, height = 400 }) => {
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "card-content", children: [
-        /* @__PURE__ */ jsx("div", { className: "full-width", children: /* @__PURE__ */ jsx(ResponsiveContainer, { width: "100%", height, children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card-content", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "full-width", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ResponsiveContainer, { width: "100%", height, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           TimelineChart,
           {
             width: dimensions.width,
@@ -18352,16 +21967,16 @@ const Timeline = ({ data, height = 400 }) => {
           }
         ) }) }),
         data.agents.length > 0 && // <div className="mt-4 flex-align-center flex-wrap gap-2">
-        /* @__PURE__ */ jsx("div", { className: "timeline-agent-list", children: data.agents.map((agent) => /* @__PURE__ */ jsxs("div", { className: "timeline-agent-item", children: [
-          /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "timeline-agent-list", children: data.agents.map((agent) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "timeline-agent-item", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "div",
             {
               className: "timeline-agent-dot",
               style: { backgroundColor: agent.color }
             }
           ),
-          /* @__PURE__ */ jsx("span", { className: "timeline-agent-name", children: agent.name.replace(/_/g, " ") }),
-          /* @__PURE__ */ jsxs("span", { className: "timeline-agent-class", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "timeline-agent-name", children: agent.name.replace(/_/g, " ") }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "timeline-agent-class", children: [
             "(",
             agent.class,
             ")"
@@ -18372,7 +21987,7 @@ const Timeline = ({ data, height = 400 }) => {
   ] });
 };
 const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     Modal,
     {
       flowId,
@@ -18387,8 +22002,8 @@ const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
       preventCloseIfUnsavedChanges: false,
       noHeader: true,
       children: [
-        /* @__PURE__ */ jsx("div", { className: "timeline-modal fullscreen open no-backdrop", children: /* @__PURE__ */ jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsx(Timeline, { data }) }) }),
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "timeline-modal fullscreen open no-backdrop", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Timeline, { data }) }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             type: "button",
@@ -18396,7 +22011,7 @@ const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
             className: "modal-close",
             onClick: onClose,
             "data-testid": "modal-close",
-            children: /* @__PURE__ */ jsx(FaX, { size: 12 })
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaX, { size: 12 })
           }
         )
       ]
@@ -18519,10 +22134,10 @@ const UpdateState = (props) => {
     () => hasUpdateConfig && currentConfig?.type === "callable" ? currentConfig.content : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT,
     [hasUpdateConfig, currentConfig]
   );
-  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-update-state-panel", children: [
-    /* @__PURE__ */ jsx("div", { className: "info margin-bottom-10", children: "You can update the agent's system message before replying. This can be useful if you need to control the system message based on the current conversation context. If enabled, it can be a string or a function. If text, it will be used as a template and substitute the context variables. If a function, it should accept the agent and messages as arguments and return a string." }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel agent-update-state-panel", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info margin-bottom-10", children: "You can update the agent's system message before replying. This can be useful if you need to control the system message based on the current conversation context. If enabled, it can be a string or a function. If text, it will be used as a template and substitute the context variables. If a function, it should accept the agent and messages as arguments and return a string." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
           label: "Update system message before reply",
@@ -18532,9 +22147,9 @@ const UpdateState = (props) => {
           "aria-label": "Enable update system message"
         }
       ),
-      enabled && /* @__PURE__ */ jsxs(Fragment, { children: [
-        /* @__PURE__ */ jsx("label", { htmlFor: "update-system-message-type-select-input", children: "Message update type" }),
-        /* @__PURE__ */ jsx(
+      enabled && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "update-system-message-type-select-input", children: "Message update type" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           Select,
           {
             options: updateSystemMessageTypeOptions,
@@ -18543,8 +22158,8 @@ const UpdateState = (props) => {
             inputId: "update-system-message-type-select-input"
           }
         ),
-        /* @__PURE__ */ jsx("label", { htmlFor: "update-system-message-string", children: "Message update" }),
-        selectedType === "string" ? /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "update-system-message-string", children: "Message update" }),
+        selectedType === "string" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
           TextareaInput,
           {
             rows: 4,
@@ -18554,7 +22169,7 @@ const UpdateState = (props) => {
             "data-testid": "update-system-message-string",
             id: "update-system-message-string"
           }
-        ) : /* @__PURE__ */ jsx(
+        ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
           Editor,
           {
             value: callableContent,
@@ -18570,7 +22185,7 @@ const UpdateState = (props) => {
 UpdateState.displayName = "UpdateState";
 const WizardStep = memo((props) => {
   const { children, id } = props;
-  return /* @__PURE__ */ jsx("div", { className: "wizard-step-view", "data-testid": `wizard-step-${id}`, children });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "wizard-step-view", "data-testid": `wizard-step-${id}`, children });
 });
 const Wizard = memo((props) => {
   const {
@@ -18637,7 +22252,7 @@ const Wizard = memo((props) => {
     () => steps.map((step, index2) => {
       const isActive = currentStep === index2;
       const className = isActive ? "wizard-step--active" : "";
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         "div",
         {
           role: "tab",
@@ -18652,10 +22267,10 @@ const Wizard = memo((props) => {
     }),
     [steps, currentStep]
   );
-  return /* @__PURE__ */ jsxs("div", { className: "wizard", children: [
-    /* @__PURE__ */ jsx("div", { className: "wizard-steps", role: "tablist", children: renderedSteps }),
-    /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "wizard", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "wizard-steps", role: "tablist", children: renderedSteps }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -18668,7 +22283,7 @@ const Wizard = memo((props) => {
           children: backButtonText
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -18876,7 +22491,7 @@ const useKeys = (flowId, onSave) => {
     return clientRect.width > 0 && clientRect.height > 0;
   };
   {
-    useHotkeys(
+    we(
       "mod+z",
       () => {
         if (pastStates.length > 0) {
@@ -18887,7 +22502,7 @@ const useKeys = (flowId, onSave) => {
       },
       { scopes: flowId }
     );
-    useHotkeys(
+    we(
       ["shift+mod+z", "mod+y"],
       () => {
         if (futureStates.length > 0) {
@@ -18900,7 +22515,7 @@ const useKeys = (flowId, onSave) => {
     );
   }
   if (listenForSave) {
-    useHotkeys(
+    we(
       "mod+s",
       (event) => {
         if (isFlowVisible()) {
@@ -19170,6 +22785,15 @@ const useFlowEvents = (flowId) => {
 function IoIosSend(props) {
   return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M435.9 64.9l-367.1 160c-6.5 3.1-6.3 12.4.3 15.3l99.3 56.1c5.9 3.3 13.2 2.6 18.3-1.8l195.8-168.8c1.3-1.1 4.4-3.2 5.6-2 1.3 1.3-.7 4.3-1.8 5.6L216.9 320.1c-4.7 5.3-5.4 13.1-1.6 19.1l64.9 104.1c3.2 6.3 12.3 6.2 15.2-.2L447.2 76c3.3-7.2-4.2-14.5-11.3-11.1z" }, "child": [] }] })(props);
 }
+function MdTimeline(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "fill": "none", "d": "M0 0h24v24H0z" }, "child": [] }, { "tag": "path", "attr": { "d": "M23 8c0 1.1-.9 2-2 2a1.7 1.7 0 0 1-.51-.07l-3.56 3.55c.05.16.07.34.07.52 0 1.1-.9 2-2 2s-2-.9-2-2c0-.18.02-.36.07-.52l-2.55-2.55c-.16.05-.34.07-.52.07s-.36-.02-.52-.07l-4.55 4.56c.05.16.07.33.07.51 0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2c.18 0 .35.02.51.07l4.56-4.55C8.02 9.36 8 9.18 8 9c0-1.1.9-2 2-2s2 .9 2 2c0 .18-.02.36-.07.52l2.55 2.55c.16-.05.34-.07.52-.07s.36.02.52.07l3.55-3.56A1.7 1.7 0 0 1 19 8c0-1.1.9-2 2-2s2 .9 2 2z" }, "child": [] }] })(props);
+}
+function MdMessage(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "fill": "none", "d": "M0 0h24v24H0z" }, "child": [] }, { "tag": "path", "attr": { "d": "M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" }, "child": [] }] })(props);
+}
+function MdIosShare(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "fill": "none", "d": "M0 0h24v24H0V0z" }, "child": [] }, { "tag": "path", "attr": { "d": "m16 5-1.42 1.42-1.59-1.59V16h-1.98V4.83L9.42 6.42 8 5l4-4 4 4zm4 5v11c0 1.1-.9 2-2 2H6a2 2 0 0 1-2-2V10c0-1.11.89-2 2-2h3v2H6v11h12V10h-3V8h3a2 2 0 0 1 2 2z" }, "child": [] }] })(props);
+}
 const ChatModal = memo((props) => {
   const { flowId, chat } = props;
   const [textInput, setTextInput] = useState("");
@@ -19293,7 +22917,7 @@ const ChatModal = memo((props) => {
   const imageInputId = `rf-${flowId}-chat-modal-image`;
   const modalTestId = `rf-${flowId}-chat-modal`;
   const isModalOpen = isLocallyOpen && (chat?.show === true || chat !== void 0 && chat.messages.length > 0);
-  const leftIcon = chat?.timeline ? /* @__PURE__ */ jsx(
+  const leftIcon = chat?.timeline ? /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
       role: "button",
@@ -19301,21 +22925,21 @@ const ChatModal = memo((props) => {
       onClick: handleTimelineClick,
       title: "View Timeline",
       "data-testid": `rf-${flowId}-chat-modal-timeline`,
-      children: /* @__PURE__ */ jsx(MdTimeline, { size: 18 })
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(MdTimeline, { size: 18 })
     }
-  ) : chat?.handlers?.onInterrupt && !chat.active ? /* @__PURE__ */ jsx(
+  ) : chat?.handlers?.onInterrupt && !chat.active ? /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
       role: "button",
       className: "chat-modal-action clickable",
       onClick: () => chat?.handlers?.onInterrupt?.(),
       title: "Interrupt",
-      children: /* @__PURE__ */ jsx(FaStop$1, { size: 18 })
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaStop$1, { size: 18 })
     }
   ) : void 0;
   const allowImage = !chat || !chat?.mediaConfig ? true : chat?.mediaConfig?.allowedTypes.includes("image");
   if (timelineOpen && chat?.timeline) {
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       TimelineModal,
       {
         flowId,
@@ -19325,7 +22949,7 @@ const ChatModal = memo((props) => {
       }
     );
   }
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     Modal,
     {
       flowId,
@@ -19341,8 +22965,8 @@ const ChatModal = memo((props) => {
       dataTestId: modalTestId,
       hasUnsavedChanges: false,
       preventCloseIfUnsavedChanges: false,
-      children: /* @__PURE__ */ jsxs("div", { className: "modal-body", children: [
-        chat?.messages && chat.messages.length > 0 && /* @__PURE__ */ jsx("div", { className: "chat-wrapper", "data-flow-id": flowId, children: /* @__PURE__ */ jsx(
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body", children: [
+        chat?.messages && chat.messages.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "chat-wrapper", "data-flow-id": flowId, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           ChatUI,
           {
             isDarkMode: false,
@@ -19351,11 +22975,11 @@ const ChatModal = memo((props) => {
             activeRequest: chat.activeRequest
           }
         ) }),
-        /* @__PURE__ */ jsx("div", { className: "input-prompt", children: chat?.activeRequest?.prompt }),
-        chat?.activeRequest?.request_id !== void 0 && /* @__PURE__ */ jsxs("div", { className: "chat-input-container", children: [
-          imagePreview && /* @__PURE__ */ jsx("div", { className: "chat-image-preview", children: /* @__PURE__ */ jsxs("div", { className: "chat-image-wrapper", children: [
-            /* @__PURE__ */ jsx("img", { src: imagePreview, alt: "Preview", className: "chat-preview-image" }),
-            /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "input-prompt", children: chat?.activeRequest?.prompt }),
+        chat?.activeRequest?.request_id !== void 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "chat-input-container", children: [
+          imagePreview && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "chat-image-preview", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "chat-image-wrapper", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: imagePreview, alt: "Preview", className: "chat-preview-image" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -19363,12 +22987,12 @@ const ChatModal = memo((props) => {
                 onClick: clearImage,
                 title: "Remove Image",
                 "aria-label": "Remove uploaded image",
-                children: /* @__PURE__ */ jsx(FiX, { size: 14 })
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(FiX, { size: 14 })
               }
             )
           ] }) }),
-          /* @__PURE__ */ jsx("div", { className: "chat-input-field-container", children: chat?.activeRequest?.password === true ? /* @__PURE__ */ jsxs("div", { className: "password-toggle-container", children: [
-            /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "chat-input-field-container", children: chat?.activeRequest?.password === true ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "password-toggle-container", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
               {
                 type: showPassword ? "text" : "password",
@@ -19387,7 +23011,7 @@ const ChatModal = memo((props) => {
                 "aria-label": "Password input"
               }
             ),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -19396,10 +23020,10 @@ const ChatModal = memo((props) => {
                 title: showPassword ? "Hide password" : "Show password",
                 "aria-label": showPassword ? "Hide password" : "Show password",
                 disabled: chat?.activeRequest?.request_id === void 0,
-                children: showPassword ? /* @__PURE__ */ jsx(FiEyeOff, { size: 18 }) : /* @__PURE__ */ jsx(FiEye, { size: 18 })
+                children: showPassword ? /* @__PURE__ */ jsxRuntimeExports.jsx(FiEyeOff, { size: 18 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(FiEye, { size: 18 })
               }
             )
-          ] }) : /* @__PURE__ */ jsx(
+          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
             {
               type: "text",
@@ -19418,11 +23042,11 @@ const ChatModal = memo((props) => {
               "aria-label": "User input"
             }
           ) }),
-          chat?.activeRequest?.request_id !== void 0 && /* @__PURE__ */ jsxs("div", { className: "chat-input-actions", children: [
-            allowImage ? /* @__PURE__ */ jsxs("label", { htmlFor: imageInputId, className: "chat-upload-button", children: [
-              /* @__PURE__ */ jsx(FiPaperclip, { size: 18, "aria-hidden": "true" }),
-              /* @__PURE__ */ jsx("span", { className: "hidden", children: "Upload an image" }),
-              /* @__PURE__ */ jsx(
+          chat?.activeRequest?.request_id !== void 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "chat-input-actions", children: [
+            allowImage ? /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: imageInputId, className: "chat-upload-button", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(FiPaperclip, { size: 18, "aria-hidden": "true" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "hidden", children: "Upload an image" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "input",
                 {
                   type: "file",
@@ -19437,8 +23061,8 @@ const ChatModal = memo((props) => {
                   onBlur: closeFileSelectModal
                 }
               )
-            ] }) : /* @__PURE__ */ jsx("div", { className: "chat-upload-button" }),
-            /* @__PURE__ */ jsx(
+            ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "chat-upload-button" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -19448,7 +23072,7 @@ const ChatModal = memo((props) => {
                 className: "chat-send-button",
                 "data-testid": `rf-${flowId}-chat-modal-submit`,
                 "aria-label": "Send message",
-                children: /* @__PURE__ */ jsx(IoIosSend, { size: 20, "aria-hidden": "true" })
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(IoIosSend, { size: 20, "aria-hidden": "true" })
               }
             )
           ] })
@@ -19573,7 +23197,7 @@ const ExportFlowModal = memo((props) => {
     },
     [showError]
   );
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     Modal,
     {
       flowId,
@@ -19582,15 +23206,15 @@ const ExportFlowModal = memo((props) => {
       title: "Export Flow",
       dataTestId: `export-flow-modal-${flowId}`,
       children: [
-        /* @__PURE__ */ jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxs("div", { className: "padding-10", children: [
-          /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "padding-10", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             CheckboxInput,
             {
               id: `export-flow-modal-upload-${flowId}`,
-              label: /* @__PURE__ */ jsx("span", { className: "checkbox-label-view", children: /* @__PURE__ */ jsxs("div", { children: [
+              label: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "checkbox-label-view", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 "Share this flow to",
                 " ",
-                /* @__PURE__ */ jsx(
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "a",
                   {
                     href: HUB_URL,
@@ -19606,11 +23230,11 @@ const ExportFlowModal = memo((props) => {
               "data-testid": `export-flow-modal-upload-checkbox-${flowId}`
             }
           ),
-          alsoUpload && /* @__PURE__ */ jsxs("div", { className: "flex-align-center full-width flex-column", children: [
-            /* @__PURE__ */ jsx("div", { className: "margin-top-10 full-width", children: /* @__PURE__ */ jsx(
+          alsoUpload && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center full-width flex-column", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10 full-width", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
               TextInput,
               {
-                label: /* @__PURE__ */ jsx("div", { className: "no-padding margin-bottom-5", children: "Hub API Token:" }),
+                label: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "no-padding margin-bottom-5", children: "Hub API Token:" }),
                 value: hubApiToken,
                 name: "hub-api-token",
                 onChange: onHubApiTokenChange,
@@ -19620,9 +23244,9 @@ const ExportFlowModal = memo((props) => {
                 isPassword: true
               }
             ) }),
-            /* @__PURE__ */ jsxs("div", { className: "margin-top-10 margin-bottom-20 full-width", children: [
-              /* @__PURE__ */ jsx("div", { className: "margin-bottom-10 padding-10 center", children: "Additional CSV file (results.csv) to include:" }),
-              /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10 margin-bottom-20 full-width", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-10 padding-10 center", children: "Additional CSV file (results.csv) to include:" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
                 DropZone,
                 {
                   allowedFileExtensions: [".csv"],
@@ -19634,10 +23258,10 @@ const ExportFlowModal = memo((props) => {
             ] })
           ] })
         ] }) }),
-        /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
-          /* @__PURE__ */ jsx("button", { type: "reset", className: "modal-action-cancel", onClick: onClose, children: "Cancel" }),
-          /* @__PURE__ */ jsxs("div", { className: "flex-align-center flex-row", children: [
-            alsoUpload && /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "reset", className: "modal-action-cancel", onClick: onClose, children: "Cancel" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center flex-row", children: [
+            alsoUpload && /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -19648,7 +23272,7 @@ const ExportFlowModal = memo((props) => {
                 children: isUploading ? "Uploading..." : "Upload to Hub"
               }
             ),
-            /* @__PURE__ */ jsx("button", { type: "button", className: "primary", onClick: onDownload, children: "Download" })
+            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "primary", onClick: onDownload, children: "Download" })
           ] })
         ] })
       ]
@@ -19997,16 +23621,16 @@ const LoadFlowStep = (props) => {
     onSearchSubmit,
     onSelectResult
   } = useLoadFlowStep(props);
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       Collapsible,
       {
         title: "Search the hub",
         dataTestId: `import-flow-modal-collapsible-search-${flowId}`,
         expanded: true,
-        children: /* @__PURE__ */ jsxs("div", { className: "margin-top-10 margin-bottom-10 full-width flex-column", children: [
-          /* @__PURE__ */ jsxs("div", { className: "full-width flex-align-center", children: [
-            /* @__PURE__ */ jsx(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10 margin-bottom-10 full-width flex-column", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "full-width flex-align-center", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
               {
                 type: "text",
@@ -20020,7 +23644,7 @@ const LoadFlowStep = (props) => {
                 }
               }
             ),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -20033,16 +23657,16 @@ const LoadFlowStep = (props) => {
               }
             )
           ] }),
-          /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: state.searchResults && state.searchResults.length > 0 && /* @__PURE__ */ jsx("ul", { className: "search-results-list", children: state.searchResults.map((result) => /* @__PURE__ */ jsxs(
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: state.searchResults && state.searchResults.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "search-results-list", children: state.searchResults.map((result) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "li",
             {
               className: "search-result-item clickable",
               role: "button",
               onClick: () => onSelectResult(result),
               children: [
-                /* @__PURE__ */ jsx("span", { className: "search-result-title", children: result.name }),
-                /* @__PURE__ */ jsx("span", { className: "search-result-tags", children: result.tags.map((tag) => /* @__PURE__ */ jsx("span", { className: "search-result-tag", children: tag }, tag)) }),
-                /* @__PURE__ */ jsx("div", { className: "search-result-description", children: result.description })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "search-result-title", children: result.name }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "search-result-tags", children: result.tags.map((tag) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "search-result-tag", children: tag }, tag)) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "search-result-description", children: result.description })
               ]
             },
             result.id
@@ -20050,7 +23674,7 @@ const LoadFlowStep = (props) => {
         ] })
       }
     ),
-    /* @__PURE__ */ jsx(Collapsible, { title: "Upload a file", dataTestId: `import-flow-modal-collapsible-local-${flowId}`, children: /* @__PURE__ */ jsx("div", { className: "padding-10 margin-left--10 margin-right--10", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Collapsible, { title: "Upload a file", dataTestId: `import-flow-modal-collapsible-local-${flowId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "padding-10 margin-left--10 margin-right--10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       DropZone,
       {
         flowId,
@@ -20058,10 +23682,10 @@ const LoadFlowStep = (props) => {
         allowedFileExtensions: [".waldiez", ".json"]
       }
     ) }) }),
-    /* @__PURE__ */ jsx(Collapsible, { title: "Import from URL", dataTestId: `import-flow-modal-collapsible-url-${flowId}`, children: /* @__PURE__ */ jsxs("div", { className: "margin-top-10 full-width flex-column", children: [
-      /* @__PURE__ */ jsx("div", { className: "warning margin-bottom-10", children: /* @__PURE__ */ jsx("span", { children: "Warning: Importing from an untrusted source can be harmful" }) }),
-      /* @__PURE__ */ jsxs("div", { className: "margin-top-10 full-width flex-align-center", children: [
-        /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Collapsible, { title: "Import from URL", dataTestId: `import-flow-modal-collapsible-url-${flowId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10 full-width flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "warning margin-bottom-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Warning: Importing from an untrusted source can be harmful" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10 full-width flex-align-center", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
           {
             type: "text",
@@ -20072,7 +23696,7 @@ const LoadFlowStep = (props) => {
             "data-testid": `import-flow-modal-url-input-${flowId}`
           }
         ),
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             type: "button",
@@ -20086,10 +23710,10 @@ const LoadFlowStep = (props) => {
         )
       ] })
     ] }) }),
-    /* @__PURE__ */ jsx("div", { className: "margin-top-20 center", children: loadedFlowData ? /* @__PURE__ */ jsxs("div", { className: "flex-center", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-20 center", children: loadedFlowData ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-center", children: [
       "Loaded flow: ",
-      /* @__PURE__ */ jsx("span", { className: "bold italic", children: loadedFlowData.name }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "bold italic", children: loadedFlowData.name }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         FaXmark,
         {
           className: "margin-left-10 clickable",
@@ -20097,7 +23721,7 @@ const LoadFlowStep = (props) => {
           onClick: onClearLoadedFlowData
         }
       )
-    ] }) : /* @__PURE__ */ jsx("div", { children: "No flow loaded" }) })
+    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "No flow loaded" }) })
   ] });
 };
 const useFlowAgents = (props) => {
@@ -20426,12 +24050,12 @@ const FlowAgents = (props) => {
   const { flowId, state } = props;
   const { selectedProps } = state;
   const { agentNodes, onAgentsChange, onAllNoneAgentsChange } = useFlowAgents(props);
-  return /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
-    /* @__PURE__ */ jsx("h4", { children: "Agents" }),
-    agentNodes && agentNodes?.length > 1 && /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body-section", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "Agents" }),
+    agentNodes && agentNodes?.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       CheckboxInput,
       {
-        label: /* @__PURE__ */ jsx("div", { className: "bold", children: "Select All | None" }),
+        label: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bold", children: "Select All | None" }),
         isChecked: selectedProps.nodes.agents.length === agentNodes.length,
         onCheckedChange: onAllNoneAgentsChange,
         id: `import-flow-modal-agents-all-none-${flowId}`,
@@ -20440,10 +24064,10 @@ const FlowAgents = (props) => {
     ) }),
     agentNodes?.map((node) => {
       const agentNode = node;
-      return /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxs("div", { children: [
+          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             agentNode.data.label,
             ": ",
             agentNode.data.description
@@ -20455,7 +24079,7 @@ const FlowAgents = (props) => {
         }
       ) }, node.id);
     }),
-    agentNodes?.length === 0 && /* @__PURE__ */ jsx("div", { children: "No agents in this flow" })
+    agentNodes?.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "No agents in this flow" })
   ] });
 };
 const FlowInfo = (props) => {
@@ -20473,10 +24097,10 @@ const FlowInfo = (props) => {
     onRequirementsChange,
     onImportEverythingChange
   } = useFlowInfo(props);
-  return /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body", children: [
-    /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
-      /* @__PURE__ */ jsx("h4", { children: "Flow Override" }),
-      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "Flow Override" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
           label: "Override existing flow with imported flow",
@@ -20487,9 +24111,9 @@ const FlowInfo = (props) => {
         }
       ) })
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", style: { marginTop: 0 }, children: [
-      /* @__PURE__ */ jsx("h4", { children: "What to import" }),
-      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body-section", style: { marginTop: 0 }, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "What to import" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
           label: "Import Everything",
@@ -20500,22 +24124,22 @@ const FlowInfo = (props) => {
         }
       ) })
     ] }),
-    !selectedProps.everything && /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
-      /* @__PURE__ */ jsx("h4", { children: "Flow Information" }),
-      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+    !selectedProps.everything && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body-section", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "Flow Information" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsx("div", { className: "bold", children: "Select All | None" }),
+          label: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bold", children: "Select All | None" }),
           isChecked: selectedProps.name && selectedProps.description && selectedProps.tags && selectedProps.requirements && selectedProps.isAsync,
           onCheckedChange: onAllNoneInfoChange,
           id: `import-flow-info-all-none-${flowId}`,
           "data-testid": "import-flow-info-all-none"
         }
       ) }),
-      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxs("div", { "data-testid": "import-flow-info-name-preview", children: [
+          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-testid": "import-flow-info-name-preview", children: [
             "Name: ",
             flowData?.name
           ] }),
@@ -20525,10 +24149,10 @@ const FlowInfo = (props) => {
           "data-testid": "import-flow-info-name"
         }
       ) }),
-      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxs("div", { "data-testid": "import-flow-info-description-preview", children: [
+          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-testid": "import-flow-info-description-preview", children: [
             "Description: ",
             flowData?.description
           ] }),
@@ -20538,10 +24162,10 @@ const FlowInfo = (props) => {
           "data-testid": "import-flow-info-description"
         }
       ) }),
-      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxs("div", { "data-testid": "import-flow-info-tags-preview", children: [
+          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-testid": "import-flow-info-tags-preview", children: [
             "Tags: ",
             tagsString
           ] }),
@@ -20551,10 +24175,10 @@ const FlowInfo = (props) => {
           "data-testid": "import-flow-info-tags"
         }
       ) }),
-      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxs("div", { "data-testid": "import-flow-info-requirements-preview", children: [
+          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-testid": "import-flow-info-requirements-preview", children: [
             "Requirements: ",
             requirementsString
           ] }),
@@ -20564,7 +24188,7 @@ const FlowInfo = (props) => {
           "data-testid": "import-flow-info-requirements"
         }
       ) }),
-      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
           label: "Is Async",
@@ -20581,9 +24205,9 @@ const FlowModels = (props) => {
   const { state } = props;
   const { modelNodes, onModelsChange, onAllNoneModelsChange } = useFlowModels(props);
   const { selectedProps } = state;
-  return /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
-    /* @__PURE__ */ jsx("h4", { children: "Models" }),
-    modelNodes && modelNodes?.length > 1 && /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body-section", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "Models" }),
+    modelNodes && modelNodes?.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
       CheckboxInput,
       {
         id: `import-flow-modal-models-all-none-${props.flowId}`,
@@ -20595,10 +24219,10 @@ const FlowModels = (props) => {
     ),
     modelNodes?.map((node) => {
       const modelNode = node;
-      return /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxs("div", { children: [
+          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             modelNode.data.label,
             ": ",
             modelNode.data.description
@@ -20610,16 +24234,16 @@ const FlowModels = (props) => {
         }
       ) }, node.id);
     }),
-    modelNodes?.length === 0 && /* @__PURE__ */ jsx("div", { children: "No models in this flow" })
+    modelNodes?.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "No models in this flow" })
   ] });
 };
 const FlowTools = (props) => {
   const { flowId, state } = props;
   const { selectedProps } = state;
   const { toolNodes, onToolsChange, onAllNoneToolsChange } = useFlowTools(props);
-  return /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
-    /* @__PURE__ */ jsx("h4", { children: "Tools" }),
-    toolNodes && toolNodes?.length > 1 && /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body-section", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "Tools" }),
+    toolNodes && toolNodes?.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
       CheckboxInput,
       {
         id: `import-flow-modal-tools-all-none-${flowId}`,
@@ -20631,10 +24255,10 @@ const FlowTools = (props) => {
     ),
     toolNodes?.map((node) => {
       const toolNode = node;
-      return /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxs("div", { children: [
+          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
             toolNode.data.label,
             ": ",
             toolNode.data.description
@@ -20646,19 +24270,19 @@ const FlowTools = (props) => {
         }
       ) }, node.id);
     }),
-    toolNodes?.length === 0 && /* @__PURE__ */ jsx("div", { children: "No tools in this flow" })
+    toolNodes?.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "No tools in this flow" })
   ] });
 };
 const FlowDataPreviewStep = (props) => {
   const { flowId, state, onStateChange } = props;
-  return /* @__PURE__ */ jsxs("div", { className: "flow-data-preview", "data-testid": `import-flow-modal-preview-step-${flowId}-view`, children: [
-    /* @__PURE__ */ jsx(FlowInfo, { flowId, state, onStateChange }),
-    !state.selectedProps.everything && /* @__PURE__ */ jsxs(Fragment, { children: [
-      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-header", children: /* @__PURE__ */ jsx("h3", { children: "Flow Nodes" }) }),
-      /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body", children: [
-        /* @__PURE__ */ jsx(FlowModels, { flowId, state, onStateChange }),
-        /* @__PURE__ */ jsx(FlowTools, { flowId, state, onStateChange }),
-        /* @__PURE__ */ jsx(FlowAgents, { flowId, state, onStateChange })
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview", "data-testid": `import-flow-modal-preview-step-${flowId}-view`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(FlowInfo, { flowId, state, onStateChange }),
+    !state.selectedProps.everything && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-header", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Flow Nodes" }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(FlowModels, { flowId, state, onStateChange }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(FlowTools, { flowId, state, onStateChange }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(FlowAgents, { flowId, state, onStateChange })
       ] })
     ] })
   ] });
@@ -20666,7 +24290,7 @@ const FlowDataPreviewStep = (props) => {
 const ImportFlowModal = (props) => {
   const { flowId, isOpen } = props;
   const { state, initialState: initialState2, onStateChange, onClose, onBack, onForward } = useImportFlowModal(props);
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     Modal,
     {
       flowId,
@@ -20674,7 +24298,7 @@ const ImportFlowModal = (props) => {
       onClose,
       title: "Import Flow",
       dataTestId: `import-flow-modal-${flowId}`,
-      children: /* @__PURE__ */ jsx("div", { className: "modal-body padding-10", children: /* @__PURE__ */ jsxs(
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body padding-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
         Wizard,
         {
           activeStep: 0,
@@ -20684,7 +24308,7 @@ const ImportFlowModal = (props) => {
           onBack,
           onForward,
           children: [
-            /* @__PURE__ */ jsx(WizardStep, { id: `import-flow-modal-load-step-${flowId}`, title: "Load Flow", children: /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(WizardStep, { id: `import-flow-modal-load-step-${flowId}`, title: "Load Flow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
               LoadFlowStep,
               {
                 initialState: initialState2,
@@ -20693,7 +24317,7 @@ const ImportFlowModal = (props) => {
                 onStateChange
               }
             ) }),
-            /* @__PURE__ */ jsx(WizardStep, { id: `import-flow-modal-preview-step-${flowId}`, title: "Preview Flow", children: state.loadedFlowData ? /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(WizardStep, { id: `import-flow-modal-preview-step-${flowId}`, title: "Preview Flow", children: state.loadedFlowData ? /* @__PURE__ */ jsxRuntimeExports.jsx(
               FlowDataPreviewStep,
               {
                 flowId,
@@ -20741,8 +24365,8 @@ const WaldiezFlowPanels = (props) => {
   const includeConvertIcons = !isReadOnly && typeof onConvert === "function";
   const includeStepByStepRun = !isReadOnly && typeof stepRunner === "function";
   const { isDark, toggleTheme } = useWaldiezTheme();
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
-    selectedNodeType !== "agent" && readOnly === false && /* @__PURE__ */ jsx(Panel, { position: "top-left", children: /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    selectedNodeType !== "agent" && readOnly === false && /* @__PURE__ */ jsxRuntimeExports.jsx(Panel, { position: "top-left", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "button",
       {
         type: "button",
@@ -20751,15 +24375,15 @@ const WaldiezFlowPanels = (props) => {
         title: `Add ${selectedNodeType}`,
         "data-testid": `add-${selectedNodeType}-node`,
         children: [
-          /* @__PURE__ */ jsx(FaPlusCircle, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(FaPlusCircle, {}),
           "Add ",
           selectedNodeType
         ]
       }
     ) }),
-    /* @__PURE__ */ jsx(Panel, { position: "top-right", children: /* @__PURE__ */ jsxs("div", { className: "editor-nav-actions", children: [
-      (includeRunButton || includeConvertIcons || includeStepByStepRun) && /* @__PURE__ */ jsxs(Fragment, { children: [
-        includeStepByStepRun && /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(Panel, { position: "top-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "editor-nav-actions", children: [
+      (includeRunButton || includeConvertIcons || includeStepByStepRun) && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        includeStepByStepRun && /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             type: "button",
@@ -20767,10 +24391,10 @@ const WaldiezFlowPanels = (props) => {
             onClick: onStepRun,
             title: "Run step-by-step",
             "data-testid": `step-by-step-${flowId}`,
-            children: /* @__PURE__ */ jsx(VscDebugAlt, {})
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(VscDebugAlt, {})
           }
         ),
-        includeRunButton && /* @__PURE__ */ jsx(
+        includeRunButton && /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             type: "button",
@@ -20778,10 +24402,10 @@ const WaldiezFlowPanels = (props) => {
             onClick: onRun,
             title: "Run flow",
             "data-testid": `run-${flowId}`,
-            children: /* @__PURE__ */ jsx(FaCirclePlay, {})
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCirclePlay, {})
           }
         ),
-        includeConvertIcons && /* @__PURE__ */ jsx(
+        includeConvertIcons && /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             type: "button",
@@ -20789,10 +24413,10 @@ const WaldiezFlowPanels = (props) => {
             onClick: onConvertToPy,
             title: "Convert to Python",
             "data-testid": `convert-${flowId}-to-py`,
-            children: /* @__PURE__ */ jsx(FaPython, {})
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaPython, {})
           }
         ),
-        includeConvertIcons && /* @__PURE__ */ jsx(
+        includeConvertIcons && /* @__PURE__ */ jsxRuntimeExports.jsx(
           "button",
           {
             type: "button",
@@ -20800,11 +24424,11 @@ const WaldiezFlowPanels = (props) => {
             onClick: onConvertToIpynb,
             title: "Convert to Jupyter Notebook",
             "data-testid": `convert-${flowId}-to-ipynb`,
-            children: /* @__PURE__ */ jsx(SiJupyter, {})
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(SiJupyter, {})
           }
         )
       ] }),
-      includeImportButton && /* @__PURE__ */ jsx(
+      includeImportButton && /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -20812,10 +24436,10 @@ const WaldiezFlowPanels = (props) => {
           onClick: onOpenImportModal,
           title: "Import flow",
           "data-testid": `import-flow-${flowId}-button`,
-          children: /* @__PURE__ */ jsx(FaFileImport, {})
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaFileImport, {})
         }
       ),
-      includeExportButton && /* @__PURE__ */ jsx(
+      includeExportButton && /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -20823,28 +24447,28 @@ const WaldiezFlowPanels = (props) => {
           onClick: onExport,
           title: "Export flow",
           "data-testid": `export-flow-${flowId}-button`,
-          children: /* @__PURE__ */ jsx(MdIosShare, { size: 24 })
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(MdIosShare, { size: 24 })
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
           className: "editor-nav-action",
           title: "Github repository",
           "data-testid": `open-docs-${flowId}`,
-          children: /* @__PURE__ */ jsx(
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             "a",
             {
               href: "https://github.com/waldiez/waldiez",
               target: "_blank",
               rel: "noopener noreferrer",
-              children: /* @__PURE__ */ jsx(FaGithub, {})
+              children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaGithub, {})
             }
           )
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -20852,12 +24476,27 @@ const WaldiezFlowPanels = (props) => {
           onClick: toggleTheme,
           title: "Toggle theme",
           "data-testid": `toggle-theme-${flowId}`,
-          children: isDark ? /* @__PURE__ */ jsx(FaSun, {}) : /* @__PURE__ */ jsx(FaMoon, {})
+          children: isDark ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaSun, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaMoon, {})
         }
       )
     ] }) })
   ] });
 };
+function GiNestEggs(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M263.4 75.12c-13 0-24.4 6.3-34.8 17.96-10.3 11.62-18.9 28.52-24.6 47.62-8.6 28.5-10.4 61.8-4.8 88.8l65.8-9.4 62.9 7.4c5.2-26.6 3.3-59-5.1-86.8-5.7-19.1-14.3-36-24.6-47.62-10.4-11.66-21.8-17.96-34.8-17.96zm144 35.08c-11.6 0-21.9 5.7-31.3 16.5-9.3 10.8-17.2 26.6-22.4 44.4-1.9 6.6-3.5 13.4-4.7 20.3.4 12.5-.5 24.8-2.6 36.4 0 .6 0 1.2.1 1.9l29.9 3.5-61.9 10.9-49.3-5.8-168.44 24 83.54 30 109.2-18.6-106 54.1-115.68-61.3-28.93 4.1L47.3 302l-29.27-11.9 37.91 44.2 4.73 17.7 43.83 20.9 63.1-16.5-56.8 41.9-42.17-16.5 10.86 40.6 24.01 7-41.99 17.2 97.39.4-52.8 21.9 107.1-7.6c73.4 25.8 90.3 22.4 173.3 30.1l-68.2-25.5 24.3-12.6-57.9-39.6c77.9 24.1 107.9 16.5 183.6 2.3l-42.2-6.2 51.8-27 .4-12.7 27.5-57.6-26.3 18.6 1-29.4-63.2 51.5-113-34.4 116.2 7.9 60.1-28.9.5-14.1 16.1-40.9-30.6 19.1-37.1-4.3-77.4 8.7s22.1-6.9 42.9-13.2l21.6-15.2 50.5 5.9c3-23 .8-49.6-6-72.7-5.2-17.8-13.1-33.6-22.4-44.4-9.4-10.8-19.7-16.5-31.3-16.5zM139.6 121c-12.1 0-22.6 5.5-32.1 15.4-9.48 10-17.39 24.6-22.65 41-7.12 22.1-9.18 47.5-5.73 69.2l102.08-14.5c-5.3-25.4-4.3-54.1 1.5-80.9-3.3-5.6-7-10.6-11-14.8-9.5-9.9-20-15.4-32.1-15.4zm68.2 244.4l73.2 13.8 78-9-79.6 30.8z" }, "child": [] }] })(props);
+}
+function GiShakingHands(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 512 512" }, "child": [{ "tag": "path", "attr": { "d": "M494 61.363l-82.58 77.934 78.994 132.96 3.586-4.458V61.362zM18 62.5v225.893c4.48.582 9.863.903 15.295.96 11.87.125 21.654-.65 27.15-1.144L113.1 154.974 18 62.5zm389.154 104.86l-7.04 4.556c-.15.097-5.362 3.336-6.893 4.29l-10.605 6.42.15.09c-4.914 3.057-6.28 3.917-11.857 7.38-2.83 1.757-2.9 1.798-5.584 3.465-20.29-10.907-42.306-19.29-67.998-25.882-32.312 9.762-66.542 23.888-100.722 37.142 14.19 17.087 29.96 22.651 45.845 22.85 18.42.23 37.25-7.78 50.218-16.754l7.4-5.12 7.426 10.73 115.453 83.33 45.112-29.987-60.906-102.51zM126.477 170.1L81.11 284.887 97.76 297.69l30.795-34.905 2.467-2.795 3.72-.232c1.5-.094 2.98-.138 4.44-.13 10.212.066 19.342 2.716 26.19 8.76 5.072 4.472 8.444 10.426 10.4 17.32l2.28-.142c11.995-.75 22.802 1.725 30.63 8.63 7.827 6.907 11.63 17.323 12.38 29.32l.07 1.08c6.44 1.216 12.205 3.752 16.893 7.888 7.828 6.906 11.63 17.32 12.38 29.317l.197 3.12c.642.202 1.275.424 1.9.658l2.033-2.853 5.47-7.678 2.813-3.95 7.33 5.223 59.428 42.336c6.464-1.594 10.317-4.075 12.46-7.086 2.147-3.012 3.233-7.47 2.624-14.107l-71.258-51.03-7.318-5.24 5.19-7.246 6.67-9.365 7.33 5.223 80.335 57.226c6.464-1.593 10.32-4.074 12.463-7.085 2.144-3.01 3.23-7.457 2.625-14.082l-92.398-65.55-7.34-5.21 10.414-14.68 7.343 5.208 92.414 65.565c6.47-1.594 10.327-4.075 12.473-7.088 2.148-3.015 3.233-7.476 2.62-14.125l-110.44-79.71c-14.655 8.688-33.402 15.648-53.557 15.396-23.587-.295-48.817-11.566-67.377-40.05a9 9 0 0 1 4.343-13.327c13.014-4.945 26.163-10.17 39.343-15.354l-92.056-6.834zm12.902 107.62l-47.564 53.91c.927 6.746 3.04 10.942 5.887 13.454 2.847 2.512 7.275 4.085 14.084 4.164l47.563-53.908c-.927-6.747-3.04-10.945-5.887-13.457-2.847-2.512-7.274-4.084-14.084-4.162zm43.308 25.81l-53.713 60.88c.926 6.747 3.04 10.945 5.886 13.457 2.85 2.51 7.275 4.083 14.085 4.16l53.713-60.878c-.926-6.748-3.04-10.944-5.887-13.457-2.846-2.512-7.273-4.085-14.083-4.164zm29.34 38.286l-47.56 53.91c.927 6.746 3.04 10.943 5.887 13.456 2.848 2.512 7.275 4.083 14.084 4.162L232 359.44c-.927-6.75-3.04-10.947-5.887-13.46-2.847-2.512-7.274-4.083-14.084-4.162zm24.702 39.137l-38.794 44.28c.925 6.76 3.038 10.962 5.888 13.476 2.845 2.51 7.267 4.082 14.067 4.163l38.796-44.28c-.926-6.758-3.04-10.96-5.89-13.476-2.844-2.51-7.266-4.08-14.066-4.162zm35.342 4.79c1.694 4.62 2.673 9.74 3.014 15.192l.232 3.704-8.277 9.448 26.724 19.037c6.464-1.594 10.316-4.075 12.46-7.086 2.145-3.01 3.233-7.464 2.628-14.093l-36.78-26.2z" }, "child": [] }] })(props);
+}
+function GoAlert(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "d": "M13 17.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Zm-.25-8.25a.75.75 0 0 0-1.5 0v4.5a.75.75 0 0 0 1.5 0v-4.5Z" }, "child": [] }, { "tag": "path", "attr": { "d": "M9.836 3.244c.963-1.665 3.365-1.665 4.328 0l8.967 15.504c.963 1.667-.24 3.752-2.165 3.752H3.034c-1.926 0-3.128-2.085-2.165-3.752Zm3.03.751a1.002 1.002 0 0 0-1.732 0L2.168 19.499A1.002 1.002 0 0 0 3.034 21h17.932a1.002 1.002 0 0 0 .866-1.5L12.866 3.994Z" }, "child": [] }] })(props);
+}
+function GoChevronDown(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "d": "M5.22 8.22a.749.749 0 0 0 0 1.06l6.25 6.25a.749.749 0 0 0 1.06 0l6.25-6.25a.749.749 0 1 0-1.06-1.06L12 13.939 6.28 8.22a.749.749 0 0 0-1.06 0Z" }, "child": [] }] })(props);
+}
+function GoChevronUp(props) {
+  return GenIcon({ "attr": { "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "d": "M18.78 15.78a.749.749 0 0 1-1.06 0L12 10.061 6.28 15.78a.749.749 0 1 1-1.06-1.06l6.25-6.25a.749.749 0 0 1 1.06 0l6.25 6.25a.749.749 0 0 1 0 1.06Z" }, "child": [] }] })(props);
+}
 const EdgeLabel = ({ edge, transform }) => {
   if (!edge) {
     return null;
@@ -20867,7 +24506,7 @@ const EdgeLabel = ({ edge, transform }) => {
     return null;
   }
   const trimmedTo20Chars = label.length > 20 ? `${label.slice(0, 20)}...` : label;
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
       style: {
@@ -20896,7 +24535,7 @@ const EdgePosition = ({
   if (!edge) {
     return null;
   }
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "div",
     {
       style: {
@@ -21081,16 +24720,16 @@ const getEdgeLabelTransformNodeOffset = (sourceX, sourceY, targetX, targetY, lab
   }
 };
 const WaldiezEdgeChat = memo((props) => {
-  return /* @__PURE__ */ jsx(WaldiezEdgeCommon, { ...props, type: "chat" });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezEdgeCommon, { ...props, type: "chat" });
 });
 const WaldiezEdgeNested = memo((props) => {
-  return /* @__PURE__ */ jsx(WaldiezEdgeCommon, { ...props, type: "nested" });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezEdgeCommon, { ...props, type: "nested" });
 });
 const WaldiezEdgeGroup = memo((props) => {
-  return /* @__PURE__ */ jsx(WaldiezEdgeCommon, { ...props, type: "group" });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezEdgeCommon, { ...props, type: "group" });
 });
 const WaldiezEdgeHidden = memo((props) => {
-  return /* @__PURE__ */ jsx(WaldiezEdgeCommon, { ...props, type: "hidden" });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezEdgeCommon, { ...props, type: "hidden" });
 });
 const getGroupChatType = (sourceAgent, targetAgent) => {
   if (targetAgent.data.agentType === "group_manager") {
@@ -21107,11 +24746,11 @@ const getGroupChatType = (sourceAgent, targetAgent) => {
 const getGroupChatIcon = (groupChatType, size2) => {
   switch (groupChatType) {
     case "handoff":
-      return /* @__PURE__ */ jsx(GiShakingHands, { size: size2 });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(GiShakingHands, { size: size2 });
     case "nested":
-      return /* @__PURE__ */ jsx(GiNestEggs, { size: size2 });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(GiNestEggs, { size: size2 });
     default:
-      return /* @__PURE__ */ jsx(MdMessage, { size: size2 });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(MdMessage, { size: size2 });
   }
 };
 const getEdgeIcon = (type, groupChatType, edgeColor) => {
@@ -21121,9 +24760,9 @@ const getEdgeIcon = (type, groupChatType, edgeColor) => {
   }
   switch (type) {
     case "chat":
-      return /* @__PURE__ */ jsx(MdMessage, { color: edgeColor, size: size2 });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(MdMessage, { color: edgeColor, size: size2 });
     case "nested":
-      return /* @__PURE__ */ jsx(GiNestEggs, { color: edgeColor, size: size2 });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(GiNestEggs, { color: edgeColor, size: size2 });
     default:
       return null;
   }
@@ -21243,23 +24882,23 @@ const WaldiezEdgeCommon = memo((props) => {
   }, []);
   const renderEdgeContent = useMemo(() => {
     if (edgeNumber !== "") {
-      return /* @__PURE__ */ jsxs("div", { className: "agent-edge-view clickable", children: [
-        /* @__PURE__ */ jsx(EdgePosition, { edge, transform: positionTranslation.edgeStart, children: edgeNumber === "0" ? /* @__PURE__ */ jsx(GoAlert, { size: 16, className: "edge-position-warning-icon" }) : edgeNumber }),
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-edge-view clickable", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(EdgePosition, { edge, transform: positionTranslation.edgeStart, children: edgeNumber === "0" ? /* @__PURE__ */ jsxRuntimeExports.jsx(GoAlert, { size: 16, className: "edge-position-warning-icon" }) : edgeNumber }),
         edgeIcon
       ] });
     }
     if (type === "group") {
-      return /* @__PURE__ */ jsxs("div", { className: "agent-edge-view clickable", children: [
-        groupChatType === "fromManager" && /* @__PURE__ */ jsx(EdgePosition, { edge, transform: positionTranslation.edgeStart, children: /* @__PURE__ */ jsx(GoAlert, { size: 16, className: "edge-position-warning-icon" }) }),
-        groupChatType === "toManager" && /* @__PURE__ */ jsx(EdgePosition, { edge, transform: positionTranslation.edgeStart, children: /* @__PURE__ */ jsx("div", { className: "edge-position", children: "1" }) }),
-        /* @__PURE__ */ jsx("div", { className: "edge-icon", children: edgeIcon })
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-edge-view clickable", children: [
+        groupChatType === "fromManager" && /* @__PURE__ */ jsxRuntimeExports.jsx(EdgePosition, { edge, transform: positionTranslation.edgeStart, children: /* @__PURE__ */ jsxRuntimeExports.jsx(GoAlert, { size: 16, className: "edge-position-warning-icon" }) }),
+        groupChatType === "toManager" && /* @__PURE__ */ jsxRuntimeExports.jsx(EdgePosition, { edge, transform: positionTranslation.edgeStart, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "edge-position", children: "1" }) }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "edge-icon", children: edgeIcon })
       ] });
     }
-    return /* @__PURE__ */ jsx("div", { className: "agent-edge-view clickable", children: edgeIcon });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-edge-view clickable", children: edgeIcon });
   }, [edgeNumber, type, edgeIcon, edge, positionTranslation, groupChatType]);
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx(BaseEdge, { path: edgePath, markerEnd, style: { ...style, color: edgeColor } }),
-    /* @__PURE__ */ jsx(EdgeLabelRenderer, { children: /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(BaseEdge, { path: edgePath, markerEnd, style: { ...style, color: edgeColor } }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(EdgeLabelRenderer, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
         style: {
@@ -21273,8 +24912,8 @@ const WaldiezEdgeCommon = memo((props) => {
         tabIndex: 0,
         onBlur: onEdgeBlur,
         children: [
-          focussed && /* @__PURE__ */ jsxs("div", { className: "edge-actions", children: [
-            /* @__PURE__ */ jsx(
+          focussed && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "edge-actions", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "div",
               {
                 title: "Delete",
@@ -21283,10 +24922,10 @@ const WaldiezEdgeCommon = memo((props) => {
                 className: "delete-edge clickable",
                 "data-testid": `delete-edge-${id}`,
                 "aria-label": "Delete edge",
-                children: /* @__PURE__ */ jsx(FaTrash, { size: 12 })
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaTrash$1, { size: 12 })
               }
             ),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "div",
               {
                 title: "Edit",
@@ -21295,12 +24934,12 @@ const WaldiezEdgeCommon = memo((props) => {
                 className: "open-edge-modal clickable",
                 "data-testid": `open-edge-modal-${id}`,
                 "aria-label": "Edit edge",
-                children: /* @__PURE__ */ jsx(VscSettings, { size: 12 })
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(VscSettings, { size: 12 })
               }
             )
           ] }),
           renderEdgeContent,
-          /* @__PURE__ */ jsx(EdgeLabel, { edge, transform: positionTranslation.edgeEnd })
+          /* @__PURE__ */ jsxRuntimeExports.jsx(EdgeLabel, { edge, transform: positionTranslation.edgeEnd })
         ]
       }
     ) })
@@ -21311,9 +24950,6 @@ WaldiezEdgeNested.displayName = "WaldiezEdgeNested";
 WaldiezEdgeGroup.displayName = "WaldiezEdgeGroup";
 WaldiezEdgeHidden.displayName = "WaldiezEdgeHidden";
 WaldiezEdgeCommon.displayName = "WaldiezEdgeCommon";
-function getDefaultExportFromCjs(x) {
-  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
-}
 var reactFastCompare;
 var hasRequiredReactFastCompare;
 function requireReactFastCompare() {
@@ -21323,65 +24959,65 @@ function requireReactFastCompare() {
   var hasMap = typeof Map === "function";
   var hasSet = typeof Set === "function";
   var hasArrayBuffer = typeof ArrayBuffer === "function" && !!ArrayBuffer.isView;
-  function equal(a, b) {
-    if (a === b) return true;
-    if (a && b && typeof a == "object" && typeof b == "object") {
-      if (a.constructor !== b.constructor) return false;
+  function equal(a, b2) {
+    if (a === b2) return true;
+    if (a && b2 && typeof a == "object" && typeof b2 == "object") {
+      if (a.constructor !== b2.constructor) return false;
       var length, i, keys;
       if (Array.isArray(a)) {
         length = a.length;
-        if (length != b.length) return false;
+        if (length != b2.length) return false;
         for (i = length; i-- !== 0; )
-          if (!equal(a[i], b[i])) return false;
+          if (!equal(a[i], b2[i])) return false;
         return true;
       }
       var it;
-      if (hasMap && a instanceof Map && b instanceof Map) {
-        if (a.size !== b.size) return false;
+      if (hasMap && a instanceof Map && b2 instanceof Map) {
+        if (a.size !== b2.size) return false;
         it = a.entries();
         while (!(i = it.next()).done)
-          if (!b.has(i.value[0])) return false;
+          if (!b2.has(i.value[0])) return false;
         it = a.entries();
         while (!(i = it.next()).done)
-          if (!equal(i.value[1], b.get(i.value[0]))) return false;
+          if (!equal(i.value[1], b2.get(i.value[0]))) return false;
         return true;
       }
-      if (hasSet && a instanceof Set && b instanceof Set) {
-        if (a.size !== b.size) return false;
+      if (hasSet && a instanceof Set && b2 instanceof Set) {
+        if (a.size !== b2.size) return false;
         it = a.entries();
         while (!(i = it.next()).done)
-          if (!b.has(i.value[0])) return false;
+          if (!b2.has(i.value[0])) return false;
         return true;
       }
-      if (hasArrayBuffer && ArrayBuffer.isView(a) && ArrayBuffer.isView(b)) {
+      if (hasArrayBuffer && ArrayBuffer.isView(a) && ArrayBuffer.isView(b2)) {
         length = a.length;
-        if (length != b.length) return false;
+        if (length != b2.length) return false;
         for (i = length; i-- !== 0; )
-          if (a[i] !== b[i]) return false;
+          if (a[i] !== b2[i]) return false;
         return true;
       }
-      if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
-      if (a.valueOf !== Object.prototype.valueOf && typeof a.valueOf === "function" && typeof b.valueOf === "function") return a.valueOf() === b.valueOf();
-      if (a.toString !== Object.prototype.toString && typeof a.toString === "function" && typeof b.toString === "function") return a.toString() === b.toString();
+      if (a.constructor === RegExp) return a.source === b2.source && a.flags === b2.flags;
+      if (a.valueOf !== Object.prototype.valueOf && typeof a.valueOf === "function" && typeof b2.valueOf === "function") return a.valueOf() === b2.valueOf();
+      if (a.toString !== Object.prototype.toString && typeof a.toString === "function" && typeof b2.toString === "function") return a.toString() === b2.toString();
       keys = Object.keys(a);
       length = keys.length;
-      if (length !== Object.keys(b).length) return false;
+      if (length !== Object.keys(b2).length) return false;
       for (i = length; i-- !== 0; )
-        if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+        if (!Object.prototype.hasOwnProperty.call(b2, keys[i])) return false;
       if (hasElementType && a instanceof Element) return false;
       for (i = length; i-- !== 0; ) {
         if ((keys[i] === "_owner" || keys[i] === "__v" || keys[i] === "__o") && a.$$typeof) {
           continue;
         }
-        if (!equal(a[keys[i]], b[keys[i]])) return false;
+        if (!equal(a[keys[i]], b2[keys[i]])) return false;
       }
       return true;
     }
-    return a !== a && b !== b;
+    return a !== a && b2 !== b2;
   }
-  reactFastCompare = function isEqual2(a, b) {
+  reactFastCompare = function isEqual2(a, b2) {
     try {
-      return equal(a, b);
+      return equal(a, b2);
     } catch (error) {
       if ((error.message || "").match(/stack|recursion/i)) {
         console.warn("react-fast-compare cannot handle circular refs");
@@ -21392,7 +25028,7 @@ function requireReactFastCompare() {
   };
   return reactFastCompare;
 }
-var reactFastCompareExports = requireReactFastCompare();
+var reactFastCompareExports = /* @__PURE__ */ requireReactFastCompare();
 const isEqual = /* @__PURE__ */ getDefaultExportFromCjs(reactFastCompareExports);
 const useWaldiezEdgeModal = (props) => {
   const { edgeId, onClose } = props;
@@ -21636,9 +25272,9 @@ const WaldiezEdgeBasicTab = (props) => {
     onLlmPromptChange,
     onLlmSummaryRoleChange
   } = useWaldiezEdgeBasicTab(props);
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-    /* @__PURE__ */ jsxs("div", { className: "margin-top--10", children: [
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top--10", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           htmlFor: `select-chat-type-${edgeId}`,
@@ -21646,8 +25282,8 @@ const WaldiezEdgeBasicTab = (props) => {
           info: "The type of the chat. Could be Chat or Nested Chat. Chats are executed in a sequential order. Nested Chats are not always executed (i.e., triggered)."
         }
       ),
-      /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: `select-chat-type-${edgeId}`, children: "Chat Type:" }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: `select-chat-type-${edgeId}`, children: "Chat Type:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: edgeTypeOptions,
@@ -21657,7 +25293,7 @@ const WaldiezEdgeBasicTab = (props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextInput,
       {
         label: "Label:",
@@ -21667,9 +25303,9 @@ const WaldiezEdgeBasicTab = (props) => {
         dataTestId: `edge-${edgeId}-label-input`
       }
     ),
-    !skipDescription && /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
-      /* @__PURE__ */ jsx("label", { htmlFor: `edge-${edgeId}-description-input`, children: "Description:" }),
-      /* @__PURE__ */ jsx(
+    !skipDescription && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `edge-${edgeId}-description-input`, children: "Description:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         TextareaInput,
         {
           rows: 2,
@@ -21680,8 +25316,8 @@ const WaldiezEdgeBasicTab = (props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       CheckboxInput,
       {
         label: "Clear History",
@@ -21690,7 +25326,7 @@ const WaldiezEdgeBasicTab = (props) => {
         id: `edge-${edgeId}-clear-history-checkbox`
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       NumberInput,
       {
         name: "max-turns",
@@ -21706,35 +25342,35 @@ const WaldiezEdgeBasicTab = (props) => {
         dataTestId: `edge-${edgeId}-max-turns-input`
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoLabel,
       {
         htmlFor: `select-summary-method-${edgeId}`,
         label: "Summary Method:",
-        info: () => /* @__PURE__ */ jsxs("div", { children: [
+        info: () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
           "The method to be used to summarize the conversation. ",
-          /* @__PURE__ */ jsx("br", {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
           "Possible values are: ",
-          /* @__PURE__ */ jsx("br", {}),
-          /* @__PURE__ */ jsxs("ul", { children: [
-            /* @__PURE__ */ jsxs("li", { children: [
-              /* @__PURE__ */ jsx("b", { children: "Reflection with LLM:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Reflection with LLM:" }),
               " the summary is generated by reflecting on the conversation and using the Language Model (LLM) to generate the summary."
             ] }),
-            /* @__PURE__ */ jsxs("li", { children: [
-              /* @__PURE__ */ jsx("b", { children: "Last Message:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Last Message:" }),
               " the last message of the conversation is used as the summary."
             ] }),
-            /* @__PURE__ */ jsxs("li", { children: [
-              /* @__PURE__ */ jsx("b", { children: "None:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "None:" }),
               " no summary is generated."
             ] })
           ] })
         ] })
       }
     ),
-    /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: `select-summary-method-${edgeId}`, children: "Summary Method:" }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: `select-summary-method-${edgeId}`, children: "Summary Method:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       Select,
       {
         options: summaryOptions,
@@ -21746,8 +25382,8 @@ const WaldiezEdgeBasicTab = (props) => {
         inputId: `select-summary-method-${edgeId}`
       }
     ),
-    data.summary.method === "reflectionWithLlm" && /* @__PURE__ */ jsxs(Fragment, { children: [
-      /* @__PURE__ */ jsx(
+    data.summary.method === "reflectionWithLlm" && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           htmlFor: `edge-${edgeId}-llm-prompt-input`,
@@ -21755,7 +25391,7 @@ const WaldiezEdgeBasicTab = (props) => {
           info: "The prompt to be used for the summary generation."
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         TextareaInput,
         {
           placeholder: "Enter the summary prompt",
@@ -21765,8 +25401,8 @@ const WaldiezEdgeBasicTab = (props) => {
           "data-testid": `edge-${edgeId}-llm-prompt-input`
         }
       ),
-      /* @__PURE__ */ jsx("label", { htmlFor: `select-summary-role-${edgeId}`, children: "Summary Role:" }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `select-summary-role-${edgeId}`, children: "Summary Role:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: summaryRoleOptions,
@@ -21862,7 +25498,7 @@ const WaldiezEdgeMessageTab = (props) => {
   const handlAddContextEntry = skipContextVarsOption === true ? noOp : onAddMessageContextEntry;
   const handleRemoveContextEntry = skipContextVarsOption === true ? noOp : onRemoveMessageContextEntry;
   const handleUpdateContextEntries = skipContextVarsOption === true ? noOp : onUpdateMessageContextEntries;
-  return /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
     MessageInput,
     {
       darkMode,
@@ -21984,10 +25620,10 @@ const WaldiezEdgeNestedTab = (props) => {
   };
   const noOp = () => {
   };
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
-    /* @__PURE__ */ jsx("div", { className: "info margin-bottom-10", children: "When the connection is used in a nested chat, you can specify the messages to be sent and received, from the source and the target respectively." }),
-    /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
-      /* @__PURE__ */ jsx(TabItem, { label: "Message", id: `wc-${flowId}-edge-nested-chat-${edgeId}-message`, children: /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-top-10", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info margin-bottom-10", children: "When the connection is used in a nested chat, you can specify the messages to be sent and received, from the source and the target respectively." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex: 0, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Message", id: `wc-${flowId}-edge-nested-chat-${edgeId}-message`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         MessageInput,
         {
           darkMode,
@@ -22007,7 +25643,7 @@ const WaldiezEdgeNestedTab = (props) => {
           onUpdateContextEntries: noOp
         }
       ) }) }),
-      /* @__PURE__ */ jsx(TabItem, { label: "Reply", id: `wc-${flowId}-edge-nested-chat-${edgeId}-reply`, children: /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Reply", id: `wc-${flowId}-edge-nested-chat-${edgeId}-reply`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         MessageInput,
         {
           darkMode,
@@ -22102,7 +25738,7 @@ const WaldiezEdgeModal = memo((props) => {
     [onDataChange]
   );
   const beforeTitle = useMemo(
-    () => /* @__PURE__ */ jsx(
+    () => /* @__PURE__ */ jsxRuntimeExports.jsx(
       FaTrashCan,
       {
         className: "clickable",
@@ -22184,7 +25820,7 @@ const WaldiezEdgeModal = memo((props) => {
     },
     [onDataChange, edgeData.nestedChat]
   );
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     Modal,
     {
       flowId,
@@ -22196,9 +25832,9 @@ const WaldiezEdgeModal = memo((props) => {
       dataTestId: testIds.modal,
       hasUnsavedChanges: isDirty,
       preventCloseIfUnsavedChanges: true,
-      children: /* @__PURE__ */ jsxs("div", { className: "modal-body edge-modal", children: [
-        edgeType === "group" ? /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
-          /* @__PURE__ */ jsx(TabItem, { label: "Properties", id: tabIds.properties, children: /* @__PURE__ */ jsx(
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body edge-modal", children: [
+        edgeType === "group" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Properties", id: tabIds.properties, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezEdgeBasicTab,
             {
               edgeId,
@@ -22209,7 +25845,7 @@ const WaldiezEdgeModal = memo((props) => {
               skipDescription: true
             }
           ) }),
-          groupChatType === "toManager" && /* @__PURE__ */ jsx(TabItem, { label: "Message", id: tabIds.message, children: /* @__PURE__ */ jsx(
+          groupChatType === "toManager" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Message", id: tabIds.message, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezEdgeMessageTab,
             {
               edgeId,
@@ -22221,7 +25857,7 @@ const WaldiezEdgeModal = memo((props) => {
               onDataChange
             }
           ) }),
-          groupChatType === "nested" && /* @__PURE__ */ jsx(TabItem, { label: "Message", id: `wc-${flowId}-edge-nested-chat-${edgeId}-message`, children: /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
+          groupChatType === "nested" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Message", id: `wc-${flowId}-edge-nested-chat-${edgeId}-message`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             MessageInput,
             {
               darkMode: isDark,
@@ -22242,22 +25878,22 @@ const WaldiezEdgeModal = memo((props) => {
               onUpdateContextEntries: noOp
             }
           ) }) }),
-          groupChatType === "handoff" && /* @__PURE__ */ jsx(TabItem, { label: "Condition", id: tabIds.condition, children: /* @__PURE__ */ jsx(
+          groupChatType === "handoff" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Condition", id: tabIds.condition, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             HandoffCondition,
             {
               condition: edgeData.condition,
               onDataChange: onConditionChange
             }
           ) }),
-          groupChatType === "handoff" && /* @__PURE__ */ jsx(TabItem, { label: "Availability", id: tabIds.availability, children: /* @__PURE__ */ jsx(
+          groupChatType === "handoff" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Availability", id: tabIds.availability, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             HandoffAvailability,
             {
               available: edgeData.available,
               onDataChange: onAvailabilityChange
             }
           ) })
-        ] }) : /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
-          /* @__PURE__ */ jsx(TabItem, { label: "Properties", id: tabIds.properties, children: /* @__PURE__ */ jsx(
+        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Properties", id: tabIds.properties, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezEdgeBasicTab,
             {
               edgeId,
@@ -22267,7 +25903,7 @@ const WaldiezEdgeModal = memo((props) => {
               onDataChange
             }
           ) }),
-          edgeType === "chat" && /* @__PURE__ */ jsx(TabItem, { label: "Message", id: tabIds.message, children: /* @__PURE__ */ jsx(
+          edgeType === "chat" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Message", id: tabIds.message, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezEdgeMessageTab,
             {
               edgeId,
@@ -22277,7 +25913,7 @@ const WaldiezEdgeModal = memo((props) => {
               onDataChange
             }
           ) }),
-          edgeType === "nested" && /* @__PURE__ */ jsx(TabItem, { label: "Nested Chat", id: tabIds.nested, children: /* @__PURE__ */ jsx(
+          edgeType === "nested" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Nested Chat", id: tabIds.nested, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezEdgeNestedTab,
             {
               flowId,
@@ -22288,8 +25924,8 @@ const WaldiezEdgeModal = memo((props) => {
             }
           ) })
         ] }),
-        /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
-          /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               type: "button",
@@ -22301,8 +25937,8 @@ const WaldiezEdgeModal = memo((props) => {
               children: "Cancel"
             }
           ),
-          /* @__PURE__ */ jsxs("div", { className: "flex-row", children: [
-            /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-row", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 title: "Save & Close",
@@ -22316,7 +25952,7 @@ const WaldiezEdgeModal = memo((props) => {
                 children: "Save & Close"
               }
             ),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -22342,106 +25978,106 @@ const ActivityIcon = ({ activity, title, className }) => {
     return null;
   }
   if (activity === "thinking") {
-    return /* @__PURE__ */ jsxs(
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "span",
       {
         className: `agent-activity-icon is-thinking ${className ?? ""}`,
         title: title ?? "Thinking",
         "data-activity": "thinking",
         children: [
-          /* @__PURE__ */ jsx(FaHourglassHalf, {}),
-          /* @__PURE__ */ jsxs("span", { className: "typing-dots", "aria-label": "thinking", children: [
-            /* @__PURE__ */ jsx("i", {}),
-            /* @__PURE__ */ jsx("i", {}),
-            /* @__PURE__ */ jsx("i", {})
+          /* @__PURE__ */ jsxRuntimeExports.jsx(FaHourglassHalf, {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "typing-dots", "aria-label": "thinking", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("i", {}),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("i", {}),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("i", {})
           ] })
         ]
       }
     );
   }
   if (activity === "tool") {
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       "span",
       {
         className: `agent-activity-icon is-tool ${className ?? ""}`,
         title: title ?? "Running tool",
         "data-activity": "tool",
-        children: /* @__PURE__ */ jsx(FaCog, { className: "gear" })
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCog, { className: "gear" })
       }
     );
   }
   if (activity === "message") {
-    return /* @__PURE__ */ jsxs(
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "span",
       {
         className: `agent-activity-icon is-message ${className ?? ""}`,
         title: title ?? "Composing",
         "data-activity": "message",
         children: [
-          /* @__PURE__ */ jsx(FaCommentDots, { className: "bubble" }),
-          /* @__PURE__ */ jsxs("span", { className: "typing-dots", "aria-label": "typing", children: [
-            /* @__PURE__ */ jsx("i", {}),
-            /* @__PURE__ */ jsx("i", {}),
-            /* @__PURE__ */ jsx("i", {})
+          /* @__PURE__ */ jsxRuntimeExports.jsx(FaCommentDots, { className: "bubble" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "typing-dots", "aria-label": "typing", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("i", {}),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("i", {}),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("i", {})
           ] })
         ]
       }
     );
   }
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     "span",
     {
       className: `agent-activity-icon ${className ?? ""}`,
       title: title ?? String(activity),
       "data-activity": String(activity),
-      children: /* @__PURE__ */ jsx(FaCircle, { className: "status-dot" })
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCircle, { className: "status-dot" })
     }
   );
 };
 const ICON_SIZE = 14;
 const PREDEFINED_TOOL_INSTRUCTIONS = {
   wikipedia_search: void 0,
-  youtube_search: /* @__PURE__ */ jsxs("div", { className: "info", children: [
-    /* @__PURE__ */ jsx("p", { children: "To use the YouTube Search tool, you need to set up a YouTube Data API key." }),
-    /* @__PURE__ */ jsx("p", { children: " Follow these steps:" }),
-    /* @__PURE__ */ jsxs("ol", { children: [
-      /* @__PURE__ */ jsxs("li", { children: [
+  youtube_search: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "To use the YouTube Search tool, you need to set up a YouTube Data API key." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: " Follow these steps:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Go to the",
         " ",
-        /* @__PURE__ */ jsx("a", { href: "https://console.cloud.google.com/", target: "_blank", rel: "noopener noreferrer", children: "Google Cloud Console" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://console.cloud.google.com/", target: "_blank", rel: "noopener noreferrer", children: "Google Cloud Console" }),
         "."
       ] }),
-      /* @__PURE__ */ jsx("li", { children: "Create a new project or select an existing one." }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Create a new project or select an existing one." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Navigate to ",
-        /* @__PURE__ */ jsx("strong", { children: "APIs & Services > Library" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "APIs & Services > Library" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Search for ",
-        /* @__PURE__ */ jsx("strong", { children: "YouTube Data API v3" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "YouTube Data API v3" }),
         " and enable it."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Go to ",
-        /* @__PURE__ */ jsx("strong", { children: "APIs & Services > Credentials" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "APIs & Services > Credentials" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Click on ",
-        /* @__PURE__ */ jsx("strong", { children: "Create Credentials > API key" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Create Credentials > API key" }),
         " and copy your API key."
       ] })
     ] })
   ] }),
-  google_search: /* @__PURE__ */ jsxs("div", { className: "info", children: [
-    /* @__PURE__ */ jsx("p", { children: "To use the Google Search tool, you need to set up a Google Custom Search Engine (CSE) and obtain an API key." }),
-    /* @__PURE__ */ jsx("p", { children: "Follow these steps:" }),
-    /* @__PURE__ */ jsxs("ol", { children: [
-      /* @__PURE__ */ jsxs("li", { children: [
+  google_search: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "To use the Google Search tool, you need to set up a Google Custom Search Engine (CSE) and obtain an API key." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Follow these steps:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Go to",
         " ",
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "a",
           {
             href: "https://programmablesearchengine.google.com/about/",
@@ -22452,96 +26088,96 @@ const PREDEFINED_TOOL_INSTRUCTIONS = {
         ),
         "."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Click ",
-        /* @__PURE__ */ jsx("strong", { children: "Get Started" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Get Started" }),
         " and create a search engine."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Under ",
-        /* @__PURE__ */ jsx("strong", { children: "Sites to Search" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Sites to Search" }),
         ", select ",
-        /* @__PURE__ */ jsx("strong", { children: "Search the entire web" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Search the entire web" }),
         " if you want global search."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Copy the ",
-        /* @__PURE__ */ jsx("strong", { children: "Search Engine ID" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Search Engine ID" }),
         " from the CSE dashboard (the `cx` parameter from the URL)."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Go to the",
         " ",
-        /* @__PURE__ */ jsx("a", { href: "https://console.cloud.google.com/", target: "_blank", rel: "noopener noreferrer", children: "Google Cloud Console" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://console.cloud.google.com/", target: "_blank", rel: "noopener noreferrer", children: "Google Cloud Console" }),
         "."
       ] }),
-      /* @__PURE__ */ jsx("li", { children: "Create a new project." }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Create a new project." }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Navigate to ",
-        /* @__PURE__ */ jsx("strong", { children: "APIs & Services > Library" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "APIs & Services > Library" }),
         ", search for",
         " ",
-        /* @__PURE__ */ jsx("strong", { children: "Custom Search API" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Custom Search API" }),
         ", and enable it."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Go to ",
-        /* @__PURE__ */ jsx("strong", { children: "APIs & Services > Credentials" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "APIs & Services > Credentials" }),
         ", click on",
         " ",
-        /* @__PURE__ */ jsx("strong", { children: "Create Credentials > API key" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Create Credentials > API key" }),
         ", and copy your API key."
       ] })
     ] })
   ] }),
-  tavily_search: /* @__PURE__ */ jsxs("div", { className: "info", children: [
-    /* @__PURE__ */ jsx("p", { children: "To use the Tavily Search tool, you need to set up a Tavily API key." }),
-    /* @__PURE__ */ jsx("p", { children: "Follow these steps:" }),
-    /* @__PURE__ */ jsxs("ol", { children: [
-      /* @__PURE__ */ jsxs("li", { children: [
+  tavily_search: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "To use the Tavily Search tool, you need to set up a Tavily API key." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Follow these steps:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Visit",
         " ",
-        /* @__PURE__ */ jsx("a", { href: "https://tavily.com/", target: "_blank", rel: "noopener noreferrer", children: "Tavily AI" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://tavily.com/", target: "_blank", rel: "noopener noreferrer", children: "Tavily AI" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Click ",
-        /* @__PURE__ */ jsx("strong", { children: "Sign Up" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Sign Up" }),
         " and create an account."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Navigate to",
         " ",
-        /* @__PURE__ */ jsx("a", { href: "https://app.tavily.com/", target: "_blank", rel: "noopener noreferrer", children: "Tavily API" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://app.tavily.com/", target: "_blank", rel: "noopener noreferrer", children: "Tavily API" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Generate an API key under ",
-        /* @__PURE__ */ jsx("strong", { children: "API Keys" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "API Keys" }),
         "."
       ] })
     ] })
   ] }),
   duckduckgo_search: void 0,
-  perplexity_search: /* @__PURE__ */ jsxs("div", { className: "info", children: [
-    /* @__PURE__ */ jsx("p", { children: "To use the Perplexity Search tool, you need to set up a Perplexity API key." }),
-    /* @__PURE__ */ jsx("p", { children: "Follow these steps:" }),
-    /* @__PURE__ */ jsxs("ol", { children: [
-      /* @__PURE__ */ jsxs("li", { children: [
+  perplexity_search: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "To use the Perplexity Search tool, you need to set up a Perplexity API key." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Follow these steps:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Visit",
         " ",
-        /* @__PURE__ */ jsx("a", { href: "https://www.perplexity.ai/", target: "_blank", rel: "noopener noreferrer", children: "Perplexity AI" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://www.perplexity.ai/", target: "_blank", rel: "noopener noreferrer", children: "Perplexity AI" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Click ",
-        /* @__PURE__ */ jsx("strong", { children: "Sign Up" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Sign Up" }),
         " and create an account."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Navigate to",
         " ",
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "a",
           {
             href: "https://www.perplexity.ai/settings/api",
@@ -22552,9 +26188,9 @@ const PREDEFINED_TOOL_INSTRUCTIONS = {
         ),
         "."
       ] }),
-      /* @__PURE__ */ jsxs("li", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
         "Generate an API key under ",
-        /* @__PURE__ */ jsx("strong", { children: "API Keys" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "API Keys" }),
         "."
       ] })
     ] })
@@ -22564,16 +26200,16 @@ const PREDEFINED_TOOL_INSTRUCTIONS = {
   custom: void 0
 };
 const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
-  const defaultIcon = /* @__PURE__ */ jsx(FaCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
+  const defaultIcon = /* @__PURE__ */ jsxRuntimeExports.jsx(FaCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
   if (toolType === "custom") {
     return defaultIcon;
   }
   if (toolType === "shared") {
-    return /* @__PURE__ */ jsx(FaRegFileCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(FaRegFileCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
   }
   switch (toolLabel) {
     case "wikipedia_search":
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         "img",
         {
           src: TOOL_ICONS.wikipedia_search,
@@ -22582,7 +26218,7 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     case "youtube_search":
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         "img",
         {
           src: TOOL_ICONS.youtube_search,
@@ -22591,7 +26227,7 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     case "google_search":
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         "img",
         {
           src: TOOL_ICONS.google_search,
@@ -22600,7 +26236,7 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     case "tavily_search":
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         "img",
         {
           src: TOOL_ICONS.tavily_search,
@@ -22609,7 +26245,7 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     case "duckduckgo_search":
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         "img",
         {
           src: TOOL_ICONS.duckduckgo_search,
@@ -22618,7 +26254,7 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     case "perplexity_search":
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         "img",
         {
           src: TOOL_ICONS.perplexity_search,
@@ -22628,7 +26264,7 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     case "searxng_search":
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         "img",
         {
           src: TOOL_ICONS.searxng_search,
@@ -22637,19 +26273,19 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     default:
-      return /* @__PURE__ */ jsx(FaCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(FaCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
   }
 };
 const TOOL_TYPE_OPTIONS = [
   {
     value: "shared",
     label: "Shared Code",
-    icon: /* @__PURE__ */ jsx(FaRegFileCode, { size: 18, style: { marginLeft: 2, width: 16, height: 16 } })
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(FaRegFileCode, { size: 18, style: { marginLeft: 2, width: 16, height: 16 } })
   },
   {
     value: "wikipedia_search",
     label: "Wikipedia Search",
-    icon: /* @__PURE__ */ jsx(
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(
       "img",
       {
         src: TOOL_ICONS.wikipedia_search,
@@ -22661,7 +26297,7 @@ const TOOL_TYPE_OPTIONS = [
   {
     value: "youtube_search",
     label: "YouTube Search",
-    icon: /* @__PURE__ */ jsx(
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(
       "img",
       {
         src: TOOL_ICONS.youtube_search,
@@ -22673,17 +26309,17 @@ const TOOL_TYPE_OPTIONS = [
   {
     value: "tavily_search",
     label: "Tavily Search",
-    icon: /* @__PURE__ */ jsx("img", { src: TOOL_ICONS.tavily_search, alt: "Tavily Search Icon", style: { width: 20, height: 20 } })
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: TOOL_ICONS.tavily_search, alt: "Tavily Search Icon", style: { width: 20, height: 20 } })
   },
   {
     value: "google_search",
     label: "Google Search",
-    icon: /* @__PURE__ */ jsx("img", { src: TOOL_ICONS.google_search, alt: "Google Search Icon", style: { width: 20, height: 20 } })
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: TOOL_ICONS.google_search, alt: "Google Search Icon", style: { width: 20, height: 20 } })
   },
   {
     value: "duckduckgo_search",
     label: "DuckDuckGo Search",
-    icon: /* @__PURE__ */ jsx(
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(
       "img",
       {
         src: TOOL_ICONS.duckduckgo_search,
@@ -22695,7 +26331,7 @@ const TOOL_TYPE_OPTIONS = [
   {
     value: "perplexity_search",
     label: "Perplexity AI Search",
-    icon: /* @__PURE__ */ jsx(
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(
       "img",
       {
         src: TOOL_ICONS.perplexity_search,
@@ -22708,7 +26344,7 @@ const TOOL_TYPE_OPTIONS = [
   {
     value: "searxng_search",
     label: "SearxNG Search",
-    icon: /* @__PURE__ */ jsx(
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(
       "img",
       {
         src: TOOL_ICONS.searxng_search,
@@ -22720,7 +26356,7 @@ const TOOL_TYPE_OPTIONS = [
   {
     value: "custom",
     label: "Custom Tool",
-    icon: /* @__PURE__ */ jsx(FaCode, { size: 18, style: { marginLeft: 2, width: 16, height: 16 } })
+    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCode, { size: 18, style: { marginLeft: 2, width: 16, height: 16 } })
   }
 ];
 const WaldiezNodeAgentBody = memo(
@@ -22728,10 +26364,10 @@ const WaldiezNodeAgentBody = memo(
     const { id, data } = props;
     const agentType = data.agentType;
     if (agentType === "group_manager") {
-      return /* @__PURE__ */ jsx("div", { className: "agent-content" });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-content" });
     }
     if (agentType === "user_proxy") {
-      return /* @__PURE__ */ jsx("div", { className: "agent-content", children: /* @__PURE__ */ jsx("div", { className: "agent-label margin-top-20", "data-testid": `agent-${id}-label`, children: data.label }) });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-content", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-label margin-top-20", "data-testid": `agent-${id}-label`, children: data.label }) });
     }
     return useAgentContentView(id, data);
   }
@@ -22828,12 +26464,12 @@ const useAgentContentView = (id, data) => {
     const hasTools = data.tools.length > 0;
     const showModels = hasModels && modelsToShow > 0;
     const showTools = hasTools && toolsToShow > 0;
-    return /* @__PURE__ */ jsxs("div", { ref: contentRef, className: "agent-content", children: [
-      /* @__PURE__ */ jsx("div", { className: "agent-label", "data-testid": `agent-${id}-label`, children: data.label }),
-      showModels && /* @__PURE__ */ jsxs("div", { className: "agent-models-preview", children: [
-        agentModelNames.slice(0, modelsToShow).map((name, index2) => /* @__PURE__ */ jsxs("div", { className: "agent-model-preview", "data-testid": "agent-model-preview", children: [
-          /* @__PURE__ */ jsx("div", { className: `agent-model-img ${agentWaldiezModelAPITypes[index2]}`, children: /* @__PURE__ */ jsx("img", { src: agentModelLogos[index2], title: name, alt: name }) }),
-          /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ref: contentRef, className: "agent-content", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-label", "data-testid": `agent-${id}-label`, children: data.label }),
+      showModels && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-models-preview", children: [
+        agentModelNames.slice(0, modelsToShow).map((name, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-model-preview", "data-testid": "agent-model-preview", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `agent-model-img ${agentWaldiezModelAPITypes[index2]}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: agentModelLogos[index2], title: name, alt: name }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "div",
             {
               className: "font-small agent-model-name",
@@ -22842,30 +26478,30 @@ const useAgentContentView = (id, data) => {
             }
           )
         ] }, name)),
-        agentModelNames.length > modelsToShow && /* @__PURE__ */ jsxs("div", { className: "agent-more-indicator", children: [
-          /* @__PURE__ */ jsx("div", { className: "agent-model-img", children: /* @__PURE__ */ jsx("span", { children: "⋯" }) }),
-          /* @__PURE__ */ jsxs("div", { className: "font-small agent-model-name", children: [
+        agentModelNames.length > modelsToShow && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-more-indicator", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-model-img", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "⋯" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-small agent-model-name", children: [
             "+",
             agentModelNames.length - modelsToShow,
             " more"
           ] })
         ] })
       ] }),
-      !hasModels && data.agentType !== "user_proxy" && /* @__PURE__ */ jsx("div", { className: "agent-models-preview", children: /* @__PURE__ */ jsx("div", { className: "font-small agent-model-name", children: "No models" }) }),
-      showTools && /* @__PURE__ */ jsxs("div", { className: "agent-tools-preview", children: [
+      !hasModels && data.agentType !== "user_proxy" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-models-preview", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-small agent-model-name", children: "No models" }) }),
+      showTools && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-tools-preview", children: [
         data.tools.slice(0, toolsToShow).map((linkedTool, index2) => {
           const tool = tools.find((tool2) => tool2.id === linkedTool.id);
           if (!tool) {
             return null;
           }
-          return /* @__PURE__ */ jsxs(
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "div",
             {
               className: "agent-tool-preview",
               "data-testid": "agent-tool-preview",
               children: [
-                /* @__PURE__ */ jsx("div", { className: "agent-tool-img", children: getToolIcon(tool.data.label, tool.data.toolType) }),
-                /* @__PURE__ */ jsx(
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-tool-img", children: getToolIcon(tool.data.label, tool.data.toolType) }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "div",
                   {
                     className: "font-small agent-tool-name",
@@ -22878,16 +26514,16 @@ const useAgentContentView = (id, data) => {
             tool.id
           );
         }),
-        data.tools.length > toolsToShow && /* @__PURE__ */ jsxs("div", { className: "agent-more-indicator", children: [
-          /* @__PURE__ */ jsx("div", { className: "agent-tool-img", children: /* @__PURE__ */ jsx("span", { children: "⋯" }) }),
-          /* @__PURE__ */ jsxs("div", { className: "font-small agent-tool-name", children: [
+        data.tools.length > toolsToShow && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-more-indicator", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-tool-img", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "⋯" }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-small agent-tool-name", children: [
             "+",
             data.tools.length - toolsToShow,
             " more"
           ] })
         ] })
       ] }),
-      !hasTools && !["user_proxy", "rag_user_proxy"].includes(data.agentType) && /* @__PURE__ */ jsx("div", { className: "agent-tools-preview", children: /* @__PURE__ */ jsx("div", { className: "font-small agent-tool-name", children: "No tools" }) })
+      !hasTools && !["user_proxy", "rag_user_proxy"].includes(data.agentType) && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-tools-preview", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-small agent-tool-name", children: "No tools" }) })
     ] });
   }, [
     agentModelNames,
@@ -22916,7 +26552,7 @@ const createHandles = (props) => {
     handleClass += "not-selected ";
   }
   if (agentType === "group_manager") {
-    return positions.map(({ pos, label }) => /* @__PURE__ */ jsx(
+    return positions.map(({ pos, label }) => /* @__PURE__ */ jsxRuntimeExports.jsx(
       Handle,
       {
         className: `${handleClass} ${label} target`,
@@ -22937,7 +26573,7 @@ const createHandles = (props) => {
     [Position.Right]: { target: { top: "75%" }, source: { top: "25%" } }
   };
   return positions.flatMap(({ pos, label }) => [
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       Handle,
       {
         className: `${handleClass} ${label} target`,
@@ -22951,7 +26587,7 @@ const createHandles = (props) => {
       },
       `target-${label}`
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       Handle,
       {
         className: `${handleClass} ${label} source`,
@@ -23621,13 +27257,13 @@ const WaldiezAgentModels = memo((props) => {
     },
     [onDataChange]
   );
-  return /* @__PURE__ */ jsxs("div", { className: "agent-panel margin-bottom-10", "data-testid": "agent-models-panel", children: [
-    /* @__PURE__ */ jsxs("label", { htmlFor: `select-agent-models-${id}`, children: [
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel margin-bottom-10", "data-testid": "agent-models-panel", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: `select-agent-models-${id}`, children: [
       "Model",
       data.agentType === "rag_user_proxy" ? "" : "s",
       " to use:"
     ] }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       Select,
       {
         options: modelOptions,
@@ -23692,9 +27328,9 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
   const getAgentName2 = (agentId) => {
     return groupMembers.find((agent) => agent.id === agentId)?.data.label ?? agentId;
   };
-  return /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
-    /* @__PURE__ */ jsx(TabItem, { label: "Group", id: `wf-${flowId}-agent-group-manager-config-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "modal-body  agent-panel", children: [
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Group", id: `wf-${flowId}-agent-group-manager-config-${id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body  agent-panel", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         TextInput,
         {
           label: "Group Name:",
@@ -23705,8 +27341,8 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Group name"
         }
       ),
-      /* @__PURE__ */ jsx("label", { htmlFor: `wf-${flowId}-agent-config-${id}-select-initial-agent`, children: "Initial Agent:" }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `wf-${flowId}-agent-config-${id}-select-initial-agent`, children: "Initial Agent:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: initialAgentOptions,
@@ -23716,7 +27352,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Select initial agent"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         NumberInput,
         {
           name: "max-rounds",
@@ -23733,7 +27369,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Maximum conversation rounds"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Dict,
         {
           itemsType: "group-context-variables",
@@ -23748,8 +27384,8 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
         }
       )
     ] }) }),
-    /* @__PURE__ */ jsx(TabItem, { label: "Group Manager", id: `wf-${flowId}-agent-group-manager-agent-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "modal-body agent-panel", children: [
-      /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Group Manager", id: `wf-${flowId}-agent-group-manager-agent-${id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body agent-panel", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezAgentModels,
         {
           id,
@@ -23758,7 +27394,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           onDataChange: props.onDataChange
         }
       ) }),
-      /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         TextInput,
         {
           label: "Group Manager's Name:",
@@ -23771,8 +27407,8 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Group manager name"
         }
       ) }),
-      /* @__PURE__ */ jsx("label", { htmlFor: `agent-description-input-${id}`, children: "Description:" }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-description-input-${id}`, children: "Description:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         TextareaInput,
         {
           id: `agent-description-input-${id}`,
@@ -23784,7 +27420,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Manager description"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoCheckbox,
         {
           label: "Send introductions",
@@ -23795,7 +27431,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Enable sending introductions"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoCheckbox,
         {
           label: "Enable clear history",
@@ -23807,37 +27443,37 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
         }
       )
     ] }) }),
-    /* @__PURE__ */ jsx(TabItem, { label: "Speakers", id: `wf-${flowId}-agent-group-manager-speakers-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "modal-body agent-panel", children: [
-      /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Speakers", id: `wf-${flowId}-agent-group-manager-speakers-${id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body agent-panel", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
         "The method for selecting the next speaker. The default is",
         " ",
-        /* @__PURE__ */ jsx("strong", { className: "italic", children: "Auto" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "italic", children: "Auto" }),
         ". Could be any of the following:",
-        /* @__PURE__ */ jsxs("ul", { children: [
-          /* @__PURE__ */ jsxs("li", { children: [
-            /* @__PURE__ */ jsx("strong", { className: "italic", children: "Auto" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "italic", children: "Auto" }),
             ": the next speaker is selected automatically by LLM."
           ] }),
-          /* @__PURE__ */ jsxs("li", { children: [
-            /* @__PURE__ */ jsx("strong", { className: "italic", children: "Manual" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "italic", children: "Manual" }),
             ": the next speaker is selected manually by user input."
           ] }),
-          /* @__PURE__ */ jsxs("li", { children: [
-            /* @__PURE__ */ jsx("strong", { className: "italic", children: "Default" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "italic", children: "Default" }),
             ": the transitions to the speakers are explicitly defined in the workflow."
           ] }),
-          /* @__PURE__ */ jsxs("li", { children: [
-            /* @__PURE__ */ jsx("strong", { className: "italic", children: "Random" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "italic", children: "Random" }),
             ": the next speaker is selected randomly."
           ] }),
-          /* @__PURE__ */ jsxs("li", { children: [
-            /* @__PURE__ */ jsx("strong", { className: "italic", children: "Round Robin" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "italic", children: "Round Robin" }),
             ": the next speaker is selected in a round robin fashion, i.e., iterating in the same order as provided in agents."
           ] })
         ] })
       ] }) }),
-      /* @__PURE__ */ jsx("label", { htmlFor: `manager-speaker-selection-method-${id}`, children: "Speaker Selection Method:" }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `manager-speaker-selection-method-${id}`, children: "Speaker Selection Method:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: speakerSelectionOptions,
@@ -23847,7 +27483,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Select speaker selection method"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         NumberInput,
         {
           name: "max-retries-for-selecting",
@@ -23865,21 +27501,21 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Maximum retries for speaker selection"
         }
       ),
-      data.speakers?.selectionMethod === "round_robin" && /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
-        /* @__PURE__ */ jsx("div", { className: "info", children: "The order in which the speakers will be selected in round robin mode. If not provided, the order will be automatically determined based on the agents in the group." }),
-        /* @__PURE__ */ jsx("div", { className: "ordered-items-list", children: speakersOrder.map((speaker, index2) => {
+      data.speakers?.selectionMethod === "round_robin" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: "The order in which the speakers will be selected in round robin mode. If not provided, the order will be automatically determined based on the agents in the group." }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "ordered-items-list", children: speakersOrder.map((speaker, index2) => {
           const isInitialAgent = data.initialAgentId === speaker;
           const canMoveUp = index2 > 0 && !(data.initialAgentId && index2 === 1);
           const canMoveDown = index2 < speakersOrder.length - 1 && !isInitialAgent;
           const hasButtons = canMoveUp || canMoveDown;
-          return /* @__PURE__ */ jsxs(
+          return /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "div",
             {
               className: `ordered-item ${hasButtons ? "has-buttons" : "no-buttons"}`,
               "data-testid": `group-speaker-${index2}`,
               children: [
-                /* @__PURE__ */ jsxs("div", { className: "reorder-buttons", children: [
-                  canMoveUp && /* @__PURE__ */ jsx(
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "reorder-buttons", children: [
+                  canMoveUp && /* @__PURE__ */ jsxRuntimeExports.jsx(
                     "button",
                     {
                       type: "button",
@@ -23889,7 +27525,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
                       children: "↑"
                     }
                   ),
-                  canMoveDown && /* @__PURE__ */ jsx(
+                  canMoveDown && /* @__PURE__ */ jsxRuntimeExports.jsx(
                     "button",
                     {
                       type: "button",
@@ -23899,9 +27535,9 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
                       children: "↓"
                     }
                   ),
-                  isInitialAgent && /* @__PURE__ */ jsx("button", { type: "button", className: "reorder-btn no-click", children: /* @__PURE__ */ jsx(FaLock, {}) })
+                  isInitialAgent && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "reorder-btn no-click", children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaLock, {}) })
                 ] }),
-                /* @__PURE__ */ jsx("div", { className: "ordered-item-content", children: getAgentName2(speaker) })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "ordered-item-content", children: getAgentName2(speaker) })
               ]
             },
             `group-speaker-${speaker}`
@@ -23909,7 +27545,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
         }) })
       ] })
     ] }) }),
-    showAfterwardsTab && /* @__PURE__ */ jsx(TabItem, { label: "Afterwards", id: `wf-${flowId}-agent-group-manager-after-work-${id}`, children: /* @__PURE__ */ jsx("div", { className: "modal-body agent-panel", children: /* @__PURE__ */ jsx(
+    showAfterwardsTab && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Afterwards", id: `wf-${flowId}-agent-group-manager-after-work-${id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body agent-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       AfterWork,
       {
         target: data.afterWork,
@@ -24026,8 +27662,8 @@ const WaldiezAgentBasic = memo((props) => {
     }),
     [data.humanInputMode, inputMethodsMapping]
   );
-  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-basic-panel", children: [
-    data.agentType === "assistant" && /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel agent-basic-panel", children: [
+    data.agentType === "assistant" && /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "Multimodal",
@@ -24037,7 +27673,7 @@ const WaldiezAgentBasic = memo((props) => {
         id: `agent-multimodal-toggle-${id}`
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextInput,
       {
         label: "Name:",
@@ -24048,8 +27684,8 @@ const WaldiezAgentBasic = memo((props) => {
         "aria-label": "Agent name"
       }
     ),
-    /* @__PURE__ */ jsx("label", { htmlFor: `agent-description-input-${id}`, children: "Description:" }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-description-input-${id}`, children: "Description:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextareaInput,
       {
         id: `agent-description-input-${id}`,
@@ -24061,8 +27697,8 @@ const WaldiezAgentBasic = memo((props) => {
         "aria-label": "Agent description"
       }
     ),
-    /* @__PURE__ */ jsx("label", { htmlFor: `agent-system-message-input-${id}`, children: "System Message:" }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-system-message-input-${id}`, children: "System Message:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextareaInput,
       {
         id: `agent-system-message-input-${id}`,
@@ -24074,26 +27710,26 @@ const WaldiezAgentBasic = memo((props) => {
         "aria-label": "System message"
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoLabel,
       {
         label: "Human Input mode:",
-        info: () => /* @__PURE__ */ jsxs("div", { children: [
+        info: () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
           "Whether to ask for human inputs every time a message is received. ",
-          /* @__PURE__ */ jsx("br", {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
           "Possible values are: ",
-          /* @__PURE__ */ jsx("br", {}),
-          /* @__PURE__ */ jsxs("ul", { children: [
-            /* @__PURE__ */ jsxs("li", { children: [
-              /* @__PURE__ */ jsx("b", { children: "Always:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Always:" }),
               ' the agent prompts for human input every time a message is received. Under this mode, the conversation stops when the human input is "exit", or when is_termination_msg is True and there is no human input.'
             ] }),
-            /* @__PURE__ */ jsxs("li", { children: [
-              /* @__PURE__ */ jsx("b", { children: "Terminate:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Terminate:" }),
               " the agent only prompts for human input only when a termination message is received or the number of auto reply reaches the max_consecutive_auto_reply."
             ] }),
-            /* @__PURE__ */ jsxs("li", { children: [
-              /* @__PURE__ */ jsx("b", { children: "Never:" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Never:" }),
               " the agent will never prompt for human input. Under this mode, the conversation stops when the number of auto reply reaches the max_consecutive_auto_reply or when is_termination_msg is True."
             ] })
           ] })
@@ -24101,8 +27737,8 @@ const WaldiezAgentBasic = memo((props) => {
         htmlFor: `agent-human-input-mode-${id}`
       }
     ),
-    /* @__PURE__ */ jsx("label", { htmlFor: `agent-human-input-mode-select-${id}`, className: "hidden", children: "Human Input mode:" }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-human-input-mode-select-${id}`, className: "hidden", children: "Human Input mode:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       Select,
       {
         options: inputMethodOptions,
@@ -24112,7 +27748,7 @@ const WaldiezAgentBasic = memo((props) => {
         "aria-label": "Human input mode"
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       NumberInput,
       {
         name: "max-consecutive-auto-reply",
@@ -24131,9 +27767,9 @@ const WaldiezAgentBasic = memo((props) => {
         "aria-label": "Maximum consecutive auto replies"
       }
     ),
-    /* @__PURE__ */ jsx("label", { htmlFor: `agent-default-auto-reply-input-${id}`, children: "Default Auto Reply:" }),
-    /* @__PURE__ */ jsx("div", { className: "margin-top-5" }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-default-auto-reply-input-${id}`, children: "Default Auto Reply:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-5" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextareaInput,
       {
         className: "full-width margin-top-5",
@@ -24143,7 +27779,7 @@ const WaldiezAgentBasic = memo((props) => {
         "aria-label": "Default auto reply message"
       }
     ),
-    /* @__PURE__ */ jsx("div", { className: "margin-bottom-10" })
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-10" })
   ] });
 });
 WaldiezAgentBasic.displayName = "WaldiezAgentBasic";
@@ -24266,8 +27902,8 @@ const WaldiezAgentCaptainTab = memo((props) => {
     onToolLibChange,
     onMaxRoundChange
   } = useWaldiezAgentCaptain(props);
-  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-codeExecution-panel margin-top--10", children: [
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel agent-codeExecution-panel margin-top--10", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       NumberInput,
       {
         name: "max-round",
@@ -24281,7 +27917,7 @@ const WaldiezAgentCaptainTab = memo((props) => {
         "aria-label": "Maximum rounds"
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         id: `tool-lib-${id}`,
@@ -24292,10 +27928,10 @@ const WaldiezAgentCaptainTab = memo((props) => {
         "aria-label": "Include tool library"
       }
     ),
-    /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-bottom-10", children: [
       "If selected, you can find the available tools",
       " ",
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "a",
         {
           href: TOOLS_LINK,
@@ -24306,7 +27942,7 @@ const WaldiezAgentCaptainTab = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "Include agent lib",
@@ -24317,10 +27953,10 @@ const WaldiezAgentCaptainTab = memo((props) => {
         "aria-label": "Include agent library"
       }
     ),
-    /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-bottom-10", children: [
       "You can find an example of agents library",
       " ",
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "a",
         {
           href: EXAMPLE_LIB_LINK,
@@ -24331,8 +27967,8 @@ const WaldiezAgentCaptainTab = memo((props) => {
         }
       )
     ] }),
-    enableAgentLib && /* @__PURE__ */ jsxs("div", { className: "agent-lib-container", children: [
-      /* @__PURE__ */ jsx(
+    enableAgentLib && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-lib-container", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         DropZone,
         {
           flowId,
@@ -24341,7 +27977,7 @@ const WaldiezAgentCaptainTab = memo((props) => {
           "aria-label": "Upload agent library JSON file"
         }
       ),
-      agentLib.length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+      agentLib.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         Collapsible,
         {
           title: `Agent Library (${agentLib.length} entries)`,
@@ -24349,7 +27985,7 @@ const WaldiezAgentCaptainTab = memo((props) => {
           expanded: false,
           fullWidth: true,
           "aria-label": "Agent library entries",
-          children: /* @__PURE__ */ jsx(
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             "div",
             {
               className: "agent-lib-preview",
@@ -24357,7 +27993,7 @@ const WaldiezAgentCaptainTab = memo((props) => {
                 maxHeight: "300px",
                 overflowY: "auto"
               },
-              children: /* @__PURE__ */ jsx("pre", { children: JSON.stringify(agentLib, null, 2) })
+              children: /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { children: JSON.stringify(agentLib, null, 2) })
             }
           )
         }
@@ -24476,8 +28112,8 @@ const WaldiezAgentCodeExecution = memo((props) => {
   const lastNMessagesValue = isCodeExecutionEnabled && data.codeExecutionConfig !== false && data.codeExecutionConfig?.lastNMessages && data.codeExecutionConfig?.lastNMessages !== "auto" ? data.codeExecutionConfig?.lastNMessages : 0;
   const isDockerEnabled = isCodeExecutionEnabled && data.codeExecutionConfig !== false && data.codeExecutionConfig?.useDocker === true;
   const shouldShowFunctions = isCodeExecutionEnabled && !isDockerEnabled && tools.length > 0;
-  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-codeExecution-panel", children: [
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel agent-codeExecution-panel", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "Enable Code Execution",
@@ -24488,8 +28124,8 @@ const WaldiezAgentCodeExecution = memo((props) => {
         "aria-label": "Enable code execution"
       }
     ),
-    isCodeExecutionEnabled && data.codeExecutionConfig !== false && /* @__PURE__ */ jsxs("div", { className: "agent-node-codeExecution-options margin-top-10", children: [
-      /* @__PURE__ */ jsx(
+    isCodeExecutionEnabled && data.codeExecutionConfig !== false && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-node-codeExecution-options margin-top-10", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         TextInput,
         {
           label: "Working directory:",
@@ -24502,7 +28138,7 @@ const WaldiezAgentCodeExecution = memo((props) => {
           "aria-label": "Code execution working directory"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         NumberInput,
         {
           name: "last-n-messages",
@@ -24520,7 +28156,7 @@ const WaldiezAgentCodeExecution = memo((props) => {
           "aria-label": "Number of messages to include for code execution"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         NumberInput,
         {
           label: "Timeout:",
@@ -24539,11 +28175,11 @@ const WaldiezAgentCodeExecution = memo((props) => {
           "aria-label": "Code execution timeout in seconds"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "div",
         {
           className: `margin-top-10 margin-bottom-10 ${"sr-only hidden"}`,
-          children: /* @__PURE__ */ jsx(
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             InfoCheckbox,
             {
               label: "Use Docker",
@@ -24556,10 +28192,10 @@ const WaldiezAgentCodeExecution = memo((props) => {
           )
         }
       ),
-      shouldShowFunctions && /* @__PURE__ */ jsx("div", { className: "codeExecution-functions", children: /* @__PURE__ */ jsxs("div", { className: "agent-node-functions", children: [
-        /* @__PURE__ */ jsx("div", { className: "margin-top-20" }),
-        /* @__PURE__ */ jsx("label", { htmlFor: `agent-code-execution-functions-${id}`, children: "Functions:" }),
-        /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+      shouldShowFunctions && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "codeExecution-functions", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-node-functions", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-20" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-code-execution-functions-${id}`, children: "Functions:" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           Select,
           {
             isMulti: true,
@@ -24619,8 +28255,8 @@ const WaldiezDocAgentTab = memo((props) => {
     },
     [data.queryEngine, onDataChange]
   );
-  return /* @__PURE__ */ jsxs("div", { className: "agent-panel", children: [
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextInput,
       {
         label: "Collection Name:",
@@ -24632,7 +28268,7 @@ const WaldiezDocAgentTab = memo((props) => {
         className: "margin-top-5"
       }
     ),
-    /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "Reset Collection",
@@ -24642,7 +28278,7 @@ const WaldiezDocAgentTab = memo((props) => {
         onChange: onResetCollectionChange
       }
     ) }),
-    /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "Enable Query Citations",
@@ -24652,7 +28288,7 @@ const WaldiezDocAgentTab = memo((props) => {
         onChange: onEnableQueryCitationsChange
       }
     ) }),
-    /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextInput,
       {
         label: "Database Path:",
@@ -24701,44 +28337,44 @@ const getHelpInstructions = () => {
   const isMac = platform2.includes("mac");
   const isWindows = platform2.includes("win");
   if (isMac) {
-    return /* @__PURE__ */ jsxs("div", { className: "help-instructions", children: [
-      /* @__PURE__ */ jsx("h4", { children: "How to find folder path on Mac:" }),
-      /* @__PURE__ */ jsxs("ol", { children: [
-        /* @__PURE__ */ jsx("li", { children: "Open Finder and navigate to your folder" }),
-        /* @__PURE__ */ jsx("li", { children: 'Right-click the folder and select "Get Info"' }),
-        /* @__PURE__ */ jsx("li", { children: 'Copy the path from "Where:" field' }),
-        /* @__PURE__ */ jsx("li", { children: "Or drag the folder into Terminal to see its path" })
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "help-instructions", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "How to find folder path on Mac:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Open Finder and navigate to your folder" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Right-click the folder and select "Get Info"' }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Copy the path from "Where:" field' }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Or drag the folder into Terminal to see its path" })
       ] }),
-      /* @__PURE__ */ jsxs("p", { children: [
-        /* @__PURE__ */ jsx("strong", { children: "Example:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Example:" }),
         " /Users/yourname/Documents/MyProject"
       ] })
     ] });
   } else if (isWindows) {
-    return /* @__PURE__ */ jsxs("div", { className: "help-instructions", children: [
-      /* @__PURE__ */ jsx("h4", { children: "How to find folder path on Windows:" }),
-      /* @__PURE__ */ jsxs("ol", { children: [
-        /* @__PURE__ */ jsx("li", { children: "Open File Explorer and navigate to your folder" }),
-        /* @__PURE__ */ jsx("li", { children: "Click on the address bar (or press Ctrl+L)" }),
-        /* @__PURE__ */ jsx("li", { children: "The full path will be shown - copy it" }),
-        /* @__PURE__ */ jsx("li", { children: "Or right-click folder → Properties → Location" })
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "help-instructions", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "How to find folder path on Windows:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Open File Explorer and navigate to your folder" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Click on the address bar (or press Ctrl+L)" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "The full path will be shown - copy it" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Or right-click folder → Properties → Location" })
       ] }),
-      /* @__PURE__ */ jsxs("p", { children: [
-        /* @__PURE__ */ jsx("strong", { children: "Example:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Example:" }),
         " C:\\Users\\yourname\\Documents\\MyProject"
       ] })
     ] });
   } else {
-    return /* @__PURE__ */ jsxs("div", { className: "help-instructions", children: [
-      /* @__PURE__ */ jsx("h4", { children: "How to find folder path:" }),
-      /* @__PURE__ */ jsxs("ol", { children: [
-        /* @__PURE__ */ jsx("li", { children: "Open your file manager" }),
-        /* @__PURE__ */ jsx("li", { children: "Navigate to the folder you want" }),
-        /* @__PURE__ */ jsx("li", { children: "Look for the path in the address bar" }),
-        /* @__PURE__ */ jsx("li", { children: "Or right-click and check properties" })
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "help-instructions", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "How to find folder path:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Open your file manager" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Navigate to the folder you want" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Look for the path in the address bar" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Or right-click and check properties" })
       ] }),
-      /* @__PURE__ */ jsxs("p", { children: [
-        /* @__PURE__ */ jsx("strong", { children: "Example:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Example:" }),
         " /home/yourname/Documents/MyProject"
       ] })
     ] });
@@ -24822,14 +28458,14 @@ const WaldiezAgentGroupMember = memo((props) => {
   );
   const showGroupTabs = !!currentGroupManager;
   const isJoinButtonDisabled = selectedGroup === null;
-  return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-group-panel", children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
-    /* @__PURE__ */ jsx(TabItem, { id: `wa-${id}-group-membership`, label: "Membership", children: /* @__PURE__ */ jsxs("div", { style: { padding: "1rem" }, "data-testid": `agent-group-panel-${id}`, children: [
-      /* @__PURE__ */ jsx("div", { className: "info margin-bottom-10", children: "Should this agent be part of a group chat?" }),
-      !showGroupTabs ? /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { htmlFor: `agent-select-group-${id}`, children: "Group:" }),
-        /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-        /* @__PURE__ */ jsxs("div", { className: "flex-align-center space-between", children: [
-          /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel agent-group-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex: 0, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { id: `wa-${id}-group-membership`, label: "Membership", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { padding: "1rem" }, "data-testid": `agent-group-panel-${id}`, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info margin-bottom-10", children: "Should this agent be part of a group chat?" }),
+      !showGroupTabs ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-select-group-${id}`, children: "Group:" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center space-between", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             Select,
             {
               options: groupOptions,
@@ -24840,7 +28476,7 @@ const WaldiezAgentGroupMember = memo((props) => {
               "aria-label": "Select a group to join"
             }
           ),
-          /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               type: "button",
@@ -24856,8 +28492,8 @@ const WaldiezAgentGroupMember = memo((props) => {
         ] })
       ] }) : (
         /* In a group: Show group info and leave button */
-        /* @__PURE__ */ jsxs("div", { className: "flex-align-center space-between current-group-info", children: [
-          /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center space-between current-group-info", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "div",
             {
               className: "agent-panel-group-label",
@@ -24865,7 +28501,7 @@ const WaldiezAgentGroupMember = memo((props) => {
               children: currentGroupManager.data.label
             }
           ),
-          /* @__PURE__ */ jsx("div", { className: "agent-panel-group-actions", children: /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel-group-actions", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               title: "Leave group",
@@ -24880,7 +28516,7 @@ const WaldiezAgentGroupMember = memo((props) => {
         ] })
       )
     ] }) }),
-    showGroupTabs && /* @__PURE__ */ jsx(TabItem, { id: `wa-${id}-group-handoffs`, label: "Handoffs", children: /* @__PURE__ */ jsx(
+    showGroupTabs && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { id: `wa-${id}-group-handoffs`, label: "Handoffs", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       Handoffs,
       {
         agents,
@@ -24890,13 +28526,13 @@ const WaldiezAgentGroupMember = memo((props) => {
         onDataChange
       }
     ) }),
-    showGroupTabs && !isDocAgent && /* @__PURE__ */ jsx(TabItem, { id: `wa-${id}-group-update-state`, label: "State", children: /* @__PURE__ */ jsx(UpdateState, { data, darkMode, onDataChange }) }),
-    showGroupTabs && /* @__PURE__ */ jsx(TabItem, { label: "Afterwards", id: `wa-${id}-group-after-work`, children: /* @__PURE__ */ jsx(
+    showGroupTabs && !isDocAgent && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { id: `wa-${id}-group-update-state`, label: "State", children: /* @__PURE__ */ jsxRuntimeExports.jsx(UpdateState, { data, darkMode, onDataChange }) }),
+    showGroupTabs && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Afterwards", id: `wa-${id}-group-after-work`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       "div",
       {
         style: { paddingLeft: "1rem", paddingRight: "1rem" },
         "data-testid": `after-work-panel-${id}`,
-        children: /* @__PURE__ */ jsx(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           AfterWork,
           {
             target: data.afterWork,
@@ -25034,15 +28670,15 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
     },
     [nestedChats, onDataChange]
   );
-  return /* @__PURE__ */ jsx("div", { className: "agent-panel", "data-testid": `agent-group-nested-chat-tabs-${id}`, children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
-    /* @__PURE__ */ jsx(TabItem, { label: "Queue", id: `wf-${flowId}-wa-${id}-nested-chats-queue`, children: /* @__PURE__ */ jsx("div", { className: "flex-column margin-10 nested-chat-queue", children: nestedChats[0]?.messages.map((message, index2) => /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel", "data-testid": `agent-group-nested-chat-tabs-${id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex: 0, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Queue", id: `wf-${flowId}-wa-${id}-nested-chats-queue`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column margin-10 nested-chat-queue", children: nestedChats[0]?.messages.map((message, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
         className: "flex-align-center margin-bottom-10 queue-item",
         "data-testid": `nested-chat-queue-item-${index2}`,
         children: [
-          /* @__PURE__ */ jsxs("div", { className: "margin-right-10 reorder-buttons", children: [
-            index2 > 0 && (nestedChatMessagesCount || 0) > 1 && /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-right-10 reorder-buttons", children: [
+            index2 > 0 && (nestedChatMessagesCount || 0) > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -25054,7 +28690,7 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
                 children: "↑"
               }
             ),
-            index2 < (nestedChatMessagesCount || 0) - 1 && /* @__PURE__ */ jsx(
+            index2 < (nestedChatMessagesCount || 0) - 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 title: "Move down",
@@ -25067,12 +28703,12 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
               }
             )
           ] }),
-          /* @__PURE__ */ jsx("div", { className: "agent-nested-recipient-name", children: getRecipientName(message.id) })
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-nested-recipient-name", children: getRecipientName(message.id) })
         ]
       },
       `agent-${id}-nestedChat-recipient-${index2}`
     )) }) }),
-    /* @__PURE__ */ jsx(TabItem, { label: "Condition", id: `wf-${flowId}-wa-${id}-nested-chat-condition`, children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Condition", id: `wf-${flowId}-wa-${id}-nested-chat-condition`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       HandoffCondition,
       {
         condition: nestedChats[0]?.condition || defaultCondition,
@@ -25080,7 +28716,7 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
         "aria-label": "Handoff condition settings"
       }
     ) }),
-    /* @__PURE__ */ jsx(TabItem, { label: "Availability", id: `wf-${flowId}-wa-${id}-nested-chat-availability`, children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Availability", id: `wf-${flowId}-wa-${id}-nested-chat-availability`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       HandoffAvailability,
       {
         available: nestedChats[0]?.available || defaultAvailability,
@@ -25317,19 +28953,19 @@ const WaldiezAgentNestedChatsMessages = memo((props) => {
   );
   const isAddButtonDisabled = !selectedRecipient || !selectedRecipient.id;
   const hasNoMessages = chat.messages.length === 0;
-  return /* @__PURE__ */ jsxs("div", { className: "nested-chat-messages", "data-testid": `nested-chat-messages-${id}`, children: [
-    /* @__PURE__ */ jsxs("div", { className: "info", children: [
-      /* @__PURE__ */ jsx("b", { children: "Messages:" }),
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "nested-chat-messages", "data-testid": `nested-chat-messages-${id}`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Messages:" }),
       " Specifies which nested chat will be triggered. The final message is returned to the main chat. ",
-      /* @__PURE__ */ jsx("br", {}),
-      /* @__PURE__ */ jsx("b", { children: "Agent's Reply:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Agent's Reply:" }),
       ' Indicates the recipient of the trigger message. If selected, it is the second in the order. For example, if "User => Assistant" with the box ticked, the message is sent to the User; otherwise, it is sent to the Assistant.'
     ] }),
-    /* @__PURE__ */ jsx("label", { htmlFor: `new-nested-chat-select-recipient-${id}`, className: "nested-chat-messages-label", children: "Messages:" }),
-    /* @__PURE__ */ jsxs("div", { className: "nested-chats-add-message", children: [
-      /* @__PURE__ */ jsxs("div", { className: "nested-chat-recipients margin-right-10", children: [
-        /* @__PURE__ */ jsx("label", { htmlFor: `new-nested-chat-select-recipient-${id}`, className: "hidden", children: "Recipient" }),
-        /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `new-nested-chat-select-recipient-${id}`, className: "nested-chat-messages-label", children: "Messages:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "nested-chats-add-message", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "nested-chat-recipients margin-right-10", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `new-nested-chat-select-recipient-${id}`, className: "hidden", children: "Recipient" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           Select,
           {
             options: selectOptions,
@@ -25340,7 +28976,7 @@ const WaldiezAgentNestedChatsMessages = memo((props) => {
           }
         )
       ] }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         CheckboxInput,
         {
           id: `new-nested-chat-recipient-is-agent-reply-${id}`,
@@ -25350,7 +28986,7 @@ const WaldiezAgentNestedChatsMessages = memo((props) => {
           "data-testid": `new-nested-chat-recipient-is-agent-reply-${id}`
         }
       ),
-      /* @__PURE__ */ jsx("div", { className: "nested-chat-add-button", children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-add-button", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -25364,7 +29000,7 @@ const WaldiezAgentNestedChatsMessages = memo((props) => {
         }
       ) })
     ] }),
-    /* @__PURE__ */ jsx("div", { className: "nested-chats-registered-messages", children: hasNoMessages ? /* @__PURE__ */ jsx("div", { className: "nested-chat-registered-message", children: "No messages to include" }) : /* @__PURE__ */ jsx("div", { className: "flex-1 messages-list", children: chat.messages.map((target, index2) => /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chats-registered-messages", children: hasNoMessages ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-registered-message", children: "No messages to include" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 messages-list", children: chat.messages.map((target, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
       MessageListItem,
       {
         target,
@@ -25393,18 +29029,18 @@ const MessageListItem = memo(
   }) => {
     const canMoveUp = messageCount > 1 && index2 !== 0;
     const canMoveDown = messageCount > 1 && index2 !== messageCount - 1;
-    return /* @__PURE__ */ jsxs(
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
         className: "nested-chat-registered-message",
         "data-testid": `nested-chat-message-${id}-${index2}`,
         children: [
-          /* @__PURE__ */ jsxs("span", { className: "message-label", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "message-label", children: [
             getMessageLabel(index2),
-            target.isReply && /* @__PURE__ */ jsx("span", { className: "reply-indicator", children: " (Reply)" })
+            target.isReply && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "reply-indicator", children: " (Reply)" })
           ] }),
-          /* @__PURE__ */ jsxs("div", { className: "nested-chat-message-actions", children: [
-            canMoveUp && /* @__PURE__ */ jsx("div", { className: "nested-chat-reorder", children: /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "nested-chat-message-actions", children: [
+            canMoveUp && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-reorder", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -25415,7 +29051,7 @@ const MessageListItem = memo(
                 children: "↑"
               }
             ) }),
-            canMoveDown && /* @__PURE__ */ jsx("div", { className: "nested-chat-reorder", children: /* @__PURE__ */ jsx(
+            canMoveDown && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-reorder", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -25426,7 +29062,7 @@ const MessageListItem = memo(
                 children: "↓"
               }
             ) }),
-            /* @__PURE__ */ jsx("div", { className: "nested-chat-remove", children: /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-remove", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -25457,13 +29093,13 @@ const WaldiezAgentNestedChatsTriggers = memo((props) => {
     }),
     [selectedTriggers, selectOptions]
   );
-  return /* @__PURE__ */ jsxs("div", { className: "nested-chat-triggers margin-bottom--10", "data-testid": `nested-chat-triggers-${id}`, children: [
-    /* @__PURE__ */ jsxs("div", { className: "info", children: [
-      /* @__PURE__ */ jsx("b", { children: "Trigged by:" }),
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "nested-chat-triggers margin-bottom--10", "data-testid": `nested-chat-triggers-${id}`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Trigged by:" }),
       " The agent triggers a sequence of nested chats when a message is received. If it is the termination message of a selected chat (e.g., max turns is set to 1) the trigger won't be activated."
     ] }),
-    /* @__PURE__ */ jsx("label", { htmlFor: `new-nested-chat-select-trigger-${id}`, className: "nested-chat-triggers-label", children: "Triggered by:" }),
-    /* @__PURE__ */ jsx("div", { className: "nested-chat-select-trigger-view", children: /* @__PURE__ */ jsx("div", { className: "nested-chat-select-trigger", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `new-nested-chat-select-trigger-${id}`, className: "nested-chat-triggers-label", children: "Triggered by:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-select-trigger-view", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-select-trigger", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       Select,
       {
         options: selectOptions,
@@ -25496,13 +29132,13 @@ const WaldiezAgentNestedChats = memo((props) => {
     getEdgeLabel
   } = useWaldiezAgentNestedChats(props);
   const showMessages = chat.triggeredBy.length > 0;
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
       className: "agent-panel agent-nestedChats-panel margin-top-10",
       "data-testid": `agent-nested-chats-panel-${id}`,
       children: [
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           WaldiezAgentNestedChatsTriggers,
           {
             id,
@@ -25511,8 +29147,8 @@ const WaldiezAgentNestedChats = memo((props) => {
             selectOptions: triggerSelectOptions
           }
         ),
-        showMessages && /* @__PURE__ */ jsxs(Fragment, { children: [
-          /* @__PURE__ */ jsx(
+        showMessages && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "hr",
             {
               className: "nested-chat-separator margin-top--10",
@@ -25520,7 +29156,7 @@ const WaldiezAgentNestedChats = memo((props) => {
               "aria-hidden": "true"
             }
           ),
-          /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezAgentNestedChatsMessages,
             {
               id,
@@ -25661,21 +29297,21 @@ const modelNameMapping = {
   mongodb: "all-MiniLM-L6-v2",
   qdrant: "BAAI/bge-small-en-v1.5"
 };
-const getEmbeddingModelInfoView = () => /* @__PURE__ */ jsxs("div", { children: [
+const getEmbeddingModelInfoView = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
   "The model for embedding. ",
-  /* @__PURE__ */ jsx("br", {}),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
   "The defaults are: ",
-  /* @__PURE__ */ jsx("br", {}),
-  /* @__PURE__ */ jsx("b", { children: "Chroma:" }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Chroma:" }),
   " all-MiniLM-L6-v2; ",
-  /* @__PURE__ */ jsx("br", {}),
-  /* @__PURE__ */ jsx("b", { children: "Pgvector:" }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Pgvector:" }),
   " all-MiniLM-L6-v2; ",
-  /* @__PURE__ */ jsx("br", {}),
-  /* @__PURE__ */ jsx("b", { children: "MongoDB:" }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "MongoDB:" }),
   " all-MiniLM-L6-v2; ",
-  /* @__PURE__ */ jsx("br", {}),
-  /* @__PURE__ */ jsx("b", { children: "Qdrant:" }),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Qdrant:" }),
   " BAAI/bge-small-en-v1.5."
 ] });
 const WaldiezAgentRagUserVectorDb = memo((props) => {
@@ -25707,9 +29343,9 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
   const usesMemoryStorage = isQdrant && retrieveConfig.dbConfig.useMemory;
   const usesLocalStorage = retrieveConfig.dbConfig.useLocalStorage;
   const showConnectionUrl = !isQdrant || isQdrant && !usesMemoryStorage && !usesLocalStorage;
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column vector-db-config", "data-testid": `rag-vector-db-config-${id}`, children: [
-    /* @__PURE__ */ jsx("label", { htmlFor: `rag-vector-db-${id}`, children: "Vector DB:" }),
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column vector-db-config", "data-testid": `rag-vector-db-config-${id}`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `rag-vector-db-${id}`, children: "Vector DB:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       Select,
       {
         options: vectorDbOptions,
@@ -25719,7 +29355,7 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
         "aria-label": "Select vector database type"
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoLabel,
       {
         label: "Embedding Model:",
@@ -25727,7 +29363,7 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
         htmlFor: `rag-vector-db-model-${id}`
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       "input",
       {
         type: "text",
@@ -25739,8 +29375,8 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
         "aria-label": "Embedding model name"
       }
     ),
-    isQdrant && /* @__PURE__ */ jsxs(Fragment, { children: [
-      /* @__PURE__ */ jsx(
+    isQdrant && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoCheckbox,
         {
           label: "Use Memory Storage ",
@@ -25751,8 +29387,8 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
           "aria-label": "Use memory storage for Qdrant"
         }
       ),
-      !usesMemoryStorage && /* @__PURE__ */ jsxs(Fragment, { children: [
-        /* @__PURE__ */ jsx(
+      !usesMemoryStorage && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           InfoCheckbox,
           {
             label: "Use Local Storage ",
@@ -25763,9 +29399,9 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
             "aria-label": "Use local storage for Qdrant"
           }
         ),
-        usesLocalStorage && /* @__PURE__ */ jsxs(Fragment, { children: [
-          /* @__PURE__ */ jsx("label", { htmlFor: `rag-vector-db-local-storage-path-${id}`, children: "Storage Path:" }),
-          /* @__PURE__ */ jsx(
+        usesLocalStorage && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `rag-vector-db-local-storage-path-${id}`, children: "Storage Path:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
             {
               id: `rag-vector-db-local-storage-path-${id}`,
@@ -25780,8 +29416,8 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
         ] })
       ] })
     ] }),
-    isChroma && /* @__PURE__ */ jsxs(Fragment, { children: [
-      /* @__PURE__ */ jsx(
+    isChroma && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoCheckbox,
         {
           label: "Use Persistent Storage ",
@@ -25792,9 +29428,9 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
           "aria-label": "Use persistent storage for Chroma"
         }
       ),
-      usesLocalStorage && /* @__PURE__ */ jsxs(Fragment, { children: [
-        /* @__PURE__ */ jsx("label", { htmlFor: `rag-vector-db-chroma-local-storage-path-${id}`, children: "Storage Path:" }),
-        /* @__PURE__ */ jsx(
+      usesLocalStorage && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `rag-vector-db-chroma-local-storage-path-${id}`, children: "Storage Path:" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
           {
             id: `rag-vector-db-chroma-local-storage-path-${id}`,
@@ -25808,8 +29444,8 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
         )
       ] })
     ] }),
-    showConnectionUrl && /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
+    showConnectionUrl && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           htmlFor: `rag-vector-db-connection-url-${id}`,
@@ -25817,7 +29453,7 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
           info: "The connection URL for the vector db. If using chroma and not provided, a new chroma db server will be spawned. For pgvector and mongodb, this is required."
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           type: "text",
@@ -26000,9 +29636,9 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
     }),
     [data.retrieveConfig.task, retrieveConfig.task]
   );
-  return /* @__PURE__ */ jsxs("div", { className: "rag-retrieve-config-container", "data-testid": `rag-retrieve-config-${id}`, children: [
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rag-retrieve-config-container", "data-testid": `rag-retrieve-config-${id}`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           label: "Task:",
@@ -26010,8 +29646,8 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
           htmlFor: `rag-retrieve-task-input-${id}`
         }
       ),
-      /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: `rag-retrieve-task-${id}`, children: "Task" }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: `rag-retrieve-task-${id}`, children: "Task" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: taskOptions,
@@ -26022,8 +29658,8 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      uploadsEnabled && /* @__PURE__ */ jsx("div", { className: "margin-top-20", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      uploadsEnabled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-20", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         DropZone,
         {
           flowId,
@@ -26033,7 +29669,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
           "aria-label": "Upload documents for RAG"
         }
       ) }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         StringList,
         {
           viewLabel: "Docs Paths:",
@@ -26047,8 +29683,8 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           label: "Collection Name:",
@@ -26056,7 +29692,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
           htmlFor: `rag-retrieve-collection-name-${id}`
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           type: "text",
@@ -26069,8 +29705,8 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           label: "Number of results:",
@@ -26078,7 +29714,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
           htmlFor: `rag-retrieve-n-results-${id}`
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           title: "Number of results",
@@ -26091,8 +29727,8 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           htmlFor: `rag-retrieve-distance-threshold-${id}`,
@@ -26100,7 +29736,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
           info: "The threshold for the distance score, only distance smaller than it will be returned. Will be ignored if < 0. Default is -1."
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           title: "Distance threshold",
@@ -26212,9 +29848,9 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
     [retrieveConfig.chunkMode]
   );
   const showEmptyLineBreak = retrieveConfig.chunkMode === "multi_lines";
-  return /* @__PURE__ */ jsxs("div", { className: "text-split-config", "data-testid": `rag-text-split-config-${id}`, children: [
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-split-config", "data-testid": `rag-text-split-config-${id}`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           label: "Chunk Token Size:",
@@ -26222,7 +29858,7 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
           htmlFor: `rag-chunk-token-size-${id}`
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           title: "Chunk token size",
@@ -26235,8 +29871,8 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           label: "Context Max Tokens:",
@@ -26244,7 +29880,7 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
           htmlFor: `rag-context-max-tokens-${id}`
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           title: "Context max tokens",
@@ -26257,8 +29893,8 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           htmlFor: `rag-chunk-mode-${id}`,
@@ -26266,8 +29902,8 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
           info: 'The chunk mode for the retrieve chat. Possible values are "Multi Lines" and "One Line". If not provided, a default mode "Multi Lines" will be used.'
         }
       ),
-      /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: `rag-select-chunk-mode-${id}`, children: "Chunk Mode" }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: `rag-select-chunk-mode-${id}`, children: "Chunk Mode" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: chunkModeOptions,
@@ -26278,7 +29914,7 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
         }
       )
     ] }),
-    showEmptyLineBreak && /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
+    showEmptyLineBreak && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "Must Break at Empty Line ",
@@ -26384,9 +30020,9 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
     onOverwriteChange,
     onRecursiveChange
   } = useWaldiezAgentRagUserAdvanced(props);
-  return /* @__PURE__ */ jsxs("div", { className: "rag-advanced-settings", "data-testid": `rag-advanced-settings-${id}`, children: [
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rag-advanced-settings", "data-testid": `rag-advanced-settings-${id}`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           label: "Customized Prompt:",
@@ -26394,7 +30030,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
           htmlFor: `rag-customized-prompt-${id}`
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         TextareaInput,
         {
           title: "Customized prompt",
@@ -26407,8 +30043,8 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           label: "Customized Answer Prefix:",
@@ -26416,7 +30052,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
           htmlFor: `rag-customized-answer-prefix-${id}`
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           type: "text",
@@ -26429,7 +30065,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "Update Context ",
@@ -26440,7 +30076,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         "aria-label": "Update context for interactive retrieval"
       }
     ) }),
-    /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "Get or Create ",
@@ -26451,7 +30087,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         "aria-label": "Get or create collection"
       }
     ) }),
-    /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "New Docs ",
@@ -26462,7 +30098,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         "aria-label": "Only add new documents"
       }
     ) }),
-    /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "Overwrite ",
@@ -26473,7 +30109,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         "aria-label": "Overwrite existing collection"
       }
     ) }),
-    /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "Recursive ",
@@ -26669,21 +30305,21 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
   const useCustomTokenCount = retrieveConfig.useCustomTokenCount ?? false;
   const useCustomTextSplit = retrieveConfig.useCustomTextSplit ?? false;
   const collapsibleStyle = { marginTop: -20, marginBottom: -10 };
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
       className: "waldiez-agent-rag-user-custom-functions",
       "data-testid": `rag-custom-functions-${flowId}`,
       children: [
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           Collapsible,
           {
             title: "Embedding Function",
             dataTestId: `${flowId}-rag-use-custom-embedding`,
             "aria-label": "Embedding function settings",
-            children: /* @__PURE__ */ jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
-              /* @__PURE__ */ jsx("div", { className: "info", children: /* @__PURE__ */ jsx("div", { className: "info-tooltip", children: "If selected, the agent will use a custom embedding function. Default is False." }) }),
-              /* @__PURE__ */ jsx(
+            children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info-tooltip", children: "If selected, the agent will use a custom embedding function. Default is False." }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
                 CheckboxInput,
                 {
                   id: `${flowId}-rag-use-custom-embedding-checkbox`,
@@ -26693,9 +30329,9 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
                   "data-testid": `${flowId}-rag-use-custom-embedding-checkbox`
                 }
               ),
-              useCustomEmbedding && /* @__PURE__ */ jsxs(Fragment, { children: [
-                /* @__PURE__ */ jsx("label", { htmlFor: `${flowId}-embedding-function-editor`, children: "Embedding Function:" }),
-                /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+              useCustomEmbedding && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `${flowId}-embedding-function-editor`, children: "Embedding Function:" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                   Editor,
                   {
                     darkMode: isDarkMode,
@@ -26708,15 +30344,15 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
             ] })
           }
         ),
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           Collapsible,
           {
             title: "Token Count",
             dataTestId: `${flowId}-rag-use-custom-tokenCount`,
             "aria-label": "Token count function settings",
-            children: /* @__PURE__ */ jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
-              /* @__PURE__ */ jsx("div", { className: "info", children: /* @__PURE__ */ jsx("div", { className: "info-tooltip", children: "If selected, the agent will use a custom token count function. Default is False." }) }),
-              /* @__PURE__ */ jsx(
+            children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info-tooltip", children: "If selected, the agent will use a custom token count function. Default is False." }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
                 CheckboxInput,
                 {
                   id: `${flowId}-rag-use-custom-tokenCount-checkbox`,
@@ -26726,9 +30362,9 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
                   "data-testid": `${flowId}-rag-use-custom-tokenCount-checkbox`
                 }
               ),
-              useCustomTokenCount && /* @__PURE__ */ jsxs(Fragment, { children: [
-                /* @__PURE__ */ jsx("label", { htmlFor: `${flowId}-token-count-function-editor`, children: "Custom Token Count Function:" }),
-                /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+              useCustomTokenCount && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `${flowId}-token-count-function-editor`, children: "Custom Token Count Function:" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                   Editor,
                   {
                     darkMode: isDarkMode,
@@ -26741,15 +30377,15 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
             ] })
           }
         ),
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           Collapsible,
           {
             title: "Text Split",
             dataTestId: `${flowId}-rag-use-custom-textSplit`,
             "aria-label": "Text split function settings",
-            children: /* @__PURE__ */ jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
-              /* @__PURE__ */ jsx("div", { className: "info", children: /* @__PURE__ */ jsx("div", { className: "info-tooltip", children: "If selected, the agent will use a custom text split function. Default is False." }) }),
-              /* @__PURE__ */ jsx(
+            children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info-tooltip", children: "If selected, the agent will use a custom text split function. Default is False." }) }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
                 CheckboxInput,
                 {
                   id: `${flowId}-rag-use-custom-textSplit-checkbox`,
@@ -26759,9 +30395,9 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
                   "data-testid": `${flowId}-rag-use-custom-textSplit-checkbox`
                 }
               ),
-              useCustomTextSplit && /* @__PURE__ */ jsxs(Fragment, { children: [
-                /* @__PURE__ */ jsx("label", { htmlFor: `${flowId}-text-split-function-editor`, children: "Custom Text Split Function:" }),
-                /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
+              useCustomTextSplit && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `${flowId}-text-split-function-editor`, children: "Custom Text Split Function:" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                   Editor,
                   {
                     darkMode: isDarkMode,
@@ -26912,12 +30548,12 @@ const WaldiezAgentTools = memo((props) => {
     onRemoveTool
   } = useWaldiezAgentTools(props);
   if (tools.length === 0) {
-    return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsx("div", { className: "margin-top-10 margin-left-10", children: "No tools found in the workspace" }) });
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10 margin-left-10", children: "No tools found in the workspace" }) });
   }
   if (skipExecutor === true) {
-    return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-top-10 margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { className: "agent-panel-select-tools", children: [
-      /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tools-${id}`, children: "Tools:" }),
-      /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel agent-tools-panel margin-top-10 margin-bottom-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel-select-tools", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `select-agent-tools-${id}`, children: "Tools:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: toolOptions,
@@ -26931,10 +30567,10 @@ const WaldiezAgentTools = memo((props) => {
       )
     ] }) });
   }
-  return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-top-10 margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsxs("div", { className: "agent-panel-add-tool", children: [
-      /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tool-${id}`, children: "Tool:" }),
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel agent-tools-panel margin-top-10 margin-bottom-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel-add-tool", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `select-agent-tool-${id}`, children: "Tool:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: toolOptions,
@@ -26944,8 +30580,8 @@ const WaldiezAgentTools = memo((props) => {
           "aria-label": "Select tool"
         }
       ),
-      /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tool-executor-${id}`, children: "Executor:" }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `select-agent-tool-executor-${id}`, children: "Executor:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: agentOptions,
@@ -26955,7 +30591,7 @@ const WaldiezAgentTools = memo((props) => {
           "aria-label": "Select executor agent"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -26968,24 +30604,24 @@ const WaldiezAgentTools = memo((props) => {
         }
       )
     ] }),
-    data.tools.length > 0 && /* @__PURE__ */ jsxs("div", { className: "agent-panel-current-tools margin-top-10", children: [
-      /* @__PURE__ */ jsx("div", { className: "agent-panel-current-tools-heading", children: "Current tools:" }),
-      data.tools.map((tool, index2) => /* @__PURE__ */ jsx(
+    data.tools.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel-current-tools margin-top-10", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel-current-tools-heading", children: "Current tools:" }),
+      data.tools.map((tool, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
         "div",
         {
           className: "agent-panel-current-tool",
-          children: /* @__PURE__ */ jsxs("div", { className: "agent-panel-current-tool-entry", children: [
-            /* @__PURE__ */ jsxs("div", { className: "tool-item", children: [
+          children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel-current-tool-entry", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tool-item", children: [
               "Tool:",
               " ",
-              /* @__PURE__ */ jsx("div", { className: "tool-name", "data-testid": `tool-name-${id}-${index2}`, children: getToolName(tool) })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tool-name", "data-testid": `tool-name-${id}-${index2}`, children: getToolName(tool) })
             ] }),
-            /* @__PURE__ */ jsxs("div", { className: "agent-item", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-item", children: [
               "Executor:",
               " ",
-              /* @__PURE__ */ jsx("div", { className: "agent-name", "data-testid": `agent-name-${id}-${index2}`, children: getAgentName2(tool) })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-name", "data-testid": `agent-name-${id}-${index2}`, children: getAgentName2(tool) })
             ] }),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -27026,13 +30662,13 @@ const WaldiezAgentRagUserTabs = memo(
     useEffect(() => {
       setActiveTabIndex(0);
     }, [isModalOpen]);
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       "div",
       {
         className: "agent-panel agent-ragUser-panel margin-bottom-10",
         "data-testid": `agent-rag-user-panel-${id}`,
-        children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
-          /* @__PURE__ */ jsx(TabItem, { label: "Model", id: `wf-${flowId}-wa-${id}-models`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+        children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Model", id: `wf-${flowId}-wa-${id}-models`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezAgentModels,
             {
               id,
@@ -27041,7 +30677,7 @@ const WaldiezAgentRagUserTabs = memo(
               onDataChange
             }
           ) }) }),
-          /* @__PURE__ */ jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezAgentCodeExecution,
             {
               id,
@@ -27050,7 +30686,7 @@ const WaldiezAgentRagUserTabs = memo(
               onDataChange
             }
           ) }) }),
-          /* @__PURE__ */ jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezAgentTools,
             {
               id,
@@ -27061,7 +30697,7 @@ const WaldiezAgentRagUserTabs = memo(
               onDataChange
             }
           ) }) }),
-          showNestedChatsTab && /* @__PURE__ */ jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+          showNestedChatsTab && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezAgentNestedChats,
             {
               id,
@@ -27070,8 +30706,8 @@ const WaldiezAgentRagUserTabs = memo(
               agentConnections
             }
           ) }) }),
-          /* @__PURE__ */ jsx(TabItem, { label: "RAG", id: `wf-${flowId}-wa-${id}-rag`, children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
-            /* @__PURE__ */ jsx(TabItem, { label: "Retrieve Config", id: `wf-${flowId}-wa-${id}-rag-retrieveConfig`, children: /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "RAG", id: `wf-${flowId}-wa-${id}-rag`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex: 0, children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Retrieve Config", id: `wf-${flowId}-wa-${id}-rag-retrieveConfig`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
               WaldiezAgentRagUserRetrieveConfig,
               {
                 id,
@@ -27083,7 +30719,7 @@ const WaldiezAgentRagUserTabs = memo(
                 onFilesToUploadChange
               }
             ) }),
-            /* @__PURE__ */ jsx(TabItem, { label: "Text splitting", id: `wf-${flowId}-wa-${id}-rag-textSplit`, children: /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Text splitting", id: `wf-${flowId}-wa-${id}-rag-textSplit`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
               WaldiezAgentRagUserTextSplit,
               {
                 id,
@@ -27091,7 +30727,7 @@ const WaldiezAgentRagUserTabs = memo(
                 onDataChange
               }
             ) }),
-            /* @__PURE__ */ jsx(TabItem, { label: "Vector DB Config", id: `wf-${flowId}-wa-${id}-rag-vectorDb`, children: /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Vector DB Config", id: `wf-${flowId}-wa-${id}-rag-vectorDb`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
               WaldiezAgentRagUserVectorDb,
               {
                 id,
@@ -27099,12 +30735,12 @@ const WaldiezAgentRagUserTabs = memo(
                 onDataChange
               }
             ) }),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               TabItem,
               {
                 label: "Custom Functions",
                 id: `wf-${flowId}-wa-${id}-rag-customFunctions`,
-                children: /* @__PURE__ */ jsx(
+                children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                   WaldiezAgentRagUserCustomFunctions,
                   {
                     id,
@@ -27116,7 +30752,7 @@ const WaldiezAgentRagUserTabs = memo(
                 )
               }
             ),
-            /* @__PURE__ */ jsx(TabItem, { label: "Advanced", id: `wf-${flowId}-wa-${id}-rag-advanced`, children: /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Advanced", id: `wf-${flowId}-wa-${id}-rag-advanced`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
               WaldiezAgentRagUserAdvanced,
               {
                 id,
@@ -27328,8 +30964,8 @@ const WaldiezAgentReasoning2 = memo((props) => {
     onNSimChange,
     onExplorationConstantChange
   } = useWaldiezAgentReasoning(props);
-  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-codeExecution-panel margin-top--10", children: [
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel agent-codeExecution-panel margin-top--10", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       InfoCheckbox,
       {
         label: "Verbose",
@@ -27340,8 +30976,8 @@ const WaldiezAgentReasoning2 = memo((props) => {
         "aria-label": "Enable verbose reasoning output"
       }
     ),
-    /* @__PURE__ */ jsx("label", { className: "agent-panel-label", htmlFor: `agent-reasoning-method-${id}`, children: "Reasoning Method:" }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "agent-panel-label", htmlFor: `agent-reasoning-method-${id}`, children: "Reasoning Method:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       Select,
       {
         options: reasoningMethodOptions,
@@ -27351,7 +30987,7 @@ const WaldiezAgentReasoning2 = memo((props) => {
         "aria-label": "Select reasoning method"
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       NumberInput,
       {
         label: "Max Depth:",
@@ -27364,7 +31000,7 @@ const WaldiezAgentReasoning2 = memo((props) => {
         "aria-label": "Maximum depth for reasoning"
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       NumberInput,
       {
         label: "Forest Size:",
@@ -27377,7 +31013,7 @@ const WaldiezAgentReasoning2 = memo((props) => {
         "aria-label": "Forest size for reasoning"
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       NumberInput,
       {
         label: "Rating Scale:",
@@ -27390,8 +31026,8 @@ const WaldiezAgentReasoning2 = memo((props) => {
         "aria-label": "Rating scale for reasoning"
       }
     ),
-    isBeamSearch && /* @__PURE__ */ jsxs(Fragment, { children: [
-      /* @__PURE__ */ jsx(
+    isBeamSearch && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         NumberInput,
         {
           name: "beam-size",
@@ -27404,8 +31040,8 @@ const WaldiezAgentReasoning2 = memo((props) => {
           "aria-label": "Beam size for beam search"
         }
       ),
-      /* @__PURE__ */ jsx("label", { className: "agent-panel-label", htmlFor: `agent-reasoning-answer-approach-${id}`, children: "Answer Approach:" }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "agent-panel-label", htmlFor: `agent-reasoning-answer-approach-${id}`, children: "Answer Approach:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: answerApproachOptions,
@@ -27416,8 +31052,8 @@ const WaldiezAgentReasoning2 = memo((props) => {
         }
       )
     ] }),
-    isSimulationBasedMethod && /* @__PURE__ */ jsxs(Fragment, { children: [
-      /* @__PURE__ */ jsx(
+    isSimulationBasedMethod && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         NumberInput,
         {
           name: "number-of-simulations",
@@ -27430,7 +31066,7 @@ const WaldiezAgentReasoning2 = memo((props) => {
           "aria-label": "Number of simulations for MCTS/LATS"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         NumberInput,
         {
           label: "Exploration Constant:",
@@ -27609,11 +31245,11 @@ const WaldiezAgentTermination = memo((props) => {
   }, [data.termination.criterion, terminationCriterionOptions2]);
   const showMethodEditor = data.termination && data.termination.type === "method";
   const showKeywordSettings = data.termination && data.termination.type === "keyword";
-  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-termination-panel", children: [
-    /* @__PURE__ */ jsx("div", { className: "info", children: "After receiving each message, the agent will send a reply to the sender unless the termination condition is met. A termination condition can be a keyword or a custom method." }),
-    /* @__PURE__ */ jsx("label", { htmlFor: `termination-type-${id}`, children: "Termination Type:" }),
-    /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel agent-termination-panel", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: "After receiving each message, the agent will send a reply to the sender unless the termination condition is met. A termination condition can be a keyword or a custom method." }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `termination-type-${id}`, children: "Termination Type:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       Select,
       {
         options: terminationTypeOptions2,
@@ -27623,10 +31259,10 @@ const WaldiezAgentTermination = memo((props) => {
         "aria-label": "Select termination type"
       }
     ),
-    showMethodEditor && /* @__PURE__ */ jsxs(Fragment, { children: [
-      /* @__PURE__ */ jsx("label", { htmlFor: `termination-method-editor-${id}`, children: "Termination Method:" }),
-      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsx(
+    showMethodEditor && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `termination-method-editor-${id}`, children: "Termination Method:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Editor,
         {
           "data-testid": `termination-method-editor-${id}`,
@@ -27637,10 +31273,10 @@ const WaldiezAgentTermination = memo((props) => {
         }
       )
     ] }),
-    showKeywordSettings && /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
-      /* @__PURE__ */ jsx("label", { htmlFor: `termination-criterion-${id}`, children: "Termination Criterion:" }),
-      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsx(
+    showKeywordSettings && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `termination-criterion-${id}`, children: "Termination Criterion:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           options: terminationCriterionOptions2,
@@ -27650,7 +31286,7 @@ const WaldiezAgentTermination = memo((props) => {
           "aria-label": "Select termination criterion"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         StringList,
         {
           viewLabel: "Termination Keywords:",
@@ -27687,9 +31323,9 @@ const WaldiezAgentUserTabs = memo((props) => {
     },
     [onDataChange]
   );
-  return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-user-panel margin-bottom-10", "data-testid": `agent-user-panel-${id}`, children: /* @__PURE__ */ jsxs(TabItems, { children: [
-    /* @__PURE__ */ jsx(TabItem, { label: "User", id: `wf-${flowId}-wa-${id}-user`, children: /* @__PURE__ */ jsxs("div", { className: "modal-tab-body", children: [
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel agent-user-panel margin-bottom-10", "data-testid": `agent-user-panel-${id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "User", id: `wf-${flowId}-wa-${id}-user`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-tab-body", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         TextInput,
         {
           label: "Name:",
@@ -27701,7 +31337,7 @@ const WaldiezAgentUserTabs = memo((props) => {
           className: "margin-top-5"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         NumberInput,
         {
           name: "max-consecutive-auto-reply",
@@ -27720,10 +31356,10 @@ const WaldiezAgentUserTabs = memo((props) => {
           "aria-label": "Maximum consecutive auto replies"
         }
       ),
-      /* @__PURE__ */ jsx("div", { className: "margin-bottom-20" }),
-      /* @__PURE__ */ jsx("label", { htmlFor: `agent-default-auto-reply-input-${id}`, children: "Default Auto Reply:" }),
-      /* @__PURE__ */ jsx("div", { className: "margin-top-5" }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-20" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-default-auto-reply-input-${id}`, children: "Default Auto Reply:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-5" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         TextareaInput,
         {
           className: "full-width margin-top-5",
@@ -27735,7 +31371,7 @@ const WaldiezAgentUserTabs = memo((props) => {
         }
       )
     ] }) }),
-    /* @__PURE__ */ jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       WaldiezAgentCodeExecution,
       {
         id,
@@ -27744,7 +31380,7 @@ const WaldiezAgentUserTabs = memo((props) => {
         onDataChange
       }
     ) }) }),
-    /* @__PURE__ */ jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       WaldiezAgentTools,
       {
         id,
@@ -27755,7 +31391,7 @@ const WaldiezAgentUserTabs = memo((props) => {
         onDataChange
       }
     ) }) }),
-    showNestedChatsTab && /* @__PURE__ */ jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+    showNestedChatsTab && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       WaldiezAgentNestedChats,
       {
         id,
@@ -27858,7 +31494,7 @@ const WaldiezNodeAgentModalTabs = memo(
       uploadsEnabled
     } = derivedData;
     if (isRagUser) {
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezAgentRagUserTabs,
         {
           id,
@@ -27879,7 +31515,7 @@ const WaldiezNodeAgentModalTabs = memo(
       );
     }
     if (data.agentType === "user_proxy") {
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezAgentUserTabs,
         {
           id,
@@ -27895,8 +31531,8 @@ const WaldiezNodeAgentModalTabs = memo(
         }
       );
     }
-    return /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
-      /* @__PURE__ */ jsx(TabItem, { label: "Agent", id: `wf-${flowId}-wa-${id}-basic`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Agent", id: `wf-${flowId}-wa-${id}-basic`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezAgentBasic,
         {
           id,
@@ -27905,7 +31541,7 @@ const WaldiezNodeAgentModalTabs = memo(
           onAgentTypeChange
         }
       ) }) }),
-      isReasoning && /* @__PURE__ */ jsx(TabItem, { label: "Reasoning", id: `wf-${flowId}-wa-${id}-reasoning`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+      isReasoning && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Reasoning", id: `wf-${flowId}-wa-${id}-reasoning`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezAgentReasoning2,
         {
           id,
@@ -27913,7 +31549,7 @@ const WaldiezNodeAgentModalTabs = memo(
           onDataChange
         }
       ) }) }),
-      isCaptain && /* @__PURE__ */ jsx(TabItem, { label: "Captain", id: `wf-${flowId}-wa-${id}-captain`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+      isCaptain && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Captain", id: `wf-${flowId}-wa-${id}-captain`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezAgentCaptainTab,
         {
           id,
@@ -27922,7 +31558,7 @@ const WaldiezNodeAgentModalTabs = memo(
           onDataChange
         }
       ) }) }),
-      isDocAgent && /* @__PURE__ */ jsx(TabItem, { label: "Documents", id: `wf-${flowId}-wa-${id}-documents`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+      isDocAgent && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Documents", id: `wf-${flowId}-wa-${id}-documents`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezDocAgentTab,
         {
           id,
@@ -27931,8 +31567,8 @@ const WaldiezNodeAgentModalTabs = memo(
           onDataChange
         }
       ) }) }),
-      /* @__PURE__ */ jsx(TabItem, { label: "Termination", id: `wf-${flowId}-wa-${id}-termination`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(WaldiezAgentTermination, { id, data, onDataChange }) }) }),
-      /* @__PURE__ */ jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Termination", id: `wf-${flowId}-wa-${id}-termination`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezAgentTermination, { id, data, onDataChange }) }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezAgentCodeExecution,
         {
           id,
@@ -27941,8 +31577,8 @@ const WaldiezNodeAgentModalTabs = memo(
           onDataChange
         }
       ) }) }),
-      /* @__PURE__ */ jsx(TabItem, { label: "Models", id: `wf-${flowId}-wa-${id}-models`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(WaldiezAgentModels, { id, data, models, onDataChange }) }) }),
-      !(isDocAgent && isGroupMember) && /* @__PURE__ */ jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Models", id: `wf-${flowId}-wa-${id}-models`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezAgentModels, { id, data, models, onDataChange }) }) }),
+      !(isDocAgent && isGroupMember) && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezAgentTools,
         {
           id,
@@ -27953,7 +31589,7 @@ const WaldiezNodeAgentModalTabs = memo(
           onDataChange
         }
       ) }) }),
-      showNestedChatsTab && /* @__PURE__ */ jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+      showNestedChatsTab && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezAgentNestedChats,
         {
           id,
@@ -27962,7 +31598,7 @@ const WaldiezNodeAgentModalTabs = memo(
           agentConnections
         }
       ) }) }),
-      isGroupMember && showGroupNestedChatTab && /* @__PURE__ */ jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-group-nested`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+      isGroupMember && showGroupNestedChatTab && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-group-nested`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezAgentGroupNestedChatTabs,
         {
           id,
@@ -27974,7 +31610,7 @@ const WaldiezNodeAgentModalTabs = memo(
           onDataChange
         }
       ) }) }),
-      !isManager && groupManagers.length > 0 && /* @__PURE__ */ jsx(TabItem, { id: `wf-${flowId}-wa-${id}-group`, label: "Group", children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
+      !isManager && groupManagers.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { id: `wf-${flowId}-wa-${id}-group`, label: "Group", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezAgentGroupMember,
         {
           id,
@@ -27992,8 +31628,8 @@ WaldiezNodeAgentModalTabs.displayName = "WaldiezNodeAgentModalTabs";
 const getImportExportView = (flowId, itemId, itemType, onImport, onExport) => {
   const itemTypeLower = itemType.toLowerCase();
   const itemTypeCapitalized = itemType.charAt(0).toUpperCase() + itemType.slice(1);
-  return /* @__PURE__ */ jsxs("div", { className: "modal-header-import-export", children: [
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-header-import-export", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       "input",
       {
         title: `Import ${itemTypeCapitalized}`,
@@ -28005,16 +31641,16 @@ const getImportExportView = (flowId, itemId, itemType, onImport, onExport) => {
         className: "hidden"
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       "label",
       {
         htmlFor: `file-upload-${itemTypeLower}-${flowId}-${itemId}`,
         className: "modal-header-import-button file-label",
         title: `Import ${itemTypeCapitalized}`,
-        children: /* @__PURE__ */ jsx(FaFileImport$1, {})
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaFileImport$1, {})
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       "div",
       {
         role: "button",
@@ -28022,7 +31658,7 @@ const getImportExportView = (flowId, itemId, itemType, onImport, onExport) => {
         onClick: onExport,
         title: `Export ${itemTypeCapitalized}`,
         "data-testid": `export-${itemTypeLower}-${flowId}-${itemId}`,
-        children: /* @__PURE__ */ jsx(FaFileExport, {})
+        children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaFileExport, {})
       }
     )
   ] });
@@ -28054,7 +31690,7 @@ const WaldiezNodeAgentModal = memo((props) => {
   );
   const tabComponent = useMemo(() => {
     if (data.agentType === "group_manager") {
-      return /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezNodeGroupManagerTabs,
         {
           isModalOpen: isOpen,
@@ -28066,7 +31702,7 @@ const WaldiezNodeAgentModal = memo((props) => {
         }
       );
     }
-    return /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx(
       WaldiezNodeAgentModalTabs,
       {
         id,
@@ -28092,7 +31728,7 @@ const WaldiezNodeAgentModal = memo((props) => {
     filesToUpload,
     onFilesToUploadChange
   ]);
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     Modal,
     {
       flowId,
@@ -28105,9 +31741,9 @@ const WaldiezNodeAgentModal = memo((props) => {
       hasUnsavedChanges: isDirty,
       preventCloseIfUnsavedChanges: true,
       children: [
-        /* @__PURE__ */ jsx("div", { className: "modal-body", children: tabComponent }),
-        /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
-          /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body", children: tabComponent }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               className: "secondary",
@@ -28119,8 +31755,8 @@ const WaldiezNodeAgentModal = memo((props) => {
               children: "Cancel"
             }
           ),
-          /* @__PURE__ */ jsxs("div", { className: "flex-row", children: [
-            /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-row", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -28133,7 +31769,7 @@ const WaldiezNodeAgentModal = memo((props) => {
                 children: "Save & Close"
               }
             ),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -28222,7 +31858,7 @@ const WaldiezNodeAgentView = (props) => {
     [agentType]
   );
   const agentImgSrc = AGENT_ICONS[agentType];
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
       className,
@@ -28232,11 +31868,11 @@ const WaldiezNodeAgentView = (props) => {
       onDrop,
       "data-activity": isSender && activeEvent ? activityEmoji(activeEvent) : void 0,
       children: [
-        (isSender || isRecipient) && /* @__PURE__ */ jsxs("div", { className: "agent-badge-wrap", children: [
-          /* @__PURE__ */ jsx("span", { className: "agent-badge-chip", children: isSender ? "SENDING" : "RECEIVING" }),
-          isSender && activeEvent && /* @__PURE__ */ jsx("span", { className: "agent-activity-label", children: /* @__PURE__ */ jsx(ActivityIcon, { activity: activeEvent }) })
+        (isSender || isRecipient) && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-badge-wrap", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "agent-badge-chip", children: isSender ? "SENDING" : "RECEIVING" }),
+          isSender && activeEvent && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "agent-activity-label", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ActivityIcon, { activity: activeEvent }) })
         ] }),
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           NodeResizer,
           {
             color: AGENT_COLORS[agentType],
@@ -28246,9 +31882,9 @@ const WaldiezNodeAgentView = (props) => {
             handleClassName: agentType
           }
         ),
-        !isReadOnly && !isDragging && selected && /* @__PURE__ */ jsxs("div", { className: `agent-actions ${agentType}`, "data-testid": `agent-actions-${id}`, children: [
-          /* @__PURE__ */ jsx(
-            FaTrash$1,
+        !isReadOnly && !isDragging && selected && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `agent-actions ${agentType}`, "data-testid": `agent-actions-${id}`, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            FaTrash,
             {
               role: "button",
               onClick: onDelete,
@@ -28257,8 +31893,8 @@ const WaldiezNodeAgentView = (props) => {
               "aria-label": "Delete Agent"
             }
           ),
-          data.agentType !== "group_manager" && /* @__PURE__ */ jsx(
-            FaCopy,
+          data.agentType !== "group_manager" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+            FaCopy$1,
             {
               role: "button",
               onClick: onClone,
@@ -28267,7 +31903,7 @@ const WaldiezNodeAgentView = (props) => {
               "aria-label": "Clone Agent"
             }
           ),
-          /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             VscSettings,
             {
               role: "button",
@@ -28278,13 +31914,13 @@ const WaldiezNodeAgentView = (props) => {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs("div", { className: "agent-main", children: [
-          /* @__PURE__ */ jsxs("div", { className: "agent-top", children: [
-            /* @__PURE__ */ jsxs("div", { className: "agent-icon-with-label", children: [
-              /* @__PURE__ */ jsx("img", { className: "agent-icon-image", src: agentImgSrc, alt: "Agent" }),
-              /* @__PURE__ */ jsx("div", { className: "agent-icon-label", children: data.label })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-main", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-top", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-icon-with-label", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("img", { className: "agent-icon-image", src: agentImgSrc, alt: "Agent" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-icon-label", children: data.label })
             ] }),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               WaldiezNodeAgentBody,
               {
                 flowId,
@@ -28297,7 +31933,7 @@ const WaldiezNodeAgentView = (props) => {
             )
           ] }),
           createHandles({ agentType, id, handleClassNameBase, selected, onEdgeConnection }),
-          /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               title: "Open Node Modal",
@@ -28308,7 +31944,7 @@ const WaldiezNodeAgentView = (props) => {
               onClick: onOpenNodeModal
             }
           ),
-          /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               title: "Open Edge Modal",
@@ -28320,8 +31956,8 @@ const WaldiezNodeAgentView = (props) => {
               "data-edge-id": ""
             }
           ),
-          edge && /* @__PURE__ */ jsx(WaldiezEdgeModal, { isOpen: isEdgeModalOpen, edgeId: edge.id, onClose: onCloseEdgeModal }),
-          /* @__PURE__ */ jsx(
+          edge && /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezEdgeModal, { isOpen: isEdgeModalOpen, edgeId: edge.id, onClose: onCloseEdgeModal }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezNodeAgentModal,
             {
               id,
@@ -29334,8 +32970,8 @@ const WaldiezNodeModelModalAdvancedTab = memo(
       onUpdateTag,
       onDeleteTag
     } = useModelModalAdvancedTab(props);
-    return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         NumberInput,
         {
           name: "temperature",
@@ -29350,7 +32986,7 @@ const WaldiezNodeModelModalAdvancedTab = memo(
           dataTestId: "model-modal-temperature"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         NumberInput,
         {
           name: "top-p",
@@ -29366,7 +33002,7 @@ const WaldiezNodeModelModalAdvancedTab = memo(
           dataTestId: "model-modal-top-p"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         NumberInput,
         {
           name: "max-tokens",
@@ -29382,7 +33018,7 @@ const WaldiezNodeModelModalAdvancedTab = memo(
           dataTestId: "model-modal-max-tokens"
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Dict,
         {
           viewLabel: "Default Headers:",
@@ -29394,7 +33030,7 @@ const WaldiezNodeModelModalAdvancedTab = memo(
           onAdd: onAddHeader
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         StringList,
         {
           viewLabel: "Tags:",
@@ -29440,8 +33076,8 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
     },
     [data.aws, onDataChange]
   );
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextInput,
       {
         value: data.aws?.accessKey || "",
@@ -29451,7 +33087,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
         onChange: onAwsAccessKeyChange
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextInput,
       {
         value: data.aws?.secretKey || "",
@@ -29461,7 +33097,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
         onChange: onAwsSecretKeyChange
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextInput,
       {
         value: data.aws?.region || "",
@@ -29471,7 +33107,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
         onChange: onAwsRegionChange
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextInput,
       {
         value: data.aws?.profileName || "",
@@ -29481,7 +33117,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
         onChange: onAwsProfileNameChange
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextInput,
       {
         value: data.aws?.sessionToken || "",
@@ -29590,8 +33226,8 @@ const ModelSelector = memo((props) => {
   };
   const formatGroupLabel = (group) => {
     const logo = LOGOS[group.label];
-    return /* @__PURE__ */ jsxs("div", { className: `model-logo ${group.label} flex items-center`, children: [
-      /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `model-logo ${group.label} flex items-center`, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "img",
         {
           src: logo,
@@ -29604,13 +33240,13 @@ const ModelSelector = memo((props) => {
           }
         }
       ),
-      /* @__PURE__ */ jsx("strong", { children: group.label })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: group.label })
     ] });
   };
-  return /* @__PURE__ */ jsxs("div", { className: "margin-bottom-5", children: [
-    /* @__PURE__ */ jsx("label", { htmlFor: "predefined-models-select", children: "Predefined models:" }),
-    /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-bottom-5", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "predefined-models-select", children: "Predefined models:" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       Select,
       {
         ref,
@@ -29659,21 +33295,21 @@ const WaldiezNodeModelModalBasicTab = memo(
       [onDataChange]
     );
     const usefulLinks = useMemo(
-      () => /* @__PURE__ */ jsx("div", { className: "flex-column", children: Object.entries(modelLinks).filter(([_, link]) => link.length > 0).map(([key, link]) => /* @__PURE__ */ jsxs("div", { className: "flex-row margin-bottom-5", children: [
-        /* @__PURE__ */ jsxs("span", { className: "flex-shrink-0", children: [
+      () => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: Object.entries(modelLinks).filter(([_, link]) => link.length > 0).map(([key, link]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-row margin-bottom-5", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex-shrink-0", children: [
           capitalize(key),
           " models:  "
         ] }),
-        /* @__PURE__ */ jsx("a", { href: link, target: "_blank", rel: "noreferrer", className: "text-truncate", children: link })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: link, target: "_blank", rel: "noreferrer", className: "text-truncate", children: link })
       ] }, key)) }),
       []
     );
     const OptionWithIcon = memo(
       (props2) => {
         const { innerProps, data: data2 } = props2;
-        return /* @__PURE__ */ jsxs("div", { ...innerProps, className: "flex margin-10", children: [
-          /* @__PURE__ */ jsx("div", { className: `margin-right-10 margin-left-5 model-logo ${data2.value}`, children: /* @__PURE__ */ jsx("img", { src: LOGOS[data2.value], alt: data2.label, style: { width: 20, height: 20 } }) }),
-          /* @__PURE__ */ jsx("span", { className: "label", children: data2.label })
+        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ...innerProps, className: "flex margin-10", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `margin-right-10 margin-left-5 model-logo ${data2.value}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: LOGOS[data2.value], alt: data2.label, style: { width: 20, height: 20 } }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "label", children: data2.label })
         ] });
       }
     );
@@ -29681,15 +33317,15 @@ const WaldiezNodeModelModalBasicTab = memo(
     const apiTypeSelectId = `model-api-type-select-${id}`;
     const apiKeyInputId = `model-api-key-input-${id}`;
     const baseUrlInputId = `model-base-url-input-${id}`;
-    return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxs("div", { className: "info margin-bottom-10", children: [
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info margin-bottom-10", children: [
         "You can select one of the predefined models from the list below or manually enter the model name and type. In the latter case, make sure that the model's name is a valid name (based on the provider). You can use the ",
-        /* @__PURE__ */ jsx("strong", { children: "Test" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Test" }),
         " button to check if the model parameters are correct, but model credits might be used for this test (depending on the provider). ",
-        /* @__PURE__ */ jsx("br", {}),
-        /* @__PURE__ */ jsx("strong", { children: "Note" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Note" }),
         ` that if testing the model fails with a "Failed to load" message (for example a NIM model), it doesn't mean that the configuration is not correct (it could be a browser/CORS issue).`,
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           Collapsible,
           {
             title: "Useful Links",
@@ -29701,11 +33337,11 @@ const WaldiezNodeModelModalBasicTab = memo(
           }
         )
       ] }),
-      /* @__PURE__ */ jsx(ModelSelector, { ref: predefinedModelsSelectRef, onChange: onPredefineSelected }),
-      /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
-        /* @__PURE__ */ jsx("label", { htmlFor: nameInputId, children: "Name:" }),
-        /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-        /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(ModelSelector, { ref: predefinedModelsSelectRef, onChange: onPredefineSelected }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: nameInputId, children: "Name:" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
           {
             id: nameInputId,
@@ -29719,8 +33355,8 @@ const WaldiezNodeModelModalBasicTab = memo(
           }
         )
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "margin-top-0", children: [
-        /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-0", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           InfoLabel,
           {
             htmlFor: `model-type-${id}`,
@@ -29728,8 +33364,8 @@ const WaldiezNodeModelModalBasicTab = memo(
             info: "API type to use for the model. Use 'other' for custom openai compatible models"
           }
         ),
-        /* @__PURE__ */ jsx("label", { htmlFor: apiTypeSelectId, className: "hidden", children: "Model Type:" }),
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: apiTypeSelectId, className: "hidden", children: "Model Type:" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           Select,
           {
             options: apiTypeOptions2,
@@ -29745,10 +33381,10 @@ const WaldiezNodeModelModalBasicTab = memo(
           }
         )
       ] }),
-      apiType !== "bedrock" && /* @__PURE__ */ jsxs("div", { className: "margin-top-0", children: [
-        /* @__PURE__ */ jsx(InfoLabel, { label: "API Key:", info: apiKeyInfo, htmlFor: apiKeyInputId }),
-        /* @__PURE__ */ jsxs("div", { className: "flex full-width", children: [
-          /* @__PURE__ */ jsx(
+      apiType !== "bedrock" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-0", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(InfoLabel, { label: "API Key:", info: apiKeyInfo, htmlFor: apiKeyInputId }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex full-width", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
             {
               id: apiKeyInputId,
@@ -29761,7 +33397,7 @@ const WaldiezNodeModelModalBasicTab = memo(
               "aria-label": "API key"
             }
           ),
-          /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               type: "button",
@@ -29770,13 +33406,13 @@ const WaldiezNodeModelModalBasicTab = memo(
               title: apiKeyVisible ? "Hide API key" : "Show API key",
               "aria-label": apiKeyVisible ? "Hide API key" : "Show API key",
               "data-testid": `visibility-apiKey-model-${id}`,
-              children: apiKeyVisible ? /* @__PURE__ */ jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsx(FaEye, {})
+              children: apiKeyVisible ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaEye, {})
             }
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "margin-top-0", children: [
-        /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-0", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           InfoLabel,
           {
             label: "Base URL:",
@@ -29784,7 +33420,7 @@ const WaldiezNodeModelModalBasicTab = memo(
             htmlFor: baseUrlInputId
           }
         ),
-        urlIsEditable ? /* @__PURE__ */ jsx(
+        urlIsEditable ? /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
           {
             id: baseUrlInputId,
@@ -29796,7 +33432,7 @@ const WaldiezNodeModelModalBasicTab = memo(
             className: "full-width",
             "aria-label": "Base URL"
           }
-        ) : /* @__PURE__ */ jsx(
+        ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
           "input",
           {
             id: baseUrlInputId,
@@ -29870,8 +33506,8 @@ const WaldiezNodeModelModalPriceTab = memo(
     const completionTestId = `model-modal-price-completion-${modelId}`;
     const promptInputId = `price-prompt-${modelId}`;
     const completionInputId = `price-completion-${modelId}`;
-    return /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxs("div", { className: "model-price", children: [
-      /* @__PURE__ */ jsx(
+    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "model-price", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         InfoLabel,
         {
           label: "Price:",
@@ -29879,10 +33515,10 @@ const WaldiezNodeModelModalPriceTab = memo(
           htmlFor: "prompt-price-inputs"
         }
       ),
-      /* @__PURE__ */ jsxs("div", { className: "flex-column margin-left-10 margin-bottom-10 padding-left-10", children: [
-        /* @__PURE__ */ jsxs("div", { className: "flex-column margin-bottom-10", children: [
-          /* @__PURE__ */ jsx("label", { htmlFor: promptInputId, children: "Prompt price per 1K tokens:" }),
-          /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-left-10 margin-bottom-10 padding-left-10", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-bottom-10", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: promptInputId, children: "Prompt price per 1K tokens:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
             {
               id: promptInputId,
@@ -29898,9 +33534,9 @@ const WaldiezNodeModelModalPriceTab = memo(
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-          /* @__PURE__ */ jsx("label", { htmlFor: completionInputId, children: "Completion price per 1K tokens:" }),
-          /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: completionInputId, children: "Completion price per 1K tokens:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
             {
               id: completionInputId,
@@ -29941,7 +33577,7 @@ const WaldiezNodeModelModal = (props) => {
   useEffect(() => {
     setActiveTabIndex(0);
   }, [isOpen]);
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     Modal,
     {
       flowId,
@@ -29953,9 +33589,9 @@ const WaldiezNodeModelModal = (props) => {
       onSaveAndClose,
       hasUnsavedChanges: isDirty,
       preventCloseIfUnsavedChanges: true,
-      children: /* @__PURE__ */ jsxs("div", { className: "modal-body", children: [
-        /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
-          /* @__PURE__ */ jsx(TabItem, { label: "Basic", id: `model-config-basic-${modelId}`, children: /* @__PURE__ */ jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsx(
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Basic", id: `model-config-basic-${modelId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezNodeModelModalBasicTab,
             {
               id: modelId,
@@ -29964,9 +33600,9 @@ const WaldiezNodeModelModal = (props) => {
               onLogoChange
             }
           ) }) }),
-          data.apiType === "bedrock" && /* @__PURE__ */ jsx(TabItem, { label: "AWS", id: `model-config-aws-${modelId}`, children: /* @__PURE__ */ jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsx(WaldiezNodeModelModalAWSTab, { data, onDataChange }) }) }),
-          /* @__PURE__ */ jsx(TabItem, { label: "Advanced", id: `model-config-advanced-${modelId}`, children: /* @__PURE__ */ jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsx(WaldiezNodeModelModalAdvancedTab, { data, onDataChange }) }) }),
-          /* @__PURE__ */ jsx(TabItem, { label: "Price", id: `model-config-price-${modelId}`, children: /* @__PURE__ */ jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsx(
+          data.apiType === "bedrock" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "AWS", id: `model-config-aws-${modelId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezNodeModelModalAWSTab, { data, onDataChange }) }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Advanced", id: `model-config-advanced-${modelId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezNodeModelModalAdvancedTab, { data, onDataChange }) }) }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Price", id: `model-config-price-${modelId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             WaldiezNodeModelModalPriceTab,
             {
               modelId,
@@ -29975,8 +33611,8 @@ const WaldiezNodeModelModal = (props) => {
             }
           ) }) })
         ] }),
-        /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
-          /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               type: "button",
@@ -29987,8 +33623,8 @@ const WaldiezNodeModelModal = (props) => {
               children: "Cancel"
             }
           ),
-          /* @__PURE__ */ jsxs("div", { className: "flex-row", children: [
-            /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-row", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -30000,7 +33636,7 @@ const WaldiezNodeModelModal = (props) => {
                 children: "Test"
               }
             ),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 title: "Save & Close",
@@ -30012,7 +33648,7 @@ const WaldiezNodeModelModal = (props) => {
                 children: "Save & Close"
               }
             ),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -30050,9 +33686,9 @@ const WaldiezNodeModelView = ({ id, data }) => {
     onCheck
   } = useWaldiezNodeModel(id, data);
   const importExportView = getImportExportView(flowId, id, "model", onImport, onExport);
-  return /* @__PURE__ */ jsxs("div", { className: isOpen ? "model-node nodrag nowheel" : "model-node nodrag", children: [
-    /* @__PURE__ */ jsxs("div", { className: "model-header", children: [
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: isOpen ? "model-node nodrag nowheel" : "model-node nodrag", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "model-header", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "div",
         {
           role: "button",
@@ -30061,14 +33697,14 @@ const WaldiezNodeModelView = ({ id, data }) => {
           "data-node-id": id,
           "data-testid": `open-model-node-modal-${id}`,
           onClick: onOpen,
-          children: /* @__PURE__ */ jsx(FaGear, {})
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaGear, {})
         }
       ),
-      /* @__PURE__ */ jsx("div", { id: `node-label-${id}`, className: "node-label", "data-testid": `node-label-${id}`, children: data.label }),
-      /* @__PURE__ */ jsx("div", { className: `model-logo ${data.apiType}`, children: /* @__PURE__ */ jsx("img", { src: logo, alt: "logo" }) })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { id: `node-label-${id}`, className: "node-label", "data-testid": `node-label-${id}`, children: data.label }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `model-logo ${data.apiType}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: logo, alt: "logo" }) })
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "model-footer", "data-testid": `model-footer-${id}`, children: [
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "model-footer", "data-testid": `model-footer-${id}`, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "div",
         {
           role: "button",
@@ -30077,11 +33713,11 @@ const WaldiezNodeModelView = ({ id, data }) => {
           id: `delete-node-${id}`,
           "data-testid": `delete-node-${id}`,
           onClick: onDelete,
-          children: /* @__PURE__ */ jsx(FaTrashCan, {})
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaTrashCan, {})
         }
       ),
-      /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
-        /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "div",
           {
             role: "button",
@@ -30090,10 +33726,10 @@ const WaldiezNodeModelView = ({ id, data }) => {
             id: `test-model-${id}`,
             "data-testid": `test-model-${id}`,
             onClick: onCheck,
-            children: /* @__PURE__ */ jsx(TbSettingsCheck, { fontSize: "1.1em" })
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(TbSettingsCheck, { fontSize: "1.1em" })
           }
         ),
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           "div",
           {
             role: "button",
@@ -30102,12 +33738,12 @@ const WaldiezNodeModelView = ({ id, data }) => {
             id: `clone-node-${id}`,
             "data-testid": `clone-node-${id}`,
             onClick: onClone,
-            children: /* @__PURE__ */ jsx(FaCopy$1, {})
+            children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCopy, {})
           }
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       WaldiezNodeModelModal,
       {
         flowId,
@@ -30402,15 +34038,15 @@ const WaldiezToolAdvancedTab = memo((props) => {
     onTagChange
   } = useToolNodeModal(props);
   const requirementsViewLabelInfo = useMemo(
-    () => /* @__PURE__ */ jsxs("div", { children: [
+    () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
       "Requirements to ",
-      /* @__PURE__ */ jsx("span", { className: "bold italic", children: "pip install" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "bold italic", children: "pip install" }),
       " for this tool"
     ] }),
     []
   );
-  return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       Dict,
       {
         viewLabel: "Environment Variables:",
@@ -30422,7 +34058,7 @@ const WaldiezToolAdvancedTab = memo((props) => {
         areValuesSecret: true
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       StringList,
       {
         viewLabel: "Requirements:",
@@ -30435,7 +34071,7 @@ const WaldiezToolAdvancedTab = memo((props) => {
         onItemChange: onRequirementChange
       }
     ),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       StringList,
       {
         viewLabel: "Tags:",
@@ -30501,17 +34137,17 @@ const WaldiezToolBasicTab = memo((props) => {
   const ToolOptionWithIcon = memo(
     (props2) => {
       const { innerProps, data: data2 } = props2;
-      return /* @__PURE__ */ jsxs("div", { ...innerProps, className: "flex margin-5 clickable", children: [
-        data2.icon && /* @__PURE__ */ jsx("div", { className: "icon margin-right-10 margin-top-5 margin-left-5", children: data2.icon }),
-        /* @__PURE__ */ jsx("span", { className: "label", children: data2.label })
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ...innerProps, className: "flex margin-5 clickable", children: [
+        data2.icon && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "icon margin-right-10 margin-top-5 margin-left-5", children: data2.icon }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "label", children: data2.label })
       ] });
     }
   );
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
-    /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
-      /* @__PURE__ */ jsx("label", { htmlFor: typeSelectId, children: "Type:" }),
-      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-bottom-10", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: typeSelectId, children: "Type:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Select,
         {
           inputId: typeSelectId,
@@ -30526,10 +34162,10 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
-    data.toolType !== "predefined" && /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
-      /* @__PURE__ */ jsx("label", { htmlFor: labelInputId, children: "Name:" }),
-      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsx(
+    data.toolType !== "predefined" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-bottom-10", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: labelInputId, children: "Name:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "input",
         {
           title: "Name",
@@ -30543,10 +34179,10 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
-    data.toolType !== "predefined" && /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
-      /* @__PURE__ */ jsx("label", { htmlFor: descriptionInputId, children: "Description:" }),
-      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsx(
+    data.toolType !== "predefined" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-bottom-10", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: descriptionInputId, children: "Description:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         TextareaInput,
         {
           title: "Description",
@@ -30560,10 +34196,10 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
-    data.toolType !== "predefined" && /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { htmlFor: contentEditorId, children: "Content:" }),
-      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsx(
+    data.toolType !== "predefined" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: contentEditorId, children: "Content:" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         Editor,
         {
           value: data.content || "",
@@ -30574,8 +34210,8 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
-    data.toolType === "predefined" && PREDEFINED_TOOL_INSTRUCTIONS[data.label] && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_INSTRUCTIONS[data.label] }),
-    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label] && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]?.map((kwarg, index2) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
+    data.toolType === "predefined" && PREDEFINED_TOOL_INSTRUCTIONS[data.label] && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_INSTRUCTIONS[data.label] }),
+    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label] && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]?.map((kwarg, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextInput,
       {
         name: kwarg.label,
@@ -30588,7 +34224,7 @@ const WaldiezToolBasicTab = memo((props) => {
         placeholder: `Enter the ${kwarg.label}`
       }
     ) }, index2)) }),
-    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label] && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_ENVS[data.label]?.map((envVar, index2) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
+    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label] && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_ENVS[data.label]?.map((envVar, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextInput,
       {
         name: envVar.label,
@@ -30623,7 +34259,7 @@ const WaldiezNodeToolModal = (props) => {
   useEffect(() => {
     setActiveTabIndex(0);
   }, [isModalOpen]);
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     Modal,
     {
       flowId,
@@ -30635,12 +34271,12 @@ const WaldiezNodeToolModal = (props) => {
       hasUnsavedChanges: isDirty,
       preventCloseIfUnsavedChanges: true,
       children: [
-        /* @__PURE__ */ jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
-          /* @__PURE__ */ jsx(TabItem, { label: "Basic", id: `tool-basic-tab-${toolId}`, children: /* @__PURE__ */ jsx("div", { className: "tool-panel", children: /* @__PURE__ */ jsx(WaldiezToolBasicTab, { ...props }) }) }),
-          data.toolType !== "predefined" && /* @__PURE__ */ jsx(TabItem, { label: "Advanced", id: `tool-advanced-tab-${toolId}`, children: /* @__PURE__ */ jsx("div", { className: "tool-panel", children: /* @__PURE__ */ jsx(WaldiezToolAdvancedTab, { ...props }) }) })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Basic", id: `tool-basic-tab-${toolId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tool-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezToolBasicTab, { ...props }) }) }),
+          data.toolType !== "predefined" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Advanced", id: `tool-advanced-tab-${toolId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tool-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezToolAdvancedTab, { ...props }) }) })
         ] }) }),
-        /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
-          /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               type: "button",
@@ -30651,7 +34287,7 @@ const WaldiezNodeToolModal = (props) => {
               children: "Cancel"
             }
           ),
-          /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               title: "Save & Close",
@@ -30663,7 +34299,7 @@ const WaldiezNodeToolModal = (props) => {
               children: "Save & Close"
             }
           ),
-          /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               title: "Save",
@@ -30699,9 +34335,9 @@ const WaldiezNodeToolView = (props) => {
     onExport,
     onImport
   } = useWaldiezNodeTool(props.id, props.data);
-  return /* @__PURE__ */ jsxs("div", { className: isModalOpen ? "tool-node nodrag nowheel" : "tool-node nodrag", children: [
-    /* @__PURE__ */ jsxs("div", { className: "tool-header", children: [
-      /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: isModalOpen ? "tool-node nodrag nowheel" : "tool-node nodrag", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tool-header", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "div",
         {
           role: "button",
@@ -30710,15 +34346,15 @@ const WaldiezNodeToolView = (props) => {
           "data-node-id": id,
           "data-testid": `open-tool-node-modal-${id}`,
           onClick: onOpen,
-          children: /* @__PURE__ */ jsx(FaGear, {})
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaGear, {})
         }
       ),
-      /* @__PURE__ */ jsx("div", { "data-testid": `node-label-${id}`, className: "node-label", children: data.label }),
-      /* @__PURE__ */ jsx("div", { className: `tool-logo ${data.toolType}`, children: logo })
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { "data-testid": `node-label-${id}`, className: "node-label", children: data.label }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `tool-logo ${data.toolType}`, children: logo })
     ] }),
-    /* @__PURE__ */ jsx("div", { className: "tool-content", children: /* @__PURE__ */ jsx("div", { className: "description", "data-test-id": `node-description-${id}`, children: data.description }) }),
-    /* @__PURE__ */ jsxs("div", { className: "tool-footer", "data-testid": `tool-footer-${id}`, children: [
-      /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tool-content", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "description", "data-test-id": `node-description-${id}`, children: data.description }) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tool-footer", "data-testid": `tool-footer-${id}`, children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "div",
         {
           role: "button",
@@ -30727,10 +34363,10 @@ const WaldiezNodeToolView = (props) => {
           id: `delete-node-${id}`,
           "data-testid": `delete-node-${id}`,
           onClick: onDelete,
-          children: /* @__PURE__ */ jsx(FaTrashCan, {})
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaTrashCan, {})
         }
       ),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "div",
         {
           role: "button",
@@ -30739,11 +34375,11 @@ const WaldiezNodeToolView = (props) => {
           id: `clone-node-${id}`,
           "data-testid": `clone-node-${id}`,
           onClick: onClone,
-          children: /* @__PURE__ */ jsx(FaCopy$1, {})
+          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCopy, {})
         }
       )
     ] }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       WaldiezNodeToolModal,
       {
         toolId: id,
@@ -30904,7 +34540,7 @@ const SidebarProvider = ({ children, collapsed }) => {
   const toggleSidebar = () => {
     setIsCollapsed((prev) => !prev);
   };
-  return /* @__PURE__ */ jsx(SidebarContext.Provider, { value: { isCollapsed, toggleSidebar }, children });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(SidebarContext.Provider, { value: { isCollapsed, toggleSidebar }, children });
 };
 const setSidebarCollapsedToBody = (isCollapsed) => {
   if (isCollapsed) {
@@ -31157,14 +34793,14 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
       onPrerequisitesChange(edge, []);
     }
   };
-  return /* @__PURE__ */ jsxs("div", { className: "flow-chat-prerequisites-wrapper", children: [
-    /* @__PURE__ */ jsx("div", { className: "info", children: "Specify the chats to run when the flow initializes and their prerequisites (if more than one). You should remove the ones that are expected to be triggered during the flow (like in nested chats)." }),
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-chat-prerequisites-wrapper", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: "Specify the chats to run when the flow initializes and their prerequisites (if more than one). You should remove the ones that are expected to be triggered during the flow (like in nested chats)." }),
     sortedEdges.map((edge, index2) => {
-      return /* @__PURE__ */ jsxs("div", { className: "flow-chat-prerequisites", children: [
-        /* @__PURE__ */ jsx("div", { className: "flow-chat-prerequisite-source", children: /* @__PURE__ */ jsx("span", { children: edge.data?.label }) }),
-        sortedEdges.length > 1 && /* @__PURE__ */ jsxs("div", { className: "flow-chat-prerequisite-actions", children: [
-          /* @__PURE__ */ jsx("label", { htmlFor: "chat-pre-requisites-select", children: "Prerequisites:" }),
-          /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-chat-prerequisites", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-chat-prerequisite-source", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: edge.data?.label }) }),
+        sortedEdges.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-chat-prerequisite-actions", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "chat-pre-requisites-select", children: "Prerequisites:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             Select,
             {
               placeholder: "Select prerequisites...",
@@ -31184,7 +34820,7 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
               inputId: "chat-pre-requisites-select"
             }
           ),
-          sortedEdges.length > 1 && /* @__PURE__ */ jsx("div", { className: "flow-chat-remove", children: sortedEdges.length > 1 && /* @__PURE__ */ jsx(
+          sortedEdges.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-chat-remove", children: sortedEdges.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               type: "button",
@@ -31198,10 +34834,10 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
         ] })
       ] }, edge.id);
     }),
-    remainingEdges.length > 0 && /* @__PURE__ */ jsxs("div", { className: "flow-order-add-wrapper", children: [
-      /* @__PURE__ */ jsxs("div", { className: "flex-1 margin-right-10", children: [
-        /* @__PURE__ */ jsx("label", { htmlFor: "new-edge-select", className: "hidden", children: "Add new chat" }),
-        /* @__PURE__ */ jsx(
+    remainingEdges.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-order-add-wrapper", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 margin-right-10", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "new-edge-select", className: "hidden", children: "Add new chat" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           Select,
           {
             options: remainingEdges.map((edge) => ({
@@ -31217,7 +34853,7 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
           }
         )
       ] }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -31243,13 +34879,13 @@ const HandleSyncChatOrder = (props) => {
     onMoveEdgeUp,
     onMoveEdgeDown
   } = props;
-  return /* @__PURE__ */ jsxs("div", { className: "flow-chat-order-wrapper", children: [
-    /* @__PURE__ */ jsx("div", { className: "info", children: "Specify the chats to run when the flow initializes and their order (if more than one). You should remove the ones that are expected to be triggered during the flow (like in nested chats)." }),
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-chat-order-wrapper", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: "Specify the chats to run when the flow initializes and their order (if more than one). You should remove the ones that are expected to be triggered during the flow (like in nested chats)." }),
     sortedEdges.map((edge, index2) => {
-      return /* @__PURE__ */ jsxs("div", { className: "flow-order-item-wrapper", children: [
-        /* @__PURE__ */ jsx("div", { className: "flow-order-item", children: /* @__PURE__ */ jsx("span", { className: "flow-order-item-entry", children: edge.data?.label }) }),
-        sortedEdges.length > 1 && /* @__PURE__ */ jsxs("div", { className: "flow-order-item-actions", children: [
-          index2 > 0 && sortedEdges.length > 1 && /* @__PURE__ */ jsx(
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-order-item-wrapper", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-order-item", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flow-order-item-entry", children: edge.data?.label }) }),
+        sortedEdges.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-order-item-actions", children: [
+          index2 > 0 && sortedEdges.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               type: "button",
@@ -31260,7 +34896,7 @@ const HandleSyncChatOrder = (props) => {
               children: "↑"
             }
           ),
-          index2 < sortedEdges.length - 1 && /* @__PURE__ */ jsx(
+          index2 < sortedEdges.length - 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               title: "Move down",
@@ -31271,7 +34907,7 @@ const HandleSyncChatOrder = (props) => {
               children: "↓"
             }
           ),
-          sortedEdges.length > 1 && /* @__PURE__ */ jsx(
+          sortedEdges.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               type: "button",
@@ -31285,10 +34921,10 @@ const HandleSyncChatOrder = (props) => {
         ] })
       ] }, edge.id);
     }),
-    remainingEdges.length > 0 && /* @__PURE__ */ jsxs("div", { className: "flow-order-add-wrapper", children: [
-      /* @__PURE__ */ jsxs("div", { className: "flex-1 margin-right-10", children: [
-        /* @__PURE__ */ jsx("label", { htmlFor: "new-edge-select", className: "hidden", children: "Add new chat" }),
-        /* @__PURE__ */ jsx(
+    remainingEdges.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-order-add-wrapper", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 margin-right-10", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "new-edge-select", className: "hidden", children: "Add new chat" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           Select,
           {
             options: remainingEdges.map((edge) => ({
@@ -31304,7 +34940,7 @@ const HandleSyncChatOrder = (props) => {
           }
         )
       ] }),
-      /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
         "button",
         {
           type: "button",
@@ -31334,9 +34970,9 @@ const EditFlowModalModalTabBasic = (props) => {
     onDataChange({ isAsync: checked });
   };
   const edgesCount = sortedEdges.length + remainingEdges.length;
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column padding-left-10 padding-right-10", id: `rf-${flowId}-edit-flow-modal`, children: [
-    /* @__PURE__ */ jsx("label", { htmlFor: `rf-${flowId}-edit-flow-modal-name`, children: "Name" }),
-    /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column padding-left-10 padding-right-10", id: `rf-${flowId}-edit-flow-modal`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `rf-${flowId}-edit-flow-modal-name`, children: "Name" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       "input",
       {
         type: "text",
@@ -31348,9 +34984,9 @@ const EditFlowModalModalTabBasic = (props) => {
         "data-testid": `edit-flow-${flowId}-name-input`
       }
     ),
-    /* @__PURE__ */ jsx("label", { htmlFor: `rf-${flowId}-edit-flow-modal-description`, children: "Description" }),
-    /* @__PURE__ */ jsx("div", { className: "margin-bottom-5" }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `rf-${flowId}-edit-flow-modal-description`, children: "Description" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-5" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       TextareaInput,
       {
         id: `rf-${flowId}-edit-flow-modal-description`,
@@ -31361,8 +34997,8 @@ const EditFlowModalModalTabBasic = (props) => {
         "data-testid": `edit-flow-${flowId}-description-input`
       }
     ),
-    /* @__PURE__ */ jsx("div", { className: "margin-bottom-5" }),
-    /* @__PURE__ */ jsx(
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-5" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(
       CheckboxInput,
       {
         id: `edit-flow-${flowId}-modal-async-mode`,
@@ -31371,12 +35007,12 @@ const EditFlowModalModalTabBasic = (props) => {
         onCheckedChange: onAsyncChange
       }
     ),
-    /* @__PURE__ */ jsxs("div", { className: "margin-top-5 margin-left-5", children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-5 margin-left-5", children: [
       "Chat order ",
       isAsync && "& prerequisites",
       " "
     ] }),
-    edgesCount === 0 ? /* @__PURE__ */ jsx("div", { className: "info", children: "No chats added to the flow yet." }) : isAsync ? /* @__PURE__ */ jsx(HandleASyncChatOrderAndPrerequisites, { ...props }) : /* @__PURE__ */ jsx(HandleSyncChatOrder, { ...props })
+    edgesCount === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: "No chats added to the flow yet." }) : isAsync ? /* @__PURE__ */ jsxRuntimeExports.jsx(HandleASyncChatOrderAndPrerequisites, { ...props }) : /* @__PURE__ */ jsxRuntimeExports.jsx(HandleSyncChatOrder, { ...props })
   ] });
 };
 const EditFlowModalModalTabOther = (props) => {
@@ -31416,18 +35052,18 @@ const EditFlowModalModalTabOther = (props) => {
     } catch (_) {
     }
   };
-  const viewLabelInfo = () => /* @__PURE__ */ jsxs("div", { children: [
+  const viewLabelInfo = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
     "Requirements to ",
-    /* @__PURE__ */ jsx("span", { className: "bold italic", children: "pip install" }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "bold italic", children: "pip install" }),
     " before running this flow"
   ] });
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
       className: "padding-left-10 padding-right-10",
       "data-testid": `edit-flow-${flowId}-modal-other-view`,
       children: [
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           CheckboxInput,
           {
             id: `edit-flow-${flowId}-modal-cache-seed-toggle`,
@@ -31437,9 +35073,9 @@ const EditFlowModalModalTabOther = (props) => {
             "data-testid": `edit-flow-${flowId}-modal-cache-seed-toggle`
           }
         ),
-        typeof cacheSeed === "number" && /* @__PURE__ */ jsxs("div", { className: "margin-top-5 flex-align-center", children: [
-          /* @__PURE__ */ jsx("div", { className: "margin-left-5 margin-right-5", children: " Cache seed:" }),
-          /* @__PURE__ */ jsx(
+        typeof cacheSeed === "number" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-5 flex-align-center", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-left-5 margin-right-5", children: " Cache seed:" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "input",
             {
               type: "number",
@@ -31452,7 +35088,7 @@ const EditFlowModalModalTabOther = (props) => {
             }
           )
         ] }),
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           StringList,
           {
             items: requirements,
@@ -31464,7 +35100,7 @@ const EditFlowModalModalTabOther = (props) => {
             onItemChange: onRequirementChange
           }
         ),
-        /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(
           StringList,
           {
             items: tags,
@@ -31503,7 +35139,7 @@ const EditFlowModal = (props) => {
     onSubmit();
     onClose();
   };
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(
     Modal,
     {
       title: "Edit Flow",
@@ -31516,9 +35152,9 @@ const EditFlowModal = (props) => {
       dataTestId: `edit-flow-modal-${flowId}`,
       hasUnsavedChanges: isDirty,
       preventCloseIfUnsavedChanges: true,
-      children: /* @__PURE__ */ jsxs("div", { className: "modal-body", children: [
-        /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
-          /* @__PURE__ */ jsx(TabItem, { label: "Properties", id: `rf-${flowId}-edit-flow-modal`, children: /* @__PURE__ */ jsx(
+      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex: 0, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Properties", id: `rf-${flowId}-edit-flow-modal`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             EditFlowModalModalTabBasic,
             {
               flowId,
@@ -31535,7 +35171,7 @@ const EditFlowModal = (props) => {
               onDataChange
             }
           ) }),
-          /* @__PURE__ */ jsx(TabItem, { label: "Other", id: `rf-${flowId}-edit-flow-modal-extras`, children: /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Other", id: `rf-${flowId}-edit-flow-modal-extras`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
             EditFlowModalModalTabOther,
             {
               flowId,
@@ -31544,8 +35180,8 @@ const EditFlowModal = (props) => {
             }
           ) })
         ] }),
-        /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
-          /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             "button",
             {
               className: "modal-action-cancel",
@@ -31556,8 +35192,8 @@ const EditFlowModal = (props) => {
               children: "Cancel"
             }
           ),
-          /* @__PURE__ */ jsxs("div", { className: "flex-row", children: [
-            /* @__PURE__ */ jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-row", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 title: "Save & Close",
@@ -31569,7 +35205,7 @@ const EditFlowModal = (props) => {
                 children: "Save & Close"
               }
             ),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "button",
               {
                 type: "button",
@@ -31606,14 +35242,14 @@ const SideBar = (props) => {
     onManagerDragStart
   } = useSidebarView(props);
   const { isCollapsed, toggleSidebar } = useSidebar();
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
       className: `sidebar${isReadonly ? " hidden" : ""}`,
       "data-testid": `sidebar-${flowId}`,
       style: { width: isCollapsed ? "40px" : "200px" },
       children: [
-        /* @__PURE__ */ jsxs(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(
           "div",
           {
             className: "sidebar-header",
@@ -31621,8 +35257,8 @@ const SideBar = (props) => {
               justifyContent: isCollapsed ? "center" : "space-between"
             },
             children: [
-              !isCollapsed && /* @__PURE__ */ jsx("div", { className: "title", children: "Waldiez" }),
-              /* @__PURE__ */ jsx(
+              !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "title", children: "Waldiez" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx(
                 "div",
                 {
                   className: "sidebar-toggle",
@@ -31630,7 +35266,7 @@ const SideBar = (props) => {
                   role: "button",
                   "aria-hidden": "true",
                   "data-testid": "sidebar-toggle",
-                  children: /* @__PURE__ */ jsx(
+                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(
                     FaBars,
                     {
                       className: "sidebar-toggle-button tooltip-container clickable",
@@ -31643,9 +35279,9 @@ const SideBar = (props) => {
             ]
           }
         ),
-        /* @__PURE__ */ jsxs("div", { className: "sidebar-content", children: [
-          /* @__PURE__ */ jsxs("ul", { children: [
-            /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sidebar-content", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "li",
               {
                 className: "clickable",
@@ -31653,39 +35289,39 @@ const SideBar = (props) => {
                 "data-testid": `edit-flow-${flowId}-sidebar-button`,
                 onClick: onOpenEditModal,
                 title: "Edit flow",
-                children: isCollapsed ? /* @__PURE__ */ jsx(FaEdit, {}) : /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
-                  /* @__PURE__ */ jsx(FaEdit, {}),
-                  /* @__PURE__ */ jsx("div", { children: "Edit flow" })
+                children: isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaEdit, {}) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(FaEdit, {}),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "Edit flow" })
                 ] })
               }
             ),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "li",
               {
                 className: "clickable",
                 "data-node-type": "model",
                 "data-testid": "show-models",
                 onClick: onShowModels,
-                children: isCollapsed ? /* @__PURE__ */ jsx(LuBrain, {}) : /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
-                  /* @__PURE__ */ jsx(LuBrain, {}),
-                  /* @__PURE__ */ jsx("div", { children: "Models" })
+                children: isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(LuBrain, {}) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(LuBrain, {}),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "Models" })
                 ] })
               }
             ),
-            /* @__PURE__ */ jsx(
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
               "li",
               {
                 className: "clickable",
                 "data-node-type": "tool",
                 "data-testid": "show-tools",
                 onClick: onShowTools,
-                children: isCollapsed ? /* @__PURE__ */ jsx(FaTools, {}) : /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
-                  /* @__PURE__ */ jsx(FaTools, {}),
-                  /* @__PURE__ */ jsx("div", { children: "Tools" })
+                children: isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaTools, {}) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(FaTools, {}),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "Tools" })
                 ] })
               }
             ),
-            /* @__PURE__ */ jsxs(
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "li",
               {
                 className: "clickable expandable",
@@ -31693,18 +35329,18 @@ const SideBar = (props) => {
                 "data-testid": "show-agents",
                 onClick: onShowAgents,
                 children: [
-                  /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
-                    /* @__PURE__ */ jsx(FaRobot, {}),
-                    !isCollapsed && /* @__PURE__ */ jsx("span", { children: "Agents" })
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx(FaRobot, {}),
+                    !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Agents" })
                   ] }),
-                  !isCollapsed && /* @__PURE__ */ jsx("div", { className: "expand-icon", children: isAgentsViewCollapsed ? /* @__PURE__ */ jsx(GoChevronDown, {}) : /* @__PURE__ */ jsx(GoChevronUp, {}) })
+                  !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "expand-icon", children: isAgentsViewCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(GoChevronDown, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(GoChevronUp, {}) })
                 ]
               }
             )
           ] }),
-          !isCollapsed && !isAgentsViewCollapsed && /* @__PURE__ */ jsxs(Fragment, { children: [
-            /* @__PURE__ */ jsx("div", { className: "dnd-description", children: /* @__PURE__ */ jsx("p", { children: "Drag n' drop an agent to the canvas to add it to the flow" }) }),
-            /* @__PURE__ */ jsxs(
+          !isCollapsed && !isAgentsViewCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "dnd-description", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Drag n' drop an agent to the canvas to add it to the flow" }) }),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "div",
               {
                 className: "dnd-area",
@@ -31712,7 +35348,7 @@ const SideBar = (props) => {
                 onDragStart: onUserDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx(
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
                     "img",
                     {
                       src: AGENT_ICONS.user_proxy,
@@ -31724,7 +35360,7 @@ const SideBar = (props) => {
                 ]
               }
             ),
-            /* @__PURE__ */ jsxs(
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "div",
               {
                 className: "dnd-area",
@@ -31732,7 +35368,7 @@ const SideBar = (props) => {
                 onDragStart: onAssistantDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx(
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
                     "img",
                     {
                       alt: "Assistant agent icon",
@@ -31744,7 +35380,7 @@ const SideBar = (props) => {
                 ]
               }
             ),
-            /* @__PURE__ */ jsxs(
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "div",
               {
                 className: "dnd-area",
@@ -31752,12 +35388,12 @@ const SideBar = (props) => {
                 onDragStart: onDocDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx("img", { alt: "Doc agent icon", src: AGENT_ICONS.doc_agent, title: "Document Agent" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("img", { alt: "Doc agent icon", src: AGENT_ICONS.doc_agent, title: "Document Agent" }),
                   "Docs Agent"
                 ]
               }
             ),
-            /* @__PURE__ */ jsxs(
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "div",
               {
                 className: "dnd-area",
@@ -31765,7 +35401,7 @@ const SideBar = (props) => {
                 onDragStart: onReasoningDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx(
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
                     "img",
                     {
                       alt: "Reasoning agent icon",
@@ -31777,7 +35413,7 @@ const SideBar = (props) => {
                 ]
               }
             ),
-            /* @__PURE__ */ jsxs(
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "div",
               {
                 className: "dnd-area",
@@ -31785,12 +35421,12 @@ const SideBar = (props) => {
                 onDragStart: onCaptainDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx("img", { alt: "Captain agent icon", src: AGENT_ICONS.captain, title: "Captain Agent" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("img", { alt: "Captain agent icon", src: AGENT_ICONS.captain, title: "Captain Agent" }),
                   "Captain"
                 ]
               }
             ),
-            /* @__PURE__ */ jsxs(
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
               "div",
               {
                 className: "dnd-area",
@@ -31798,7 +35434,7 @@ const SideBar = (props) => {
                 onDragStart: onManagerDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsx(
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(
                     "img",
                     {
                       alt: "Group manager icon",
@@ -31812,8 +35448,8 @@ const SideBar = (props) => {
             )
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "spacer" }),
-        isEditModalOpen && /* @__PURE__ */ jsx(EditFlowModal, { flowId, isOpen: isEditModalOpen, onClose: onCloseEditModal })
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "spacer" }),
+        isEditModalOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(EditFlowModal, { flowId, isOpen: isEditModalOpen, onClose: onCloseEditModal })
       ]
     }
   );
@@ -31919,7 +35555,7 @@ const WaldiezFlowView = memo((props) => {
   const { onDragOver, onDrop, onNodeDrag, onNodeDragStop } = useDnD(onNewAgent);
   const flowNodes = useMemo(() => nodes, [nodes]);
   const flowEdges = useMemo(() => edges, [edges]);
-  return /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
     "div",
     {
       className: `flow-wrapper ${colorMode}`,
@@ -31927,8 +35563,8 @@ const WaldiezFlowView = memo((props) => {
       "data-flow-id": flowId,
       "data-testid": `rf-root-${flowId}`,
       children: [
-        /* @__PURE__ */ jsxs("div", { className: "flow-main", children: [
-          /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-main", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
             SideBar,
             {
               onSelectNodeType: onTypeShownChange,
@@ -31936,7 +35572,7 @@ const WaldiezFlowView = memo((props) => {
               isReadonly: isReadOnly
             }
           ),
-          /* @__PURE__ */ jsx("div", { className: "react-flow-wrapper", "data-testid": `rf-wrapper-${flowId}`, ref: rfParent, children: /* @__PURE__ */ jsxs(
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "react-flow-wrapper", "data-testid": `rf-wrapper-${flowId}`, ref: rfParent, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
             ReactFlow,
             {
               id: flowId,
@@ -31968,8 +35604,8 @@ const WaldiezFlowView = memo((props) => {
               onNodeDrag,
               onNodeDragStop,
               children: [
-                /* @__PURE__ */ jsx(Controls, { showInteractive: true }),
-                /* @__PURE__ */ jsx(
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Controls, { showInteractive: true }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
                   WaldiezFlowPanels,
                   {
                     flowId,
@@ -31986,15 +35622,15 @@ const WaldiezFlowView = memo((props) => {
                     onExport: handleExport
                   }
                 ),
-                /* @__PURE__ */ jsx("div", { className: "hidden", "data-testid": `drop-area-${flowId}` }),
-                /* @__PURE__ */ jsx(Background, { variant: BackgroundVariant.Dots })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "hidden", "data-testid": `drop-area-${flowId}` }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(Background, { variant: BackgroundVariant.Dots })
               ]
             }
           ) })
         ] }),
-        /* @__PURE__ */ jsx(StepByStepView, { flowId, stepByStep }),
-        /* @__PURE__ */ jsx(ChatModal, { flowId, chat, isDarkMode: isDark }),
-        isImportModalOpen && /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsxRuntimeExports.jsx(StepByStepView, { flowId, stepByStep }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx(ChatModal, { flowId, chat, isDarkMode: isDark }),
+        isImportModalOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
           ImportFlowModal,
           {
             flowId,
@@ -32004,7 +35640,7 @@ const WaldiezFlowView = memo((props) => {
             onTypeShownChange
           }
         ),
-        isExportModalOpen && /* @__PURE__ */ jsx(
+        isExportModalOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
           ExportFlowModal,
           {
             flowId,
@@ -32038,7 +35674,7 @@ const Waldiez = (props) => {
       loader.config({ paths: { vs: monacoVsPath } });
     }
   }, [monacoVsPath]);
-  return /* @__PURE__ */ jsx(SnackbarProvider, { children: /* @__PURE__ */ jsx(WaldiezThemeProvider, { children: /* @__PURE__ */ jsx(ErrorBoundary, { fallbackRender, children: /* @__PURE__ */ jsx(HotkeysProvider, { initiallyActiveScopes: [flowId], children: /* @__PURE__ */ jsx(ReactFlowProvider, { children: /* @__PURE__ */ jsx(SidebarProvider, { children: /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(SnackbarProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezThemeProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(ErrorBoundary, { fallbackRender, children: /* @__PURE__ */ jsxRuntimeExports.jsx(he, { initiallyActiveScopes: [flowId], children: /* @__PURE__ */ jsxRuntimeExports.jsx(ReactFlowProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SidebarProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
     WaldiezProvider,
     {
       ...props,
@@ -32048,7 +35684,7 @@ const Waldiez = (props) => {
       isReadOnly: readOnly,
       skipImport,
       skipExport,
-      children: /* @__PURE__ */ jsx(
+      children: /* @__PURE__ */ jsxRuntimeExports.jsx(
         WaldiezFlowView,
         {
           flowId,
@@ -32065,7 +35701,7 @@ const Waldiez = (props) => {
 const fallbackRender = (props) => {
   const { error } = props;
   console.error("Error in Waldiez component:", error);
-  return /* @__PURE__ */ jsx(ErrorPage, { error });
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(ErrorPage, { error });
 };
 const checkInitialBodyThemeClass = () => {
   const isDark = isInitiallyDark();
