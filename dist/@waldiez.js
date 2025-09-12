@@ -3,9 +3,10 @@
  * Copyright 2024 - 2026 Waldiez & contributors
  */
 
+import { jsx, jsxs, Fragment } from "react/jsx-runtime";
+import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, getSimpleBezierPath, Position, BaseEdge, EdgeLabelRenderer, Handle, NodeResizer, ReactFlow, Controls, Background, BackgroundVariant, ReactFlowProvider } from "@xyflow/react";
 import * as React from "react";
 import React__default, { createContext, useContext, useState, useEffect, Component, createElement, useCallback, useRef, useLayoutEffect, memo, forwardRef, useMemo, useImperativeHandle } from "react";
-import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, getSimpleBezierPath, Position, BaseEdge, EdgeLabelRenderer, Handle, NodeResizer, ReactFlow, Controls, Background, BackgroundVariant, ReactFlowProvider } from "@xyflow/react";
 import MonacoEditor, { loader } from "@monaco-editor/react";
 import * as ReactDOM from "react-dom";
 import ReactDOM__default, { createPortal } from "react-dom";
@@ -6417,327 +6418,6 @@ const TOOL_ICONS = {
   searxng_search: searxng
 };
 const WALDIEZ_ICON = generic;
-var jsxRuntime = { exports: {} };
-var reactJsxRuntime_production = {};
-/**
- * @license React
- * react-jsx-runtime.production.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var hasRequiredReactJsxRuntime_production;
-function requireReactJsxRuntime_production() {
-  if (hasRequiredReactJsxRuntime_production) return reactJsxRuntime_production;
-  hasRequiredReactJsxRuntime_production = 1;
-  var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
-  function jsxProd(type, config, maybeKey) {
-    var key = null;
-    void 0 !== maybeKey && (key = "" + maybeKey);
-    void 0 !== config.key && (key = "" + config.key);
-    if ("key" in config) {
-      maybeKey = {};
-      for (var propName in config)
-        "key" !== propName && (maybeKey[propName] = config[propName]);
-    } else maybeKey = config;
-    config = maybeKey.ref;
-    return {
-      $$typeof: REACT_ELEMENT_TYPE,
-      type,
-      key,
-      ref: void 0 !== config ? config : null,
-      props: maybeKey
-    };
-  }
-  reactJsxRuntime_production.Fragment = REACT_FRAGMENT_TYPE;
-  reactJsxRuntime_production.jsx = jsxProd;
-  reactJsxRuntime_production.jsxs = jsxProd;
-  return reactJsxRuntime_production;
-}
-var reactJsxRuntime_development = {};
-/**
- * @license React
- * react-jsx-runtime.development.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var hasRequiredReactJsxRuntime_development;
-function requireReactJsxRuntime_development() {
-  if (hasRequiredReactJsxRuntime_development) return reactJsxRuntime_development;
-  hasRequiredReactJsxRuntime_development = 1;
-  "production" !== process.env.NODE_ENV && (function() {
-    function getComponentNameFromType(type) {
-      if (null == type) return null;
-      if ("function" === typeof type)
-        return type.$$typeof === REACT_CLIENT_REFERENCE ? null : type.displayName || type.name || null;
-      if ("string" === typeof type) return type;
-      switch (type) {
-        case REACT_FRAGMENT_TYPE:
-          return "Fragment";
-        case REACT_PROFILER_TYPE:
-          return "Profiler";
-        case REACT_STRICT_MODE_TYPE:
-          return "StrictMode";
-        case REACT_SUSPENSE_TYPE:
-          return "Suspense";
-        case REACT_SUSPENSE_LIST_TYPE:
-          return "SuspenseList";
-        case REACT_ACTIVITY_TYPE:
-          return "Activity";
-      }
-      if ("object" === typeof type)
-        switch ("number" === typeof type.tag && console.error(
-          "Received an unexpected object in getComponentNameFromType(). This is likely a bug in React. Please file an issue."
-        ), type.$$typeof) {
-          case REACT_PORTAL_TYPE:
-            return "Portal";
-          case REACT_CONTEXT_TYPE:
-            return (type.displayName || "Context") + ".Provider";
-          case REACT_CONSUMER_TYPE:
-            return (type._context.displayName || "Context") + ".Consumer";
-          case REACT_FORWARD_REF_TYPE:
-            var innerType = type.render;
-            type = type.displayName;
-            type || (type = innerType.displayName || innerType.name || "", type = "" !== type ? "ForwardRef(" + type + ")" : "ForwardRef");
-            return type;
-          case REACT_MEMO_TYPE:
-            return innerType = type.displayName || null, null !== innerType ? innerType : getComponentNameFromType(type.type) || "Memo";
-          case REACT_LAZY_TYPE:
-            innerType = type._payload;
-            type = type._init;
-            try {
-              return getComponentNameFromType(type(innerType));
-            } catch (x) {
-            }
-        }
-      return null;
-    }
-    function testStringCoercion(value) {
-      return "" + value;
-    }
-    function checkKeyStringCoercion(value) {
-      try {
-        testStringCoercion(value);
-        var JSCompiler_inline_result = false;
-      } catch (e) {
-        JSCompiler_inline_result = true;
-      }
-      if (JSCompiler_inline_result) {
-        JSCompiler_inline_result = console;
-        var JSCompiler_temp_const = JSCompiler_inline_result.error;
-        var JSCompiler_inline_result$jscomp$0 = "function" === typeof Symbol && Symbol.toStringTag && value[Symbol.toStringTag] || value.constructor.name || "Object";
-        JSCompiler_temp_const.call(
-          JSCompiler_inline_result,
-          "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.",
-          JSCompiler_inline_result$jscomp$0
-        );
-        return testStringCoercion(value);
-      }
-    }
-    function getTaskName(type) {
-      if (type === REACT_FRAGMENT_TYPE) return "<>";
-      if ("object" === typeof type && null !== type && type.$$typeof === REACT_LAZY_TYPE)
-        return "<...>";
-      try {
-        var name = getComponentNameFromType(type);
-        return name ? "<" + name + ">" : "<...>";
-      } catch (x) {
-        return "<...>";
-      }
-    }
-    function getOwner() {
-      var dispatcher = ReactSharedInternals.A;
-      return null === dispatcher ? null : dispatcher.getOwner();
-    }
-    function UnknownOwner() {
-      return Error("react-stack-top-frame");
-    }
-    function hasValidKey(config) {
-      if (hasOwnProperty.call(config, "key")) {
-        var getter = Object.getOwnPropertyDescriptor(config, "key").get;
-        if (getter && getter.isReactWarning) return false;
-      }
-      return void 0 !== config.key;
-    }
-    function defineKeyPropWarningGetter(props, displayName) {
-      function warnAboutAccessingKey() {
-        specialPropKeyWarningShown || (specialPropKeyWarningShown = true, console.error(
-          "%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)",
-          displayName
-        ));
-      }
-      warnAboutAccessingKey.isReactWarning = true;
-      Object.defineProperty(props, "key", {
-        get: warnAboutAccessingKey,
-        configurable: true
-      });
-    }
-    function elementRefGetterWithDeprecationWarning() {
-      var componentName = getComponentNameFromType(this.type);
-      didWarnAboutElementRef[componentName] || (didWarnAboutElementRef[componentName] = true, console.error(
-        "Accessing element.ref was removed in React 19. ref is now a regular prop. It will be removed from the JSX Element type in a future release."
-      ));
-      componentName = this.props.ref;
-      return void 0 !== componentName ? componentName : null;
-    }
-    function ReactElement(type, key, self2, source, owner, props, debugStack, debugTask) {
-      self2 = props.ref;
-      type = {
-        $$typeof: REACT_ELEMENT_TYPE,
-        type,
-        key,
-        props,
-        _owner: owner
-      };
-      null !== (void 0 !== self2 ? self2 : null) ? Object.defineProperty(type, "ref", {
-        enumerable: false,
-        get: elementRefGetterWithDeprecationWarning
-      }) : Object.defineProperty(type, "ref", { enumerable: false, value: null });
-      type._store = {};
-      Object.defineProperty(type._store, "validated", {
-        configurable: false,
-        enumerable: false,
-        writable: true,
-        value: 0
-      });
-      Object.defineProperty(type, "_debugInfo", {
-        configurable: false,
-        enumerable: false,
-        writable: true,
-        value: null
-      });
-      Object.defineProperty(type, "_debugStack", {
-        configurable: false,
-        enumerable: false,
-        writable: true,
-        value: debugStack
-      });
-      Object.defineProperty(type, "_debugTask", {
-        configurable: false,
-        enumerable: false,
-        writable: true,
-        value: debugTask
-      });
-      Object.freeze && (Object.freeze(type.props), Object.freeze(type));
-      return type;
-    }
-    function jsxDEVImpl(type, config, maybeKey, isStaticChildren, source, self2, debugStack, debugTask) {
-      var children = config.children;
-      if (void 0 !== children)
-        if (isStaticChildren)
-          if (isArrayImpl(children)) {
-            for (isStaticChildren = 0; isStaticChildren < children.length; isStaticChildren++)
-              validateChildKeys(children[isStaticChildren]);
-            Object.freeze && Object.freeze(children);
-          } else
-            console.error(
-              "React.jsx: Static children should always be an array. You are likely explicitly calling React.jsxs or React.jsxDEV. Use the Babel transform instead."
-            );
-        else validateChildKeys(children);
-      if (hasOwnProperty.call(config, "key")) {
-        children = getComponentNameFromType(type);
-        var keys = Object.keys(config).filter(function(k) {
-          return "key" !== k;
-        });
-        isStaticChildren = 0 < keys.length ? "{key: someKey, " + keys.join(": ..., ") + ": ...}" : "{key: someKey}";
-        didWarnAboutKeySpread[children + isStaticChildren] || (keys = 0 < keys.length ? "{" + keys.join(": ..., ") + ": ...}" : "{}", console.error(
-          'A props object containing a "key" prop is being spread into JSX:\n  let props = %s;\n  <%s {...props} />\nReact keys must be passed directly to JSX without using spread:\n  let props = %s;\n  <%s key={someKey} {...props} />',
-          isStaticChildren,
-          children,
-          keys,
-          children
-        ), didWarnAboutKeySpread[children + isStaticChildren] = true);
-      }
-      children = null;
-      void 0 !== maybeKey && (checkKeyStringCoercion(maybeKey), children = "" + maybeKey);
-      hasValidKey(config) && (checkKeyStringCoercion(config.key), children = "" + config.key);
-      if ("key" in config) {
-        maybeKey = {};
-        for (var propName in config)
-          "key" !== propName && (maybeKey[propName] = config[propName]);
-      } else maybeKey = config;
-      children && defineKeyPropWarningGetter(
-        maybeKey,
-        "function" === typeof type ? type.displayName || type.name || "Unknown" : type
-      );
-      return ReactElement(
-        type,
-        children,
-        self2,
-        source,
-        getOwner(),
-        maybeKey,
-        debugStack,
-        debugTask
-      );
-    }
-    function validateChildKeys(node) {
-      "object" === typeof node && null !== node && node.$$typeof === REACT_ELEMENT_TYPE && node._store && (node._store.validated = 1);
-    }
-    var React2 = React__default, REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element"), REACT_PORTAL_TYPE = Symbol.for("react.portal"), REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"), REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"), REACT_PROFILER_TYPE = Symbol.for("react.profiler");
-    var REACT_CONSUMER_TYPE = Symbol.for("react.consumer"), REACT_CONTEXT_TYPE = Symbol.for("react.context"), REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"), REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"), REACT_SUSPENSE_LIST_TYPE = Symbol.for("react.suspense_list"), REACT_MEMO_TYPE = Symbol.for("react.memo"), REACT_LAZY_TYPE = Symbol.for("react.lazy"), REACT_ACTIVITY_TYPE = Symbol.for("react.activity"), REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), ReactSharedInternals = React2.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, hasOwnProperty = Object.prototype.hasOwnProperty, isArrayImpl = Array.isArray, createTask = console.createTask ? console.createTask : function() {
-      return null;
-    };
-    React2 = {
-      react_stack_bottom_frame: function(callStackForError) {
-        return callStackForError();
-      }
-    };
-    var specialPropKeyWarningShown;
-    var didWarnAboutElementRef = {};
-    var unknownOwnerDebugStack = React2.react_stack_bottom_frame.bind(
-      React2,
-      UnknownOwner
-    )();
-    var unknownOwnerDebugTask = createTask(getTaskName(UnknownOwner));
-    var didWarnAboutKeySpread = {};
-    reactJsxRuntime_development.Fragment = REACT_FRAGMENT_TYPE;
-    reactJsxRuntime_development.jsx = function(type, config, maybeKey, source, self2) {
-      var trackActualOwner = 1e4 > ReactSharedInternals.recentlyCreatedOwnerStacks++;
-      return jsxDEVImpl(
-        type,
-        config,
-        maybeKey,
-        false,
-        source,
-        self2,
-        trackActualOwner ? Error("react-stack-top-frame") : unknownOwnerDebugStack,
-        trackActualOwner ? createTask(getTaskName(type)) : unknownOwnerDebugTask
-      );
-    };
-    reactJsxRuntime_development.jsxs = function(type, config, maybeKey, source, self2) {
-      var trackActualOwner = 1e4 > ReactSharedInternals.recentlyCreatedOwnerStacks++;
-      return jsxDEVImpl(
-        type,
-        config,
-        maybeKey,
-        true,
-        source,
-        self2,
-        trackActualOwner ? Error("react-stack-top-frame") : unknownOwnerDebugStack,
-        trackActualOwner ? createTask(getTaskName(type)) : unknownOwnerDebugTask
-      );
-    };
-  })();
-  return reactJsxRuntime_development;
-}
-var hasRequiredJsxRuntime;
-function requireJsxRuntime() {
-  if (hasRequiredJsxRuntime) return jsxRuntime.exports;
-  hasRequiredJsxRuntime = 1;
-  if (process.env.NODE_ENV === "production") {
-    jsxRuntime.exports = /* @__PURE__ */ requireReactJsxRuntime_production();
-  } else {
-    jsxRuntime.exports = /* @__PURE__ */ requireReactJsxRuntime_development();
-  }
-  return jsxRuntime.exports;
-}
-var jsxRuntimeExports = /* @__PURE__ */ requireJsxRuntime();
 const WaldiezThemeContext = createContext(void 0);
 const useWaldiezTheme = () => {
   const context = useContext(WaldiezThemeContext);
@@ -6829,7 +6509,7 @@ const WaldiezThemeProvider = ({ children, initialDark }) => {
     });
     return () => observer.disconnect();
   }, [initialDark]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezThemeContext.Provider, { value: { isDark, toggleTheme, setTheme }, children });
+  return /* @__PURE__ */ jsx(WaldiezThemeContext.Provider, { value: { isDark, toggleTheme, setTheme }, children });
 };
 const INITIAL_AGENT_SIZE = {
   user: {
@@ -9883,7 +9563,7 @@ const oe = (t, r, n = false) => {
   return a && a.length === 1 && a.includes(h) ? true : a ? ee(a) : !a;
 }, X = createContext(void 0), ae = () => useContext(X);
 function fe({ addHotkey: t, removeHotkey: r, children: n }) {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(X.Provider, { value: { addHotkey: t, removeHotkey: r }, children: n });
+  return /* @__PURE__ */ jsx(X.Provider, { value: { addHotkey: t, removeHotkey: r }, children: n });
 }
 function N(t, r) {
   return t && r && typeof t == "object" && typeof r == "object" ? Object.keys(t).length === Object.keys(r).length && // @ts-expect-error TS7053
@@ -9911,11 +9591,11 @@ const Y = createContext({
   }, []), w = useCallback((e) => {
     u((s) => s.filter((y) => !N(y, e)));
   }, []);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     Y.Provider,
     {
       value: { activeScopes: n, hotkeys: l, enableScope: c, disableScope: d, toggleScope: a },
-      children: /* @__PURE__ */ jsxRuntimeExports.jsx(fe, { addHotkey: i, removeHotkey: w, children: r })
+      children: /* @__PURE__ */ jsx(fe, { addHotkey: i, removeHotkey: w, children: r })
     }
   );
 };
@@ -10035,8 +9715,8 @@ const bots = [
   { src: AGENT_ICONS.user_proxy, alt: "User Waldiez" }
 ];
 const ErrorPage = ({ error }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "waldiez-error-container", "data-testid": "error-boundary", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "waldiez-bots-row", children: bots.map((bot, idx) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "waldiez-error-container", "data-testid": "error-boundary", children: [
+    /* @__PURE__ */ jsx("div", { className: "waldiez-bots-row", children: bots.map((bot, idx) => /* @__PURE__ */ jsx(
       motion.img,
       {
         src: bot.src,
@@ -10048,7 +9728,7 @@ const ErrorPage = ({ error }) => {
       },
       bot.alt
     )) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       motion.div,
       {
         className: "waldiez-error-sign",
@@ -10063,10 +9743,10 @@ const ErrorPage = ({ error }) => {
           duration: 1.2,
           delay: 0.5
         },
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "🚨 ERROR" })
+        children: /* @__PURE__ */ jsx("span", { children: "🚨 ERROR" })
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    /* @__PURE__ */ jsxs(
       motion.div,
       {
         className: "waldiez-error-message",
@@ -10074,9 +9754,9 @@ const ErrorPage = ({ error }) => {
         animate: { opacity: 1, y: 0 },
         transition: { delay: 1.3 },
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "waldiez-error-title", children: "Oops, something went wrong!" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "waldiez-error-desc", children: "The Waldiez team is on the case. Please wait while we investigate..." }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "waldiez-refresh-btn-container", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx("div", { className: "waldiez-error-title", children: "Oops, something went wrong!" }),
+          /* @__PURE__ */ jsx("div", { className: "waldiez-error-desc", children: "The Waldiez team is on the case. Please wait while we investigate..." }),
+          /* @__PURE__ */ jsx("div", { className: "waldiez-refresh-btn-container", children: /* @__PURE__ */ jsx(
             "button",
             {
               onClick: () => window.location.reload(),
@@ -10087,11 +9767,11 @@ const ErrorPage = ({ error }) => {
               children: "Refresh Page"
             }
           ) }),
-          error && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "waldiez-error-details", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Error:" }),
+          error && /* @__PURE__ */ jsxs("div", { className: "waldiez-error-details", children: [
+            /* @__PURE__ */ jsx("strong", { children: "Error:" }),
             " ",
             error.message,
-            error.stack && /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { children: error.stack })
+            error.stack && /* @__PURE__ */ jsx("pre", { children: error.stack })
           ] })
         ]
       }
@@ -10169,7 +9849,7 @@ const Snackbar = ({
   };
   const showDetails = details && !(typeof details === "string" && details.length <= 50);
   return createPortal(
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    /* @__PURE__ */ jsxs(
       "div",
       {
         className: `snackbar show ${level} ${details ? "with-details" : ""}`,
@@ -10178,12 +9858,12 @@ const Snackbar = ({
         id: `${flowId}-snackbar`,
         "data-testid": "snackbar",
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "message", "data-testid": "snackbar-message", children: message }),
-          details && (!showDetails ? /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "details-content", "data-testid": "snackbar-details", children: details }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("details", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("summary", { children: "Details" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "details-content", "data-testid": "snackbar-details", children: getErrorMessage(details) })
+          /* @__PURE__ */ jsx("div", { className: "message", "data-testid": "snackbar-message", children: message }),
+          details && (!showDetails ? /* @__PURE__ */ jsx("span", { className: "details-content", "data-testid": "snackbar-details", children: details }) : /* @__PURE__ */ jsxs("details", { children: [
+            /* @__PURE__ */ jsx("summary", { children: "Details" }),
+            /* @__PURE__ */ jsx("div", { className: "details-content", "data-testid": "snackbar-details", children: getErrorMessage(details) })
           ] })),
-          withCloseButton && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          withCloseButton && /* @__PURE__ */ jsx(
             "button",
             {
               className: "close",
@@ -10252,10 +9932,10 @@ const SnackbarProvider = ({ children }) => {
       timeouts.current = {};
     };
   }, [active, handleClose]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(SnackbarContext.Provider, { value: { enqueueSnackbar }, children: [
+  return /* @__PURE__ */ jsxs(SnackbarContext.Provider, { value: { enqueueSnackbar }, children: [
     children,
     Object.entries(active).map(
-      ([flowId, snackbar]) => snackbar ? /* @__PURE__ */ jsxRuntimeExports.jsx(Snackbar, { ...snackbar, onClose: () => handleClose(flowId) }, snackbar.id) : null
+      ([flowId, snackbar]) => snackbar ? /* @__PURE__ */ jsx(Snackbar, { ...snackbar, onClose: () => handleClose(flowId) }, snackbar.id) : null
     )
   ] });
 };
@@ -10311,7 +9991,7 @@ function createContextScope(scopeName, createContextScopeDeps = []) {
       const { scope, children, ...context } = props;
       const Context = scope?.[scopeName]?.[index2] || BaseContext;
       const value = React.useMemo(() => context, Object.values(context));
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
+      return /* @__PURE__ */ jsx(Context.Provider, { value, children });
     };
     Provider2.displayName = rootComponentName + "Provider";
     function useContext2(consumerName, scope) {
@@ -10375,9 +10055,9 @@ function createSlot(ownerName) {
           return child;
         }
       });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: React.isValidElement(newElement) ? React.cloneElement(newElement, void 0, newChildren) : null });
+      return /* @__PURE__ */ jsx(SlotClone, { ...slotProps, ref: forwardedRef, children: React.isValidElement(newElement) ? React.cloneElement(newElement, void 0, newChildren) : null });
     }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
+    return /* @__PURE__ */ jsx(SlotClone, { ...slotProps, ref: forwardedRef, children });
   });
   Slot2.displayName = `${ownerName}.Slot`;
   return Slot2;
@@ -10403,7 +10083,7 @@ var SLOTTABLE_IDENTIFIER = Symbol("radix.slottable");
 // @__NO_SIDE_EFFECTS__
 function createSlottable(ownerName) {
   const Slottable2 = ({ children }) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children });
+    return /* @__PURE__ */ jsx(Fragment, { children });
   };
   Slottable2.displayName = `${ownerName}.Slottable`;
   Slottable2.__radixId = SLOTTABLE_IDENTIFIER;
@@ -10476,7 +10156,7 @@ var Primitive = NODES.reduce((primitive, node) => {
     if (typeof window !== "undefined") {
       window[Symbol.for("radix-ui")] = true;
     }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Comp, { ...primitiveProps, ref: forwardedRef });
+    return /* @__PURE__ */ jsx(Comp, { ...primitiveProps, ref: forwardedRef });
   });
   Node2.displayName = `Primitive.${node}`;
   return { ...primitive, [node]: Node2 };
@@ -10590,7 +10270,7 @@ var DismissableLayer = React.forwardRef(
       document.addEventListener(CONTEXT_UPDATE, handleUpdate);
       return () => document.removeEventListener(CONTEXT_UPDATE, handleUpdate);
     }, []);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       Primitive.div,
       {
         ...layerProps,
@@ -10624,7 +10304,7 @@ var DismissableLayerBranch = React.forwardRef((props, forwardedRef) => {
       };
     }
   }, [context.branches]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive.div, { ...props, ref: composedRefs });
+  return /* @__PURE__ */ jsx(Primitive.div, { ...props, ref: composedRefs });
 });
 DismissableLayerBranch.displayName = BRANCH_NAME;
 function usePointerDownOutside(onPointerDownOutside, ownerDocument = globalThis?.document) {
@@ -12595,7 +12275,7 @@ const arrow = (options, deps) => ({
 var NAME$1 = "Arrow";
 var Arrow$1 = React.forwardRef((props, forwardedRef) => {
   const { children, width = 10, height = 5, ...arrowProps } = props;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     Primitive.svg,
     {
       ...arrowProps,
@@ -12604,7 +12284,7 @@ var Arrow$1 = React.forwardRef((props, forwardedRef) => {
       height,
       viewBox: "0 0 30 10",
       preserveAspectRatio: "none",
-      children: props.asChild ? children : /* @__PURE__ */ jsxRuntimeExports.jsx("polygon", { points: "0,0 30,0 15,10" })
+      children: props.asChild ? children : /* @__PURE__ */ jsx("polygon", { points: "0,0 30,0 15,10" })
     }
   );
 });
@@ -12650,7 +12330,7 @@ var [PopperProvider, usePopperContext] = createPopperContext(POPPER_NAME);
 var Popper = (props) => {
   const { __scopePopper, children } = props;
   const [anchor, setAnchor] = React.useState(null);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(PopperProvider, { scope: __scopePopper, anchor, onAnchorChange: setAnchor, children });
+  return /* @__PURE__ */ jsx(PopperProvider, { scope: __scopePopper, anchor, onAnchorChange: setAnchor, children });
 };
 Popper.displayName = POPPER_NAME;
 var ANCHOR_NAME = "PopperAnchor";
@@ -12668,7 +12348,7 @@ var PopperAnchor = React.forwardRef(
         context.onAnchorChange(anchorRef.current);
       }
     });
-    return virtualRef ? null : /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive.div, { ...anchorProps, ref: composedRefs });
+    return virtualRef ? null : /* @__PURE__ */ jsx(Primitive.div, { ...anchorProps, ref: composedRefs });
   }
 );
 PopperAnchor.displayName = ANCHOR_NAME;
@@ -12761,7 +12441,7 @@ var PopperContent = React.forwardRef(
     useLayoutEffect2(() => {
       if (content) setContentZIndex(window.getComputedStyle(content).zIndex);
     }, [content]);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       "div",
       {
         ref: refs.setFloating,
@@ -12785,7 +12465,7 @@ var PopperContent = React.forwardRef(
           }
         },
         dir: props.dir,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        children: /* @__PURE__ */ jsx(
           PopperContentProvider,
           {
             scope: __scopePopper,
@@ -12794,7 +12474,7 @@ var PopperContent = React.forwardRef(
             arrowX,
             arrowY,
             shouldHideArrow: cannotCenterArrow,
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            children: /* @__PURE__ */ jsx(
               Primitive.div,
               {
                 "data-side": placedSide,
@@ -12831,7 +12511,7 @@ var PopperArrow = React.forwardRef(function PopperArrow2(props, forwardedRef) {
     // we have to use an extra wrapper because `ResizeObserver` (used by `useSize`)
     // doesn't report size as we'd expect on SVG elements.
     // it reports their bounding box which is effectively the largest path inside the SVG.
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       "span",
       {
         ref: contentContext.onArrowChange,
@@ -12854,7 +12534,7 @@ var PopperArrow = React.forwardRef(function PopperArrow2(props, forwardedRef) {
           }[contentContext.placedSide],
           visibility: contentContext.shouldHideArrow ? "hidden" : void 0
         },
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        children: /* @__PURE__ */ jsx(
           Root$2,
           {
             ...arrowProps,
@@ -12919,7 +12599,7 @@ var Portal$1 = React.forwardRef((props, forwardedRef) => {
   const [mounted, setMounted] = React.useState(false);
   useLayoutEffect2(() => setMounted(true), []);
   const container = containerProp || mounted && globalThis?.document?.body;
-  return container ? ReactDOM__default.createPortal(/* @__PURE__ */ jsxRuntimeExports.jsx(Primitive.div, { ...portalProps, ref: forwardedRef }), container) : null;
+  return container ? ReactDOM__default.createPortal(/* @__PURE__ */ jsx(Primitive.div, { ...portalProps, ref: forwardedRef }), container) : null;
 });
 Portal$1.displayName = PORTAL_NAME$1;
 function useStateMachine(initialState2, machine) {
@@ -13124,7 +12804,7 @@ var VISUALLY_HIDDEN_STYLES = Object.freeze({
 var NAME = "VisuallyHidden";
 var VisuallyHidden = React.forwardRef(
   (props, forwardedRef) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       Primitive.span,
       {
         ...props,
@@ -13159,7 +12839,7 @@ var TooltipProvider = (props) => {
     const skipDelayTimer = skipDelayTimerRef.current;
     return () => window.clearTimeout(skipDelayTimer);
   }, []);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     TooltipProviderContextProvider,
     {
       scope: __scopeTooltip,
@@ -13250,7 +12930,7 @@ var Tooltip = (props) => {
       }
     };
   }, []);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(Root2, { ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(Root2, { ...popperScope, children: /* @__PURE__ */ jsx(
     TooltipContextProvider,
     {
       scope: __scopeTooltip,
@@ -13294,7 +12974,7 @@ var TooltipTrigger = React.forwardRef(
     React.useEffect(() => {
       return () => document.removeEventListener("pointerup", handlePointerUp);
     }, [handlePointerUp]);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Anchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(Anchor, { asChild: true, ...popperScope, children: /* @__PURE__ */ jsx(
       Primitive.button,
       {
         "aria-describedby": context.open ? context.contentId : void 0,
@@ -13336,7 +13016,7 @@ var [PortalProvider, usePortalContext] = createTooltipContext(PORTAL_NAME, {
 var TooltipPortal = (props) => {
   const { __scopeTooltip, forceMount, children, container } = props;
   const context = useTooltipContext(PORTAL_NAME, __scopeTooltip);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(PortalProvider, { scope: __scopeTooltip, forceMount, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Portal$1, { asChild: true, container, children }) }) });
+  return /* @__PURE__ */ jsx(PortalProvider, { scope: __scopeTooltip, forceMount, children: /* @__PURE__ */ jsx(Presence, { present: forceMount || context.open, children: /* @__PURE__ */ jsx(Portal$1, { asChild: true, container, children }) }) });
 };
 TooltipPortal.displayName = PORTAL_NAME;
 var CONTENT_NAME = "TooltipContent";
@@ -13345,7 +13025,7 @@ var TooltipContent = React.forwardRef(
     const portalContext = usePortalContext(CONTENT_NAME, props.__scopeTooltip);
     const { forceMount = portalContext.forceMount, side = "top", ...contentProps } = props;
     const context = useTooltipContext(CONTENT_NAME, props.__scopeTooltip);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(Presence, { present: forceMount || context.open, children: context.disableHoverableContent ? /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentImpl, { side, ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentHoverable, { side, ...contentProps, ref: forwardedRef }) });
+    return /* @__PURE__ */ jsx(Presence, { present: forceMount || context.open, children: context.disableHoverableContent ? /* @__PURE__ */ jsx(TooltipContentImpl, { side, ...contentProps, ref: forwardedRef }) : /* @__PURE__ */ jsx(TooltipContentHoverable, { side, ...contentProps, ref: forwardedRef }) });
   }
 );
 var TooltipContentHoverable = React.forwardRef((props, forwardedRef) => {
@@ -13407,7 +13087,7 @@ var TooltipContentHoverable = React.forwardRef((props, forwardedRef) => {
       return () => document.removeEventListener("pointermove", handleTrackPointerGrace);
     }
   }, [trigger, content, pointerGraceArea, onClose, handleRemoveGraceArea]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(TooltipContentImpl, { ...props, ref: composedRefs });
+  return /* @__PURE__ */ jsx(TooltipContentImpl, { ...props, ref: composedRefs });
 });
 var [VisuallyHiddenContentContextProvider, useVisuallyHiddenContentContext] = createTooltipContext(TOOLTIP_NAME, { isInside: false });
 var Slottable = /* @__PURE__ */ createSlottable("TooltipContent");
@@ -13438,7 +13118,7 @@ var TooltipContentImpl = React.forwardRef(
         return () => window.removeEventListener("scroll", handleScroll, { capture: true });
       }
     }, [context.trigger, onClose]);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       DismissableLayer,
       {
         asChild: true,
@@ -13447,7 +13127,7 @@ var TooltipContentImpl = React.forwardRef(
         onPointerDownOutside,
         onFocusOutside: (event) => event.preventDefault(),
         onDismiss: onClose,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        children: /* @__PURE__ */ jsxs(
           Content,
           {
             "data-state": context.stateAttribute,
@@ -13466,8 +13146,8 @@ var TooltipContentImpl = React.forwardRef(
               }
             },
             children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(Slottable, { children }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(VisuallyHiddenContentContextProvider, { scope: __scopeTooltip, isInside: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Root$1, { id: context.contentId, role: "tooltip", children: ariaLabel || children }) })
+              /* @__PURE__ */ jsx(Slottable, { children }),
+              /* @__PURE__ */ jsx(VisuallyHiddenContentContextProvider, { scope: __scopeTooltip, isInside: true, children: /* @__PURE__ */ jsx(Root$1, { id: context.contentId, role: "tooltip", children: ariaLabel || children }) })
             ]
           }
         )
@@ -13485,7 +13165,7 @@ var TooltipArrow = React.forwardRef(
       ARROW_NAME,
       __scopeTooltip
     );
-    return visuallyHiddenContentContext.isInside ? null : /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
+    return visuallyHiddenContentContext.isInside ? null : /* @__PURE__ */ jsx(Arrow, { ...popperScope, ...arrowProps, ref: forwardedRef });
   }
 );
 TooltipArrow.displayName = ARROW_NAME;
@@ -13854,7 +13534,7 @@ function CheckboxProvider(props) {
     bubbleInput,
     setBubbleInput
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     CheckboxProviderImpl,
     {
       scope: __scopeCheckbox,
@@ -13888,7 +13568,7 @@ var CheckboxTrigger = React.forwardRef(
         return () => form.removeEventListener("reset", reset);
       }
     }, [control, setChecked]);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       Primitive.button,
       {
         type: "button",
@@ -13930,7 +13610,7 @@ var Checkbox = React.forwardRef(
       form,
       ...checkboxProps
     } = props;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       CheckboxProvider,
       {
         __scopeCheckbox,
@@ -13942,8 +13622,8 @@ var Checkbox = React.forwardRef(
         name,
         form,
         value,
-        internal_do_not_use_render: ({ isFormControl }) => /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        internal_do_not_use_render: ({ isFormControl }) => /* @__PURE__ */ jsxs(Fragment, { children: [
+          /* @__PURE__ */ jsx(
             CheckboxTrigger,
             {
               ...checkboxProps,
@@ -13951,7 +13631,7 @@ var Checkbox = React.forwardRef(
               __scopeCheckbox
             }
           ),
-          isFormControl && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          isFormControl && /* @__PURE__ */ jsx(
             CheckboxBubbleInput,
             {
               __scopeCheckbox
@@ -13968,11 +13648,11 @@ var CheckboxIndicator = React.forwardRef(
   (props, forwardedRef) => {
     const { __scopeCheckbox, forceMount, ...indicatorProps } = props;
     const context = useCheckboxContext(INDICATOR_NAME, __scopeCheckbox);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       Presence,
       {
         present: forceMount || isIndeterminate(context.checked) || context.checked === true,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        children: /* @__PURE__ */ jsx(
           Primitive.span,
           {
             "data-state": getState(context.checked),
@@ -14024,7 +13704,7 @@ var CheckboxBubbleInput = React.forwardRef(
       }
     }, [bubbleInput, prevChecked, checked, hasConsumerStoppedPropagationRef]);
     const defaultCheckedRef = React.useRef(isIndeterminate(checked) ? false : checked);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       Primitive.input,
       {
         type: "checkbox",
@@ -14066,13 +13746,13 @@ function getState(checked) {
 }
 const CheckboxInput = memo(({ id, label, isChecked, onCheckedChange }) => {
   const ariaLabel = typeof label === "string" ? label : "Label for checkbox";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className: "flex-align-center margin-bottom-10 margin-top-5",
       "data-testid": `checkbox-input-container-${id}`,
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           Checkbox,
           {
             className: "checkbox-root",
@@ -14081,10 +13761,10 @@ const CheckboxInput = memo(({ id, label, isChecked, onCheckedChange }) => {
             onCheckedChange,
             "data-testid": id,
             "aria-label": ariaLabel,
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(CheckboxIndicator, { className: "checkbox-indicator", children: "✓" })
+            children: /* @__PURE__ */ jsx(CheckboxIndicator, { className: "checkbox-indicator", children: "✓" })
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           "label",
           {
             className: "clickable no-padding padding-10 margin-top--5",
@@ -14101,19 +13781,19 @@ const InfoCheckbox = memo((props) => {
   const { id, label, info, checked, onChange } = props;
   const labelElement = typeof label === "function" ? label() : label;
   const infoElement = typeof info === "function" ? info() : info;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info-checkbox-container", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info-checkbox-wrapper", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(CheckboxInput, { id, label: labelElement, isChecked: checked, onCheckedChange: onChange }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Provider, { delayDuration: 100, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx("div", { className: "info-checkbox-container", children: /* @__PURE__ */ jsxs("div", { className: "info-checkbox-wrapper", children: [
+    /* @__PURE__ */ jsx(CheckboxInput, { id, label: labelElement, isChecked: checked, onCheckedChange: onChange }),
+    /* @__PURE__ */ jsx(Provider, { delayDuration: 100, children: /* @__PURE__ */ jsxs(Root3, { children: [
+      /* @__PURE__ */ jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
           "aria-label": "More info",
           className: "tooltip-button inline-flex items-center justify-center cursor-help",
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaInfoCircle, {})
+          children: /* @__PURE__ */ jsx(FaInfoCircle, {})
         }
       ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Portal, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsxs(
         Content2,
         {
           side: "top",
@@ -14123,7 +13803,7 @@ const InfoCheckbox = memo((props) => {
           className: "tooltip-content",
           children: [
             infoElement,
-            /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-[var(--info-tooltip-bg)]" })
+            /* @__PURE__ */ jsx(Arrow2, { className: "fill-[var(--info-tooltip-bg)]" })
           ]
         }
       ) })
@@ -14133,7 +13813,7 @@ const InfoCheckbox = memo((props) => {
 InfoCheckbox.displayName = "InfoCheckbox";
 const Select = forwardRef(
   (props, ref) => {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       ReactSelect,
       {
         ref,
@@ -14303,8 +13983,8 @@ const AfterWork = memo(
     );
     const infoLabelAfter = isForGroupChat ? "the chat ends" : "the Agent has no more work to do";
     const infoText = "Check this to handle conversation continuation when no further options are available. If no agent is selected and no tool calls have output, we will use this property to determine the next action.";
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "waldiez-after-work", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsxs("div", { className: "waldiez-after-work", children: [
+      /* @__PURE__ */ jsx(
         InfoCheckbox,
         {
           label: `Include an action to perform after ${infoLabelAfter}?`,
@@ -14314,11 +13994,11 @@ const AfterWork = memo(
           onChange: onEnabledChange
         }
       ),
-      enabled && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center flex-column margin-bottom-10", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "full-width margin-bottom-10", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "afterWorkTargetType", children: "Action to perform after work:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+      enabled && /* @__PURE__ */ jsxs("div", { className: "flex-align-center flex-column margin-bottom-10", children: [
+        /* @__PURE__ */ jsxs("div", { className: "full-width margin-bottom-10", children: [
+          /* @__PURE__ */ jsx("label", { htmlFor: "afterWorkTargetType", children: "Action to perform after work:" }),
+          /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+          /* @__PURE__ */ jsx(
             Select,
             {
               inputId: "afterWorkTargetType",
@@ -14329,10 +14009,10 @@ const AfterWork = memo(
             }
           )
         ] }),
-        selectedTargetType === "AgentTarget" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "full-width margin-bottom-10", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "afterWorkTargetId", children: "Agent to pass the floor to:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        selectedTargetType === "AgentTarget" && /* @__PURE__ */ jsxs("div", { className: "full-width margin-bottom-10", children: [
+          /* @__PURE__ */ jsx("label", { htmlFor: "afterWorkTargetId", children: "Agent to pass the floor to:" }),
+          /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+          /* @__PURE__ */ jsx(
             Select,
             {
               inputId: "afterWorkTargetId",
@@ -14345,10 +14025,10 @@ const AfterWork = memo(
             }
           )
         ] }),
-        selectedTargetType === "RandomAgentTarget" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "full-width", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "afterWorkTargetIds", children: "Agents to choose from:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        selectedTargetType === "RandomAgentTarget" && /* @__PURE__ */ jsxs("div", { className: "full-width", children: [
+          /* @__PURE__ */ jsx("label", { htmlFor: "afterWorkTargetIds", children: "Agents to choose from:" }),
+          /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+          /* @__PURE__ */ jsx(
             Select,
             {
               inputId: "afterWorkTargetIds",
@@ -14472,11 +14152,11 @@ const ImageModal = ({ isOpen, imageUrl, onClose }) => {
   const onImageError = () => {
     setImageError(true);
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `image-modal ${isOpen ? "open" : ""}`, onClick: onClose, "data-testid": "modal-overlay", children: [
-    imageError ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-error-message", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "The image could not be displayed in full size." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "It may still be available in the chat or might have been removed." })
-    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: `image-modal ${isOpen ? "open" : ""}`, onClick: onClose, "data-testid": "modal-overlay", children: [
+    imageError ? /* @__PURE__ */ jsxs("div", { className: "modal-error-message", children: [
+      /* @__PURE__ */ jsx("p", { children: "The image could not be displayed in full size." }),
+      /* @__PURE__ */ jsx("p", { children: "It may still be available in the chat or might have been removed." })
+    ] }) : /* @__PURE__ */ jsx(
       "img",
       {
         src: imageUrl,
@@ -14486,7 +14166,7 @@ const ImageModal = ({ isOpen, imageUrl, onClose }) => {
         onError: onImageError
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       "button",
       {
         type: "button",
@@ -14494,7 +14174,7 @@ const ImageModal = ({ isOpen, imageUrl, onClose }) => {
         className: "modal-close",
         onClick: onClose,
         "data-testid": "modal-close",
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaX, { size: 12 })
+        children: /* @__PURE__ */ jsx(FaX, { size: 12 })
       }
     )
   ] });
@@ -14539,7 +14219,7 @@ const ImageWithRetry = ({ src, alt = "Chat image", className, onClick }) => {
       registerImage(imgRef.current, src);
     }
   }, [src, registerImage]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     "img",
     {
       ref: imgRef,
@@ -14622,19 +14302,19 @@ const Markdown = ({ content, isDarkMode = false, onImageClick }) => {
     return preprocessContent(content);
   }, [content]);
   if (!shouldRenderMarkdown) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: content });
+    return /* @__PURE__ */ jsx("span", { children: content });
   }
   const themeClass = isDarkMode ? "markdown-dark" : "markdown-light";
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `markdown-renderer ${themeClass}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx("div", { className: `markdown-renderer ${themeClass}`, children: /* @__PURE__ */ jsx(
     ReactMarkdown,
     {
       remarkPlugins: [remarkGfm],
       rehypePlugins: [rehypeHighlight],
       components: {
         // Custom rendering for links
-        a: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("a", { ...props, target: "_blank", rel: "noopener noreferrer", className: "markdown-link", children }),
+        a: ({ children, ...props }) => /* @__PURE__ */ jsx("a", { ...props, target: "_blank", rel: "noopener noreferrer", className: "markdown-link", children }),
         // Custom rendering for images with preview capability
-        img: ({ src, alt, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+        img: ({ src, alt, ...props }) => /* @__PURE__ */ jsx(
           "img",
           {
             src,
@@ -14645,48 +14325,48 @@ const Markdown = ({ content, isDarkMode = false, onImageClick }) => {
           }
         ),
         // Heading components
-        h1: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h1", { className: "markdown-h1", ...props, children }),
-        h2: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "markdown-h2", ...props, children }),
-        h3: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "markdown-h3", ...props, children }),
-        h4: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "markdown-h4", ...props, children }),
-        h5: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h5", { className: "markdown-h5", ...props, children }),
-        h6: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("h6", { className: "markdown-h6", ...props, children }),
+        h1: ({ children, ...props }) => /* @__PURE__ */ jsx("h1", { className: "markdown-h1", ...props, children }),
+        h2: ({ children, ...props }) => /* @__PURE__ */ jsx("h2", { className: "markdown-h2", ...props, children }),
+        h3: ({ children, ...props }) => /* @__PURE__ */ jsx("h3", { className: "markdown-h3", ...props, children }),
+        h4: ({ children, ...props }) => /* @__PURE__ */ jsx("h4", { className: "markdown-h4", ...props, children }),
+        h5: ({ children, ...props }) => /* @__PURE__ */ jsx("h5", { className: "markdown-h5", ...props, children }),
+        h6: ({ children, ...props }) => /* @__PURE__ */ jsx("h6", { className: "markdown-h6", ...props, children }),
         // List items
-        ul: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "markdown-ul", ...props, children }),
-        ol: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("ol", { className: "markdown-ol", ...props, children }),
-        li: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("li", { className: "markdown-li", ...props, children }),
+        ul: ({ children, ...props }) => /* @__PURE__ */ jsx("ul", { className: "markdown-ul", ...props, children }),
+        ol: ({ children, ...props }) => /* @__PURE__ */ jsx("ol", { className: "markdown-ol", ...props, children }),
+        li: ({ children, ...props }) => /* @__PURE__ */ jsx("li", { className: "markdown-li", ...props, children }),
         // Block elements
-        blockquote: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("blockquote", { className: "markdown-blockquote", ...props, children }),
+        blockquote: ({ children, ...props }) => /* @__PURE__ */ jsx("blockquote", { className: "markdown-blockquote", ...props, children }),
         // Table components
-        table: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("table", { className: "markdown-table", ...props, children }),
-        thead: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("thead", { className: "markdown-thead", ...props, children }),
-        tbody: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("tbody", { className: "markdown-tbody", ...props, children }),
-        tr: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("tr", { className: "markdown-tr", ...props, children }),
-        th: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("th", { className: "markdown-th", ...props, children }),
-        td: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("td", { className: "markdown-td", ...props, children }),
+        table: ({ children, ...props }) => /* @__PURE__ */ jsx("table", { className: "markdown-table", ...props, children }),
+        thead: ({ children, ...props }) => /* @__PURE__ */ jsx("thead", { className: "markdown-thead", ...props, children }),
+        tbody: ({ children, ...props }) => /* @__PURE__ */ jsx("tbody", { className: "markdown-tbody", ...props, children }),
+        tr: ({ children, ...props }) => /* @__PURE__ */ jsx("tr", { className: "markdown-tr", ...props, children }),
+        th: ({ children, ...props }) => /* @__PURE__ */ jsx("th", { className: "markdown-th", ...props, children }),
+        td: ({ children, ...props }) => /* @__PURE__ */ jsx("td", { className: "markdown-td", ...props, children }),
         // Custom code block rendering
         code: ({ children, className, ...props }) => {
           const isInline = !className;
           if (isInline) {
-            return /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: "markdown-inline-code", ...props, children });
+            return /* @__PURE__ */ jsx("code", { className: "markdown-inline-code", ...props, children });
           }
-          return /* @__PURE__ */ jsxRuntimeExports.jsx("code", { className: `markdown-code ${className || ""}`, ...props, children });
+          return /* @__PURE__ */ jsx("code", { className: `markdown-code ${className || ""}`, ...props, children });
         },
         // Pre tag wrapper for code blocks
         pre: ({ children, ...props }) => {
           const language = findLanguageInChildren(children);
           if (language) {
-            return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "markdown-code-block-wrapper", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "markdown-code-block-header", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "markdown-code-language", children: language }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "markdown-pre", ...props, children })
+            return /* @__PURE__ */ jsxs("div", { className: "markdown-code-block-wrapper", children: [
+              /* @__PURE__ */ jsx("div", { className: "markdown-code-block-header", children: /* @__PURE__ */ jsx("span", { className: "markdown-code-language", children: language }) }),
+              /* @__PURE__ */ jsx("pre", { className: "markdown-pre", ...props, children })
             ] });
           }
-          return /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "markdown-pre", ...props, children });
+          return /* @__PURE__ */ jsx("pre", { className: "markdown-pre", ...props, children });
         },
         // Paragraph
-        p: ({ children, ...props }) => /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "markdown-p", ...props, children }),
+        p: ({ children, ...props }) => /* @__PURE__ */ jsx("p", { className: "markdown-p", ...props, children }),
         // Horizontal rule
-        hr: (props) => /* @__PURE__ */ jsxRuntimeExports.jsx("hr", { className: "markdown-hr", ...props })
+        hr: (props) => /* @__PURE__ */ jsx("hr", { className: "markdown-hr", ...props })
       },
       children: processedContent
     }
@@ -14700,7 +14380,7 @@ const parseStructuredContent = (items, isDarkMode, onImageClick) => {
       return null;
     }
     if (item.type === "text" && item.text.trim().length > 0) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         Markdown,
         {
           content: item.text,
@@ -14711,7 +14391,7 @@ const parseStructuredContent = (items, isDarkMode, onImageClick) => {
       );
     }
     if (item.type === "image_url" && item.image_url?.url) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         ImageWithRetry,
         {
           src: item.image_url.url,
@@ -14722,7 +14402,7 @@ const parseStructuredContent = (items, isDarkMode, onImageClick) => {
       );
     }
     if (item.type === "image" && item.image?.url) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         ImageWithRetry,
         {
           src: item.image.url,
@@ -14738,7 +14418,7 @@ const parseStructuredContent = (items, isDarkMode, onImageClick) => {
   if (children.length === 0) {
     return null;
   }
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "structured-content", children });
+  return /* @__PURE__ */ jsx("div", { className: "structured-content", children });
 };
 const parseTextWithImages = (text, isDarkMode, onImageClick) => {
   const regex2 = /\[Image:\s*(.+?)\]/g;
@@ -14750,7 +14430,7 @@ const parseTextWithImages = (text, isDarkMode, onImageClick) => {
     const textBefore = text.slice(lastIdx, match.index);
     if (textBefore) {
       parts.push(
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           Markdown,
           {
             content: textBefore,
@@ -14763,7 +14443,7 @@ const parseTextWithImages = (text, isDarkMode, onImageClick) => {
     }
     if (url) {
       parts.push(
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           ImageWithRetry,
           {
             src: url,
@@ -14778,9 +14458,9 @@ const parseTextWithImages = (text, isDarkMode, onImageClick) => {
   }
   const remainingText = text.slice(lastIdx);
   if (remainingText) {
-    parts.push(/* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: remainingText }, "text-end"));
+    parts.push(/* @__PURE__ */ jsx("span", { children: remainingText }, "text-end"));
   }
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "content-with-images", children: parts });
+  return /* @__PURE__ */ jsx("div", { className: "content-with-images", children: parts });
 };
 const parseMessageContent = (data, isDarkMode, onImageClick) => {
   if (typeof data === "string") {
@@ -14863,22 +14543,22 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
     setTimeout(scrollToBottom, 100);
     setTimeout(scrollToBottom, 300);
   }, [messages.length]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "chat-container", ref: chatContainer, children: messages.map((msg, index2) => {
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx("div", { className: "chat-container", ref: chatContainer, children: messages.map((msg, index2) => {
       const processedMsg = processMessage(msg);
       if (!processedMsg.node) {
         return null;
       }
       const messageClass = getMessageClass(processedMsg);
       const showAvatar = messageClass === "user-message" || messageClass === "assistant-message";
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      return /* @__PURE__ */ jsxs(
         "div",
         {
           className: `message-bubble ${getMessageClass(processedMsg)}`,
           "data-testid": "rf-chat-message",
           children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `message-header ${showAvatar && messageClass}`, children: messageClass === "assistant-message" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-              showAvatar && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "avatar-container", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "avatar assistant-avatar", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx("div", { className: `message-header ${showAvatar && messageClass}`, children: messageClass === "assistant-message" ? /* @__PURE__ */ jsxs(Fragment, { children: [
+              showAvatar && /* @__PURE__ */ jsx("div", { className: "avatar-container", children: /* @__PURE__ */ jsx("div", { className: "avatar assistant-avatar", children: /* @__PURE__ */ jsx(
                 "img",
                 {
                   src: WALDIEZ_ICON,
@@ -14886,23 +14566,23 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
                   className: "avatar-image"
                 }
               ) }) }),
-              processedMsg.sender && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "message-sender", children: processedMsg.sender }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() })
-            ] }) : messageClass === "user-message" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() }),
-              processedMsg.sender && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "message-sender", children: processedMsg.sender }),
-              showAvatar && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "avatar-container", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "avatar user-avatar", children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaRegUser, { size: 24 }) }) })
-            ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-              processedMsg.sender && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "message-sender", children: processedMsg.sender }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() })
+              processedMsg.sender && /* @__PURE__ */ jsx("span", { className: "message-sender", children: processedMsg.sender }),
+              /* @__PURE__ */ jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() })
+            ] }) : messageClass === "user-message" ? /* @__PURE__ */ jsxs(Fragment, { children: [
+              /* @__PURE__ */ jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() }),
+              processedMsg.sender && /* @__PURE__ */ jsx("span", { className: "message-sender", children: processedMsg.sender }),
+              showAvatar && /* @__PURE__ */ jsx("div", { className: "avatar-container", children: /* @__PURE__ */ jsx("div", { className: "avatar user-avatar", children: /* @__PURE__ */ jsx(FaRegUser, { size: 24 }) }) })
+            ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+              processedMsg.sender && /* @__PURE__ */ jsx("span", { className: "message-sender", children: processedMsg.sender }),
+              /* @__PURE__ */ jsx("span", { className: "message-timestamp", children: new Date(msg.timestamp).toLocaleTimeString() })
             ] }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "message-content", children: processedMsg.node })
+            /* @__PURE__ */ jsx("div", { className: "message-content", children: processedMsg.node })
           ]
         },
         getMessageKey(msg, index2)
       );
     }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(ImageModal, { isOpen: Boolean(previewImage), imageUrl: previewImage, onClose: closeImagePreview })
+    /* @__PURE__ */ jsx(ImageModal, { isOpen: Boolean(previewImage), imageUrl: previewImage, onClose: closeImagePreview })
   ] });
 };
 ChatUI.displayName = "ChatUI";
@@ -14925,12 +14605,12 @@ const Collapsible = memo((props) => {
   }, []);
   const containerClassName = `collapsible ${fullWidth ? "full-width" : ""} ${className}`.trim();
   const headerClassName = `collapsible-header ${className}`.trim();
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: containerClassName, "data-testid": dataTestId, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: headerClassName, onClick: onToggle, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: title }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "margin-left-5", "aria-hidden": "true", children: isOpen ? "▲" : "▼" })
+  return /* @__PURE__ */ jsxs("div", { className: containerClassName, "data-testid": dataTestId, children: [
+    /* @__PURE__ */ jsxs("div", { className: headerClassName, onClick: onToggle, children: [
+      /* @__PURE__ */ jsx("span", { children: title }),
+      /* @__PURE__ */ jsx("span", { className: "margin-left-5", "aria-hidden": "true", children: isOpen ? "▲" : "▼" })
     ] }),
-    isOpen && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `collapsible-content ${contentClassName || ""}`, children })
+    isOpen && /* @__PURE__ */ jsx("div", { className: `collapsible-content ${contentClassName || ""}`, children })
   ] });
 });
 Collapsible.displayName = "Collapsible";
@@ -15027,26 +14707,26 @@ const useDict = (props) => {
 const InfoLabel = ({ htmlFor, label, info, children }) => {
   const labelElement = typeof label === "function" ? label() : label;
   const infoElement = typeof info === "function" ? info() : info;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center flex-row gap-1", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center items-center gap-2", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor, className: "text-sm info-label", children: labelElement }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Provider, { delayDuration: 100, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Root3, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "flex-align-center flex-row gap-1", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex-align-center items-center gap-2", children: [
+      /* @__PURE__ */ jsx("label", { htmlFor, className: "text-sm info-label", children: labelElement }),
+      /* @__PURE__ */ jsx(Provider, { delayDuration: 100, children: /* @__PURE__ */ jsxs(Root3, { children: [
+        /* @__PURE__ */ jsx(Trigger, { asChild: true, children: /* @__PURE__ */ jsx(
           "button",
           {
             type: "button",
             "aria-label": "More info",
             className: "tooltip-button inline-flex items-center justify-center cursor-help",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaInfoCircle, {})
+            children: /* @__PURE__ */ jsx(FaInfoCircle, {})
           }
         ) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(Portal, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(Content2, { side: "top", align: "center", className: "tooltip-content", children: [
+        /* @__PURE__ */ jsx(Portal, { children: /* @__PURE__ */ jsxs(Content2, { side: "top", align: "center", className: "tooltip-content", children: [
           infoElement,
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Arrow2, { className: "fill-[var(--background-color)]" })
+          /* @__PURE__ */ jsx(Arrow2, { className: "fill-[var(--background-color)]" })
         ] }) })
       ] }) })
     ] }),
-    children && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children })
+    children && /* @__PURE__ */ jsx("div", { children })
   ] });
 };
 InfoLabel.displayName = "InfoLabel";
@@ -15065,10 +14745,10 @@ const Dict = (props) => {
     onNewEntryValueChange,
     isDirty
   } = useDict(props);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "dict-entries-view", children: [
-    viewLabelInfo ? /* @__PURE__ */ jsxRuntimeExports.jsx(InfoLabel, { htmlFor: `dict-entry-${itemsType}`, label: viewLabel, info: viewLabelInfo }) : /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "margin-bottom-5", children: viewLabel }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "dict-entries-list", children: Object.entries(items).map(([key, value], index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "dict-entry", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "dict-entries-view", children: [
+    viewLabelInfo ? /* @__PURE__ */ jsx(InfoLabel, { htmlFor: `dict-entry-${itemsType}`, label: viewLabel, info: viewLabelInfo }) : /* @__PURE__ */ jsx("label", { className: "margin-bottom-5", children: viewLabel }),
+    /* @__PURE__ */ jsx("div", { className: "dict-entries-list", children: Object.entries(items).map(([key, value], index2) => /* @__PURE__ */ jsxs("div", { className: "dict-entry", children: [
+      /* @__PURE__ */ jsx(
         "input",
         {
           type: "text",
@@ -15079,7 +14759,7 @@ const Dict = (props) => {
         },
         `${key}-${value}-${index2}`
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "input",
         {
           type: areValuesSecret ? visible[key] ? "text" : "password" : "text",
@@ -15091,7 +14771,7 @@ const Dict = (props) => {
         },
         `${value}-${index2}-${key}`
       ),
-      areValuesSecret && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      areValuesSecret && /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -15100,10 +14780,10 @@ const Dict = (props) => {
           title: "Toggle visibility",
           id: `visibility-${itemsType}-${index2}`,
           "data-testid": `visibility-${itemsType}-${index2}`,
-          children: visible[key] ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaEye, {})
+          children: visible[key] ? /* @__PURE__ */ jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsx(FaEye, {})
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -15112,10 +14792,10 @@ const Dict = (props) => {
           className: "trash-button",
           id: `delete-dict-item-${itemsType}-${index2}`,
           "data-testid": `delete-dict-item-${itemsType}-${index2}`,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaTrash$1, {})
+          children: /* @__PURE__ */ jsx(FaTrash$1, {})
         }
       ),
-      isDirty(index2) && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      isDirty(index2) && /* @__PURE__ */ jsx(
         "button",
         {
           onClick: onSaveEntry,
@@ -15124,12 +14804,12 @@ const Dict = (props) => {
           "data-testid": `save-dict-item-${itemsType}-${index2}`,
           type: "button",
           className: "save-button",
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaSave, {})
+          children: /* @__PURE__ */ jsx(FaSave, {})
         }
       )
     ] }, key)) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "add-dict-entry-view", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxs("div", { className: "add-dict-entry-view", children: [
+      /* @__PURE__ */ jsx(
         "input",
         {
           type: "text",
@@ -15140,7 +14820,7 @@ const Dict = (props) => {
           onChange: onNewEntryKeyChange
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "input",
         {
           placeholder: "Value",
@@ -15151,7 +14831,7 @@ const Dict = (props) => {
           onChange: onNewEntryValueChange
         }
       ),
-      areValuesSecret && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      areValuesSecret && /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -15160,10 +14840,10 @@ const Dict = (props) => {
           title: "Toggle visibility",
           id: `visibility-${itemsType}-new`,
           "data-testid": `visibility-${itemsType}-new`,
-          children: visible["_NEW"] ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaEye, {})
+          children: visible["_NEW"] ? /* @__PURE__ */ jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsx(FaEye, {})
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "button",
         {
           onClick: onAddEntry,
@@ -15173,7 +14853,7 @@ const Dict = (props) => {
           "data-testid": `add-new-dict-${itemsType}-item`,
           disabled: newEntry.key === "",
           type: "button",
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaPlus, {})
+          children: /* @__PURE__ */ jsx(FaPlus, {})
         }
       )
     ] })
@@ -15277,7 +14957,7 @@ const DropZone = (props) => {
   const { flowId, multiple = false } = props;
   const { onFileDragOver, onFileDragLeave, onOpenUploadDialog, onFileDrop } = useDropZone(props);
   const instruction = multiple ? "Drop files here or click to upload" : "Drop a file here or click to upload";
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     "div",
     {
       className: "drop_zone clickable",
@@ -15286,9 +14966,9 @@ const DropZone = (props) => {
       onClick: onOpenUploadDialog,
       onDragLeave: onFileDragLeave,
       "data-testid": `drop-zone-${flowId}`,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "drop_zone_content", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "drop_zone_icon", children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCloudUploadAlt, {}) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "drop_zone_text", children: instruction })
+      children: /* @__PURE__ */ jsxs("div", { className: "drop_zone_content", children: [
+        /* @__PURE__ */ jsx("div", { className: "drop_zone_icon", children: /* @__PURE__ */ jsx(FaCloudUploadAlt, {}) }),
+        /* @__PURE__ */ jsx("div", { className: "drop_zone_text", children: instruction })
       ] })
     }
   );
@@ -15297,7 +14977,7 @@ DropZone.displayName = "DropZone";
 const Editor = (props) => {
   const { value, onChange, darkMode } = props;
   const theme = darkMode ? "vs-dark" : "vs-light";
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "code-editor", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx("div", { className: "code-editor", children: /* @__PURE__ */ jsx(
     MonacoEditor,
     {
       defaultLanguage: "python",
@@ -15358,7 +15038,7 @@ const TextareaInput = ({ value, onChange, autoFocus = false, ...props }) => {
       });
     }
   }, [value]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("textarea", { ref, value, onChange: handleChange, ...props });
+  return /* @__PURE__ */ jsx("textarea", { ref, value, onChange: handleChange, ...props });
 };
 TextareaInput.displayName = "TextareaInput";
 const availabilityTypeOptions = [
@@ -15417,9 +15097,9 @@ const HandoffAvailability = (props) => {
     },
     [currentAvailability, onDataChange]
   );
-  const renderExpressionInput = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-top-10", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: "expression-input", children: "Expression" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  const renderExpressionInput = () => /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
+    /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: "expression-input", children: "Expression" }),
+    /* @__PURE__ */ jsx(
       TextareaInput,
       {
         rows: 2,
@@ -15432,9 +15112,9 @@ const HandoffAvailability = (props) => {
       }
     )
   ] });
-  const renderStringInput = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-top-10", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: "string-input", children: "Variable Name" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  const renderStringInput = () => /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
+    /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: "string-input", children: "Variable Name" }),
+    /* @__PURE__ */ jsx(
       "input",
       {
         type: "text",
@@ -15447,22 +15127,22 @@ const HandoffAvailability = (props) => {
       }
     )
   ] });
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info margin-bottom-5", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "info margin-bottom-5", children: [
       "You can optionally handle the availability of this transition by checking a variable or using an expression.",
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Check a variable" }),
+      /* @__PURE__ */ jsxs("ul", { children: [
+        /* @__PURE__ */ jsxs("li", { children: [
+          /* @__PURE__ */ jsx("strong", { children: "Check a variable" }),
           ": Confirm if a certain variable (like",
           " ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "order_is_found" }),
+          /* @__PURE__ */ jsx("code", { children: "order_is_found" }),
           ") is set and is truthy."
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Use Expression" }),
+        /* @__PURE__ */ jsxs("li", { children: [
+          /* @__PURE__ */ jsx("strong", { children: "Use Expression" }),
           ": Write a short logic rule using variables, like:",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("code", { children: [
+          /* @__PURE__ */ jsx("br", {}),
+          /* @__PURE__ */ jsxs("code", { children: [
             "$",
             "{",
             "is_logged_in",
@@ -15475,7 +15155,7 @@ const HandoffAvailability = (props) => {
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
       CheckboxInput,
       {
         label: "Enable Availability Check",
@@ -15486,9 +15166,9 @@ const HandoffAvailability = (props) => {
         "aria-label": "Enable availability check"
       }
     ) }),
-    available.type !== "none" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-top-10", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: "select-availability-type", children: "Availability Type" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    available.type !== "none" && /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
+      /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: "select-availability-type", children: "Availability Type" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: availabilityTypeOptions,
@@ -15546,17 +15226,17 @@ const TextInput = memo((props) => {
   );
   const renderLabel = () => {
     if (labelInfo) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(InfoLabel, { label, info: labelInfo, htmlFor: `id-${name}` });
+      return /* @__PURE__ */ jsx(InfoLabel, { label, info: labelInfo, htmlFor: `id-${name}` });
     }
     if (typeof label === "string") {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `id-${name}`, className: labelClassName, children: label });
+      return /* @__PURE__ */ jsx("label", { htmlFor: `id-${name}`, className: labelClassName, children: label });
     }
     return label;
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
     renderLabel(),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `text-input-container flex-align-center ${className}`, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxs("div", { className: `text-input-container flex-align-center ${className}`, children: [
+      /* @__PURE__ */ jsx(
         "input",
         {
           className: inputClassName,
@@ -15575,7 +15255,7 @@ const TextInput = memo((props) => {
           autoComplete: "off"
         }
       ),
-      isPassword && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      isPassword && /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -15584,7 +15264,7 @@ const TextInput = memo((props) => {
           title: visible ? "Hide password" : "Show password",
           "aria-label": visible ? "Hide password" : "Show password",
           "data-testid": `visibility-${dataTestId}`,
-          children: visible ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaEye, {})
+          children: visible ? /* @__PURE__ */ jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsx(FaEye, {})
         }
       )
     ] })
@@ -15672,10 +15352,10 @@ const HandoffCondition = (props) => {
     const updater = fieldUpdaters[conditionType];
     switch (conditionType) {
       case "string_llm":
-        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { children: "LLM Prompt:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-5" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        return /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
+          /* @__PURE__ */ jsx("label", { children: "LLM Prompt:" }),
+          /* @__PURE__ */ jsx("div", { className: "margin-top-5" }),
+          /* @__PURE__ */ jsx(
             TextareaInput,
             {
               rows: 2,
@@ -15688,9 +15368,9 @@ const HandoffCondition = (props) => {
           )
         ] });
       case "context_str_llm":
-        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { children: "Prompt:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        return /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
+          /* @__PURE__ */ jsx("label", { children: "Prompt:" }),
+          /* @__PURE__ */ jsx(
             TextareaInput,
             {
               rows: 2,
@@ -15704,7 +15384,7 @@ const HandoffCondition = (props) => {
           )
         ] });
       case "string_context":
-        return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        return /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
           TextInput,
           {
             name: "variable-name",
@@ -15717,9 +15397,9 @@ const HandoffCondition = (props) => {
           }
         ) });
       case "expression_context":
-        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { children: "Expression:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        return /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
+          /* @__PURE__ */ jsx("label", { children: "Expression:" }),
+          /* @__PURE__ */ jsx(
             TextareaInput,
             {
               rows: 2,
@@ -15736,20 +15416,20 @@ const HandoffCondition = (props) => {
         return null;
     }
   }, [currentHandoffCondition, fieldUpdaters]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info margin-bottom-5", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "info margin-bottom-5", children: [
       "You can control when this transition happens. Conditions allow you to check values or evaluate logic based on the current context. There are four types of conditions you can choose from:",
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { className: "no-margin", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Static LLM prompt" }),
+      /* @__PURE__ */ jsxs("ul", { className: "no-margin", children: [
+        /* @__PURE__ */ jsxs("li", { children: [
+          /* @__PURE__ */ jsx("strong", { children: "Static LLM prompt" }),
           ": A fixed message sent to a language model (LLM) to decide whether the transition should happen."
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Dynamic LLM prompt" }),
+        /* @__PURE__ */ jsxs("li", { children: [
+          /* @__PURE__ */ jsx("strong", { children: "Dynamic LLM prompt" }),
           ": A message that includes context variables, like the user's name or order count. It's sent to the LLM for evaluation.",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("em", { children: "Example:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("code", { children: [
+          /* @__PURE__ */ jsx("br", {}),
+          /* @__PURE__ */ jsx("em", { children: "Example:" }),
+          /* @__PURE__ */ jsx("ul", { children: /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsxs("code", { children: [
             '"User is ',
             "{",
             "user_name",
@@ -15761,28 +15441,28 @@ const HandoffCondition = (props) => {
             ' orders."'
           ] }) }) })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Variable check" }),
+        /* @__PURE__ */ jsxs("li", { children: [
+          /* @__PURE__ */ jsx("strong", { children: "Variable check" }),
           ": Simply checks if a specific variable exists and is truthy."
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Expression check" }),
+        /* @__PURE__ */ jsxs("li", { children: [
+          /* @__PURE__ */ jsx("strong", { children: "Expression check" }),
           ": Allows you to write a small logic expression using context variables. You can use operators like ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "and" }),
+          /* @__PURE__ */ jsx("code", { children: "and" }),
           ", ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "or" }),
+          /* @__PURE__ */ jsx("code", { children: "or" }),
           ",",
           " ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "not" }),
+          /* @__PURE__ */ jsx("code", { children: "not" }),
           ", as well as comparison signs like ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: ">" }),
+          /* @__PURE__ */ jsx("code", { children: ">" }),
           ", ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("code", { children: "==" }),
+          /* @__PURE__ */ jsx("code", { children: "==" }),
           ", etc.",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("em", { children: "Examples:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("code", { children: [
+          /* @__PURE__ */ jsx("br", {}),
+          /* @__PURE__ */ jsx("em", { children: "Examples:" }),
+          /* @__PURE__ */ jsxs("ul", { children: [
+            /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsxs("code", { children: [
               "not $",
               "{",
               "logged_in",
@@ -15796,7 +15476,7 @@ const HandoffCondition = (props) => {
               "guest_checkout",
               "}"
             ] }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("code", { children: [
+            /* @__PURE__ */ jsx("li", { children: /* @__PURE__ */ jsxs("code", { children: [
               "len($",
               "{",
               "orders",
@@ -15810,9 +15490,9 @@ const HandoffCondition = (props) => {
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-top-10", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: "select-condition-type", children: "Condition Type" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
+      /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: "select-condition-type", children: "Condition Type" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: conditionTypeOptions,
@@ -16067,25 +15747,25 @@ const Handoffs = memo((props) => {
     onMoveTransitionTargetUp
   } = useHandoffs(id, data, agents, edges, onDataChange);
   const hasHandoffs = orderedTransitionTargets.length > 0 || !!data.afterWork;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "handoffs-container", "data-testid": `handoffs-container-${id}`, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info margin-left--5", children: "Handoffs control where the conversation flow goes from this agent. They include connections to other agents, nested chats, and what happens after the agent's work is done." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "handoffs-list", children: !hasHandoffs ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "no-handoffs-message", children: `This agent has no handoffs configured. You can add connections to other agents in the flow editor, configure nested chats in the agent settings, or set what happens after the agent's work is done in the "Afterwards" tab.` }) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "handoffs-items", children: [
-      orderedTransitionTargets.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "handoffs-section", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "handoffs-section-title", children: "Handoffs" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "handoff-order-instructions", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "handoffs-container", "data-testid": `handoffs-container-${id}`, children: [
+    /* @__PURE__ */ jsx("div", { className: "info margin-left--5", children: "Handoffs control where the conversation flow goes from this agent. They include connections to other agents, nested chats, and what happens after the agent's work is done." }),
+    /* @__PURE__ */ jsx("div", { className: "handoffs-list", children: !hasHandoffs ? /* @__PURE__ */ jsx("div", { className: "no-handoffs-message", children: `This agent has no handoffs configured. You can add connections to other agents in the flow editor, configure nested chats in the agent settings, or set what happens after the agent's work is done in the "Afterwards" tab.` }) : /* @__PURE__ */ jsxs("div", { className: "handoffs-items", children: [
+      orderedTransitionTargets.length > 0 && /* @__PURE__ */ jsxs("div", { className: "handoffs-section", children: [
+        /* @__PURE__ */ jsx("h4", { className: "handoffs-section-title", children: "Handoffs" }),
+        /* @__PURE__ */ jsxs("p", { className: "handoff-order-instructions", children: [
           "If the group's speakers selection mode allows it (e.g. set to",
           " ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("em", { children: /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "default" }) }),
+          /* @__PURE__ */ jsx("em", { children: /* @__PURE__ */ jsx("b", { children: "default" }) }),
           "), you can use the up and down arrows to reorder handoffs. The ordering will then determine the sequence in which handoffs are processed."
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "ordered-items-list", children: orderedTransitionTargets.map((item, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        /* @__PURE__ */ jsx("div", { className: "ordered-items-list", children: orderedTransitionTargets.map((item, index2) => /* @__PURE__ */ jsxs(
           "div",
           {
             className: "ordered-item",
             "data-testid": `handoff-item-${index2}`,
             children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "reorder-buttons", children: [
-                index2 > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+              /* @__PURE__ */ jsxs("div", { className: "reorder-buttons", children: [
+                index2 > 0 && /* @__PURE__ */ jsx(
                   "button",
                   {
                     type: "button",
@@ -16097,7 +15777,7 @@ const Handoffs = memo((props) => {
                     children: "↑"
                   }
                 ),
-                index2 < orderedTransitionTargets.length - 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                index2 < orderedTransitionTargets.length - 1 && /* @__PURE__ */ jsx(
                   "button",
                   {
                     type: "button",
@@ -16111,11 +15791,11 @@ const Handoffs = memo((props) => {
                 )
               ] }),
               " ",
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ordered-item-content", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "order-badge", children: index2 + 1 }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "handoff-type", children: item.targetType === "AgentTarget" ? "Agent Connection" : item.targetType === "NestedChatTarget" ? "Nested Chat" : item.targetType }),
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "handoff-target", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "target-label", children: "Target:" }),
+              /* @__PURE__ */ jsxs("div", { className: "ordered-item-content", children: [
+                /* @__PURE__ */ jsx("div", { className: "order-badge", children: index2 + 1 }),
+                /* @__PURE__ */ jsx("div", { className: "handoff-type", children: item.targetType === "AgentTarget" ? "Agent Connection" : item.targetType === "NestedChatTarget" ? "Nested Chat" : item.targetType }),
+                /* @__PURE__ */ jsxs("div", { className: "handoff-target", children: [
+                  /* @__PURE__ */ jsx("span", { className: "target-label", children: "Target:" }),
                   " ",
                   item.value
                 ] })
@@ -16125,21 +15805,21 @@ const Handoffs = memo((props) => {
           `handoff-${index2}`
         )) })
       ] }),
-      data.afterWork && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "handoffs-section", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "handoffs-section-title", children: "After Work" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+      data.afterWork && /* @__PURE__ */ jsxs("div", { className: "handoffs-section", children: [
+        /* @__PURE__ */ jsx("h4", { className: "handoffs-section-title", children: "After Work" }),
+        /* @__PURE__ */ jsx(
           "div",
           {
             className: "ordered-item after-work-handoff",
             "data-testid": "handoff-after-work-item",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "ordered-item-content", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "handoff-type", children: "AfterWork" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "handoff-target", children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "target-label", children: "Target:" }),
+            children: /* @__PURE__ */ jsxs("div", { className: "ordered-item-content", children: [
+              /* @__PURE__ */ jsx("div", { className: "handoff-type", children: "AfterWork" }),
+              /* @__PURE__ */ jsxs("div", { className: "handoff-target", children: [
+                /* @__PURE__ */ jsx("span", { className: "target-label", children: "Target:" }),
                 " ",
                 getTransitionTargetName(data.afterWork)
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "handoff-info", children: /* @__PURE__ */ jsxRuntimeExports.jsx("em", { children: "AfterWork handoff always executes last" }) })
+              /* @__PURE__ */ jsx("div", { className: "handoff-info", children: /* @__PURE__ */ jsx("em", { children: "AfterWork handoff always executes last" }) })
             ] })
           }
         )
@@ -16265,7 +15945,7 @@ const MessageInput = (props) => {
     onUpdateContextEntries
   } = useMessageInput(props);
   const getLabelView = () => {
-    return current.type !== "none" && current.type !== "rag_message_generator" && notNoneLabel && (notNoneLabelInfo ? /* @__PURE__ */ jsxRuntimeExports.jsx(InfoLabel, { label: notNoneLabel, info: notNoneLabelInfo, htmlFor: "message-input" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "message-input", children: notNoneLabel }));
+    return current.type !== "none" && current.type !== "rag_message_generator" && notNoneLabel && (notNoneLabelInfo ? /* @__PURE__ */ jsx(InfoLabel, { label: notNoneLabel, info: notNoneLabelInfo, htmlFor: "message-input" }) : /* @__PURE__ */ jsx("label", { htmlFor: "message-input", children: notNoneLabel }));
   };
   const labelView = getLabelView();
   const useDict2 = includeContext && current.type !== "rag_message_generator" && current.type !== "none";
@@ -16273,10 +15953,10 @@ const MessageInput = (props) => {
   if (skipNone === true) {
     selectOptions = selectOptions.filter((option) => option.value !== "none");
   }
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `message-select-test-${selectTestId}`, children: selectLabel }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-5" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx("label", { htmlFor: `message-select-test-${selectTestId}`, children: selectLabel }),
+    /* @__PURE__ */ jsx("div", { className: "margin-bottom-5" }),
+    /* @__PURE__ */ jsx(
       Select,
       {
         options: selectOptions,
@@ -16295,7 +15975,7 @@ const MessageInput = (props) => {
       }
     ),
     labelView,
-    current.type === "string" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "full-width", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    current.type === "string" && /* @__PURE__ */ jsx("div", { className: "full-width", children: /* @__PURE__ */ jsx(
       TextareaInput,
       {
         placeholder: "Enter the message",
@@ -16306,10 +15986,10 @@ const MessageInput = (props) => {
         "data-testid": "message-text"
       }
     ) }),
-    current.type === "rag_message_generator" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info margin-bottom-20", children: "Use the RAG user's `sender.message_generator` method to generate a message." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { children: "Problem:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "full-width", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    current.type === "rag_message_generator" && /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("div", { className: "info margin-bottom-20", children: "Use the RAG user's `sender.message_generator` method to generate a message." }),
+      /* @__PURE__ */ jsx("label", { children: "Problem:" }),
+      /* @__PURE__ */ jsx("div", { className: "full-width", children: /* @__PURE__ */ jsx(
         TextareaInput,
         {
           placeholder: "Enter the problem",
@@ -16321,7 +16001,7 @@ const MessageInput = (props) => {
         }
       ) })
     ] }),
-    current.type === "method" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+    current.type === "method" && /* @__PURE__ */ jsx(
       Editor,
       {
         value: current.content ?? defaultContent,
@@ -16329,7 +16009,7 @@ const MessageInput = (props) => {
         darkMode
       }
     ),
-    useDict2 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+    useDict2 && /* @__PURE__ */ jsx(
       Dict,
       {
         items: current.context,
@@ -16341,7 +16021,7 @@ const MessageInput = (props) => {
         onUpdate: onUpdateContextEntries
       }
     ),
-    !skipCarryoverOption && (current.type === "string" || current.type === "rag_message_generator") && /* @__PURE__ */ jsxRuntimeExports.jsx(
+    !skipCarryoverOption && (current.type === "string" || current.type === "rag_message_generator") && /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "Carryover ",
@@ -16353,14 +16033,14 @@ const MessageInput = (props) => {
     )
   ] });
 };
-const carryOverInfo = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "This should not be checked if this is the first message in the flow." }),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+const carryOverInfo = /* @__PURE__ */ jsxs("div", { children: [
+  /* @__PURE__ */ jsx("div", { children: "This should not be checked if this is the first message in the flow." }),
+  /* @__PURE__ */ jsx("br", {}),
   "Append the context's last carryover to the message.",
-  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+  /* @__PURE__ */ jsx("br", {}),
   "Example final message:",
-  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { children: '"Write a blogpost.\\nContext:\\n" + carryover' })
+  /* @__PURE__ */ jsx("br", {}),
+  /* @__PURE__ */ jsx("pre", { children: '"Write a blogpost.\\nContext:\\n" + carryover' })
 ] });
 const messageTypeOptions = [
   { label: "None", value: "none" },
@@ -16377,10 +16057,10 @@ const MessageOptionsMapping = {
 MessageInput.displayName = "MessageInput";
 const renderConfirmationContent = (props) => {
   const { onSaveAndClose, hideConfirmation, handleSaveAndClose, handleCloseModal } = props;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-confirmation padding-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-confirmation-content", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "warning", children: "Are you sure you want to close this modal? Any unsaved changes will be lost." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-actions", children: onSaveAndClose ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-actions flex-center margin-top--10 margin-bottom--10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx("div", { className: "modal-confirmation padding-10", children: /* @__PURE__ */ jsxs("div", { className: "modal-confirmation-content", children: [
+    /* @__PURE__ */ jsx("h4", { className: "warning", children: "Are you sure you want to close this modal? Any unsaved changes will be lost." }),
+    /* @__PURE__ */ jsx("div", { className: "modal-actions", children: onSaveAndClose ? /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx("div", { className: "modal-actions flex-center margin-top--10 margin-bottom--10", children: /* @__PURE__ */ jsx(
         "button",
         {
           className: "secondary",
@@ -16391,8 +16071,8 @@ const renderConfirmationContent = (props) => {
           children: "Don't Close"
         }
       ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions flex-center margin-top--10 margin-bottom--10", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxs("div", { className: "modal-actions flex-center margin-top--10 margin-bottom--10", children: [
+        /* @__PURE__ */ jsx(
           "button",
           {
             className: "save margin-right-10",
@@ -16403,7 +16083,7 @@ const renderConfirmationContent = (props) => {
             children: "Save & Close"
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           "button",
           {
             className: "primary",
@@ -16415,8 +16095,8 @@ const renderConfirmationContent = (props) => {
           }
         )
       ] })
-    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx(
         "button",
         {
           className: "modal-action-cancel",
@@ -16427,7 +16107,7 @@ const renderConfirmationContent = (props) => {
           children: "Don't Close"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "button",
         {
           className: "modal-action-submit",
@@ -16778,8 +16458,8 @@ const Modal = forwardRef((props, ref) => {
       left: position.x
     }
   };
-  const modalContent = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { id: `${flowId}-modal`, className: "modal-root", children: [
-    !noBackdrop && !isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && /* @__PURE__ */ jsxRuntimeExports.jsx(
+  const modalContent = /* @__PURE__ */ jsxs("div", { id: `${flowId}-modal`, className: "modal-root", children: [
+    !noBackdrop && !isMinimized && !isFullScreen && !className.includes("modal-fullscreen") && /* @__PURE__ */ jsx(
       "div",
       {
         className: "modal-backdrop",
@@ -16794,7 +16474,7 @@ const Modal = forwardRef((props, ref) => {
         }
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    /* @__PURE__ */ jsxs(
       "div",
       {
         ref: modalRef,
@@ -16804,34 +16484,34 @@ const Modal = forwardRef((props, ref) => {
         className: modalClasses,
         style: modalStyle,
         children: [
-          !props.noHeader && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-header", ref: dragRef, onMouseDown, children: [
-            !isMinimized && beforeTitle && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: beforeTitle }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("h3", { className: "modal-title font-semibold truncate", children: [
+          !props.noHeader && /* @__PURE__ */ jsxs("div", { className: "modal-header", ref: dragRef, onMouseDown, children: [
+            !isMinimized && beforeTitle && /* @__PURE__ */ jsx("div", { children: beforeTitle }),
+            /* @__PURE__ */ jsxs("h3", { className: "modal-title font-semibold truncate", children: [
               title,
-              hasUnsavedChanges && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { style: { color: "#f97316", marginLeft: "0.25rem" }, children: "*" })
+              hasUnsavedChanges && /* @__PURE__ */ jsx("span", { style: { color: "#f97316", marginLeft: "0.25rem" }, children: "*" })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-header-actions", children: [
-              hasMinimizeBtn && /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsxs("div", { className: "modal-header-actions", children: [
+              hasMinimizeBtn && /* @__PURE__ */ jsx(
                 "div",
                 {
                   className: "modal-minimize-btn clickable",
                   role: "button",
                   title: isMinimized ? "Restore" : "Minimize",
                   onClick: onToggleMinimize,
-                  children: isMinimized ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaChevronUp, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaChevronDown, {})
+                  children: isMinimized ? /* @__PURE__ */ jsx(FaChevronUp, {}) : /* @__PURE__ */ jsx(FaChevronDown, {})
                 }
               ),
-              hasMaximizeBtn && /* @__PURE__ */ jsxRuntimeExports.jsx(
+              hasMaximizeBtn && /* @__PURE__ */ jsx(
                 "div",
                 {
                   className: "modal-fullscreen-btn clickable",
                   role: "button",
                   title: isFullScreen ? "Restore" : "Maximize",
                   onClick: onToggleFullScreen,
-                  children: isFullScreen ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaCompress, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaExpand, {})
+                  children: isFullScreen ? /* @__PURE__ */ jsx(FaCompress, {}) : /* @__PURE__ */ jsx(FaExpand, {})
                 }
               ),
-              hasCloseBtn && /* @__PURE__ */ jsxRuntimeExports.jsx(
+              hasCloseBtn && /* @__PURE__ */ jsx(
                 "div",
                 {
                   className: "modal-close-btn clickable",
@@ -16839,12 +16519,12 @@ const Modal = forwardRef((props, ref) => {
                   title: "Close",
                   "data-testid": "modal-close-btn",
                   onClick: handleCloseModal,
-                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCircleXmark, {})
+                  children: /* @__PURE__ */ jsx(FaCircleXmark, {})
                 }
               )
             ] })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `modal-content ${isMinimized ? "hidden" : ""}`, children: showConfirmation ? renderConfirmationContent({
+          /* @__PURE__ */ jsx("div", { className: `modal-content ${isMinimized ? "hidden" : ""}`, children: showConfirmation ? renderConfirmationContent({
             onSaveAndClose,
             hideConfirmation,
             handleSaveAndClose,
@@ -16876,7 +16556,7 @@ function createCollection(name) {
     const { scope, children } = props;
     const ref = React__default.useRef(null);
     const itemMap = React__default.useRef(/* @__PURE__ */ new Map()).current;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionProviderImpl, { scope, itemMap, collectionRef: ref, children });
+    return /* @__PURE__ */ jsx(CollectionProviderImpl, { scope, itemMap, collectionRef: ref, children });
   };
   CollectionProvider.displayName = PROVIDER_NAME2;
   const COLLECTION_SLOT_NAME = name + "CollectionSlot";
@@ -16886,7 +16566,7 @@ function createCollection(name) {
       const { scope, children } = props;
       const context = useCollectionContext(COLLECTION_SLOT_NAME, scope);
       const composedRefs = useComposedRefs(forwardedRef, context.collectionRef);
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionSlotImpl, { ref: composedRefs, children });
+      return /* @__PURE__ */ jsx(CollectionSlotImpl, { ref: composedRefs, children });
     }
   );
   CollectionSlot.displayName = COLLECTION_SLOT_NAME;
@@ -16903,7 +16583,7 @@ function createCollection(name) {
         context.itemMap.set(ref, { ref, ...itemData });
         return () => void context.itemMap.delete(ref);
       });
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(CollectionItemSlotImpl, { ...{ [ITEM_DATA_ATTR]: "" }, ref: composedRefs, children });
+      return /* @__PURE__ */ jsx(CollectionItemSlotImpl, { ...{ [ITEM_DATA_ATTR]: "" }, ref: composedRefs, children });
     }
   );
   CollectionItemSlot.displayName = ITEM_SLOT_NAME;
@@ -17004,7 +16684,7 @@ var Slider = React.forwardRef(
         }
       });
     }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       SliderProvider,
       {
         scope: props.__scopeSlider,
@@ -17017,7 +16697,7 @@ var Slider = React.forwardRef(
         values,
         orientation,
         form,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Provider, { scope: props.__scopeSlider, children: /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.Slot, { scope: props.__scopeSlider, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        children: /* @__PURE__ */ jsx(Collection.Provider, { scope: props.__scopeSlider, children: /* @__PURE__ */ jsx(Collection.Slot, { scope: props.__scopeSlider, children: /* @__PURE__ */ jsx(
           SliderOrientation,
           {
             "aria-disabled": disabled,
@@ -17086,7 +16766,7 @@ var SliderHorizontal = React.forwardRef(
       rectRef.current = rect;
       return value(pointerPosition - rect.left);
     }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       SliderOrientationProvider,
       {
         scope: props.__scopeSlider,
@@ -17094,7 +16774,7 @@ var SliderHorizontal = React.forwardRef(
         endEdge: isSlidingFromLeft ? "right" : "left",
         direction: isSlidingFromLeft ? 1 : -1,
         size: "width",
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        children: /* @__PURE__ */ jsx(
           SliderImpl,
           {
             dir: direction,
@@ -17152,7 +16832,7 @@ var SliderVertical = React.forwardRef(
       rectRef.current = rect;
       return value(pointerPosition - rect.top);
     }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       SliderOrientationProvider,
       {
         scope: props.__scopeSlider,
@@ -17160,7 +16840,7 @@ var SliderVertical = React.forwardRef(
         endEdge: isSlidingFromBottom ? "top" : "bottom",
         size: "height",
         direction: isSlidingFromBottom ? 1 : -1,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        children: /* @__PURE__ */ jsx(
           SliderImpl,
           {
             "data-orientation": "vertical",
@@ -17206,7 +16886,7 @@ var SliderImpl = React.forwardRef(
       ...sliderProps
     } = props;
     const context = useSliderContext(SLIDER_NAME, __scopeSlider);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       Primitive.span,
       {
         ...sliderProps,
@@ -17253,7 +16933,7 @@ var SliderTrack = React.forwardRef(
   (props, forwardedRef) => {
     const { __scopeSlider, ...trackProps } = props;
     const context = useSliderContext(TRACK_NAME, __scopeSlider);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       Primitive.span,
       {
         "data-disabled": context.disabled ? "" : void 0,
@@ -17279,7 +16959,7 @@ var SliderRange = React.forwardRef(
     );
     const offsetStart = valuesCount > 1 ? Math.min(...percentages) : 0;
     const offsetEnd = 100 - Math.max(...percentages);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       Primitive.span,
       {
         "data-orientation": context.orientation,
@@ -17306,7 +16986,7 @@ var SliderThumb = React.forwardRef(
       () => thumb ? getItems().findIndex((item) => item.ref.current === thumb) : -1,
       [getItems, thumb]
     );
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(SliderThumbImpl, { ...props, ref: composedRefs, index: index2 });
+    return /* @__PURE__ */ jsx(SliderThumbImpl, { ...props, ref: composedRefs, index: index2 });
   }
 );
 var SliderThumbImpl = React.forwardRef(
@@ -17331,7 +17011,7 @@ var SliderThumbImpl = React.forwardRef(
         };
       }
     }, [thumb, context.thumbs]);
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    return /* @__PURE__ */ jsxs(
       "span",
       {
         style: {
@@ -17340,7 +17020,7 @@ var SliderThumbImpl = React.forwardRef(
           [orientation.startEdge]: `calc(${percent}% + ${thumbInBoundsOffset}px)`
         },
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Collection.ItemSlot, { scope: props.__scopeSlider, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(Collection.ItemSlot, { scope: props.__scopeSlider, children: /* @__PURE__ */ jsx(
             Primitive.span,
             {
               role: "slider",
@@ -17360,7 +17040,7 @@ var SliderThumbImpl = React.forwardRef(
               })
             }
           ) }),
-          isFormControl && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          isFormControl && /* @__PURE__ */ jsx(
             SliderBubbleInput,
             {
               name: name ?? (context.name ? context.name + (context.values.length > 1 ? "[]" : "") : void 0),
@@ -17393,7 +17073,7 @@ var SliderBubbleInput = React.forwardRef(
         input.dispatchEvent(event);
       }
     }, [prevValue, value]);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       Primitive.input,
       {
         style: { display: "none" },
@@ -17520,11 +17200,11 @@ const NumberInput = memo((props) => {
   );
   const getLabelValue = useCallback(() => {
     if ((value === max2 || value === null) && (setNullOnUpper || onUpperLabel !== null)) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "margin-left-5", children: onUpperLabel ?? "No limit" });
+      return /* @__PURE__ */ jsx("span", { className: "margin-left-5", children: onUpperLabel ?? "No limit" });
     } else if ((value === min2 || value === null) && (setNullOnLower || onLowerLabel !== null)) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "margin-left-5", children: onLowerLabel ?? "Not set" });
+      return /* @__PURE__ */ jsx("span", { className: "margin-left-5", children: onLowerLabel ?? "Not set" });
     } else {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "margin-left-5 margin-bottom-5", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx("span", { className: "margin-left-5 margin-bottom-5", children: /* @__PURE__ */ jsx(
         "input",
         {
           id: `id-for-${name}`,
@@ -17557,17 +17237,17 @@ const NumberInput = memo((props) => {
   ]);
   const renderLabel = useMemo(() => {
     if (labelInfo) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "number-input-info-label-wrapper", children: /* @__PURE__ */ jsxRuntimeExports.jsx(InfoLabel, { htmlFor: `id-for-${name}`, label, info: labelInfo, children: getLabelValue() }) });
+      return /* @__PURE__ */ jsx("div", { className: "number-input-info-label-wrapper", children: /* @__PURE__ */ jsx(InfoLabel, { htmlFor: `id-for-${name}`, label, info: labelInfo, children: getLabelValue() }) });
     }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "number-input-label-wrapper", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: `id-for-${name}`, children: [
+    return /* @__PURE__ */ jsx("div", { className: "number-input-label-wrapper", children: /* @__PURE__ */ jsxs("label", { htmlFor: `id-for-${name}`, children: [
       label,
       " ",
       getLabelValue()
     ] }) });
   }, [name, label, getLabelValue, labelInfo]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
     renderLabel,
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    /* @__PURE__ */ jsxs(
       Root,
       {
         className: "slider-root",
@@ -17578,8 +17258,8 @@ const NumberInput = memo((props) => {
         onValueChange: handleSliderChange,
         disabled,
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Track, { className: "slider-track", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Range, { className: "slider-range" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(Thumb, { className: "slider-thumb" })
+          /* @__PURE__ */ jsx(Track, { className: "slider-track", children: /* @__PURE__ */ jsx(Range, { className: "slider-range" }) }),
+          /* @__PURE__ */ jsx(Thumb, { className: "slider-thumb" })
         ]
       }
     )
@@ -17805,7 +17485,7 @@ const FloatingPanel = ({
     zIndex: 1e6,
     minWidth: 260
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       ref: rootRef,
@@ -17813,7 +17493,7 @@ const FloatingPanel = ({
       style: isCollapsed ? collapsedStyle : expandedStyle,
       "aria-expanded": !isCollapsed,
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        /* @__PURE__ */ jsxs(
           "div",
           {
             className: `fp-header ${headerClassName}`,
@@ -17827,7 +17507,7 @@ const FloatingPanel = ({
             role: "toolbar",
             "aria-label": "Panel header",
             children: [
-              headerLeft && /* @__PURE__ */ jsxRuntimeExports.jsx(
+              headerLeft && /* @__PURE__ */ jsx(
                 "div",
                 {
                   className: "fp-left",
@@ -17839,9 +17519,9 @@ const FloatingPanel = ({
                   children: headerLeft
                 }
               ),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fp-title", title: typeof title === "string" ? title : void 0, children: title }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "fp-right", style: { display: "flex", alignItems: "center", gap: 0 }, children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
+              /* @__PURE__ */ jsx("div", { className: "fp-title", title: typeof title === "string" ? title : void 0, children: title }),
+              /* @__PURE__ */ jsxs("div", { className: "fp-right", style: { display: "flex", alignItems: "center", gap: 0 }, children: [
+                /* @__PURE__ */ jsx(
                   "button",
                   {
                     title: isCollapsed ? "Expand" : "Collapse",
@@ -17849,7 +17529,7 @@ const FloatingPanel = ({
                     onClick: toggleCollapsed,
                     className: "fp-toggle",
                     "aria-label": isCollapsed ? "Expand panel" : "Collapse panel",
-                    children: isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaChevronUp, { size: 14 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaChevronDown, { size: 14 })
+                    children: isCollapsed ? /* @__PURE__ */ jsx(FaChevronUp, { size: 14 }) : /* @__PURE__ */ jsx(FaChevronDown, { size: 14 })
                   }
                 ),
                 headerRight
@@ -17857,7 +17537,7 @@ const FloatingPanel = ({
             ]
           }
         ),
-        !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fp-content", children: children ?? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { style: { padding: 12 }, children: "Your content here…" }) })
+        !isCollapsed && /* @__PURE__ */ jsx("div", { className: "fp-content", children: children ?? /* @__PURE__ */ jsx("div", { style: { padding: 12 }, children: "Your content here…" }) })
       ]
     }
   );
@@ -17881,10 +17561,10 @@ const ResumeSpinner = () => {
     const t = setTimeout(() => setPhase("done"), 2e3);
     return () => clearTimeout(t);
   }, []);
-  return phase === "spin" ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center items-center gap-2", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "animate-spin inline-block", children: "⏳" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Resuming a previously stored state…" })
-  ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "✅ Resume complete!" });
+  return phase === "spin" ? /* @__PURE__ */ jsxs("div", { className: "flex-align-center items-center gap-2", children: [
+    /* @__PURE__ */ jsx("span", { className: "animate-spin inline-block", children: "⏳" }),
+    /* @__PURE__ */ jsx("span", { children: "Resuming a previously stored state…" })
+  ] }) : /* @__PURE__ */ jsx("div", { children: "✅ Resume complete!" });
 };
 const getParticipants = (ev) => {
   const sender = ev.sender || ev.content.sender;
@@ -17901,46 +17581,46 @@ const renderEvent = (ev) => {
   switch (ev.type) {
     case "empty": {
       const c = ev;
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-gray-700 font-large", children: c.content });
+      return /* @__PURE__ */ jsx("div", { className: "text-gray-700 font-large", children: c.content });
     }
     case "text": {
       const c = ev.content;
       const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-amber-500 font-semibold", children: [
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "text-amber-500 font-semibold", children: [
           sender,
           " ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400", children: "→" }),
+          /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: "→" }),
           " ",
           recipient
         ] }),
-        typeof c.content === "string" ? /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.content }) : typeof c.content === "object" ? /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: JSON.stringify(c.content) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: String(c.content) })
+        typeof c.content === "string" ? /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.content }) : typeof c.content === "object" ? /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: JSON.stringify(c.content) }) : /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: String(c.content) })
       ] });
     }
     case "post_carryover_processing": {
       const c = ev.content;
       const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-pink-500 font-semibold", children: [
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "text-pink-500 font-semibold", children: [
           sender,
           " ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400", children: "→" }),
+          /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: "→" }),
           " ",
           recipient
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.message })
+        /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.message })
       ] });
     }
     case "group_chat_run_chat": {
       const c = ev.content;
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-green-600 font-semibold", children: [
+      return /* @__PURE__ */ jsxs("div", { className: "text-green-600 font-semibold", children: [
         "Next speaker: ",
         ev.speaker || c.speaker
       ] });
     }
     case "using_auto_reply": {
       const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700", children: [
+      return /* @__PURE__ */ jsxs("div", { className: "text-gray-700", children: [
         "sender=",
         sender,
         ", recipient=",
@@ -17950,24 +17630,24 @@ const renderEvent = (ev) => {
     case "tool_call": {
       const c = ev.content;
       const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-gray-700 mb-1", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: sender }),
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "text-gray-700 mb-1", children: [
+          /* @__PURE__ */ jsx("span", { className: "font-medium", children: sender }),
           " ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-gray-400", children: "→" }),
+          /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: "→" }),
           " ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: recipient })
+          /* @__PURE__ */ jsx("span", { className: "font-medium", children: recipient })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-1", children: c.tool_calls?.map((tc, i) => {
+        /* @__PURE__ */ jsx("div", { className: "space-y-1", children: c.tool_calls?.map((tc, i) => {
           const args = tc.function.arguments && tc.function.arguments !== "{}" ? tc.function.arguments : "none";
-          return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center items-start gap-2", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "🔧" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-semibold", children: [
+          return /* @__PURE__ */ jsxs("div", { className: "flex-align-center items-start gap-2", children: [
+            /* @__PURE__ */ jsx("span", { children: "🔧" }),
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
                 "Calling: ",
                 tc.function.name
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
+              /* @__PURE__ */ jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
                 "args: ",
                 args
               ] })
@@ -17979,16 +17659,16 @@ const renderEvent = (ev) => {
     case "execute_function": {
       const c = ev.content;
       const { recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-semibold", children: [
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
           "⚡ Executing: ",
           c.func_name
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm text-gray-700", children: [
+        /* @__PURE__ */ jsxs("div", { className: "text-sm text-gray-700", children: [
           "→ Target: ",
           recipient
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
+        /* @__PURE__ */ jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
           "→ Args: ",
           formatArgs(ev.arguments || c.arguments)
         ] })
@@ -17998,13 +17678,13 @@ const renderEvent = (ev) => {
       const c = ev.content ? ev.content : ev;
       const ok = !!c.is_exec_success;
       const transferred = typeof c.content === "object" && c.content && "agent_name" in c.content ? c.content.agent_name : void 0;
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: ok ? "text-green-600 font-semibold" : "text-red-600 font-semibold", children: [
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: ok ? "text-green-600 font-semibold" : "text-red-600 font-semibold", children: [
           ok ? "✅ Success" : "❌ Failed",
           ": ",
           c.func_name
         ] }),
-        transferred && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm", children: [
+        transferred && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
           "→ Transferred to: ",
           transferred
         ] })
@@ -18013,18 +17693,18 @@ const renderEvent = (ev) => {
     case "input_request":
     case "debug_input_request": {
       const c = ev.content ? ev.content : ev;
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold", children: "👤 Provide your input:" }),
-        c.prompt && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-sm", children: c.prompt })
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "👤 Provide your input:" }),
+        c.prompt && /* @__PURE__ */ jsx("div", { className: "text-sm", children: c.prompt })
       ] });
     }
     case "tool_response": {
       const c = ev.content ? ev.content : ev;
       const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "🔄 Tool Response:" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { className: "whitespace-pre-wrap break-words", children: c.content }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs", children: [
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("div", { children: "🔄 Tool Response:" }),
+        /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap break-words", children: c.content }),
+        /* @__PURE__ */ jsxs("div", { className: "text-xs", children: [
           "→ From: ",
           sender,
           " to ",
@@ -18034,9 +17714,9 @@ const renderEvent = (ev) => {
     }
     case "termination": {
       const c = ev.content ? ev.content : ev;
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold", children: "Termination met" }),
-        c.termination_reason && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm", children: [
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "Termination met" }),
+        c.termination_reason && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
           "→ Termination_reason: ",
           c.termination_reason
         ] })
@@ -18044,32 +17724,32 @@ const renderEvent = (ev) => {
     }
     case "termination_and_human_reply_no_input": {
       const c = ev.content ? ev.content : ev;
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold", children: "No human input" }),
-        c.no_human_input_msg && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-sm", children: [
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "No human input" }),
+        c.no_human_input_msg && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
           "→ Message: ",
           c.no_human_input_msg
         ] })
       ] });
     }
     case "run_completion":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold", children: "🏁 Run completed" });
+      return /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "🏁 Run completed" });
     case "generate_code_execution_reply":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold", children: "💻 Code executed" });
+      return /* @__PURE__ */ jsx("div", { className: "font-semibold", children: "💻 Code executed" });
     case "group_chat_resume":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(ResumeSpinner, {});
+      return /* @__PURE__ */ jsx(ResumeSpinner, {});
     case "info":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
+      return /* @__PURE__ */ jsx("div", { className: "info", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
     case "error":
       if (!ev.content && ev.error) {
-        return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "error", children: ev.error });
+        return /* @__PURE__ */ jsx("div", { className: "error", children: ev.error });
       }
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "error", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
+      return /* @__PURE__ */ jsx("div", { className: "error", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
     default:
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-amber-700", children: [
+      return /* @__PURE__ */ jsxs("div", { className: "text-amber-700", children: [
         "⚠️ Unknown event type: ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-mono", children: ev.type }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("pre", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
+        /* @__PURE__ */ jsx("span", { className: "font-mono", children: ev.type }),
+        /* @__PURE__ */ jsxs("pre", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
           "Raw event: ",
           JSON.stringify(ev, null, 2)
         ] })
@@ -18089,18 +17769,18 @@ const EventConsole = ({ events, printRaw, autoScroll, className }) => {
       el.scrollTop = el.scrollHeight;
     }
   }, [events, autoScroll]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     "div",
     {
       className: ["flex-align-center flex-column full-height json", className].filter(Boolean).join(" "),
       "data-testid": "events-console",
-      children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      children: /* @__PURE__ */ jsx(
         "div",
         {
           ref: listRef,
           className: "flex-1 full-width overflow-auto p-3 space-y-3 text-sm font-mono leading-5",
-          children: events.map((ev, idx) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: ev.type === "empty" ? "center" : "entry", children: [
-            printRaw && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
+          children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: ev.type === "empty" ? "center" : "entry", children: [
+            printRaw && /* @__PURE__ */ jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
               "Raw event: ",
               JSON.stringify(ev, null, 2)
             ] }),
@@ -21081,7 +20761,7 @@ function WaldiezProvider({ children, ...props }) {
     });
     return storeRef.current;
   }, [flowId]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezContext.Provider, { value: store, children });
+  return /* @__PURE__ */ jsx(WaldiezContext.Provider, { value: store, children });
 }
 const eventToActivity = (e) => {
   if (!e) {
@@ -21269,14 +20949,14 @@ const StepByStepView = ({ flowId, stepByStep }) => {
     return null;
   }
   const mayClose = canClose || !!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error";
-  const headerLeft = /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "header", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(FaBug, { className: "icon-bug", size: 18 }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "title", children: "Step-by-step Run" }),
-    badgeText && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `badge ${badgeText}`, children: badgeText }),
-    !badgeText && !stepByStep?.active && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "badge", children: "Finished" }),
-    !badgeText && stepByStep?.active && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "badge", children: "Running" })
+  const headerLeft = /* @__PURE__ */ jsxs("div", { className: "header", children: [
+    /* @__PURE__ */ jsx(FaBug, { className: "icon-bug", size: 18 }),
+    /* @__PURE__ */ jsx("div", { className: "title", children: "Step-by-step Run" }),
+    badgeText && /* @__PURE__ */ jsx("div", { className: `badge ${badgeText}`, children: badgeText }),
+    !badgeText && !stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Finished" }),
+    !badgeText && stepByStep?.active && /* @__PURE__ */ jsx("div", { className: "badge", children: "Running" })
   ] });
-  const headerRight = mayClose ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+  const headerRight = mayClose ? /* @__PURE__ */ jsx(
     "button",
     {
       title: "Close",
@@ -21284,10 +20964,10 @@ const StepByStepView = ({ flowId, stepByStep }) => {
       onClick: stepByStep?.handlers?.close,
       className: "header-toggle",
       "aria-label": "Close panel",
-      children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaX, { size: 14 })
+      children: /* @__PURE__ */ jsx(FaX, { size: 14 })
     }
   ) : void 0;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: /* @__PURE__ */ jsx(
     FloatingPanel,
     {
       flowId,
@@ -21298,9 +20978,9 @@ const StepByStepView = ({ flowId, stepByStep }) => {
       minHeight: 320,
       minWidth: 420,
       maxWidth: "80vw",
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "content", children: [
-        stepByStep?.pendingControlInput && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "controls", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      children: /* @__PURE__ */ jsxs("div", { className: "content", children: [
+        stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
+          /* @__PURE__ */ jsxs(
             "button",
             {
               className: "btn btn-primary",
@@ -21308,13 +20988,13 @@ const StepByStepView = ({ flowId, stepByStep }) => {
               onClick: () => onControl("continue"),
               disabled: !stepByStep?.pendingControlInput,
               children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(FaStepForward, {}),
+                /* @__PURE__ */ jsx(FaStepForward, {}),
                 " ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Continue" })
+                /* @__PURE__ */ jsx("span", { children: "Continue" })
               ]
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          /* @__PURE__ */ jsxs(
             "button",
             {
               className: "btn btn-secondary",
@@ -21322,13 +21002,13 @@ const StepByStepView = ({ flowId, stepByStep }) => {
               onClick: () => onControl("run"),
               disabled: !stepByStep?.pendingControlInput,
               children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(FaPlay, {}),
+                /* @__PURE__ */ jsx(FaPlay, {}),
                 " ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Run" })
+                /* @__PURE__ */ jsx("span", { children: "Run" })
               ]
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          /* @__PURE__ */ jsxs(
             "button",
             {
               className: "btn btn-danger",
@@ -21336,18 +21016,18 @@ const StepByStepView = ({ flowId, stepByStep }) => {
               onClick: () => onControl("quit"),
               disabled: !stepByStep?.pendingControlInput,
               children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(FaStop, {}),
+                /* @__PURE__ */ jsx(FaStop, {}),
                 " ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Quit" })
+                /* @__PURE__ */ jsx("span", { children: "Quit" })
               ]
             }
           )
         ] }),
-        stepByStep?.activeRequest && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card card--pending", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "card-title", children: "Waiting for input" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "input-row", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+        stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
+          /* @__PURE__ */ jsx("div", { className: "card-title", children: "Waiting for input" }),
+          /* @__PURE__ */ jsx("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
+          /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
+            /* @__PURE__ */ jsx(
               "input",
               {
                 className: "input",
@@ -21361,10 +21041,10 @@ const StepByStepView = ({ flowId, stepByStep }) => {
                 autoComplete: "off"
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
+            /* @__PURE__ */ jsx("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
           ] })
         ] }),
-        reducedHistory.length > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "event-history", children: /* @__PURE__ */ jsxRuntimeExports.jsx(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "event-history", children: /* @__PURE__ */ jsxRuntimeExports.jsx(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
+        reducedHistory.length > 0 ? /* @__PURE__ */ jsx("div", { className: "event-history", children: /* @__PURE__ */ jsx(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx("div", { className: "event-history", children: /* @__PURE__ */ jsx(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
       ] })
     }
   ) });
@@ -21434,8 +21114,8 @@ const StringList = memo((props) => {
   );
   const renderItems = useMemo(
     () => items.map((item, index2) => {
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "list-entry", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsxs("div", { className: "list-entry", children: [
+        /* @__PURE__ */ jsx(
           "input",
           {
             placeholder,
@@ -21447,7 +21127,7 @@ const StringList = memo((props) => {
             "data-testid": `list-entry-item-${itemsType}-${index2}`
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           "button",
           {
             type: "button",
@@ -21458,7 +21138,7 @@ const StringList = memo((props) => {
             id: `delete-list-entry-${itemsType}-${index2}`,
             "aria-label": `Delete item: ${item}`,
             "data-testid": `delete-list-entry-${itemsType}-${index2}`,
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaTrash$1, {})
+            children: /* @__PURE__ */ jsx(FaTrash$1, {})
           }
         )
       ] }, `${itemsType}-${index2}`);
@@ -21466,11 +21146,11 @@ const StringList = memo((props) => {
     [items, itemsType, placeholder, onEntryChange, onDeleteEntry]
   );
   const isAddDisabled = !newEntry.trim();
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "list-entries-view", children: [
-    viewLabelInfo ? /* @__PURE__ */ jsxRuntimeExports.jsx(InfoLabel, { label: viewLabel, info: viewLabelInfo, htmlFor: "list-entries" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "list-entries-label", htmlFor: "list-entries", children: labelElement }),
-    items.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "list-entries-list", children: renderItems }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "list-entries-list", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "add-list-entry-view", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "list-entries-view", children: [
+    viewLabelInfo ? /* @__PURE__ */ jsx(InfoLabel, { label: viewLabel, info: viewLabelInfo, htmlFor: "list-entries" }) : /* @__PURE__ */ jsx("label", { className: "list-entries-label", htmlFor: "list-entries", children: labelElement }),
+    items.length > 0 && /* @__PURE__ */ jsx("div", { className: "list-entries-list", children: renderItems }),
+    /* @__PURE__ */ jsx("div", { className: "list-entries-list", children: /* @__PURE__ */ jsxs("div", { className: "add-list-entry-view", children: [
+      /* @__PURE__ */ jsx(
         "input",
         {
           placeholder,
@@ -21483,7 +21163,7 @@ const StringList = memo((props) => {
           id: `new-list-entry-${itemsType}`
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -21494,7 +21174,7 @@ const StringList = memo((props) => {
           "aria-label": "Add item",
           id: `add-list-entry-${itemsType}-button`,
           "data-testid": `add-list-entry-${itemsType}-button`,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaPlus, {})
+          children: /* @__PURE__ */ jsx(FaPlus, {})
         }
       )
     ] }) })
@@ -21503,7 +21183,7 @@ const StringList = memo((props) => {
 StringList.displayName = "StringList";
 const TabItem = memo((props) => {
   const { id, children } = props;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     "div",
     {
       className: "tab-panel",
@@ -21539,7 +21219,7 @@ const TabItems = memo((props) => {
       const isActive = activeTab === index2;
       const className = isActive ? "tab-btn--active" : "";
       const tabId = tab.props.id;
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("li", { role: "tab", "aria-selected": isActive, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx("li", { role: "tab", "aria-selected": isActive, children: /* @__PURE__ */ jsx(
         "div",
         {
           role: "button",
@@ -21556,8 +21236,8 @@ const TabItems = memo((props) => {
     [tabs, activeTab, handleTabClick]
   );
   const activeTabContent = tabs[activeTab] || null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tabs", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("nav", { className: "tab-list-wrapper", children: /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "tab-list", role: "tablist", "aria-orientation": "horizontal", children: tabButtons }) }),
+  return /* @__PURE__ */ jsxs("div", { className: "tabs", children: [
+    /* @__PURE__ */ jsx("nav", { className: "tab-list-wrapper", children: /* @__PURE__ */ jsx("ul", { className: "tab-list", role: "tablist", "aria-orientation": "horizontal", children: tabButtons }) }),
     activeTabContent
   ] });
 });
@@ -21624,17 +21304,17 @@ const TimelineChart = ({
   const axisColor = darkMode ? "#9CA3AF" : "#64748b";
   const costLineColor = "#8B5CF6";
   const textColor = darkMode ? "#F3F4F6" : "#333";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+    /* @__PURE__ */ jsx(
       "svg",
       {
         width,
         height,
         onMouseMove: handleMouseMove,
         onMouseLeave: () => setHoveredItem(null),
-        children: /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { transform: `translate(${margin.left}, ${margin.top})`, children: [
-          [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+        children: /* @__PURE__ */ jsxs("g", { transform: `translate(${margin.left}, ${margin.top})`, children: [
+          [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxs("g", { children: [
+            /* @__PURE__ */ jsx(
               "line",
               {
                 x1: chartWidth * ratio,
@@ -21646,7 +21326,7 @@ const TimelineChart = ({
                 strokeWidth: 1
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "line",
               {
                 x1: 0,
@@ -21678,8 +21358,8 @@ const TimelineChart = ({
                 itemY = yScale(0) - 10;
               }
             }
-            return /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
+            return /* @__PURE__ */ jsxs("g", { children: [
+              /* @__PURE__ */ jsx(
                 "rect",
                 {
                   x: xScale(item.start),
@@ -21695,7 +21375,7 @@ const TimelineChart = ({
                   onMouseEnter: () => setHoveredItem({ ...item, index: i })
                 }
               ),
-              item.type === "gap" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+              item.type === "gap" && /* @__PURE__ */ jsx(
                 "text",
                 {
                   x: xScale(item.start + item.duration / 2),
@@ -21711,8 +21391,8 @@ const TimelineChart = ({
               )
             ] }, item.id);
           }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("path", { d: costLinePath, fill: "none", stroke: costLineColor, strokeWidth: 2 }),
-          data.cost_timeline.map((d, i) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx("path", { d: costLinePath, fill: "none", stroke: costLineColor, strokeWidth: 2 }),
+          data.cost_timeline.map((d, i) => /* @__PURE__ */ jsx(
             "circle",
             {
               cx: xScale(d.time),
@@ -21730,10 +21410,10 @@ const TimelineChart = ({
             },
             `dot-${i}`
           )),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { transform: `translate(0, ${chartHeight})`, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: 0, y1: 0, x2: chartWidth, y2: 0, stroke: axisColor }),
-            [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxs("g", { transform: `translate(0, ${chartHeight})`, children: [
+            /* @__PURE__ */ jsx("line", { x1: 0, y1: 0, x2: chartWidth, y2: 0, stroke: axisColor }),
+            [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxs("g", { children: [
+              /* @__PURE__ */ jsx(
                 "line",
                 {
                   x1: chartWidth * ratio,
@@ -21743,7 +21423,7 @@ const TimelineChart = ({
                   stroke: axisColor
                 }
               ),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              /* @__PURE__ */ jsxs(
                 "text",
                 {
                   x: chartWidth * ratio,
@@ -21758,7 +21438,7 @@ const TimelineChart = ({
                 }
               )
             ] }, `x-tick-${ratio}`)),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "text",
               {
                 x: chartWidth / 2,
@@ -21771,10 +21451,10 @@ const TimelineChart = ({
               }
             )
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { transform: `translate(${chartWidth}, 0)`, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("line", { x1: 0, y1: 0, x2: 0, y2: chartHeight, stroke: costLineColor }),
-            [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxRuntimeExports.jsxs("g", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxs("g", { transform: `translate(${chartWidth}, 0)`, children: [
+            /* @__PURE__ */ jsx("line", { x1: 0, y1: 0, x2: 0, y2: chartHeight, stroke: costLineColor }),
+            [0, 0.25, 0.5, 0.75, 1].map((ratio) => /* @__PURE__ */ jsxs("g", { children: [
+              /* @__PURE__ */ jsx(
                 "line",
                 {
                   x1: 0,
@@ -21784,7 +21464,7 @@ const TimelineChart = ({
                   stroke: costLineColor
                 }
               ),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              /* @__PURE__ */ jsxs(
                 "text",
                 {
                   x: 20,
@@ -21800,7 +21480,7 @@ const TimelineChart = ({
                 }
               )
             ] }, `y-tick-${ratio}`)),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "text",
               {
                 x: 120,
@@ -21818,7 +21498,7 @@ const TimelineChart = ({
         ] })
       }
     ),
-    hoveredItem && /* @__PURE__ */ jsxRuntimeExports.jsx(
+    hoveredItem && /* @__PURE__ */ jsx(
       "div",
       {
         className: "absolute pointer-events-none",
@@ -21827,24 +21507,24 @@ const TimelineChart = ({
           top: mousePos.y - 10,
           transform: mousePos.x > width / 2 ? "translateX(-100%)" : void 0
         },
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "card", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card-content padding-10", children: [
-          hoveredItem.type === "session" && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold text-sm", children: hoveredItem.agent.replace(/_/g, " ") }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs space-y-0_5", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        children: /* @__PURE__ */ jsx("div", { className: "card", children: /* @__PURE__ */ jsxs("div", { className: "card-content padding-10", children: [
+          hoveredItem.type === "session" && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsx("div", { className: "font-semibold text-sm", children: hoveredItem.agent.replace(/_/g, " ") }),
+            /* @__PURE__ */ jsxs("div", { className: "text-xs space-y-0_5", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
                 "LLM: ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "font-medium", children: hoveredItem.llm_model })
+                /* @__PURE__ */ jsx("span", { className: "font-medium", children: hoveredItem.llm_model })
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxs("div", { children: [
                 "Cost: $",
                 hoveredItem.cost.toFixed(6)
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxs("div", { children: [
                 "Duration: ",
                 hoveredItem.duration.toFixed(2),
                 "s"
               ] }),
-              hoveredItem.tokens > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              hoveredItem.tokens > 0 && /* @__PURE__ */ jsxs("div", { children: [
                 "Tokens: ",
                 hoveredItem.prompt_tokens.toLocaleString(),
                 " in +",
@@ -21852,46 +21532,46 @@ const TimelineChart = ({
                 hoveredItem.completion_tokens.toLocaleString(),
                 " out"
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxs("div", { children: [
                 "Cache: ",
                 hoveredItem.is_cached ? "Cached" : "Fresh"
               ] }),
-              hoveredItem.real_start_time && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              hoveredItem.real_start_time && /* @__PURE__ */ jsxs("div", { children: [
                 "Started: ",
                 hoveredItem.real_start_time
               ] })
             ] })
           ] }),
-          hoveredItem.type === "gap" && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-semibold text-sm", children: hoveredItem.label }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs space-y-0_5", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          hoveredItem.type === "gap" && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsx("div", { className: "font-semibold text-sm", children: hoveredItem.label }),
+            /* @__PURE__ */ jsxs("div", { className: "text-xs space-y-0_5", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
                 "Type: ",
                 hoveredItem.gap_type.replace(/_/g, " ")
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxs("div", { children: [
                 "Original Duration: ",
                 hoveredItem.real_duration?.toFixed(1),
                 "s"
               ] }),
-              hoveredItem.compressed && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              hoveredItem.compressed && /* @__PURE__ */ jsxs("div", { children: [
                 "Compressed to: ",
                 hoveredItem.duration.toFixed(1),
                 "s"
               ] })
             ] })
           ] }),
-          hoveredItem.type === "cost_point" && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-semibold text-sm", children: [
+          hoveredItem.type === "cost_point" && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsxs("div", { className: "font-semibold text-sm", children: [
               "Cumulative Cost: $",
               hoveredItem.cost_data.cumulative_cost.toFixed(6)
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-xs space-y-0_5", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+            /* @__PURE__ */ jsxs("div", { className: "text-xs space-y-0_5", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
                 "Session Cost: $",
                 hoveredItem.cost_data.session_cost.toFixed(6)
               ] }),
-              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              /* @__PURE__ */ jsxs("div", { children: [
                 "Session: ",
                 hoveredItem.cost_data.session_id
               ] })
@@ -21916,8 +21596,8 @@ const Timeline = ({ data, height = 400 }) => {
       }
     }
   }, []);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "full-width padding-10", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "timeline-grid margin-bottom-10", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "full-width padding-10", children: [
+    /* @__PURE__ */ jsx("div", { className: "timeline-grid margin-bottom-10", children: [
       { label: "Sessions", value: data.summary.total_sessions, icon: FiActivity },
       {
         label: "Total Cost",
@@ -21936,19 +21616,19 @@ const Timeline = ({ data, height = 400 }) => {
         value: `$${data.summary.avg_cost_per_session.toFixed(6)}`,
         icon: FiDollarSign
       }
-    ].map(({ label, value, icon: Icon }) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "card", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "card-content", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "timeline-top", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(Icon, { className: "timeline-icon" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "timeline-top-content", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "timeline-label", children: label }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "timeline-value", children: value })
+    ].map(({ label, value, icon: Icon }) => /* @__PURE__ */ jsx("div", { className: "card", children: /* @__PURE__ */ jsx("div", { className: "card-content", children: /* @__PURE__ */ jsxs("div", { className: "timeline-top", children: [
+      /* @__PURE__ */ jsx(Icon, { className: "timeline-icon" }),
+      /* @__PURE__ */ jsxs("div", { className: "timeline-top-content", children: [
+        /* @__PURE__ */ jsx("p", { className: "timeline-label", children: label }),
+        /* @__PURE__ */ jsx("p", { className: "timeline-value", children: value })
       ] })
     ] }) }) }, label)) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card-header", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "card-title", children: "Session Activity Timeline with Cumulative Cost" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "card-description", children: [
+    /* @__PURE__ */ jsxs("div", { className: "card", children: [
+      /* @__PURE__ */ jsxs("div", { className: "card-header", children: [
+        /* @__PURE__ */ jsx("h3", { className: "card-title", children: "Session Activity Timeline with Cumulative Cost" }),
+        /* @__PURE__ */ jsxs("p", { className: "card-description", children: [
           "Interactive timeline showing agent sessions and cost accumulation (human input periods compressed)",
-          data.summary.compression_info.gaps_compressed > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "badge badge-secondary", style: { marginLeft: "0.5rem" }, children: [
+          data.summary.compression_info.gaps_compressed > 0 && /* @__PURE__ */ jsxs("span", { className: "badge badge-secondary", style: { marginLeft: "0.5rem" }, children: [
             data.summary.compression_info.gaps_compressed,
             " gaps compressed,",
             data.summary.compression_info.time_saved.toFixed(1),
@@ -21956,8 +21636,8 @@ const Timeline = ({ data, height = 400 }) => {
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "card-content", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "full-width", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ResponsiveContainer, { width: "100%", height, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxs("div", { className: "card-content", children: [
+        /* @__PURE__ */ jsx("div", { className: "full-width", children: /* @__PURE__ */ jsx(ResponsiveContainer, { width: "100%", height, children: /* @__PURE__ */ jsx(
           TimelineChart,
           {
             width: dimensions.width,
@@ -21967,16 +21647,16 @@ const Timeline = ({ data, height = 400 }) => {
           }
         ) }) }),
         data.agents.length > 0 && // <div className="mt-4 flex-align-center flex-wrap gap-2">
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "timeline-agent-list", children: data.agents.map((agent) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "timeline-agent-item", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx("div", { className: "timeline-agent-list", children: data.agents.map((agent) => /* @__PURE__ */ jsxs("div", { className: "timeline-agent-item", children: [
+          /* @__PURE__ */ jsx(
             "div",
             {
               className: "timeline-agent-dot",
               style: { backgroundColor: agent.color }
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "timeline-agent-name", children: agent.name.replace(/_/g, " ") }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "timeline-agent-class", children: [
+          /* @__PURE__ */ jsx("span", { className: "timeline-agent-name", children: agent.name.replace(/_/g, " ") }),
+          /* @__PURE__ */ jsxs("span", { className: "timeline-agent-class", children: [
             "(",
             agent.class,
             ")"
@@ -21987,7 +21667,7 @@ const Timeline = ({ data, height = 400 }) => {
   ] });
 };
 const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(
     Modal,
     {
       flowId,
@@ -22002,8 +21682,8 @@ const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
       preventCloseIfUnsavedChanges: false,
       noHeader: true,
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "timeline-modal fullscreen open no-backdrop", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(Timeline, { data }) }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx("div", { className: "timeline-modal fullscreen open no-backdrop", children: /* @__PURE__ */ jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsx(Timeline, { data }) }) }),
+        /* @__PURE__ */ jsx(
           "button",
           {
             type: "button",
@@ -22011,7 +21691,7 @@ const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
             className: "modal-close",
             onClick: onClose,
             "data-testid": "modal-close",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaX, { size: 12 })
+            children: /* @__PURE__ */ jsx(FaX, { size: 12 })
           }
         )
       ]
@@ -22134,10 +21814,10 @@ const UpdateState = (props) => {
     () => hasUpdateConfig && currentConfig?.type === "callable" ? currentConfig.content : CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT,
     [hasUpdateConfig, currentConfig]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel agent-update-state-panel", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info margin-bottom-10", children: "You can update the agent's system message before replying. This can be useful if you need to control the system message based on the current conversation context. If enabled, it can be a string or a function. If text, it will be used as a template and substitute the context variables. If a function, it should accept the agent and messages as arguments and return a string." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-update-state-panel", children: [
+    /* @__PURE__ */ jsx("div", { className: "info margin-bottom-10", children: "You can update the agent's system message before replying. This can be useful if you need to control the system message based on the current conversation context. If enabled, it can be a string or a function. If text, it will be used as a template and substitute the context variables. If a function, it should accept the agent and messages as arguments and return a string." }),
+    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
         CheckboxInput,
         {
           label: "Update system message before reply",
@@ -22147,9 +21827,9 @@ const UpdateState = (props) => {
           "aria-label": "Enable update system message"
         }
       ),
-      enabled && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "update-system-message-type-select-input", children: "Message update type" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+      enabled && /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsx("label", { htmlFor: "update-system-message-type-select-input", children: "Message update type" }),
+        /* @__PURE__ */ jsx(
           Select,
           {
             options: updateSystemMessageTypeOptions,
@@ -22158,8 +21838,8 @@ const UpdateState = (props) => {
             inputId: "update-system-message-type-select-input"
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "update-system-message-string", children: "Message update" }),
-        selectedType === "string" ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx("label", { htmlFor: "update-system-message-string", children: "Message update" }),
+        selectedType === "string" ? /* @__PURE__ */ jsx(
           TextareaInput,
           {
             rows: 4,
@@ -22169,7 +21849,7 @@ const UpdateState = (props) => {
             "data-testid": "update-system-message-string",
             id: "update-system-message-string"
           }
-        ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+        ) : /* @__PURE__ */ jsx(
           Editor,
           {
             value: callableContent,
@@ -22185,7 +21865,7 @@ const UpdateState = (props) => {
 UpdateState.displayName = "UpdateState";
 const WizardStep = memo((props) => {
   const { children, id } = props;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "wizard-step-view", "data-testid": `wizard-step-${id}`, children });
+  return /* @__PURE__ */ jsx("div", { className: "wizard-step-view", "data-testid": `wizard-step-${id}`, children });
 });
 const Wizard = memo((props) => {
   const {
@@ -22252,7 +21932,7 @@ const Wizard = memo((props) => {
     () => steps.map((step, index2) => {
       const isActive = currentStep === index2;
       const className = isActive ? "wizard-step--active" : "";
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         "div",
         {
           role: "tab",
@@ -22267,10 +21947,10 @@ const Wizard = memo((props) => {
     }),
     [steps, currentStep]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "wizard", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "wizard-steps", role: "tablist", children: renderedSteps }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "wizard", children: [
+    /* @__PURE__ */ jsx("div", { className: "wizard-steps", role: "tablist", children: renderedSteps }),
+    /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
+      /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -22283,7 +21963,7 @@ const Wizard = memo((props) => {
           children: backButtonText
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -22917,7 +22597,7 @@ const ChatModal = memo((props) => {
   const imageInputId = `rf-${flowId}-chat-modal-image`;
   const modalTestId = `rf-${flowId}-chat-modal`;
   const isModalOpen = isLocallyOpen && (chat?.show === true || chat !== void 0 && chat.messages.length > 0);
-  const leftIcon = chat?.timeline ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+  const leftIcon = chat?.timeline ? /* @__PURE__ */ jsx(
     "div",
     {
       role: "button",
@@ -22925,21 +22605,21 @@ const ChatModal = memo((props) => {
       onClick: handleTimelineClick,
       title: "View Timeline",
       "data-testid": `rf-${flowId}-chat-modal-timeline`,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsx(MdTimeline, { size: 18 })
+      children: /* @__PURE__ */ jsx(MdTimeline, { size: 18 })
     }
-  ) : chat?.handlers?.onInterrupt && !chat.active ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+  ) : chat?.handlers?.onInterrupt && !chat.active ? /* @__PURE__ */ jsx(
     "div",
     {
       role: "button",
       className: "chat-modal-action clickable",
       onClick: () => chat?.handlers?.onInterrupt?.(),
       title: "Interrupt",
-      children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaStop$1, { size: 18 })
+      children: /* @__PURE__ */ jsx(FaStop$1, { size: 18 })
     }
   ) : void 0;
   const allowImage = !chat || !chat?.mediaConfig ? true : chat?.mediaConfig?.allowedTypes.includes("image");
   if (timelineOpen && chat?.timeline) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       TimelineModal,
       {
         flowId,
@@ -22949,7 +22629,7 @@ const ChatModal = memo((props) => {
       }
     );
   }
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     Modal,
     {
       flowId,
@@ -22965,8 +22645,8 @@ const ChatModal = memo((props) => {
       dataTestId: modalTestId,
       hasUnsavedChanges: false,
       preventCloseIfUnsavedChanges: false,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body", children: [
-        chat?.messages && chat.messages.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "chat-wrapper", "data-flow-id": flowId, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      children: /* @__PURE__ */ jsxs("div", { className: "modal-body", children: [
+        chat?.messages && chat.messages.length > 0 && /* @__PURE__ */ jsx("div", { className: "chat-wrapper", "data-flow-id": flowId, children: /* @__PURE__ */ jsx(
           ChatUI,
           {
             isDarkMode: false,
@@ -22975,11 +22655,11 @@ const ChatModal = memo((props) => {
             activeRequest: chat.activeRequest
           }
         ) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "input-prompt", children: chat?.activeRequest?.prompt }),
-        chat?.activeRequest?.request_id !== void 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "chat-input-container", children: [
-          imagePreview && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "chat-image-preview", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "chat-image-wrapper", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: imagePreview, alt: "Preview", className: "chat-preview-image" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx("div", { className: "input-prompt", children: chat?.activeRequest?.prompt }),
+        chat?.activeRequest?.request_id !== void 0 && /* @__PURE__ */ jsxs("div", { className: "chat-input-container", children: [
+          imagePreview && /* @__PURE__ */ jsx("div", { className: "chat-image-preview", children: /* @__PURE__ */ jsxs("div", { className: "chat-image-wrapper", children: [
+            /* @__PURE__ */ jsx("img", { src: imagePreview, alt: "Preview", className: "chat-preview-image" }),
+            /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -22987,12 +22667,12 @@ const ChatModal = memo((props) => {
                 onClick: clearImage,
                 title: "Remove Image",
                 "aria-label": "Remove uploaded image",
-                children: /* @__PURE__ */ jsxRuntimeExports.jsx(FiX, { size: 14 })
+                children: /* @__PURE__ */ jsx(FiX, { size: 14 })
               }
             )
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "chat-input-field-container", children: chat?.activeRequest?.password === true ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "password-toggle-container", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx("div", { className: "chat-input-field-container", children: chat?.activeRequest?.password === true ? /* @__PURE__ */ jsxs("div", { className: "password-toggle-container", children: [
+            /* @__PURE__ */ jsx(
               "input",
               {
                 type: showPassword ? "text" : "password",
@@ -23011,7 +22691,7 @@ const ChatModal = memo((props) => {
                 "aria-label": "Password input"
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -23020,10 +22700,10 @@ const ChatModal = memo((props) => {
                 title: showPassword ? "Hide password" : "Show password",
                 "aria-label": showPassword ? "Hide password" : "Show password",
                 disabled: chat?.activeRequest?.request_id === void 0,
-                children: showPassword ? /* @__PURE__ */ jsxRuntimeExports.jsx(FiEyeOff, { size: 18 }) : /* @__PURE__ */ jsxRuntimeExports.jsx(FiEye, { size: 18 })
+                children: showPassword ? /* @__PURE__ */ jsx(FiEyeOff, { size: 18 }) : /* @__PURE__ */ jsx(FiEye, { size: 18 })
               }
             )
-          ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+          ] }) : /* @__PURE__ */ jsx(
             "input",
             {
               type: "text",
@@ -23042,11 +22722,11 @@ const ChatModal = memo((props) => {
               "aria-label": "User input"
             }
           ) }),
-          chat?.activeRequest?.request_id !== void 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "chat-input-actions", children: [
-            allowImage ? /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: imageInputId, className: "chat-upload-button", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx(FiPaperclip, { size: 18, "aria-hidden": "true" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "hidden", children: "Upload an image" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
+          chat?.activeRequest?.request_id !== void 0 && /* @__PURE__ */ jsxs("div", { className: "chat-input-actions", children: [
+            allowImage ? /* @__PURE__ */ jsxs("label", { htmlFor: imageInputId, className: "chat-upload-button", children: [
+              /* @__PURE__ */ jsx(FiPaperclip, { size: 18, "aria-hidden": "true" }),
+              /* @__PURE__ */ jsx("span", { className: "hidden", children: "Upload an image" }),
+              /* @__PURE__ */ jsx(
                 "input",
                 {
                   type: "file",
@@ -23061,8 +22741,8 @@ const ChatModal = memo((props) => {
                   onBlur: closeFileSelectModal
                 }
               )
-            ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "chat-upload-button" }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            ] }) : /* @__PURE__ */ jsx("div", { className: "chat-upload-button" }),
+            /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -23072,7 +22752,7 @@ const ChatModal = memo((props) => {
                 className: "chat-send-button",
                 "data-testid": `rf-${flowId}-chat-modal-submit`,
                 "aria-label": "Send message",
-                children: /* @__PURE__ */ jsxRuntimeExports.jsx(IoIosSend, { size: 20, "aria-hidden": "true" })
+                children: /* @__PURE__ */ jsx(IoIosSend, { size: 20, "aria-hidden": "true" })
               }
             )
           ] })
@@ -23197,7 +22877,7 @@ const ExportFlowModal = memo((props) => {
     },
     [showError]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(
     Modal,
     {
       flowId,
@@ -23206,15 +22886,15 @@ const ExportFlowModal = memo((props) => {
       title: "Export Flow",
       dataTestId: `export-flow-modal-${flowId}`,
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "padding-10", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxs("div", { className: "padding-10", children: [
+          /* @__PURE__ */ jsx(
             CheckboxInput,
             {
               id: `export-flow-modal-upload-${flowId}`,
-              label: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "checkbox-label-view", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+              label: /* @__PURE__ */ jsx("span", { className: "checkbox-label-view", children: /* @__PURE__ */ jsxs("div", { children: [
                 "Share this flow to",
                 " ",
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                /* @__PURE__ */ jsx(
                   "a",
                   {
                     href: HUB_URL,
@@ -23230,11 +22910,11 @@ const ExportFlowModal = memo((props) => {
               "data-testid": `export-flow-modal-upload-checkbox-${flowId}`
             }
           ),
-          alsoUpload && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center full-width flex-column", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10 full-width", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          alsoUpload && /* @__PURE__ */ jsxs("div", { className: "flex-align-center full-width flex-column", children: [
+            /* @__PURE__ */ jsx("div", { className: "margin-top-10 full-width", children: /* @__PURE__ */ jsx(
               TextInput,
               {
-                label: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "no-padding margin-bottom-5", children: "Hub API Token:" }),
+                label: /* @__PURE__ */ jsx("div", { className: "no-padding margin-bottom-5", children: "Hub API Token:" }),
                 value: hubApiToken,
                 name: "hub-api-token",
                 onChange: onHubApiTokenChange,
@@ -23244,9 +22924,9 @@ const ExportFlowModal = memo((props) => {
                 isPassword: true
               }
             ) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10 margin-bottom-20 full-width", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-10 padding-10 center", children: "Additional CSV file (results.csv) to include:" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsxs("div", { className: "margin-top-10 margin-bottom-20 full-width", children: [
+              /* @__PURE__ */ jsx("div", { className: "margin-bottom-10 padding-10 center", children: "Additional CSV file (results.csv) to include:" }),
+              /* @__PURE__ */ jsx(
                 DropZone,
                 {
                   allowedFileExtensions: [".csv"],
@@ -23258,10 +22938,10 @@ const ExportFlowModal = memo((props) => {
             ] })
           ] })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "reset", className: "modal-action-cancel", onClick: onClose, children: "Cancel" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center flex-row", children: [
-            alsoUpload && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
+          /* @__PURE__ */ jsx("button", { type: "reset", className: "modal-action-cancel", onClick: onClose, children: "Cancel" }),
+          /* @__PURE__ */ jsxs("div", { className: "flex-align-center flex-row", children: [
+            alsoUpload && /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -23272,7 +22952,7 @@ const ExportFlowModal = memo((props) => {
                 children: isUploading ? "Uploading..." : "Upload to Hub"
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "primary", onClick: onDownload, children: "Download" })
+            /* @__PURE__ */ jsx("button", { type: "button", className: "primary", onClick: onDownload, children: "Download" })
           ] })
         ] })
       ]
@@ -23621,16 +23301,16 @@ const LoadFlowStep = (props) => {
     onSearchSubmit,
     onSelectResult
   } = useLoadFlowStep(props);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(
       Collapsible,
       {
         title: "Search the hub",
         dataTestId: `import-flow-modal-collapsible-search-${flowId}`,
         expanded: true,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10 margin-bottom-10 full-width flex-column", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "full-width flex-align-center", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+        children: /* @__PURE__ */ jsxs("div", { className: "margin-top-10 margin-bottom-10 full-width flex-column", children: [
+          /* @__PURE__ */ jsxs("div", { className: "full-width flex-align-center", children: [
+            /* @__PURE__ */ jsx(
               "input",
               {
                 type: "text",
@@ -23644,7 +23324,7 @@ const LoadFlowStep = (props) => {
                 }
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -23657,16 +23337,16 @@ const LoadFlowStep = (props) => {
               }
             )
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: state.searchResults && state.searchResults.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("ul", { className: "search-results-list", children: state.searchResults.map((result) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: state.searchResults && state.searchResults.length > 0 && /* @__PURE__ */ jsx("ul", { className: "search-results-list", children: state.searchResults.map((result) => /* @__PURE__ */ jsxs(
             "li",
             {
               className: "search-result-item clickable",
               role: "button",
               onClick: () => onSelectResult(result),
               children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "search-result-title", children: result.name }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "search-result-tags", children: result.tags.map((tag) => /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "search-result-tag", children: tag }, tag)) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "search-result-description", children: result.description })
+                /* @__PURE__ */ jsx("span", { className: "search-result-title", children: result.name }),
+                /* @__PURE__ */ jsx("span", { className: "search-result-tags", children: result.tags.map((tag) => /* @__PURE__ */ jsx("span", { className: "search-result-tag", children: tag }, tag)) }),
+                /* @__PURE__ */ jsx("div", { className: "search-result-description", children: result.description })
               ]
             },
             result.id
@@ -23674,7 +23354,7 @@ const LoadFlowStep = (props) => {
         ] })
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Collapsible, { title: "Upload a file", dataTestId: `import-flow-modal-collapsible-local-${flowId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "padding-10 margin-left--10 margin-right--10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(Collapsible, { title: "Upload a file", dataTestId: `import-flow-modal-collapsible-local-${flowId}`, children: /* @__PURE__ */ jsx("div", { className: "padding-10 margin-left--10 margin-right--10", children: /* @__PURE__ */ jsx(
       DropZone,
       {
         flowId,
@@ -23682,10 +23362,10 @@ const LoadFlowStep = (props) => {
         allowedFileExtensions: [".waldiez", ".json"]
       }
     ) }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Collapsible, { title: "Import from URL", dataTestId: `import-flow-modal-collapsible-url-${flowId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10 full-width flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "warning margin-bottom-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Warning: Importing from an untrusted source can be harmful" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10 full-width flex-align-center", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(Collapsible, { title: "Import from URL", dataTestId: `import-flow-modal-collapsible-url-${flowId}`, children: /* @__PURE__ */ jsxs("div", { className: "margin-top-10 full-width flex-column", children: [
+      /* @__PURE__ */ jsx("div", { className: "warning margin-bottom-10", children: /* @__PURE__ */ jsx("span", { children: "Warning: Importing from an untrusted source can be harmful" }) }),
+      /* @__PURE__ */ jsxs("div", { className: "margin-top-10 full-width flex-align-center", children: [
+        /* @__PURE__ */ jsx(
           "input",
           {
             type: "text",
@@ -23696,7 +23376,7 @@ const LoadFlowStep = (props) => {
             "data-testid": `import-flow-modal-url-input-${flowId}`
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           "button",
           {
             type: "button",
@@ -23710,10 +23390,10 @@ const LoadFlowStep = (props) => {
         )
       ] })
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-20 center", children: loadedFlowData ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-center", children: [
+    /* @__PURE__ */ jsx("div", { className: "margin-top-20 center", children: loadedFlowData ? /* @__PURE__ */ jsxs("div", { className: "flex-center", children: [
       "Loaded flow: ",
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "bold italic", children: loadedFlowData.name }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("span", { className: "bold italic", children: loadedFlowData.name }),
+      /* @__PURE__ */ jsx(
         FaXmark,
         {
           className: "margin-left-10 clickable",
@@ -23721,7 +23401,7 @@ const LoadFlowStep = (props) => {
           onClick: onClearLoadedFlowData
         }
       )
-    ] }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "No flow loaded" }) })
+    ] }) : /* @__PURE__ */ jsx("div", { children: "No flow loaded" }) })
   ] });
 };
 const useFlowAgents = (props) => {
@@ -24050,12 +23730,12 @@ const FlowAgents = (props) => {
   const { flowId, state } = props;
   const { selectedProps } = state;
   const { agentNodes, onAgentsChange, onAllNoneAgentsChange } = useFlowAgents(props);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body-section", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "Agents" }),
-    agentNodes && agentNodes?.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
+    /* @__PURE__ */ jsx("h4", { children: "Agents" }),
+    agentNodes && agentNodes?.length > 1 && /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
       CheckboxInput,
       {
-        label: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bold", children: "Select All | None" }),
+        label: /* @__PURE__ */ jsx("div", { className: "bold", children: "Select All | None" }),
         isChecked: selectedProps.nodes.agents.length === agentNodes.length,
         onCheckedChange: onAllNoneAgentsChange,
         id: `import-flow-modal-agents-all-none-${flowId}`,
@@ -24064,10 +23744,10 @@ const FlowAgents = (props) => {
     ) }),
     agentNodes?.map((node) => {
       const agentNode = node;
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          label: /* @__PURE__ */ jsxs("div", { children: [
             agentNode.data.label,
             ": ",
             agentNode.data.description
@@ -24079,7 +23759,7 @@ const FlowAgents = (props) => {
         }
       ) }, node.id);
     }),
-    agentNodes?.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "No agents in this flow" })
+    agentNodes?.length === 0 && /* @__PURE__ */ jsx("div", { children: "No agents in this flow" })
   ] });
 };
 const FlowInfo = (props) => {
@@ -24097,10 +23777,10 @@ const FlowInfo = (props) => {
     onRequirementsChange,
     onImportEverythingChange
   } = useFlowInfo(props);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(jsxRuntimeExports.Fragment, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body-section", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "Flow Override" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
+      /* @__PURE__ */ jsx("h4", { children: "Flow Override" }),
+      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
         {
           label: "Override existing flow with imported flow",
@@ -24111,9 +23791,9 @@ const FlowInfo = (props) => {
         }
       ) })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body-section", style: { marginTop: 0 }, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "What to import" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", style: { marginTop: 0 }, children: [
+      /* @__PURE__ */ jsx("h4", { children: "What to import" }),
+      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
         {
           label: "Import Everything",
@@ -24124,22 +23804,22 @@ const FlowInfo = (props) => {
         }
       ) })
     ] }),
-    !selectedProps.everything && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body-section", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "Flow Information" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    !selectedProps.everything && /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
+      /* @__PURE__ */ jsx("h4", { children: "Flow Information" }),
+      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bold", children: "Select All | None" }),
+          label: /* @__PURE__ */ jsx("div", { className: "bold", children: "Select All | None" }),
           isChecked: selectedProps.name && selectedProps.description && selectedProps.tags && selectedProps.requirements && selectedProps.isAsync,
           onCheckedChange: onAllNoneInfoChange,
           id: `import-flow-info-all-none-${flowId}`,
           "data-testid": "import-flow-info-all-none"
         }
       ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-testid": "import-flow-info-name-preview", children: [
+          label: /* @__PURE__ */ jsxs("div", { "data-testid": "import-flow-info-name-preview", children: [
             "Name: ",
             flowData?.name
           ] }),
@@ -24149,10 +23829,10 @@ const FlowInfo = (props) => {
           "data-testid": "import-flow-info-name"
         }
       ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-testid": "import-flow-info-description-preview", children: [
+          label: /* @__PURE__ */ jsxs("div", { "data-testid": "import-flow-info-description-preview", children: [
             "Description: ",
             flowData?.description
           ] }),
@@ -24162,10 +23842,10 @@ const FlowInfo = (props) => {
           "data-testid": "import-flow-info-description"
         }
       ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-testid": "import-flow-info-tags-preview", children: [
+          label: /* @__PURE__ */ jsxs("div", { "data-testid": "import-flow-info-tags-preview", children: [
             "Tags: ",
             tagsString
           ] }),
@@ -24175,10 +23855,10 @@ const FlowInfo = (props) => {
           "data-testid": "import-flow-info-tags"
         }
       ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { "data-testid": "import-flow-info-requirements-preview", children: [
+          label: /* @__PURE__ */ jsxs("div", { "data-testid": "import-flow-info-requirements-preview", children: [
             "Requirements: ",
             requirementsString
           ] }),
@@ -24188,7 +23868,7 @@ const FlowInfo = (props) => {
           "data-testid": "import-flow-info-requirements"
         }
       ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
         {
           label: "Is Async",
@@ -24205,9 +23885,9 @@ const FlowModels = (props) => {
   const { state } = props;
   const { modelNodes, onModelsChange, onAllNoneModelsChange } = useFlowModels(props);
   const { selectedProps } = state;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body-section", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "Models" }),
-    modelNodes && modelNodes?.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
+    /* @__PURE__ */ jsx("h4", { children: "Models" }),
+    modelNodes && modelNodes?.length > 1 && /* @__PURE__ */ jsx(
       CheckboxInput,
       {
         id: `import-flow-modal-models-all-none-${props.flowId}`,
@@ -24219,10 +23899,10 @@ const FlowModels = (props) => {
     ),
     modelNodes?.map((node) => {
       const modelNode = node;
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          label: /* @__PURE__ */ jsxs("div", { children: [
             modelNode.data.label,
             ": ",
             modelNode.data.description
@@ -24234,16 +23914,16 @@ const FlowModels = (props) => {
         }
       ) }, node.id);
     }),
-    modelNodes?.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "No models in this flow" })
+    modelNodes?.length === 0 && /* @__PURE__ */ jsx("div", { children: "No models in this flow" })
   ] });
 };
 const FlowTools = (props) => {
   const { flowId, state } = props;
   const { selectedProps } = state;
   const { toolNodes, onToolsChange, onAllNoneToolsChange } = useFlowTools(props);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body-section", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "Tools" }),
-    toolNodes && toolNodes?.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body-section", children: [
+    /* @__PURE__ */ jsx("h4", { children: "Tools" }),
+    toolNodes && toolNodes?.length > 1 && /* @__PURE__ */ jsx(
       CheckboxInput,
       {
         id: `import-flow-modal-tools-all-none-${flowId}`,
@@ -24255,10 +23935,10 @@ const FlowTools = (props) => {
     ),
     toolNodes?.map((node) => {
       const toolNode = node;
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx("div", { className: "flow-data-preview-body-section-row", children: /* @__PURE__ */ jsx(
         CheckboxInput,
         {
-          label: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+          label: /* @__PURE__ */ jsxs("div", { children: [
             toolNode.data.label,
             ": ",
             toolNode.data.description
@@ -24270,19 +23950,19 @@ const FlowTools = (props) => {
         }
       ) }, node.id);
     }),
-    toolNodes?.length === 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "No tools in this flow" })
+    toolNodes?.length === 0 && /* @__PURE__ */ jsx("div", { children: "No tools in this flow" })
   ] });
 };
 const FlowDataPreviewStep = (props) => {
   const { flowId, state, onStateChange } = props;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview", "data-testid": `import-flow-modal-preview-step-${flowId}-view`, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(FlowInfo, { flowId, state, onStateChange }),
-    !state.selectedProps.everything && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-data-preview-header", children: /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { children: "Flow Nodes" }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-data-preview-body", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(FlowModels, { flowId, state, onStateChange }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(FlowTools, { flowId, state, onStateChange }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(FlowAgents, { flowId, state, onStateChange })
+  return /* @__PURE__ */ jsxs("div", { className: "flow-data-preview", "data-testid": `import-flow-modal-preview-step-${flowId}-view`, children: [
+    /* @__PURE__ */ jsx(FlowInfo, { flowId, state, onStateChange }),
+    !state.selectedProps.everything && /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx("div", { className: "flow-data-preview-header", children: /* @__PURE__ */ jsx("h3", { children: "Flow Nodes" }) }),
+      /* @__PURE__ */ jsxs("div", { className: "flow-data-preview-body", children: [
+        /* @__PURE__ */ jsx(FlowModels, { flowId, state, onStateChange }),
+        /* @__PURE__ */ jsx(FlowTools, { flowId, state, onStateChange }),
+        /* @__PURE__ */ jsx(FlowAgents, { flowId, state, onStateChange })
       ] })
     ] })
   ] });
@@ -24290,7 +23970,7 @@ const FlowDataPreviewStep = (props) => {
 const ImportFlowModal = (props) => {
   const { flowId, isOpen } = props;
   const { state, initialState: initialState2, onStateChange, onClose, onBack, onForward } = useImportFlowModal(props);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     Modal,
     {
       flowId,
@@ -24298,7 +23978,7 @@ const ImportFlowModal = (props) => {
       onClose,
       title: "Import Flow",
       dataTestId: `import-flow-modal-${flowId}`,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body padding-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      children: /* @__PURE__ */ jsx("div", { className: "modal-body padding-10", children: /* @__PURE__ */ jsxs(
         Wizard,
         {
           activeStep: 0,
@@ -24308,7 +23988,7 @@ const ImportFlowModal = (props) => {
           onBack,
           onForward,
           children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(WizardStep, { id: `import-flow-modal-load-step-${flowId}`, title: "Load Flow", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(WizardStep, { id: `import-flow-modal-load-step-${flowId}`, title: "Load Flow", children: /* @__PURE__ */ jsx(
               LoadFlowStep,
               {
                 initialState: initialState2,
@@ -24317,7 +23997,7 @@ const ImportFlowModal = (props) => {
                 onStateChange
               }
             ) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(WizardStep, { id: `import-flow-modal-preview-step-${flowId}`, title: "Preview Flow", children: state.loadedFlowData ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(WizardStep, { id: `import-flow-modal-preview-step-${flowId}`, title: "Preview Flow", children: state.loadedFlowData ? /* @__PURE__ */ jsx(
               FlowDataPreviewStep,
               {
                 flowId,
@@ -24365,8 +24045,8 @@ const WaldiezFlowPanels = (props) => {
   const includeConvertIcons = !isReadOnly && typeof onConvert === "function";
   const includeStepByStepRun = !isReadOnly && typeof stepRunner === "function";
   const { isDark, toggleTheme } = useWaldiezTheme();
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    selectedNodeType !== "agent" && readOnly === false && /* @__PURE__ */ jsxRuntimeExports.jsx(Panel, { position: "top-left", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    selectedNodeType !== "agent" && readOnly === false && /* @__PURE__ */ jsx(Panel, { position: "top-left", children: /* @__PURE__ */ jsxs(
       "button",
       {
         type: "button",
@@ -24375,15 +24055,15 @@ const WaldiezFlowPanels = (props) => {
         title: `Add ${selectedNodeType}`,
         "data-testid": `add-${selectedNodeType}-node`,
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(FaPlusCircle, {}),
+          /* @__PURE__ */ jsx(FaPlusCircle, {}),
           "Add ",
           selectedNodeType
         ]
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(Panel, { position: "top-right", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "editor-nav-actions", children: [
-      (includeRunButton || includeConvertIcons || includeStepByStepRun) && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        includeStepByStepRun && /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(Panel, { position: "top-right", children: /* @__PURE__ */ jsxs("div", { className: "editor-nav-actions", children: [
+      (includeRunButton || includeConvertIcons || includeStepByStepRun) && /* @__PURE__ */ jsxs(Fragment, { children: [
+        includeStepByStepRun && /* @__PURE__ */ jsx(
           "button",
           {
             type: "button",
@@ -24391,10 +24071,10 @@ const WaldiezFlowPanels = (props) => {
             onClick: onStepRun,
             title: "Run step-by-step",
             "data-testid": `step-by-step-${flowId}`,
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(VscDebugAlt, {})
+            children: /* @__PURE__ */ jsx(VscDebugAlt, {})
           }
         ),
-        includeRunButton && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        includeRunButton && /* @__PURE__ */ jsx(
           "button",
           {
             type: "button",
@@ -24402,10 +24082,10 @@ const WaldiezFlowPanels = (props) => {
             onClick: onRun,
             title: "Run flow",
             "data-testid": `run-${flowId}`,
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCirclePlay, {})
+            children: /* @__PURE__ */ jsx(FaCirclePlay, {})
           }
         ),
-        includeConvertIcons && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        includeConvertIcons && /* @__PURE__ */ jsx(
           "button",
           {
             type: "button",
@@ -24413,10 +24093,10 @@ const WaldiezFlowPanels = (props) => {
             onClick: onConvertToPy,
             title: "Convert to Python",
             "data-testid": `convert-${flowId}-to-py`,
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaPython, {})
+            children: /* @__PURE__ */ jsx(FaPython, {})
           }
         ),
-        includeConvertIcons && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        includeConvertIcons && /* @__PURE__ */ jsx(
           "button",
           {
             type: "button",
@@ -24424,11 +24104,11 @@ const WaldiezFlowPanels = (props) => {
             onClick: onConvertToIpynb,
             title: "Convert to Jupyter Notebook",
             "data-testid": `convert-${flowId}-to-ipynb`,
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(SiJupyter, {})
+            children: /* @__PURE__ */ jsx(SiJupyter, {})
           }
         )
       ] }),
-      includeImportButton && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      includeImportButton && /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -24436,10 +24116,10 @@ const WaldiezFlowPanels = (props) => {
           onClick: onOpenImportModal,
           title: "Import flow",
           "data-testid": `import-flow-${flowId}-button`,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaFileImport, {})
+          children: /* @__PURE__ */ jsx(FaFileImport, {})
         }
       ),
-      includeExportButton && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      includeExportButton && /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -24447,28 +24127,28 @@ const WaldiezFlowPanels = (props) => {
           onClick: onExport,
           title: "Export flow",
           "data-testid": `export-flow-${flowId}-button`,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(MdIosShare, { size: 24 })
+          children: /* @__PURE__ */ jsx(MdIosShare, { size: 24 })
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
           className: "editor-nav-action",
           title: "Github repository",
           "data-testid": `open-docs-${flowId}`,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          children: /* @__PURE__ */ jsx(
             "a",
             {
               href: "https://github.com/waldiez/waldiez",
               target: "_blank",
               rel: "noopener noreferrer",
-              children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaGithub, {})
+              children: /* @__PURE__ */ jsx(FaGithub, {})
             }
           )
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -24476,7 +24156,7 @@ const WaldiezFlowPanels = (props) => {
           onClick: toggleTheme,
           title: "Toggle theme",
           "data-testid": `toggle-theme-${flowId}`,
-          children: isDark ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaSun, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaMoon, {})
+          children: isDark ? /* @__PURE__ */ jsx(FaSun, {}) : /* @__PURE__ */ jsx(FaMoon, {})
         }
       )
     ] }) })
@@ -24506,7 +24186,7 @@ const EdgeLabel = ({ edge, transform }) => {
     return null;
   }
   const trimmedTo20Chars = label.length > 20 ? `${label.slice(0, 20)}...` : label;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     "div",
     {
       style: {
@@ -24535,7 +24215,7 @@ const EdgePosition = ({
   if (!edge) {
     return null;
   }
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     "div",
     {
       style: {
@@ -24720,16 +24400,16 @@ const getEdgeLabelTransformNodeOffset = (sourceX, sourceY, targetX, targetY, lab
   }
 };
 const WaldiezEdgeChat = memo((props) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezEdgeCommon, { ...props, type: "chat" });
+  return /* @__PURE__ */ jsx(WaldiezEdgeCommon, { ...props, type: "chat" });
 });
 const WaldiezEdgeNested = memo((props) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezEdgeCommon, { ...props, type: "nested" });
+  return /* @__PURE__ */ jsx(WaldiezEdgeCommon, { ...props, type: "nested" });
 });
 const WaldiezEdgeGroup = memo((props) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezEdgeCommon, { ...props, type: "group" });
+  return /* @__PURE__ */ jsx(WaldiezEdgeCommon, { ...props, type: "group" });
 });
 const WaldiezEdgeHidden = memo((props) => {
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezEdgeCommon, { ...props, type: "hidden" });
+  return /* @__PURE__ */ jsx(WaldiezEdgeCommon, { ...props, type: "hidden" });
 });
 const getGroupChatType = (sourceAgent, targetAgent) => {
   if (targetAgent.data.agentType === "group_manager") {
@@ -24746,11 +24426,11 @@ const getGroupChatType = (sourceAgent, targetAgent) => {
 const getGroupChatIcon = (groupChatType, size2) => {
   switch (groupChatType) {
     case "handoff":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(GiShakingHands, { size: size2 });
+      return /* @__PURE__ */ jsx(GiShakingHands, { size: size2 });
     case "nested":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(GiNestEggs, { size: size2 });
+      return /* @__PURE__ */ jsx(GiNestEggs, { size: size2 });
     default:
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(MdMessage, { size: size2 });
+      return /* @__PURE__ */ jsx(MdMessage, { size: size2 });
   }
 };
 const getEdgeIcon = (type, groupChatType, edgeColor) => {
@@ -24760,9 +24440,9 @@ const getEdgeIcon = (type, groupChatType, edgeColor) => {
   }
   switch (type) {
     case "chat":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(MdMessage, { color: edgeColor, size: size2 });
+      return /* @__PURE__ */ jsx(MdMessage, { color: edgeColor, size: size2 });
     case "nested":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(GiNestEggs, { color: edgeColor, size: size2 });
+      return /* @__PURE__ */ jsx(GiNestEggs, { color: edgeColor, size: size2 });
     default:
       return null;
   }
@@ -24882,23 +24562,23 @@ const WaldiezEdgeCommon = memo((props) => {
   }, []);
   const renderEdgeContent = useMemo(() => {
     if (edgeNumber !== "") {
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-edge-view clickable", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(EdgePosition, { edge, transform: positionTranslation.edgeStart, children: edgeNumber === "0" ? /* @__PURE__ */ jsxRuntimeExports.jsx(GoAlert, { size: 16, className: "edge-position-warning-icon" }) : edgeNumber }),
+      return /* @__PURE__ */ jsxs("div", { className: "agent-edge-view clickable", children: [
+        /* @__PURE__ */ jsx(EdgePosition, { edge, transform: positionTranslation.edgeStart, children: edgeNumber === "0" ? /* @__PURE__ */ jsx(GoAlert, { size: 16, className: "edge-position-warning-icon" }) : edgeNumber }),
         edgeIcon
       ] });
     }
     if (type === "group") {
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-edge-view clickable", children: [
-        groupChatType === "fromManager" && /* @__PURE__ */ jsxRuntimeExports.jsx(EdgePosition, { edge, transform: positionTranslation.edgeStart, children: /* @__PURE__ */ jsxRuntimeExports.jsx(GoAlert, { size: 16, className: "edge-position-warning-icon" }) }),
-        groupChatType === "toManager" && /* @__PURE__ */ jsxRuntimeExports.jsx(EdgePosition, { edge, transform: positionTranslation.edgeStart, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "edge-position", children: "1" }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "edge-icon", children: edgeIcon })
+      return /* @__PURE__ */ jsxs("div", { className: "agent-edge-view clickable", children: [
+        groupChatType === "fromManager" && /* @__PURE__ */ jsx(EdgePosition, { edge, transform: positionTranslation.edgeStart, children: /* @__PURE__ */ jsx(GoAlert, { size: 16, className: "edge-position-warning-icon" }) }),
+        groupChatType === "toManager" && /* @__PURE__ */ jsx(EdgePosition, { edge, transform: positionTranslation.edgeStart, children: /* @__PURE__ */ jsx("div", { className: "edge-position", children: "1" }) }),
+        /* @__PURE__ */ jsx("div", { className: "edge-icon", children: edgeIcon })
       ] });
     }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-edge-view clickable", children: edgeIcon });
+    return /* @__PURE__ */ jsx("div", { className: "agent-edge-view clickable", children: edgeIcon });
   }, [edgeNumber, type, edgeIcon, edge, positionTranslation, groupChatType]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(BaseEdge, { path: edgePath, markerEnd, style: { ...style, color: edgeColor } }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(EdgeLabelRenderer, { children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(BaseEdge, { path: edgePath, markerEnd, style: { ...style, color: edgeColor } }),
+    /* @__PURE__ */ jsx(EdgeLabelRenderer, { children: /* @__PURE__ */ jsxs(
       "div",
       {
         style: {
@@ -24912,8 +24592,8 @@ const WaldiezEdgeCommon = memo((props) => {
         tabIndex: 0,
         onBlur: onEdgeBlur,
         children: [
-          focussed && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "edge-actions", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+          focussed && /* @__PURE__ */ jsxs("div", { className: "edge-actions", children: [
+            /* @__PURE__ */ jsx(
               "div",
               {
                 title: "Delete",
@@ -24922,10 +24602,10 @@ const WaldiezEdgeCommon = memo((props) => {
                 className: "delete-edge clickable",
                 "data-testid": `delete-edge-${id}`,
                 "aria-label": "Delete edge",
-                children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaTrash$1, { size: 12 })
+                children: /* @__PURE__ */ jsx(FaTrash$1, { size: 12 })
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "div",
               {
                 title: "Edit",
@@ -24934,12 +24614,12 @@ const WaldiezEdgeCommon = memo((props) => {
                 className: "open-edge-modal clickable",
                 "data-testid": `open-edge-modal-${id}`,
                 "aria-label": "Edit edge",
-                children: /* @__PURE__ */ jsxRuntimeExports.jsx(VscSettings, { size: 12 })
+                children: /* @__PURE__ */ jsx(VscSettings, { size: 12 })
               }
             )
           ] }),
           renderEdgeContent,
-          /* @__PURE__ */ jsxRuntimeExports.jsx(EdgeLabel, { edge, transform: positionTranslation.edgeEnd })
+          /* @__PURE__ */ jsx(EdgeLabel, { edge, transform: positionTranslation.edgeEnd })
         ]
       }
     ) })
@@ -25272,9 +24952,9 @@ const WaldiezEdgeBasicTab = (props) => {
     onLlmPromptChange,
     onLlmSummaryRoleChange
   } = useWaldiezEdgeBasicTab(props);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top--10", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "margin-top--10", children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           htmlFor: `select-chat-type-${edgeId}`,
@@ -25282,8 +24962,8 @@ const WaldiezEdgeBasicTab = (props) => {
           info: "The type of the chat. Could be Chat or Nested Chat. Chats are executed in a sequential order. Nested Chats are not always executed (i.e., triggered)."
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: `select-chat-type-${edgeId}`, children: "Chat Type:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: `select-chat-type-${edgeId}`, children: "Chat Type:" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: edgeTypeOptions,
@@ -25293,7 +24973,7 @@ const WaldiezEdgeBasicTab = (props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       TextInput,
       {
         label: "Label:",
@@ -25303,9 +24983,9 @@ const WaldiezEdgeBasicTab = (props) => {
         dataTestId: `edge-${edgeId}-label-input`
       }
     ),
-    !skipDescription && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `edge-${edgeId}-description-input`, children: "Description:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    !skipDescription && /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: `edge-${edgeId}-description-input`, children: "Description:" }),
+      /* @__PURE__ */ jsx(
         TextareaInput,
         {
           rows: 2,
@@ -25316,8 +24996,8 @@ const WaldiezEdgeBasicTab = (props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+    /* @__PURE__ */ jsx(
       CheckboxInput,
       {
         label: "Clear History",
@@ -25326,7 +25006,7 @@ const WaldiezEdgeBasicTab = (props) => {
         id: `edge-${edgeId}-clear-history-checkbox`
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       NumberInput,
       {
         name: "max-turns",
@@ -25342,35 +25022,35 @@ const WaldiezEdgeBasicTab = (props) => {
         dataTestId: `edge-${edgeId}-max-turns-input`
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       InfoLabel,
       {
         htmlFor: `select-summary-method-${edgeId}`,
         label: "Summary Method:",
-        info: () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        info: () => /* @__PURE__ */ jsxs("div", { children: [
           "The method to be used to summarize the conversation. ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+          /* @__PURE__ */ jsx("br", {}),
           "Possible values are: ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Reflection with LLM:" }),
+          /* @__PURE__ */ jsx("br", {}),
+          /* @__PURE__ */ jsxs("ul", { children: [
+            /* @__PURE__ */ jsxs("li", { children: [
+              /* @__PURE__ */ jsx("b", { children: "Reflection with LLM:" }),
               " the summary is generated by reflecting on the conversation and using the Language Model (LLM) to generate the summary."
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Last Message:" }),
+            /* @__PURE__ */ jsxs("li", { children: [
+              /* @__PURE__ */ jsx("b", { children: "Last Message:" }),
               " the last message of the conversation is used as the summary."
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "None:" }),
+            /* @__PURE__ */ jsxs("li", { children: [
+              /* @__PURE__ */ jsx("b", { children: "None:" }),
               " no summary is generated."
             ] })
           ] })
         ] })
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: `select-summary-method-${edgeId}`, children: "Summary Method:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: `select-summary-method-${edgeId}`, children: "Summary Method:" }),
+    /* @__PURE__ */ jsx(
       Select,
       {
         options: summaryOptions,
@@ -25382,8 +25062,8 @@ const WaldiezEdgeBasicTab = (props) => {
         inputId: `select-summary-method-${edgeId}`
       }
     ),
-    data.summary.method === "reflectionWithLlm" && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    data.summary.method === "reflectionWithLlm" && /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           htmlFor: `edge-${edgeId}-llm-prompt-input`,
@@ -25391,7 +25071,7 @@ const WaldiezEdgeBasicTab = (props) => {
           info: "The prompt to be used for the summary generation."
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         TextareaInput,
         {
           placeholder: "Enter the summary prompt",
@@ -25401,8 +25081,8 @@ const WaldiezEdgeBasicTab = (props) => {
           "data-testid": `edge-${edgeId}-llm-prompt-input`
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `select-summary-role-${edgeId}`, children: "Summary Role:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("label", { htmlFor: `select-summary-role-${edgeId}`, children: "Summary Role:" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: summaryRoleOptions,
@@ -25498,7 +25178,7 @@ const WaldiezEdgeMessageTab = (props) => {
   const handlAddContextEntry = skipContextVarsOption === true ? noOp : onAddMessageContextEntry;
   const handleRemoveContextEntry = skipContextVarsOption === true ? noOp : onRemoveMessageContextEntry;
   const handleUpdateContextEntries = skipContextVarsOption === true ? noOp : onUpdateMessageContextEntries;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
     MessageInput,
     {
       darkMode,
@@ -25620,10 +25300,10 @@ const WaldiezEdgeNestedTab = (props) => {
   };
   const noOp = () => {
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-top-10", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info margin-bottom-10", children: "When the connection is used in a nested chat, you can specify the messages to be sent and received, from the source and the target respectively." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex: 0, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Message", id: `wc-${flowId}-edge-nested-chat-${edgeId}-message`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
+    /* @__PURE__ */ jsx("div", { className: "info margin-bottom-10", children: "When the connection is used in a nested chat, you can specify the messages to be sent and received, from the source and the target respectively." }),
+    /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
+      /* @__PURE__ */ jsx(TabItem, { label: "Message", id: `wc-${flowId}-edge-nested-chat-${edgeId}-message`, children: /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
         MessageInput,
         {
           darkMode,
@@ -25643,7 +25323,7 @@ const WaldiezEdgeNestedTab = (props) => {
           onUpdateContextEntries: noOp
         }
       ) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Reply", id: `wc-${flowId}-edge-nested-chat-${edgeId}-reply`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(TabItem, { label: "Reply", id: `wc-${flowId}-edge-nested-chat-${edgeId}-reply`, children: /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
         MessageInput,
         {
           darkMode,
@@ -25738,7 +25418,7 @@ const WaldiezEdgeModal = memo((props) => {
     [onDataChange]
   );
   const beforeTitle = useMemo(
-    () => /* @__PURE__ */ jsxRuntimeExports.jsx(
+    () => /* @__PURE__ */ jsx(
       FaTrashCan,
       {
         className: "clickable",
@@ -25820,7 +25500,7 @@ const WaldiezEdgeModal = memo((props) => {
     },
     [onDataChange, edgeData.nestedChat]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     Modal,
     {
       flowId,
@@ -25832,9 +25512,9 @@ const WaldiezEdgeModal = memo((props) => {
       dataTestId: testIds.modal,
       hasUnsavedChanges: isDirty,
       preventCloseIfUnsavedChanges: true,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body edge-modal", children: [
-        edgeType === "group" ? /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Properties", id: tabIds.properties, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      children: /* @__PURE__ */ jsxs("div", { className: "modal-body edge-modal", children: [
+        edgeType === "group" ? /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
+          /* @__PURE__ */ jsx(TabItem, { label: "Properties", id: tabIds.properties, children: /* @__PURE__ */ jsx(
             WaldiezEdgeBasicTab,
             {
               edgeId,
@@ -25845,7 +25525,7 @@ const WaldiezEdgeModal = memo((props) => {
               skipDescription: true
             }
           ) }),
-          groupChatType === "toManager" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Message", id: tabIds.message, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          groupChatType === "toManager" && /* @__PURE__ */ jsx(TabItem, { label: "Message", id: tabIds.message, children: /* @__PURE__ */ jsx(
             WaldiezEdgeMessageTab,
             {
               edgeId,
@@ -25857,7 +25537,7 @@ const WaldiezEdgeModal = memo((props) => {
               onDataChange
             }
           ) }),
-          groupChatType === "nested" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Message", id: `wc-${flowId}-edge-nested-chat-${edgeId}-message`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          groupChatType === "nested" && /* @__PURE__ */ jsx(TabItem, { label: "Message", id: `wc-${flowId}-edge-nested-chat-${edgeId}-message`, children: /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
             MessageInput,
             {
               darkMode: isDark,
@@ -25878,22 +25558,22 @@ const WaldiezEdgeModal = memo((props) => {
               onUpdateContextEntries: noOp
             }
           ) }) }),
-          groupChatType === "handoff" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Condition", id: tabIds.condition, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          groupChatType === "handoff" && /* @__PURE__ */ jsx(TabItem, { label: "Condition", id: tabIds.condition, children: /* @__PURE__ */ jsx(
             HandoffCondition,
             {
               condition: edgeData.condition,
               onDataChange: onConditionChange
             }
           ) }),
-          groupChatType === "handoff" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Availability", id: tabIds.availability, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          groupChatType === "handoff" && /* @__PURE__ */ jsx(TabItem, { label: "Availability", id: tabIds.availability, children: /* @__PURE__ */ jsx(
             HandoffAvailability,
             {
               available: edgeData.available,
               onDataChange: onAvailabilityChange
             }
           ) })
-        ] }) : /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Properties", id: tabIds.properties, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        ] }) : /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
+          /* @__PURE__ */ jsx(TabItem, { label: "Properties", id: tabIds.properties, children: /* @__PURE__ */ jsx(
             WaldiezEdgeBasicTab,
             {
               edgeId,
@@ -25903,7 +25583,7 @@ const WaldiezEdgeModal = memo((props) => {
               onDataChange
             }
           ) }),
-          edgeType === "chat" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Message", id: tabIds.message, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          edgeType === "chat" && /* @__PURE__ */ jsx(TabItem, { label: "Message", id: tabIds.message, children: /* @__PURE__ */ jsx(
             WaldiezEdgeMessageTab,
             {
               edgeId,
@@ -25913,7 +25593,7 @@ const WaldiezEdgeModal = memo((props) => {
               onDataChange
             }
           ) }),
-          edgeType === "nested" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Nested Chat", id: tabIds.nested, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          edgeType === "nested" && /* @__PURE__ */ jsx(TabItem, { label: "Nested Chat", id: tabIds.nested, children: /* @__PURE__ */ jsx(
             WaldiezEdgeNestedTab,
             {
               flowId,
@@ -25924,8 +25604,8 @@ const WaldiezEdgeModal = memo((props) => {
             }
           ) })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
+          /* @__PURE__ */ jsx(
             "button",
             {
               type: "button",
@@ -25937,8 +25617,8 @@ const WaldiezEdgeModal = memo((props) => {
               children: "Cancel"
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-row", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxs("div", { className: "flex-row", children: [
+            /* @__PURE__ */ jsx(
               "button",
               {
                 title: "Save & Close",
@@ -25952,7 +25632,7 @@ const WaldiezEdgeModal = memo((props) => {
                 children: "Save & Close"
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -25978,106 +25658,106 @@ const ActivityIcon = ({ activity, title, className }) => {
     return null;
   }
   if (activity === "thinking") {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    return /* @__PURE__ */ jsxs(
       "span",
       {
         className: `agent-activity-icon is-thinking ${className ?? ""}`,
         title: title ?? "Thinking",
         "data-activity": "thinking",
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(FaHourglassHalf, {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "typing-dots", "aria-label": "thinking", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("i", {}),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("i", {}),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("i", {})
+          /* @__PURE__ */ jsx(FaHourglassHalf, {}),
+          /* @__PURE__ */ jsxs("span", { className: "typing-dots", "aria-label": "thinking", children: [
+            /* @__PURE__ */ jsx("i", {}),
+            /* @__PURE__ */ jsx("i", {}),
+            /* @__PURE__ */ jsx("i", {})
           ] })
         ]
       }
     );
   }
   if (activity === "tool") {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       "span",
       {
         className: `agent-activity-icon is-tool ${className ?? ""}`,
         title: title ?? "Running tool",
         "data-activity": "tool",
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCog, { className: "gear" })
+        children: /* @__PURE__ */ jsx(FaCog, { className: "gear" })
       }
     );
   }
   if (activity === "message") {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    return /* @__PURE__ */ jsxs(
       "span",
       {
         className: `agent-activity-icon is-message ${className ?? ""}`,
         title: title ?? "Composing",
         "data-activity": "message",
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(FaCommentDots, { className: "bubble" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "typing-dots", "aria-label": "typing", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("i", {}),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("i", {}),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("i", {})
+          /* @__PURE__ */ jsx(FaCommentDots, { className: "bubble" }),
+          /* @__PURE__ */ jsxs("span", { className: "typing-dots", "aria-label": "typing", children: [
+            /* @__PURE__ */ jsx("i", {}),
+            /* @__PURE__ */ jsx("i", {}),
+            /* @__PURE__ */ jsx("i", {})
           ] })
         ]
       }
     );
   }
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     "span",
     {
       className: `agent-activity-icon ${className ?? ""}`,
       title: title ?? String(activity),
       "data-activity": String(activity),
-      children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCircle, { className: "status-dot" })
+      children: /* @__PURE__ */ jsx(FaCircle, { className: "status-dot" })
     }
   );
 };
 const ICON_SIZE = 14;
 const PREDEFINED_TOOL_INSTRUCTIONS = {
   wikipedia_search: void 0,
-  youtube_search: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "To use the YouTube Search tool, you need to set up a YouTube Data API key." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: " Follow these steps:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+  youtube_search: /* @__PURE__ */ jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsx("p", { children: "To use the YouTube Search tool, you need to set up a YouTube Data API key." }),
+    /* @__PURE__ */ jsx("p", { children: " Follow these steps:" }),
+    /* @__PURE__ */ jsxs("ol", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Go to the",
         " ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://console.cloud.google.com/", target: "_blank", rel: "noopener noreferrer", children: "Google Cloud Console" }),
+        /* @__PURE__ */ jsx("a", { href: "https://console.cloud.google.com/", target: "_blank", rel: "noopener noreferrer", children: "Google Cloud Console" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Create a new project or select an existing one." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsx("li", { children: "Create a new project or select an existing one." }),
+      /* @__PURE__ */ jsxs("li", { children: [
         "Navigate to ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "APIs & Services > Library" }),
+        /* @__PURE__ */ jsx("strong", { children: "APIs & Services > Library" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Search for ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "YouTube Data API v3" }),
+        /* @__PURE__ */ jsx("strong", { children: "YouTube Data API v3" }),
         " and enable it."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Go to ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "APIs & Services > Credentials" }),
+        /* @__PURE__ */ jsx("strong", { children: "APIs & Services > Credentials" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Click on ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Create Credentials > API key" }),
+        /* @__PURE__ */ jsx("strong", { children: "Create Credentials > API key" }),
         " and copy your API key."
       ] })
     ] })
   ] }),
-  google_search: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "To use the Google Search tool, you need to set up a Google Custom Search Engine (CSE) and obtain an API key." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Follow these steps:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+  google_search: /* @__PURE__ */ jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsx("p", { children: "To use the Google Search tool, you need to set up a Google Custom Search Engine (CSE) and obtain an API key." }),
+    /* @__PURE__ */ jsx("p", { children: "Follow these steps:" }),
+    /* @__PURE__ */ jsxs("ol", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Go to",
         " ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           "a",
           {
             href: "https://programmablesearchengine.google.com/about/",
@@ -26088,96 +25768,96 @@ const PREDEFINED_TOOL_INSTRUCTIONS = {
         ),
         "."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Click ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Get Started" }),
+        /* @__PURE__ */ jsx("strong", { children: "Get Started" }),
         " and create a search engine."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Under ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Sites to Search" }),
+        /* @__PURE__ */ jsx("strong", { children: "Sites to Search" }),
         ", select ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Search the entire web" }),
+        /* @__PURE__ */ jsx("strong", { children: "Search the entire web" }),
         " if you want global search."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Copy the ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Search Engine ID" }),
+        /* @__PURE__ */ jsx("strong", { children: "Search Engine ID" }),
         " from the CSE dashboard (the `cx` parameter from the URL)."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Go to the",
         " ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://console.cloud.google.com/", target: "_blank", rel: "noopener noreferrer", children: "Google Cloud Console" }),
+        /* @__PURE__ */ jsx("a", { href: "https://console.cloud.google.com/", target: "_blank", rel: "noopener noreferrer", children: "Google Cloud Console" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Create a new project." }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsx("li", { children: "Create a new project." }),
+      /* @__PURE__ */ jsxs("li", { children: [
         "Navigate to ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "APIs & Services > Library" }),
+        /* @__PURE__ */ jsx("strong", { children: "APIs & Services > Library" }),
         ", search for",
         " ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Custom Search API" }),
+        /* @__PURE__ */ jsx("strong", { children: "Custom Search API" }),
         ", and enable it."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Go to ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "APIs & Services > Credentials" }),
+        /* @__PURE__ */ jsx("strong", { children: "APIs & Services > Credentials" }),
         ", click on",
         " ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Create Credentials > API key" }),
+        /* @__PURE__ */ jsx("strong", { children: "Create Credentials > API key" }),
         ", and copy your API key."
       ] })
     ] })
   ] }),
-  tavily_search: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "To use the Tavily Search tool, you need to set up a Tavily API key." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Follow these steps:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+  tavily_search: /* @__PURE__ */ jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsx("p", { children: "To use the Tavily Search tool, you need to set up a Tavily API key." }),
+    /* @__PURE__ */ jsx("p", { children: "Follow these steps:" }),
+    /* @__PURE__ */ jsxs("ol", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Visit",
         " ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://tavily.com/", target: "_blank", rel: "noopener noreferrer", children: "Tavily AI" }),
+        /* @__PURE__ */ jsx("a", { href: "https://tavily.com/", target: "_blank", rel: "noopener noreferrer", children: "Tavily AI" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Click ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Sign Up" }),
+        /* @__PURE__ */ jsx("strong", { children: "Sign Up" }),
         " and create an account."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Navigate to",
         " ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://app.tavily.com/", target: "_blank", rel: "noopener noreferrer", children: "Tavily API" }),
+        /* @__PURE__ */ jsx("a", { href: "https://app.tavily.com/", target: "_blank", rel: "noopener noreferrer", children: "Tavily API" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Generate an API key under ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "API Keys" }),
+        /* @__PURE__ */ jsx("strong", { children: "API Keys" }),
         "."
       ] })
     ] })
   ] }),
   duckduckgo_search: void 0,
-  perplexity_search: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "To use the Perplexity Search tool, you need to set up a Perplexity API key." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Follow these steps:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+  perplexity_search: /* @__PURE__ */ jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsx("p", { children: "To use the Perplexity Search tool, you need to set up a Perplexity API key." }),
+    /* @__PURE__ */ jsx("p", { children: "Follow these steps:" }),
+    /* @__PURE__ */ jsxs("ol", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Visit",
         " ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: "https://www.perplexity.ai/", target: "_blank", rel: "noopener noreferrer", children: "Perplexity AI" }),
+        /* @__PURE__ */ jsx("a", { href: "https://www.perplexity.ai/", target: "_blank", rel: "noopener noreferrer", children: "Perplexity AI" }),
         "."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Click ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Sign Up" }),
+        /* @__PURE__ */ jsx("strong", { children: "Sign Up" }),
         " and create an account."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Navigate to",
         " ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           "a",
           {
             href: "https://www.perplexity.ai/settings/api",
@@ -26188,9 +25868,9 @@ const PREDEFINED_TOOL_INSTRUCTIONS = {
         ),
         "."
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
+      /* @__PURE__ */ jsxs("li", { children: [
         "Generate an API key under ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "API Keys" }),
+        /* @__PURE__ */ jsx("strong", { children: "API Keys" }),
         "."
       ] })
     ] })
@@ -26200,16 +25880,16 @@ const PREDEFINED_TOOL_INSTRUCTIONS = {
   custom: void 0
 };
 const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
-  const defaultIcon = /* @__PURE__ */ jsxRuntimeExports.jsx(FaCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
+  const defaultIcon = /* @__PURE__ */ jsx(FaCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
   if (toolType === "custom") {
     return defaultIcon;
   }
   if (toolType === "shared") {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(FaRegFileCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
+    return /* @__PURE__ */ jsx(FaRegFileCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
   }
   switch (toolLabel) {
     case "wikipedia_search":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         "img",
         {
           src: TOOL_ICONS.wikipedia_search,
@@ -26218,7 +25898,7 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     case "youtube_search":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         "img",
         {
           src: TOOL_ICONS.youtube_search,
@@ -26227,7 +25907,7 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     case "google_search":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         "img",
         {
           src: TOOL_ICONS.google_search,
@@ -26236,7 +25916,7 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     case "tavily_search":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         "img",
         {
           src: TOOL_ICONS.tavily_search,
@@ -26245,7 +25925,7 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     case "duckduckgo_search":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         "img",
         {
           src: TOOL_ICONS.duckduckgo_search,
@@ -26254,7 +25934,7 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     case "perplexity_search":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         "img",
         {
           src: TOOL_ICONS.perplexity_search,
@@ -26264,7 +25944,7 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     case "searxng_search":
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         "img",
         {
           src: TOOL_ICONS.searxng_search,
@@ -26273,19 +25953,19 @@ const getToolIcon = (toolLabel, toolType, size2 = ICON_SIZE) => {
         }
       );
     default:
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(FaCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
+      return /* @__PURE__ */ jsx(FaCode, { "aria-hidden": "true", size: size2, style: { width: size2, height: size2 } });
   }
 };
 const TOOL_TYPE_OPTIONS = [
   {
     value: "shared",
     label: "Shared Code",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(FaRegFileCode, { size: 18, style: { marginLeft: 2, width: 16, height: 16 } })
+    icon: /* @__PURE__ */ jsx(FaRegFileCode, { size: 18, style: { marginLeft: 2, width: 16, height: 16 } })
   },
   {
     value: "wikipedia_search",
     label: "Wikipedia Search",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    icon: /* @__PURE__ */ jsx(
       "img",
       {
         src: TOOL_ICONS.wikipedia_search,
@@ -26297,7 +25977,7 @@ const TOOL_TYPE_OPTIONS = [
   {
     value: "youtube_search",
     label: "YouTube Search",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    icon: /* @__PURE__ */ jsx(
       "img",
       {
         src: TOOL_ICONS.youtube_search,
@@ -26309,17 +25989,17 @@ const TOOL_TYPE_OPTIONS = [
   {
     value: "tavily_search",
     label: "Tavily Search",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: TOOL_ICONS.tavily_search, alt: "Tavily Search Icon", style: { width: 20, height: 20 } })
+    icon: /* @__PURE__ */ jsx("img", { src: TOOL_ICONS.tavily_search, alt: "Tavily Search Icon", style: { width: 20, height: 20 } })
   },
   {
     value: "google_search",
     label: "Google Search",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: TOOL_ICONS.google_search, alt: "Google Search Icon", style: { width: 20, height: 20 } })
+    icon: /* @__PURE__ */ jsx("img", { src: TOOL_ICONS.google_search, alt: "Google Search Icon", style: { width: 20, height: 20 } })
   },
   {
     value: "duckduckgo_search",
     label: "DuckDuckGo Search",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    icon: /* @__PURE__ */ jsx(
       "img",
       {
         src: TOOL_ICONS.duckduckgo_search,
@@ -26331,7 +26011,7 @@ const TOOL_TYPE_OPTIONS = [
   {
     value: "perplexity_search",
     label: "Perplexity AI Search",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    icon: /* @__PURE__ */ jsx(
       "img",
       {
         src: TOOL_ICONS.perplexity_search,
@@ -26344,7 +26024,7 @@ const TOOL_TYPE_OPTIONS = [
   {
     value: "searxng_search",
     label: "SearxNG Search",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    icon: /* @__PURE__ */ jsx(
       "img",
       {
         src: TOOL_ICONS.searxng_search,
@@ -26356,7 +26036,7 @@ const TOOL_TYPE_OPTIONS = [
   {
     value: "custom",
     label: "Custom Tool",
-    icon: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCode, { size: 18, style: { marginLeft: 2, width: 16, height: 16 } })
+    icon: /* @__PURE__ */ jsx(FaCode, { size: 18, style: { marginLeft: 2, width: 16, height: 16 } })
   }
 ];
 const WaldiezNodeAgentBody = memo(
@@ -26364,10 +26044,10 @@ const WaldiezNodeAgentBody = memo(
     const { id, data } = props;
     const agentType = data.agentType;
     if (agentType === "group_manager") {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-content" });
+      return /* @__PURE__ */ jsx("div", { className: "agent-content" });
     }
     if (agentType === "user_proxy") {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-content", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-label margin-top-20", "data-testid": `agent-${id}-label`, children: data.label }) });
+      return /* @__PURE__ */ jsx("div", { className: "agent-content", children: /* @__PURE__ */ jsx("div", { className: "agent-label margin-top-20", "data-testid": `agent-${id}-label`, children: data.label }) });
     }
     return useAgentContentView(id, data);
   }
@@ -26464,12 +26144,12 @@ const useAgentContentView = (id, data) => {
     const hasTools = data.tools.length > 0;
     const showModels = hasModels && modelsToShow > 0;
     const showTools = hasTools && toolsToShow > 0;
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ref: contentRef, className: "agent-content", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-label", "data-testid": `agent-${id}-label`, children: data.label }),
-      showModels && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-models-preview", children: [
-        agentModelNames.slice(0, modelsToShow).map((name, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-model-preview", "data-testid": "agent-model-preview", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `agent-model-img ${agentWaldiezModelAPITypes[index2]}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: agentModelLogos[index2], title: name, alt: name }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsxs("div", { ref: contentRef, className: "agent-content", children: [
+      /* @__PURE__ */ jsx("div", { className: "agent-label", "data-testid": `agent-${id}-label`, children: data.label }),
+      showModels && /* @__PURE__ */ jsxs("div", { className: "agent-models-preview", children: [
+        agentModelNames.slice(0, modelsToShow).map((name, index2) => /* @__PURE__ */ jsxs("div", { className: "agent-model-preview", "data-testid": "agent-model-preview", children: [
+          /* @__PURE__ */ jsx("div", { className: `agent-model-img ${agentWaldiezModelAPITypes[index2]}`, children: /* @__PURE__ */ jsx("img", { src: agentModelLogos[index2], title: name, alt: name }) }),
+          /* @__PURE__ */ jsx(
             "div",
             {
               className: "font-small agent-model-name",
@@ -26478,30 +26158,30 @@ const useAgentContentView = (id, data) => {
             }
           )
         ] }, name)),
-        agentModelNames.length > modelsToShow && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-more-indicator", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-model-img", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "⋯" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-small agent-model-name", children: [
+        agentModelNames.length > modelsToShow && /* @__PURE__ */ jsxs("div", { className: "agent-more-indicator", children: [
+          /* @__PURE__ */ jsx("div", { className: "agent-model-img", children: /* @__PURE__ */ jsx("span", { children: "⋯" }) }),
+          /* @__PURE__ */ jsxs("div", { className: "font-small agent-model-name", children: [
             "+",
             agentModelNames.length - modelsToShow,
             " more"
           ] })
         ] })
       ] }),
-      !hasModels && data.agentType !== "user_proxy" && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-models-preview", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-small agent-model-name", children: "No models" }) }),
-      showTools && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-tools-preview", children: [
+      !hasModels && data.agentType !== "user_proxy" && /* @__PURE__ */ jsx("div", { className: "agent-models-preview", children: /* @__PURE__ */ jsx("div", { className: "font-small agent-model-name", children: "No models" }) }),
+      showTools && /* @__PURE__ */ jsxs("div", { className: "agent-tools-preview", children: [
         data.tools.slice(0, toolsToShow).map((linkedTool, index2) => {
           const tool = tools.find((tool2) => tool2.id === linkedTool.id);
           if (!tool) {
             return null;
           }
-          return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          return /* @__PURE__ */ jsxs(
             "div",
             {
               className: "agent-tool-preview",
               "data-testid": "agent-tool-preview",
               children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-tool-img", children: getToolIcon(tool.data.label, tool.data.toolType) }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                /* @__PURE__ */ jsx("div", { className: "agent-tool-img", children: getToolIcon(tool.data.label, tool.data.toolType) }),
+                /* @__PURE__ */ jsx(
                   "div",
                   {
                     className: "font-small agent-tool-name",
@@ -26514,16 +26194,16 @@ const useAgentContentView = (id, data) => {
             tool.id
           );
         }),
-        data.tools.length > toolsToShow && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-more-indicator", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-tool-img", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "⋯" }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "font-small agent-tool-name", children: [
+        data.tools.length > toolsToShow && /* @__PURE__ */ jsxs("div", { className: "agent-more-indicator", children: [
+          /* @__PURE__ */ jsx("div", { className: "agent-tool-img", children: /* @__PURE__ */ jsx("span", { children: "⋯" }) }),
+          /* @__PURE__ */ jsxs("div", { className: "font-small agent-tool-name", children: [
             "+",
             data.tools.length - toolsToShow,
             " more"
           ] })
         ] })
       ] }),
-      !hasTools && !["user_proxy", "rag_user_proxy"].includes(data.agentType) && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-tools-preview", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "font-small agent-tool-name", children: "No tools" }) })
+      !hasTools && !["user_proxy", "rag_user_proxy"].includes(data.agentType) && /* @__PURE__ */ jsx("div", { className: "agent-tools-preview", children: /* @__PURE__ */ jsx("div", { className: "font-small agent-tool-name", children: "No tools" }) })
     ] });
   }, [
     agentModelNames,
@@ -26552,7 +26232,7 @@ const createHandles = (props) => {
     handleClass += "not-selected ";
   }
   if (agentType === "group_manager") {
-    return positions.map(({ pos, label }) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return positions.map(({ pos, label }) => /* @__PURE__ */ jsx(
       Handle,
       {
         className: `${handleClass} ${label} target`,
@@ -26573,7 +26253,7 @@ const createHandles = (props) => {
     [Position.Right]: { target: { top: "75%" }, source: { top: "25%" } }
   };
   return positions.flatMap(({ pos, label }) => [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       Handle,
       {
         className: `${handleClass} ${label} target`,
@@ -26587,7 +26267,7 @@ const createHandles = (props) => {
       },
       `target-${label}`
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       Handle,
       {
         className: `${handleClass} ${label} source`,
@@ -27257,13 +26937,13 @@ const WaldiezAgentModels = memo((props) => {
     },
     [onDataChange]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel margin-bottom-10", "data-testid": "agent-models-panel", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { htmlFor: `select-agent-models-${id}`, children: [
+  return /* @__PURE__ */ jsxs("div", { className: "agent-panel margin-bottom-10", "data-testid": "agent-models-panel", children: [
+    /* @__PURE__ */ jsxs("label", { htmlFor: `select-agent-models-${id}`, children: [
       "Model",
       data.agentType === "rag_user_proxy" ? "" : "s",
       " to use:"
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       Select,
       {
         options: modelOptions,
@@ -27328,9 +27008,9 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
   const getAgentName2 = (agentId) => {
     return groupMembers.find((agent) => agent.id === agentId)?.data.label ?? agentId;
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Group", id: `wf-${flowId}-agent-group-manager-config-${id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body  agent-panel", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
+    /* @__PURE__ */ jsx(TabItem, { label: "Group", id: `wf-${flowId}-agent-group-manager-config-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "modal-body  agent-panel", children: [
+      /* @__PURE__ */ jsx(
         TextInput,
         {
           label: "Group Name:",
@@ -27341,8 +27021,8 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Group name"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `wf-${flowId}-agent-config-${id}-select-initial-agent`, children: "Initial Agent:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("label", { htmlFor: `wf-${flowId}-agent-config-${id}-select-initial-agent`, children: "Initial Agent:" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: initialAgentOptions,
@@ -27352,7 +27032,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Select initial agent"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         NumberInput,
         {
           name: "max-rounds",
@@ -27369,7 +27049,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Maximum conversation rounds"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         Dict,
         {
           itemsType: "group-context-variables",
@@ -27384,8 +27064,8 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
         }
       )
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Group Manager", id: `wf-${flowId}-agent-group-manager-agent-${id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body agent-panel", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(TabItem, { label: "Group Manager", id: `wf-${flowId}-agent-group-manager-agent-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "modal-body agent-panel", children: [
+      /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
         WaldiezAgentModels,
         {
           id,
@@ -27394,7 +27074,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           onDataChange: props.onDataChange
         }
       ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
         TextInput,
         {
           label: "Group Manager's Name:",
@@ -27407,8 +27087,8 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Group manager name"
         }
       ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-description-input-${id}`, children: "Description:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("label", { htmlFor: `agent-description-input-${id}`, children: "Description:" }),
+      /* @__PURE__ */ jsx(
         TextareaInput,
         {
           id: `agent-description-input-${id}`,
@@ -27420,7 +27100,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Manager description"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         InfoCheckbox,
         {
           label: "Send introductions",
@@ -27431,7 +27111,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Enable sending introductions"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         InfoCheckbox,
         {
           label: "Enable clear history",
@@ -27443,37 +27123,37 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
         }
       )
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Speakers", id: `wf-${flowId}-agent-group-manager-speakers-${id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body agent-panel", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
+    /* @__PURE__ */ jsx(TabItem, { label: "Speakers", id: `wf-${flowId}-agent-group-manager-speakers-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "modal-body agent-panel", children: [
+      /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxs("div", { className: "info", children: [
         "The method for selecting the next speaker. The default is",
         " ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "italic", children: "Auto" }),
+        /* @__PURE__ */ jsx("strong", { className: "italic", children: "Auto" }),
         ". Could be any of the following:",
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "italic", children: "Auto" }),
+        /* @__PURE__ */ jsxs("ul", { children: [
+          /* @__PURE__ */ jsxs("li", { children: [
+            /* @__PURE__ */ jsx("strong", { className: "italic", children: "Auto" }),
             ": the next speaker is selected automatically by LLM."
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "italic", children: "Manual" }),
+          /* @__PURE__ */ jsxs("li", { children: [
+            /* @__PURE__ */ jsx("strong", { className: "italic", children: "Manual" }),
             ": the next speaker is selected manually by user input."
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "italic", children: "Default" }),
+          /* @__PURE__ */ jsxs("li", { children: [
+            /* @__PURE__ */ jsx("strong", { className: "italic", children: "Default" }),
             ": the transitions to the speakers are explicitly defined in the workflow."
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "italic", children: "Random" }),
+          /* @__PURE__ */ jsxs("li", { children: [
+            /* @__PURE__ */ jsx("strong", { className: "italic", children: "Random" }),
             ": the next speaker is selected randomly."
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { className: "italic", children: "Round Robin" }),
+          /* @__PURE__ */ jsxs("li", { children: [
+            /* @__PURE__ */ jsx("strong", { className: "italic", children: "Round Robin" }),
             ": the next speaker is selected in a round robin fashion, i.e., iterating in the same order as provided in agents."
           ] })
         ] })
       ] }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `manager-speaker-selection-method-${id}`, children: "Speaker Selection Method:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("label", { htmlFor: `manager-speaker-selection-method-${id}`, children: "Speaker Selection Method:" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: speakerSelectionOptions,
@@ -27483,7 +27163,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Select speaker selection method"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         NumberInput,
         {
           name: "max-retries-for-selecting",
@@ -27501,21 +27181,21 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
           "aria-label": "Maximum retries for speaker selection"
         }
       ),
-      data.speakers?.selectionMethod === "round_robin" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: "The order in which the speakers will be selected in round robin mode. If not provided, the order will be automatically determined based on the agents in the group." }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "ordered-items-list", children: speakersOrder.map((speaker, index2) => {
+      data.speakers?.selectionMethod === "round_robin" && /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
+        /* @__PURE__ */ jsx("div", { className: "info", children: "The order in which the speakers will be selected in round robin mode. If not provided, the order will be automatically determined based on the agents in the group." }),
+        /* @__PURE__ */ jsx("div", { className: "ordered-items-list", children: speakersOrder.map((speaker, index2) => {
           const isInitialAgent = data.initialAgentId === speaker;
           const canMoveUp = index2 > 0 && !(data.initialAgentId && index2 === 1);
           const canMoveDown = index2 < speakersOrder.length - 1 && !isInitialAgent;
           const hasButtons = canMoveUp || canMoveDown;
-          return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          return /* @__PURE__ */ jsxs(
             "div",
             {
               className: `ordered-item ${hasButtons ? "has-buttons" : "no-buttons"}`,
               "data-testid": `group-speaker-${index2}`,
               children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "reorder-buttons", children: [
-                  canMoveUp && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                /* @__PURE__ */ jsxs("div", { className: "reorder-buttons", children: [
+                  canMoveUp && /* @__PURE__ */ jsx(
                     "button",
                     {
                       type: "button",
@@ -27525,7 +27205,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
                       children: "↑"
                     }
                   ),
-                  canMoveDown && /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  canMoveDown && /* @__PURE__ */ jsx(
                     "button",
                     {
                       type: "button",
@@ -27535,9 +27215,9 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
                       children: "↓"
                     }
                   ),
-                  isInitialAgent && /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "reorder-btn no-click", children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaLock, {}) })
+                  isInitialAgent && /* @__PURE__ */ jsx("button", { type: "button", className: "reorder-btn no-click", children: /* @__PURE__ */ jsx(FaLock, {}) })
                 ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "ordered-item-content", children: getAgentName2(speaker) })
+                /* @__PURE__ */ jsx("div", { className: "ordered-item-content", children: getAgentName2(speaker) })
               ]
             },
             `group-speaker-${speaker}`
@@ -27545,7 +27225,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
         }) })
       ] })
     ] }) }),
-    showAfterwardsTab && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Afterwards", id: `wf-${flowId}-agent-group-manager-after-work-${id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body agent-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    showAfterwardsTab && /* @__PURE__ */ jsx(TabItem, { label: "Afterwards", id: `wf-${flowId}-agent-group-manager-after-work-${id}`, children: /* @__PURE__ */ jsx("div", { className: "modal-body agent-panel", children: /* @__PURE__ */ jsx(
       AfterWork,
       {
         target: data.afterWork,
@@ -27662,8 +27342,8 @@ const WaldiezAgentBasic = memo((props) => {
     }),
     [data.humanInputMode, inputMethodsMapping]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel agent-basic-panel", children: [
-    data.agentType === "assistant" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-basic-panel", children: [
+    data.agentType === "assistant" && /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "Multimodal",
@@ -27673,7 +27353,7 @@ const WaldiezAgentBasic = memo((props) => {
         id: `agent-multimodal-toggle-${id}`
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       TextInput,
       {
         label: "Name:",
@@ -27684,8 +27364,8 @@ const WaldiezAgentBasic = memo((props) => {
         "aria-label": "Agent name"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-description-input-${id}`, children: "Description:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("label", { htmlFor: `agent-description-input-${id}`, children: "Description:" }),
+    /* @__PURE__ */ jsx(
       TextareaInput,
       {
         id: `agent-description-input-${id}`,
@@ -27697,8 +27377,8 @@ const WaldiezAgentBasic = memo((props) => {
         "aria-label": "Agent description"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-system-message-input-${id}`, children: "System Message:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("label", { htmlFor: `agent-system-message-input-${id}`, children: "System Message:" }),
+    /* @__PURE__ */ jsx(
       TextareaInput,
       {
         id: `agent-system-message-input-${id}`,
@@ -27710,26 +27390,26 @@ const WaldiezAgentBasic = memo((props) => {
         "aria-label": "System message"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       InfoLabel,
       {
         label: "Human Input mode:",
-        info: () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+        info: () => /* @__PURE__ */ jsxs("div", { children: [
           "Whether to ask for human inputs every time a message is received. ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+          /* @__PURE__ */ jsx("br", {}),
           "Possible values are: ",
-          /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Always:" }),
+          /* @__PURE__ */ jsx("br", {}),
+          /* @__PURE__ */ jsxs("ul", { children: [
+            /* @__PURE__ */ jsxs("li", { children: [
+              /* @__PURE__ */ jsx("b", { children: "Always:" }),
               ' the agent prompts for human input every time a message is received. Under this mode, the conversation stops when the human input is "exit", or when is_termination_msg is True and there is no human input.'
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Terminate:" }),
+            /* @__PURE__ */ jsxs("li", { children: [
+              /* @__PURE__ */ jsx("b", { children: "Terminate:" }),
               " the agent only prompts for human input only when a termination message is received or the number of auto reply reaches the max_consecutive_auto_reply."
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("li", { children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Never:" }),
+            /* @__PURE__ */ jsxs("li", { children: [
+              /* @__PURE__ */ jsx("b", { children: "Never:" }),
               " the agent will never prompt for human input. Under this mode, the conversation stops when the number of auto reply reaches the max_consecutive_auto_reply or when is_termination_msg is True."
             ] })
           ] })
@@ -27737,8 +27417,8 @@ const WaldiezAgentBasic = memo((props) => {
         htmlFor: `agent-human-input-mode-${id}`
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-human-input-mode-select-${id}`, className: "hidden", children: "Human Input mode:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("label", { htmlFor: `agent-human-input-mode-select-${id}`, className: "hidden", children: "Human Input mode:" }),
+    /* @__PURE__ */ jsx(
       Select,
       {
         options: inputMethodOptions,
@@ -27748,7 +27428,7 @@ const WaldiezAgentBasic = memo((props) => {
         "aria-label": "Human input mode"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       NumberInput,
       {
         name: "max-consecutive-auto-reply",
@@ -27767,9 +27447,9 @@ const WaldiezAgentBasic = memo((props) => {
         "aria-label": "Maximum consecutive auto replies"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-default-auto-reply-input-${id}`, children: "Default Auto Reply:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-5" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("label", { htmlFor: `agent-default-auto-reply-input-${id}`, children: "Default Auto Reply:" }),
+    /* @__PURE__ */ jsx("div", { className: "margin-top-5" }),
+    /* @__PURE__ */ jsx(
       TextareaInput,
       {
         className: "full-width margin-top-5",
@@ -27779,7 +27459,7 @@ const WaldiezAgentBasic = memo((props) => {
         "aria-label": "Default auto reply message"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-10" })
+    /* @__PURE__ */ jsx("div", { className: "margin-bottom-10" })
   ] });
 });
 WaldiezAgentBasic.displayName = "WaldiezAgentBasic";
@@ -27902,8 +27582,8 @@ const WaldiezAgentCaptainTab = memo((props) => {
     onToolLibChange,
     onMaxRoundChange
   } = useWaldiezAgentCaptain(props);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel agent-codeExecution-panel margin-top--10", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-codeExecution-panel margin-top--10", children: [
+    /* @__PURE__ */ jsx(
       NumberInput,
       {
         name: "max-round",
@@ -27917,7 +27597,7 @@ const WaldiezAgentCaptainTab = memo((props) => {
         "aria-label": "Maximum rounds"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         id: `tool-lib-${id}`,
@@ -27928,10 +27608,10 @@ const WaldiezAgentCaptainTab = memo((props) => {
         "aria-label": "Include tool library"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-bottom-10", children: [
+    /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
       "If selected, you can find the available tools",
       " ",
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "a",
         {
           href: TOOLS_LINK,
@@ -27942,7 +27622,7 @@ const WaldiezAgentCaptainTab = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "Include agent lib",
@@ -27953,10 +27633,10 @@ const WaldiezAgentCaptainTab = memo((props) => {
         "aria-label": "Include agent library"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-bottom-10", children: [
+    /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
       "You can find an example of agents library",
       " ",
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "a",
         {
           href: EXAMPLE_LIB_LINK,
@@ -27967,8 +27647,8 @@ const WaldiezAgentCaptainTab = memo((props) => {
         }
       )
     ] }),
-    enableAgentLib && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-lib-container", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    enableAgentLib && /* @__PURE__ */ jsxs("div", { className: "agent-lib-container", children: [
+      /* @__PURE__ */ jsx(
         DropZone,
         {
           flowId,
@@ -27977,7 +27657,7 @@ const WaldiezAgentCaptainTab = memo((props) => {
           "aria-label": "Upload agent library JSON file"
         }
       ),
-      agentLib.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      agentLib.length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
         Collapsible,
         {
           title: `Agent Library (${agentLib.length} entries)`,
@@ -27985,7 +27665,7 @@ const WaldiezAgentCaptainTab = memo((props) => {
           expanded: false,
           fullWidth: true,
           "aria-label": "Agent library entries",
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          children: /* @__PURE__ */ jsx(
             "div",
             {
               className: "agent-lib-preview",
@@ -27993,7 +27673,7 @@ const WaldiezAgentCaptainTab = memo((props) => {
                 maxHeight: "300px",
                 overflowY: "auto"
               },
-              children: /* @__PURE__ */ jsxRuntimeExports.jsx("pre", { children: JSON.stringify(agentLib, null, 2) })
+              children: /* @__PURE__ */ jsx("pre", { children: JSON.stringify(agentLib, null, 2) })
             }
           )
         }
@@ -28112,8 +27792,8 @@ const WaldiezAgentCodeExecution = memo((props) => {
   const lastNMessagesValue = isCodeExecutionEnabled && data.codeExecutionConfig !== false && data.codeExecutionConfig?.lastNMessages && data.codeExecutionConfig?.lastNMessages !== "auto" ? data.codeExecutionConfig?.lastNMessages : 0;
   const isDockerEnabled = isCodeExecutionEnabled && data.codeExecutionConfig !== false && data.codeExecutionConfig?.useDocker === true;
   const shouldShowFunctions = isCodeExecutionEnabled && !isDockerEnabled && tools.length > 0;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel agent-codeExecution-panel", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-codeExecution-panel", children: [
+    /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "Enable Code Execution",
@@ -28124,8 +27804,8 @@ const WaldiezAgentCodeExecution = memo((props) => {
         "aria-label": "Enable code execution"
       }
     ),
-    isCodeExecutionEnabled && data.codeExecutionConfig !== false && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-node-codeExecution-options margin-top-10", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    isCodeExecutionEnabled && data.codeExecutionConfig !== false && /* @__PURE__ */ jsxs("div", { className: "agent-node-codeExecution-options margin-top-10", children: [
+      /* @__PURE__ */ jsx(
         TextInput,
         {
           label: "Working directory:",
@@ -28138,7 +27818,7 @@ const WaldiezAgentCodeExecution = memo((props) => {
           "aria-label": "Code execution working directory"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         NumberInput,
         {
           name: "last-n-messages",
@@ -28156,7 +27836,7 @@ const WaldiezAgentCodeExecution = memo((props) => {
           "aria-label": "Number of messages to include for code execution"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         NumberInput,
         {
           label: "Timeout:",
@@ -28175,11 +27855,11 @@ const WaldiezAgentCodeExecution = memo((props) => {
           "aria-label": "Code execution timeout in seconds"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "div",
         {
           className: `margin-top-10 margin-bottom-10 ${"sr-only hidden"}`,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          children: /* @__PURE__ */ jsx(
             InfoCheckbox,
             {
               label: "Use Docker",
@@ -28192,10 +27872,10 @@ const WaldiezAgentCodeExecution = memo((props) => {
           )
         }
       ),
-      shouldShowFunctions && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "codeExecution-functions", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-node-functions", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-20" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-code-execution-functions-${id}`, children: "Functions:" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      shouldShowFunctions && /* @__PURE__ */ jsx("div", { className: "codeExecution-functions", children: /* @__PURE__ */ jsxs("div", { className: "agent-node-functions", children: [
+        /* @__PURE__ */ jsx("div", { className: "margin-top-20" }),
+        /* @__PURE__ */ jsx("label", { htmlFor: `agent-code-execution-functions-${id}`, children: "Functions:" }),
+        /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
           Select,
           {
             isMulti: true,
@@ -28255,8 +27935,8 @@ const WaldiezDocAgentTab = memo((props) => {
     },
     [data.queryEngine, onDataChange]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "agent-panel", children: [
+    /* @__PURE__ */ jsx(
       TextInput,
       {
         label: "Collection Name:",
@@ -28268,7 +27948,7 @@ const WaldiezDocAgentTab = memo((props) => {
         className: "margin-top-5"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "Reset Collection",
@@ -28278,7 +27958,7 @@ const WaldiezDocAgentTab = memo((props) => {
         onChange: onResetCollectionChange
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "Enable Query Citations",
@@ -28288,7 +27968,7 @@ const WaldiezDocAgentTab = memo((props) => {
         onChange: onEnableQueryCitationsChange
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
       TextInput,
       {
         label: "Database Path:",
@@ -28337,44 +28017,44 @@ const getHelpInstructions = () => {
   const isMac = platform2.includes("mac");
   const isWindows = platform2.includes("win");
   if (isMac) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "help-instructions", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "How to find folder path on Mac:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Open Finder and navigate to your folder" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Right-click the folder and select "Get Info"' }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: 'Copy the path from "Where:" field' }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Or drag the folder into Terminal to see its path" })
+    return /* @__PURE__ */ jsxs("div", { className: "help-instructions", children: [
+      /* @__PURE__ */ jsx("h4", { children: "How to find folder path on Mac:" }),
+      /* @__PURE__ */ jsxs("ol", { children: [
+        /* @__PURE__ */ jsx("li", { children: "Open Finder and navigate to your folder" }),
+        /* @__PURE__ */ jsx("li", { children: 'Right-click the folder and select "Get Info"' }),
+        /* @__PURE__ */ jsx("li", { children: 'Copy the path from "Where:" field' }),
+        /* @__PURE__ */ jsx("li", { children: "Or drag the folder into Terminal to see its path" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Example:" }),
+      /* @__PURE__ */ jsxs("p", { children: [
+        /* @__PURE__ */ jsx("strong", { children: "Example:" }),
         " /Users/yourname/Documents/MyProject"
       ] })
     ] });
   } else if (isWindows) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "help-instructions", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "How to find folder path on Windows:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Open File Explorer and navigate to your folder" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Click on the address bar (or press Ctrl+L)" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "The full path will be shown - copy it" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Or right-click folder → Properties → Location" })
+    return /* @__PURE__ */ jsxs("div", { className: "help-instructions", children: [
+      /* @__PURE__ */ jsx("h4", { children: "How to find folder path on Windows:" }),
+      /* @__PURE__ */ jsxs("ol", { children: [
+        /* @__PURE__ */ jsx("li", { children: "Open File Explorer and navigate to your folder" }),
+        /* @__PURE__ */ jsx("li", { children: "Click on the address bar (or press Ctrl+L)" }),
+        /* @__PURE__ */ jsx("li", { children: "The full path will be shown - copy it" }),
+        /* @__PURE__ */ jsx("li", { children: "Or right-click folder → Properties → Location" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Example:" }),
+      /* @__PURE__ */ jsxs("p", { children: [
+        /* @__PURE__ */ jsx("strong", { children: "Example:" }),
         " C:\\Users\\yourname\\Documents\\MyProject"
       ] })
     ] });
   } else {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "help-instructions", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { children: "How to find folder path:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("ol", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Open your file manager" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Navigate to the folder you want" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Look for the path in the address bar" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("li", { children: "Or right-click and check properties" })
+    return /* @__PURE__ */ jsxs("div", { className: "help-instructions", children: [
+      /* @__PURE__ */ jsx("h4", { children: "How to find folder path:" }),
+      /* @__PURE__ */ jsxs("ol", { children: [
+        /* @__PURE__ */ jsx("li", { children: "Open your file manager" }),
+        /* @__PURE__ */ jsx("li", { children: "Navigate to the folder you want" }),
+        /* @__PURE__ */ jsx("li", { children: "Look for the path in the address bar" }),
+        /* @__PURE__ */ jsx("li", { children: "Or right-click and check properties" })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Example:" }),
+      /* @__PURE__ */ jsxs("p", { children: [
+        /* @__PURE__ */ jsx("strong", { children: "Example:" }),
         " /home/yourname/Documents/MyProject"
       ] })
     ] });
@@ -28458,14 +28138,14 @@ const WaldiezAgentGroupMember = memo((props) => {
   );
   const showGroupTabs = !!currentGroupManager;
   const isJoinButtonDisabled = selectedGroup === null;
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel agent-group-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex: 0, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { id: `wa-${id}-group-membership`, label: "Membership", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { style: { padding: "1rem" }, "data-testid": `agent-group-panel-${id}`, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info margin-bottom-10", children: "Should this agent be part of a group chat?" }),
-      !showGroupTabs ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-select-group-${id}`, children: "Group:" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center space-between", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-group-panel", children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
+    /* @__PURE__ */ jsx(TabItem, { id: `wa-${id}-group-membership`, label: "Membership", children: /* @__PURE__ */ jsxs("div", { style: { padding: "1rem" }, "data-testid": `agent-group-panel-${id}`, children: [
+      /* @__PURE__ */ jsx("div", { className: "info margin-bottom-10", children: "Should this agent be part of a group chat?" }),
+      !showGroupTabs ? /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { htmlFor: `agent-select-group-${id}`, children: "Group:" }),
+        /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+        /* @__PURE__ */ jsxs("div", { className: "flex-align-center space-between", children: [
+          /* @__PURE__ */ jsx(
             Select,
             {
               options: groupOptions,
@@ -28476,7 +28156,7 @@ const WaldiezAgentGroupMember = memo((props) => {
               "aria-label": "Select a group to join"
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(
             "button",
             {
               type: "button",
@@ -28492,8 +28172,8 @@ const WaldiezAgentGroupMember = memo((props) => {
         ] })
       ] }) : (
         /* In a group: Show group info and leave button */
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center space-between current-group-info", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxs("div", { className: "flex-align-center space-between current-group-info", children: [
+          /* @__PURE__ */ jsx(
             "div",
             {
               className: "agent-panel-group-label",
@@ -28501,7 +28181,7 @@ const WaldiezAgentGroupMember = memo((props) => {
               children: currentGroupManager.data.label
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel-group-actions", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx("div", { className: "agent-panel-group-actions", children: /* @__PURE__ */ jsx(
             "button",
             {
               title: "Leave group",
@@ -28516,7 +28196,7 @@ const WaldiezAgentGroupMember = memo((props) => {
         ] })
       )
     ] }) }),
-    showGroupTabs && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { id: `wa-${id}-group-handoffs`, label: "Handoffs", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    showGroupTabs && /* @__PURE__ */ jsx(TabItem, { id: `wa-${id}-group-handoffs`, label: "Handoffs", children: /* @__PURE__ */ jsx(
       Handoffs,
       {
         agents,
@@ -28526,13 +28206,13 @@ const WaldiezAgentGroupMember = memo((props) => {
         onDataChange
       }
     ) }),
-    showGroupTabs && !isDocAgent && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { id: `wa-${id}-group-update-state`, label: "State", children: /* @__PURE__ */ jsxRuntimeExports.jsx(UpdateState, { data, darkMode, onDataChange }) }),
-    showGroupTabs && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Afterwards", id: `wa-${id}-group-after-work`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    showGroupTabs && !isDocAgent && /* @__PURE__ */ jsx(TabItem, { id: `wa-${id}-group-update-state`, label: "State", children: /* @__PURE__ */ jsx(UpdateState, { data, darkMode, onDataChange }) }),
+    showGroupTabs && /* @__PURE__ */ jsx(TabItem, { label: "Afterwards", id: `wa-${id}-group-after-work`, children: /* @__PURE__ */ jsx(
       "div",
       {
         style: { paddingLeft: "1rem", paddingRight: "1rem" },
         "data-testid": `after-work-panel-${id}`,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        children: /* @__PURE__ */ jsx(
           AfterWork,
           {
             target: data.afterWork,
@@ -28670,15 +28350,15 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
     },
     [nestedChats, onDataChange]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel", "data-testid": `agent-group-nested-chat-tabs-${id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex: 0, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Queue", id: `wf-${flowId}-wa-${id}-nested-chats-queue`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column margin-10 nested-chat-queue", children: nestedChats[0]?.messages.map((message, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsx("div", { className: "agent-panel", "data-testid": `agent-group-nested-chat-tabs-${id}`, children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
+    /* @__PURE__ */ jsx(TabItem, { label: "Queue", id: `wf-${flowId}-wa-${id}-nested-chats-queue`, children: /* @__PURE__ */ jsx("div", { className: "flex-column margin-10 nested-chat-queue", children: nestedChats[0]?.messages.map((message, index2) => /* @__PURE__ */ jsxs(
       "div",
       {
         className: "flex-align-center margin-bottom-10 queue-item",
         "data-testid": `nested-chat-queue-item-${index2}`,
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-right-10 reorder-buttons", children: [
-            index2 > 0 && (nestedChatMessagesCount || 0) > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxs("div", { className: "margin-right-10 reorder-buttons", children: [
+            index2 > 0 && (nestedChatMessagesCount || 0) > 1 && /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -28690,7 +28370,7 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
                 children: "↑"
               }
             ),
-            index2 < (nestedChatMessagesCount || 0) - 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+            index2 < (nestedChatMessagesCount || 0) - 1 && /* @__PURE__ */ jsx(
               "button",
               {
                 title: "Move down",
@@ -28703,12 +28383,12 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
               }
             )
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-nested-recipient-name", children: getRecipientName(message.id) })
+          /* @__PURE__ */ jsx("div", { className: "agent-nested-recipient-name", children: getRecipientName(message.id) })
         ]
       },
       `agent-${id}-nestedChat-recipient-${index2}`
     )) }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Condition", id: `wf-${flowId}-wa-${id}-nested-chat-condition`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(TabItem, { label: "Condition", id: `wf-${flowId}-wa-${id}-nested-chat-condition`, children: /* @__PURE__ */ jsx(
       HandoffCondition,
       {
         condition: nestedChats[0]?.condition || defaultCondition,
@@ -28716,7 +28396,7 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
         "aria-label": "Handoff condition settings"
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Availability", id: `wf-${flowId}-wa-${id}-nested-chat-availability`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(TabItem, { label: "Availability", id: `wf-${flowId}-wa-${id}-nested-chat-availability`, children: /* @__PURE__ */ jsx(
       HandoffAvailability,
       {
         available: nestedChats[0]?.available || defaultAvailability,
@@ -28953,19 +28633,19 @@ const WaldiezAgentNestedChatsMessages = memo((props) => {
   );
   const isAddButtonDisabled = !selectedRecipient || !selectedRecipient.id;
   const hasNoMessages = chat.messages.length === 0;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "nested-chat-messages", "data-testid": `nested-chat-messages-${id}`, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Messages:" }),
+  return /* @__PURE__ */ jsxs("div", { className: "nested-chat-messages", "data-testid": `nested-chat-messages-${id}`, children: [
+    /* @__PURE__ */ jsxs("div", { className: "info", children: [
+      /* @__PURE__ */ jsx("b", { children: "Messages:" }),
       " Specifies which nested chat will be triggered. The final message is returned to the main chat. ",
-      /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Agent's Reply:" }),
+      /* @__PURE__ */ jsx("br", {}),
+      /* @__PURE__ */ jsx("b", { children: "Agent's Reply:" }),
       ' Indicates the recipient of the trigger message. If selected, it is the second in the order. For example, if "User => Assistant" with the box ticked, the message is sent to the User; otherwise, it is sent to the Assistant.'
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `new-nested-chat-select-recipient-${id}`, className: "nested-chat-messages-label", children: "Messages:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "nested-chats-add-message", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "nested-chat-recipients margin-right-10", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `new-nested-chat-select-recipient-${id}`, className: "hidden", children: "Recipient" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("label", { htmlFor: `new-nested-chat-select-recipient-${id}`, className: "nested-chat-messages-label", children: "Messages:" }),
+    /* @__PURE__ */ jsxs("div", { className: "nested-chats-add-message", children: [
+      /* @__PURE__ */ jsxs("div", { className: "nested-chat-recipients margin-right-10", children: [
+        /* @__PURE__ */ jsx("label", { htmlFor: `new-nested-chat-select-recipient-${id}`, className: "hidden", children: "Recipient" }),
+        /* @__PURE__ */ jsx(
           Select,
           {
             options: selectOptions,
@@ -28976,7 +28656,7 @@ const WaldiezAgentNestedChatsMessages = memo((props) => {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         CheckboxInput,
         {
           id: `new-nested-chat-recipient-is-agent-reply-${id}`,
@@ -28986,7 +28666,7 @@ const WaldiezAgentNestedChatsMessages = memo((props) => {
           "data-testid": `new-nested-chat-recipient-is-agent-reply-${id}`
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-add-button", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("div", { className: "nested-chat-add-button", children: /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -29000,7 +28680,7 @@ const WaldiezAgentNestedChatsMessages = memo((props) => {
         }
       ) })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chats-registered-messages", children: hasNoMessages ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-registered-message", children: "No messages to include" }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-1 messages-list", children: chat.messages.map((target, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { className: "nested-chats-registered-messages", children: hasNoMessages ? /* @__PURE__ */ jsx("div", { className: "nested-chat-registered-message", children: "No messages to include" }) : /* @__PURE__ */ jsx("div", { className: "flex-1 messages-list", children: chat.messages.map((target, index2) => /* @__PURE__ */ jsx(
       MessageListItem,
       {
         target,
@@ -29029,18 +28709,18 @@ const MessageListItem = memo(
   }) => {
     const canMoveUp = messageCount > 1 && index2 !== 0;
     const canMoveDown = messageCount > 1 && index2 !== messageCount - 1;
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    return /* @__PURE__ */ jsxs(
       "div",
       {
         className: "nested-chat-registered-message",
         "data-testid": `nested-chat-message-${id}-${index2}`,
         children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "message-label", children: [
+          /* @__PURE__ */ jsxs("span", { className: "message-label", children: [
             getMessageLabel(index2),
-            target.isReply && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "reply-indicator", children: " (Reply)" })
+            target.isReply && /* @__PURE__ */ jsx("span", { className: "reply-indicator", children: " (Reply)" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "nested-chat-message-actions", children: [
-            canMoveUp && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-reorder", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxs("div", { className: "nested-chat-message-actions", children: [
+            canMoveUp && /* @__PURE__ */ jsx("div", { className: "nested-chat-reorder", children: /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -29051,7 +28731,7 @@ const MessageListItem = memo(
                 children: "↑"
               }
             ) }),
-            canMoveDown && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-reorder", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            canMoveDown && /* @__PURE__ */ jsx("div", { className: "nested-chat-reorder", children: /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -29062,7 +28742,7 @@ const MessageListItem = memo(
                 children: "↓"
               }
             ) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-remove", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx("div", { className: "nested-chat-remove", children: /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -29093,13 +28773,13 @@ const WaldiezAgentNestedChatsTriggers = memo((props) => {
     }),
     [selectedTriggers, selectOptions]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "nested-chat-triggers margin-bottom--10", "data-testid": `nested-chat-triggers-${id}`, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Trigged by:" }),
+  return /* @__PURE__ */ jsxs("div", { className: "nested-chat-triggers margin-bottom--10", "data-testid": `nested-chat-triggers-${id}`, children: [
+    /* @__PURE__ */ jsxs("div", { className: "info", children: [
+      /* @__PURE__ */ jsx("b", { children: "Trigged by:" }),
       " The agent triggers a sequence of nested chats when a message is received. If it is the termination message of a selected chat (e.g., max turns is set to 1) the trigger won't be activated."
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `new-nested-chat-select-trigger-${id}`, className: "nested-chat-triggers-label", children: "Triggered by:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-select-trigger-view", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nested-chat-select-trigger", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("label", { htmlFor: `new-nested-chat-select-trigger-${id}`, className: "nested-chat-triggers-label", children: "Triggered by:" }),
+    /* @__PURE__ */ jsx("div", { className: "nested-chat-select-trigger-view", children: /* @__PURE__ */ jsx("div", { className: "nested-chat-select-trigger", children: /* @__PURE__ */ jsx(
       Select,
       {
         options: selectOptions,
@@ -29132,13 +28812,13 @@ const WaldiezAgentNestedChats = memo((props) => {
     getEdgeLabel
   } = useWaldiezAgentNestedChats(props);
   const showMessages = chat.triggeredBy.length > 0;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className: "agent-panel agent-nestedChats-panel margin-top-10",
       "data-testid": `agent-nested-chats-panel-${id}`,
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           WaldiezAgentNestedChatsTriggers,
           {
             id,
@@ -29147,8 +28827,8 @@ const WaldiezAgentNestedChats = memo((props) => {
             selectOptions: triggerSelectOptions
           }
         ),
-        showMessages && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        showMessages && /* @__PURE__ */ jsxs(Fragment, { children: [
+          /* @__PURE__ */ jsx(
             "hr",
             {
               className: "nested-chat-separator margin-top--10",
@@ -29156,7 +28836,7 @@ const WaldiezAgentNestedChats = memo((props) => {
               "aria-hidden": "true"
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(
             WaldiezAgentNestedChatsMessages,
             {
               id,
@@ -29297,21 +28977,21 @@ const modelNameMapping = {
   mongodb: "all-MiniLM-L6-v2",
   qdrant: "BAAI/bge-small-en-v1.5"
 };
-const getEmbeddingModelInfoView = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+const getEmbeddingModelInfoView = () => /* @__PURE__ */ jsxs("div", { children: [
   "The model for embedding. ",
-  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+  /* @__PURE__ */ jsx("br", {}),
   "The defaults are: ",
-  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Chroma:" }),
+  /* @__PURE__ */ jsx("br", {}),
+  /* @__PURE__ */ jsx("b", { children: "Chroma:" }),
   " all-MiniLM-L6-v2; ",
-  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Pgvector:" }),
+  /* @__PURE__ */ jsx("br", {}),
+  /* @__PURE__ */ jsx("b", { children: "Pgvector:" }),
   " all-MiniLM-L6-v2; ",
-  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "MongoDB:" }),
+  /* @__PURE__ */ jsx("br", {}),
+  /* @__PURE__ */ jsx("b", { children: "MongoDB:" }),
   " all-MiniLM-L6-v2; ",
-  /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-  /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Qdrant:" }),
+  /* @__PURE__ */ jsx("br", {}),
+  /* @__PURE__ */ jsx("b", { children: "Qdrant:" }),
   " BAAI/bge-small-en-v1.5."
 ] });
 const WaldiezAgentRagUserVectorDb = memo((props) => {
@@ -29343,9 +29023,9 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
   const usesMemoryStorage = isQdrant && retrieveConfig.dbConfig.useMemory;
   const usesLocalStorage = retrieveConfig.dbConfig.useLocalStorage;
   const showConnectionUrl = !isQdrant || isQdrant && !usesMemoryStorage && !usesLocalStorage;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column vector-db-config", "data-testid": `rag-vector-db-config-${id}`, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `rag-vector-db-${id}`, children: "Vector DB:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "flex-column vector-db-config", "data-testid": `rag-vector-db-config-${id}`, children: [
+    /* @__PURE__ */ jsx("label", { htmlFor: `rag-vector-db-${id}`, children: "Vector DB:" }),
+    /* @__PURE__ */ jsx(
       Select,
       {
         options: vectorDbOptions,
@@ -29355,7 +29035,7 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
         "aria-label": "Select vector database type"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       InfoLabel,
       {
         label: "Embedding Model:",
@@ -29363,7 +29043,7 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
         htmlFor: `rag-vector-db-model-${id}`
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       "input",
       {
         type: "text",
@@ -29375,8 +29055,8 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
         "aria-label": "Embedding model name"
       }
     ),
-    isQdrant && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    isQdrant && /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx(
         InfoCheckbox,
         {
           label: "Use Memory Storage ",
@@ -29387,8 +29067,8 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
           "aria-label": "Use memory storage for Qdrant"
         }
       ),
-      !usesMemoryStorage && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+      !usesMemoryStorage && /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsx(
           InfoCheckbox,
           {
             label: "Use Local Storage ",
@@ -29399,9 +29079,9 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
             "aria-label": "Use local storage for Qdrant"
           }
         ),
-        usesLocalStorage && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `rag-vector-db-local-storage-path-${id}`, children: "Storage Path:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        usesLocalStorage && /* @__PURE__ */ jsxs(Fragment, { children: [
+          /* @__PURE__ */ jsx("label", { htmlFor: `rag-vector-db-local-storage-path-${id}`, children: "Storage Path:" }),
+          /* @__PURE__ */ jsx(
             "input",
             {
               id: `rag-vector-db-local-storage-path-${id}`,
@@ -29416,8 +29096,8 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
         ] })
       ] })
     ] }),
-    isChroma && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    isChroma && /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx(
         InfoCheckbox,
         {
           label: "Use Persistent Storage ",
@@ -29428,9 +29108,9 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
           "aria-label": "Use persistent storage for Chroma"
         }
       ),
-      usesLocalStorage && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `rag-vector-db-chroma-local-storage-path-${id}`, children: "Storage Path:" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+      usesLocalStorage && /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsx("label", { htmlFor: `rag-vector-db-chroma-local-storage-path-${id}`, children: "Storage Path:" }),
+        /* @__PURE__ */ jsx(
           "input",
           {
             id: `rag-vector-db-chroma-local-storage-path-${id}`,
@@ -29444,8 +29124,8 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
         )
       ] })
     ] }),
-    showConnectionUrl && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    showConnectionUrl && /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           htmlFor: `rag-vector-db-connection-url-${id}`,
@@ -29453,7 +29133,7 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
           info: "The connection URL for the vector db. If using chroma and not provided, a new chroma db server will be spawned. For pgvector and mongodb, this is required."
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "input",
         {
           type: "text",
@@ -29636,9 +29316,9 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
     }),
     [data.retrieveConfig.task, retrieveConfig.task]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rag-retrieve-config-container", "data-testid": `rag-retrieve-config-${id}`, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "rag-retrieve-config-container", "data-testid": `rag-retrieve-config-${id}`, children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           label: "Task:",
@@ -29646,8 +29326,8 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
           htmlFor: `rag-retrieve-task-input-${id}`
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: `rag-retrieve-task-${id}`, children: "Task" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: `rag-retrieve-task-${id}`, children: "Task" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: taskOptions,
@@ -29658,8 +29338,8 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      uploadsEnabled && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-20", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      uploadsEnabled && /* @__PURE__ */ jsx("div", { className: "margin-top-20", children: /* @__PURE__ */ jsx(
         DropZone,
         {
           flowId,
@@ -29669,7 +29349,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
           "aria-label": "Upload documents for RAG"
         }
       ) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         StringList,
         {
           viewLabel: "Docs Paths:",
@@ -29683,8 +29363,8 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           label: "Collection Name:",
@@ -29692,7 +29372,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
           htmlFor: `rag-retrieve-collection-name-${id}`
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "input",
         {
           type: "text",
@@ -29705,8 +29385,8 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           label: "Number of results:",
@@ -29714,7 +29394,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
           htmlFor: `rag-retrieve-n-results-${id}`
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "input",
         {
           title: "Number of results",
@@ -29727,8 +29407,8 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           htmlFor: `rag-retrieve-distance-threshold-${id}`,
@@ -29736,7 +29416,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
           info: "The threshold for the distance score, only distance smaller than it will be returned. Will be ignored if < 0. Default is -1."
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "input",
         {
           title: "Distance threshold",
@@ -29848,9 +29528,9 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
     [retrieveConfig.chunkMode]
   );
   const showEmptyLineBreak = retrieveConfig.chunkMode === "multi_lines";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "text-split-config", "data-testid": `rag-text-split-config-${id}`, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "text-split-config", "data-testid": `rag-text-split-config-${id}`, children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           label: "Chunk Token Size:",
@@ -29858,7 +29538,7 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
           htmlFor: `rag-chunk-token-size-${id}`
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "input",
         {
           title: "Chunk token size",
@@ -29871,8 +29551,8 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           label: "Context Max Tokens:",
@@ -29880,7 +29560,7 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
           htmlFor: `rag-context-max-tokens-${id}`
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "input",
         {
           title: "Context max tokens",
@@ -29893,8 +29573,8 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           htmlFor: `rag-chunk-mode-${id}`,
@@ -29902,8 +29582,8 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
           info: 'The chunk mode for the retrieve chat. Possible values are "Multi Lines" and "One Line". If not provided, a default mode "Multi Lines" will be used.'
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "hidden", htmlFor: `rag-select-chunk-mode-${id}`, children: "Chunk Mode" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("label", { className: "hidden", htmlFor: `rag-select-chunk-mode-${id}`, children: "Chunk Mode" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: chunkModeOptions,
@@ -29914,7 +29594,7 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
         }
       )
     ] }),
-    showEmptyLineBreak && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    showEmptyLineBreak && /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "Must Break at Empty Line ",
@@ -30020,9 +29700,9 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
     onOverwriteChange,
     onRecursiveChange
   } = useWaldiezAgentRagUserAdvanced(props);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "rag-advanced-settings", "data-testid": `rag-advanced-settings-${id}`, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "rag-advanced-settings", "data-testid": `rag-advanced-settings-${id}`, children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           label: "Customized Prompt:",
@@ -30030,7 +29710,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
           htmlFor: `rag-customized-prompt-${id}`
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         TextareaInput,
         {
           title: "Customized prompt",
@@ -30043,8 +29723,8 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           label: "Customized Answer Prefix:",
@@ -30052,7 +29732,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
           htmlFor: `rag-customized-answer-prefix-${id}`
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "input",
         {
           type: "text",
@@ -30065,7 +29745,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "Update Context ",
@@ -30076,7 +29756,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         "aria-label": "Update context for interactive retrieval"
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "Get or Create ",
@@ -30087,7 +29767,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         "aria-label": "Get or create collection"
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "New Docs ",
@@ -30098,7 +29778,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         "aria-label": "Only add new documents"
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "Overwrite ",
@@ -30109,7 +29789,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         "aria-label": "Overwrite existing collection"
       }
     ) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "Recursive ",
@@ -30305,21 +29985,21 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
   const useCustomTokenCount = retrieveConfig.useCustomTokenCount ?? false;
   const useCustomTextSplit = retrieveConfig.useCustomTextSplit ?? false;
   const collapsibleStyle = { marginTop: -20, marginBottom: -10 };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className: "waldiez-agent-rag-user-custom-functions",
       "data-testid": `rag-custom-functions-${flowId}`,
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           Collapsible,
           {
             title: "Embedding Function",
             dataTestId: `${flowId}-rag-use-custom-embedding`,
             "aria-label": "Embedding function settings",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info-tooltip", children: "If selected, the agent will use a custom embedding function. Default is False." }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
+            children: /* @__PURE__ */ jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
+              /* @__PURE__ */ jsx("div", { className: "info", children: /* @__PURE__ */ jsx("div", { className: "info-tooltip", children: "If selected, the agent will use a custom embedding function. Default is False." }) }),
+              /* @__PURE__ */ jsx(
                 CheckboxInput,
                 {
                   id: `${flowId}-rag-use-custom-embedding-checkbox`,
@@ -30329,9 +30009,9 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
                   "data-testid": `${flowId}-rag-use-custom-embedding-checkbox`
                 }
               ),
-              useCustomEmbedding && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `${flowId}-embedding-function-editor`, children: "Embedding Function:" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              useCustomEmbedding && /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx("label", { htmlFor: `${flowId}-embedding-function-editor`, children: "Embedding Function:" }),
+                /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
                   Editor,
                   {
                     darkMode: isDarkMode,
@@ -30344,15 +30024,15 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
             ] })
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           Collapsible,
           {
             title: "Token Count",
             dataTestId: `${flowId}-rag-use-custom-tokenCount`,
             "aria-label": "Token count function settings",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info-tooltip", children: "If selected, the agent will use a custom token count function. Default is False." }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
+            children: /* @__PURE__ */ jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
+              /* @__PURE__ */ jsx("div", { className: "info", children: /* @__PURE__ */ jsx("div", { className: "info-tooltip", children: "If selected, the agent will use a custom token count function. Default is False." }) }),
+              /* @__PURE__ */ jsx(
                 CheckboxInput,
                 {
                   id: `${flowId}-rag-use-custom-tokenCount-checkbox`,
@@ -30362,9 +30042,9 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
                   "data-testid": `${flowId}-rag-use-custom-tokenCount-checkbox`
                 }
               ),
-              useCustomTokenCount && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `${flowId}-token-count-function-editor`, children: "Custom Token Count Function:" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              useCustomTokenCount && /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx("label", { htmlFor: `${flowId}-token-count-function-editor`, children: "Custom Token Count Function:" }),
+                /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
                   Editor,
                   {
                     darkMode: isDarkMode,
@@ -30377,15 +30057,15 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
             ] })
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           Collapsible,
           {
             title: "Text Split",
             dataTestId: `${flowId}-rag-use-custom-textSplit`,
             "aria-label": "Text split function settings",
-            children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info-tooltip", children: "If selected, the agent will use a custom text split function. Default is False." }) }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
+            children: /* @__PURE__ */ jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
+              /* @__PURE__ */ jsx("div", { className: "info", children: /* @__PURE__ */ jsx("div", { className: "info-tooltip", children: "If selected, the agent will use a custom text split function. Default is False." }) }),
+              /* @__PURE__ */ jsx(
                 CheckboxInput,
                 {
                   id: `${flowId}-rag-use-custom-textSplit-checkbox`,
@@ -30395,9 +30075,9 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
                   "data-testid": `${flowId}-rag-use-custom-textSplit-checkbox`
                 }
               ),
-              useCustomTextSplit && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `${flowId}-text-split-function-editor`, children: "Custom Text Split Function:" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+              useCustomTextSplit && /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx("label", { htmlFor: `${flowId}-text-split-function-editor`, children: "Custom Text Split Function:" }),
+                /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx(
                   Editor,
                   {
                     darkMode: isDarkMode,
@@ -30548,12 +30228,12 @@ const WaldiezAgentTools = memo((props) => {
     onRemoveTool
   } = useWaldiezAgentTools(props);
   if (tools.length === 0) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10 margin-left-10", children: "No tools found in the workspace" }) });
+    return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-bottom-10", children: /* @__PURE__ */ jsx("div", { className: "margin-top-10 margin-left-10", children: "No tools found in the workspace" }) });
   }
   if (skipExecutor === true) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel agent-tools-panel margin-top-10 margin-bottom-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel-select-tools", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `select-agent-tools-${id}`, children: "Tools:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-top-10 margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { className: "agent-panel-select-tools", children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tools-${id}`, children: "Tools:" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: toolOptions,
@@ -30567,10 +30247,10 @@ const WaldiezAgentTools = memo((props) => {
       )
     ] }) });
   }
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel agent-tools-panel margin-top-10 margin-bottom-10", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel-add-tool", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `select-agent-tool-${id}`, children: "Tool:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-tools-panel margin-top-10 margin-bottom-10", children: /* @__PURE__ */ jsxs("div", { children: [
+    /* @__PURE__ */ jsxs("div", { className: "agent-panel-add-tool", children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tool-${id}`, children: "Tool:" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: toolOptions,
@@ -30580,8 +30260,8 @@ const WaldiezAgentTools = memo((props) => {
           "aria-label": "Select tool"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `select-agent-tool-executor-${id}`, children: "Executor:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("label", { htmlFor: `select-agent-tool-executor-${id}`, children: "Executor:" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: agentOptions,
@@ -30591,7 +30271,7 @@ const WaldiezAgentTools = memo((props) => {
           "aria-label": "Select executor agent"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -30604,24 +30284,24 @@ const WaldiezAgentTools = memo((props) => {
         }
       )
     ] }),
-    data.tools.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel-current-tools margin-top-10", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel-current-tools-heading", children: "Current tools:" }),
-      data.tools.map((tool, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+    data.tools.length > 0 && /* @__PURE__ */ jsxs("div", { className: "agent-panel-current-tools margin-top-10", children: [
+      /* @__PURE__ */ jsx("div", { className: "agent-panel-current-tools-heading", children: "Current tools:" }),
+      data.tools.map((tool, index2) => /* @__PURE__ */ jsx(
         "div",
         {
           className: "agent-panel-current-tool",
-          children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel-current-tool-entry", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tool-item", children: [
+          children: /* @__PURE__ */ jsxs("div", { className: "agent-panel-current-tool-entry", children: [
+            /* @__PURE__ */ jsxs("div", { className: "tool-item", children: [
               "Tool:",
               " ",
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tool-name", "data-testid": `tool-name-${id}-${index2}`, children: getToolName(tool) })
+              /* @__PURE__ */ jsx("div", { className: "tool-name", "data-testid": `tool-name-${id}-${index2}`, children: getToolName(tool) })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-item", children: [
+            /* @__PURE__ */ jsxs("div", { className: "agent-item", children: [
               "Executor:",
               " ",
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-name", "data-testid": `agent-name-${id}-${index2}`, children: getAgentName2(tool) })
+              /* @__PURE__ */ jsx("div", { className: "agent-name", "data-testid": `agent-name-${id}-${index2}`, children: getAgentName2(tool) })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -30662,13 +30342,13 @@ const WaldiezAgentRagUserTabs = memo(
     useEffect(() => {
       setActiveTabIndex(0);
     }, [isModalOpen]);
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       "div",
       {
         className: "agent-panel agent-ragUser-panel margin-bottom-10",
         "data-testid": `agent-rag-user-panel-${id}`,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Model", id: `wf-${flowId}-wa-${id}-models`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+        children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
+          /* @__PURE__ */ jsx(TabItem, { label: "Model", id: `wf-${flowId}-wa-${id}-models`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
             WaldiezAgentModels,
             {
               id,
@@ -30677,7 +30357,7 @@ const WaldiezAgentRagUserTabs = memo(
               onDataChange
             }
           ) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
             WaldiezAgentCodeExecution,
             {
               id,
@@ -30686,7 +30366,7 @@ const WaldiezAgentRagUserTabs = memo(
               onDataChange
             }
           ) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
             WaldiezAgentTools,
             {
               id,
@@ -30697,7 +30377,7 @@ const WaldiezAgentRagUserTabs = memo(
               onDataChange
             }
           ) }) }),
-          showNestedChatsTab && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          showNestedChatsTab && /* @__PURE__ */ jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
             WaldiezAgentNestedChats,
             {
               id,
@@ -30706,8 +30386,8 @@ const WaldiezAgentRagUserTabs = memo(
               agentConnections
             }
           ) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "RAG", id: `wf-${flowId}-wa-${id}-rag`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex: 0, children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Retrieve Config", id: `wf-${flowId}-wa-${id}-rag-retrieveConfig`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(TabItem, { label: "RAG", id: `wf-${flowId}-wa-${id}-rag`, children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
+            /* @__PURE__ */ jsx(TabItem, { label: "Retrieve Config", id: `wf-${flowId}-wa-${id}-rag-retrieveConfig`, children: /* @__PURE__ */ jsx(
               WaldiezAgentRagUserRetrieveConfig,
               {
                 id,
@@ -30719,7 +30399,7 @@ const WaldiezAgentRagUserTabs = memo(
                 onFilesToUploadChange
               }
             ) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Text splitting", id: `wf-${flowId}-wa-${id}-rag-textSplit`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(TabItem, { label: "Text splitting", id: `wf-${flowId}-wa-${id}-rag-textSplit`, children: /* @__PURE__ */ jsx(
               WaldiezAgentRagUserTextSplit,
               {
                 id,
@@ -30727,7 +30407,7 @@ const WaldiezAgentRagUserTabs = memo(
                 onDataChange
               }
             ) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Vector DB Config", id: `wf-${flowId}-wa-${id}-rag-vectorDb`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(TabItem, { label: "Vector DB Config", id: `wf-${flowId}-wa-${id}-rag-vectorDb`, children: /* @__PURE__ */ jsx(
               WaldiezAgentRagUserVectorDb,
               {
                 id,
@@ -30735,12 +30415,12 @@ const WaldiezAgentRagUserTabs = memo(
                 onDataChange
               }
             ) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               TabItem,
               {
                 label: "Custom Functions",
                 id: `wf-${flowId}-wa-${id}-rag-customFunctions`,
-                children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                children: /* @__PURE__ */ jsx(
                   WaldiezAgentRagUserCustomFunctions,
                   {
                     id,
@@ -30752,7 +30432,7 @@ const WaldiezAgentRagUserTabs = memo(
                 )
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Advanced", id: `wf-${flowId}-wa-${id}-rag-advanced`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(TabItem, { label: "Advanced", id: `wf-${flowId}-wa-${id}-rag-advanced`, children: /* @__PURE__ */ jsx(
               WaldiezAgentRagUserAdvanced,
               {
                 id,
@@ -30964,8 +30644,8 @@ const WaldiezAgentReasoning2 = memo((props) => {
     onNSimChange,
     onExplorationConstantChange
   } = useWaldiezAgentReasoning(props);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel agent-codeExecution-panel margin-top--10", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-codeExecution-panel margin-top--10", children: [
+    /* @__PURE__ */ jsx(
       InfoCheckbox,
       {
         label: "Verbose",
@@ -30976,8 +30656,8 @@ const WaldiezAgentReasoning2 = memo((props) => {
         "aria-label": "Enable verbose reasoning output"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "agent-panel-label", htmlFor: `agent-reasoning-method-${id}`, children: "Reasoning Method:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("label", { className: "agent-panel-label", htmlFor: `agent-reasoning-method-${id}`, children: "Reasoning Method:" }),
+    /* @__PURE__ */ jsx(
       Select,
       {
         options: reasoningMethodOptions,
@@ -30987,7 +30667,7 @@ const WaldiezAgentReasoning2 = memo((props) => {
         "aria-label": "Select reasoning method"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       NumberInput,
       {
         label: "Max Depth:",
@@ -31000,7 +30680,7 @@ const WaldiezAgentReasoning2 = memo((props) => {
         "aria-label": "Maximum depth for reasoning"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       NumberInput,
       {
         label: "Forest Size:",
@@ -31013,7 +30693,7 @@ const WaldiezAgentReasoning2 = memo((props) => {
         "aria-label": "Forest size for reasoning"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       NumberInput,
       {
         label: "Rating Scale:",
@@ -31026,8 +30706,8 @@ const WaldiezAgentReasoning2 = memo((props) => {
         "aria-label": "Rating scale for reasoning"
       }
     ),
-    isBeamSearch && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    isBeamSearch && /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx(
         NumberInput,
         {
           name: "beam-size",
@@ -31040,8 +30720,8 @@ const WaldiezAgentReasoning2 = memo((props) => {
           "aria-label": "Beam size for beam search"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { className: "agent-panel-label", htmlFor: `agent-reasoning-answer-approach-${id}`, children: "Answer Approach:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("label", { className: "agent-panel-label", htmlFor: `agent-reasoning-answer-approach-${id}`, children: "Answer Approach:" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: answerApproachOptions,
@@ -31052,8 +30732,8 @@ const WaldiezAgentReasoning2 = memo((props) => {
         }
       )
     ] }),
-    isSimulationBasedMethod && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    isSimulationBasedMethod && /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx(
         NumberInput,
         {
           name: "number-of-simulations",
@@ -31066,7 +30746,7 @@ const WaldiezAgentReasoning2 = memo((props) => {
           "aria-label": "Number of simulations for MCTS/LATS"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         NumberInput,
         {
           label: "Exploration Constant:",
@@ -31245,11 +30925,11 @@ const WaldiezAgentTermination = memo((props) => {
   }, [data.termination.criterion, terminationCriterionOptions2]);
   const showMethodEditor = data.termination && data.termination.type === "method";
   const showKeywordSettings = data.termination && data.termination.type === "keyword";
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-panel agent-termination-panel", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: "After receiving each message, the agent will send a reply to the sender unless the termination condition is met. A termination condition can be a keyword or a custom method." }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `termination-type-${id}`, children: "Termination Type:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-termination-panel", children: [
+    /* @__PURE__ */ jsx("div", { className: "info", children: "After receiving each message, the agent will send a reply to the sender unless the termination condition is met. A termination condition can be a keyword or a custom method." }),
+    /* @__PURE__ */ jsx("label", { htmlFor: `termination-type-${id}`, children: "Termination Type:" }),
+    /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+    /* @__PURE__ */ jsx(
       Select,
       {
         options: terminationTypeOptions2,
@@ -31259,10 +30939,10 @@ const WaldiezAgentTermination = memo((props) => {
         "aria-label": "Select termination type"
       }
     ),
-    showMethodEditor && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `termination-method-editor-${id}`, children: "Termination Method:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    showMethodEditor && /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: `termination-method-editor-${id}`, children: "Termination Method:" }),
+      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsx(
         Editor,
         {
           "data-testid": `termination-method-editor-${id}`,
@@ -31273,10 +30953,10 @@ const WaldiezAgentTermination = memo((props) => {
         }
       )
     ] }),
-    showKeywordSettings && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `termination-criterion-${id}`, children: "Termination Criterion:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    showKeywordSettings && /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: `termination-criterion-${id}`, children: "Termination Criterion:" }),
+      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           options: terminationCriterionOptions2,
@@ -31286,7 +30966,7 @@ const WaldiezAgentTermination = memo((props) => {
           "aria-label": "Select termination criterion"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         StringList,
         {
           viewLabel: "Termination Keywords:",
@@ -31323,9 +31003,9 @@ const WaldiezAgentUserTabs = memo((props) => {
     },
     [onDataChange]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-panel agent-user-panel margin-bottom-10", "data-testid": `agent-user-panel-${id}`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "User", id: `wf-${flowId}-wa-${id}-user`, children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-tab-body", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx("div", { className: "agent-panel agent-user-panel margin-bottom-10", "data-testid": `agent-user-panel-${id}`, children: /* @__PURE__ */ jsxs(TabItems, { children: [
+    /* @__PURE__ */ jsx(TabItem, { label: "User", id: `wf-${flowId}-wa-${id}-user`, children: /* @__PURE__ */ jsxs("div", { className: "modal-tab-body", children: [
+      /* @__PURE__ */ jsx(
         TextInput,
         {
           label: "Name:",
@@ -31337,7 +31017,7 @@ const WaldiezAgentUserTabs = memo((props) => {
           className: "margin-top-5"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         NumberInput,
         {
           name: "max-consecutive-auto-reply",
@@ -31356,10 +31036,10 @@ const WaldiezAgentUserTabs = memo((props) => {
           "aria-label": "Maximum consecutive auto replies"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-20" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `agent-default-auto-reply-input-${id}`, children: "Default Auto Reply:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-5" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx("div", { className: "margin-bottom-20" }),
+      /* @__PURE__ */ jsx("label", { htmlFor: `agent-default-auto-reply-input-${id}`, children: "Default Auto Reply:" }),
+      /* @__PURE__ */ jsx("div", { className: "margin-top-5" }),
+      /* @__PURE__ */ jsx(
         TextareaInput,
         {
           className: "full-width margin-top-5",
@@ -31371,7 +31051,7 @@ const WaldiezAgentUserTabs = memo((props) => {
         }
       )
     ] }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
       WaldiezAgentCodeExecution,
       {
         id,
@@ -31380,7 +31060,7 @@ const WaldiezAgentUserTabs = memo((props) => {
         onDataChange
       }
     ) }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
       WaldiezAgentTools,
       {
         id,
@@ -31391,7 +31071,7 @@ const WaldiezAgentUserTabs = memo((props) => {
         onDataChange
       }
     ) }) }),
-    showNestedChatsTab && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    showNestedChatsTab && /* @__PURE__ */ jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
       WaldiezAgentNestedChats,
       {
         id,
@@ -31494,7 +31174,7 @@ const WaldiezNodeAgentModalTabs = memo(
       uploadsEnabled
     } = derivedData;
     if (isRagUser) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         WaldiezAgentRagUserTabs,
         {
           id,
@@ -31515,7 +31195,7 @@ const WaldiezNodeAgentModalTabs = memo(
       );
     }
     if (data.agentType === "user_proxy") {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         WaldiezAgentUserTabs,
         {
           id,
@@ -31531,8 +31211,8 @@ const WaldiezNodeAgentModalTabs = memo(
         }
       );
     }
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Agent", id: `wf-${flowId}-wa-${id}-basic`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
+      /* @__PURE__ */ jsx(TabItem, { label: "Agent", id: `wf-${flowId}-wa-${id}-basic`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
         WaldiezAgentBasic,
         {
           id,
@@ -31541,7 +31221,7 @@ const WaldiezNodeAgentModalTabs = memo(
           onAgentTypeChange
         }
       ) }) }),
-      isReasoning && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Reasoning", id: `wf-${flowId}-wa-${id}-reasoning`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      isReasoning && /* @__PURE__ */ jsx(TabItem, { label: "Reasoning", id: `wf-${flowId}-wa-${id}-reasoning`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
         WaldiezAgentReasoning2,
         {
           id,
@@ -31549,7 +31229,7 @@ const WaldiezNodeAgentModalTabs = memo(
           onDataChange
         }
       ) }) }),
-      isCaptain && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Captain", id: `wf-${flowId}-wa-${id}-captain`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      isCaptain && /* @__PURE__ */ jsx(TabItem, { label: "Captain", id: `wf-${flowId}-wa-${id}-captain`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
         WaldiezAgentCaptainTab,
         {
           id,
@@ -31558,7 +31238,7 @@ const WaldiezNodeAgentModalTabs = memo(
           onDataChange
         }
       ) }) }),
-      isDocAgent && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Documents", id: `wf-${flowId}-wa-${id}-documents`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      isDocAgent && /* @__PURE__ */ jsx(TabItem, { label: "Documents", id: `wf-${flowId}-wa-${id}-documents`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
         WaldiezDocAgentTab,
         {
           id,
@@ -31567,8 +31247,8 @@ const WaldiezNodeAgentModalTabs = memo(
           onDataChange
         }
       ) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Termination", id: `wf-${flowId}-wa-${id}-termination`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezAgentTermination, { id, data, onDataChange }) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(TabItem, { label: "Termination", id: `wf-${flowId}-wa-${id}-termination`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(WaldiezAgentTermination, { id, data, onDataChange }) }) }),
+      /* @__PURE__ */ jsx(TabItem, { label: "Code Execution", id: `wf-${flowId}-wa-${id}-codeExecution`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
         WaldiezAgentCodeExecution,
         {
           id,
@@ -31577,8 +31257,8 @@ const WaldiezNodeAgentModalTabs = memo(
           onDataChange
         }
       ) }) }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Models", id: `wf-${flowId}-wa-${id}-models`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezAgentModels, { id, data, models, onDataChange }) }) }),
-      !(isDocAgent && isGroupMember) && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(TabItem, { label: "Models", id: `wf-${flowId}-wa-${id}-models`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(WaldiezAgentModels, { id, data, models, onDataChange }) }) }),
+      !(isDocAgent && isGroupMember) && /* @__PURE__ */ jsx(TabItem, { label: "Tools", id: `wf-${flowId}-wa-${id}-tools`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
         WaldiezAgentTools,
         {
           id,
@@ -31589,7 +31269,7 @@ const WaldiezNodeAgentModalTabs = memo(
           onDataChange
         }
       ) }) }),
-      showNestedChatsTab && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      showNestedChatsTab && /* @__PURE__ */ jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-nested`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
         WaldiezAgentNestedChats,
         {
           id,
@@ -31598,7 +31278,7 @@ const WaldiezNodeAgentModalTabs = memo(
           agentConnections
         }
       ) }) }),
-      isGroupMember && showGroupNestedChatTab && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-group-nested`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      isGroupMember && showGroupNestedChatTab && /* @__PURE__ */ jsx(TabItem, { label: "Nested chat", id: `wf-${flowId}-wa-${id}-group-nested`, children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
         WaldiezAgentGroupNestedChatTabs,
         {
           id,
@@ -31610,7 +31290,7 @@ const WaldiezNodeAgentModalTabs = memo(
           onDataChange
         }
       ) }) }),
-      !isManager && groupManagers.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { id: `wf-${flowId}-wa-${id}-group`, label: "Group", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      !isManager && groupManagers.length > 0 && /* @__PURE__ */ jsx(TabItem, { id: `wf-${flowId}-wa-${id}-group`, label: "Group", children: /* @__PURE__ */ jsx("div", { className: "modal-tab-body", children: /* @__PURE__ */ jsx(
         WaldiezAgentGroupMember,
         {
           id,
@@ -31628,8 +31308,8 @@ WaldiezNodeAgentModalTabs.displayName = "WaldiezNodeAgentModalTabs";
 const getImportExportView = (flowId, itemId, itemType, onImport, onExport) => {
   const itemTypeLower = itemType.toLowerCase();
   const itemTypeCapitalized = itemType.charAt(0).toUpperCase() + itemType.slice(1);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-header-import-export", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "modal-header-import-export", children: [
+    /* @__PURE__ */ jsx(
       "input",
       {
         title: `Import ${itemTypeCapitalized}`,
@@ -31641,16 +31321,16 @@ const getImportExportView = (flowId, itemId, itemType, onImport, onExport) => {
         className: "hidden"
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       "label",
       {
         htmlFor: `file-upload-${itemTypeLower}-${flowId}-${itemId}`,
         className: "modal-header-import-button file-label",
         title: `Import ${itemTypeCapitalized}`,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaFileImport$1, {})
+        children: /* @__PURE__ */ jsx(FaFileImport$1, {})
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       "div",
       {
         role: "button",
@@ -31658,7 +31338,7 @@ const getImportExportView = (flowId, itemId, itemType, onImport, onExport) => {
         onClick: onExport,
         title: `Export ${itemTypeCapitalized}`,
         "data-testid": `export-${itemTypeLower}-${flowId}-${itemId}`,
-        children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaFileExport, {})
+        children: /* @__PURE__ */ jsx(FaFileExport, {})
       }
     )
   ] });
@@ -31690,7 +31370,7 @@ const WaldiezNodeAgentModal = memo((props) => {
   );
   const tabComponent = useMemo(() => {
     if (data.agentType === "group_manager") {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsx(
         WaldiezNodeGroupManagerTabs,
         {
           isModalOpen: isOpen,
@@ -31702,7 +31382,7 @@ const WaldiezNodeAgentModal = memo((props) => {
         }
       );
     }
-    return /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx(
       WaldiezNodeAgentModalTabs,
       {
         id,
@@ -31728,7 +31408,7 @@ const WaldiezNodeAgentModal = memo((props) => {
     filesToUpload,
     onFilesToUploadChange
   ]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(
     Modal,
     {
       flowId,
@@ -31741,9 +31421,9 @@ const WaldiezNodeAgentModal = memo((props) => {
       hasUnsavedChanges: isDirty,
       preventCloseIfUnsavedChanges: true,
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body", children: tabComponent }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx("div", { className: "modal-body", children: tabComponent }),
+        /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
+          /* @__PURE__ */ jsx(
             "button",
             {
               className: "secondary",
@@ -31755,8 +31435,8 @@ const WaldiezNodeAgentModal = memo((props) => {
               children: "Cancel"
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-row", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxs("div", { className: "flex-row", children: [
+            /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -31769,7 +31449,7 @@ const WaldiezNodeAgentModal = memo((props) => {
                 children: "Save & Close"
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -31858,7 +31538,7 @@ const WaldiezNodeAgentView = (props) => {
     [agentType]
   );
   const agentImgSrc = AGENT_ICONS[agentType];
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className,
@@ -31868,11 +31548,11 @@ const WaldiezNodeAgentView = (props) => {
       onDrop,
       "data-activity": isSender && activeEvent ? activityEmoji(activeEvent) : void 0,
       children: [
-        (isSender || isRecipient) && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-badge-wrap", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "agent-badge-chip", children: isSender ? "SENDING" : "RECEIVING" }),
-          isSender && activeEvent && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "agent-activity-label", children: /* @__PURE__ */ jsxRuntimeExports.jsx(ActivityIcon, { activity: activeEvent }) })
+        (isSender || isRecipient) && /* @__PURE__ */ jsxs("div", { className: "agent-badge-wrap", children: [
+          /* @__PURE__ */ jsx("span", { className: "agent-badge-chip", children: isSender ? "SENDING" : "RECEIVING" }),
+          isSender && activeEvent && /* @__PURE__ */ jsx("span", { className: "agent-activity-label", children: /* @__PURE__ */ jsx(ActivityIcon, { activity: activeEvent }) })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           NodeResizer,
           {
             color: AGENT_COLORS[agentType],
@@ -31882,8 +31562,8 @@ const WaldiezNodeAgentView = (props) => {
             handleClassName: agentType
           }
         ),
-        !isReadOnly && !isDragging && selected && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `agent-actions ${agentType}`, "data-testid": `agent-actions-${id}`, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        !isReadOnly && !isDragging && selected && /* @__PURE__ */ jsxs("div", { className: `agent-actions ${agentType}`, "data-testid": `agent-actions-${id}`, children: [
+          /* @__PURE__ */ jsx(
             FaTrash,
             {
               role: "button",
@@ -31893,7 +31573,7 @@ const WaldiezNodeAgentView = (props) => {
               "aria-label": "Delete Agent"
             }
           ),
-          data.agentType !== "group_manager" && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          data.agentType !== "group_manager" && /* @__PURE__ */ jsx(
             FaCopy$1,
             {
               role: "button",
@@ -31903,7 +31583,7 @@ const WaldiezNodeAgentView = (props) => {
               "aria-label": "Clone Agent"
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(
             VscSettings,
             {
               role: "button",
@@ -31914,13 +31594,13 @@ const WaldiezNodeAgentView = (props) => {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-main", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-top", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "agent-icon-with-label", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("img", { className: "agent-icon-image", src: agentImgSrc, alt: "Agent" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "agent-icon-label", children: data.label })
+        /* @__PURE__ */ jsxs("div", { className: "agent-main", children: [
+          /* @__PURE__ */ jsxs("div", { className: "agent-top", children: [
+            /* @__PURE__ */ jsxs("div", { className: "agent-icon-with-label", children: [
+              /* @__PURE__ */ jsx("img", { className: "agent-icon-image", src: agentImgSrc, alt: "Agent" }),
+              /* @__PURE__ */ jsx("div", { className: "agent-icon-label", children: data.label })
             ] }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               WaldiezNodeAgentBody,
               {
                 flowId,
@@ -31933,7 +31613,7 @@ const WaldiezNodeAgentView = (props) => {
             )
           ] }),
           createHandles({ agentType, id, handleClassNameBase, selected, onEdgeConnection }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(
             "button",
             {
               title: "Open Node Modal",
@@ -31944,7 +31624,7 @@ const WaldiezNodeAgentView = (props) => {
               onClick: onOpenNodeModal
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(
             "button",
             {
               title: "Open Edge Modal",
@@ -31956,8 +31636,8 @@ const WaldiezNodeAgentView = (props) => {
               "data-edge-id": ""
             }
           ),
-          edge && /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezEdgeModal, { isOpen: isEdgeModalOpen, edgeId: edge.id, onClose: onCloseEdgeModal }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+          edge && /* @__PURE__ */ jsx(WaldiezEdgeModal, { isOpen: isEdgeModalOpen, edgeId: edge.id, onClose: onCloseEdgeModal }),
+          /* @__PURE__ */ jsx(
             WaldiezNodeAgentModal,
             {
               id,
@@ -32970,8 +32650,8 @@ const WaldiezNodeModelModalAdvancedTab = memo(
       onUpdateTag,
       onDeleteTag
     } = useModelModalAdvancedTab(props);
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsx(
         NumberInput,
         {
           name: "temperature",
@@ -32986,7 +32666,7 @@ const WaldiezNodeModelModalAdvancedTab = memo(
           dataTestId: "model-modal-temperature"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         NumberInput,
         {
           name: "top-p",
@@ -33002,7 +32682,7 @@ const WaldiezNodeModelModalAdvancedTab = memo(
           dataTestId: "model-modal-top-p"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         NumberInput,
         {
           name: "max-tokens",
@@ -33018,7 +32698,7 @@ const WaldiezNodeModelModalAdvancedTab = memo(
           dataTestId: "model-modal-max-tokens"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         Dict,
         {
           viewLabel: "Default Headers:",
@@ -33030,7 +32710,7 @@ const WaldiezNodeModelModalAdvancedTab = memo(
           onAdd: onAddHeader
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         StringList,
         {
           viewLabel: "Tags:",
@@ -33076,8 +32756,8 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
     },
     [data.aws, onDataChange]
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsx(
       TextInput,
       {
         value: data.aws?.accessKey || "",
@@ -33087,7 +32767,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
         onChange: onAwsAccessKeyChange
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       TextInput,
       {
         value: data.aws?.secretKey || "",
@@ -33097,7 +32777,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
         onChange: onAwsSecretKeyChange
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       TextInput,
       {
         value: data.aws?.region || "",
@@ -33107,7 +32787,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
         onChange: onAwsRegionChange
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       TextInput,
       {
         value: data.aws?.profileName || "",
@@ -33117,7 +32797,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
         onChange: onAwsProfileNameChange
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       TextInput,
       {
         value: data.aws?.sessionToken || "",
@@ -33226,8 +32906,8 @@ const ModelSelector = memo((props) => {
   };
   const formatGroupLabel = (group) => {
     const logo = LOGOS[group.label];
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `model-logo ${group.label} flex items-center`, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsxs("div", { className: `model-logo ${group.label} flex items-center`, children: [
+      /* @__PURE__ */ jsx(
         "img",
         {
           src: logo,
@@ -33240,13 +32920,13 @@ const ModelSelector = memo((props) => {
           }
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: group.label })
+      /* @__PURE__ */ jsx("strong", { children: group.label })
     ] });
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-bottom-5", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "predefined-models-select", children: "Predefined models:" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "margin-bottom-5", children: [
+    /* @__PURE__ */ jsx("label", { htmlFor: "predefined-models-select", children: "Predefined models:" }),
+    /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+    /* @__PURE__ */ jsx(
       Select,
       {
         ref,
@@ -33295,21 +32975,21 @@ const WaldiezNodeModelModalBasicTab = memo(
       [onDataChange]
     );
     const usefulLinks = useMemo(
-      () => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: Object.entries(modelLinks).filter(([_, link]) => link.length > 0).map(([key, link]) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-row margin-bottom-5", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "flex-shrink-0", children: [
+      () => /* @__PURE__ */ jsx("div", { className: "flex-column", children: Object.entries(modelLinks).filter(([_, link]) => link.length > 0).map(([key, link]) => /* @__PURE__ */ jsxs("div", { className: "flex-row margin-bottom-5", children: [
+        /* @__PURE__ */ jsxs("span", { className: "flex-shrink-0", children: [
           capitalize(key),
           " models:  "
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("a", { href: link, target: "_blank", rel: "noreferrer", className: "text-truncate", children: link })
+        /* @__PURE__ */ jsx("a", { href: link, target: "_blank", rel: "noreferrer", className: "text-truncate", children: link })
       ] }, key)) }),
       []
     );
     const OptionWithIcon = memo(
       (props2) => {
         const { innerProps, data: data2 } = props2;
-        return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ...innerProps, className: "flex margin-10", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `margin-right-10 margin-left-5 model-logo ${data2.value}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: LOGOS[data2.value], alt: data2.label, style: { width: 20, height: 20 } }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "label", children: data2.label })
+        return /* @__PURE__ */ jsxs("div", { ...innerProps, className: "flex margin-10", children: [
+          /* @__PURE__ */ jsx("div", { className: `margin-right-10 margin-left-5 model-logo ${data2.value}`, children: /* @__PURE__ */ jsx("img", { src: LOGOS[data2.value], alt: data2.label, style: { width: 20, height: 20 } }) }),
+          /* @__PURE__ */ jsx("span", { className: "label", children: data2.label })
         ] });
       }
     );
@@ -33317,15 +32997,15 @@ const WaldiezNodeModelModalBasicTab = memo(
     const apiTypeSelectId = `model-api-type-select-${id}`;
     const apiKeyInputId = `model-api-key-input-${id}`;
     const baseUrlInputId = `model-base-url-input-${id}`;
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "info margin-bottom-10", children: [
+    return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+      /* @__PURE__ */ jsxs("div", { className: "info margin-bottom-10", children: [
         "You can select one of the predefined models from the list below or manually enter the model name and type. In the latter case, make sure that the model's name is a valid name (based on the provider). You can use the ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Test" }),
+        /* @__PURE__ */ jsx("strong", { children: "Test" }),
         " button to check if the model parameters are correct, but model credits might be used for this test (depending on the provider). ",
-        /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("strong", { children: "Note" }),
+        /* @__PURE__ */ jsx("br", {}),
+        /* @__PURE__ */ jsx("strong", { children: "Note" }),
         ` that if testing the model fails with a "Failed to load" message (for example a NIM model), it doesn't mean that the configuration is not correct (it could be a browser/CORS issue).`,
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           Collapsible,
           {
             title: "Useful Links",
@@ -33337,11 +33017,11 @@ const WaldiezNodeModelModalBasicTab = memo(
           }
         )
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(ModelSelector, { ref: predefinedModelsSelectRef, onChange: onPredefineSelected }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-10", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: nameInputId, children: "Name:" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(ModelSelector, { ref: predefinedModelsSelectRef, onChange: onPredefineSelected }),
+      /* @__PURE__ */ jsxs("div", { className: "margin-top-10", children: [
+        /* @__PURE__ */ jsx("label", { htmlFor: nameInputId, children: "Name:" }),
+        /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+        /* @__PURE__ */ jsx(
           "input",
           {
             id: nameInputId,
@@ -33355,8 +33035,8 @@ const WaldiezNodeModelModalBasicTab = memo(
           }
         )
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-0", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxs("div", { className: "margin-top-0", children: [
+        /* @__PURE__ */ jsx(
           InfoLabel,
           {
             htmlFor: `model-type-${id}`,
@@ -33364,8 +33044,8 @@ const WaldiezNodeModelModalBasicTab = memo(
             info: "API type to use for the model. Use 'other' for custom openai compatible models"
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: apiTypeSelectId, className: "hidden", children: "Model Type:" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx("label", { htmlFor: apiTypeSelectId, className: "hidden", children: "Model Type:" }),
+        /* @__PURE__ */ jsx(
           Select,
           {
             options: apiTypeOptions2,
@@ -33381,10 +33061,10 @@ const WaldiezNodeModelModalBasicTab = memo(
           }
         )
       ] }),
-      apiType !== "bedrock" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-0", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(InfoLabel, { label: "API Key:", info: apiKeyInfo, htmlFor: apiKeyInputId }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex full-width", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+      apiType !== "bedrock" && /* @__PURE__ */ jsxs("div", { className: "margin-top-0", children: [
+        /* @__PURE__ */ jsx(InfoLabel, { label: "API Key:", info: apiKeyInfo, htmlFor: apiKeyInputId }),
+        /* @__PURE__ */ jsxs("div", { className: "flex full-width", children: [
+          /* @__PURE__ */ jsx(
             "input",
             {
               id: apiKeyInputId,
@@ -33397,7 +33077,7 @@ const WaldiezNodeModelModalBasicTab = memo(
               "aria-label": "API key"
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(
             "button",
             {
               type: "button",
@@ -33406,13 +33086,13 @@ const WaldiezNodeModelModalBasicTab = memo(
               title: apiKeyVisible ? "Hide API key" : "Show API key",
               "aria-label": apiKeyVisible ? "Hide API key" : "Show API key",
               "data-testid": `visibility-apiKey-model-${id}`,
-              children: apiKeyVisible ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(FaEye, {})
+              children: apiKeyVisible ? /* @__PURE__ */ jsx(FaEyeSlash, {}) : /* @__PURE__ */ jsx(FaEye, {})
             }
           )
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-0", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxs("div", { className: "margin-top-0", children: [
+        /* @__PURE__ */ jsx(
           InfoLabel,
           {
             label: "Base URL:",
@@ -33420,7 +33100,7 @@ const WaldiezNodeModelModalBasicTab = memo(
             htmlFor: baseUrlInputId
           }
         ),
-        urlIsEditable ? /* @__PURE__ */ jsxRuntimeExports.jsx(
+        urlIsEditable ? /* @__PURE__ */ jsx(
           "input",
           {
             id: baseUrlInputId,
@@ -33432,7 +33112,7 @@ const WaldiezNodeModelModalBasicTab = memo(
             className: "full-width",
             "aria-label": "Base URL"
           }
-        ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+        ) : /* @__PURE__ */ jsx(
           "input",
           {
             id: baseUrlInputId,
@@ -33506,8 +33186,8 @@ const WaldiezNodeModelModalPriceTab = memo(
     const completionTestId = `model-modal-price-completion-${modelId}`;
     const promptInputId = `price-prompt-${modelId}`;
     const completionInputId = `price-completion-${modelId}`;
-    return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "model-price", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    return /* @__PURE__ */ jsx("div", { className: "flex-column", children: /* @__PURE__ */ jsxs("div", { className: "model-price", children: [
+      /* @__PURE__ */ jsx(
         InfoLabel,
         {
           label: "Price:",
@@ -33515,10 +33195,10 @@ const WaldiezNodeModelModalPriceTab = memo(
           htmlFor: "prompt-price-inputs"
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-left-10 margin-bottom-10 padding-left-10", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column margin-bottom-10", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: promptInputId, children: "Prompt price per 1K tokens:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxs("div", { className: "flex-column margin-left-10 margin-bottom-10 padding-left-10", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex-column margin-bottom-10", children: [
+          /* @__PURE__ */ jsx("label", { htmlFor: promptInputId, children: "Prompt price per 1K tokens:" }),
+          /* @__PURE__ */ jsx(
             "input",
             {
               id: promptInputId,
@@ -33534,9 +33214,9 @@ const WaldiezNodeModelModalPriceTab = memo(
             }
           )
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: completionInputId, children: "Completion price per 1K tokens:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+          /* @__PURE__ */ jsx("label", { htmlFor: completionInputId, children: "Completion price per 1K tokens:" }),
+          /* @__PURE__ */ jsx(
             "input",
             {
               id: completionInputId,
@@ -33577,7 +33257,7 @@ const WaldiezNodeModelModal = (props) => {
   useEffect(() => {
     setActiveTabIndex(0);
   }, [isOpen]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     Modal,
     {
       flowId,
@@ -33589,9 +33269,9 @@ const WaldiezNodeModelModal = (props) => {
       onSaveAndClose,
       hasUnsavedChanges: isDirty,
       preventCloseIfUnsavedChanges: true,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Basic", id: `model-config-basic-${modelId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      children: /* @__PURE__ */ jsxs("div", { className: "modal-body", children: [
+        /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
+          /* @__PURE__ */ jsx(TabItem, { label: "Basic", id: `model-config-basic-${modelId}`, children: /* @__PURE__ */ jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsx(
             WaldiezNodeModelModalBasicTab,
             {
               id: modelId,
@@ -33600,9 +33280,9 @@ const WaldiezNodeModelModal = (props) => {
               onLogoChange
             }
           ) }) }),
-          data.apiType === "bedrock" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "AWS", id: `model-config-aws-${modelId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezNodeModelModalAWSTab, { data, onDataChange }) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Advanced", id: `model-config-advanced-${modelId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezNodeModelModalAdvancedTab, { data, onDataChange }) }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Price", id: `model-config-price-${modelId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          data.apiType === "bedrock" && /* @__PURE__ */ jsx(TabItem, { label: "AWS", id: `model-config-aws-${modelId}`, children: /* @__PURE__ */ jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsx(WaldiezNodeModelModalAWSTab, { data, onDataChange }) }) }),
+          /* @__PURE__ */ jsx(TabItem, { label: "Advanced", id: `model-config-advanced-${modelId}`, children: /* @__PURE__ */ jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsx(WaldiezNodeModelModalAdvancedTab, { data, onDataChange }) }) }),
+          /* @__PURE__ */ jsx(TabItem, { label: "Price", id: `model-config-price-${modelId}`, children: /* @__PURE__ */ jsx("div", { className: "model-panel", children: /* @__PURE__ */ jsx(
             WaldiezNodeModelModalPriceTab,
             {
               modelId,
@@ -33611,8 +33291,8 @@ const WaldiezNodeModelModal = (props) => {
             }
           ) }) })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
+          /* @__PURE__ */ jsx(
             "button",
             {
               type: "button",
@@ -33623,8 +33303,8 @@ const WaldiezNodeModelModal = (props) => {
               children: "Cancel"
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-row", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxs("div", { className: "flex-row", children: [
+            /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -33636,7 +33316,7 @@ const WaldiezNodeModelModal = (props) => {
                 children: "Test"
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "button",
               {
                 title: "Save & Close",
@@ -33648,7 +33328,7 @@ const WaldiezNodeModelModal = (props) => {
                 children: "Save & Close"
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -33686,9 +33366,9 @@ const WaldiezNodeModelView = ({ id, data }) => {
     onCheck
   } = useWaldiezNodeModel(id, data);
   const importExportView = getImportExportView(flowId, id, "model", onImport, onExport);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: isOpen ? "model-node nodrag nowheel" : "model-node nodrag", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "model-header", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: isOpen ? "model-node nodrag nowheel" : "model-node nodrag", children: [
+    /* @__PURE__ */ jsxs("div", { className: "model-header", children: [
+      /* @__PURE__ */ jsx(
         "div",
         {
           role: "button",
@@ -33697,14 +33377,14 @@ const WaldiezNodeModelView = ({ id, data }) => {
           "data-node-id": id,
           "data-testid": `open-model-node-modal-${id}`,
           onClick: onOpen,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaGear, {})
+          children: /* @__PURE__ */ jsx(FaGear, {})
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { id: `node-label-${id}`, className: "node-label", "data-testid": `node-label-${id}`, children: data.label }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `model-logo ${data.apiType}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("img", { src: logo, alt: "logo" }) })
+      /* @__PURE__ */ jsx("div", { id: `node-label-${id}`, className: "node-label", "data-testid": `node-label-${id}`, children: data.label }),
+      /* @__PURE__ */ jsx("div", { className: `model-logo ${data.apiType}`, children: /* @__PURE__ */ jsx("img", { src: logo, alt: "logo" }) })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "model-footer", "data-testid": `model-footer-${id}`, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsxs("div", { className: "model-footer", "data-testid": `model-footer-${id}`, children: [
+      /* @__PURE__ */ jsx(
         "div",
         {
           role: "button",
@@ -33713,11 +33393,11 @@ const WaldiezNodeModelView = ({ id, data }) => {
           id: `delete-node-${id}`,
           "data-testid": `delete-node-${id}`,
           onClick: onDelete,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaTrashCan, {})
+          children: /* @__PURE__ */ jsx(FaTrashCan, {})
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
+        /* @__PURE__ */ jsx(
           "div",
           {
             role: "button",
@@ -33726,10 +33406,10 @@ const WaldiezNodeModelView = ({ id, data }) => {
             id: `test-model-${id}`,
             "data-testid": `test-model-${id}`,
             onClick: onCheck,
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(TbSettingsCheck, { fontSize: "1.1em" })
+            children: /* @__PURE__ */ jsx(TbSettingsCheck, { fontSize: "1.1em" })
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           "div",
           {
             role: "button",
@@ -33738,12 +33418,12 @@ const WaldiezNodeModelView = ({ id, data }) => {
             id: `clone-node-${id}`,
             "data-testid": `clone-node-${id}`,
             onClick: onClone,
-            children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCopy, {})
+            children: /* @__PURE__ */ jsx(FaCopy, {})
           }
         )
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       WaldiezNodeModelModal,
       {
         flowId,
@@ -34038,15 +33718,15 @@ const WaldiezToolAdvancedTab = memo((props) => {
     onTagChange
   } = useToolNodeModal(props);
   const requirementsViewLabelInfo = useMemo(
-    () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+    () => /* @__PURE__ */ jsxs("div", { children: [
       "Requirements to ",
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "bold italic", children: "pip install" }),
+      /* @__PURE__ */ jsx("span", { className: "bold italic", children: "pip install" }),
       " for this tool"
     ] }),
     []
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(
       Dict,
       {
         viewLabel: "Environment Variables:",
@@ -34058,7 +33738,7 @@ const WaldiezToolAdvancedTab = memo((props) => {
         areValuesSecret: true
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       StringList,
       {
         viewLabel: "Requirements:",
@@ -34071,7 +33751,7 @@ const WaldiezToolAdvancedTab = memo((props) => {
         onItemChange: onRequirementChange
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       StringList,
       {
         viewLabel: "Tags:",
@@ -34137,17 +33817,17 @@ const WaldiezToolBasicTab = memo((props) => {
   const ToolOptionWithIcon = memo(
     (props2) => {
       const { innerProps, data: data2 } = props2;
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { ...innerProps, className: "flex margin-5 clickable", children: [
-        data2.icon && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "icon margin-right-10 margin-top-5 margin-left-5", children: data2.icon }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "label", children: data2.label })
+      return /* @__PURE__ */ jsxs("div", { ...innerProps, className: "flex margin-5 clickable", children: [
+        data2.icon && /* @__PURE__ */ jsx("div", { className: "icon margin-right-10 margin-top-5 margin-left-5", children: data2.icon }),
+        /* @__PURE__ */ jsx("span", { className: "label", children: data2.label })
       ] });
     }
   );
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-bottom-10", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: typeSelectId, children: "Type:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: typeSelectId, children: "Type:" }),
+      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsx(
         Select,
         {
           inputId: typeSelectId,
@@ -34162,10 +33842,10 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
-    data.toolType !== "predefined" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-bottom-10", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: labelInputId, children: "Name:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    data.toolType !== "predefined" && /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: labelInputId, children: "Name:" }),
+      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsx(
         "input",
         {
           title: "Name",
@@ -34179,10 +33859,10 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
-    data.toolType !== "predefined" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-bottom-10", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: descriptionInputId, children: "Description:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    data.toolType !== "predefined" && /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: descriptionInputId, children: "Description:" }),
+      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsx(
         TextareaInput,
         {
           title: "Description",
@@ -34196,10 +33876,10 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
-    data.toolType !== "predefined" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: contentEditorId, children: "Content:" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    data.toolType !== "predefined" && /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: contentEditorId, children: "Content:" }),
+      /* @__PURE__ */ jsx("div", { className: "margin-top-10" }),
+      /* @__PURE__ */ jsx(
         Editor,
         {
           value: data.content || "",
@@ -34210,8 +33890,8 @@ const WaldiezToolBasicTab = memo((props) => {
         }
       )
     ] }),
-    data.toolType === "predefined" && PREDEFINED_TOOL_INSTRUCTIONS[data.label] && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_INSTRUCTIONS[data.label] }),
-    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label] && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]?.map((kwarg, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    data.toolType === "predefined" && PREDEFINED_TOOL_INSTRUCTIONS[data.label] && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_INSTRUCTIONS[data.label] }),
+    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label] && PREDEFINED_TOOL_REQUIRED_KWARGS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]?.map((kwarg, index2) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
       TextInput,
       {
         name: kwarg.label,
@@ -34224,7 +33904,7 @@ const WaldiezToolBasicTab = memo((props) => {
         placeholder: `Enter the ${kwarg.label}`
       }
     ) }, index2)) }),
-    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label] && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_ENVS[data.label]?.map((envVar, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+    data.toolType === "predefined" && PREDEFINED_TOOL_REQUIRED_ENVS[data.label] && PREDEFINED_TOOL_REQUIRED_ENVS[data.label].length > 0 && /* @__PURE__ */ jsx("div", { className: "margin-top-10", children: PREDEFINED_TOOL_REQUIRED_ENVS[data.label]?.map((envVar, index2) => /* @__PURE__ */ jsx("div", { className: "margin-bottom-5", children: /* @__PURE__ */ jsx(
       TextInput,
       {
         name: envVar.label,
@@ -34259,7 +33939,7 @@ const WaldiezNodeToolModal = (props) => {
   useEffect(() => {
     setActiveTabIndex(0);
   }, [isModalOpen]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(
     Modal,
     {
       flowId,
@@ -34271,12 +33951,12 @@ const WaldiezNodeToolModal = (props) => {
       hasUnsavedChanges: isDirty,
       preventCloseIfUnsavedChanges: true,
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Basic", id: `tool-basic-tab-${toolId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tool-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezToolBasicTab, { ...props }) }) }),
-          data.toolType !== "predefined" && /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Advanced", id: `tool-advanced-tab-${toolId}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tool-panel", children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezToolAdvancedTab, { ...props }) }) })
+        /* @__PURE__ */ jsx("div", { className: "modal-body", children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
+          /* @__PURE__ */ jsx(TabItem, { label: "Basic", id: `tool-basic-tab-${toolId}`, children: /* @__PURE__ */ jsx("div", { className: "tool-panel", children: /* @__PURE__ */ jsx(WaldiezToolBasicTab, { ...props }) }) }),
+          data.toolType !== "predefined" && /* @__PURE__ */ jsx(TabItem, { label: "Advanced", id: `tool-advanced-tab-${toolId}`, children: /* @__PURE__ */ jsx("div", { className: "tool-panel", children: /* @__PURE__ */ jsx(WaldiezToolAdvancedTab, { ...props }) }) })
         ] }) }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
+          /* @__PURE__ */ jsx(
             "button",
             {
               type: "button",
@@ -34287,7 +33967,7 @@ const WaldiezNodeToolModal = (props) => {
               children: "Cancel"
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(
             "button",
             {
               title: "Save & Close",
@@ -34299,7 +33979,7 @@ const WaldiezNodeToolModal = (props) => {
               children: "Save & Close"
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(
             "button",
             {
               title: "Save",
@@ -34335,9 +34015,9 @@ const WaldiezNodeToolView = (props) => {
     onExport,
     onImport
   } = useWaldiezNodeTool(props.id, props.data);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: isModalOpen ? "tool-node nodrag nowheel" : "tool-node nodrag", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tool-header", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: isModalOpen ? "tool-node nodrag nowheel" : "tool-node nodrag", children: [
+    /* @__PURE__ */ jsxs("div", { className: "tool-header", children: [
+      /* @__PURE__ */ jsx(
         "div",
         {
           role: "button",
@@ -34346,15 +34026,15 @@ const WaldiezNodeToolView = (props) => {
           "data-node-id": id,
           "data-testid": `open-tool-node-modal-${id}`,
           onClick: onOpen,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaGear, {})
+          children: /* @__PURE__ */ jsx(FaGear, {})
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { "data-testid": `node-label-${id}`, className: "node-label", children: data.label }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `tool-logo ${data.toolType}`, children: logo })
+      /* @__PURE__ */ jsx("div", { "data-testid": `node-label-${id}`, className: "node-label", children: data.label }),
+      /* @__PURE__ */ jsx("div", { className: `tool-logo ${data.toolType}`, children: logo })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "tool-content", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "description", "data-test-id": `node-description-${id}`, children: data.description }) }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "tool-footer", "data-testid": `tool-footer-${id}`, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { className: "tool-content", children: /* @__PURE__ */ jsx("div", { className: "description", "data-test-id": `node-description-${id}`, children: data.description }) }),
+    /* @__PURE__ */ jsxs("div", { className: "tool-footer", "data-testid": `tool-footer-${id}`, children: [
+      /* @__PURE__ */ jsx(
         "div",
         {
           role: "button",
@@ -34363,10 +34043,10 @@ const WaldiezNodeToolView = (props) => {
           id: `delete-node-${id}`,
           "data-testid": `delete-node-${id}`,
           onClick: onDelete,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaTrashCan, {})
+          children: /* @__PURE__ */ jsx(FaTrashCan, {})
         }
       ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "div",
         {
           role: "button",
@@ -34375,11 +34055,11 @@ const WaldiezNodeToolView = (props) => {
           id: `clone-node-${id}`,
           "data-testid": `clone-node-${id}`,
           onClick: onClone,
-          children: /* @__PURE__ */ jsxRuntimeExports.jsx(FaCopy, {})
+          children: /* @__PURE__ */ jsx(FaCopy, {})
         }
       )
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx(
       WaldiezNodeToolModal,
       {
         toolId: id,
@@ -34540,7 +34220,7 @@ const SidebarProvider = ({ children, collapsed }) => {
   const toggleSidebar = () => {
     setIsCollapsed((prev) => !prev);
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(SidebarContext.Provider, { value: { isCollapsed, toggleSidebar }, children });
+  return /* @__PURE__ */ jsx(SidebarContext.Provider, { value: { isCollapsed, toggleSidebar }, children });
 };
 const setSidebarCollapsedToBody = (isCollapsed) => {
   if (isCollapsed) {
@@ -34793,14 +34473,14 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
       onPrerequisitesChange(edge, []);
     }
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-chat-prerequisites-wrapper", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: "Specify the chats to run when the flow initializes and their prerequisites (if more than one). You should remove the ones that are expected to be triggered during the flow (like in nested chats)." }),
+  return /* @__PURE__ */ jsxs("div", { className: "flow-chat-prerequisites-wrapper", children: [
+    /* @__PURE__ */ jsx("div", { className: "info", children: "Specify the chats to run when the flow initializes and their prerequisites (if more than one). You should remove the ones that are expected to be triggered during the flow (like in nested chats)." }),
     sortedEdges.map((edge, index2) => {
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-chat-prerequisites", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-chat-prerequisite-source", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: edge.data?.label }) }),
-        sortedEdges.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-chat-prerequisite-actions", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "chat-pre-requisites-select", children: "Prerequisites:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsxs("div", { className: "flow-chat-prerequisites", children: [
+        /* @__PURE__ */ jsx("div", { className: "flow-chat-prerequisite-source", children: /* @__PURE__ */ jsx("span", { children: edge.data?.label }) }),
+        sortedEdges.length > 1 && /* @__PURE__ */ jsxs("div", { className: "flow-chat-prerequisite-actions", children: [
+          /* @__PURE__ */ jsx("label", { htmlFor: "chat-pre-requisites-select", children: "Prerequisites:" }),
+          /* @__PURE__ */ jsx(
             Select,
             {
               placeholder: "Select prerequisites...",
@@ -34820,7 +34500,7 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
               inputId: "chat-pre-requisites-select"
             }
           ),
-          sortedEdges.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-chat-remove", children: sortedEdges.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          sortedEdges.length > 1 && /* @__PURE__ */ jsx("div", { className: "flow-chat-remove", children: sortedEdges.length > 1 && /* @__PURE__ */ jsx(
             "button",
             {
               type: "button",
@@ -34834,10 +34514,10 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
         ] })
       ] }, edge.id);
     }),
-    remainingEdges.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-order-add-wrapper", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 margin-right-10", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "new-edge-select", className: "hidden", children: "Add new chat" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+    remainingEdges.length > 0 && /* @__PURE__ */ jsxs("div", { className: "flow-order-add-wrapper", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex-1 margin-right-10", children: [
+        /* @__PURE__ */ jsx("label", { htmlFor: "new-edge-select", className: "hidden", children: "Add new chat" }),
+        /* @__PURE__ */ jsx(
           Select,
           {
             options: remainingEdges.map((edge) => ({
@@ -34853,7 +34533,7 @@ const HandleASyncChatOrderAndPrerequisites = (props) => {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -34879,13 +34559,13 @@ const HandleSyncChatOrder = (props) => {
     onMoveEdgeUp,
     onMoveEdgeDown
   } = props;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-chat-order-wrapper", children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: "Specify the chats to run when the flow initializes and their order (if more than one). You should remove the ones that are expected to be triggered during the flow (like in nested chats)." }),
+  return /* @__PURE__ */ jsxs("div", { className: "flow-chat-order-wrapper", children: [
+    /* @__PURE__ */ jsx("div", { className: "info", children: "Specify the chats to run when the flow initializes and their order (if more than one). You should remove the ones that are expected to be triggered during the flow (like in nested chats)." }),
     sortedEdges.map((edge, index2) => {
-      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-order-item-wrapper", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flow-order-item", children: /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "flow-order-item-entry", children: edge.data?.label }) }),
-        sortedEdges.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-order-item-actions", children: [
-          index2 > 0 && sortedEdges.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+      return /* @__PURE__ */ jsxs("div", { className: "flow-order-item-wrapper", children: [
+        /* @__PURE__ */ jsx("div", { className: "flow-order-item", children: /* @__PURE__ */ jsx("span", { className: "flow-order-item-entry", children: edge.data?.label }) }),
+        sortedEdges.length > 1 && /* @__PURE__ */ jsxs("div", { className: "flow-order-item-actions", children: [
+          index2 > 0 && sortedEdges.length > 1 && /* @__PURE__ */ jsx(
             "button",
             {
               type: "button",
@@ -34896,7 +34576,7 @@ const HandleSyncChatOrder = (props) => {
               children: "↑"
             }
           ),
-          index2 < sortedEdges.length - 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          index2 < sortedEdges.length - 1 && /* @__PURE__ */ jsx(
             "button",
             {
               title: "Move down",
@@ -34907,7 +34587,7 @@ const HandleSyncChatOrder = (props) => {
               children: "↓"
             }
           ),
-          sortedEdges.length > 1 && /* @__PURE__ */ jsxRuntimeExports.jsx(
+          sortedEdges.length > 1 && /* @__PURE__ */ jsx(
             "button",
             {
               type: "button",
@@ -34921,10 +34601,10 @@ const HandleSyncChatOrder = (props) => {
         ] })
       ] }, edge.id);
     }),
-    remainingEdges.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-order-add-wrapper", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 margin-right-10", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: "new-edge-select", className: "hidden", children: "Add new chat" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+    remainingEdges.length > 0 && /* @__PURE__ */ jsxs("div", { className: "flow-order-add-wrapper", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex-1 margin-right-10", children: [
+        /* @__PURE__ */ jsx("label", { htmlFor: "new-edge-select", className: "hidden", children: "Add new chat" }),
+        /* @__PURE__ */ jsx(
           Select,
           {
             options: remainingEdges.map((edge) => ({
@@ -34940,7 +34620,7 @@ const HandleSyncChatOrder = (props) => {
           }
         )
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
+      /* @__PURE__ */ jsx(
         "button",
         {
           type: "button",
@@ -34970,9 +34650,9 @@ const EditFlowModalModalTabBasic = (props) => {
     onDataChange({ isAsync: checked });
   };
   const edgesCount = sortedEdges.length + remainingEdges.length;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-column padding-left-10 padding-right-10", id: `rf-${flowId}-edit-flow-modal`, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `rf-${flowId}-edit-flow-modal-name`, children: "Name" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsxs("div", { className: "flex-column padding-left-10 padding-right-10", id: `rf-${flowId}-edit-flow-modal`, children: [
+    /* @__PURE__ */ jsx("label", { htmlFor: `rf-${flowId}-edit-flow-modal-name`, children: "Name" }),
+    /* @__PURE__ */ jsx(
       "input",
       {
         type: "text",
@@ -34984,9 +34664,9 @@ const EditFlowModalModalTabBasic = (props) => {
         "data-testid": `edit-flow-${flowId}-name-input`
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("label", { htmlFor: `rf-${flowId}-edit-flow-modal-description`, children: "Description" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-5" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("label", { htmlFor: `rf-${flowId}-edit-flow-modal-description`, children: "Description" }),
+    /* @__PURE__ */ jsx("div", { className: "margin-bottom-5" }),
+    /* @__PURE__ */ jsx(
       TextareaInput,
       {
         id: `rf-${flowId}-edit-flow-modal-description`,
@@ -34997,8 +34677,8 @@ const EditFlowModalModalTabBasic = (props) => {
         "data-testid": `edit-flow-${flowId}-description-input`
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-bottom-5" }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(
+    /* @__PURE__ */ jsx("div", { className: "margin-bottom-5" }),
+    /* @__PURE__ */ jsx(
       CheckboxInput,
       {
         id: `edit-flow-${flowId}-modal-async-mode`,
@@ -35007,12 +34687,12 @@ const EditFlowModalModalTabBasic = (props) => {
         onCheckedChange: onAsyncChange
       }
     ),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-5 margin-left-5", children: [
+    /* @__PURE__ */ jsxs("div", { className: "margin-top-5 margin-left-5", children: [
       "Chat order ",
       isAsync && "& prerequisites",
       " "
     ] }),
-    edgesCount === 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "info", children: "No chats added to the flow yet." }) : isAsync ? /* @__PURE__ */ jsxRuntimeExports.jsx(HandleASyncChatOrderAndPrerequisites, { ...props }) : /* @__PURE__ */ jsxRuntimeExports.jsx(HandleSyncChatOrder, { ...props })
+    edgesCount === 0 ? /* @__PURE__ */ jsx("div", { className: "info", children: "No chats added to the flow yet." }) : isAsync ? /* @__PURE__ */ jsx(HandleASyncChatOrderAndPrerequisites, { ...props }) : /* @__PURE__ */ jsx(HandleSyncChatOrder, { ...props })
   ] });
 };
 const EditFlowModalModalTabOther = (props) => {
@@ -35052,18 +34732,18 @@ const EditFlowModalModalTabOther = (props) => {
     } catch (_) {
     }
   };
-  const viewLabelInfo = () => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
+  const viewLabelInfo = () => /* @__PURE__ */ jsxs("div", { children: [
     "Requirements to ",
-    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "bold italic", children: "pip install" }),
+    /* @__PURE__ */ jsx("span", { className: "bold italic", children: "pip install" }),
     " before running this flow"
   ] });
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className: "padding-left-10 padding-right-10",
       "data-testid": `edit-flow-${flowId}-modal-other-view`,
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           CheckboxInput,
           {
             id: `edit-flow-${flowId}-modal-cache-seed-toggle`,
@@ -35073,9 +34753,9 @@ const EditFlowModalModalTabOther = (props) => {
             "data-testid": `edit-flow-${flowId}-modal-cache-seed-toggle`
           }
         ),
-        typeof cacheSeed === "number" && /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "margin-top-5 flex-align-center", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "margin-left-5 margin-right-5", children: " Cache seed:" }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        typeof cacheSeed === "number" && /* @__PURE__ */ jsxs("div", { className: "margin-top-5 flex-align-center", children: [
+          /* @__PURE__ */ jsx("div", { className: "margin-left-5 margin-right-5", children: " Cache seed:" }),
+          /* @__PURE__ */ jsx(
             "input",
             {
               type: "number",
@@ -35088,7 +34768,7 @@ const EditFlowModalModalTabOther = (props) => {
             }
           )
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           StringList,
           {
             items: requirements,
@@ -35100,7 +34780,7 @@ const EditFlowModalModalTabOther = (props) => {
             onItemChange: onRequirementChange
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(
           StringList,
           {
             items: tags,
@@ -35139,7 +34819,7 @@ const EditFlowModal = (props) => {
     onSubmit();
     onClose();
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(
     Modal,
     {
       title: "Edit Flow",
@@ -35152,9 +34832,9 @@ const EditFlowModal = (props) => {
       dataTestId: `edit-flow-modal-${flowId}`,
       hasUnsavedChanges: isDirty,
       preventCloseIfUnsavedChanges: true,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-body", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(TabItems, { activeTabIndex: 0, children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Properties", id: `rf-${flowId}-edit-flow-modal`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      children: /* @__PURE__ */ jsxs("div", { className: "modal-body", children: [
+        /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
+          /* @__PURE__ */ jsx(TabItem, { label: "Properties", id: `rf-${flowId}-edit-flow-modal`, children: /* @__PURE__ */ jsx(
             EditFlowModalModalTabBasic,
             {
               flowId,
@@ -35171,7 +34851,7 @@ const EditFlowModal = (props) => {
               onDataChange
             }
           ) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx(TabItem, { label: "Other", id: `rf-${flowId}-edit-flow-modal-extras`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsx(TabItem, { label: "Other", id: `rf-${flowId}-edit-flow-modal-extras`, children: /* @__PURE__ */ jsx(
             EditFlowModalModalTabOther,
             {
               flowId,
@@ -35180,8 +34860,8 @@ const EditFlowModal = (props) => {
             }
           ) })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "modal-actions", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
+          /* @__PURE__ */ jsx(
             "button",
             {
               className: "modal-action-cancel",
@@ -35192,8 +34872,8 @@ const EditFlowModal = (props) => {
               children: "Cancel"
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-row", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxs("div", { className: "flex-row", children: [
+            /* @__PURE__ */ jsx(
               "button",
               {
                 title: "Save & Close",
@@ -35205,7 +34885,7 @@ const EditFlowModal = (props) => {
                 children: "Save & Close"
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "button",
               {
                 type: "button",
@@ -35242,14 +34922,14 @@ const SideBar = (props) => {
     onManagerDragStart
   } = useSidebarView(props);
   const { isCollapsed, toggleSidebar } = useSidebar();
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className: `sidebar${isReadonly ? " hidden" : ""}`,
       "data-testid": `sidebar-${flowId}`,
       style: { width: isCollapsed ? "40px" : "200px" },
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs(
+        /* @__PURE__ */ jsxs(
           "div",
           {
             className: "sidebar-header",
@@ -35257,8 +34937,8 @@ const SideBar = (props) => {
               justifyContent: isCollapsed ? "center" : "space-between"
             },
             children: [
-              !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "title", children: "Waldiez" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx(
+              !isCollapsed && /* @__PURE__ */ jsx("div", { className: "title", children: "Waldiez" }),
+              /* @__PURE__ */ jsx(
                 "div",
                 {
                   className: "sidebar-toggle",
@@ -35266,7 +34946,7 @@ const SideBar = (props) => {
                   role: "button",
                   "aria-hidden": "true",
                   "data-testid": "sidebar-toggle",
-                  children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  children: /* @__PURE__ */ jsx(
                     FaBars,
                     {
                       className: "sidebar-toggle-button tooltip-container clickable",
@@ -35279,9 +34959,9 @@ const SideBar = (props) => {
             ]
           }
         ),
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "sidebar-content", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs("ul", { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxs("div", { className: "sidebar-content", children: [
+          /* @__PURE__ */ jsxs("ul", { children: [
+            /* @__PURE__ */ jsx(
               "li",
               {
                 className: "clickable",
@@ -35289,39 +34969,39 @@ const SideBar = (props) => {
                 "data-testid": `edit-flow-${flowId}-sidebar-button`,
                 onClick: onOpenEditModal,
                 title: "Edit flow",
-                children: isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaEdit, {}) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(FaEdit, {}),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "Edit flow" })
+                children: isCollapsed ? /* @__PURE__ */ jsx(FaEdit, {}) : /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
+                  /* @__PURE__ */ jsx(FaEdit, {}),
+                  /* @__PURE__ */ jsx("div", { children: "Edit flow" })
                 ] })
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "li",
               {
                 className: "clickable",
                 "data-node-type": "model",
                 "data-testid": "show-models",
                 onClick: onShowModels,
-                children: isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(LuBrain, {}) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(LuBrain, {}),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "Models" })
+                children: isCollapsed ? /* @__PURE__ */ jsx(LuBrain, {}) : /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
+                  /* @__PURE__ */ jsx(LuBrain, {}),
+                  /* @__PURE__ */ jsx("div", { children: "Models" })
                 ] })
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
+            /* @__PURE__ */ jsx(
               "li",
               {
                 className: "clickable",
                 "data-node-type": "tool",
                 "data-testid": "show-tools",
                 onClick: onShowTools,
-                children: isCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(FaTools, {}) : /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(FaTools, {}),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { children: "Tools" })
+                children: isCollapsed ? /* @__PURE__ */ jsx(FaTools, {}) : /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
+                  /* @__PURE__ */ jsx(FaTools, {}),
+                  /* @__PURE__ */ jsx("div", { children: "Tools" })
                 ] })
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            /* @__PURE__ */ jsxs(
               "li",
               {
                 className: "clickable expandable",
@@ -35329,18 +35009,18 @@ const SideBar = (props) => {
                 "data-testid": "show-agents",
                 onClick: onShowAgents,
                 children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-align-center", children: [
-                    /* @__PURE__ */ jsxRuntimeExports.jsx(FaRobot, {}),
-                    !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Agents" })
+                  /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
+                    /* @__PURE__ */ jsx(FaRobot, {}),
+                    !isCollapsed && /* @__PURE__ */ jsx("span", { children: "Agents" })
                   ] }),
-                  !isCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "expand-icon", children: isAgentsViewCollapsed ? /* @__PURE__ */ jsxRuntimeExports.jsx(GoChevronDown, {}) : /* @__PURE__ */ jsxRuntimeExports.jsx(GoChevronUp, {}) })
+                  !isCollapsed && /* @__PURE__ */ jsx("div", { className: "expand-icon", children: isAgentsViewCollapsed ? /* @__PURE__ */ jsx(GoChevronDown, {}) : /* @__PURE__ */ jsx(GoChevronUp, {}) })
                 ]
               }
             )
           ] }),
-          !isCollapsed && !isAgentsViewCollapsed && /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "dnd-description", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "Drag n' drop an agent to the canvas to add it to the flow" }) }),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          !isCollapsed && !isAgentsViewCollapsed && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsx("div", { className: "dnd-description", children: /* @__PURE__ */ jsx("p", { children: "Drag n' drop an agent to the canvas to add it to the flow" }) }),
+            /* @__PURE__ */ jsxs(
               "div",
               {
                 className: "dnd-area",
@@ -35348,7 +35028,7 @@ const SideBar = (props) => {
                 onDragStart: onUserDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  /* @__PURE__ */ jsx(
                     "img",
                     {
                       src: AGENT_ICONS.user_proxy,
@@ -35360,7 +35040,7 @@ const SideBar = (props) => {
                 ]
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            /* @__PURE__ */ jsxs(
               "div",
               {
                 className: "dnd-area",
@@ -35368,7 +35048,7 @@ const SideBar = (props) => {
                 onDragStart: onAssistantDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  /* @__PURE__ */ jsx(
                     "img",
                     {
                       alt: "Assistant agent icon",
@@ -35380,7 +35060,7 @@ const SideBar = (props) => {
                 ]
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            /* @__PURE__ */ jsxs(
               "div",
               {
                 className: "dnd-area",
@@ -35388,12 +35068,12 @@ const SideBar = (props) => {
                 onDragStart: onDocDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("img", { alt: "Doc agent icon", src: AGENT_ICONS.doc_agent, title: "Document Agent" }),
+                  /* @__PURE__ */ jsx("img", { alt: "Doc agent icon", src: AGENT_ICONS.doc_agent, title: "Document Agent" }),
                   "Docs Agent"
                 ]
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            /* @__PURE__ */ jsxs(
               "div",
               {
                 className: "dnd-area",
@@ -35401,7 +35081,7 @@ const SideBar = (props) => {
                 onDragStart: onReasoningDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  /* @__PURE__ */ jsx(
                     "img",
                     {
                       alt: "Reasoning agent icon",
@@ -35413,7 +35093,7 @@ const SideBar = (props) => {
                 ]
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            /* @__PURE__ */ jsxs(
               "div",
               {
                 className: "dnd-area",
@@ -35421,12 +35101,12 @@ const SideBar = (props) => {
                 onDragStart: onCaptainDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("img", { alt: "Captain agent icon", src: AGENT_ICONS.captain, title: "Captain Agent" }),
+                  /* @__PURE__ */ jsx("img", { alt: "Captain agent icon", src: AGENT_ICONS.captain, title: "Captain Agent" }),
                   "Captain"
                 ]
               }
             ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            /* @__PURE__ */ jsxs(
               "div",
               {
                 className: "dnd-area",
@@ -35434,7 +35114,7 @@ const SideBar = (props) => {
                 onDragStart: onManagerDragStart,
                 draggable: true,
                 children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  /* @__PURE__ */ jsx(
                     "img",
                     {
                       alt: "Group manager icon",
@@ -35448,8 +35128,8 @@ const SideBar = (props) => {
             )
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "spacer" }),
-        isEditModalOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(EditFlowModal, { flowId, isOpen: isEditModalOpen, onClose: onCloseEditModal })
+        /* @__PURE__ */ jsx("div", { className: "spacer" }),
+        isEditModalOpen && /* @__PURE__ */ jsx(EditFlowModal, { flowId, isOpen: isEditModalOpen, onClose: onCloseEditModal })
       ]
     }
   );
@@ -35555,7 +35235,7 @@ const WaldiezFlowView = memo((props) => {
   const { onDragOver, onDrop, onNodeDrag, onNodeDragStop } = useDnD(onNewAgent);
   const flowNodes = useMemo(() => nodes, [nodes]);
   const flowEdges = useMemo(() => edges, [edges]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className: `flow-wrapper ${colorMode}`,
@@ -35563,8 +35243,8 @@ const WaldiezFlowView = memo((props) => {
       "data-flow-id": flowId,
       "data-testid": `rf-root-${flowId}`,
       children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flow-main", children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsxs("div", { className: "flow-main", children: [
+          /* @__PURE__ */ jsx(
             SideBar,
             {
               onSelectNodeType: onTypeShownChange,
@@ -35572,7 +35252,7 @@ const WaldiezFlowView = memo((props) => {
               isReadonly: isReadOnly
             }
           ),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "react-flow-wrapper", "data-testid": `rf-wrapper-${flowId}`, ref: rfParent, children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+          /* @__PURE__ */ jsx("div", { className: "react-flow-wrapper", "data-testid": `rf-wrapper-${flowId}`, ref: rfParent, children: /* @__PURE__ */ jsxs(
             ReactFlow,
             {
               id: flowId,
@@ -35604,8 +35284,8 @@ const WaldiezFlowView = memo((props) => {
               onNodeDrag,
               onNodeDragStop,
               children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Controls, { showInteractive: true }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                /* @__PURE__ */ jsx(Controls, { showInteractive: true }),
+                /* @__PURE__ */ jsx(
                   WaldiezFlowPanels,
                   {
                     flowId,
@@ -35622,15 +35302,15 @@ const WaldiezFlowView = memo((props) => {
                     onExport: handleExport
                   }
                 ),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "hidden", "data-testid": `drop-area-${flowId}` }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx(Background, { variant: BackgroundVariant.Dots })
+                /* @__PURE__ */ jsx("div", { className: "hidden", "data-testid": `drop-area-${flowId}` }),
+                /* @__PURE__ */ jsx(Background, { variant: BackgroundVariant.Dots })
               ]
             }
           ) })
         ] }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(StepByStepView, { flowId, stepByStep }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx(ChatModal, { flowId, chat, isDarkMode: isDark }),
-        isImportModalOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        /* @__PURE__ */ jsx(StepByStepView, { flowId, stepByStep }),
+        /* @__PURE__ */ jsx(ChatModal, { flowId, chat, isDarkMode: isDark }),
+        isImportModalOpen && /* @__PURE__ */ jsx(
           ImportFlowModal,
           {
             flowId,
@@ -35640,7 +35320,7 @@ const WaldiezFlowView = memo((props) => {
             onTypeShownChange
           }
         ),
-        isExportModalOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        isExportModalOpen && /* @__PURE__ */ jsx(
           ExportFlowModal,
           {
             flowId,
@@ -35674,7 +35354,7 @@ const Waldiez = (props) => {
       loader.config({ paths: { vs: monacoVsPath } });
     }
   }, [monacoVsPath]);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(SnackbarProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(WaldiezThemeProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(ErrorBoundary, { fallbackRender, children: /* @__PURE__ */ jsxRuntimeExports.jsx(he, { initiallyActiveScopes: [flowId], children: /* @__PURE__ */ jsxRuntimeExports.jsx(ReactFlowProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SidebarProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+  return /* @__PURE__ */ jsx(SnackbarProvider, { children: /* @__PURE__ */ jsx(WaldiezThemeProvider, { children: /* @__PURE__ */ jsx(ErrorBoundary, { fallbackRender, children: /* @__PURE__ */ jsx(he, { initiallyActiveScopes: [flowId], children: /* @__PURE__ */ jsx(ReactFlowProvider, { children: /* @__PURE__ */ jsx(SidebarProvider, { children: /* @__PURE__ */ jsx(
     WaldiezProvider,
     {
       ...props,
@@ -35684,7 +35364,7 @@ const Waldiez = (props) => {
       isReadOnly: readOnly,
       skipImport,
       skipExport,
-      children: /* @__PURE__ */ jsxRuntimeExports.jsx(
+      children: /* @__PURE__ */ jsx(
         WaldiezFlowView,
         {
           flowId,
@@ -35701,7 +35381,7 @@ const Waldiez = (props) => {
 const fallbackRender = (props) => {
   const { error } = props;
   console.error("Error in Waldiez component:", error);
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(ErrorPage, { error });
+  return /* @__PURE__ */ jsx(ErrorPage, { error });
 };
 const checkInitialBodyThemeClass = () => {
   const isDark = isInitiallyDark();

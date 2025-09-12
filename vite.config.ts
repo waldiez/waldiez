@@ -117,18 +117,16 @@ export default defineConfig(({ command }) => ({
         lib: {
             entry: normalizedResolve("src", "waldiez", "index.ts"),
             name: "Waldiez",
-            formats: ["es", "cjs", "umd"],
-            fileName: (format: string) =>
-                format === "es" ? "@waldiez.js" : format === "cjs" ? "@waldiez.cjs" : "@waldiez.umd.cjs",
+            formats: ["es", "cjs"],
+            fileName: (format: string) => (format === "es" ? "@waldiez.js" : "@waldiez.cjs"),
             cssFileName: "@waldiez",
         },
         minify: "terser" as const,
         rollupOptions: {
             external: [
-                ...Object.keys(packageJson.peerDependencies || {}),
-                ...Object.keys(packageJson.dependencies || {}).filter(d =>
-                    /^react(\/jsx-runtime)?$|^react-dom$/.test(d),
-                ),
+                "react",
+                "react-dom",
+                "react/jsx-runtime",
                 "@monaco-editor/react",
                 "@xyflow/react",
                 "react-markdown",
@@ -137,21 +135,10 @@ export default defineConfig(({ command }) => ({
                 "rehype-highlight",
                 "recharts",
                 "framer-motion",
+                "react-icons",
             ],
             output: {
                 exports: "named",
-                globals: {
-                    react: "react",
-                    "react-dom": "reactDom",
-                    "@monaco-editor/react": "monacoEditor",
-                    "@xyflow/react": "reactFlow",
-                    "react-markdown": "reactMarkdown",
-                    "react-select": "reactSelect",
-                    "rehype-highlight": "rehypeHighlight",
-                    "remark-gfm": "remarkGfm",
-                    recharts: "recharts",
-                    "framer-motion": "framerMotion",
-                },
             },
             manualChunks: undefined,
             treeshake: {

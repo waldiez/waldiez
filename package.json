@@ -17,8 +17,6 @@
         "./dist/*.css": "./dist/*.css",
         "./dist/*.svg": "./dist/*.svg"
     },
-    "unpkg": "dist/@waldiez.umd.cjs",
-    "jsdelivr": "dist/@waldiez.umd.cjs",
     "homepage": "https://waldiez.io",
     "repository": {
         "type": "git",
@@ -133,7 +131,45 @@
     },
     "peerDependencies": {
         "react": "^18.3.1 || ^19.1.1",
-        "react-dom": "^18.3.1 || ^19.1.1"
+        "react-dom": "^18.3.1 || ^19.1.1",
+        "@monaco-editor/react": "^4.7.0",
+        "@xyflow/react": "^12.8.4",
+        "react-markdown": "^10.1.0",
+        "react-select": "^5.10.2",
+        "remark-gfm": "^4.0.1",
+        "rehype-highlight": "^7.0.2",
+        "recharts": "^3.2.0",
+        "framer-motion": "^12.23.12",
+        "react-icons": "^5.5.0"
+    },
+    "peerDependenciesMeta": {
+        "@monaco-editor/react": {
+            "optional": false
+        },
+        "@xyflow/react": {
+            "optional": false
+        },
+        "react-markdown": {
+            "optional": false
+        },
+        "remark-gfm": {
+            "optional": false
+        },
+        "rehype-highlight": {
+            "optional": false
+        },
+        "react-select": {
+            "optional": false
+        },
+        "recharts": {
+            "optional": false
+        },
+        "framer-motion": {
+            "optional": false
+        },
+        "react-icons": {
+            "optional": false
+        }
     },
     "devDependencies": {
         "@apidevtools/openapi-schemas": "^2.1.0",
