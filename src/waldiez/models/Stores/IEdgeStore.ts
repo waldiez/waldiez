@@ -4,7 +4,7 @@
  */
 import type { Connection, Edge, EdgeChange } from "@xyflow/react";
 
-import React from "react";
+import type { MouseEvent } from "react";
 
 import type {
     WaldiezEdge,
@@ -90,7 +90,7 @@ export interface IWaldiezEdgeStore {
      * @param event - The double-click event.
      * @param edge - The edge that was double-clicked.
      */
-    onEdgeDoubleClick: (event: React.MouseEvent, edge: WaldiezEdge) => void;
+    onEdgeDoubleClick: (event: MouseEvent, edge: WaldiezEdge) => void;
     /**
      * Callback function to handle edge connection events.
      * @param oldEdge - The old edge before the connection.

@@ -7,17 +7,32 @@ import React from "react";
 import { ImageWithRetry } from "@waldiez/components/chatUI/imageWithRetry";
 import { Markdown } from "@waldiez/components/markdown";
 
-const parseStructuredContent = (items: any[], isDarkMode: boolean, onImageClick: (url: string) => void) => {
+const keyOf = (path: string, idx: number, type: string, hint?: string | number) =>
+    `${path}/${idx}:${type}${hint ? `#${hint}` : ""}`;
+const parseStructuredContent = (
+    items: any[],
+    isDarkMode: boolean,
+    onImageClick: (url: string) => void,
+    path = "root",
+) => {
+    if (!Array.isArray(items) || items.length === 0) {
+        return null;
+    }
+
     const children = items
+        // eslint-disable-next-line max-statements
         .map((item, idx) => {
+            if (typeof item === "string") {
+                return parseTextWithImages(item, isDarkMode, onImageClick);
+            }
             if (!item || !item.type) {
                 console.warn("Invalid item in structured content", item);
                 return null;
             }
-            if (item.type === "text" && item.text.trim().length > 0) {
+            if (item.type === "text" && typeof item.text === "string" && item.text.trim()) {
                 return (
                     <Markdown
-                        key={`text-${idx}`}
+                        key={keyOf(path, idx, "text")}
                         content={item.text}
                         isDarkMode={isDarkMode}
                         onImageClick={onImageClick}
@@ -25,25 +40,39 @@ const parseStructuredContent = (items: any[], isDarkMode: boolean, onImageClick:
                 );
             }
             if (item.type === "image_url" && item.image_url?.url) {
+                const url = item.image_url.url;
                 return (
                     <ImageWithRetry
-                        key={`img-${idx}`}
-                        src={item.image_url.url}
+                        key={keyOf(path, idx, "image_url", url)}
+                        src={url}
                         className="chat-image"
-                        onClick={() => onImageClick(item.image_url.url)}
+                        onClick={() => onImageClick(url)}
                     />
                 );
             }
             if (item.type === "image" && item.image?.url) {
+                const url = item.image.url;
                 return (
                     <ImageWithRetry
-                        key={`img-${idx}`}
-                        src={item.image.url}
+                        key={keyOf(path, idx, "image", url)}
+                        src={url}
                         className="chat-image"
-                        onClick={() => onImageClick(item.image.url)}
+                        onClick={() => onImageClick(url)}
                     />
                 );
             }
+            if (Array.isArray(item.content)) {
+                const nested = parseStructuredContent(
+                    item.content,
+                    isDarkMode,
+                    onImageClick,
+                    `${path}/${idx}`,
+                );
+                if (nested) {
+                    return <React.Fragment key={keyOf(path, idx, "nested")}>{nested}</React.Fragment>;
+                }
+            }
+
             console.warn("Unsupported item type in structured content", item);
             return null;
         })
@@ -110,16 +139,21 @@ export const parseMessageContent = (
             const parsed = JSON.parse(data);
             return Array.isArray(parsed)
                 ? parseStructuredContent(parsed, isDarkMode, onImageClick)
-                : parseTextWithImages(data, isDarkMode, onImageClick);
+                : parseStructuredContent([parsed], isDarkMode, onImageClick);
         } catch {
             return parseTextWithImages(data, isDarkMode, onImageClick);
         }
-    } else if ("content" in data && data.content) {
-        return Array.isArray(data.content)
-            ? parseStructuredContent(data.content, isDarkMode, onImageClick)
-            : parseTextWithImages(String(data.content), isDarkMode, onImageClick);
-    } else if (Array.isArray(data)) {
+    }
+    if (Array.isArray(data)) {
         return parseStructuredContent(data, isDarkMode, onImageClick);
     }
-    return parseTextWithImages(String(data.content), isDarkMode, onImageClick);
+    if (typeof data === "object") {
+        if ("content" in data && data.content) {
+            return Array.isArray(data.content)
+                ? parseStructuredContent(data.content, isDarkMode, onImageClick)
+                : parseStructuredContent([data.content], isDarkMode, onImageClick);
+        }
+        return parseStructuredContent([data], isDarkMode, onImageClick);
+    }
+    return parseTextWithImages(String(data), isDarkMode, onImageClick);
 };

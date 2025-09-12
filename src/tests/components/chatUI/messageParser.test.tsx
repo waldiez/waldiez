@@ -48,6 +48,36 @@ describe("parseMessageContent", () => {
         expect(getByText("Nice")).toBeInTheDocument();
     });
 
+    it("handles array content", () => {
+        const data = JSON.stringify({
+            type: "text",
+            content: [
+                {
+                    type: "text",
+                    text: "Some text",
+                },
+                { type: "image_url", image_url: { url: "https://img.jpg" } },
+                { foo: "bar" },
+                { type: "baz", data: "qux" },
+            ],
+        });
+        const consoleSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+        const { getByText, getByTestId, queryByText } = render(
+            <>{parseMessageContent(data, false, vi.fn())}</>,
+        );
+        expect(getByText("Some text")).toBeInTheDocument();
+        expect(getByTestId("image")).toHaveAttribute("src", "https://img.jpg");
+        expect(queryByText("foo")).not.toBeInTheDocument();
+        expect(queryByText("bar")).not.toBeInTheDocument();
+        expect(queryByText("baz")).not.toBeInTheDocument();
+        expect(queryByText("qux")).not.toBeInTheDocument();
+        expect(consoleSpy).toHaveBeenCalledWith("Invalid item in structured content", { foo: "bar" });
+        expect(consoleSpy).toHaveBeenCalledWith("Unsupported item type in structured content", {
+            type: "baz",
+            data: "qux",
+        });
+    });
+
     it("calls onImageClick when image is clicked", () => {
         const mockClick = vi.fn();
         const content = "Test [Image: https://img2.png]";

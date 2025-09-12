@@ -4,7 +4,10 @@
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { WaldiezChatExecutedFunctionHandler } from "@waldiez/utils/chat/handlers/function";
+import {
+    WaldiezChatExecuteFunctionHandler,
+    WaldiezChatExecutedFunctionHandler,
+} from "@waldiez/utils/chat/handlers/function";
 
 // Mock dependencies
 vi.mock("nanoid", () => ({
@@ -192,6 +195,65 @@ describe("Function Handlers", () => {
                     },
                 });
             });
+        });
+    });
+    describe("WaldiezChatExecuteFunctionHandler", () => {
+        let handler: WaldiezChatExecuteFunctionHandler;
+
+        beforeEach(() => {
+            handler = new WaldiezChatExecuteFunctionHandler();
+        });
+
+        it("should handle valid execute_function message with arguments", () => {
+            const data = {
+                type: "execute_function",
+                content: {
+                    uuid: "execute-function-uuid-123",
+                    func_name: "calculate_sum",
+                    arguments: { a: 1, b: 2 },
+                    sender: "system",
+                    recipient: "user",
+                },
+            };
+
+            const result = handler.handle(data);
+
+            expect(result).toEqual({
+                message: {
+                    id: "execute-function-uuid-123",
+                    timestamp: "2024-01-01T12:00:00.000Z",
+                    type: "execute_function",
+                    content: [
+                        {
+                            type: "text",
+                            text: "Execute function: calculate_sum",
+                        },
+                        {
+                            type: "text",
+                            text: "Arguments: [object Object]",
+                        },
+                    ],
+                    sender: "system",
+                    recipient: "user",
+                },
+            });
+        });
+
+        it("should generate nanoid and handle missing arguments", () => {
+            const data = {
+                type: "execute_function",
+                content: {
+                    func_name: "doSomething",
+                    sender: "assistant",
+                    recipient: "system",
+                },
+            };
+
+            const result = handler.handle(data);
+
+            expect(result?.message?.id).toBe("mock-nanoid-id");
+            expect((result?.message?.content as any)[0].text).toBe("Execute function: doSomething");
+            expect((result?.message?.content as any)[1].text).toBe("Arguments: undefined");
         });
     });
 });

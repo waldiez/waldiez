@@ -11,8 +11,8 @@ import type {
 } from "@waldiez/utils/chat/types";
 
 /**
- * Executed function handler processes messages indicating a function has been executed.
- * It validates the message structure and constructs a WaldiezChatMessage object with the executed function content.
+ * Execute function handler processes messages indicating a function is to be executed.
+ * It validates the message structure and constructs a WaldiezChatMessage object with the function name and args.
  */
 export class WaldiezChatExecuteFunctionHandler implements WaldiezChatMessageHandler {
     canHandle(type: string): boolean {

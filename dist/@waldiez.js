@@ -14294,15 +14294,63 @@ ${codeContent}\`\`\``;
   });
   return processedContent;
 };
+const extractText = (obj) => {
+  if (!obj) {
+    return "";
+  }
+  if (typeof obj === "string") {
+    return obj;
+  }
+  if (typeof obj === "number") {
+    return obj.toString();
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(extractText).filter(Boolean).join("");
+  }
+  if (typeof obj === "object") {
+    if (typeof obj.text === "string") {
+      return obj.text;
+    }
+    if (typeof obj.prompt === "string") {
+      return obj.prompt;
+    }
+    if (Array.isArray(obj.content)) {
+      return extractText(obj.content);
+    }
+    if (typeof obj.type === "string") {
+      const entry = obj[obj.type];
+      if (entry !== void 0) {
+        return extractText(entry);
+      }
+    }
+    for (const key of ["message", "value", "data", "content"]) {
+      if (typeof obj[key] === "string") {
+        return obj[key];
+      }
+      if (Array.isArray(obj[key]) || typeof obj[key] === "object") {
+        const s = extractText(obj[key]);
+        if (s) {
+          return s;
+        }
+      }
+    }
+  }
+  try {
+    return "```json\n" + JSON.stringify(obj, null, 2) + "\n```";
+  } catch {
+    return "";
+  }
+};
 const Markdown = ({ content, isDarkMode = false, onImageClick }) => {
+  const strContent = useMemo(() => extractText(content), [content]);
   const shouldRenderMarkdown = useMemo(() => {
-    return content.length > 5 && mightBeMarkdown(content);
-  }, [content]);
+    return strContent.length > 5 && mightBeMarkdown(strContent);
+  }, [strContent]);
   const processedContent = useMemo(() => {
-    return preprocessContent(content);
-  }, [content]);
+    return preprocessContent(strContent);
+  }, [strContent]);
   if (!shouldRenderMarkdown) {
-    return /* @__PURE__ */ jsx("span", { children: content });
+    return /* @__PURE__ */ jsx("span", { children: strContent });
   }
   const themeClass = isDarkMode ? "markdown-dark" : "markdown-light";
   return /* @__PURE__ */ jsx("div", { className: `markdown-renderer ${themeClass}`, children: /* @__PURE__ */ jsx(
@@ -14373,13 +14421,20 @@ const Markdown = ({ content, isDarkMode = false, onImageClick }) => {
   ) });
 };
 Markdown.displayName = "Markdown";
-const parseStructuredContent = (items, isDarkMode, onImageClick) => {
+const keyOf = (path, idx, type, hint) => `${path}/${idx}:${type}${hint ? `#${hint}` : ""}`;
+const parseStructuredContent = (items, isDarkMode, onImageClick, path = "root") => {
+  if (!Array.isArray(items) || items.length === 0) {
+    return null;
+  }
   const children = items.map((item, idx) => {
+    if (typeof item === "string") {
+      return parseTextWithImages(item, isDarkMode, onImageClick);
+    }
     if (!item || !item.type) {
       console.warn("Invalid item in structured content", item);
       return null;
     }
-    if (item.type === "text" && item.text.trim().length > 0) {
+    if (item.type === "text" && typeof item.text === "string" && item.text.trim()) {
       return /* @__PURE__ */ jsx(
         Markdown,
         {
@@ -14387,30 +14442,43 @@ const parseStructuredContent = (items, isDarkMode, onImageClick) => {
           isDarkMode,
           onImageClick
         },
-        `text-${idx}`
+        keyOf(path, idx, "text")
       );
     }
     if (item.type === "image_url" && item.image_url?.url) {
+      const url = item.image_url.url;
       return /* @__PURE__ */ jsx(
         ImageWithRetry,
         {
-          src: item.image_url.url,
+          src: url,
           className: "chat-image",
-          onClick: () => onImageClick(item.image_url.url)
+          onClick: () => onImageClick(url)
         },
-        `img-${idx}`
+        keyOf(path, idx, "image_url", url)
       );
     }
     if (item.type === "image" && item.image?.url) {
+      const url = item.image.url;
       return /* @__PURE__ */ jsx(
         ImageWithRetry,
         {
-          src: item.image.url,
+          src: url,
           className: "chat-image",
-          onClick: () => onImageClick(item.image.url)
+          onClick: () => onImageClick(url)
         },
-        `img-${idx}`
+        keyOf(path, idx, "image", url)
       );
+    }
+    if (Array.isArray(item.content)) {
+      const nested = parseStructuredContent(
+        item.content,
+        isDarkMode,
+        onImageClick,
+        `${path}/${idx}`
+      );
+      if (nested) {
+        return /* @__PURE__ */ jsx(React__default.Fragment, { children: nested }, keyOf(path, idx, "nested"));
+      }
     }
     console.warn("Unsupported item type in structured content", item);
     return null;
@@ -14466,16 +14534,21 @@ const parseMessageContent = (data, isDarkMode, onImageClick) => {
   if (typeof data === "string") {
     try {
       const parsed = JSON.parse(data);
-      return Array.isArray(parsed) ? parseStructuredContent(parsed, isDarkMode, onImageClick) : parseTextWithImages(data, isDarkMode, onImageClick);
+      return Array.isArray(parsed) ? parseStructuredContent(parsed, isDarkMode, onImageClick) : parseStructuredContent([parsed], isDarkMode, onImageClick);
     } catch {
       return parseTextWithImages(data, isDarkMode, onImageClick);
     }
-  } else if ("content" in data && data.content) {
-    return Array.isArray(data.content) ? parseStructuredContent(data.content, isDarkMode, onImageClick) : parseTextWithImages(String(data.content), isDarkMode, onImageClick);
-  } else if (Array.isArray(data)) {
+  }
+  if (Array.isArray(data)) {
     return parseStructuredContent(data, isDarkMode, onImageClick);
   }
-  return parseTextWithImages(String(data.content), isDarkMode, onImageClick);
+  if (typeof data === "object") {
+    if ("content" in data && data.content) {
+      return Array.isArray(data.content) ? parseStructuredContent(data.content, isDarkMode, onImageClick) : parseStructuredContent([data.content], isDarkMode, onImageClick);
+    }
+    return parseStructuredContent([data], isDarkMode, onImageClick);
+  }
+  return parseTextWithImages(String(data), isDarkMode, onImageClick);
 };
 const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
   const [previewImage, setPreviewImage] = useState(null);
@@ -35425,4 +35498,3 @@ export {
   importFlow,
   showSnackbar
 };
-//# sourceMappingURL=@waldiez.js.map

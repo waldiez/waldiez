@@ -9,7 +9,7 @@ import React, { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 
 type MarkdownRendererProps = {
-    content: string;
+    content: any;
     isDarkMode?: boolean;
     onImageClick?: (url: string) => void;
 };
@@ -104,22 +104,84 @@ const preprocessContent = (content: string): string => {
     return processedContent;
 };
 
+// eslint-disable-next-line max-statements
+const extractText = (obj: any): string => {
+    if (!obj) {
+        return "";
+    }
+    if (typeof obj === "string") {
+        return obj;
+    }
+    if (typeof obj === "number") {
+        return obj.toString();
+    }
+    // arrays: flatten
+    if (Array.isArray(obj)) {
+        return obj.map(extractText).filter(Boolean).join("");
+    }
+
+    // objects
+    if (typeof obj === "object") {
+        // common shapes
+        if (typeof obj.text === "string") {
+            return obj.text;
+        }
+        if (typeof obj.prompt === "string") {
+            return obj.prompt;
+        }
+
+        // content blocks array
+        if (Array.isArray(obj.content)) {
+            return extractText(obj.content);
+        }
+
+        // shape: { type: "text", text: "..."} already handled; but also { type, [type]: ... }
+        if (typeof obj.type === "string") {
+            const entry = (obj as any)[obj.type];
+            if (entry !== undefined) {
+                return extractText(entry);
+            }
+        }
+
+        // last resort: try a few common keys
+        for (const key of ["message", "value", "data", "content"]) {
+            if (typeof obj[key] === "string") {
+                return obj[key];
+            }
+            if (Array.isArray(obj[key]) || typeof obj[key] === "object") {
+                const s = extractText(obj[key]);
+                if (s) {
+                    return s;
+                }
+            }
+        }
+    }
+
+    // ultimate fallback
+    try {
+        return "```json\n" + JSON.stringify(obj, null, 2) + "\n```";
+    } catch {
+        return "";
+    }
+};
+
 /**
  * Component to render markdown content
  */
 export const Markdown: React.FC<MarkdownRendererProps> = ({ content, isDarkMode = false, onImageClick }) => {
+    const strContent = useMemo(() => extractText(content), [content]);
     // Skip markdown processing for short texts or if it doesn't look like markdown
     const shouldRenderMarkdown = useMemo(() => {
-        return content.length > 5 && mightBeMarkdown(content);
-    }, [content]);
+        return strContent.length > 5 && mightBeMarkdown(strContent);
+    }, [strContent]);
 
     // Pre-process content to handle special cases
     const processedContent = useMemo(() => {
-        return preprocessContent(content);
-    }, [content]);
+        return preprocessContent(strContent);
+    }, [strContent]);
 
     if (!shouldRenderMarkdown) {
-        return <span>{content}</span>;
+        return <span>{strContent}</span>;
     }
 
     // CSS class to handle dark/light mode
