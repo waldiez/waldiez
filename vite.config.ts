@@ -121,6 +121,7 @@ export default defineConfig(({ command }) => ({
             fileName: (format: string) => (format === "es" ? "@waldiez.js" : "@waldiez.cjs"),
             cssFileName: "@waldiez",
         },
+        sourcemap: true,
         minify: "terser" as const,
         rollupOptions: {
             external: [
