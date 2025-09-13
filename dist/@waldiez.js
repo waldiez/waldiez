@@ -1658,6 +1658,7 @@ class DebugPrintHandler {
   canHandle(type) {
     return type === "debug_print" || type === "print";
   }
+  // eslint-disable-next-line max-statements
   handle(data, _context) {
     if (data.type !== "debug_print" && data.type !== "print") {
       return {
@@ -1667,8 +1668,18 @@ class DebugPrintHandler {
         }
       };
     }
-    let content = data.content;
     const printData = data;
+    if (typeof printData === "object" && "participants" in printData && typeof printData.participants === "object") {
+      const participantsResult = WaldiezChatParticipantsHandler.extractParticipants(printData);
+      if (participantsResult?.participants) {
+        return {
+          stateUpdate: {
+            participants: participantsResult.participants
+          }
+        };
+      }
+    }
+    let content = data.content;
     if (typeof printData.content !== "string") {
       if (typeof printData.data === "string") {
         content = printData.data;
