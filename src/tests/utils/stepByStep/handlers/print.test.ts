@@ -301,4 +301,30 @@ describe("DebugPrintHandler", () => {
             });
         });
     });
+    it("should extract participants from print message", () => {
+        const message = {
+            type: "print" as const,
+            participants: [
+                { id: "u", name: "user_proxy", humanInputMode: "ALWAYS", agentType: "user_proxy" },
+                { name: "assistant_1", humanInputMode: "NEVER", agentType: "assistant" },
+            ],
+        };
+        const result = handler.handle(message as any, {});
+        expect(result).toEqual({
+            stateUpdate: {
+                participants: [
+                    {
+                        id: "u",
+                        name: "user_proxy",
+                        isUser: true,
+                    },
+                    {
+                        id: "assistant_1",
+                        name: "assistant_1",
+                        isUser: false,
+                    },
+                ],
+            },
+        });
+    });
 });

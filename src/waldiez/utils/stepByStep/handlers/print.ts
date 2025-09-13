@@ -3,6 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import type { WaldiezDebugMessage } from "@waldiez/components/stepByStep/types";
+import { WaldiezChatParticipantsHandler } from "@waldiez/utils/chat/handlers/participants";
 import { WORKFLOW_STEP_END_MARKERS } from "@waldiez/utils/stepByStep/constants";
 import type {
     WaldiezStepByStepHandler,
@@ -19,6 +20,7 @@ export class DebugPrintHandler implements WaldiezStepByStepHandler {
         return type === "debug_print" || type === "print";
     }
 
+    // eslint-disable-next-line max-statements
     handle(
         data: WaldiezDebugMessage,
         _context: WaldiezStepByStepProcessingContext,
@@ -31,8 +33,22 @@ export class DebugPrintHandler implements WaldiezStepByStepHandler {
                 },
             };
         }
-        let content = data.content;
         const printData = data as any;
+        if (
+            typeof printData === "object" &&
+            "participants" in printData &&
+            typeof printData.participants === "object"
+        ) {
+            const participantsResult = WaldiezChatParticipantsHandler.extractParticipants(printData);
+            if (participantsResult?.participants) {
+                return {
+                    stateUpdate: {
+                        participants: participantsResult.participants,
+                    },
+                };
+            }
+        }
+        let content = data.content;
         if (typeof printData.content !== "string") {
             if (typeof printData.data === "string") {
                 content = printData.data;
