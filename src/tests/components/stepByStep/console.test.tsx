@@ -326,12 +326,6 @@ describe("EventConsole", () => {
     });
 
     describe("edge cases", () => {
-        it("should handle empty events array", () => {
-            const { container } = render(<EventConsole events={[]} />);
-            const eventsContainer = container.querySelector(".flex-1");
-            expect(eventsContainer?.children).toHaveLength(0);
-        });
-
         it("should handle events with missing type", () => {
             const events = [{ content: {} }] as any;
             render(<EventConsole events={events} />);

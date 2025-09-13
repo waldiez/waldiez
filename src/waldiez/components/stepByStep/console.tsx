@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 /**
  * SPDX-License-Identifier: Apache-2.0
@@ -344,17 +344,47 @@ const renderEvent = (ev: WaldiezEvent) => {
 
 export const EventConsole: React.FC<EventConsoleProps> = ({ events, printRaw, autoScroll, className }) => {
     const listRef = useRef<HTMLDivElement>(null);
-    // Smooth-scroll on update
+    const endRef = useRef<HTMLDivElement>(null);
+    const userScrolledUpRef = useRef(false);
+
     useEffect(() => {
-        if (!autoScroll || !listRef.current) {
+        const el = listRef.current;
+        if (!el) {
             return;
         }
+
+        const onScroll = () => {
+            const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+            userScrolledUpRef.current = !nearBottom;
+        };
+        el.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+        return () => el.removeEventListener("scroll", onScroll);
+    }, []);
+
+    const scrollToBottom = (smooth: boolean) => {
         const el = listRef.current;
-        if (typeof (el as any).scrollTo === "function") {
-            listRef.current.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
-        } else {
-            el.scrollTop = el.scrollHeight;
+        const end = endRef.current;
+        if (!el || !end) {
+            return;
         }
+
+        if (typeof end.scrollIntoView === "function") {
+            end.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "end" });
+            return;
+        }
+        el.scrollTop = el.scrollHeight - el.clientHeight;
+    };
+
+    useLayoutEffect(() => {
+        if (!autoScroll || userScrolledUpRef.current) {
+            return;
+        }
+
+        // Double RAF to ensure DOM is fully rendered
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => scrollToBottom(true));
+        });
     }, [events, autoScroll]);
 
     return (
@@ -364,20 +394,20 @@ export const EventConsole: React.FC<EventConsoleProps> = ({ events, printRaw, au
                 .join(" ")}
             data-testid="events-console"
         >
-            <div
-                ref={listRef}
-                className="flex-1 full-width overflow-auto p-3 space-y-3 text-sm font-mono leading-5"
-            >
-                {events.map((ev, idx) => (
-                    <div key={ev.id ?? idx} className={ev.type === "empty" ? "center" : "entry"}>
-                        {printRaw && (
-                            <div className="text-xs text-blue-600/80 mb-2 break-words">
-                                Raw event: {JSON.stringify(ev, null, 2)}
-                            </div>
-                        )}
-                        {renderEvent(ev)}
-                    </div>
-                ))}
+            <div ref={listRef} className="flex-1 full-width overflow-auto text-sm font-mono leading-5">
+                <div className="p-3 space-y-3">
+                    {events.map((ev, idx) => (
+                        <div key={ev.id ?? idx} className={ev.type === "empty" ? "center" : "entry"}>
+                            {printRaw && (
+                                <div className="text-xs text-blue-600/80 mb-2 break-words">
+                                    Raw event: {JSON.stringify(ev, null, 2)}
+                                </div>
+                            )}
+                            {renderEvent(ev)}
+                        </div>
+                    ))}
+                </div>
+                <div ref={endRef} className="scroll-anchor p-3" />
             </div>
         </div>
     );

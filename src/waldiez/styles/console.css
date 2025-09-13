@@ -20,3 +20,8 @@ body.waldiez-dark .console {
   background-color: #141414;
   border: 1px solid #444;
 }
+
+.scroll-anchor {
+  overflow-anchor: auto;
+  height: 1px;
+}

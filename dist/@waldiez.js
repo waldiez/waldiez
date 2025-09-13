@@ -21077,36 +21077,56 @@ const renderEvent = (ev) => {
 };
 const EventConsole = ({ events, printRaw, autoScroll, className }) => {
   const listRef = useRef(null);
+  const endRef = useRef(null);
+  const userScrolledUpRef = useRef(false);
   useEffect(() => {
-    if (!autoScroll || !listRef.current) {
+    const el = listRef.current;
+    if (!el) {
       return;
     }
+    const onScroll = () => {
+      const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+      userScrolledUpRef.current = !nearBottom;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+  const scrollToBottom = (smooth) => {
     const el = listRef.current;
-    if (typeof el.scrollTo === "function") {
-      listRef.current.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
-    } else {
-      el.scrollTop = el.scrollHeight;
+    const end = endRef.current;
+    if (!el || !end) {
+      return;
     }
+    if (typeof end.scrollIntoView === "function") {
+      end.scrollIntoView({ behavior: "smooth", block: "end" });
+      return;
+    }
+    el.scrollTop = el.scrollHeight - el.clientHeight;
+  };
+  useLayoutEffect(() => {
+    if (!autoScroll || userScrolledUpRef.current) {
+      return;
+    }
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => scrollToBottom());
+    });
   }, [events, autoScroll]);
   return /* @__PURE__ */ jsx$1(
     "div",
     {
       className: ["flex-align-center flex-column full-height json", className].filter(Boolean).join(" "),
       "data-testid": "events-console",
-      children: /* @__PURE__ */ jsx$1(
-        "div",
-        {
-          ref: listRef,
-          className: "flex-1 full-width overflow-auto p-3 space-y-3 text-sm font-mono leading-5",
-          children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: ev.type === "empty" ? "center" : "entry", children: [
-            printRaw && /* @__PURE__ */ jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
-              "Raw event: ",
-              JSON.stringify(ev, null, 2)
-            ] }),
-            renderEvent(ev)
-          ] }, ev.id ?? idx))
-        }
-      )
+      children: /* @__PURE__ */ jsxs("div", { ref: listRef, className: "flex-1 full-width overflow-auto text-sm font-mono leading-5", children: [
+        /* @__PURE__ */ jsx$1("div", { className: "p-3 space-y-3", children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: ev.type === "empty" ? "center" : "entry", children: [
+          printRaw && /* @__PURE__ */ jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
+            "Raw event: ",
+            JSON.stringify(ev, null, 2)
+          ] }),
+          renderEvent(ev)
+        ] }, ev.id ?? idx)) }),
+        /* @__PURE__ */ jsx$1("div", { ref: endRef, className: "scroll-anchor p-3" })
+      ] })
     }
   );
 };
