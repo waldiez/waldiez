@@ -5,6 +5,15 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## v0.6.0
+
+- New mode for step-by-step running a waldiez flow
+- Waldiez-runner bug fixes and enhancements, including administration related actions
+- New waldiez-studio with file previews, python code execution and terminal view
+- Dependency updates, including jupyter 4.4.7
+- Bug fixes
+- UI related enhancements
+
 ## v0.5.10
 
 - Updated ag2 dependency to 0.9.9
