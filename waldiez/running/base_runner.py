@@ -24,19 +24,14 @@ from waldiez.exporter import WaldiezExporter
 from waldiez.logger import WaldiezLogger, get_logger
 from waldiez.models import Waldiez
 
-from .environment import refresh_environment, reset_env_vars, set_env_vars
+from .async_utils import is_async_callable, syncify
+from .dir_utils import a_chdir, chdir
+from .environment import reset_env_vars, set_env_vars
 from .exceptions import StopRunningException
+from .io_utils import input_async, input_sync
 from .post_run import after_run
-from .pre_run import RequirementsMixin, dump_waldiez
+from .pre_run import RequirementsMixin
 from .protocol import WaldiezRunnerProtocol
-from .utils import (
-    a_chdir,
-    chdir,
-    input_async,
-    input_sync,
-    is_async_callable,
-    syncify,
-)
 
 if TYPE_CHECKING:
     # pylint: disable=line-too-long
@@ -100,6 +95,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         WaldiezBaseRunner._print = print
         WaldiezBaseRunner._send = print
         WaldiezBaseRunner._is_async = waldiez.is_async
+        RequirementsMixin.__init__(self)
         self._waldiez = waldiez
         self._called_install_requirements = False
         self._exporter = WaldiezExporter(waldiez)
@@ -119,7 +115,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         elif isinstance(waldiez_file, Path):
             waldiez_file_path = waldiez_file.resolve()
         else:
-            waldiez_file_path = dump_waldiez(waldiez, output_path=output_path)
+            waldiez_file_path = waldiez.dump(output_path=output_path)
         if not waldiez_file_path or not waldiez_file_path.is_file():
             raise ValueError("Could not resolve a waldiez file path")
         WaldiezBaseRunner._waldiez_file = waldiez_file_path
@@ -549,7 +545,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             uploads_root=uploads_root_path,
         )
         self.install_requirements()
-        refresh_environment()
         return temp_dir, output_file, uploads_root_path
 
     # noinspection PyProtocol
@@ -679,7 +674,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             uploads_root=uploads_root_path,
         )
         await self.a_install_requirements()
-        refresh_environment()
         return temp_dir, output_file, uploads_root_path
 
     # noinspection DuplicatedCode

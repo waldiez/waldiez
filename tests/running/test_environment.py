@@ -6,19 +6,10 @@ import os
 import warnings
 
 from waldiez.running.environment import (
-    in_virtualenv,
     refresh_environment,
     reset_env_vars,
     set_env_vars,
 )
-
-
-def test_in_virtualenv() -> None:
-    """Test in_virtualenv."""
-    # When
-    result = in_virtualenv()
-    # Then
-    assert isinstance(result, bool)
 
 
 def test_refresh_environment() -> None:

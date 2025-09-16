@@ -1,72 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Test waldiez.running.running.*."""
+"""Test waldiez.running.post_run.*."""
 
-import os
 from pathlib import Path
 
-import pytest
-
 from waldiez.running.post_run import after_run
-from waldiez.running.pre_run import (
-    a_install_requirements,
-    install_requirements,
-)
-from waldiez.running.utils import (
-    a_chdir,
-    chdir,
-)
-
-
-def test_chdir(tmp_path: Path) -> None:
-    """Test chdir.
-
-    Parameters
-    ----------
-    tmp_path : Path
-        The temporary path.
-    """
-    # Given
-    old_cwd = os.getcwd()
-    # When
-    with chdir(tmp_path):
-        # Then
-        assert os.getcwd() == str(tmp_path)
-    # And
-    assert os.getcwd() == old_cwd
-
-
-@pytest.mark.asyncio
-async def test_a_chdir(tmp_path: Path) -> None:
-    """Test a_chdir.
-
-    Parameters
-    ----------
-    tmp_path : Path
-        The temporary path.
-    """
-    # Given
-    old_cwd = os.getcwd()
-    # When
-    async with a_chdir(tmp_path):
-        # Then
-        assert os.getcwd() == str(tmp_path)
-    # And
-    assert os.getcwd() == old_cwd
-
-
-def test_install_requirements() -> None:
-    """Test install_requirements."""
-    extra_requirements = {"pytest"}
-    install_requirements(extra_requirements)
-    assert True
-
-
-@pytest.mark.asyncio
-async def test_a_install_requirements() -> None:
-    """Test a_install_requirements."""
-    extra_requirements = {"pytest"}
-    await a_install_requirements(extra_requirements)
 
 
 def test_after_run(tmp_path: Path) -> None:

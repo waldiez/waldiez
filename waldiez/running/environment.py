@@ -12,42 +12,6 @@ import sys
 from typing import Generator
 
 
-def in_virtualenv() -> bool:
-    """Check if we are inside a virtualenv.
-
-    Returns
-    -------
-    bool
-        True if inside a virtualenv, False otherwise.
-    """
-    return hasattr(sys, "real_prefix") or (
-        hasattr(sys, "base_prefix")
-        and os.path.realpath(sys.base_prefix) != os.path.realpath(sys.prefix)
-    )
-
-
-def is_root() -> bool:  # pragma: no cover  # os specific
-    """Check if the script is running as root/administrator.
-
-    Returns
-    -------
-    bool
-        True if running as root/administrator, False otherwise.
-    """
-    # pylint: disable=import-outside-toplevel,line-too-long,no-member
-    if os.name == "nt":
-        # noinspection PyBroadException
-        # pylint: disable=broad-exception-caught
-        try:
-            import ctypes
-
-            return ctypes.windll.shell32.IsUserAnAdmin() != 0  # type: ignore[unused-ignore,attr-defined]  # noqa: E501
-        except Exception:
-            return False
-    else:
-        return os.getuid() == 0
-
-
 def refresh_environment() -> None:
     """Refresh the environment."""
     # a group chat without a user agent
@@ -157,15 +121,15 @@ def reload_autogen() -> None:  # noqa: C901  # pragma: no cover
 
 def reload_chroma_if_needed() -> None:  # pragma: no cover
     """Reload the chroma package if it is installed."""
-    cheomadb_modules = [
+    chromadb_modules = [
         name
         for name in sys.modules
         if name.startswith("chromadb.") or name == "chromadb"
     ]
-    if not cheomadb_modules:
+    if not chromadb_modules:
         return
 
-    for mod_name in sorted(cheomadb_modules, key=len, reverse=True):
+    for mod_name in sorted(chromadb_modules, key=len, reverse=True):
         # Remove chromadb modules in reverse dependency order
         if mod_name in sys.modules:
             del sys.modules[mod_name]
@@ -181,7 +145,7 @@ def try_handle_the_np_thing() -> None:
     """Try to handle the numpy deprecation warning."""
     # we might get:
     # module 'numpy' has no attribute '_no_nep50_warning'
-    # (sentnence_transformers?)
+    # (sentence_transformers?)
     # in autogen/agentchat/contrib/captainagent/tool_retriever.py
     os.environ["NEP50_DEPRECATION_WARNING"] = "0"
     os.environ["NEP50_DISABLE_WARNING"] = "1"

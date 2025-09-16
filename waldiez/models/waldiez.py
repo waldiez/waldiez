@@ -9,6 +9,7 @@ definitions and their optional additional tools to be used.
 """
 
 import json
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterator
@@ -19,7 +20,7 @@ from .agents import (
     get_captain_agent_extra_requirements,
     get_retrievechat_extra_requirements,
 )
-from .common import get_autogen_version
+from .common import get_autogen_version, safe_filename
 from .flow import (
     WaldiezAgentConnection,
     WaldiezFlow,
@@ -367,3 +368,38 @@ class Waldiez:
         if not agent.is_group_manager:
             return []
         return self.flow.get_group_chat_members(agent.id)
+
+    def dump(self, output_path: str | Path | None) -> Path:
+        """Dump waldiez flow to a file.
+
+        Parameters
+        ----------
+        output_path : str | Path | None
+            Optional output path to determine the directory to save the flow to.
+
+        Returns
+        -------
+        Path
+            The path to the generated file.
+        """
+        file_path = Path(output_path) if output_path else None
+        if file_path:
+            file_name = file_path.name
+            if not file_name.endswith(".waldiez"):
+                file_path.with_suffix(".waldiez")
+
+        else:
+            full_name = self.name
+            file_name = safe_filename(full_name, "waldiez")
+        file_dir: Path
+        if file_path:
+            file_dir = file_path if file_path.is_dir() else file_path.parent
+        else:
+            file_dir = Path(tempfile.mkdtemp())
+        file_dir.mkdir(parents=True, exist_ok=True)
+        output_path = file_dir / file_name
+        with output_path.open(
+            "w", encoding="utf-8", errors="replace", newline="\n"
+        ) as f_open:
+            f_open.write(self.model_dump_json())
+        return output_path

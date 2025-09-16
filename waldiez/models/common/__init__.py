@@ -38,6 +38,7 @@ from .naming import (
     MAX_VARIABLE_LENGTH,
     get_valid_instance_name,
     get_valid_python_variable_name,
+    safe_filename,
 )
 from .waldiez_version import get_waldiez_version
 
@@ -56,6 +57,7 @@ __all__ = [
     "generate_function",
     "now",
     "parse_code_string",
+    "safe_filename",
     "WaldiezDefaultCondition",
     "WaldiezAgentTarget",
     "WaldiezContextBasedCondition",

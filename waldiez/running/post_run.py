@@ -11,8 +11,8 @@ from pathlib import Path
 from typing import Optional, Union
 
 from .gen_seq_diagram import generate_sequence_diagram
+from .io_utils import get_printer
 from .timeline_processor import TimelineProcessor
-from .utils import get_printer
 
 
 # noinspection PyUnusedLocal
