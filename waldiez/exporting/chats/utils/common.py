@@ -37,7 +37,7 @@ def get_chat_message_string(
         return "None", None
     if chat.message.type == "string":
         if chat.message.content is None:  # pragma: no cover
-            # should be coverred previousliy on pydantic validation
+            # should be covered previously on pydantic validation
             return "None", None
         if not chat.message.content:
             return "", None
@@ -50,6 +50,12 @@ def get_chat_message_string(
         is_rag=is_rag_with_carryover,
     )
     return function_name, function_content
+
+
+def _stop_logging(tab: str, is_async: bool) -> str:
+    if is_async:
+        return f"{tab}                await stop_logging()\n"
+    return f"{tab}                stop_logging()\n"
 
 
 def get_event_handler_string(
@@ -71,9 +77,9 @@ def get_event_handler_string(
         The event handler string.
     """
     content = (
+        f"{tab}if not isinstance(results, list):\n"
+        f"{tab}    results = [results]  # pylint: disable=redefined-variable-type\n"
         f"{tab}if on_event:\n"
-        f"{tab}    if not isinstance(results, list):\n"
-        f"{tab}        results = [results]  # pylint: disable=redefined-variable-type\n"
         f"{tab}    for index, result in enumerate(results):\n"
     )
     if is_async:
@@ -81,7 +87,7 @@ def get_event_handler_string(
             f"{tab}        async for event in result.events:\n"
             f"{tab}            try:\n"
             f"{tab}                should_continue = await on_event(event)\n"
-            f"{tab}            except BaseException as e:\n"
+            f"{tab}            except BaseException as e:\n{_stop_logging(tab, is_async)}"
             f'{tab}                print(f"Error in event handler: {{e}}")\n'
             f"{tab}                raise SystemExit(\n"
             f'{tab}                    "Error in event handler: " + str(e)\n'
@@ -92,7 +98,7 @@ def get_event_handler_string(
             f"{tab}        for event in result.events:\n"
             f"{tab}            try:\n"
             f"{tab}                should_continue = on_event(event)\n"
-            f"{tab}            except BaseException as e:\n"
+            f"{tab}            except BaseException as e:\n{_stop_logging(tab, is_async)}"
             f'{tab}                print(f"Error in event handler: {{e}}")\n'
             f"{tab}                raise SystemExit(\n"
             f'{tab}                    "Error in event handler: " + str(e)\n'
@@ -101,15 +107,12 @@ def get_event_handler_string(
     content += (
         f'{tab}            if event.type == "run_completion":\n'
         f"{tab}                break\n"
-        f"{tab}            if not should_continue:\n"
+        f"{tab}            if not should_continue:\n{_stop_logging(tab, is_async)}"
         f'{tab}                raise SystemExit("Event handler stopped processing")\n'
     )
     content += get_result_dicts_string(tab, is_async)
     content += (
-        f"{tab}else:\n"
-        f"{tab}    if not isinstance(results, list):\n"
-        f"{tab}        results = [results]  # pylint: disable=redefined-variable-type\n"
-        f"{tab}    for index, result in enumerate(results):\n"
+        f"{tab}else:\n{tab}    for index, result in enumerate(results):\n"
     )
     if is_async:
         content += f"{tab}        await result.process()\n"
