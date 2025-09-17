@@ -14,20 +14,23 @@ import sys
 from pathlib import Path
 from typing import Any, Callable
 
+WALDIEZ_SITE_PACKAGES = "WALDIEZ_SITE_PACKAGES"
+WALDIEZ_APP_ROOT = "WALDIEZ_APP_ROOT"
+
 
 # noinspection PyBroadException
 class PythonManager:
     """Python manager."""
 
-    _resource_dir: Path | None
+    _app_dir: Path | None
 
     def __init__(self) -> None:
         self.system = platform.system().lower()
         self.is_frozen = bool(getattr(sys, "frozen", False))
-        self._resource_dir = None
+        self._app_dir = None
 
     @property
-    def resource_directory(self) -> Path:
+    def app_dir(self) -> Path:
         """Directory to read packaged resources from.
 
         Returns
@@ -35,7 +38,7 @@ class PythonManager:
         Path
             The path to the application installation directory.
         """
-        return self._get_resource_directory()
+        return self._get_app_dir()
 
     @property
     def site_packages_directory(self) -> Path | None:
@@ -59,7 +62,7 @@ class PythonManager:
         if not self.is_frozen:
             return sys.executable
         # Check for bundled Python in installation directory
-        app_dir = self.resource_directory
+        app_dir = self.app_dir
         if self.system == "windows":
             candidates = [
                 app_dir / "bundled_python" / "Scripts" / "python.exe",
@@ -120,7 +123,6 @@ class PythonManager:
         return {
             "system": self.system,
             "is_frozen": self.is_frozen,
-            "resource_directory": str(self.resource_directory),
             "site_packages_directory": (
                 str(self.site_packages_directory)
                 if self.site_packages_directory
@@ -258,38 +260,34 @@ class PythonManager:
             # we'll still attempt `-m pip` and surface errors.
             pass
 
-    def _get_resource_directory(self) -> Path:
-        if self._resource_dir is None:
+    def _get_app_dir(self) -> Path:
+        if self._app_dir is None:
+            from_env_str = os.environ.get(WALDIEZ_APP_ROOT, "")
+            if from_env_str:
+                from_env_path = Path(from_env_str).resolve()
+                if from_env_path.is_dir():
+                    self._app_dir = from_env_path
+                    return self._app_dir
             if self.is_frozen and hasattr(sys, "_MEIPASS"):  # PyInstaller
-                self._resource_dir = Path(
+                self._app_dir = Path(
                     getattr(sys, "_MEIPASS", Path(sys.executable).parent)
                 )
-            else:
-                # Development mode
-                self._resource_dir = Path(__file__).parent.parent.parent
-        return self._resource_dir
+                return self._app_dir
+        # dev: package root
+        self._app_dir = Path(__file__).parent.parent
+        return self._app_dir
 
     def _get_site_packages_path(self) -> Path | None:
+        from_env_str = os.environ.get(WALDIEZ_SITE_PACKAGES, "")
+        if from_env_str:
+            from_env_path = Path(from_env_str).resolve()
+            if from_env_path.is_dir():
+                return from_env_path
         if self.is_frozen:
             # Use the bundled site-packages if available
-            bundled_sp = (
-                self.resource_directory / "bundled_python" / "site-packages"
-            )
+            bundled_sp = self.app_dir / "bundled_python" / "site-packages"
             if bundled_sp.exists():
                 return bundled_sp
-
-            # maybe use platformdirs here ?
-            # user_sp = (
-            #     Path.home() / ".local" / "share" / "waldiez" / "site-packages"
-            # )
-            # user_sp.mkdir(parents=True, exist_ok=True)
-
-            # # Add to sys.path if not already there
-            # if str(user_sp) not in sys.path:
-            #     sys.path.insert(1, str(user_sp))
-
-            # return user_sp
-        # else:
         return None
 
     def _before_pip(

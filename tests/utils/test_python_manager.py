@@ -6,6 +6,7 @@
 # flake8: noqa: D102
 """Test waldiez.utils.python_manager.*."""
 
+import os
 import sys
 from pathlib import Path
 from typing import AsyncGenerator
@@ -13,7 +14,12 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from waldiez.utils.python_manager import PythonManager, strip_ansi
+from waldiez.utils.python_manager import (
+    WALDIEZ_APP_ROOT,
+    WALDIEZ_SITE_PACKAGES,
+    PythonManager,
+    strip_ansi,
+)
 
 
 class TestPythonManager:
@@ -24,25 +30,62 @@ class TestPythonManager:
         assert pm.system in ["windows", "linux", "darwin"]
         assert isinstance(pm.is_frozen, bool)
 
-    def test_resource_directory_development(self) -> None:
+    def test_app_dir_development(self) -> None:
         pm = PythonManager()
         pm.is_frozen = False
         # Should point to project root in dev mode
-        assert pm.resource_directory.exists()
+        assert pm.app_dir.exists()
+
+    def test_app_dir_from_env(self) -> None:
+        pm = PythonManager()
+
+        original_app_root = os.environ.get(WALDIEZ_APP_ROOT)
+        # pylint: disable=too-many-try-statements
+        try:
+            test_app_path = "/custom/app/root"
+            os.environ[WALDIEZ_APP_ROOT] = test_app_path
+
+            with patch.object(Path, "is_dir", return_value=True):
+                result = pm.app_dir
+                assert str(result) == test_app_path
+
+        finally:
+            if original_app_root is not None:
+                os.environ[WALDIEZ_APP_ROOT] = original_app_root
+            else:
+                os.environ.pop(WALDIEZ_APP_ROOT, None)
 
     @patch("sys.executable", "/app/myapp.exe")
     @patch.object(Path, "exists", return_value=True)
-    def test_resource_directory_frozen(self, tmp_path: Path) -> None:
+    def test_app_dir_frozen(self, tmp_path: Path) -> None:
         pm = PythonManager()
         pm.is_frozen = True
         with patch("sys._MEIPASS", str(tmp_path / "meipass"), create=True):
-            result = pm.resource_directory
+            result = pm.app_dir
             assert str(result) == str(tmp_path / "meipass")
 
     def test_site_packages_directory_not_frozen(self) -> None:
         pm = PythonManager()
         pm.is_frozen = False
         assert pm.site_packages_directory is None
+
+    def test_site_packages_from_env(self) -> None:
+        pm = PythonManager()
+        original_site_packages = os.environ.get(WALDIEZ_SITE_PACKAGES)
+        # pylint: disable=too-many-try-statements
+        try:
+            test_site_packages_path = "/custom/site/packages"
+            os.environ[WALDIEZ_SITE_PACKAGES] = test_site_packages_path
+            with patch.object(Path, "is_dir", return_value=True):
+                result = pm.site_packages_directory
+                assert result is not None
+                assert str(result) == test_site_packages_path
+
+        finally:
+            if original_site_packages is not None:
+                os.environ[WALDIEZ_SITE_PACKAGES] = original_site_packages
+            else:
+                os.environ.pop(WALDIEZ_SITE_PACKAGES, None)
 
     def test_site_packages_directory_frozen_exists(self) -> None:
         pm = PythonManager()
@@ -176,7 +219,7 @@ class TestPythonManager:
 
         # Mock some properties for consistent testing
         with patch.object(
-            pm, "_get_resource_directory", return_value=Path("/mock/resource")
+            pm, "_get_app_dir", return_value=Path("/mock/resource")
         ):
             with patch.object(
                 pm,
@@ -192,7 +235,6 @@ class TestPythonManager:
                     expected_keys = {
                         "system",
                         "is_frozen",
-                        "resource_directory",
                         "site_packages_directory",
                         "python_executable",
                         "python_version",
@@ -209,7 +251,6 @@ class TestPythonManager:
                         "darwin",
                     ]
                     assert isinstance(debug_info["is_frozen"], bool)
-                    assert debug_info["resource_directory"] == "/mock/resource"
                     assert (
                         debug_info["site_packages_directory"]
                         == "/mock/site-packages"
