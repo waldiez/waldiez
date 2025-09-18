@@ -44,7 +44,7 @@ from .models import (
     UserInputRequest,
     UserResponse,
 )
-from .utils import gen_id, now
+from .utils import gen_id, get_message_dump, now
 
 LOG = logging.getLogger(__name__)
 
@@ -487,23 +487,10 @@ class MqttIOStream(IOStream):
         message : BaseEvent | BaseMessage
             The message or event to send.
         """
-        try:
-            message_dump = message.model_dump(mode="json")
-        except Exception:
-            try:
-                message_dump = message.model_dump(
-                    serialize_as_any=True, mode="json", fallback=str
-                )
-            except Exception as e:
-                message_dump = {
-                    "error": str(e),
-                    "type": message.__class__.__name__,
-                }
-
+        message_dump = get_message_dump(message)
         message_type = message_dump.get("type", None)
         if not message_type:  # pragma: no cover
             message_type = message.__class__.__name__
-
         self._print(
             {
                 "type": message_type,
