@@ -266,7 +266,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
     ) -> Path:
         """Run before the flow execution."""
         self.log.info("Preparing workflow file: %s", output_file)
-        temp_dir = Path(tempfile.mkdtemp())
+        temp_dir = Path(tempfile.mkdtemp(prefix="wlz-"))
         file_name = output_file.name
         with chdir(to=temp_dir):
             self._exporter.export(
@@ -613,7 +613,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             uploads_root=uploads_root,
         )
         WaldiezBaseRunner._running = True
-        results: list[dict[str, Any]]
+        results: list[dict[str, Any]] = []
         old_env_vars = set_env_vars(self._waldiez.get_flow_env_vars())
         try:
             with chdir(to=temp_dir):
@@ -633,14 +633,14 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         finally:
             WaldiezBaseRunner._running = False
             reset_env_vars(old_env_vars)
-        self.after_run(
-            results=results,
-            output_file=output_file,
-            uploads_root=uploads_root_path,
-            temp_dir=temp_dir,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
+            self.after_run(
+                results=results,
+                output_file=output_file,
+                uploads_root=uploads_root_path,
+                temp_dir=temp_dir,
+                skip_mmd=skip_mmd,
+                skip_timeline=skip_timeline,
+            )
         self._print("<Waldiez> - Done running the flow.")
         if sys.path[0] == str(temp_dir):
             sys.path.pop(0)
@@ -733,7 +733,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             uploads_root=uploads_root,
         )
         WaldiezBaseRunner._running = True
-        results: list[dict[str, Any]]
+        results: list[dict[str, Any]] = []
         old_env_vars = set_env_vars(self._waldiez.get_flow_env_vars())
         try:
             async with a_chdir(to=temp_dir):
@@ -752,15 +752,15 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         finally:
             WaldiezBaseRunner._running = False
             reset_env_vars(old_env_vars)
-        await self._a_after_run(
-            results=results,
-            output_file=output_file,
-            uploads_root=uploads_root_path,
-            waldiez_file=WaldiezBaseRunner._waldiez_file,
-            temp_dir=temp_dir,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-        )
+            await self._a_after_run(
+                results=results,
+                output_file=output_file,
+                uploads_root=uploads_root_path,
+                waldiez_file=WaldiezBaseRunner._waldiez_file,
+                temp_dir=temp_dir,
+                skip_mmd=skip_mmd,
+                skip_timeline=skip_timeline,
+            )
         if sys.path[0] == str(temp_dir):
             sys.path.pop(0)
         return results
