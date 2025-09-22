@@ -22,6 +22,7 @@ export type { createWaldiezStore };
 /**
  * WaldiezStoreProps
  * @param flowId - The ID of the flow
+ * @param path - The path of the flow file
  * @param edges - The edges of the flow
  * @param nodes - The nodes of the flow
  * @param isAsync - Whether the flow is async or not
@@ -47,6 +48,7 @@ export type { createWaldiezStore };
  */
 export type WaldiezStoreProps = {
     flowId: string;
+    path?: string | null;
     edges: Edge[];
     nodes: Node[];
     isAsync?: boolean;
@@ -64,17 +66,18 @@ export type WaldiezStoreProps = {
     rfInstance?: ReactFlowInstance;
     viewport?: Viewport;
     previousViewport?: Viewport; // used to store the previous viewport when switching node types
-    onRun?: ((flow: string) => void) | null; // handler for running the flow (send to backend)
-    onStepRun?: ((flow: string) => void) | null; // handler for step run events (send to backend)
-    onConvert?: ((flow: string, to: "py" | "ipynb") => void) | null; // handler for converting the flow (send to backend)
-    onUpload?: ((files: File[]) => Promise<string[]>) | null; // handler for file uploads (send to backend)
-    onChange?: ((content: string) => void) | null; // handler for changes in the flow (send to backend)
-    onSave?: ((flow: string) => void) | null; // handler for saving the flow (send to backend)
+    onRun?: ((flow: string, path?: string | null) => void | Promise<void>) | null; // handler for running the flow (send to backend)
+    onStepRun?: ((flow: string, path?: string | null) => void | Promise<void>) | null; // handler for step run events (send to backend)
+    onConvert?: ((flow: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>) | null; // handler for converting the flow (send to backend)
+    onUpload?: ((files: File[], path?: string | null) => string[] | Promise<string[]>) | null; // handler for file uploads (send to backend)
+    onChange?: ((content: string, path?: string | null) => void | Promise<void>) | null; // handler for changes in the flow (send to backend)
+    onSave?: ((flow: string, path?: string | null) => void | Promise<void>) | null; // handler for saving the flow (send to backend)
 };
 
 /**
  * WaldiezFlowInfo
  * @param flowId - The ID of the flow
+ * @param path - The path of the flow file
  * @param storageId - The ID of the storage
  * @param name - The name of the flow
  * @param description - The description of the flow
@@ -85,6 +88,7 @@ export type WaldiezStoreProps = {
  */
 export type WaldiezFlowInfo = {
     flowId: string;
+    path?: string | null;
     storageId: string;
     name: string;
     description: string;
@@ -159,6 +163,7 @@ export type WaldiezChatParticipantsState = {
 /**
  * WaldiezState
  * @param flowId - The ID of the flow
+ * @param path - The path of the flow
  * @param edges - The edges of the flow
  * @param nodes - The nodes of the flow
  * @param isAsync - Whether the flow is async or not

@@ -2,261 +2,211 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useRef } from "react";
 
-import type {
-    WaldiezChatUserInput,
-    WaldiezDebugInputResponse,
-    WaldiezStepByStep,
-    WaldiezTimelineData,
-} from "@waldiez/components/types";
-import type { WaldiezChatMessage, WaldiezChatParticipant } from "@waldiez/types";
+import type { WaldiezChatConfig, WaldiezChatUserInput } from "@waldiez/components/chatUI/types";
+import type { WaldiezDebugInputResponse, WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
+import { useWaldiezWsMessaging } from "@waldiez/utils";
+import type { WaldiezChatAction } from "@waldiez/utils/chat/reducer";
+import type { WaldiezStepByStepAction } from "@waldiez/utils/stepByStep/reducer";
 
-import { useMessageHandler } from "./messageHandler";
-import { useWebSocketSender } from "./sender";
-import type { WaldiezWrapperActions, WaldiezWrapperState } from "./types";
-import { useUIMessageProcessor } from "./uiProcessor";
-import { useWebsocket } from "./ws";
+import { useMessagePreprocessor } from "./preprocessor";
 
 export const useWaldiezWrapper = ({
     flowId,
     wsUrl = "ws://localhost:8765",
+    protocols = undefined,
     onError = undefined,
 }: {
     flowId: string;
     wsUrl: string;
+    protocols?: string | string[] | undefined;
     onError?: (error: any) => void;
-}): [WaldiezWrapperState, WaldiezWrapperActions] => {
-    // Workflow state
-    const [showChat, setShowChat] = useState(false);
-    const [isRunning, setIsRunning] = useState(false);
-    const [isDebugging, setIsDebugging] = useState(false);
-    const [participants, setParticipants] = useState<WaldiezChatParticipant[]>([]);
-    const [timeline, setTimeline] = useState<WaldiezTimelineData | undefined>(undefined);
-    const [messages, setMessages] = useState<WaldiezChatMessage[]>([]);
-    const [error, setError] = useState<string | null>(null);
-    const [inputPrompt, setInputPrompt] = useState<
-        | {
-              prompt: string;
-              request_id: string;
-              password?: boolean;
-          }
-        | undefined
-    >(undefined);
-
-    const { sendJson, connected, setMessageHandler } = useWebsocket({
-        wsUrl,
-        onError: e => console.error("WebSocket error:", e),
-        autoPingMs: 25000,
-    });
-
-    // Message handler - manages sessions and triggers state changes
-    const { handleMessage, getSessionId, getPendingInputId, clearPendingInput } = useMessageHandler({
-        onRunStart: () => {
-            setIsRunning(true);
-            setIsDebugging(false);
+}): {
+    chat: WaldiezChatConfig;
+    stepByStep: WaldiezStepByStep;
+    onRun: (flowJson: string) => void;
+    onStepRun: (flowJson: string) => void;
+    onSave: (flowJson: string, path?: string | null) => void;
+    onConvert: (flowJson: string, to: "py" | "ipynb", path?: string | null) => void;
+    sendMessage: (message: unknown) => boolean | void;
+    reset: () => void;
+} => {
+    const messageSender = useRef<((msg: any) => boolean | void) | undefined>(undefined);
+    const chatDispatchRef = useRef<React.Dispatch<WaldiezChatAction> | null>(null);
+    const stepDispatchRef = useRef<React.Dispatch<WaldiezStepByStepAction> | null>(null);
+    const { preprocess, getSessionId, getPendingInputId, clearPendingInput } = useMessagePreprocessor(flowId);
+    const onRunCb = useCallback(
+        (
+            data: string,
+            opts?: {
+                uploads_root?: string | null;
+                dot_env_path?: string | null;
+                output_path?: string | null;
+                structured_io?: boolean;
+            },
+        ) => {
+            messageSender.current?.({
+                type: "run",
+                data,
+                mode: "standard",
+                structured_io: opts?.structured_io ?? true,
+                uploads_root: opts?.uploads_root ?? null,
+                dot_env_path: opts?.dot_env_path ?? null,
+                output_path: opts?.output_path ?? null,
+            });
         },
-        onDebugStart: () => {
-            setIsRunning(false);
-            setIsDebugging(true);
+        [],
+    );
+    const onStepRunCb = useCallback(
+        (
+            data: string,
+            opts?: {
+                auto_continue?: boolean;
+                breakpoints?: string[];
+                uploads_root?: string | null;
+                dot_env_path?: string | null;
+                output_path?: string | null;
+                structured_io?: boolean;
+            },
+        ) => {
+            messageSender.current?.({
+                type: "step_run",
+                data,
+                auto_continue: !!opts?.auto_continue,
+                breakpoints: opts?.breakpoints ?? [],
+                structured_io: opts?.structured_io ?? true,
+                uploads_root: opts?.uploads_root ?? null,
+                dot_env_path: opts?.dot_env_path ?? null,
+                output_path: opts?.output_path ?? null,
+            });
         },
-        onWorkflowComplete: () => {
-            setIsRunning(false);
-            setIsDebugging(false);
-            setInputPrompt(undefined);
+        [],
+    );
+    const onInterrupt = useCallback(
+        (sessionId?: string, force = false) => {
+            const sid = typeof sessionId === "string" ? sessionId : getSessionId();
+            if (!sid) {
+                console.warn("No session id :(");
+                return;
+            }
+            messageSender.current?.({ type: "stop", session_id: sid, force });
+            chatDispatchRef.current?.({ type: "SET_ACTIVE", active: false });
         },
-        onError: errorMsg => {
-            setError(errorMsg);
-            setIsRunning(false);
-            setIsDebugging(false);
-            setInputPrompt(undefined);
-            onError?.(errorMsg);
+        [getSessionId],
+    );
+    const onSave = useCallback((data: string, path?: string | null, force = true) => {
+        messageSender.current?.({ type: "save", data, path, force });
+    }, []);
+    const onConvert = useCallback((data: string, to: "py" | "ipynb", path?: string | null) => {
+        messageSender.current?.({
+            type: "convert",
+            data,
+            format: to,
+            path,
+        });
+    }, []);
+    const onUserInput = useCallback(
+        (input: WaldiezChatUserInput & { session_id?: string }) => {
+            const sid = input.session_id ?? getSessionId();
+            const rid = input.request_id ?? getPendingInputId();
+            clearPendingInput();
+            if (!sid || !rid) {
+                console.warn("Sth missing :(", { sid, rid });
+                return;
+            }
+            messageSender.current?.({
+                type: "user_input",
+                session_id: sid,
+                request_id: rid,
+                data: input.data,
+            });
         },
-    });
-
-    // WebSocket sender - pure actions
+        [clearPendingInput, getPendingInputId, getSessionId],
+    );
+    const onChatUserInput = useCallback(
+        (input: WaldiezChatUserInput & { session_id?: string }) => {
+            onUserInput(input);
+            chatDispatchRef.current?.({ type: "SET_ACTIVE_REQUEST", request: undefined });
+        },
+        [onUserInput],
+    );
+    const onStepUserInput = useCallback(
+        (input: WaldiezChatUserInput & { session_id?: string }) => {
+            onUserInput(input);
+            stepDispatchRef.current?.({ type: "SET_ACTIVE_REQUEST", request: undefined });
+        },
+        [onUserInput],
+    );
+    const sendControl = useCallback(
+        (input: Pick<WaldiezDebugInputResponse, "request_id" | "data">) => {
+            const request_id = input.request_id !== "<unknown>" ? input.request_id : getPendingInputId();
+            clearPendingInput();
+            messageSender.current?.({
+                type: "step_control",
+                action: input.data,
+                request_id,
+                session_id: getSessionId() ?? "<unknown>",
+            });
+            stepDispatchRef.current?.({ type: "SET_PENDING_CONTROL_INPUT", controlInput: undefined });
+        },
+        [getPendingInputId, clearPendingInput, getSessionId],
+    );
+    const onCloseChat = useCallback(() => {
+        chatDispatchRef.current?.({ type: "RESET" });
+    }, []);
+    const onCloseStepView = useCallback(() => {
+        stepDispatchRef.current?.({ type: "RESET" });
+    }, []);
     const {
-        runWorkflow,
-        stepRunWorkflow,
-        sendDebugControl,
-        sendDebugUserInput,
-        sendUserInput,
-        stopWorkflow,
-        saveFlow,
-        convertWorkflow,
-        uploadFiles,
-    } = useWebSocketSender({
-        sendJson,
-        getSessionId,
-        getPendingInputId,
-        clearPendingInput,
-    });
-
-    // Step-by-step state
-    const [stepByStepState, setStepByStepState] = useState<WaldiezStepByStep>(() => ({
-        show: false,
-        active: false,
-        stepMode: false,
-        autoContinue: false,
-        breakpoints: [],
-        eventHistory: [],
-        pendingControlInput: null,
-        activeRequest: null,
-        participants,
-        handlers: {
-            sendControl: () => {}, // Will be updated by main.tsx
-            respond: () => {}, // Will be updated by main.tsx
-            close: () => {
-                setStepByStepState(prev => ({
-                    ...prev,
-                    show: false,
-                    active: false,
-                    stepMode: false,
-                    autoContinue: false,
-                    breakpoints: [],
-                    eventHistory: [],
-                    pendingControlInput: null,
-                    activeRequest: null,
-                }));
-            },
-        },
-    }));
-
-    // Create the current step-by-step state with live handlers and debugging status
-    const currentStepByStepState = useMemo(
-        () => ({
-            ...stepByStepState,
-            active: isDebugging,
-            handlers: {
-                ...stepByStepState.handlers,
-                sendControl: (input: Pick<WaldiezDebugInputResponse, "request_id" | "data">) => {
-                    sendDebugControl(input);
-                    setStepByStepState(prev => ({
-                        ...prev,
-                        pendingControlInput: null,
-                        activeRequest: null,
-                    }));
-                },
-                respond: (response: WaldiezChatUserInput) => {
-                    sendDebugUserInput(response);
-                    setStepByStepState(prev => ({
-                        ...prev,
-                        activeRequest: null,
-                        pendingControlInput: null,
-                    }));
-                },
-            },
-        }),
-        [stepByStepState, isDebugging, sendDebugControl, sendDebugUserInput],
-    );
-
-    // UI message processor - handles UI-specific message processing
-    const { processUIMessage } = useUIMessageProcessor({
+        send: sendMessage,
+        chat,
+        stepByStep,
+        reset,
+        dispatch,
+        run: onRun,
+        stepRun: onStepRun,
+    } = useWaldiezWsMessaging({
         flowId,
-        isRunning,
-        isDebugging,
-        setTimeline,
-        setMessages,
-        setParticipants,
-        setInputPrompt,
-        setError,
-        getPendingInputId,
-        stepByStepState,
-        setStepByStepState,
+        onRun: onRunCb,
+        onSave,
+        onConvert,
+        onStepRun: onStepRunCb,
+        preprocess,
+        chat: {
+            handlers: {
+                onInterrupt,
+                onUserInput: onChatUserInput,
+                onClose: onCloseChat,
+            },
+            preprocess,
+        },
+        stepByStep: {
+            preprocess,
+            handlers: {
+                respond: onStepUserInput,
+                sendControl,
+                onStart: () => {},
+                close: onCloseStepView,
+            },
+        },
+        ws: {
+            url: wsUrl,
+            protocols,
+            onError,
+        },
     });
-
-    // Main WebSocket message handler
-    const onWsMessage = useCallback(
-        (event: MessageEvent) => {
-            let data;
-            try {
-                data = JSON.parse(event.data);
-            } catch {
-                return;
-            }
-            if (!data || typeof data !== "object" || !("type" in data)) {
-                return;
-            }
-
-            // Process message for session/state management
-            handleMessage(data);
-
-            // Process message for UI updates
-            processUIMessage(data);
-        },
-        [handleMessage, processUIMessage],
-    );
-
-    // Register message handler
-    useEffect(() => {
-        setMessageHandler(onWsMessage);
-    }, [onWsMessage, setMessageHandler]);
-
-    // Reset function
-    const reset = useCallback(() => {
-        setMessages([]);
-        setParticipants([]);
-        setInputPrompt(undefined);
-        setError(null);
-        clearPendingInput();
-        // Reset step-by-step state
-        setStepByStepState(prev => ({
-            ...prev,
-            eventHistory: [],
-            pendingControlInput: null,
-            activeRequest: null,
-        }));
-        setShowChat(false);
-    }, [clearPendingInput]);
-
-    // Public API
-    const handleRun = useCallback(
-        (flow: string) => {
-            reset();
-            runWorkflow(flow);
-            setShowChat(true);
-        },
-        [reset, runWorkflow],
-    );
-
-    const handleStepRun = useCallback(
-        (flow: string, opts?: { auto_continue?: boolean; breakpoints?: string[] }) => {
-            reset();
-            stepRunWorkflow(flow, opts);
-        },
-        [reset, stepRunWorkflow],
-    );
-
-    const handleUserInput = useCallback(
-        (input: WaldiezChatUserInput) => {
-            sendUserInput(input);
-        },
-        [sendUserInput],
-    );
-
-    return [
-        {
-            showChat,
-            timeline,
-            messages,
-            participants,
-            isRunning,
-            isDebugging,
-            connected,
-            error,
-            inputPrompt,
-            stepByStepState: currentStepByStepState,
-        },
-        {
-            run: handleRun,
-            stepRun: handleStepRun,
-            stop: stopWorkflow,
-            save: saveFlow,
-            upload: uploadFiles,
-            convert: convertWorkflow,
-            userInput: handleUserInput,
-            sendMessage: sendJson,
-            reset,
-        },
-    ];
+    messageSender.current = sendMessage;
+    chatDispatchRef.current = dispatch.chat;
+    stepDispatchRef.current = dispatch.step;
+    return {
+        chat,
+        stepByStep,
+        sendMessage,
+        onConvert,
+        onRun,
+        onStepRun,
+        onSave,
+        reset,
+    };
 };

@@ -23,7 +23,7 @@ class FileRequestHandler:
     """Handles file-related requests."""
 
     @staticmethod
-    def handle_save_flow_request(
+    def handle_save_request(
         msg: SaveFlowRequest,
         workspace_dir: Path,
         client_id: str,
@@ -47,10 +47,10 @@ class FileRequestHandler:
         dict[str, Any]
             The response dictionary.
         """
-        filename = msg.filename or f"waldiez_{client_id}.waldiez"
+        path = msg.path or f"waldiez_{client_id}.waldiez"
         try:
             output_path = resolve_output_path(
-                filename,
+                path,
                 workspace_dir=workspace_dir,
                 expected_ext="waldiez",
             )
@@ -58,28 +58,28 @@ class FileRequestHandler:
             logger.error("Error resolving output path: %s", exc)
             return SaveFlowResponse.fail(
                 error=f"Invalid output path: {exc}",
-                file_path=filename,
+                path=path,
             ).model_dump(mode="json")
         # pylint: disable=too-many-try-statements
         try:
-            if output_path.exists() and not msg.force_overwrite:
+            if output_path.exists() and not msg.force:
                 return SaveFlowResponse.fail(
                     error=f"File exists: {output_path}",
                     file_path=str(output_path.relative_to(workspace_dir)),
                 ).model_dump(mode="json")
 
             # Parent dir already created by resolve_output_path
-            output_path.write_text(msg.flow_data, encoding="utf-8")
+            output_path.write_text(msg.data, encoding="utf-8")
 
             return SaveFlowResponse.ok(
-                file_path=str(output_path.relative_to(workspace_dir))
+                path=str(output_path.relative_to(workspace_dir))
             ).model_dump(mode="json")
         except Exception as e:  # pylint: disable=broad-exception-caught
             logger.error("Error saving flow: %s", e)
             return SaveFlowResponse.fail(error=str(e)).model_dump(mode="json")
 
     @staticmethod
-    def handle_convert_workflow_request(
+    def handle_convert_request(
         msg: ConvertWorkflowRequest,
         client_id: str,
         workspace_dir: Path,
@@ -103,26 +103,26 @@ class FileRequestHandler:
         dict[str, Any]
             The response dictionary.
         """
-        target_format = (msg.target_format or "").strip().lower()
+        target_format = (msg.format or "").strip().lower()
         if target_format not in {"py", "ipynb"}:
             return ConvertWorkflowResponse.fail(
                 error=f"Unsupported target format: {target_format}",
-                target_format=target_format,
+                format=target_format,
             ).model_dump(mode="json")
 
         try:
-            waldiez_data = Waldiez.from_dict(json.loads(msg.flow_data))
+            waldiez_data = Waldiez.from_dict(json.loads(msg.data))
         except Exception as e:  # pylint: disable=broad-exception-caught
             return ConvertWorkflowResponse.fail(
                 error=f"Invalid flow_data: {e}",
-                target_format=target_format,
+                format=target_format,
             ).model_dump(mode="json")
 
         try:
             # Use normalized target_format for default name
-            filename = msg.output_path or f"waldiez_{client_id}.{target_format}"
+            path = msg.path or f"waldiez_{client_id}.{target_format}"
             output_path = resolve_output_path(
-                filename,
+                path,
                 workspace_dir=workspace_dir,
                 expected_ext=target_format,
             )
@@ -130,7 +130,7 @@ class FileRequestHandler:
             logger.error("Error resolving output path: %s", exc)
             return ConvertWorkflowResponse.fail(
                 error=f"Invalid output path: {exc}",
-                target_format=target_format,
+                format=target_format,
             ).model_dump(mode="json")
 
         try:
@@ -138,13 +138,13 @@ class FileRequestHandler:
             exporter.export(path=output_path, force=True, structured_io=True)
 
             return ConvertWorkflowResponse.ok(
-                target_format=target_format,
-                output_path=str(output_path.relative_to(workspace_dir)),
+                format=target_format,
+                path=str(output_path.relative_to(workspace_dir)),
             ).model_dump(mode="json")
         except Exception as e:  # pylint: disable=broad-exception-caught
             logger.error("Error converting workflow: %s", e)
             return ConvertWorkflowResponse.fail(
-                error=str(e), target_format=target_format
+                error=str(e), format=target_format
             ).model_dump(mode="json")
 
 

@@ -3,9 +3,9 @@
  * Copyright 2024 - 2026 Waldiez & contributors
  */
 
-import JSZip from "jszip";
 import * as React from "react";
-import React__default, { createContext, useContext, useState, useEffect, Component, createElement, useRef, useCallback, useLayoutEffect, memo, forwardRef, useMemo, Fragment as Fragment$1, useImperativeHandle } from "react";
+import React__default, { useMemo, useReducer, useRef, useCallback, useState, useEffect, createContext, useContext, Component, createElement, useLayoutEffect, memo, forwardRef, Fragment as Fragment$1, useImperativeHandle } from "react";
+import JSZip from "jszip";
 import { jsx as jsx$1, jsxs, Fragment } from "react/jsx-runtime";
 import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, getSimpleBezierPath, Position, BaseEdge, EdgeLabelRenderer, Handle, NodeResizer, ReactFlow, Controls, Background, BackgroundVariant, ReactFlowProvider } from "@xyflow/react";
 import { Editor, loader } from "@monaco-editor/react";
@@ -16,10 +16,10 @@ import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUpload
 import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaBug, FaPlay, FaStop, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import hljs from "highlight.js";
 import { Marked } from "marked";
+import { MdTimeline, MdIosShare, MdMessage } from "react-icons/md";
 import { temporal } from "zundo";
 import { createStore } from "zustand";
 import { ResponsiveContainer } from "recharts";
-import { MdTimeline, MdIosShare, MdMessage } from "react-icons/md";
 import { GiNestEggs, GiShakingHands } from "react-icons/gi";
 import { GoAlert, GoChevronDown, GoChevronUp } from "react-icons/go";
 class WaldiezAgentData {
@@ -88,11 +88,12 @@ class WaldiezAgentData {
     this.handoffs = props.handoffs || [];
   }
 }
+const WORKFLOW_DONE = "<Waldiez> - Done running the flow.";
 const WORKFLOW_CHAT_END_MARKERS = [
+  WORKFLOW_DONE,
   "<Waldiez> - Workflow finished",
   "<Waldiez> - Workflow stopped by user",
-  "<Waldiez> - Workflow execution failed:",
-  "<Waldiez> - Done running the flow."
+  "<Waldiez> - Workflow execution failed:"
 ];
 const MESSAGE_CONSTANTS = {
   DEFAULT_PROMPT: "Enter your message to start the conversation:",
@@ -106,6 +107,16 @@ const MESSAGE_CONSTANTS = {
     SPEAKER_SELECTION_PROMPT: "Please select a speaker from the following list:",
     SPEAKER_SELECTION_NOTE: "**Note:** You can select a speaker by entering the corresponding number."
   }
+};
+const getMessageKey = (message) => {
+  if (message.id) {
+    return message.id;
+  }
+  if (message.timestamp) {
+    return message.timestamp.toString();
+  }
+  const contentStr = typeof message.content === "string" ? message.content : JSON.stringify(message.content);
+  return `${message.type}-${message.sender}-${message.timestamp}-${contentStr.slice(0, 30)}`;
 };
 function ansiRegex({ onlyFirst = false } = {}) {
   const ST = "(?:\\u0007|\\u001B\\u005C|\\u009C)";
@@ -1159,6 +1170,534 @@ class WaldiezChatMessageProcessor {
     return handler;
   }
 }
+const getContentString = (content, onPreview) => {
+  if (typeof content === "string") {
+    return content;
+  }
+  switch (content.type) {
+    case "text":
+      return content.text;
+    case "image":
+      if (content.image.url) {
+        return onPreview?.("image", content.image.url) || content.image.url;
+      }
+      return content.image.alt || content.image.file?.name || "<image>";
+    case "image_url":
+      if (content.image_url.url) {
+        return onPreview?.("image", content.image_url.url) || content.image_url.url;
+      }
+      return content.image_url.alt || content.image_url.file?.name || "<image_url>";
+    case "video":
+      if (content.video.url) {
+        return onPreview?.("video", content.video.url) || content.video.url;
+      }
+      return content.video.file?.name || content.video.thumbnailUrl || "<video>";
+    case "audio":
+      if (content.audio.url) {
+        return onPreview?.("audio", content.audio.url) || content.audio.url;
+      }
+      return content.audio.file?.name || content.audio.transcript || "<audio>";
+    case "file":
+      if (content.file.previewUrl) {
+        return onPreview?.("file", content.file.previewUrl) || content.file.previewUrl;
+      }
+      if (content.file.url) {
+        return onPreview?.("file", content.file.url) || content.file.url;
+      }
+      return content.file.name;
+  }
+};
+const getMessageString = (message, onPreview) => {
+  if (typeof message === "string") {
+    return message;
+  }
+  if (typeof message.content === "string") {
+    return message.content;
+  }
+  if (Array.isArray(message.content)) {
+    return message.content.map((entry) => getContentString(entry, onPreview)).join(" ");
+  }
+  if ("content" in message.content) {
+    if (typeof message.content.content === "string") {
+      return message.content.content;
+    }
+    if (Array.isArray(message.content.content)) {
+      return message.content.content.map((entry) => getContentString(entry, onPreview)).join(" ");
+    }
+    return getContentString(message.content.content);
+  }
+  return getContentString(message.content);
+};
+const waldiezChatReducer = (state, action) => {
+  switch (action.type) {
+    case "RESET":
+      if (action.config) {
+        return { ...action.config };
+      }
+      return {
+        show: false,
+        active: false,
+        messages: [],
+        userParticipants: [],
+        activeRequest: void 0,
+        error: void 0,
+        timeline: void 0,
+        mediaConfig: void 0,
+        handlers: void 0
+      };
+    case "SET_ACTIVE":
+      return { ...state, active: action.active };
+    case "SET_SHOW":
+      return { ...state, show: action.show };
+    case "SET_ERROR":
+      return { ...state, error: action.error };
+    case "ADD_MESSAGE":
+      if (action.message.type === "error") {
+        return {
+          ...state,
+          error: {
+            message: getMessageString(action.message)
+          },
+          messages: [...state.messages, action.message]
+        };
+      }
+      return {
+        ...state,
+        active: action.isEndOfWorkflow !== true,
+        messages: [...state.messages, action.message]
+      };
+    case "REMOVE_MESSAGE":
+      return {
+        ...state,
+        messages: [...state.messages].filter((message) => message.id !== action.id)
+      };
+    case "CLEAR_MESSAGES":
+      return {
+        ...state,
+        messages: []
+      };
+    case "SET_ACTIVE_REQUEST":
+      return {
+        ...state,
+        activeRequest: action.request,
+        messages: action.message ? [...state.messages, action.message] : state.messages
+      };
+    case "SET_PARTICIPANTS":
+      return {
+        ...state,
+        show: true,
+        active: true,
+        activeRequest: void 0,
+        userParticipants: action.participants.filter((participant) => participant.isUser)
+      };
+    case "SET_TIMELINE":
+      return {
+        ...state,
+        show: true,
+        active: false,
+        activeRequest: void 0,
+        timeline: action.timeline
+      };
+    case "SET_CHAT_HANDLERS":
+      return {
+        ...state,
+        handlers: {
+          ...state.handlers,
+          ...action.handlers
+        }
+      };
+    case "SET_STATE":
+      return {
+        ...state,
+        ...action.state
+      };
+    default:
+      return state;
+  }
+};
+const defaultChatConfig = {
+  show: false,
+  active: false,
+  messages: [],
+  userParticipants: [],
+  activeRequest: void 0,
+  error: void 0,
+  handlers: void 0,
+  timeline: void 0,
+  mediaConfig: void 0
+};
+const defaultChatDeduplicationOptions = {
+  enabled: true,
+  keyGenerator: getMessageKey,
+  maxCacheSize: 1e3
+};
+const useWaldiezChat = (props) => {
+  const { initialConfig, handlers, preprocess, onPreview, deduplicationOptions } = props;
+  const initial = useMemo(
+    () => ({
+      ...defaultChatConfig,
+      ...initialConfig,
+      handlers: {
+        ...initialConfig?.handlers ?? {},
+        ...handlers ?? {}
+      }
+    }),
+    [initialConfig, handlers]
+  );
+  const [config, dispatch] = useReducer(waldiezChatReducer, initial);
+  const initialConfigRef = useRef(initial);
+  const messageKeysRef = useRef(/* @__PURE__ */ new Set());
+  const dedupeOptions = useMemo(
+    () => ({
+      ...defaultChatDeduplicationOptions,
+      ...deduplicationOptions
+    }),
+    [deduplicationOptions]
+  );
+  const isMessageDuplicate = useCallback(
+    (message) => {
+      if (!dedupeOptions.enabled) {
+        return false;
+      }
+      const messageKey = dedupeOptions.keyGenerator(message);
+      if (messageKeysRef.current.has(messageKey)) {
+        return true;
+      }
+      messageKeysRef.current.add(messageKey);
+      if (messageKeysRef.current.size > dedupeOptions.maxCacheSize) {
+        const keysArray = Array.from(messageKeysRef.current);
+        const keep = keysArray.slice(-Math.floor(dedupeOptions.maxCacheSize * 0.8));
+        messageKeysRef.current.clear();
+        for (const k of keep) {
+          messageKeysRef.current.add(k);
+        }
+      }
+      return false;
+    },
+    [dedupeOptions]
+  );
+  const clearMessageCache = useCallback(() => {
+    messageKeysRef.current.clear();
+  }, []);
+  const setActiveRequest = useCallback(
+    (request, message) => {
+      dispatch({ type: "SET_ACTIVE_REQUEST", request, message });
+    },
+    []
+  );
+  const setError = useCallback((error) => {
+    dispatch({ type: "SET_ERROR", error });
+  }, []);
+  const setActive = useCallback((active) => {
+    dispatch({ type: "SET_ACTIVE", active });
+  }, []);
+  const setShow = useCallback((show) => {
+    dispatch({ type: "SET_SHOW", show });
+  }, []);
+  const setTimeline = useCallback((timeline) => {
+    dispatch({ type: "SET_TIMELINE", timeline });
+  }, []);
+  const setParticipants = useCallback((participants) => {
+    dispatch({ type: "SET_PARTICIPANTS", participants });
+  }, []);
+  const addMessage = useCallback(
+    (message, isEndOfWorkflow) => {
+      if (isMessageDuplicate(message)) {
+        return;
+      }
+      dispatch({ type: "ADD_MESSAGE", message, isEndOfWorkflow });
+    },
+    [isMessageDuplicate]
+  );
+  const removeMessage = useCallback(
+    (id) => {
+      const messageToRemove = config.messages.find((msg) => msg.id === id);
+      if (messageToRemove && dedupeOptions.enabled) {
+        const messageKey = dedupeOptions.keyGenerator(messageToRemove);
+        messageKeysRef.current.delete(messageKey);
+      }
+      dispatch({ type: "REMOVE_MESSAGE", id });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dedupeOptions]
+  );
+  const clearMessages = useCallback(() => {
+    dispatch({ type: "CLEAR_MESSAGES" });
+    clearMessageCache();
+  }, [clearMessageCache]);
+  const reset = useCallback(() => {
+    dispatch({ type: "RESET", config: initialConfigRef.current });
+    clearMessageCache();
+  }, [clearMessageCache]);
+  const handleProcessorResult = useCallback(
+    (result) => {
+      if (result.timeline) {
+        setTimeline(result.timeline);
+        return;
+      }
+      if (result.participants) {
+        setParticipants(result.participants);
+        return;
+      }
+      if (result.message && result.message.type === "input_request") {
+        const prompt = result.message.prompt || "Enter your message:";
+        const password = Boolean(result.message.password) || false;
+        setActiveRequest(
+          {
+            request_id: result.requestId || result.message?.request_id || config.activeRequest?.request_id || "<unknown>",
+            prompt,
+            password
+          },
+          result.message
+        );
+        return;
+      }
+      if (result.message) {
+        addMessage(result.message, result.isWorkflowEnd);
+      }
+    },
+    [addMessage, config.activeRequest?.request_id, setActiveRequest, setParticipants, setTimeline]
+  );
+  const process2 = useCallback(
+    // eslint-disable-next-line max-statements
+    (data) => {
+      const requestId = config.activeRequest?.request_id;
+      const previewUrl = requestId ? onPreview?.(requestId) : void 0;
+      let dataToProcess = data;
+      if (typeof preprocess === "function") {
+        const { handled, updated } = preprocess(data);
+        if (handled || !updated) {
+          return;
+        }
+        dataToProcess = updated;
+      }
+      if (typeof dataToProcess === "string" && dataToProcess.includes(WORKFLOW_DONE)) {
+        dispatch({ type: "SET_ACTIVE", active: false });
+        return;
+      }
+      try {
+        const result = WaldiezChatMessageProcessor.process(dataToProcess, requestId, previewUrl);
+        if (!result) {
+          return;
+        }
+        handleProcessorResult(result);
+      } catch (error) {
+        const msg = error.message;
+        setError({
+          message: msg,
+          code: "PROCESSING_ERROR"
+        });
+      }
+    },
+    [config.activeRequest?.request_id, handleProcessorResult, preprocess, onPreview, setError]
+  );
+  return {
+    chat: config,
+    dispatch,
+    process: process2,
+    reset,
+    setActive,
+    setShow,
+    setActiveRequest,
+    setError,
+    setTimeline,
+    setParticipants,
+    addMessage,
+    removeMessage,
+    clearMessages
+  };
+};
+const useWaldiezWs = (props) => {
+  const { wsUrl, protocols, onWsMessage, onError, autoPingMs } = props;
+  const wsRef = useRef(void 0);
+  const reconnectTimeoutRef = useRef(null);
+  const reconnectAttemptsRef = useRef(0);
+  const mountedRef = useRef(true);
+  const effectRanRef = useRef(false);
+  const prevUrlRef = useRef(wsUrl);
+  const strictModeReconnectRef = useRef(false);
+  const [connected, setConnected] = useState(false);
+  const maxReconnectAttempts = 5;
+  const handlerRef = useRef(onWsMessage);
+  const setMessageHandler = useCallback((fn) => {
+    handlerRef.current = fn;
+  }, []);
+  useEffect(() => {
+    handlerRef.current = onWsMessage;
+  }, [onWsMessage]);
+  const getReconnectDelay = () => Math.min(1e3 * Math.pow(2, reconnectAttemptsRef.current), 3e4);
+  const closeExistingConnection = useCallback(() => {
+    if (wsRef.current) {
+      try {
+        if (wsRef.current.readyState !== WebSocket.CLOSING && wsRef.current.readyState !== WebSocket.CLOSED) {
+          wsRef.current.close(1e3, "client disconnect");
+        }
+      } catch {
+      }
+      wsRef.current = void 0;
+    }
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
+  }, []);
+  const connectWebSocket = useCallback(() => {
+    if (!mountedRef.current) {
+      return;
+    }
+    if (strictModeReconnectRef.current) {
+      const t = setTimeout(() => {
+        if (mountedRef.current) {
+          strictModeReconnectRef.current = false;
+          actuallyConnect();
+        }
+      }, 500);
+      return () => clearTimeout(t);
+    }
+    actuallyConnect();
+    function actuallyConnect() {
+      closeExistingConnection();
+      try {
+        const ws = new WebSocket(wsUrl, protocols);
+        ws.onopen = () => {
+          if (!mountedRef.current) {
+            return;
+          }
+          setConnected(true);
+          reconnectAttemptsRef.current = 0;
+        };
+        ws.onclose = (evt) => {
+          if (!mountedRef.current) {
+            return;
+          }
+          setConnected(false);
+          if (wsRef.current === ws && evt.code !== 1e3 && reconnectAttemptsRef.current < maxReconnectAttempts) {
+            const delay = getReconnectDelay();
+            reconnectAttemptsRef.current += 1;
+            reconnectTimeoutRef.current = setTimeout(() => {
+              if (mountedRef.current) {
+                actuallyConnect();
+              }
+            }, delay);
+          }
+        };
+        ws.onerror = (err) => {
+          if (!mountedRef.current) {
+            return;
+          }
+          onError?.(err);
+        };
+        ws.onmessage = (event) => {
+          try {
+            handlerRef.current?.(event);
+          } catch (err) {
+            onError?.(err);
+          }
+        };
+        wsRef.current = ws;
+      } catch (err) {
+        onError?.(err);
+      }
+    }
+  }, [wsUrl]);
+  const sendRaw = useCallback((data) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(data);
+      return true;
+    }
+    return false;
+  }, []);
+  const sendJson = useCallback(
+    (data) => {
+      try {
+        return sendRaw(typeof data === "string" ? data : JSON.stringify(data));
+      } catch (err) {
+        onError?.(err);
+        return false;
+      }
+    },
+    [sendRaw, onError]
+  );
+  useEffect(() => {
+    if (!autoPingMs) {
+      return;
+    }
+    const id = setInterval(() => {
+      sendJson({ type: "ping", echo_data: { t: Date.now() } });
+    }, autoPingMs);
+    return () => clearInterval(id);
+  }, [autoPingMs, sendJson]);
+  useEffect(() => {
+    mountedRef.current = true;
+    const isUrlChange = effectRanRef.current && wsUrl !== prevUrlRef.current;
+    prevUrlRef.current = wsUrl;
+    effectRanRef.current = true;
+    const delay = isUrlChange ? 300 : strictModeReconnectRef.current ? 500 : 200;
+    const timer = setTimeout(() => {
+      if (mountedRef.current) {
+        connectWebSocket();
+      }
+    }, delay);
+    return () => {
+      clearTimeout(timer);
+      if (!effectRanRef.current) {
+        strictModeReconnectRef.current = true;
+      } else {
+        mountedRef.current = false;
+        closeExistingConnection();
+      }
+    };
+  }, [wsUrl, connectWebSocket, closeExistingConnection]);
+  const getConnectionState = useCallback(() => {
+    return wsRef.current?.readyState ?? WebSocket.CLOSED;
+  }, []);
+  const reconnect = useCallback(() => {
+    reconnectAttemptsRef.current = 0;
+    connectWebSocket();
+  }, [connectWebSocket]);
+  const disconnect = useCallback(() => {
+    reconnectAttemptsRef.current = 0;
+    setConnected(false);
+    closeExistingConnection();
+  }, [closeExistingConnection]);
+  return { wsRef, send: sendJson, connected, setMessageHandler, getConnectionState, reconnect, disconnect };
+};
+const useWaldiezWsChat = ({ ws, chat }) => {
+  const chatHook = useWaldiezChat({ ...chat });
+  const handleWsMessage = useCallback(
+    (event) => {
+      try {
+        const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+        chatHook.process(data);
+      } catch (_) {
+        chatHook.process(event.data);
+      }
+    },
+    [chatHook]
+  );
+  const wsHook = useWaldiezWs({
+    wsUrl: ws.url,
+    protocols: ws.protocols,
+    autoPingMs: ws.autoPingMs,
+    onWsMessage: handleWsMessage,
+    onError: (error) => {
+      ws?.onError?.(error);
+      chatHook.setError({
+        message: "Connection error occurred",
+        code: "CONNECTION_ERROR"
+      });
+    }
+  });
+  return {
+    chat: chatHook.chat,
+    dispatch: chatHook.dispatch,
+    connected: wsHook.connected,
+    reset: chatHook.reset,
+    getConnectionState: wsHook.getConnectionState,
+    send: wsHook.send,
+    reconnect: wsHook.reconnect
+  };
+};
 const getCrypto = () => {
   if (window.crypto && window.crypto.subtle) {
     return window.crypto;
@@ -1313,104 +1852,35 @@ const importItem = (event, itemGetter, onLoad) => {
     reader.readAsText(file);
   }
 };
-const getFlowRoot = (flowId, fallbackToBody = false) => {
-  let rootDiv = document.getElementById(`rf-root-${flowId}`);
-  if (!rootDiv && fallbackToBody) {
-    rootDiv = document.body;
-  }
-  return rootDiv;
+const isPromise = (value) => {
+  return Boolean(
+    value !== null && (typeof value === "object" || typeof value === "function") && typeof value.then === "function"
+  );
 };
-class WaldiezBreakpointUtils {
-  /**
-   * Parse breakpoint from string format
-   */
-  static fromString(breakpointStr) {
-    if (breakpointStr === "all") {
-      return { type: "all" };
-    }
-    if (breakpointStr.startsWith("event:")) {
-      const event_type = breakpointStr.slice(6);
-      return { type: "event", event_type };
-    }
-    if (breakpointStr.startsWith("agent:")) {
-      const agent_name = breakpointStr.slice(6);
-      return { type: "agent", agent_name };
-    }
-    if (breakpointStr.includes(":") && !breakpointStr.startsWith("event:") && !breakpointStr.startsWith("agent:")) {
-      const [agent_name, event_type] = breakpointStr.split(":", 2);
-      return {
-        type: "agent_event",
-        agent_name,
-        event_type
-      };
-    }
-    return { type: "event", event_type: breakpointStr };
+const getEventKey = (event) => {
+  if ("id" in event && typeof event.id === "string") {
+    return event.id;
   }
-  /**
-   * Convert breakpoint to string representation
-   */
-  static toString(breakpoint) {
-    switch (breakpoint.type) {
-      case "event":
-        return `event:${breakpoint.event_type}`;
-      case "agent":
-        return `agent:${breakpoint.agent_name}`;
-      case "agent_event":
-        return `${breakpoint.agent_name}:${breakpoint.event_type}`;
-      case "all":
-      default:
-        return "all";
+  if ("uuid" in event && typeof event.uuid === "string") {
+    return event.uuid;
+  }
+  const eventType = "type" in event && typeof event.type === "string" ? `${event.type}-` : "";
+  const senderString = "sender" in event && typeof event.sender === "string" ? `${event.sender}-` : "";
+  const recipientString = "recipient" in event && typeof event.recipient === "string" ? `${event.recipient}-` : "";
+  let eventId = `${eventType}${senderString}${recipientString}`;
+  Object.entries(event).forEach(([key, value]) => {
+    if (!["type", "sender", "recipient"].includes(key)) {
+      if (typeof value === "string") {
+        eventId += value;
+      } else if (typeof value === "object" && value) {
+        eventId += JSON.stringify(value).slice(0, 50);
+      } else {
+        eventId += String(value);
+      }
     }
-  }
-  /**
-   * Check if breakpoint matches an event
-   */
-  static matches(breakpoint, event) {
-    switch (breakpoint.type) {
-      case "all":
-        return true;
-      case "event":
-        return event.type === breakpoint.event_type;
-      case "agent":
-        return event.sender === breakpoint.agent_name || event.recipient === breakpoint.agent_name;
-      case "agent_event":
-        return event.type === breakpoint.event_type && (event.sender === breakpoint.agent_name || event.recipient === breakpoint.agent_name);
-      default:
-        return false;
-    }
-  }
-  /**
-   * Normalize breakpoint input (string or object) to WaldiezBreakpoint
-   */
-  static normalize(input) {
-    return typeof input === "string" ? this.fromString(input) : input;
-  }
-  /**
-   * Get display name for breakpoint
-   */
-  static getDisplayName(breakpoint) {
-    switch (breakpoint.type) {
-      case "event":
-        return `Event: ${breakpoint.event_type}`;
-      case "agent":
-        return `Agent: ${breakpoint.agent_name}`;
-      case "agent_event":
-        return `${breakpoint.agent_name} → ${breakpoint.event_type}`;
-      case "all":
-        return "All Events";
-      default:
-        return "Unknown";
-    }
-  }
-}
-const WORKFLOW_STEP_START_MARKERS = ["<Waldiez step-by-step> - Starting workflow..."];
-const DEBUG_INPUT_PROMPT = "[Step] (c)ontinue, (r)un, (q)uit, (i)nfo, (h)elp, (st)ats:";
-const WORKFLOW_STEP_END_MARKERS = [
-  "<Waldiez step-by-step> - Workflow finished",
-  "<Waldiez step-by-step> - Workflow stopped by user",
-  "<Waldiez step-by-step> - Workflow execution failed:"
-];
-const WORKFLOW_STEP_MARKERS = [...WORKFLOW_STEP_START_MARKERS, ...WORKFLOW_STEP_END_MARKERS];
+  });
+  return eventId;
+};
 const isDebugInputRequest = (m) => Boolean(
   m && (m.type === "debug_input_request" || m.type === "input_request") && typeof m.request_id === "string" && typeof m.prompt === "string"
 );
@@ -1614,6 +2084,14 @@ class DebugHelpHandler {
     };
   }
 }
+const WORKFLOW_STEP_START_MARKERS = ["<Waldiez step-by-step> - Starting workflow..."];
+const DEBUG_INPUT_PROMPT = "[Step] (c)ontinue, (r)un, (q)uit, (i)nfo, (h)elp, (st)ats:";
+const WORKFLOW_STEP_END_MARKERS = [
+  "<Waldiez step-by-step> - Workflow finished",
+  "<Waldiez step-by-step> - Workflow stopped by user",
+  "<Waldiez step-by-step> - Workflow execution failed:"
+];
+const WORKFLOW_STEP_MARKERS = [...WORKFLOW_STEP_START_MARKERS, ...WORKFLOW_STEP_END_MARKERS];
 class DebugInputRequestHandler {
   canHandle(type) {
     return type === "debug_input_request" || type === "input_request";
@@ -2085,6 +2563,682 @@ const pyIshToJson = (src) => {
     return src;
   }
   return out;
+};
+const waldiezStepByStepReducer = (state, action) => {
+  switch (action.type) {
+    case "RESET":
+      if (action.config) {
+        return { ...action.config };
+      }
+      return {
+        show: false,
+        active: false,
+        stepMode: true,
+        autoContinue: false,
+        breakpoints: [],
+        eventHistory: [],
+        participants: [],
+        currentEvent: void 0,
+        activeRequest: void 0,
+        pendingControlInput: void 0,
+        timeline: void 0,
+        lastError: void 0,
+        stats: void 0,
+        help: void 0,
+        handlers: void 0
+      };
+    case "SET_ACTIVE":
+      return { ...state, active: action.active };
+    case "SET_SHOW":
+      return { ...state, show: action.show };
+    case "SET_ERROR":
+      if (action.markInactive === true) {
+        return { ...state, lastError: action.error, active: false };
+      }
+      return { ...state, lastError: action.error };
+    case "SET_STEP_MODE":
+      return { ...state, stepMode: action.mode };
+    case "SET_AUTO_CONTINUE":
+      return { ...state, autoContinue: action.autoContinue };
+    case "SET_PARTICIPANTS":
+      return { ...state, show: true, active: true, participants: action.participants };
+    case "SET_TIMELINE":
+      return { ...state, show: true, active: false, timeline: action.timeline };
+    case "SET_BREAKPOINTS":
+      return { ...state, breakpoints: action.breakpoints };
+    case "SET_CURRENT_EVENT":
+      return { ...state, currentEvent: action.event };
+    case "SET_PENDING_CONTROL_INPUT":
+      return { ...state, pendingControlInput: action.controlInput };
+    case "SET_ACTIVE_REQUEST":
+      return { ...state, activeRequest: action.request };
+    case "SET_HELP":
+      return { ...state, help: action.help };
+    case "SET_STATS":
+      return { ...state, stats: action.stats };
+    case "SET_STEP_HANDLERS":
+      return { ...state, handlers: action.handlers };
+    case "CLEAR_EVENTS":
+      return { ...state, eventHistory: [], currentEvent: void 0 };
+    case "ADD_EVENT":
+      if (action.makeItCurrent === true) {
+        return {
+          ...state,
+          eventHistory: [action.event, ...state.eventHistory],
+          currentEvent: action.event
+        };
+      }
+      return {
+        ...state,
+        eventHistory: [action.event, ...state.eventHistory]
+      };
+    case "ADD_EVENTS":
+      if (action.events.length < 1) {
+        return state;
+      }
+      if (action.makeLastCurrent === true) {
+        const lastEvent = action.events[action.events.length - 1];
+        return {
+          ...state,
+          eventHistory: [...action.events.reverse(), ...state.eventHistory],
+          currentEvent: lastEvent
+        };
+      }
+      return {
+        ...state,
+        eventHistory: [...action.events.reverse(), ...state.eventHistory]
+      };
+    case "REMOVE_EVENT":
+      return {
+        ...state,
+        eventHistory: [...state.eventHistory].filter((event) => event.id || event.uuid !== action.id)
+      };
+    case "SET_STATE":
+      return {
+        ...state,
+        ...action.state
+      };
+    default:
+      return state;
+  }
+};
+const defaultStepByStepDeduplicationOptions = {
+  enabled: true,
+  keyGenerator: getEventKey,
+  maxCacheSize: 1e3
+};
+const defaultStepByStep = {
+  show: false,
+  active: false,
+  stepMode: true,
+  autoContinue: false,
+  currentEvent: void 0,
+  pendingControlInput: void 0,
+  activeRequest: void 0,
+  eventHistory: [],
+  participants: [],
+  breakpoints: [],
+  lastError: void 0,
+  timeline: void 0,
+  stats: void 0,
+  help: void 0,
+  handlers: void 0
+};
+const noOp = () => {
+};
+const useWaldiezStepByStep = (props) => {
+  const { initialConfig, handlers, preprocess, deduplicationOptions } = props;
+  const initial = useMemo(
+    // eslint-disable-next-line complexity
+    () => ({
+      ...defaultStepByStep,
+      ...initialConfig,
+      handlers: {
+        onStart: handlers?.onStart || initialConfig?.handlers?.onStart || noOp,
+        close: handlers?.close || initialConfig?.handlers?.close || noOp,
+        sendControl: handlers?.sendControl || initialConfig?.handlers?.close || noOp,
+        respond: handlers?.respond || initialConfig?.handlers?.respond || noOp
+      }
+    }),
+    [initialConfig, handlers]
+  );
+  const [config, dispatch] = useReducer(waldiezStepByStepReducer, initial);
+  const initialConfigRef = useRef(initial);
+  const eventKeysRef = useRef(/* @__PURE__ */ new Set());
+  const dedupeOptions = useMemo(
+    () => ({
+      ...defaultStepByStepDeduplicationOptions,
+      ...deduplicationOptions
+    }),
+    [deduplicationOptions]
+  );
+  const isEventDuplicate = useCallback(
+    (event) => {
+      if (!dedupeOptions.enabled) {
+        return false;
+      }
+      const eventKey = dedupeOptions.keyGenerator(event);
+      if (eventKeysRef.current.has(eventKey)) {
+        return true;
+      }
+      eventKeysRef.current.add(eventKey);
+      if (eventKeysRef.current.size > dedupeOptions.maxCacheSize) {
+        const keysArray = Array.from(eventKeysRef.current);
+        const keep = keysArray.slice(-Math.floor(dedupeOptions.maxCacheSize * 0.8));
+        eventKeysRef.current.clear();
+        for (const k of keep) {
+          eventKeysRef.current.add(k);
+        }
+      }
+      return false;
+    },
+    [dedupeOptions]
+  );
+  const clearEventsCache = useCallback(() => {
+    eventKeysRef.current.clear();
+  }, []);
+  const setActive = useCallback((active) => {
+    dispatch({ type: "SET_ACTIVE", active });
+  }, []);
+  const setShow = useCallback((show) => {
+    dispatch({ type: "SET_SHOW", show });
+  }, []);
+  const setTimeline = useCallback((timeline) => {
+    dispatch({ type: "SET_TIMELINE", timeline });
+  }, []);
+  const setParticipants = useCallback((participants) => {
+    dispatch({ type: "SET_PARTICIPANTS", participants });
+  }, []);
+  const setActiveRequest = useCallback((request) => {
+    dispatch({ type: "SET_ACTIVE_REQUEST", request });
+  }, []);
+  const setPendingControl = useCallback(
+    (controlInput) => {
+      dispatch({ type: "SET_PENDING_CONTROL_INPUT", controlInput });
+    },
+    []
+  );
+  const setError = useCallback((error, markInactive) => {
+    dispatch({ type: "SET_ERROR", error, markInactive });
+  }, []);
+  const setAutoContinue = useCallback((autoContinue) => {
+    dispatch({ type: "SET_AUTO_CONTINUE", autoContinue });
+  }, []);
+  const setBreakpoints = useCallback((breakpoints) => {
+    dispatch({ type: "SET_BREAKPOINTS", breakpoints });
+  }, []);
+  const addEvent = useCallback(
+    (event) => {
+      if (isEventDuplicate(event)) {
+        console.log("Duplicate event detected, skipping:", getEventKey(event));
+        return;
+      }
+      dispatch({ type: "ADD_EVENT", event, makeItCurrent: true });
+    },
+    [isEventDuplicate]
+  );
+  const addEvents = useCallback(
+    (events) => {
+      const newEvents = [];
+      for (const event of events) {
+        if (!isEventDuplicate(event)) {
+          newEvents.push(event);
+        }
+      }
+      dispatch({ type: "ADD_EVENTS", events: newEvents, makeLastCurrent: true });
+    },
+    [isEventDuplicate]
+  );
+  const removeEvent = useCallback(
+    (id) => {
+      const eventToRemove = config.eventHistory.find((evt) => getEventKey(evt) === id);
+      if (eventToRemove && dedupeOptions.enabled) {
+        const messageKey = dedupeOptions.keyGenerator(eventToRemove);
+        eventKeysRef.current.delete(messageKey);
+      }
+      dispatch({ type: "REMOVE_EVENT", id });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dedupeOptions]
+  );
+  const clearEvents = useCallback(() => {
+    dispatch({ type: "CLEAR_EVENTS" });
+    clearEventsCache();
+  }, [clearEventsCache]);
+  const reset = useCallback(() => {
+    dispatch({ type: "RESET", config: initialConfigRef.current });
+    clearEventsCache();
+  }, [clearEventsCache]);
+  const handleProcessorResult = useCallback(
+    (result) => {
+      if (result.stateUpdate?.participants) {
+        setParticipants(result.stateUpdate.participants);
+        return;
+      }
+      if (result.stateUpdate?.timeline) {
+        setTimeline(result.stateUpdate.timeline);
+        return;
+      }
+      if (result.stateUpdate?.pendingControlInput) {
+        setPendingControl(result.stateUpdate.pendingControlInput);
+        return;
+      }
+      if (result.stateUpdate?.activeRequest) {
+        setActiveRequest(result.stateUpdate.activeRequest);
+        return;
+      }
+      if (result.stateUpdate?.autoContinue) {
+        setAutoContinue(result.stateUpdate.autoContinue);
+        return;
+      }
+      if (result.error || result.stateUpdate?.lastError) {
+        setError(
+          result.error ? result.error.message : result.stateUpdate?.lastError,
+          result.isWorkflowEnd
+        );
+        return;
+      }
+      if (result.stateUpdate?.eventHistory) {
+        addEvents(result.stateUpdate?.eventHistory);
+      }
+    },
+    [
+      setError,
+      setParticipants,
+      setActiveRequest,
+      setTimeline,
+      setPendingControl,
+      setAutoContinue,
+      addEvents
+    ]
+  );
+  const handleChatProcessorResult = useCallback(
+    (result) => {
+      if (result.participants) {
+        setParticipants(result.participants);
+        return;
+      }
+      if (result.timeline) {
+        setTimeline(result.timeline);
+        return;
+      }
+      if (result.message && result.message.type === "input_request") {
+        const prompt = result.message.prompt || "Enter your message:";
+        const password = Boolean(result.message.password) || false;
+        setActiveRequest({
+          request_id: result.requestId || result.message?.request_id || config.activeRequest?.request_id || "<unknown>",
+          prompt,
+          password
+        });
+        return;
+      }
+      if (result.message) {
+        addEvent(result.message);
+      }
+    },
+    [addEvent, setParticipants, setTimeline, setActiveRequest, config.activeRequest?.request_id]
+  );
+  const process2 = useCallback(
+    (data) => {
+      let dataToProcess = data;
+      if (typeof preprocess === "function") {
+        const { handled, updated } = preprocess(data);
+        if (handled || !updated) {
+          console.debug({ handled, updated });
+          return;
+        }
+        dataToProcess = updated;
+      }
+      try {
+        const result = WaldiezStepByStepProcessor.process(dataToProcess);
+        console.debug({ result });
+        if (!result) {
+          const chatResult = WaldiezChatMessageProcessor.process(dataToProcess);
+          if (!chatResult) {
+            return;
+          }
+          handleChatProcessorResult(chatResult);
+          return;
+        }
+        handleProcessorResult(result);
+      } catch (error) {
+        const msg = error.message;
+        setError(msg);
+      }
+    },
+    [preprocess, setError, handleChatProcessorResult, handleProcessorResult]
+  );
+  return {
+    stepByStep: config,
+    dispatch,
+    process: process2,
+    reset,
+    setActive,
+    setShow,
+    setActiveRequest,
+    setPendingControl,
+    setBreakpoints,
+    setError,
+    setTimeline,
+    setParticipants,
+    addEvent,
+    removeEvent,
+    clearEvents
+  };
+};
+const useWaldiezMessaging = ({ onSave, onConvert, onRun, chat, stepByStep, preprocess, onStepRun }) => {
+  const runningMode = useRef(void 0);
+  const stepByStepHook = useWaldiezStepByStep({ ...stepByStep });
+  const chatHook = useWaldiezChat({ ...chat });
+  const getRunningMode = () => {
+    return runningMode.current;
+  };
+  const setRunningMode = (mode) => {
+    runningMode.current = mode;
+  };
+  const save = useCallback(
+    async (contents, path, force) => {
+      if (onSave) {
+        const result = onSave(contents, path, force);
+        if (isPromise(result)) {
+          await result;
+        }
+      }
+    },
+    [onSave]
+  );
+  const convert = useCallback(
+    async (contents, to, path) => {
+      if (onConvert) {
+        const result = onConvert(contents, to, path);
+        if (isPromise(result)) {
+          await result;
+        }
+      }
+    },
+    [onConvert]
+  );
+  const run = useCallback(
+    async (contents, path) => {
+      setRunningMode("chat");
+      if (onRun) {
+        const result = onRun(contents, path);
+        if (isPromise(result)) {
+          await result;
+        }
+      }
+      chatHook.setShow(true);
+    },
+    [onRun, chatHook]
+  );
+  const stepRun = useCallback(
+    async (contents) => {
+      setRunningMode("step");
+      if (onStepRun) {
+        const result = onStepRun(contents);
+        if (isPromise(result)) {
+          await result;
+        }
+      }
+      stepByStepHook.setShow(true);
+    },
+    [onStepRun, stepByStepHook]
+  );
+  const reset = useCallback(() => {
+    if (runningMode.current === "chat") {
+      chatHook.reset();
+    } else if (runningMode.current === "step") {
+      stepByStepHook.reset();
+    }
+    setRunningMode(void 0);
+  }, [chatHook, stepByStepHook]);
+  const process2 = useCallback((data) => {
+    let toProcess = data;
+    if (typeof data === "string") {
+      try {
+        toProcess = JSON.parse(data);
+      } catch {
+      }
+    }
+    if (runningMode.current === "chat") {
+      chatHook.process(toProcess);
+    } else if (runningMode.current === "step") {
+      stepByStepHook.process(toProcess);
+    } else {
+      preprocess?.(toProcess);
+    }
+  }, []);
+  return {
+    save,
+    convert,
+    run,
+    stepRun,
+    reset,
+    process: process2,
+    getRunningMode,
+    setRunningMode,
+    actions: {
+      chat: {
+        process: chatHook.process,
+        reset: chatHook.reset,
+        setActive: chatHook.setActive,
+        setShow: chatHook.setShow,
+        setActiveRequest: chatHook.setActiveRequest,
+        setError: chatHook.setError,
+        setTimeline: chatHook.setTimeline,
+        setParticipants: chatHook.setParticipants,
+        addMessage: chatHook.addMessage,
+        removeMessage: chatHook.removeMessage,
+        clearMessages: chatHook.clearMessages
+      },
+      step: {
+        process: stepByStepHook.process,
+        reset: stepByStepHook.reset,
+        setActive: stepByStepHook.setActive,
+        setShow: stepByStepHook.setShow,
+        setActiveRequest: stepByStepHook.setActiveRequest,
+        setError: stepByStepHook.setError,
+        setTimeline: stepByStepHook.setTimeline,
+        setParticipants: stepByStepHook.setParticipants,
+        setBreakpoints: stepByStepHook.setBreakpoints,
+        addEvent: stepByStepHook.addEvent,
+        removeEvent: stepByStepHook.removeEvent,
+        clearEvents: stepByStepHook.clearEvents,
+        setPendingControl: stepByStepHook.setPendingControl
+      }
+    },
+    dispatch: {
+      chat: chatHook.dispatch,
+      step: stepByStepHook.dispatch
+    },
+    chat: chatHook.chat,
+    stepByStep: stepByStepHook.stepByStep
+  };
+};
+const useWaldiezWsMessaging = ({ flowId, onSave, onConvert, onRun, chat, stepByStep, onStepRun, preprocess, ws }) => {
+  const {
+    save,
+    convert,
+    run,
+    stepRun,
+    getRunningMode,
+    setRunningMode,
+    process: process2,
+    reset,
+    dispatch,
+    chat: chatState,
+    stepByStep: stepByStepState,
+    actions
+  } = useWaldiezMessaging({
+    onSave,
+    onConvert,
+    onRun,
+    onStepRun,
+    preprocess,
+    chat,
+    stepByStep
+  });
+  const handleWsMessage = useCallback(
+    (event) => {
+      try {
+        const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+        process2(data);
+      } catch (_) {
+        process2(event.data);
+      }
+    },
+    [process2]
+  );
+  const { send, connected, getConnectionState, reconnect, disconnect } = useWaldiezWs({
+    wsUrl: ws.url,
+    protocols: ws.protocols,
+    autoPingMs: ws.autoPingMs,
+    onWsMessage: handleWsMessage,
+    onError: (error) => {
+      ws?.onError?.(error);
+    }
+  });
+  return {
+    save,
+    convert,
+    run,
+    stepRun,
+    getRunningMode,
+    setRunningMode,
+    process: process2,
+    reset,
+    dispatch,
+    chat: chatState,
+    stepByStep: stepByStepState,
+    send,
+    connected,
+    getConnectionState,
+    reconnect,
+    disconnect,
+    actions
+  };
+};
+const getFlowRoot = (flowId, fallbackToBody = false) => {
+  let rootDiv = document.getElementById(`rf-root-${flowId}`);
+  if (!rootDiv && fallbackToBody) {
+    rootDiv = document.body;
+  }
+  return rootDiv;
+};
+class WaldiezBreakpointUtils {
+  /**
+   * Parse breakpoint from string format
+   */
+  static fromString(breakpointStr) {
+    if (breakpointStr === "all") {
+      return { type: "all" };
+    }
+    if (breakpointStr.startsWith("event:")) {
+      const event_type = breakpointStr.slice(6);
+      return { type: "event", event_type };
+    }
+    if (breakpointStr.startsWith("agent:")) {
+      const agent_name = breakpointStr.slice(6);
+      return { type: "agent", agent_name };
+    }
+    if (breakpointStr.includes(":") && !breakpointStr.startsWith("event:") && !breakpointStr.startsWith("agent:")) {
+      const [agent_name, event_type] = breakpointStr.split(":", 2);
+      return {
+        type: "agent_event",
+        agent_name,
+        event_type
+      };
+    }
+    return { type: "event", event_type: breakpointStr };
+  }
+  /**
+   * Convert breakpoint to string representation
+   */
+  static toString(breakpoint) {
+    switch (breakpoint.type) {
+      case "event":
+        return `event:${breakpoint.event_type}`;
+      case "agent":
+        return `agent:${breakpoint.agent_name}`;
+      case "agent_event":
+        return `${breakpoint.agent_name}:${breakpoint.event_type}`;
+      case "all":
+      default:
+        return "all";
+    }
+  }
+  /**
+   * Check if breakpoint matches an event
+   */
+  static matches(breakpoint, event) {
+    switch (breakpoint.type) {
+      case "all":
+        return true;
+      case "event":
+        return event.type === breakpoint.event_type;
+      case "agent":
+        return event.sender === breakpoint.agent_name || event.recipient === breakpoint.agent_name;
+      case "agent_event":
+        return event.type === breakpoint.event_type && (event.sender === breakpoint.agent_name || event.recipient === breakpoint.agent_name);
+      default:
+        return false;
+    }
+  }
+  /**
+   * Normalize breakpoint input (string or object) to WaldiezBreakpoint
+   */
+  static normalize(input) {
+    return typeof input === "string" ? this.fromString(input) : input;
+  }
+  /**
+   * Get display name for breakpoint
+   */
+  static getDisplayName(breakpoint) {
+    switch (breakpoint.type) {
+      case "event":
+        return `Event: ${breakpoint.event_type}`;
+      case "agent":
+        return `Agent: ${breakpoint.agent_name}`;
+      case "agent_event":
+        return `${breakpoint.agent_name} → ${breakpoint.event_type}`;
+      case "all":
+        return "All Events";
+      default:
+        return "Unknown";
+    }
+  }
+}
+const useWaldiezWsStepByStep = ({ ws, stepByStep }) => {
+  const stepByStepHook = useWaldiezStepByStep({ ...stepByStep });
+  const handleWsMessage = useCallback(
+    (event) => {
+      try {
+        const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+        stepByStepHook.process(data);
+      } catch (_) {
+        stepByStepHook.process(event.data);
+      }
+    },
+    [stepByStepHook]
+  );
+  const wsHook = useWaldiezWs({
+    wsUrl: ws.url,
+    protocols: ws.protocols,
+    autoPingMs: ws.autoPingMs,
+    onWsMessage: handleWsMessage,
+    onError: (error) => {
+      ws?.onError?.(error);
+    }
+  });
+  return {
+    stepByStep: stepByStepHook.stepByStep,
+    dispatch: stepByStepHook.dispatch,
+    connected: wsHook.connected,
+    reset: stepByStepHook.reset,
+    getConnectionState: wsHook.getConnectionState,
+    send: wsHook.send,
+    reconnect: wsHook.reconnect
+  };
 };
 class WaldiezStepByStepUtils {
   /**
@@ -10535,7 +11689,7 @@ var VisuallyHidden = React.forwardRef(
 );
 VisuallyHidden.displayName = NAME;
 var Root$1 = VisuallyHidden;
-var [createTooltipContext, createTooltipScope] = createContextScope("Tooltip", [
+var [createTooltipContext] = createContextScope("Tooltip", [
   createPopperScope
 ]);
 var usePopperScope = createPopperScope();
@@ -11020,7 +12174,7 @@ function usePrevious(value) {
   }, [value]);
 }
 var CHECKBOX_NAME = "Checkbox";
-var [createCheckboxContext, createCheckboxScope] = createContextScope(CHECKBOX_NAME);
+var [createCheckboxContext] = createContextScope(CHECKBOX_NAME);
 var [CheckboxProviderImpl, useCheckboxContext] = createCheckboxContext(CHECKBOX_NAME);
 function CheckboxProvider(props) {
   const {
@@ -17838,7 +18992,7 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
     },
     [participantNames]
   );
-  const getMessageKey = useCallback((msg, index2) => {
+  const getMessageKey2 = useCallback((msg, index2) => {
     return `msg-${index2}-${msg.id}-${msg.timestamp}`;
   }, []);
   useEffect(() => {
@@ -17898,7 +19052,7 @@ const ChatUI = ({ messages, isDarkMode, userParticipants }) => {
             /* @__PURE__ */ jsx$1("div", { className: "message-content", children: processedMsg.node })
           ]
         },
-        getMessageKey(msg, index2)
+        getMessageKey2(msg, index2)
       );
     }) }),
     /* @__PURE__ */ jsx$1(ImageModal, { isOpen: Boolean(previewImage), imageUrl: previewImage, onClose: closeImagePreview })
@@ -19936,7 +21090,7 @@ var BACK_KEYS = {
 };
 var SLIDER_NAME = "Slider";
 var [Collection, useCollection, createCollectionScope] = createCollection(SLIDER_NAME);
-var [createSliderContext, createSliderScope] = createContextScope(SLIDER_NAME, [
+var [createSliderContext] = createContextScope(SLIDER_NAME, [
   createCollectionScope
 ]);
 var [SliderProvider, useSliderContext] = createSliderContext(SLIDER_NAME);
@@ -20856,7 +22010,7 @@ const FloatingPanel = ({
             ]
           }
         ),
-        !isCollapsed && /* @__PURE__ */ jsx$1("div", { className: "fp-content", children: children ?? /* @__PURE__ */ jsx$1("div", { style: { padding: 12 }, children: "Your content here…" }) })
+        !isCollapsed && /* @__PURE__ */ jsx$1("div", { className: "fp-content", children: children ?? /* @__PURE__ */ jsx$1("div", { className: "padding-10", children: "..." }) })
       ]
     }
   );
@@ -24077,388 +25231,6 @@ const useAgentClassUpdates = (stepByStep) => {
     getParticipantIds
   ]);
 };
-const StepByStepView = ({ flowId, stepByStep }) => {
-  useAgentClassUpdates(stepByStep);
-  const [responseText, setResponseText] = useState("");
-  const requestId = stepByStep?.activeRequest?.request_id ?? null;
-  const canClose = !stepByStep?.active && !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
-  const onInputChange = useCallback((e) => {
-    setResponseText(e.target.value);
-  }, []);
-  const onRespond = useCallback(() => {
-    if (!requestId) {
-      return;
-    }
-    stepByStep?.handlers?.respond?.({
-      id: nanoid(),
-      timestamp: Date.now(),
-      data: responseText,
-      request_id: requestId,
-      type: "input_response"
-    });
-    setResponseText("");
-  }, [requestId, responseText, stepByStep?.handlers]);
-  const onInputKeyDown = useCallback(
-    (e) => {
-      if (e.key !== "Enter") {
-        return;
-      }
-      if (e.nativeEvent?.isComposing) {
-        return;
-      }
-      if (!requestId) {
-        return;
-      }
-      stepByStep?.handlers?.respond?.({
-        id: nanoid(),
-        timestamp: Date.now(),
-        data: responseText,
-        request_id: requestId,
-        type: "input_response"
-      });
-      setResponseText("");
-    },
-    [requestId, responseText, stepByStep?.handlers]
-  );
-  const onControl = useCallback(
-    (action) => {
-      if (!stepByStep?.handlers?.sendControl) {
-        return;
-      }
-      const rid = requestId ?? "<unknown>";
-      stepByStep.handlers.sendControl({
-        data: controlToResponse({ kind: action }),
-        request_id: rid
-      });
-    },
-    [requestId, stepByStep?.handlers]
-  );
-  const reducedHistory = useMemo(() => {
-    const raw = stepByStep?.eventHistory ?? [];
-    const max2 = 500;
-    const start = Math.max(0, raw.length - max2);
-    return raw.slice(start).filter((e) => e && !["debug", "print", "raw", "timeline"].includes(String(e?.type))).map((e) => {
-      const x = e;
-      const data = x.event ?? x.data ?? x.message ?? x;
-      return Array.isArray(data) && data.length === 1 ? data[0] : data;
-    }).reverse();
-  }, [stepByStep?.eventHistory]);
-  const badgeText = useMemo(() => {
-    if (!stepByStep) {
-      return null;
-    }
-    const curType = stepByStep.currentEvent?.type;
-    if (typeof curType === "string" && !["debug", "print", "raw"].includes(curType)) {
-      return curType;
-    }
-    const last = reducedHistory[reducedHistory.length - 1];
-    const lastType = last?.event?.type ?? last?.type;
-    if (typeof lastType === "string" && !["debug", "print", "raw"].includes(lastType)) {
-      return lastType;
-    }
-    if (!stepByStep.active && canClose) {
-      return stepByStep.eventHistory?.length > 0 ? "Finished" : null;
-    }
-    return "Running";
-  }, [stepByStep, reducedHistory, canClose]);
-  if (!stepByStep?.active && !canClose) {
-    return null;
-  }
-  const mayClose = canClose || !!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error";
-  const headerLeft = /* @__PURE__ */ jsxs("div", { className: "header", children: [
-    /* @__PURE__ */ jsx$1(FaBug, { className: "icon-bug", size: 18 }),
-    /* @__PURE__ */ jsx$1("div", { className: "title", children: "Step-by-step Run" }),
-    badgeText && /* @__PURE__ */ jsx$1("div", { className: `badge ${badgeText}`, children: badgeText }),
-    !badgeText && !stepByStep?.active && /* @__PURE__ */ jsx$1("div", { className: "badge", children: "Finished" }),
-    !badgeText && stepByStep?.active && /* @__PURE__ */ jsx$1("div", { className: "badge", children: "Running" })
-  ] });
-  const headerRight = mayClose ? /* @__PURE__ */ jsx$1(
-    "button",
-    {
-      title: "Close",
-      type: "button",
-      onClick: stepByStep?.handlers?.close,
-      className: "header-toggle",
-      "aria-label": "Close panel",
-      children: /* @__PURE__ */ jsx$1(FaX, { size: 14 })
-    }
-  ) : void 0;
-  return /* @__PURE__ */ jsx$1("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: /* @__PURE__ */ jsx$1(
-    FloatingPanel,
-    {
-      flowId,
-      title: "",
-      headerLeft,
-      headerRight,
-      maxHeight: "80vh",
-      minHeight: 320,
-      minWidth: 420,
-      maxWidth: "80vw",
-      children: /* @__PURE__ */ jsxs("div", { className: "content", children: [
-        stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
-          /* @__PURE__ */ jsxs(
-            "button",
-            {
-              className: "btn btn-primary",
-              type: "button",
-              onClick: () => onControl("continue"),
-              disabled: !stepByStep?.pendingControlInput,
-              children: [
-                /* @__PURE__ */ jsx$1(FaStepForward, {}),
-                " ",
-                /* @__PURE__ */ jsx$1("span", { children: "Continue" })
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxs(
-            "button",
-            {
-              className: "btn btn-secondary",
-              type: "button",
-              onClick: () => onControl("run"),
-              disabled: !stepByStep?.pendingControlInput,
-              children: [
-                /* @__PURE__ */ jsx$1(FaPlay, {}),
-                " ",
-                /* @__PURE__ */ jsx$1("span", { children: "Run" })
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxs(
-            "button",
-            {
-              className: "btn btn-danger",
-              type: "button",
-              onClick: () => onControl("quit"),
-              disabled: !stepByStep?.pendingControlInput,
-              children: [
-                /* @__PURE__ */ jsx$1(FaStop, {}),
-                " ",
-                /* @__PURE__ */ jsx$1("span", { children: "Quit" })
-              ]
-            }
-          )
-        ] }),
-        stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
-          /* @__PURE__ */ jsx$1("div", { className: "card-title", children: "Waiting for input" }),
-          /* @__PURE__ */ jsx$1("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
-          /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
-            /* @__PURE__ */ jsx$1(
-              "input",
-              {
-                className: "input",
-                placeholder: "Type your response... (Enter to send)",
-                value: responseText,
-                type: stepByStep.activeRequest.password === true ? "password" : "text",
-                onChange: onInputChange,
-                onKeyDown: onInputKeyDown,
-                autoCapitalize: "off",
-                autoCorrect: "off",
-                autoComplete: "off"
-              }
-            ),
-            /* @__PURE__ */ jsx$1("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
-          ] })
-        ] }),
-        reducedHistory.length > 0 ? /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
-      ] })
-    }
-  ) });
-};
-StepByStepView.displayName = "WaldiezStepByStepView";
-const useStringList = (props) => {
-  const [newEntry, setNewEntry] = useState("");
-  const { items, onItemAdded, onItemChange, onItemDeleted } = props;
-  const onAddEntry = useCallback(() => {
-    if (!onItemAdded || !newEntry.trim()) {
-      return;
-    }
-    onItemAdded(newEntry);
-    setNewEntry("");
-  }, [newEntry, onItemAdded]);
-  const onDeleteEntry = useCallback(
-    (event) => {
-      if (!onItemDeleted) {
-        return;
-      }
-      const valueToDelete = event.currentTarget.value;
-      onItemDeleted(valueToDelete);
-    },
-    [onItemDeleted]
-  );
-  const onEntryChange = useCallback(
-    (event) => {
-      if (!onItemChange) {
-        return;
-      }
-      const index2 = parseInt(event.currentTarget.getAttribute("data-index") || "0");
-      const newValue = event.target.value;
-      const originalValue = items[index2];
-      if (originalValue !== void 0 && originalValue !== null) {
-        onItemChange(originalValue, newValue);
-      }
-    },
-    [onItemChange, items]
-  );
-  const onNewEntryChange = useCallback((event) => {
-    setNewEntry(event.target.value);
-  }, []);
-  const onNewEntryKeyDown = useCallback(
-    (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        onAddEntry();
-      }
-    },
-    [onAddEntry]
-  );
-  return {
-    newEntry,
-    onAddEntry,
-    onDeleteEntry,
-    onEntryChange,
-    onNewEntryChange,
-    onNewEntryKeyDown
-  };
-};
-const StringList = memo((props) => {
-  const { viewLabel, viewLabelInfo, items = [], itemsType = "default", placeholder = "..." } = props;
-  const { newEntry, onAddEntry, onDeleteEntry, onEntryChange, onNewEntryChange, onNewEntryKeyDown } = useStringList(props);
-  const labelElement = useMemo(
-    () => typeof viewLabel === "function" ? viewLabel() : viewLabel,
-    [viewLabel]
-  );
-  const renderItems = useMemo(
-    () => items.map((item, index2) => {
-      return /* @__PURE__ */ jsxs("div", { className: "list-entry", children: [
-        /* @__PURE__ */ jsx$1(
-          "input",
-          {
-            placeholder,
-            type: "text",
-            value: item,
-            "data-index": index2,
-            id: `list-entry-item-${itemsType}-${index2}`,
-            onChange: onEntryChange,
-            "data-testid": `list-entry-item-${itemsType}-${index2}`
-          }
-        ),
-        /* @__PURE__ */ jsx$1(
-          "button",
-          {
-            type: "button",
-            onClick: onDeleteEntry,
-            value: item,
-            title: "Delete",
-            className: "trash-button",
-            id: `delete-list-entry-${itemsType}-${index2}`,
-            "aria-label": `Delete item: ${item}`,
-            "data-testid": `delete-list-entry-${itemsType}-${index2}`,
-            children: /* @__PURE__ */ jsx$1(FaTrash, {})
-          }
-        )
-      ] }, `${itemsType}-${index2}`);
-    }),
-    [items, itemsType, placeholder, onEntryChange, onDeleteEntry]
-  );
-  const isAddDisabled = !newEntry.trim();
-  return /* @__PURE__ */ jsxs("div", { className: "list-entries-view", children: [
-    viewLabelInfo ? /* @__PURE__ */ jsx$1(InfoLabel, { label: viewLabel, info: viewLabelInfo, htmlFor: "list-entries" }) : /* @__PURE__ */ jsx$1("label", { className: "list-entries-label", htmlFor: "list-entries", children: labelElement }),
-    items.length > 0 && /* @__PURE__ */ jsx$1("div", { className: "list-entries-list", children: renderItems }),
-    /* @__PURE__ */ jsx$1("div", { className: "list-entries-list", children: /* @__PURE__ */ jsxs("div", { className: "add-list-entry-view", children: [
-      /* @__PURE__ */ jsx$1(
-        "input",
-        {
-          placeholder,
-          type: "text",
-          value: newEntry,
-          onChange: onNewEntryChange,
-          onKeyDown: onNewEntryKeyDown,
-          "data-testid": `new-list-entry-${itemsType}-item`,
-          "aria-label": `New ${itemsType} input`,
-          id: `new-list-entry-${itemsType}`
-        }
-      ),
-      /* @__PURE__ */ jsx$1(
-        "button",
-        {
-          type: "button",
-          onClick: onAddEntry,
-          title: "Add",
-          disabled: isAddDisabled,
-          className: "plus-button",
-          "aria-label": "Add item",
-          id: `add-list-entry-${itemsType}-button`,
-          "data-testid": `add-list-entry-${itemsType}-button`,
-          children: /* @__PURE__ */ jsx$1(FaPlus, {})
-        }
-      )
-    ] }) })
-  ] });
-});
-StringList.displayName = "StringList";
-const TabItem = memo((props) => {
-  const { id, children } = props;
-  return /* @__PURE__ */ jsx$1(
-    "div",
-    {
-      className: "tab-panel",
-      role: "tabpanel",
-      "aria-labelledby": `tab-id-${id}`,
-      "data-testid": `panel-${id}`,
-      id: `panel-${id}`,
-      children
-    }
-  );
-});
-const TabItems = memo((props) => {
-  const { activeTabIndex = 0, children, onTabChange } = props;
-  const [activeTab, setActiveTab] = useState(activeTabIndex);
-  React__default.useEffect(() => {
-    setActiveTab(activeTabIndex);
-  }, [activeTabIndex]);
-  const handleTabClick = useCallback(
-    (index2) => {
-      setActiveTab(index2);
-      onTabChange?.(index2);
-    },
-    [onTabChange]
-  );
-  const tabs = useMemo(
-    () => React__default.Children.toArray(children).filter(
-      (child) => React__default.isValidElement(child) && child.type === TabItem
-    ),
-    [children]
-  );
-  const tabButtons = useMemo(
-    () => tabs.map((tab, index2) => {
-      const isActive = activeTab === index2;
-      const className = isActive ? "tab-btn--active" : "";
-      const tabId = tab.props.id;
-      return /* @__PURE__ */ jsx$1("li", { role: "tab", "aria-selected": isActive, children: /* @__PURE__ */ jsx$1(
-        "div",
-        {
-          role: "button",
-          "data-testid": `tab-id-${tabId}`,
-          id: `tab-id-${tabId}`,
-          "aria-controls": `panel-${tabId}`,
-          onClick: () => handleTabClick(index2),
-          className: `tab-btn ${className}`,
-          tabIndex: isActive ? 0 : -1,
-          children: tab.props.label
-        }
-      ) }, `tab-li-${tabId}-${index2}`);
-    }),
-    [tabs, activeTab, handleTabClick]
-  );
-  const activeTabContent = tabs[activeTab] || null;
-  return /* @__PURE__ */ jsxs("div", { className: "tabs", children: [
-    /* @__PURE__ */ jsx$1("nav", { className: "tab-list-wrapper", children: /* @__PURE__ */ jsx$1("ul", { className: "tab-list", role: "tablist", "aria-orientation": "horizontal", children: tabButtons }) }),
-    activeTabContent
-  ] });
-});
-TabItem.displayName = "TabItem";
-TabItems.displayName = "TabItems";
 var DefaultContext = {
   color: void 0,
   size: void 0,
@@ -25044,6 +25816,417 @@ const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
     }
   );
 };
+const StepByStepView = ({ flowId, stepByStep }) => {
+  useAgentClassUpdates(stepByStep);
+  const [responseText, setResponseText] = useState("");
+  const [timelineModalOpen, setTimelineModalOpen] = useState(false);
+  const openTimelineModal = useCallback(() => {
+    setTimelineModalOpen(true);
+  }, []);
+  const closeTimelineModal = useCallback(() => {
+    setTimelineModalOpen(false);
+  }, []);
+  const requestId = stepByStep?.activeRequest?.request_id ?? null;
+  const canClose = !stepByStep?.active && !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
+  const onInputChange = useCallback((e) => {
+    setResponseText(e.target.value);
+  }, []);
+  const onRespond = useCallback(() => {
+    if (!requestId) {
+      return;
+    }
+    stepByStep?.handlers?.respond?.({
+      id: nanoid(),
+      timestamp: Date.now(),
+      data: responseText,
+      request_id: requestId,
+      type: "input_response"
+    });
+    setResponseText("");
+  }, [requestId, responseText, stepByStep?.handlers]);
+  const onInputKeyDown = useCallback(
+    (e) => {
+      if (e.key !== "Enter") {
+        return;
+      }
+      if (e.nativeEvent?.isComposing) {
+        return;
+      }
+      if (!requestId) {
+        return;
+      }
+      stepByStep?.handlers?.respond?.({
+        id: nanoid(),
+        timestamp: Date.now(),
+        data: responseText,
+        request_id: requestId,
+        type: "input_response"
+      });
+      setResponseText("");
+    },
+    [requestId, responseText, stepByStep?.handlers]
+  );
+  const onControl = useCallback(
+    (action) => {
+      if (!stepByStep?.handlers?.sendControl) {
+        return;
+      }
+      const rid = requestId ?? "<unknown>";
+      stepByStep.handlers.sendControl({
+        data: controlToResponse({ kind: action }),
+        request_id: rid
+      });
+    },
+    [requestId, stepByStep?.handlers]
+  );
+  const reducedHistory = useMemo(() => {
+    const raw = stepByStep?.eventHistory ?? [];
+    const max2 = 500;
+    const start = Math.max(0, raw.length - max2);
+    return raw.slice(start).filter((e) => e && !["debug", "print", "raw", "timeline"].includes(String(e?.type))).map((e) => {
+      const x = e;
+      const data = x.event ?? x.data ?? x.message ?? x;
+      return Array.isArray(data) && data.length === 1 ? data[0] : data;
+    }).reverse();
+  }, [stepByStep?.eventHistory]);
+  const badgeText = useMemo(() => {
+    if (!stepByStep) {
+      return null;
+    }
+    const curType = stepByStep.currentEvent?.type;
+    if (typeof curType === "string" && !["debug", "print", "raw"].includes(curType)) {
+      return curType;
+    }
+    const last = reducedHistory[reducedHistory.length - 1];
+    const lastType = last?.event?.type ?? last?.type;
+    if (typeof lastType === "string" && !["debug", "print", "raw"].includes(lastType)) {
+      return lastType;
+    }
+    if (!stepByStep.active && canClose) {
+      return stepByStep.eventHistory?.length > 0 ? "Finished" : null;
+    }
+    return "Running";
+  }, [stepByStep, reducedHistory, canClose]);
+  if (!stepByStep?.active && !canClose) {
+    return null;
+  }
+  const mayClose = canClose || !!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error";
+  const headerLeft = /* @__PURE__ */ jsxs("div", { className: "header", children: [
+    /* @__PURE__ */ jsx$1(FaBug, { className: "icon-bug", size: 18 }),
+    stepByStep.timeline && /* @__PURE__ */ jsx$1(
+      "div",
+      {
+        role: "button",
+        className: "clickable",
+        onClick: openTimelineModal,
+        title: "View Timeline",
+        "data-testid": `rf-${flowId}-chat-modal-timeline`,
+        children: /* @__PURE__ */ jsx$1(MdTimeline, { size: 18, className: "timeline-button" })
+      }
+    ),
+    /* @__PURE__ */ jsx$1("div", { className: "title", children: "Step-by-step Run" }),
+    badgeText && /* @__PURE__ */ jsx$1("div", { className: `badge ${badgeText}`, children: badgeText }),
+    !badgeText && !stepByStep?.active && /* @__PURE__ */ jsx$1("div", { className: "badge", children: "Finished" }),
+    !badgeText && stepByStep?.active && /* @__PURE__ */ jsx$1("div", { className: "badge", children: "Running" })
+  ] });
+  const headerRight = mayClose ? /* @__PURE__ */ jsx$1(
+    "button",
+    {
+      title: "Close",
+      type: "button",
+      onClick: stepByStep?.handlers?.close,
+      className: "header-toggle",
+      "aria-label": "Close panel",
+      children: /* @__PURE__ */ jsx$1(FaX, { size: 14 })
+    }
+  ) : void 0;
+  return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: [
+    /* @__PURE__ */ jsx$1(
+      FloatingPanel,
+      {
+        flowId,
+        title: "",
+        headerLeft,
+        headerRight,
+        maxHeight: "80vh",
+        minHeight: 320,
+        minWidth: 420,
+        maxWidth: "80vw",
+        children: /* @__PURE__ */ jsxs("div", { className: "content", children: [
+          stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
+            /* @__PURE__ */ jsxs(
+              "button",
+              {
+                className: "btn btn-primary",
+                type: "button",
+                onClick: () => onControl("continue"),
+                disabled: !stepByStep?.pendingControlInput,
+                children: [
+                  /* @__PURE__ */ jsx$1(FaStepForward, {}),
+                  " ",
+                  /* @__PURE__ */ jsx$1("span", { children: "Continue" })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxs(
+              "button",
+              {
+                className: "btn btn-secondary",
+                type: "button",
+                onClick: () => onControl("run"),
+                disabled: !stepByStep?.pendingControlInput,
+                children: [
+                  /* @__PURE__ */ jsx$1(FaPlay, {}),
+                  " ",
+                  /* @__PURE__ */ jsx$1("span", { children: "Run" })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxs(
+              "button",
+              {
+                className: "btn btn-danger",
+                type: "button",
+                onClick: () => onControl("quit"),
+                disabled: !stepByStep?.pendingControlInput,
+                children: [
+                  /* @__PURE__ */ jsx$1(FaStop, {}),
+                  " ",
+                  /* @__PURE__ */ jsx$1("span", { children: "Quit" })
+                ]
+              }
+            )
+          ] }),
+          stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
+            /* @__PURE__ */ jsx$1("div", { className: "card-title", children: "Waiting for input" }),
+            /* @__PURE__ */ jsx$1("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
+            /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
+              /* @__PURE__ */ jsx$1(
+                "input",
+                {
+                  className: "input",
+                  placeholder: "Type your response... (Enter to send)",
+                  value: responseText,
+                  type: stepByStep.activeRequest.password === true ? "password" : "text",
+                  onChange: onInputChange,
+                  onKeyDown: onInputKeyDown,
+                  autoCapitalize: "off",
+                  autoCorrect: "off",
+                  autoComplete: "off"
+                }
+              ),
+              /* @__PURE__ */ jsx$1("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
+            ] })
+          ] }),
+          reducedHistory.length > 0 ? /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
+        ] })
+      }
+    ),
+    stepByStep.timeline && timelineModalOpen && /* @__PURE__ */ jsx$1(
+      TimelineModal,
+      {
+        flowId,
+        isOpen: timelineModalOpen,
+        onClose: closeTimelineModal,
+        data: stepByStep.timeline
+      }
+    )
+  ] });
+};
+StepByStepView.displayName = "WaldiezStepByStepView";
+const useStringList = (props) => {
+  const [newEntry, setNewEntry] = useState("");
+  const { items, onItemAdded, onItemChange, onItemDeleted } = props;
+  const onAddEntry = useCallback(() => {
+    if (!onItemAdded || !newEntry.trim()) {
+      return;
+    }
+    onItemAdded(newEntry);
+    setNewEntry("");
+  }, [newEntry, onItemAdded]);
+  const onDeleteEntry = useCallback(
+    (event) => {
+      if (!onItemDeleted) {
+        return;
+      }
+      const valueToDelete = event.currentTarget.value;
+      onItemDeleted(valueToDelete);
+    },
+    [onItemDeleted]
+  );
+  const onEntryChange = useCallback(
+    (event) => {
+      if (!onItemChange) {
+        return;
+      }
+      const index2 = parseInt(event.currentTarget.getAttribute("data-index") || "0");
+      const newValue = event.target.value;
+      const originalValue = items[index2];
+      if (originalValue !== void 0 && originalValue !== null) {
+        onItemChange(originalValue, newValue);
+      }
+    },
+    [onItemChange, items]
+  );
+  const onNewEntryChange = useCallback((event) => {
+    setNewEntry(event.target.value);
+  }, []);
+  const onNewEntryKeyDown = useCallback(
+    (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        onAddEntry();
+      }
+    },
+    [onAddEntry]
+  );
+  return {
+    newEntry,
+    onAddEntry,
+    onDeleteEntry,
+    onEntryChange,
+    onNewEntryChange,
+    onNewEntryKeyDown
+  };
+};
+const StringList = memo((props) => {
+  const { viewLabel, viewLabelInfo, items = [], itemsType = "default", placeholder = "..." } = props;
+  const { newEntry, onAddEntry, onDeleteEntry, onEntryChange, onNewEntryChange, onNewEntryKeyDown } = useStringList(props);
+  const labelElement = useMemo(
+    () => typeof viewLabel === "function" ? viewLabel() : viewLabel,
+    [viewLabel]
+  );
+  const renderItems = useMemo(
+    () => items.map((item, index2) => {
+      return /* @__PURE__ */ jsxs("div", { className: "list-entry", children: [
+        /* @__PURE__ */ jsx$1(
+          "input",
+          {
+            placeholder,
+            type: "text",
+            value: item,
+            "data-index": index2,
+            id: `list-entry-item-${itemsType}-${index2}`,
+            onChange: onEntryChange,
+            "data-testid": `list-entry-item-${itemsType}-${index2}`
+          }
+        ),
+        /* @__PURE__ */ jsx$1(
+          "button",
+          {
+            type: "button",
+            onClick: onDeleteEntry,
+            value: item,
+            title: "Delete",
+            className: "trash-button",
+            id: `delete-list-entry-${itemsType}-${index2}`,
+            "aria-label": `Delete item: ${item}`,
+            "data-testid": `delete-list-entry-${itemsType}-${index2}`,
+            children: /* @__PURE__ */ jsx$1(FaTrash, {})
+          }
+        )
+      ] }, `${itemsType}-${index2}`);
+    }),
+    [items, itemsType, placeholder, onEntryChange, onDeleteEntry]
+  );
+  const isAddDisabled = !newEntry.trim();
+  return /* @__PURE__ */ jsxs("div", { className: "list-entries-view", children: [
+    viewLabelInfo ? /* @__PURE__ */ jsx$1(InfoLabel, { label: viewLabel, info: viewLabelInfo, htmlFor: "list-entries" }) : /* @__PURE__ */ jsx$1("label", { className: "list-entries-label", htmlFor: "list-entries", children: labelElement }),
+    items.length > 0 && /* @__PURE__ */ jsx$1("div", { className: "list-entries-list", children: renderItems }),
+    /* @__PURE__ */ jsx$1("div", { className: "list-entries-list", children: /* @__PURE__ */ jsxs("div", { className: "add-list-entry-view", children: [
+      /* @__PURE__ */ jsx$1(
+        "input",
+        {
+          placeholder,
+          type: "text",
+          value: newEntry,
+          onChange: onNewEntryChange,
+          onKeyDown: onNewEntryKeyDown,
+          "data-testid": `new-list-entry-${itemsType}-item`,
+          "aria-label": `New ${itemsType} input`,
+          id: `new-list-entry-${itemsType}`
+        }
+      ),
+      /* @__PURE__ */ jsx$1(
+        "button",
+        {
+          type: "button",
+          onClick: onAddEntry,
+          title: "Add",
+          disabled: isAddDisabled,
+          className: "plus-button",
+          "aria-label": "Add item",
+          id: `add-list-entry-${itemsType}-button`,
+          "data-testid": `add-list-entry-${itemsType}-button`,
+          children: /* @__PURE__ */ jsx$1(FaPlus, {})
+        }
+      )
+    ] }) })
+  ] });
+});
+StringList.displayName = "StringList";
+const TabItem = memo((props) => {
+  const { id, children } = props;
+  return /* @__PURE__ */ jsx$1(
+    "div",
+    {
+      className: "tab-panel",
+      role: "tabpanel",
+      "aria-labelledby": `tab-id-${id}`,
+      "data-testid": `panel-${id}`,
+      id: `panel-${id}`,
+      children
+    }
+  );
+});
+const TabItems = memo((props) => {
+  const { activeTabIndex = 0, children, onTabChange } = props;
+  const [activeTab, setActiveTab] = useState(activeTabIndex);
+  React__default.useEffect(() => {
+    setActiveTab(activeTabIndex);
+  }, [activeTabIndex]);
+  const handleTabClick = useCallback(
+    (index2) => {
+      setActiveTab(index2);
+      onTabChange?.(index2);
+    },
+    [onTabChange]
+  );
+  const tabs = useMemo(
+    () => React__default.Children.toArray(children).filter(
+      (child) => React__default.isValidElement(child) && child.type === TabItem
+    ),
+    [children]
+  );
+  const tabButtons = useMemo(
+    () => tabs.map((tab, index2) => {
+      const isActive = activeTab === index2;
+      const className = isActive ? "tab-btn--active" : "";
+      const tabId = tab.props.id;
+      return /* @__PURE__ */ jsx$1("li", { role: "tab", "aria-selected": isActive, children: /* @__PURE__ */ jsx$1(
+        "div",
+        {
+          role: "button",
+          "data-testid": `tab-id-${tabId}`,
+          id: `tab-id-${tabId}`,
+          "aria-controls": `panel-${tabId}`,
+          onClick: () => handleTabClick(index2),
+          className: `tab-btn ${className}`,
+          tabIndex: isActive ? 0 : -1,
+          children: tab.props.label
+        }
+      ) }, `tab-li-${tabId}-${index2}`);
+    }),
+    [tabs, activeTab, handleTabClick]
+  );
+  const activeTabContent = tabs[activeTab] || null;
+  return /* @__PURE__ */ jsxs("div", { className: "tabs", children: [
+    /* @__PURE__ */ jsx$1("nav", { className: "tab-list-wrapper", children: /* @__PURE__ */ jsx$1("ul", { className: "tab-list", role: "tablist", "aria-orientation": "horizontal", children: tabButtons }) }),
+    activeTabContent
+  ] });
+});
+TabItem.displayName = "TabItem";
+TabItems.displayName = "TabItems";
 const CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT = `"""Custom update system message function."""
 
 # provide the function to define the system message before replying
@@ -28495,11 +29678,11 @@ const WaldiezEdgeMessageTab = (props) => {
     onRemoveMessageContextEntry,
     onUpdateMessageContextEntries
   } = useWaldiezEdgeMessageTab(props);
-  const noOp = () => {
+  const noOp2 = () => {
   };
-  const handlAddContextEntry = skipContextVarsOption === true ? noOp : onAddMessageContextEntry;
-  const handleRemoveContextEntry = skipContextVarsOption === true ? noOp : onRemoveMessageContextEntry;
-  const handleUpdateContextEntries = skipContextVarsOption === true ? noOp : onUpdateMessageContextEntries;
+  const handlAddContextEntry = skipContextVarsOption === true ? noOp2 : onAddMessageContextEntry;
+  const handleRemoveContextEntry = skipContextVarsOption === true ? noOp2 : onRemoveMessageContextEntry;
+  const handleUpdateContextEntries = skipContextVarsOption === true ? noOp2 : onUpdateMessageContextEntries;
   return /* @__PURE__ */ jsx$1("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx$1(
     MessageInput,
     {
@@ -28620,7 +29803,7 @@ const WaldiezEdgeNestedTab = (props) => {
     content: null,
     context: {}
   };
-  const noOp = () => {
+  const noOp2 = () => {
   };
   return /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
     /* @__PURE__ */ jsx$1("div", { className: "info margin-bottom-10", children: "When the connection is used in a nested chat, you can specify the messages to be sent and received, from the source and the target respectively." }),
@@ -28640,9 +29823,9 @@ const WaldiezEdgeNestedTab = (props) => {
           skipRagOption: true,
           onTypeChange: onNestedMessageTypeChange,
           onMessageChange: onNestedMessageChange,
-          onAddContextEntry: noOp,
-          onRemoveContextEntry: noOp,
-          onUpdateContextEntries: noOp
+          onAddContextEntry: noOp2,
+          onRemoveContextEntry: noOp2,
+          onUpdateContextEntries: noOp2
         }
       ) }) }),
       /* @__PURE__ */ jsx$1(TabItem, { label: "Reply", id: `wc-${flowId}-edge-nested-chat-${edgeId}-reply`, children: /* @__PURE__ */ jsx$1("div", { className: "flex-column", children: /* @__PURE__ */ jsx$1(
@@ -28660,9 +29843,9 @@ const WaldiezEdgeNestedTab = (props) => {
           includeContext: false,
           onTypeChange: onNestedReplyTypeChange,
           onMessageChange: onNestedReplyChange,
-          onAddContextEntry: noOp,
-          onRemoveContextEntry: noOp,
-          onUpdateContextEntries: noOp
+          onAddContextEntry: noOp2,
+          onRemoveContextEntry: noOp2,
+          onUpdateContextEntries: noOp2
         }
       ) }) })
     ] })
@@ -28792,7 +29975,7 @@ const WaldiezEdgeModal = memo((props) => {
       context: {}
     };
   }, [edgeData.nestedChat.message]);
-  const noOp = useCallback(() => {
+  const noOp2 = useCallback(() => {
   }, []);
   const onNestedMessageTypeChange = useCallback(
     (type) => {
@@ -28875,9 +30058,9 @@ const WaldiezEdgeModal = memo((props) => {
               skipNone: true,
               onTypeChange: onNestedMessageTypeChange,
               onMessageChange: onNestedMessageChange,
-              onAddContextEntry: noOp,
-              onRemoveContextEntry: noOp,
-              onUpdateContextEntries: noOp
+              onAddContextEntry: noOp2,
+              onRemoveContextEntry: noOp2,
+              onUpdateContextEntries: noOp2
             }
           ) }) }),
           groupChatType === "handoff" && /* @__PURE__ */ jsx$1(TabItem, { label: "Condition", id: tabIds.condition, children: /* @__PURE__ */ jsx$1(
@@ -29843,34 +31026,44 @@ const useWaldiezNodeAgentModal = (id, isOpen, data, onClose) => {
       postSubmit
     ]
   );
+  const onUploaded = useCallback(
+    (dataToSubmit, filePaths) => {
+      const ragData = agentData;
+      const docsPath = ragData.retrieveConfig.docsPath;
+      const newDocsPath = [...docsPath];
+      for (let i = 0; i < filesToUpload.length; i++) {
+        const index2 = newDocsPath.indexOf(`file:///${filesToUpload[i]?.name}`);
+        if (index2 > -1) {
+          if (typeof filePaths[i] === "string") {
+            newDocsPath[index2] = filePaths[i];
+          } else {
+            newDocsPath.splice(index2, 1);
+          }
+        }
+      }
+      dataToSubmit.retrieveConfig.docsPath = newDocsPath;
+      dataToSubmit.retrieveConfig.docsPath = [...newDocsPath].filter(
+        (entry) => typeof entry === "string" && entry.length > 0 && !entry.startsWith("file:///")
+      );
+      setFilesToUpload([]);
+      submit(dataToSubmit);
+    },
+    [agentData, filesToUpload, submit]
+  );
   const submitRagUser = useCallback(
     (dataToSubmit) => {
       if (filesToUpload.length > 0 && uploadHandler) {
-        uploadHandler(filesToUpload).then((filePaths) => {
-          const ragData = agentData;
-          const docsPath = ragData.retrieveConfig.docsPath;
-          const newDocsPath = [...docsPath];
-          for (let i = 0; i < filesToUpload.length; i++) {
-            const index2 = newDocsPath.indexOf(`file:///${filesToUpload[i]?.name}`);
-            if (index2 > -1) {
-              if (typeof filePaths[i] === "string") {
-                newDocsPath[index2] = filePaths[i];
-              } else {
-                newDocsPath.splice(index2, 1);
-              }
-            }
-          }
-          dataToSubmit.retrieveConfig.docsPath = newDocsPath;
-        }).catch((error) => {
-          console.error(error);
-        }).finally(() => {
-          const docsPath = dataToSubmit.retrieveConfig.docsPath;
-          dataToSubmit.retrieveConfig.docsPath = [...docsPath].filter(
-            (entry) => typeof entry === "string" && entry.length > 0 && !entry.startsWith("file:///")
-          );
-          setFilesToUpload([]);
-          submit(dataToSubmit);
-        });
+        const result = uploadHandler(filesToUpload);
+        if (isPromise(result)) {
+          result.then((filePaths) => {
+            onUploaded(dataToSubmit, filePaths);
+          }).catch((error) => {
+            console.error(error);
+            onUploaded(dataToSubmit, []);
+          });
+        } else {
+          onUploaded(dataToSubmit, result);
+        }
       } else {
         const ragData = agentData;
         const docsPath = ragData.retrieveConfig.docsPath;
@@ -29881,7 +31074,7 @@ const useWaldiezNodeAgentModal = (id, isOpen, data, onClose) => {
         submit(dataToSubmit);
       }
     },
-    [agentData, filesToUpload, uploadHandler, submit]
+    [agentData, filesToUpload, uploadHandler, submit, onUploaded]
   );
   const toRagUser = useCallback(() => {
     const ragData = agentData;
@@ -38734,6 +39927,7 @@ const exportFlow = (data, hideSecrets = true, skipLinks = true) => {
 };
 export {
   WORKFLOW_CHAT_END_MARKERS,
+  WORKFLOW_DONE,
   WORKFLOW_STEP_END_MARKERS,
   WORKFLOW_STEP_MARKERS,
   WORKFLOW_STEP_START_MARKERS,
@@ -38743,7 +39937,15 @@ export {
   WaldiezStepByStepProcessor,
   WaldiezStepByStepUtils,
   Waldiez as default,
+  defaultChatConfig,
   exportFlow,
   importFlow,
-  showSnackbar
+  showSnackbar,
+  useWaldiezChat,
+  useWaldiezMessaging,
+  useWaldiezStepByStep,
+  useWaldiezWs,
+  useWaldiezWsChat,
+  useWaldiezWsMessaging,
+  useWaldiezWsStepByStep
 };

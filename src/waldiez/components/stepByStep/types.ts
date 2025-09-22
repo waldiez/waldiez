@@ -106,27 +106,29 @@ export type WaldiezDebugEventInfo = {
     event: Record<string, unknown>; // opaque; consumer can pretty-print
 };
 
+export type WaldiezDebugStats = {
+    events_processed: number;
+    total_events: number;
+    step_mode: boolean;
+    auto_continue: boolean;
+    breakpoints: string[];
+    event_history_count: number;
+    // Allow future extensions without breaking consumers
+    [k: string]: unknown;
+};
+
 /**
  * `debug_stats` message (backend - client)
  */
-export type WaldiezDebugStats = {
+export type WaldiezDebugStatsMessage = {
     type: "debug_stats" | "stats";
-    stats: {
-        events_processed: number;
-        total_events: number;
-        step_mode: boolean;
-        auto_continue: boolean;
-        breakpoints: string[];
-        event_history_count: number;
-        // Allow future extensions without breaking consumers
-        [k: string]: unknown;
-    };
+    stats: WaldiezDebugStats;
 };
 
 /**
  * `debug_help` message (backend - client)
  */
-export type WaldiezDebugHelp = {
+export type WaldiezDebugHelpMessage = {
     type: "debug_help" | "help";
     help: WaldiezDebugHelpCommandGroup[];
 };
@@ -152,8 +154,8 @@ export type WaldiezDebugMessage =
     | WaldiezDebugBreakpointRemoved
     | WaldiezDebugBreakpointCleared
     | WaldiezDebugEventInfo
-    | WaldiezDebugStats
-    | WaldiezDebugHelp
+    | WaldiezDebugStatsMessage
+    | WaldiezDebugHelpMessage
     | WaldiezDebugError;
 
 /**
@@ -241,15 +243,13 @@ export type WaldiezBreakpoint = {
  * @param close - Close the panel view.
  */
 export type WaldiezStepHandlers = {
+    /** optional action to perform when the run starts (like select breakpoints or checkpoint) */
+    onStart?: () => void | Promise<void>;
     /** Send a control command (e.g., Continue/Run/Step/Quit/Info/Help/Stats...). */
     sendControl: (input: Pick<WaldiezDebugInputResponse, "request_id" | "data">) => void | Promise<void>;
-    /**
-     * Send a user input response (e.g., for `debug_input_request`).
-     */
+    /** Send a user input response (not a control command). */
     respond: (response: WaldiezChatUserInput) => void | Promise<void>;
-    /**
-     * Close the step-by-step session.
-     */
+    /** Close the step-by-step session.*/
     close?: () => void | Promise<void>;
 };
 
@@ -275,52 +275,38 @@ export type WaldiezStepByStep = {
     active: boolean;
     /** If true, runner will pause at breakpoints */
     stepMode: boolean;
-
     /** If true, backend auto-continues without user input */
     autoContinue: boolean;
-
     /** Event types to break on (empty means break on all) */
     breakpoints: (string | WaldiezBreakpoint)[];
-
-    /**
-     * Last stats snapshot (from `debug_stats`).
-     */
-    stats?: WaldiezDebugStats["stats"];
-
+    /**Last stats snapshot (from `debug_stats`).*/
+    stats?: WaldiezDebugStats;
     /** Raw event history accumulated client-side */
     eventHistory: Array<Record<string, unknown>>;
-
     /** The most recent `debug_event_info` payload */
     currentEvent?: Record<string, unknown>;
-
     /** Debug help content (from `debug_help`) */
-    help?: WaldiezDebugHelp["help"];
-
+    help?: WaldiezDebugHelpCommandGroup[];
     /** Last error (from `debug_error`) */
     lastError?: string;
-
     /** List of participants in the chat */
     participants?: WaldiezChatParticipant[];
-
     /** Timeline of events */
     timeline?: WaldiezTimelineData;
-
     /**
      * Pending control action input. For replying to messages
      * of type `debug_input_request`.
-     * Separate from the normal chat's `activeRequest` to decouple UIs.
+     * Separate from the normal chat's `activeRequest`s.
      */
     pendingControlInput?: {
         request_id: string;
         prompt: string;
     } | null;
-
     /**
      * Active user's input request. For replying to messages
      * of type `input_request` (Not for control messages)
      */
     activeRequest?: WaldiezActiveRequest | null;
-
     /** Handlers for step-specific actions */
-    handlers: WaldiezStepHandlers;
+    handlers?: WaldiezStepHandlers;
 };

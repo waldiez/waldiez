@@ -64,13 +64,13 @@ class TestSessionManager:
             session = await self.session_manager.create_session(
                 session_id=self.session_id,
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
                 metadata={"test": "data"},
             )
 
             assert session.session_id == self.session_id
             assert session.client_id == self.client_id
-            assert session.execution_mode == ExecutionMode.STANDARD
+            assert session.mode == ExecutionMode.STANDARD
             assert session.status == WorkflowStatus.IDLE
             assert session.metadata == {"test": "data"}
 
@@ -95,7 +95,7 @@ class TestSessionManager:
             await self.session_manager.create_session(
                 session_id=self.session_id,
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             # Try to create duplicate
@@ -103,7 +103,7 @@ class TestSessionManager:
                 await self.session_manager.create_session(
                     session_id=self.session_id,
                     client_id="different_client",
-                    execution_mode=ExecutionMode.STEP_BY_STEP,
+                    mode=ExecutionMode.STEP_BY_STEP,
                 )
 
         finally:
@@ -119,7 +119,7 @@ class TestSessionManager:
             session = await self.session_manager.create_session(
                 session_id=self.session_id,
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.SUBPROCESS,
+                mode=ExecutionMode.SUBPROCESS,
                 runner=mock_runner,
                 temp_file=tmp_path,
             )
@@ -140,7 +140,7 @@ class TestSessionManager:
             created_session = await self.session_manager.create_session(
                 session_id=self.session_id,
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             # Get session
@@ -177,20 +177,20 @@ class TestSessionManager:
             await self.session_manager.create_session(
                 session_id="session1",
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             await self.session_manager.create_session(
                 session_id="session2",
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STEP_BY_STEP,
+                mode=ExecutionMode.STEP_BY_STEP,
             )
 
             # Create session for different client
             await self.session_manager.create_session(
                 session_id="session3",
                 client_id="other_client",
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             # Get sessions for our client
@@ -231,7 +231,7 @@ class TestSessionManager:
             session = await self.session_manager.create_session(
                 session_id=self.session_id,
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             assert session.status == WorkflowStatus.IDLE
@@ -263,7 +263,7 @@ class TestSessionManager:
             await self.session_manager.stop()
 
     @pytest.mark.asyncio
-    async def test_get_session_execution_mode(self) -> None:
+    async def test_get_session_mode(self) -> None:
         """Test getting session execution mode."""
         await self.session_manager.start()
 
@@ -272,26 +272,22 @@ class TestSessionManager:
             await self.session_manager.create_session(
                 session_id=self.session_id,
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STEP_BY_STEP,
+                mode=ExecutionMode.STEP_BY_STEP,
             )
 
-            mode = await self.session_manager.get_session_execution_mode(
-                self.session_id
-            )
+            mode = await self.session_manager.get_session_mode(self.session_id)
             assert mode == ExecutionMode.STEP_BY_STEP
 
         finally:
             await self.session_manager.stop()
 
     @pytest.mark.asyncio
-    async def test_get_session_execution_mode_not_found(self) -> None:
+    async def test_get_session_mode_not_found(self) -> None:
         """Test getting execution mode for non-existent session."""
         await self.session_manager.start()
 
         try:
-            mode = await self.session_manager.get_session_execution_mode(
-                "nonexistent"
-            )
+            mode = await self.session_manager.get_session_mode("nonexistent")
             assert mode is None
 
         finally:
@@ -310,7 +306,7 @@ class TestSessionManager:
             await self.session_manager.create_session(
                 session_id=self.session_id,
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
                 runner=mock_runner,
             )
 
@@ -349,19 +345,19 @@ class TestSessionManager:
             await self.session_manager.create_session(
                 session_id="session1",
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             await self.session_manager.create_session(
                 session_id="session2",
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STEP_BY_STEP,
+                mode=ExecutionMode.STEP_BY_STEP,
             )
 
             await self.session_manager.create_session(
                 session_id="session3",
                 client_id="other_client",
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             # Remove sessions for our client
@@ -409,13 +405,13 @@ class TestSessionManager:
             await self.session_manager.create_session(
                 session_id="session1",
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             await self.session_manager.create_session(
                 session_id="session2",
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STEP_BY_STEP,
+                mode=ExecutionMode.STEP_BY_STEP,
             )
 
             # Update statuses
@@ -447,7 +443,7 @@ class TestSessionManager:
             session = await self.session_manager.create_session(
                 session_id=self.session_id,
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             # Mark as completed and set old end time
@@ -478,7 +474,7 @@ class TestSessionManager:
             session = await self.session_manager.create_session(
                 session_id=self.session_id,
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             # Make session look very old (inactive for long time)
@@ -507,7 +503,7 @@ class TestSessionManager:
             await self.session_manager.create_session(
                 session_id=self.session_id,
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             # Cleanup with very long max age
@@ -533,14 +529,14 @@ class TestSessionManager:
             await self.session_manager.create_session(
                 session_id="session1",
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
                 runner=mock_runner,
             )
 
             await self.session_manager.create_session(
                 session_id="session2",
                 client_id="other_client",
-                execution_mode=ExecutionMode.STEP_BY_STEP,
+                mode=ExecutionMode.STEP_BY_STEP,
             )
 
             # Cleanup all
@@ -565,7 +561,7 @@ class TestSessionManager:
             session = await manager.create_session(
                 session_id=self.session_id,
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             # Mark as old
@@ -672,7 +668,7 @@ class TestSessionManagerEdgeCases:
                 task = manager.create_session(
                     session_id=f"session_{i}",
                     client_id=f"client_{i % 3}",  # 3 different clients
-                    execution_mode=ExecutionMode.STANDARD,
+                    mode=ExecutionMode.STANDARD,
                 )
                 tasks.append(task)
 
@@ -696,7 +692,7 @@ class TestSessionManagerEdgeCases:
             await manager.create_session(
                 session_id="test_session",
                 client_id="test_client",
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             # Try to remove session while accessing it concurrently
@@ -733,7 +729,7 @@ class TestSessionManagerEdgeCases:
             await manager.create_session(
                 session_id="test_session",
                 client_id="test_client",
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
                 runner=mock_runner,
             )
 
@@ -757,7 +753,7 @@ class TestSessionManagerEdgeCases:
             await manager.create_session(
                 session_id="test_session",
                 client_id="test_client",
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             assert "test_client" in manager._client_sessions
@@ -817,7 +813,7 @@ class TestSessionManagerEdgeCases:
                 await manager.create_session(
                     session_id=session_id,
                     client_id=client_id,
-                    execution_mode=mode,
+                    mode=mode,
                 )
                 await manager.update_session_status(session_id, status)
 

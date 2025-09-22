@@ -119,18 +119,18 @@ class BaseNotification(BaseWaldiezMessage):
 class SaveFlowRequest(BaseRequest):
     """Request to save a workflow."""
 
-    type: Literal["save_flow"] = "save_flow"
-    flow_data: str  # JSON string of workflow
-    filename: str | None = None
-    force_overwrite: bool = False
+    type: Literal["save"] = "save"
+    data: str  # JSON string of workflow
+    path: str | None = None
+    force: bool = False
 
 
 class RunWorkflowRequest(BaseRequest):
     """Request to run a workflow in standard mode."""
 
-    type: Literal["run_workflow"] = "run_workflow"
-    flow_data: str  # JSON string of workflow
-    execution_mode: ExecutionMode = ExecutionMode.STANDARD
+    type: Literal["run"] = "run"
+    data: str  # JSON string of workflow
+    mode: ExecutionMode = ExecutionMode.STANDARD
     structured_io: bool = True
     uploads_root: str | None = None
     dot_env_path: str | None = None
@@ -140,8 +140,8 @@ class RunWorkflowRequest(BaseRequest):
 class StepRunWorkflowRequest(BaseRequest):
     """Request to run a workflow in step-by-step mode."""
 
-    type: Literal["step_run_workflow"] = "step_run_workflow"
-    flow_data: str  # JSON string of workflow
+    type: Literal["step_run"] = "step_run"
+    data: str  # JSON string of workflow
     auto_continue: bool = False
     breakpoints: list[str] = Field(default_factory=list)
     structured_io: bool = True
@@ -207,7 +207,7 @@ class UserInputResponse(BaseRequest):
 class StopWorkflowRequest(BaseRequest):
     """Request to stop workflow execution."""
 
-    type: Literal["stop_workflow"] = "stop_workflow"
+    type: Literal["stop"] = "stop"
     session_id: str
     force: bool = False
 
@@ -216,7 +216,7 @@ class StopWorkflowResponse(BaseResponse):
     """Response to stop workflow request."""
 
     session_id: str
-    type: Literal["stop_workflow_response"] = "stop_workflow_response"
+    type: Literal["stop_response"] = "stop_response"
     error: str | None = None
     forced: bool = False
 
@@ -224,10 +224,10 @@ class StopWorkflowResponse(BaseResponse):
 class ConvertWorkflowRequest(BaseRequest):
     """Request to convert workflow to different format."""
 
-    type: Literal["convert_workflow"] = "convert_workflow"
-    flow_data: str
-    target_format: Literal["py", "ipynb"]
-    output_path: str | None = None
+    type: Literal["convert"] = "convert"
+    data: str
+    format: Literal["py", "ipynb"]
+    path: str | None = None
 
 
 class UploadFileRequest(BaseRequest):
@@ -262,24 +262,24 @@ class GetStatusRequest(BaseRequest):
 class SaveFlowResponse(BaseResponse):
     """Response to save flow request."""
 
-    type: Literal["save_flow_response"] = "save_flow_response"
-    file_path: str | None = None
+    type: Literal["save_response"] = "save_response"
+    path: str | None = None
     error: str | None = None
 
 
 class RunWorkflowResponse(BaseResponse):
     """Response to run workflow request."""
 
-    type: Literal["run_workflow_response"] = "run_workflow_response"
+    type: Literal["run_response"] = "run_response"
     session_id: str
-    execution_mode: ExecutionMode
+    mode: ExecutionMode
     error: str | None = None
 
 
 class StepRunWorkflowResponse(BaseResponse):
     """Response to step run workflow request."""
 
-    type: Literal["step_run_workflow_response"] = "step_run_workflow_response"
+    type: Literal["step_run_response"] = "step_run_response"
     session_id: str
     auto_continue: bool
     breakpoints: list[str]
@@ -308,9 +308,9 @@ class BreakpointResponse(BaseResponse):
 class ConvertWorkflowResponse(BaseResponse):
     """Response to convert workflow request."""
 
-    type: Literal["convert_workflow_response"] = "convert_workflow_response"
-    target_format: str
-    output_path: str | None = None
+    type: Literal["convert_response"] = "convert_response"
+    format: str
+    path: str | None = None
     error: str | None = None
 
 
@@ -318,8 +318,8 @@ class UploadFileResponse(BaseResponse):
     """Response to file upload."""
 
     type: Literal["upload_file_response"] = "upload_file_response"
-    file_path: str | None = None
-    file_size: int | None = None
+    path: str | None = None
+    size: int | None = None
     error: str | None = None
 
 
@@ -361,7 +361,7 @@ class WorkflowStatusNotification(BaseNotification):
     type: Literal["workflow_status"] = "workflow_status"
     session_id: str
     status: WorkflowStatus
-    execution_mode: ExecutionMode
+    mode: ExecutionMode
     details: str | None = None
 
     @classmethod
@@ -393,7 +393,7 @@ class WorkflowStatusNotification(BaseNotification):
         return cls(
             session_id=session_id,
             status=status,
-            execution_mode=mode,
+            mode=mode,
             details=details,
         )
 
@@ -738,14 +738,14 @@ def create_session_id() -> str:
 # ========================================
 
 CLIENT_MESSAGE_TYPES = {
-    "save_flow",
-    "run_workflow",
-    "step_run_workflow",
+    "save",
+    "run",
+    "step_run",
     "step_control",
     "breakpoint_control",
     "user_input",
-    "stop_workflow",
-    "convert_workflow",
+    "stop",
+    "convert",
     "upload_file",
     "ping",
     "get_status",
@@ -753,12 +753,12 @@ CLIENT_MESSAGE_TYPES = {
 
 SERVER_MESSAGE_TYPES = {
     # Responses
-    "save_flow_response",
-    "run_workflow_response",
-    "step_run_workflow_response",
+    "save_response",
+    "run_response",
+    "step_run_response",
     "step_control_response",
     "breakpoint_response",
-    "convert_workflow_response",
+    "convert_response",
     "upload_file_response",
     "pong",
     "status_response",
@@ -786,7 +786,7 @@ class SessionState(BaseModel):
     session_id: str
     client_id: str
     status: WorkflowStatus
-    execution_mode: ExecutionMode
+    mode: ExecutionMode
     start_time: int = Field(default_factory=time.monotonic_ns)
     end_time: int | None = None
     metadata: dict[str, Any] = Field(default_factory=dict)
@@ -845,7 +845,7 @@ class SessionState(BaseModel):
             "session_id": self.session_id,
             "client_id": self.client_id,
             "status": self.status.value,
-            "execution_mode": self.execution_mode.value,
+            "mode": self.mode.value,
             "duration_seconds": self.duration,
             "start_time": self.start_time,
             "end_time": self.end_time,
@@ -915,9 +915,9 @@ class WorkflowSession:
         return self._state.status
 
     @property
-    def execution_mode(self) -> ExecutionMode:
+    def mode(self) -> ExecutionMode:
         """Get execution mode."""
-        return self._state.execution_mode
+        return self._state.mode
 
     @property
     def temp_file(self) -> Path | None:

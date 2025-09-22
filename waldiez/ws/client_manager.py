@@ -280,8 +280,8 @@ class ClientManager:
             server_status = await self.session_manager.get_status()
             wf_status = None
             if msg.session_id:
-                sess = await self.session_manager.get_session(msg.session_id)
-                wf_status = sess.status if sess else None
+                session = await self.session_manager.get_session(msg.session_id)
+                wf_status = session.status if session else None
             return StatusResponse.ok(
                 server_status=server_status,
                 workflow_status=wf_status,
@@ -289,7 +289,7 @@ class ClientManager:
             ).model_dump(mode="json")
 
         if isinstance(msg, SaveFlowRequest):
-            return FileRequestHandler.handle_save_flow_request(
+            return FileRequestHandler.handle_save_request(
                 msg=msg,
                 workspace_dir=self.workspace_dir,
                 client_id=self.client_id,
@@ -297,7 +297,7 @@ class ClientManager:
             )
 
         if isinstance(msg, ConvertWorkflowRequest):
-            return FileRequestHandler.handle_convert_workflow_request(
+            return FileRequestHandler.handle_convert_request(
                 msg=msg,
                 client_id=self.client_id,
                 workspace_dir=self.workspace_dir,
@@ -306,11 +306,11 @@ class ClientManager:
 
         # Start workflow (STANDARD)
         if isinstance(msg, RunWorkflowRequest):
-            return await self._handle_run_workflow(msg)
+            return await self._handle_run(msg)
 
         # Start workflow (STEP-BY-STEP / DEBUG)
         if isinstance(msg, StepRunWorkflowRequest):
-            return await self._handle_step_run_workflow(msg)
+            return await self._handle_step_run(msg)
 
         # Step controls
         if isinstance(msg, StepControlRequest):
@@ -325,24 +325,22 @@ class ClientManager:
             return await self._handle_user_input(msg)
 
         # Stop workflow
-        if hasattr(msg, "type") and msg.type == "stop_workflow":
-            return await self._handle_stop_workflow(msg)
+        if hasattr(msg, "type") and msg.type == "stop":
+            return await self.handle_stop(msg)
 
         # Unknown
         return self._error_to_response(
             UnsupportedActionError(getattr(msg, "type", "unknown"))
         )
 
-    async def _handle_run_workflow(
-        self, msg: RunWorkflowRequest
-    ) -> dict[str, Any]:
+    async def _handle_run(self, msg: RunWorkflowRequest) -> dict[str, Any]:
         try:
-            data_dict = json.loads(msg.flow_data)
+            data_dict = json.loads(msg.data)
             waldiez = Waldiez.from_dict(data_dict)
         except Exception as e:
             return RunWorkflowResponse.fail(
                 error=f"Invalid flow_data: {e}",
-                execution_mode=msg.execution_mode,
+                mode=msg.mode,
                 session_id="",
             ).model_dump(mode="json")
         # structured path preferred
@@ -361,14 +359,14 @@ class ClientManager:
         asyncio.create_task(self._run_runner(session_id, runner))
 
         return RunWorkflowResponse.ok(
-            session_id=session_id, execution_mode=ExecutionMode.STANDARD
+            session_id=session_id, mode=ExecutionMode.STANDARD
         ).model_dump(mode="json")
 
-    async def _handle_step_run_workflow(
+    async def _handle_step_run(
         self, msg: StepRunWorkflowRequest
     ) -> dict[str, Any]:
         try:
-            data_dict = json.loads(msg.flow_data)
+            data_dict = json.loads(msg.data)
             waldiez = Waldiez.from_dict(data_dict)
         except Exception as e:
             return StepRunWorkflowResponse.fail(
@@ -390,9 +388,9 @@ class ClientManager:
             ExecutionMode.STEP_BY_STEP,
             session_id=session_id,
         )
-        sess = await self.session_manager.get_session(session_id)
-        if sess:
-            sess.state.metadata.update(
+        session = await self.session_manager.get_session(session_id)
+        if session:
+            session.state.metadata.update(
                 {
                     "auto_continue": msg.auto_continue,
                     "breakpoints": list(msg.breakpoints),
@@ -416,7 +414,7 @@ class ClientManager:
         await self.session_manager.create_session(
             session_id=session_id,
             client_id=self.client_id,
-            execution_mode=mode,
+            mode=mode,
             runner=runner,
             temp_file=None,
             metadata={},
@@ -560,7 +558,19 @@ class ClientManager:
         runner.provide_user_input(msg.data)
         return {"type": "ok", "success": True}
 
-    async def _handle_stop_workflow(self, msg: Any) -> dict[str, Any]:
+    async def handle_stop(self, msg: Any) -> dict[str, Any]:
+        """Handle stop request.
+
+        Parameters
+        ----------
+        msg : Any
+            The stop request.
+
+        Returns
+        -------
+        dict[str, Any]
+            The processing result to respond with.
+        """
         session_id = getattr(msg, "session_id", "")
         runner = self._runners.get(session_id)
         if not runner:
@@ -574,7 +584,7 @@ class ClientManager:
                 session_id, WorkflowStatus.STOPPING
             )
             return {
-                "type": "stop_workflow_response",
+                "type": "stop_response",
                 "session_id": session_id,
                 "success": True,
                 "forced": getattr(msg, "force", False),

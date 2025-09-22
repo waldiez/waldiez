@@ -23,10 +23,11 @@ import type {
     WaldiezDebugBreakpointsList,
     WaldiezDebugError,
     WaldiezDebugEventInfo,
-    WaldiezDebugHelp,
+    WaldiezDebugHelpMessage,
     WaldiezDebugInputRequest,
     WaldiezDebugMessage,
     WaldiezDebugStats,
+    WaldiezDebugStatsMessage,
 } from "@waldiez/components/stepByStep/types";
 
 describe("Step-by-step type guards", () => {
@@ -199,7 +200,7 @@ describe("Step-by-step type guards", () => {
 
     describe("isDebugStats", () => {
         it("should return true for valid debug_stats message", () => {
-            const message: WaldiezDebugStats = {
+            const message: WaldiezDebugStatsMessage = {
                 type: "debug_stats",
                 stats: {
                     events_processed: 10,
@@ -215,7 +216,7 @@ describe("Step-by-step type guards", () => {
         });
 
         it("should return true for message with additional stats properties", () => {
-            const message: WaldiezDebugStats = {
+            const message: WaldiezDebugStatsMessage = {
                 type: "debug_stats",
                 stats: {
                     events_processed: 15,
@@ -233,9 +234,9 @@ describe("Step-by-step type guards", () => {
         });
 
         it("should return true for message with empty stats object", () => {
-            const message: WaldiezDebugStats = {
+            const message: WaldiezDebugStatsMessage = {
                 type: "debug_stats",
-                stats: {} as unknown as WaldiezDebugStats["stats"],
+                stats: {} as unknown as WaldiezDebugStats,
             };
 
             expect(isDebugStats(message)).toBe(true);
@@ -284,7 +285,7 @@ describe("Step-by-step type guards", () => {
 
     describe("isDebugHelp", () => {
         it("should return true for valid debug_help message", () => {
-            const message: WaldiezDebugHelp = {
+            const message: WaldiezDebugHelpMessage = {
                 type: "debug_help",
                 help: [
                     {
@@ -301,7 +302,7 @@ describe("Step-by-step type guards", () => {
         });
 
         it("should return true for message with empty help array", () => {
-            const message: WaldiezDebugHelp = {
+            const message: WaldiezDebugHelpMessage = {
                 type: "debug_help",
                 help: [],
             };
@@ -310,7 +311,7 @@ describe("Step-by-step type guards", () => {
         });
 
         it("should return true for message with complex help structure", () => {
-            const message: WaldiezDebugHelp = {
+            const message: WaldiezDebugHelpMessage = {
                 type: "debug_help",
                 help: [
                     {

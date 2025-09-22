@@ -22,7 +22,15 @@
   gap: 0.5rem;
 }
 
-.timeline-top .timeline-icon {
+.timeline-button {
+  color: #2563eb;
+}
+
+body.waldiez-dark .timeline-button {
+  color: #60a5fa;
+}
+
+.timeline-icon {
   width: 1rem;
   height: 1rem;
   color: #2563eb;

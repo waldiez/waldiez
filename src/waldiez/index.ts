@@ -7,24 +7,33 @@ import "@waldiez/polyfills/promiseWithResolvers";
 import type { WaldiezFlow, WaldiezFlowProps, WaldiezProps } from "@waldiez/types";
 import { Waldiez } from "@waldiez/waldiez";
 
+export { showSnackbar } from "@waldiez/components/snackbar";
 export type * from "@waldiez/components/types";
 export type * from "@waldiez/models/types";
 export type * from "@waldiez/store/types";
-export type * from "@waldiez/utils/chat/types";
-export type * from "@waldiez/utils/stepByStep/types";
-
-export { showSnackbar } from "@waldiez/components/snackbar";
 export {
+    defaultChatConfig,
+    useWaldiezChat,
+    useWaldiezMessaging,
+    useWaldiezStepByStep,
+    useWaldiezWs,
+    useWaldiezWsChat,
+    useWaldiezWsMessaging,
+    useWaldiezWsStepByStep,
     WaldiezBreakpointUtils,
     WaldiezChatMessageProcessor,
     WaldiezStepByStepProcessor,
     WaldiezStepByStepUtils,
     WORKFLOW_CHAT_END_MARKERS,
+    WORKFLOW_DONE,
     WORKFLOW_STEP_END_MARKERS,
     WORKFLOW_STEP_MARKERS,
     WORKFLOW_STEP_START_MARKERS,
     type WaldiezChatMessageProcessingResult,
+    type WaldiezWsMessageHandler,
 } from "@waldiez/utils";
+export type * from "@waldiez/utils/chat/types";
+export type * from "@waldiez/utils/stepByStep/types";
 
 export { Waldiez };
 export type { WaldiezFlow, WaldiezFlowProps, WaldiezProps };

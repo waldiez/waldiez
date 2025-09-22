@@ -50,7 +50,7 @@ const devHandlers = {
     onChange: undefined,
 
     // Handle save requests (triggered by Ctrl+S/Cmd+S)
-    onSave: (flowString: string) => {
+    onSave: (flowString: string, _path?: string | null) => {
         console.info("[DEV] Saving flow:", flowString.substring(0, 100) + "...");
     },
 
@@ -64,7 +64,7 @@ const devHandlers = {
     },
 
     // Handle conversion requests (to Python or Jupyter)
-    onConvert: (_flowString: string, to: "py" | "ipynb") => {
+    onConvert: (_flowString: string, to: "py" | "ipynb", _path?: string | null) => {
         console.info("[DEV] Converting flow to", to);
     },
 

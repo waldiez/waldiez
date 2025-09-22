@@ -15,7 +15,7 @@ import type {
 } from "@waldiez/models/types";
 import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
-import { exportItem, importItem } from "@waldiez/utils";
+import { exportItem, importItem, isPromise } from "@waldiez/utils";
 
 /**
  * Custom hook for managing Waldiez Node Agent Modal functionality
@@ -217,6 +217,37 @@ export const useWaldiezNodeAgentModal = (
         ],
     );
 
+    const onUploaded = useCallback(
+        (dataToSubmit: { [key: string]: any }, filePaths: string[]) => {
+            const ragData = agentData as WaldiezNodeAgentRagUserData;
+            const docsPath = ragData.retrieveConfig.docsPath;
+            const newDocsPath = [...docsPath];
+
+            // Update file paths with uploaded ones
+            for (let i = 0; i < filesToUpload.length; i++) {
+                const index = newDocsPath.indexOf(`file:///${filesToUpload[i]?.name}`);
+                if (index > -1) {
+                    if (typeof filePaths[i] === "string") {
+                        newDocsPath[index] = filePaths[i]!;
+                    } else {
+                        newDocsPath.splice(index, 1);
+                    }
+                }
+            }
+
+            dataToSubmit.retrieveConfig.docsPath = newDocsPath;
+            // Filter out invalid paths and temporary file:/// URLs
+            dataToSubmit.retrieveConfig.docsPath = [...newDocsPath].filter(
+                (entry: any) =>
+                    typeof entry === "string" && entry.length > 0 && !entry.startsWith("file:///"),
+            );
+
+            setFilesToUpload([]);
+            submit(dataToSubmit);
+        },
+        [agentData, filesToUpload, submit],
+    );
+
     /**
      * Special submission handling for RAG user agents with file uploads
      */
@@ -224,42 +255,19 @@ export const useWaldiezNodeAgentModal = (
         (dataToSubmit: { [key: string]: any }) => {
             // Handle file uploads if present
             if (filesToUpload.length > 0 && uploadHandler) {
-                uploadHandler(filesToUpload)
-                    .then(filePaths => {
-                        const ragData = agentData as WaldiezNodeAgentRagUserData;
-                        const docsPath = ragData.retrieveConfig.docsPath;
-                        const newDocsPath = [...docsPath];
-
-                        // Update file paths with uploaded ones
-                        for (let i = 0; i < filesToUpload.length; i++) {
-                            const index = newDocsPath.indexOf(`file:///${filesToUpload[i]?.name}`);
-                            if (index > -1) {
-                                if (typeof filePaths[i] === "string") {
-                                    newDocsPath[index] = filePaths[i]!;
-                                } else {
-                                    newDocsPath.splice(index, 1);
-                                }
-                            }
-                        }
-
-                        dataToSubmit.retrieveConfig.docsPath = newDocsPath;
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    })
-                    .finally(() => {
-                        // Filter out invalid paths and temporary file:/// URLs
-                        const docsPath = dataToSubmit.retrieveConfig.docsPath;
-                        dataToSubmit.retrieveConfig.docsPath = [...docsPath].filter(
-                            (entry: any) =>
-                                typeof entry === "string" &&
-                                entry.length > 0 &&
-                                !entry.startsWith("file:///"),
-                        );
-
-                        setFilesToUpload([]);
-                        submit(dataToSubmit);
-                    });
+                const result = uploadHandler(filesToUpload);
+                if (isPromise(result)) {
+                    result
+                        .then(filePaths => {
+                            onUploaded(dataToSubmit, filePaths);
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            onUploaded(dataToSubmit, []);
+                        });
+                } else {
+                    onUploaded(dataToSubmit, result);
+                }
             } else {
                 // Handle submission without file uploads
                 const ragData = agentData as WaldiezNodeAgentRagUserData;
@@ -275,7 +283,7 @@ export const useWaldiezNodeAgentModal = (
                 submit(dataToSubmit);
             }
         },
-        [agentData, filesToUpload, uploadHandler, submit],
+        [agentData, filesToUpload, uploadHandler, submit, onUploaded],
     );
 
     /**

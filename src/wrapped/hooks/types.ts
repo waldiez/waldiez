@@ -2,20 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import type { WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
-import type {
-    WaldiezChatMessage,
-    WaldiezChatParticipant,
-    WaldiezChatUserInput,
-    WaldiezTimelineData,
-} from "@waldiez/types";
 
 type ExecMode = "standard" | "step_by_step";
 
 export type ServerMessage =
-    | { type: "run_workflow_response"; success: boolean; session_id: string; error?: string }
+    | { type: "run_response"; success: boolean; session_id: string; error?: string }
     | {
-          type: "step_run_workflow_response";
+          type: "step_run_response";
           success: boolean;
           session_id: string;
           auto_continue: boolean;
@@ -23,21 +16,21 @@ export type ServerMessage =
           error?: string;
       }
     | {
-          type: "stop_workflow_response";
+          type: "stop_response";
           success: boolean;
           session_id: string;
           error?: string;
           forced?: boolean;
       }
     | {
-          type: "convert_workflow_response";
+          type: "convert_response";
           success: boolean;
-          converted_data?: string;
-          target_format: "py" | "ipynb";
-          output_path?: string;
+          data?: string;
+          format: "py" | "ipynb";
+          path?: string;
           error?: string;
       }
-    | { type: "save_flow_response"; success: boolean; file_path?: string; error?: string }
+    | { type: "save_response"; success: boolean; file_path?: string; error?: string }
     | {
           type: "upload_file_response";
           success: boolean;
@@ -67,7 +60,7 @@ export type ServerMessage =
           type: "workflow_status";
           session_id: string;
           status: string;
-          execution_mode: ExecMode;
+          mode: ExecMode;
           details?: string;
       }
     | {
@@ -113,44 +106,19 @@ export type ServerMessage =
       }
     | { type: string; [k: string]: any }; // catch-all for chat processor
 
-export type WaldiezWrapperState = {
-    showChat: boolean;
-    timeline?: WaldiezTimelineData;
-    messages: WaldiezChatMessage[];
-    participants: WaldiezChatParticipant[];
-    isRunning: boolean;
-    isDebugging: boolean;
-    connected: boolean;
-    error: string | null;
-    inputPrompt?: { prompt: string; request_id: string; password?: boolean };
-    stepByStepState: WaldiezStepByStep;
-};
-
-export type WaldiezWrapperActions = {
-    run: (flowJson: string) => void;
-    stepRun: (flowJson: string, opts?: { auto_continue?: boolean; breakpoints?: string[] }) => void;
-    stop: () => void;
-    save: (flowJson: string, filename?: string, forceOverwrite?: boolean) => void;
-    upload: (files: File[]) => Promise<string[]>;
-    convert: (flowJson: string, to: "py" | "ipynb", outputPath?: string | null) => void;
-    userInput: (input: WaldiezChatUserInput) => void;
-    sendMessage: (raw: unknown) => boolean; // raw passthrough if you need it
-    reset: () => void;
-};
-
 export type SaveFlowResponseMsg = {
-    type: "save_flow_response";
+    type: "save_response";
     success: boolean;
     error?: string;
     file_path?: string;
 };
 
 export type ConvertWorkflowResponseMsg = {
-    type: "convert_workflow_response";
+    type: "convert_response";
     success: boolean;
     error?: string;
-    converted_data?: string;
-    output_path?: string;
+    data?: string;
+    path?: string;
 };
 
 export type ErrorResponseMsg = {
@@ -169,11 +137,11 @@ export type SubprocessOutputMsg = {
 };
 
 export function isSaveFlowResponse(m: ServerMessage): m is SaveFlowResponseMsg {
-    return m?.type === "save_flow_response" && typeof (m as any).success === "boolean";
+    return m?.type === "save_response" && typeof (m as any).success === "boolean";
 }
 
 export function isConvertWorkflowResponse(m: ServerMessage): m is ConvertWorkflowResponseMsg {
-    return m?.type === "convert_workflow_response" && typeof (m as any).success === "boolean";
+    return m?.type === "convert_response" && typeof (m as any).success === "boolean";
 }
 
 export function isErrorResponse(m: ServerMessage): m is ErrorResponseMsg {

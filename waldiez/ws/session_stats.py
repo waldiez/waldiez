@@ -65,7 +65,7 @@ class SessionStats(BaseModel):
 
             client_count = self.sessions_by_client.get(state.client_id, 0)
             self.sessions_by_client[state.client_id] = client_count + 1
-            mode_key = state.execution_mode.value
+            mode_key = state.mode.value
             mode_count = self.sessions_by_mode.get(mode_key, 0)
             self.sessions_by_mode[mode_key] = mode_count + 1
             status_key = state.status.value

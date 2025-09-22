@@ -4,15 +4,16 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type WaldiezChatMessageHandler = (event: MessageEvent) => void;
+export type WaldiezWsMessageHandler = (event: MessageEvent) => void;
 
-export const useWebsocket = (props: {
+export const useWaldiezWs = (props: {
     wsUrl: string;
+    protocols?: string | string[] | undefined;
     onError?: (error: any) => void;
-    onWsMessage?: WaldiezChatMessageHandler;
-    autoPingMs?: number; // optional
+    onWsMessage?: WaldiezWsMessageHandler;
+    autoPingMs?: number;
 }) => {
-    const { wsUrl, onWsMessage, onError, autoPingMs } = props;
+    const { wsUrl, protocols, onWsMessage, onError, autoPingMs } = props;
 
     const wsRef = useRef<WebSocket | undefined>(undefined);
     // Track the reconnect timeout
@@ -29,8 +30,8 @@ export const useWebsocket = (props: {
     const [connected, setConnected] = useState(false);
     const maxReconnectAttempts = 5;
 
-    const handlerRef = useRef<WaldiezChatMessageHandler | undefined>(onWsMessage);
-    const setMessageHandler = useCallback((fn?: WaldiezChatMessageHandler) => {
+    const handlerRef = useRef<WaldiezWsMessageHandler | undefined>(onWsMessage);
+    const setMessageHandler = useCallback((fn?: WaldiezWsMessageHandler) => {
         handlerRef.current = fn;
     }, []);
     useEffect(() => {
@@ -46,7 +47,7 @@ export const useWebsocket = (props: {
                     wsRef.current.readyState !== WebSocket.CLOSING &&
                     wsRef.current.readyState !== WebSocket.CLOSED
                 ) {
-                    wsRef.current.close();
+                    wsRef.current.close(1000, "client disconnect");
                 }
             } catch {}
             wsRef.current = undefined;
@@ -77,7 +78,7 @@ export const useWebsocket = (props: {
         function actuallyConnect() {
             closeExistingConnection();
             try {
-                const ws = new WebSocket(wsUrl);
+                const ws = new WebSocket(wsUrl, protocols);
 
                 ws.onopen = () => {
                     if (!mountedRef.current) {
@@ -116,7 +117,11 @@ export const useWebsocket = (props: {
                 };
 
                 ws.onmessage = event => {
-                    handlerRef.current?.(event);
+                    try {
+                        handlerRef.current?.(event);
+                    } catch (err) {
+                        onError?.(err);
+                    }
                 };
 
                 wsRef.current = ws;
@@ -183,5 +188,20 @@ export const useWebsocket = (props: {
         };
     }, [wsUrl, connectWebSocket, closeExistingConnection]);
 
-    return { wsRef, sendJson, connected, setMessageHandler };
+    const getConnectionState = useCallback(() => {
+        return wsRef.current?.readyState ?? WebSocket.CLOSED;
+    }, []);
+
+    const reconnect = useCallback(() => {
+        reconnectAttemptsRef.current = 0;
+        connectWebSocket();
+    }, [connectWebSocket]);
+
+    const disconnect = useCallback(() => {
+        reconnectAttemptsRef.current = 0;
+        setConnected(false);
+        closeExistingConnection();
+    }, [closeExistingConnection]);
+
+    return { wsRef, send: sendJson, connected, setMessageHandler, getConnectionState, reconnect, disconnect };
 };

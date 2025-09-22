@@ -8,55 +8,36 @@ import React, { useCallback } from "react";
 
 import type { WaldiezProps } from "@waldiez/types";
 
-import { useWaldiezWrapper } from "./hooks";
+import { useWaldiezWrapper } from "./hooks/wrapper";
 
 type WaldiezWrapperProps = {
-    // Original Waldiez props that will be passed to the component
     waldiezProps: Omit<WaldiezProps, "onRun" | "onStepRun" | "onSave" | "onUpload" | "onConvert" | "chat">;
-    // WebSocket connection URL
     wsUrl?: string;
+    protocols?: string | string[] | undefined;
 };
 
 export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
     waldiezProps,
     wsUrl = "ws://localhost:8765",
+    protocols = undefined,
 }) => {
     const onError = useCallback((error: any) => {
         showSnackbar({ message: "Workflow Error", details: error, level: "error", withCloseButton: true });
     }, []);
-    const [
-        { showChat, messages, participants, isRunning, isDebugging, inputPrompt, timeline, stepByStepState },
-        { run, stepRun, stop, save, upload, convert, userInput, reset },
-    ] = useWaldiezWrapper({ wsUrl, flowId: waldiezProps.flowId, onError });
-    const userParticipants = participants
-        .filter(p => p.isUser)
-        .map(p => p.name)
-        .filter(Boolean);
-
-    // Assemble props for the Waldiez component
+    const { chat, stepByStep, onRun, onStepRun, onConvert, onSave } = useWaldiezWrapper({
+        flowId: waldiezProps.flowId,
+        wsUrl,
+        protocols,
+        onError,
+    });
     const completeProps: WaldiezProps = {
         ...waldiezProps,
-        onRun: run,
-        onStepRun: stepRun,
-        onSave: save,
-        onUpload: upload,
-        onConvert: convert,
-        chat: isDebugging
-            ? undefined
-            : {
-                  show: showChat,
-                  active: isRunning,
-                  messages,
-                  userParticipants,
-                  activeRequest: inputPrompt,
-                  timeline,
-                  handlers: {
-                      onUserInput: userInput,
-                      onInterrupt: stop,
-                      onClose: reset,
-                  },
-              },
-        stepByStep: isRunning ? undefined : !isDebugging ? undefined : stepByStepState,
+        onRun,
+        onStepRun,
+        onSave,
+        onConvert,
+        chat,
+        stepByStep,
     };
 
     return (

@@ -13,7 +13,7 @@ parso==0.8.5
 pillow
 pip>=25.1.1
 platformdirs==4.4.0
-psutil==7.0.0
+psutil==7.1.0
 pydantic>=2.10.2,<3
 rpds-py==0.27.1
 typer>=0.9.0,<1

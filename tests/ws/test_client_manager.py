@@ -237,7 +237,7 @@ class TestClientManager:
             await self.session_manager.create_session(
                 session_id="test_session",
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
             )
 
             message = json.dumps(
@@ -255,28 +255,28 @@ class TestClientManager:
             await self.session_manager.stop()
 
     @pytest.mark.asyncio
-    async def test_handle_save_flow_request(self) -> None:
+    async def test_handle_save_request(self) -> None:
         """Test handling save flow request."""
-        test_file = Path("test_handle_save_flow_request.waldiez")
+        test_file = Path("test_handle_save_request.waldiez")
         if test_file.exists():
             test_file.unlink()
         flow_data = '{"nodes": [], "edges": []}'
 
         message = json.dumps(
             {
-                "type": "save_flow",
-                "flow_data": flow_data,
-                "filename": str(test_file),
+                "type": "save",
+                "data": flow_data,
+                "path": str(test_file),
             }
         )
 
         response = await self.client_manager.handle_message(message)
 
         assert response is not None
-        assert response["type"] == "save_flow_response"
+        assert response["type"] == "save_response"
         if response["success"] is False:
             raise ValueError(response["error"])
-        assert response["file_path"] == str(test_file)
+        assert response["path"] == str(test_file)
 
         # Verify file was created
         assert test_file.exists()
@@ -287,24 +287,24 @@ class TestClientManager:
             pass
 
     @pytest.mark.asyncio
-    async def test_handle_save_flow_request_file_exists(self) -> None:
+    async def test_handle_save_request_file_exists(self) -> None:
         """Test handling save flow request when file exists."""
-        test_file = Path("test_handle_save_flow_request_file_exists.waldiez")
+        test_file = Path("test_handle_save_request_file_exists.waldiez")
         test_file.write_text("existing content", encoding="utf-8")
 
         message = json.dumps(
             {
-                "type": "save_flow",
-                "flow_data": '{"new": "data"}',
-                "filename": str(test_file),
-                "force_overwrite": False,
+                "type": "save",
+                "data": '{"new": "data"}',
+                "path": str(test_file),
+                "force": False,
             }
         )
 
         response = await self.client_manager.handle_message(message)
 
         assert response is not None
-        assert response["type"] == "save_flow_response"
+        assert response["type"] == "save_response"
         assert response["success"] is False
         assert "File exists" in response["error"]
         try:
@@ -313,27 +313,25 @@ class TestClientManager:
             pass
 
     @pytest.mark.asyncio
-    async def test_handle_save_flow_request_force_overwrite(self) -> None:
+    async def test_handle_save_request_force_overwrite(self) -> None:
         """Test handling save flow request with force overwrite."""
-        test_file = Path(
-            "test_handle_save_flow_request_force_overwrite.waldiez"
-        )
+        test_file = Path("test_handle_save_request_force_overwrite.waldiez")
         test_file.write_text("old content", encoding="utf-8")
         new_content = '{"new": "data"}'
 
         message = json.dumps(
             {
-                "type": "save_flow",
-                "flow_data": new_content,
-                "filename": str(test_file),
-                "force_overwrite": True,
+                "type": "save",
+                "data": new_content,
+                "path": str(test_file),
+                "force": True,
             }
         )
 
         response = await self.client_manager.handle_message(message)
 
         assert response is not None
-        assert response["type"] == "save_flow_response"
+        assert response["type"] == "save_response"
         assert response["success"] is True
         assert test_file.read_text(encoding="utf-8") == new_content
         try:
@@ -342,23 +340,23 @@ class TestClientManager:
             pass
 
     @pytest.mark.asyncio
-    async def test_handle_save_flow_request_default_filename(self) -> None:
+    async def test_handle_save_request_default_filename(self) -> None:
         """Test handling save flow request with default filename."""
         flow_data = '{"test": "data"}'
 
-        message = json.dumps({"type": "save_flow", "flow_data": flow_data})
+        message = json.dumps({"type": "save", "data": flow_data})
 
         with patch("pathlib.Path.write_text") as mock_write:
             response = await self.client_manager.handle_message(message)
 
             assert response is not None
-            assert response["type"] == "save_flow_response"
+            assert response["type"] == "save_response"
             assert response["success"] is True
-            assert f"waldiez_{self.client_id}.waldiez" in response["file_path"]
+            assert f"waldiez_{self.client_id}.waldiez" in response["path"]
             mock_write.assert_called_once_with(flow_data, encoding="utf-8")
 
     @pytest.mark.asyncio
-    async def test_handle_convert_workflow_request(self) -> None:
+    async def test_handle_convert_request(self) -> None:
         """Test handling convert workflow request."""
         # Mock valid waldiez data
         flow_data = json.dumps(
@@ -377,10 +375,10 @@ class TestClientManager:
 
         message = json.dumps(
             {
-                "type": "convert_workflow",
-                "flow_data": flow_data,
-                "target_format": "py",
-                "output_path": "test_output.py",
+                "type": "convert",
+                "data": flow_data,
+                "format": "py",
+                "path": "test_output.py",
             }
         )
 
@@ -401,30 +399,30 @@ class TestClientManager:
                     response = await self.client_manager.handle_message(message)
 
                     assert response is not None
-                    assert response["type"] == "convert_workflow_response"
+                    assert response["type"] == "convert_response"
                     assert response["success"] is True
-                    assert response["target_format"] == "py"
+                    assert response["format"] == "py"
 
     @pytest.mark.asyncio
-    async def test_handle_convert_workflow_request_invalid_flow(self) -> None:
+    async def test_handle_convert_request_invalid_flow(self) -> None:
         """Test handling convert workflow request with invalid flow data."""
         message = json.dumps(
             {
-                "type": "convert_workflow",
-                "flow_data": "invalid json",
-                "target_format": "py",
+                "type": "convert",
+                "data": "invalid json",
+                "format": "py",
             }
         )
 
         response = await self.client_manager.handle_message(message)
 
         assert response is not None
-        assert response["type"] == "convert_workflow_response"
+        assert response["type"] == "convert_response"
         assert response["success"] is False
         assert "Invalid flow_data" in response["error"]
 
     @pytest.mark.asyncio
-    async def test_handle_run_workflow_request(self) -> None:
+    async def test_handle_run_request(self) -> None:
         """Test handling run workflow request."""
         await self.session_manager.start()
 
@@ -432,9 +430,9 @@ class TestClientManager:
             flow_data = Waldiez.default().model_dump_json()
             message = json.dumps(
                 {
-                    "type": "run_workflow",
-                    "flow_data": flow_data,
-                    "execution_mode": "standard",
+                    "type": "run",
+                    "data": flow_data,
+                    "mode": "standard",
                 }
             )
 
@@ -452,10 +450,10 @@ class TestClientManager:
                     response = await self.client_manager.handle_message(message)
 
                     assert response is not None
-                    assert response["type"] == "run_workflow_response"
+                    assert response["type"] == "run_response"
                     assert response["success"] is True
                     assert "session_id" in response
-                    assert response["execution_mode"] == "standard"
+                    assert response["mode"] == "standard"
 
                     # Verify runner was created and task was scheduled
                     mock_runner_class.assert_called_once()
@@ -464,25 +462,25 @@ class TestClientManager:
             await self.session_manager.stop()
 
     @pytest.mark.asyncio
-    async def test_handle_run_workflow_request_invalid_flow(self) -> None:
+    async def test_handle_run_request_invalid_flow(self) -> None:
         """Test handling run workflow request with invalid flow data."""
         message = json.dumps(
             {
-                "type": "run_workflow",
-                "flow_data": "invalid json",
-                "execution_mode": "standard",
+                "type": "run",
+                "data": "invalid json",
+                "mode": "standard",
             }
         )
 
         response = await self.client_manager.handle_message(message)
 
         assert response is not None
-        assert response["type"] == "run_workflow_response"
+        assert response["type"] == "run_response"
         assert response["success"] is False
         assert "Invalid flow_data" in response["error"]
 
     @pytest.mark.asyncio
-    async def test_handle_step_run_workflow_request(self) -> None:
+    async def test_handle_step_run_request(self) -> None:
         """Test handling step run workflow request."""
         await self.session_manager.start()
 
@@ -492,8 +490,8 @@ class TestClientManager:
 
             message = json.dumps(
                 {
-                    "type": "step_run_workflow",
-                    "flow_data": flow_data,
+                    "type": "step_run",
+                    "data": flow_data,
                     "auto_continue": True,
                     "breakpoints": ["event1", "event2"],
                 }
@@ -514,7 +512,7 @@ class TestClientManager:
                     response = await self.client_manager.handle_message(message)
 
                     assert response is not None
-                    assert response["type"] == "step_run_workflow_response"
+                    assert response["type"] == "step_run_response"
                     assert response["success"] is True
                     assert response["auto_continue"] is True
                     assert response["breakpoints"] == ["event1", "event2"]
@@ -689,7 +687,7 @@ class TestClientManager:
         assert response["success"] is False
 
     @pytest.mark.asyncio
-    async def test_handle_stop_workflow_request(self) -> None:
+    async def test_handle_stop_request(self) -> None:
         """Test handling stop workflow request."""
         await self.session_manager.start()
 
@@ -700,13 +698,13 @@ class TestClientManager:
             self.client_manager._runners[session_id] = mock_runner  # type: ignore
 
             message = SimpleNamespace(
-                type="stop_workflow", session_id=session_id, force=False
+                type="stop", session_id=session_id, force=False
             )
 
-            response = await self.client_manager._handle_stop_workflow(message)
+            response = await self.client_manager.handle_stop(message)
 
             assert response is not None
-            assert response["type"] == "stop_workflow_response"
+            assert response["type"] == "stop_response"
             assert response["success"] is True
             assert response["session_id"] == session_id
             assert response["forced"] is False
@@ -872,7 +870,7 @@ class TestClientManager:
             await self.session_manager.create_session(
                 session_id=session_id,
                 client_id=self.client_id,
-                execution_mode=ExecutionMode.STANDARD,
+                mode=ExecutionMode.STANDARD,
                 runner=mock_runner,
             )
 

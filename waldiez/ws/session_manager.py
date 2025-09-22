@@ -67,7 +67,7 @@ class SessionManager:
         self,
         session_id: str,
         client_id: str,
-        execution_mode: ExecutionMode,
+        mode: ExecutionMode,
         runner: Any = None,
         temp_file: Path | None = None,
         metadata: dict[str, Any] | None = None,
@@ -80,7 +80,7 @@ class SessionManager:
             The ID of the session to create
         client_id : str
             The ID of the client creating the session
-        execution_mode : ExecutionMode
+        mode : ExecutionMode
             The execution mode for the session
         runner : Any, optional
             The runner to use for the session
@@ -103,7 +103,7 @@ class SessionManager:
             session_id=session_id,
             client_id=client_id,
             status=WorkflowStatus.IDLE,
-            execution_mode=execution_mode,
+            mode=mode,
             metadata=metadata or {},
         )
         session = WorkflowSession(
@@ -180,9 +180,7 @@ class SessionManager:
             self._recompute_stats_locked()
             return True
 
-    async def get_session_execution_mode(
-        self, session_id: str
-    ) -> ExecutionMode | None:
+    async def get_session_mode(self, session_id: str) -> ExecutionMode | None:
         """Get the execution mode of a workflow session.
 
         Parameters
@@ -196,8 +194,8 @@ class SessionManager:
             The execution mode of the session, or None if it does not exist
         """
         async with self._lock:
-            s = self._sessions.get(session_id)
-            return s.execution_mode if s else None
+            session = self._sessions.get(session_id)
+            return session.mode if session else None
 
     async def remove_session(self, session_id: str) -> bool:
         """Remove a workflow session by ID.

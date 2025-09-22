@@ -3,6 +3,7 @@
  * Copyright 2024 - 2026 Waldiez & contributors
  */
 
+import { ActionDispatch } from 'react';
 import { Connection } from '@xyflow/react';
 import { default as default_2 } from 'react';
 import { Edge } from '@xyflow/react';
@@ -12,6 +13,7 @@ import { Node as Node_2 } from '@xyflow/react';
 import { NodeChange } from '@xyflow/react';
 import { ReactFlowInstance } from '@xyflow/react';
 import { ReactFlowJsonObject } from '@xyflow/react';
+import { RefObject } from 'react';
 import { StoreApi } from 'zustand';
 import { TemporalState } from 'zundo';
 import { Viewport } from '@xyflow/react';
@@ -76,6 +78,11 @@ export declare const createWaldiezStore: (props: WaldiezStoreProps) => Omit<Stor
     tags: string[] | undefined;
     }>>;
 };
+
+/**
+ * Default chat configuration
+ */
+export declare const defaultChatConfig: WaldiezChatConfig;
 
 /**
  * Default configuration for group chat speakers.
@@ -818,6 +825,307 @@ export declare type typeOfGet = () => WaldiezState;
  */
 export declare type typeOfSet = {
     (partial: WaldiezState | Partial<WaldiezState> | ((state: WaldiezState) => WaldiezState | Partial<WaldiezState>), replace?: false): void;
+};
+
+/**
+ * useWaldiezChat hook.
+ */
+export declare const useWaldiezChat: (props: {
+    initialConfig?: Partial<WaldiezChatConfig>;
+    handlers?: WaldiezChatHandlers;
+    preprocess?: (message: any) => {
+        handled: boolean;
+        updated?: any;
+    };
+    onPreview?: (requestId: string) => string;
+    deduplicationOptions?: WaldiezChatMessageDeduplicationOptions;
+}) => {
+    chat: WaldiezChatConfig;
+    dispatch: ActionDispatch<[action: WaldiezChatAction]>;
+    process: (data: any) => void;
+    reset: () => void;
+    setActive: (active: boolean) => void;
+    setShow: (show: boolean) => void;
+    setActiveRequest: (request: WaldiezActiveRequest | undefined, message?: WaldiezChatMessage) => void;
+    setError: (error: WaldiezChatError | undefined) => void;
+    setTimeline: (timeline: WaldiezTimelineData | undefined) => void;
+    setParticipants: (participants: WaldiezChatParticipant[]) => void;
+    addMessage: (message: WaldiezChatMessage, isEndOfWorkflow?: boolean) => void;
+    removeMessage: (id: string) => void;
+    clearMessages: () => void;
+};
+
+export declare const useWaldiezMessaging: (props: {
+    flowId: string;
+    onSave?: (contents: string, path?: string | null, force?: boolean) => void | Promise<void>;
+    onConvert?: (contents: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>;
+    onRun?: (contents: string, path?: string | null) => void | Promise<void>;
+    onStepRun?: (contents: string) => void | Promise<void>;
+    preprocess?: (message: any) => {
+        handled: boolean;
+        updated?: any;
+    };
+    chat?: {
+        initialConfig?: Partial<WaldiezChatConfig>;
+        handlers?: WaldiezChatHandlers;
+        preprocess?: (message: any) => {
+            handled: boolean;
+            updated?: any;
+        };
+        onPreview?: (requestId: string) => string;
+        deduplicationOptions?: WaldiezChatMessageDeduplicationOptions;
+    };
+    stepByStep?: {
+        initialConfig?: Partial<WaldiezStepByStep>;
+        handlers?: WaldiezStepHandlers;
+        preprocess?: (message: any) => {
+            handled: boolean;
+            updated?: any;
+        };
+        onPreview?: (requestId: string) => string;
+        deduplicationOptions?: WaldiezStepByStepMessageDeduplicationOptions;
+    };
+}) => {
+    save: (contents: string) => Promise<void>;
+    convert: (contents: string, to: "py" | "ipynb", path?: string | null) => Promise<void>;
+    run: (contents: string, path?: string | null) => Promise<void>;
+    stepRun: (contents: string) => Promise<void>;
+    getRunningMode: () => "chat" | "step" | undefined;
+    setRunningMode: (mode: "chat" | "step" | undefined) => void;
+    process: (data: any) => void;
+    reset: () => void;
+    dispatch: {
+        chat: React.Dispatch<WaldiezChatAction>;
+        step: React.Dispatch<WaldiezStepByStepAction>;
+    };
+    chat: WaldiezChatConfig;
+    stepByStep: WaldiezStepByStep;
+    actions: {
+        chat: {
+            process: (data: any) => void;
+            reset: () => void;
+            setActive: (active: boolean) => void;
+            setShow: (show: boolean) => void;
+            setActiveRequest: (request: WaldiezActiveRequest | undefined, message?: WaldiezChatMessage) => void;
+            setError: (error: WaldiezChatError | undefined) => void;
+            setTimeline: (timeline: WaldiezTimelineData | undefined) => void;
+            setParticipants: (participants: WaldiezChatParticipant[]) => void;
+            addMessage: (message: WaldiezChatMessage, isEndOfWorkflow?: boolean) => void;
+            removeMessage: (id: string) => void;
+            clearMessages: () => void;
+        };
+        step: {
+            process: (data: any) => void;
+            reset: () => void;
+            setActive: (active: boolean) => void;
+            setShow: (show: boolean) => void;
+            setActiveRequest: (request: WaldiezActiveRequest | undefined) => void;
+            setPendingControl: (controlInput: {
+                request_id: string;
+                prompt: string;
+            } | undefined) => void;
+            setBreakpoints: (breakpoints: (string | WaldiezBreakpoint)[]) => void;
+            setError: (error: string) => void;
+            setTimeline: (timeline: WaldiezTimelineData) => void;
+            setParticipants: (participants: WaldiezChatParticipant[]) => void;
+            addEvent: (event: Record<string, unknown>) => void;
+            removeEvent: (id: string) => void;
+            clearEvents: () => void;
+        };
+    };
+};
+
+/**
+ * useWaldiezChat hook.
+ */
+export declare const useWaldiezStepByStep: (props: {
+    initialConfig?: Partial<WaldiezStepByStep>;
+    handlers?: WaldiezStepHandlers;
+    preprocess?: (message: any) => {
+        handled: boolean;
+        updated?: any;
+    };
+    onPreview?: (requestId: string) => string;
+    deduplicationOptions?: WaldiezStepByStepMessageDeduplicationOptions;
+}) => {
+    stepByStep: WaldiezStepByStep;
+    dispatch: React.Dispatch<WaldiezStepByStepAction>;
+    process: (data: any) => void;
+    reset: () => void;
+    setActive: (active: boolean) => void;
+    setShow: (show: boolean) => void;
+    setActiveRequest: (request: WaldiezActiveRequest | undefined) => void;
+    setPendingControl: (controlInput: {
+        request_id: string;
+        prompt: string;
+    } | undefined) => void;
+    setBreakpoints: (breakpoints: (string | WaldiezBreakpoint)[]) => void;
+    setError: (error: string) => void;
+    setTimeline: (timeline: WaldiezTimelineData) => void;
+    setParticipants: (participants: WaldiezChatParticipant[]) => void;
+    addEvent: (event: Record<string, unknown>) => void;
+    removeEvent: (id: string) => void;
+    clearEvents: () => void;
+};
+
+export declare const useWaldiezWs: (props: {
+    wsUrl: string;
+    protocols?: string | string[] | undefined;
+    onError?: (error: any) => void;
+    onWsMessage?: WaldiezWsMessageHandler;
+    autoPingMs?: number;
+}) => {
+    wsRef: RefObject<WebSocket | undefined>;
+    send: (data: unknown) => boolean;
+    connected: boolean;
+    setMessageHandler: (fn?: WaldiezWsMessageHandler) => void;
+    getConnectionState: () => number;
+    reconnect: () => void;
+    disconnect: () => void;
+};
+
+export declare const useWaldiezWsChat: (props: {
+    ws: {
+        url: string;
+        protocols?: string | string[] | undefined;
+        autoPingMs?: number;
+        onError?: (error: any) => void;
+    };
+    chat?: {
+        initialConfig?: Partial<WaldiezChatConfig>;
+        handlers?: WaldiezChatHandlers;
+        preprocess?: (message: any) => {
+            handled: boolean;
+            updated?: any;
+        };
+        onPreview?: (requestId: string) => string;
+        deduplicationOptions?: WaldiezChatMessageDeduplicationOptions;
+    };
+}) => {
+    chat: WaldiezChatConfig;
+    dispatch: React.Dispatch<WaldiezChatAction>;
+    reset: () => void;
+    connected: boolean;
+    getConnectionState: () => number;
+    send: (msg: unknown) => boolean | void;
+    reconnect: () => void;
+};
+
+export declare const useWaldiezWsMessaging: (props: {
+    flowId: string;
+    onSave?: (contents: string, path?: string | null) => void | Promise<void>;
+    onConvert?: (contents: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>;
+    onRun?: (contents: string) => void | Promise<void>;
+    onStepRun?: (contents: string) => void | Promise<void>;
+    preprocess?: (message: any) => {
+        handled: boolean;
+        updated?: any;
+    };
+    ws: {
+        url: string;
+        protocols?: string | string[] | undefined;
+        autoPingMs?: number;
+        onError?: (error: any) => void;
+    };
+    chat?: {
+        initialConfig?: Partial<WaldiezChatConfig>;
+        handlers?: WaldiezChatHandlers;
+        preprocess?: (message: any) => {
+            handled: boolean;
+            updated?: any;
+        };
+        onPreview?: (requestId: string) => string;
+        deduplicationOptions?: WaldiezChatMessageDeduplicationOptions;
+    };
+    stepByStep?: {
+        initialConfig?: Partial<WaldiezStepByStep>;
+        handlers?: WaldiezStepHandlers;
+        preprocess?: (message: any) => {
+            handled: boolean;
+            updated?: any;
+        };
+        onPreview?: (requestId: string) => string;
+        deduplicationOptions?: WaldiezStepByStepMessageDeduplicationOptions;
+    };
+}) => {
+    save: (contents: string, path?: string | null) => Promise<void>;
+    convert: (contents: string, to: "py" | "ipynb", path?: string | null) => Promise<void>;
+    run: (contents: string) => Promise<void>;
+    stepRun: (contents: string) => Promise<void>;
+    getRunningMode: () => "chat" | "step" | undefined;
+    setRunningMode: (mode: "chat" | "step" | undefined) => void;
+    reset: () => void;
+    actions: {
+        chat: {
+            process: (data: any) => void;
+            reset: () => void;
+            setActive: (active: boolean) => void;
+            setShow: (show: boolean) => void;
+            setActiveRequest: (request: WaldiezActiveRequest | undefined, message?: WaldiezChatMessage) => void;
+            setError: (error: WaldiezChatError | undefined) => void;
+            setTimeline: (timeline: WaldiezTimelineData | undefined) => void;
+            setParticipants: (participants: WaldiezChatParticipant[]) => void;
+            addMessage: (message: WaldiezChatMessage, isEndOfWorkflow?: boolean) => void;
+            removeMessage: (id: string) => void;
+            clearMessages: () => void;
+        };
+        step: {
+            process: (data: any) => void;
+            reset: () => void;
+            setActive: (active: boolean) => void;
+            setShow: (show: boolean) => void;
+            setActiveRequest: (request: WaldiezActiveRequest | undefined) => void;
+            setPendingControl: (controlInput: {
+                request_id: string;
+                prompt: string;
+            } | undefined) => void;
+            setBreakpoints: (breakpoints: (string | WaldiezBreakpoint)[]) => void;
+            setError: (error: string) => void;
+            setTimeline: (timeline: WaldiezTimelineData) => void;
+            setParticipants: (participants: WaldiezChatParticipant[]) => void;
+            addEvent: (event: Record<string, unknown>) => void;
+            removeEvent: (id: string) => void;
+            clearEvents: () => void;
+        };
+    };
+    dispatch: {
+        chat: React.Dispatch<WaldiezChatAction>;
+        step: React.Dispatch<WaldiezStepByStepAction>;
+    };
+    chat: WaldiezChatConfig;
+    stepByStep: WaldiezStepByStep;
+    connected: boolean;
+    getConnectionState: () => number;
+    send: (message: any) => void;
+    reconnect: () => void;
+    disconnect: () => void;
+};
+
+export declare const useWaldiezWsStepByStep: (props: {
+    ws: {
+        url: string;
+        protocols?: string | string[] | undefined;
+        autoPingMs?: number;
+        onError?: (error: any) => void;
+    };
+    stepByStep?: {
+        initialConfig?: Partial<WaldiezStepByStep>;
+        handlers?: WaldiezStepHandlers;
+        preprocess?: (message: any) => {
+            handled: boolean;
+            updated?: any;
+        };
+        onPreview?: (requestId: string) => string;
+        deduplicationOptions?: WaldiezStepByStepMessageDeduplicationOptions;
+    };
+}) => {
+    stepByStep: WaldiezStepByStep;
+    dispatch: React.Dispatch<WaldiezStepByStepAction>;
+    reset: () => void;
+    connected: boolean;
+    getConnectionState: () => number;
+    send: (msg: unknown) => boolean | void;
+    reconnect: () => void;
 };
 
 /**
@@ -1949,6 +2257,45 @@ export declare class WaldiezChat {
     }): WaldiezChat;
 }
 
+declare type WaldiezChatAction = {
+    type: "RESET";
+    config?: WaldiezChatConfig;
+} | {
+    type: "SET_ACTIVE";
+    active: boolean;
+} | {
+    type: "SET_SHOW";
+    show: boolean;
+} | {
+    type: "SET_ERROR";
+    error?: WaldiezChatError;
+} | {
+    type: "ADD_MESSAGE";
+    message: WaldiezChatMessage;
+    isEndOfWorkflow?: boolean;
+} | {
+    type: "REMOVE_MESSAGE";
+    id: string;
+} | {
+    type: "CLEAR_MESSAGES";
+} | {
+    type: "SET_TIMELINE";
+    timeline?: WaldiezTimelineData;
+} | {
+    type: "SET_PARTICIPANTS";
+    participants: WaldiezChatParticipant[];
+} | {
+    type: "SET_ACTIVE_REQUEST";
+    request?: WaldiezActiveRequest;
+    message?: WaldiezChatMessage;
+} | {
+    type: "SET_CHAT_HANDLERS";
+    handlers?: Partial<WaldiezChatHandlers> | undefined;
+} | {
+    type: "SET_STATE";
+    state: Partial<WaldiezChatConfig>;
+};
+
 /**
  * Base message data structure
  * This is the common structure for all message types.
@@ -2168,7 +2515,7 @@ export declare type WaldiezChatGroupChatRunData = WaldiezChatBaseMessageData & {
  * @param onMessageStreamEvent - Callback for message stream events
  */
 export declare type WaldiezChatHandlers = {
-    onUserInput?: (input: WaldiezChatUserInput) => void | Promise<void>;
+    onUserInput?: (input: WaldiezChatUserInput) => void | Promise<void> | boolean | Promise<boolean>;
     onMediaUpload?: (media: WaldiezMediaContent) => Promise<string>;
     onChatError?: (error: WaldiezChatError) => void | Promise<void>;
     onMessageStreamEvent?: (event: WaldiezStreamEvent) => void | Promise<void>;
@@ -2237,6 +2584,15 @@ export declare type WaldiezChatMessageCommon = {
     request_id?: string;
 } & {
     [key: string]: any;
+};
+
+/**
+ * Options for message deduplication
+ */
+declare type WaldiezChatMessageDeduplicationOptions = {
+    enabled?: boolean;
+    keyGenerator?: (message: WaldiezChatMessage) => string;
+    maxCacheSize?: number;
 };
 
 /**
@@ -2571,14 +2927,6 @@ export declare type WaldiezDebugEventInfo = {
 };
 
 /**
- * `debug_help` message (backend - client)
- */
-export declare type WaldiezDebugHelp = {
-    type: "debug_help" | "help";
-    help: WaldiezDebugHelpCommandGroup[];
-};
-
-/**
  * Help command info (match Python `WaldiezDebugHelpCommand`).
  */
 export declare type WaldiezDebugHelpCommand = {
@@ -2594,6 +2942,14 @@ export declare type WaldiezDebugHelpCommand = {
 export declare type WaldiezDebugHelpCommandGroup = {
     title: string;
     commands: WaldiezDebugHelpCommand[];
+};
+
+/**
+ * `debug_help` message (backend - client)
+ */
+export declare type WaldiezDebugHelpMessage = {
+    type: "debug_help" | "help";
+    help: WaldiezDebugHelpCommandGroup[];
 };
 
 /**
@@ -2619,7 +2975,7 @@ export declare type WaldiezDebugInputResponse = {
  * Discriminated union of all step-by-step debug messages.
  * (Matches Python `WaldiezDebugMessage` union, discriminator `type`).
  */
-export declare type WaldiezDebugMessage = WaldiezDebugPrint | WaldiezDebugInputRequest | WaldiezDebugInputResponse | WaldiezDebugBreakpointsList | WaldiezDebugBreakpointAdded | WaldiezDebugBreakpointRemoved | WaldiezDebugBreakpointCleared | WaldiezDebugEventInfo | WaldiezDebugStats | WaldiezDebugHelp | WaldiezDebugError;
+export declare type WaldiezDebugMessage = WaldiezDebugPrint | WaldiezDebugInputRequest | WaldiezDebugInputResponse | WaldiezDebugBreakpointsList | WaldiezDebugBreakpointAdded | WaldiezDebugBreakpointRemoved | WaldiezDebugBreakpointCleared | WaldiezDebugEventInfo | WaldiezDebugStatsMessage | WaldiezDebugHelpMessage | WaldiezDebugError;
 
 /**
  * `debug_print` message
@@ -2634,20 +2990,22 @@ export declare type WaldiezDebugPrint = {
  */
 export declare type WaldiezDebugResponseCode = "" | "c" | "s" | "r" | "q" | "i" | "h" | "st" | "ab" | "rb" | "lb" | "cb";
 
+export declare type WaldiezDebugStats = {
+    events_processed: number;
+    total_events: number;
+    step_mode: boolean;
+    auto_continue: boolean;
+    breakpoints: string[];
+    event_history_count: number;
+    [k: string]: unknown;
+};
+
 /**
  * `debug_stats` message (backend - client)
  */
-export declare type WaldiezDebugStats = {
+export declare type WaldiezDebugStatsMessage = {
     type: "debug_stats" | "stats";
-    stats: {
-        events_processed: number;
-        total_events: number;
-        step_mode: boolean;
-        auto_continue: boolean;
-        breakpoints: string[];
-        event_history_count: number;
-        [k: string]: unknown;
-    };
+    stats: WaldiezDebugStats;
 };
 
 /**
@@ -2825,6 +3183,7 @@ export declare class WaldiezFlowData {
 /**
  * WaldiezFlowInfo
  * @param flowId - The ID of the flow
+ * @param path - The path of the flow file
  * @param storageId - The ID of the storage
  * @param name - The name of the flow
  * @param description - The description of the flow
@@ -2835,6 +3194,7 @@ export declare class WaldiezFlowData {
  */
 export declare type WaldiezFlowInfo = {
     flowId: string;
+    path?: string | null;
     storageId: string;
     name: string;
     description: string;
@@ -3014,7 +3374,7 @@ export declare type WaldiezMediaContent = {
         type?: string;
         previewUrl?: string;
     };
-};
+} | string;
 
 /**
  * Supported media types
@@ -3913,6 +4273,7 @@ export declare type WaldiezReasoningAgentReasonConfig = {
 /**
  * WaldiezState
  * @param flowId - The ID of the flow
+ * @param path - The path of the flow
  * @param edges - The edges of the flow
  * @param nodes - The nodes of the flow
  * @param isAsync - Whether the flow is async or not
@@ -3971,16 +4332,14 @@ export declare type WaldiezStepByStep = {
     autoContinue: boolean;
     /** Event types to break on (empty means break on all) */
     breakpoints: (string | WaldiezBreakpoint)[];
-    /**
-     * Last stats snapshot (from `debug_stats`).
-     */
-    stats?: WaldiezDebugStats["stats"];
+    /**Last stats snapshot (from `debug_stats`).*/
+    stats?: WaldiezDebugStats;
     /** Raw event history accumulated client-side */
     eventHistory: Array<Record<string, unknown>>;
     /** The most recent `debug_event_info` payload */
     currentEvent?: Record<string, unknown>;
     /** Debug help content (from `debug_help`) */
-    help?: WaldiezDebugHelp["help"];
+    help?: WaldiezDebugHelpCommandGroup[];
     /** Last error (from `debug_error`) */
     lastError?: string;
     /** List of participants in the chat */
@@ -3990,7 +4349,7 @@ export declare type WaldiezStepByStep = {
     /**
      * Pending control action input. For replying to messages
      * of type `debug_input_request`.
-     * Separate from the normal chat's `activeRequest` to decouple UIs.
+     * Separate from the normal chat's `activeRequest`s.
      */
     pendingControlInput?: {
         request_id: string;
@@ -4002,7 +4361,74 @@ export declare type WaldiezStepByStep = {
      */
     activeRequest?: WaldiezActiveRequest | null;
     /** Handlers for step-specific actions */
-    handlers: WaldiezStepHandlers;
+    handlers?: WaldiezStepHandlers;
+};
+
+declare type WaldiezStepByStepAction = {
+    type: "RESET";
+    config?: WaldiezStepByStep;
+} | {
+    type: "SET_SHOW";
+    show: boolean;
+} | {
+    type: "SET_ACTIVE";
+    active: boolean;
+} | {
+    type: "SET_STEP_MODE";
+    mode: boolean;
+} | {
+    type: "SET_AUTO_CONTINUE";
+    autoContinue: boolean;
+} | {
+    type: "SET_ERROR";
+    error?: string;
+    markInactive?: boolean;
+} | {
+    type: "SET_BREAKPOINTS";
+    breakpoints: (string | WaldiezBreakpoint)[];
+} | {
+    type: "SET_STATS";
+    stats: WaldiezDebugStats | undefined;
+} | {
+    type: "SET_HELP";
+    help: WaldiezDebugHelpCommandGroup[] | undefined;
+} | {
+    type: "SET_PARTICIPANTS";
+    participants: WaldiezChatParticipant[];
+} | {
+    type: "SET_TIMELINE";
+    timeline?: WaldiezTimelineData;
+} | {
+    type: "SET_CURRENT_EVENT";
+    event?: Record<string, unknown>;
+} | {
+    type: "SET_PENDING_CONTROL_INPUT";
+    controlInput?: {
+        request_id: string;
+        prompt: string;
+    } | null;
+} | {
+    type: "SET_ACTIVE_REQUEST";
+    request?: WaldiezActiveRequest;
+} | {
+    type: "SET_STEP_HANDLERS";
+    handlers?: WaldiezStepHandlers;
+} | {
+    type: "ADD_EVENT";
+    event: Record<string, unknown>;
+    makeItCurrent?: boolean;
+} | {
+    type: "ADD_EVENTS";
+    events: Record<string, unknown>[];
+    makeLastCurrent?: boolean;
+} | {
+    type: "REMOVE_EVENT";
+    id: string;
+} | {
+    type: "CLEAR_EVENTS";
+} | {
+    type: "SET_STATE";
+    state: Partial<WaldiezStepByStep>;
 };
 
 /**
@@ -4038,6 +4464,15 @@ export declare type WaldiezStepByStepHandler = {
      * Process the debug message data
      */
     handle(data: WaldiezDebugMessage, context: WaldiezStepByStepProcessingContext): WaldiezStepByStepProcessingResult | undefined;
+};
+
+/**
+ * Options for message deduplication
+ */
+declare type WaldiezStepByStepMessageDeduplicationOptions = {
+    enabled?: boolean;
+    keyGenerator?: (event: Record<string, unknown>) => string;
+    maxCacheSize?: number;
 };
 
 /**
@@ -4135,15 +4570,13 @@ export declare class WaldiezStepByStepUtils {
  * @param close - Close the panel view.
  */
 export declare type WaldiezStepHandlers = {
+    /** optional action to perform when the run starts (like select breakpoints or checkpoint) */
+    onStart?: () => void | Promise<void>;
     /** Send a control command (e.g., Continue/Run/Step/Quit/Info/Help/Stats...). */
     sendControl: (input: Pick<WaldiezDebugInputResponse, "request_id" | "data">) => void | Promise<void>;
-    /**
-     * Send a user input response (e.g., for `debug_input_request`).
-     */
+    /** Send a user input response (not a control command). */
     respond: (response: WaldiezChatUserInput) => void | Promise<void>;
-    /**
-     * Close the step-by-step session.
-     */
+    /** Close the step-by-step session.*/
     close?: () => void | Promise<void>;
 };
 
@@ -4156,6 +4589,7 @@ export declare type WaldiezStore = ReturnType<typeof createWaldiezStore>;
 /**
  * WaldiezStoreProps
  * @param flowId - The ID of the flow
+ * @param path - The path of the flow file
  * @param edges - The edges of the flow
  * @param nodes - The nodes of the flow
  * @param isAsync - Whether the flow is async or not
@@ -4181,6 +4615,7 @@ export declare type WaldiezStore = ReturnType<typeof createWaldiezStore>;
  */
 export declare type WaldiezStoreProps = {
     flowId: string;
+    path?: string | null;
     edges: Edge[];
     nodes: Node_2[];
     isAsync?: boolean;
@@ -4198,12 +4633,12 @@ export declare type WaldiezStoreProps = {
     rfInstance?: ReactFlowInstance;
     viewport?: Viewport;
     previousViewport?: Viewport;
-    onRun?: ((flow: string) => void) | null;
-    onStepRun?: ((flow: string) => void) | null;
-    onConvert?: ((flow: string, to: "py" | "ipynb") => void) | null;
-    onUpload?: ((files: File[]) => Promise<string[]>) | null;
-    onChange?: ((content: string) => void) | null;
-    onSave?: ((flow: string) => void) | null;
+    onRun?: ((flow: string, path?: string | null) => void | Promise<void>) | null;
+    onStepRun?: ((flow: string, path?: string | null) => void | Promise<void>) | null;
+    onConvert?: ((flow: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>) | null;
+    onUpload?: ((files: File[], path?: string | null) => string[] | Promise<string[]>) | null;
+    onChange?: ((content: string, path?: string | null) => void | Promise<void>) | null;
+    onSave?: ((flow: string, path?: string | null) => void | Promise<void>) | null;
 };
 
 /**
@@ -4482,7 +4917,11 @@ export declare type WaldiezVectorDbConfig = {
     } | null;
 };
 
-export declare const WORKFLOW_CHAT_END_MARKERS: readonly ["<Waldiez> - Workflow finished", "<Waldiez> - Workflow stopped by user", "<Waldiez> - Workflow execution failed:", "<Waldiez> - Done running the flow."];
+export declare type WaldiezWsMessageHandler = (event: MessageEvent) => void;
+
+export declare const WORKFLOW_CHAT_END_MARKERS: readonly ["<Waldiez> - Done running the flow.", "<Waldiez> - Workflow finished", "<Waldiez> - Workflow stopped by user", "<Waldiez> - Workflow execution failed:"];
+
+export declare const WORKFLOW_DONE: "<Waldiez> - Done running the flow.";
 
 export declare const WORKFLOW_STEP_END_MARKERS: readonly ["<Waldiez step-by-step> - Workflow finished", "<Waldiez step-by-step> - Workflow stopped by user", "<Waldiez step-by-step> - Workflow execution failed:"];
 

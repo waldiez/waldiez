@@ -5,8 +5,9 @@
   justify-content: space-between;
   gap: 8px;
   padding: 8px 10px;
-  border-bottom: 1px solid var(--card-border);
-  background: color-mix(in srgb, var(--card-background) 92%, var(--text-color) 8%);
+
+  /* border-bottom: 1px solid var(--card-border);
+  background: color-mix(in srgb, var(--card-background) 92%, var(--text-color) 8%); */
 }
 
 .waldiez-step-by-step-view .header-left {
@@ -46,7 +47,7 @@
 
 .waldiez-step-by-step-view .badge {
   display: inline-block;
-  padding: 2px 8px;
+  padding: 6px 8px;
   border-radius: 999px;
   font-size: 12px;
   color: var(--card-text);

@@ -82,7 +82,8 @@ export type WaldiezMediaContent =
               type?: string;
               previewUrl?: string;
           };
-      };
+      }
+    | string;
 
 /**
  * Supported message types
@@ -204,7 +205,7 @@ export type WaldiezStreamEvent =
  * @param onMessageStreamEvent - Callback for message stream events
  */
 export type WaldiezChatHandlers = {
-    onUserInput?: (input: WaldiezChatUserInput) => void | Promise<void>;
+    onUserInput?: (input: WaldiezChatUserInput) => void | Promise<void> | boolean | Promise<boolean>;
     onMediaUpload?: (media: WaldiezMediaContent) => Promise<string>;
     onChatError?: (error: WaldiezChatError) => void | Promise<void>;
     onMessageStreamEvent?: (event: WaldiezStreamEvent) => void | Promise<void>;

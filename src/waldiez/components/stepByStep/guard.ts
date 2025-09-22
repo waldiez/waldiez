@@ -9,10 +9,10 @@ import type {
     WaldiezDebugBreakpointsList,
     WaldiezDebugError,
     WaldiezDebugEventInfo,
-    WaldiezDebugHelp,
+    WaldiezDebugHelpMessage,
     WaldiezDebugInputRequest,
     WaldiezDebugMessage,
-    WaldiezDebugStats,
+    WaldiezDebugStatsMessage,
 } from "@waldiez/components/stepByStep/types";
 
 // noinspection SuspiciousTypeOfGuard
@@ -32,10 +32,10 @@ export const isDebugEventInfo = (m: WaldiezDebugMessage): m is WaldiezDebugEvent
             typeof m.event === "object",
     );
 
-export const isDebugStats = (m: WaldiezDebugMessage): m is WaldiezDebugStats =>
+export const isDebugStats = (m: WaldiezDebugMessage): m is WaldiezDebugStatsMessage =>
     Boolean(m && (m.type === "debug_stats" || m.type === "stats") && m.stats && typeof m.stats === "object");
 
-export const isDebugHelp = (m: WaldiezDebugMessage): m is WaldiezDebugHelp =>
+export const isDebugHelp = (m: WaldiezDebugMessage): m is WaldiezDebugHelpMessage =>
     Boolean(m && (m.type === "debug_help" || m.type === "help") && Array.isArray(m.help));
 
 // noinspection SuspiciousTypeOfGuard

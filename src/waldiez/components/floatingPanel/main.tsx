@@ -56,7 +56,6 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
     // eslint-disable-next-line max-statements
     const initialSize = useMemo(() => {
         if (typeof document === "undefined" || typeof window === "undefined") {
-            // sensible SSR fallback
             const iw = 1200;
             const ih = 800;
             const w0 = toPixels(initialWidth, "w", iw, ih) ?? Math.round((iw * 35) / 100);
@@ -312,9 +311,7 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
 
             {/* Content only renders when expanded */}
             {!isCollapsed && (
-                <div className="fp-content">
-                    {children ?? <div style={{ padding: 12 }}>Your content here…</div>}
-                </div>
+                <div className="fp-content">{children ?? <div className="padding-10">...</div>}</div>
             )}
         </div>
     );

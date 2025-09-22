@@ -6,6 +6,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { FaStepForward } from "react-icons/fa";
 import { FaBug, FaPlay, FaStop, FaX } from "react-icons/fa6";
+import { MdTimeline } from "react-icons/md";
 
 import { nanoid } from "nanoid";
 
@@ -13,6 +14,7 @@ import { FloatingPanel } from "@waldiez/components/floatingPanel";
 import { EventConsole } from "@waldiez/components/stepByStep/console";
 import { useAgentClassUpdates } from "@waldiez/components/stepByStep/hooks";
 import { type WaldiezStepByStep, controlToResponse } from "@waldiez/components/stepByStep/types";
+import { TimelineModal } from "@waldiez/components/timeline/timelineModal";
 
 /**
  * Main step-by-step debug view component
@@ -24,6 +26,14 @@ export const StepByStepView: React.FC<{
 }> = ({ flowId, stepByStep }) => {
     useAgentClassUpdates(stepByStep);
     const [responseText, setResponseText] = useState("");
+    const [timelineModalOpen, setTimelineModalOpen] = useState(false);
+
+    const openTimelineModal = useCallback(() => {
+        setTimelineModalOpen(true);
+    }, []);
+    const closeTimelineModal = useCallback(() => {
+        setTimelineModalOpen(false);
+    }, []);
 
     const requestId = stepByStep?.activeRequest?.request_id ?? null;
     const canClose =
@@ -141,6 +151,17 @@ export const StepByStepView: React.FC<{
     const headerLeft = (
         <div className="header">
             <FaBug className="icon-bug" size={18} />
+            {stepByStep.timeline && (
+                <div
+                    role="button"
+                    className="clickable"
+                    onClick={openTimelineModal}
+                    title="View Timeline"
+                    data-testid={`rf-${flowId}-chat-modal-timeline`}
+                >
+                    <MdTimeline size={18} className="timeline-button" />
+                </div>
+            )}
             <div className="title">Step-by-step Run</div>
             {badgeText && <div className={`badge ${badgeText}`}>{badgeText}</div>}
             {!badgeText && !stepByStep?.active && <div className="badge">Finished</div>}
@@ -235,6 +256,14 @@ export const StepByStepView: React.FC<{
                     )}
                 </div>
             </FloatingPanel>
+            {stepByStep.timeline && timelineModalOpen && (
+                <TimelineModal
+                    flowId={flowId}
+                    isOpen={timelineModalOpen}
+                    onClose={closeTimelineModal}
+                    data={stepByStep.timeline}
+                />
+            )}
         </div>
     );
 };
