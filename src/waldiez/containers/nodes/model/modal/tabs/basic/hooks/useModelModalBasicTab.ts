@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import { type ChangeEvent, useCallback, useMemo, useRef, useState } from "react";
 
 import type { SingleValue } from "@waldiez/components";
 import type { WaldiezNodeModelModalBasicTabProps } from "@waldiez/containers/nodes/model/modal/tabs/types";
@@ -46,7 +46,7 @@ export const useModelModalBasicTab = (props: WaldiezNodeModelModalBasicTabProps)
      * Handle model label changes
      */
     const onLabelChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             onDataChange({ label: e.target.value });
         },
         [onDataChange],
@@ -56,7 +56,7 @@ export const useModelModalBasicTab = (props: WaldiezNodeModelModalBasicTabProps)
      * Handle model description changes
      */
     const onDescriptionChange = useCallback(
-        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (e: ChangeEvent<HTMLTextAreaElement>) => {
             onDataChange({ description: e.target.value });
         },
         [onDataChange],
@@ -87,7 +87,7 @@ export const useModelModalBasicTab = (props: WaldiezNodeModelModalBasicTabProps)
      * Handle API key changes
      */
     const onApiKeyChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             onDataChange({ apiKey: e.target.value });
         },
         [onDataChange],
@@ -97,7 +97,7 @@ export const useModelModalBasicTab = (props: WaldiezNodeModelModalBasicTabProps)
      * Handle base URL changes
      */
     const onBaseUrlChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             onDataChange({ baseUrl: e.target.value });
         },
         [onDataChange],

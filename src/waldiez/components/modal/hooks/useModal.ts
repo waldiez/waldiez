@@ -2,7 +2,15 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useEffect, useState } from "react";
+import {
+    type KeyboardEvent as ReactKeyboardEvent,
+    type MouseEvent as ReactMouseEvent,
+    type RefObject,
+    type SyntheticEvent,
+    useCallback,
+    useEffect,
+    useState,
+} from "react";
 
 export const useModal = (props: {
     isOpen: boolean;
@@ -11,9 +19,9 @@ export const useModal = (props: {
     onClose?: () => void;
     onSaveAndClose?: () => void;
     onCancel?: (
-        event: React.SyntheticEvent<HTMLDialogElement | HTMLDivElement, Event> | React.KeyboardEvent,
+        event: SyntheticEvent<HTMLDialogElement | HTMLDivElement, Event> | ReactKeyboardEvent,
     ) => void;
-    modalRef: React.RefObject<HTMLDialogElement | HTMLDivElement | null>;
+    modalRef: RefObject<HTMLDialogElement | HTMLDivElement | null>;
 }) => {
     const {
         isOpen,
@@ -159,7 +167,7 @@ export const useModal = (props: {
 
     // Handle cancel event
     const handleCancel = useCallback(
-        (event: React.SyntheticEvent<HTMLDialogElement | HTMLDivElement, Event> | React.KeyboardEvent) => {
+        (event: SyntheticEvent<HTMLDialogElement | HTMLDivElement, Event> | ReactKeyboardEvent) => {
             if (onCancel) {
                 onCancel(event);
             } else {
@@ -173,7 +181,7 @@ export const useModal = (props: {
 
     // Handle keyboard events
     const onKeyDown = useCallback(
-        (event: React.KeyboardEvent) => {
+        (event: ReactKeyboardEvent) => {
             if (event.key === "Escape" && canClose) {
                 handleCancel(event);
             }
@@ -183,7 +191,7 @@ export const useModal = (props: {
 
     // Drag handlers
     const onMouseDown = useCallback(
-        (e: React.MouseEvent) => {
+        (e: ReactMouseEvent) => {
             if (!modalRef.current || isFullScreen || isMinimized) {
                 return;
             }

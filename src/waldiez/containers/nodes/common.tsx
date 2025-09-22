@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type ChangeEvent, type ReactNode } from "react";
 import { FaFileExport, FaFileImport } from "react-icons/fa";
 
 /**
@@ -18,9 +18,9 @@ export const getImportExportView: (
     flowId: string,
     itemId: string,
     itemType: "model" | "tool" | "agent",
-    onImport: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    onImport: (e: ChangeEvent<HTMLInputElement>) => void,
     onExport: () => Promise<void>,
-) => React.ReactNode = (flowId, itemId, itemType, onImport, onExport) => {
+) => ReactNode = (flowId, itemId, itemType, onImport, onExport) => {
     const itemTypeLower = itemType.toLowerCase();
     const itemTypeCapitalized = itemType.charAt(0).toUpperCase() + itemType.slice(1);
     return (

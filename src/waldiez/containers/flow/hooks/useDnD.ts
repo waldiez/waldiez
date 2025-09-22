@@ -4,7 +4,7 @@
  */
 import { type Node, type XYPosition, useReactFlow } from "@xyflow/react";
 
-import React, { useCallback, useMemo } from "react";
+import { type DragEvent, type MouseEvent, useCallback, useMemo } from "react";
 
 import { ValidAgentTypes, type WaldiezNodeAgentType } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
@@ -25,7 +25,7 @@ export const useDnD = (onNewAgent: () => void) => {
     /**
      * Extract agent type from drag event data
      */
-    const getAgentType = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    const getAgentType = useCallback((event: DragEvent<HTMLDivElement>) => {
         const nodeTypeData = event.dataTransfer.getData("application/node");
 
         if (nodeTypeData !== "agent") {
@@ -44,7 +44,7 @@ export const useDnD = (onNewAgent: () => void) => {
     /**
      * Handle drag over events
      */
-    const onDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    const onDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = "move";
         document.body.classList.add("dragging");
@@ -110,7 +110,7 @@ export const useDnD = (onNewAgent: () => void) => {
      * Calculate position and find parent for a dragged element
      */
     const getAgentPositionAndParent = useCallback(
-        (event: React.DragEvent<HTMLDivElement> | React.MouseEvent, parentNode?: Node) => {
+        (event: DragEvent<HTMLDivElement> | MouseEvent, parentNode?: Node) => {
             // Convert screen coordinates to flow coordinates
             let position = screenToFlowPosition(
                 {
@@ -151,7 +151,7 @@ export const useDnD = (onNewAgent: () => void) => {
      * Add a new agent node at the drop position
      */
     const addAgentNode = useCallback(
-        (event: React.DragEvent<HTMLDivElement>, agentType: WaldiezNodeAgentType) => {
+        (event: DragEvent<HTMLDivElement>, agentType: WaldiezNodeAgentType) => {
             const { position, parent } = getAgentPositionAndParent(event);
             const newNode = addAgent(agentType, position, parent?.id);
 
@@ -174,7 +174,7 @@ export const useDnD = (onNewAgent: () => void) => {
      * Handle drop events
      */
     const onDrop = useCallback(
-        (event: React.DragEvent<HTMLDivElement>) => {
+        (event: DragEvent<HTMLDivElement>) => {
             document.body.classList.remove("dragging");
             const agentType = getAgentType(event);
 
@@ -191,7 +191,7 @@ export const useDnD = (onNewAgent: () => void) => {
      * Find an intersecting group manager for a dragged node
      */
     const getIntersectingGroupManager = useCallback(
-        (_event: React.MouseEvent, node: Node) => {
+        (_event: MouseEvent, node: Node) => {
             try {
                 const intersectingNodes = getIntersectingNodes(node);
                 const intersections = intersectingNodes.filter(
@@ -214,7 +214,7 @@ export const useDnD = (onNewAgent: () => void) => {
      * Handle node drag events
      */
     const onNodeDrag = useCallback(
-        (event: React.MouseEvent, node: Node) => {
+        (event: MouseEvent, node: Node) => {
             if (!node.parentId && node.data.agentType !== "group_manager") {
                 const groupManager = getIntersectingGroupManager(event, node);
 
@@ -234,7 +234,7 @@ export const useDnD = (onNewAgent: () => void) => {
      * Handle node drag stop events
      */
     const onNodeDragStop = useCallback(
-        (event: React.MouseEvent, node: Node) => {
+        (event: MouseEvent, node: Node) => {
             if (!node.parentId && node.data.agentType !== "group_manager") {
                 const groupManager = getIntersectingGroupManager(event, node);
 

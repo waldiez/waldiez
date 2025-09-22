@@ -6,7 +6,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import React from "react";
+import { type ChangeEvent } from "react";
 
 import { TextareaInput } from "@waldiez/components/textareaInput";
 
@@ -246,7 +246,7 @@ describe("TextareaInput", () => {
             const user = userEvent.setup();
             let formValue = "";
 
-            const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
                 formValue = e.target.value;
             };
 
@@ -267,7 +267,7 @@ describe("TextareaInput", () => {
             const user = userEvent.setup();
             let value = "initial";
 
-            const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
                 value = e.target.value.toUpperCase(); // Transform the value
             };
 

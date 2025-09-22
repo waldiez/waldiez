@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback } from "react";
+import { type Dispatch, useCallback } from "react";
 
 import type {
     WaldiezActiveRequest,
@@ -94,8 +94,8 @@ export const useWaldiezWsMessaging: (props: {
         };
     };
     dispatch: {
-        chat: React.Dispatch<WaldiezChatAction>;
-        step: React.Dispatch<WaldiezStepByStepAction>;
+        chat: Dispatch<WaldiezChatAction>;
+        step: Dispatch<WaldiezStepByStepAction>;
     };
     chat: WaldiezChatConfig;
     stepByStep: WaldiezStepByStep;

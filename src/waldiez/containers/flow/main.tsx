@@ -4,7 +4,15 @@
  */
 import { Background, BackgroundVariant, Controls, ReactFlow, type Viewport } from "@xyflow/react";
 
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+    type MouseEvent as ReactMouseEvent,
+    memo,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 
 import { StepByStepView } from "@waldiez/components";
 import type { WaldiezStepByStep } from "@waldiez/components/types";
@@ -163,7 +171,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
      * Handle export button click
      */
     const handleExport = useCallback(
-        async (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        async (e: ReactMouseEvent<HTMLElement, MouseEvent>) => {
             if (skipHub) {
                 await onExport(e);
             } else {

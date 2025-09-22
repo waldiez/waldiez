@@ -2,7 +2,16 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { type KeyboardEvent, memo, useCallback, useEffect, useRef, useState } from "react";
+import {
+    type ChangeEvent,
+    type KeyboardEvent,
+    type SyntheticEvent,
+    memo,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import { FaStop } from "react-icons/fa";
 import { FiEye, FiEyeOff, FiPaperclip, FiX } from "react-icons/fi";
 import { IoIosSend } from "react-icons/io";
@@ -110,14 +119,14 @@ export const ChatModal = memo((props: ChatModalProps) => {
     /**
      * Handle text input changes
      */
-    const handleTextChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleTextChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setTextInput(event.target.value);
     }, []);
 
     /**
      * Handle image file selection
      */
-    const handleImageChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             const reader = new FileReader();
@@ -175,7 +184,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
      * Handle modal cancel
      */
     const handleCancel = useCallback(
-        (event: React.SyntheticEvent<HTMLDialogElement | HTMLDivElement, Event> | KeyboardEvent) => {
+        (event: SyntheticEvent<HTMLDialogElement | HTMLDivElement, Event> | KeyboardEvent) => {
             event.preventDefault();
             event.stopPropagation();
 

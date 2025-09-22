@@ -3,7 +3,10 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable complexity */
-import React, {
+import {
+    type KeyboardEvent as ReactKeyboardEvent,
+    type ReactNode,
+    type SyntheticEvent,
     forwardRef,
     useCallback,
     useEffect,
@@ -22,8 +25,8 @@ type ModalProps = {
     id?: string;
     flowId: string;
     dataTestId?: string;
-    beforeTitle?: string | React.ReactNode;
-    title: string | React.ReactNode;
+    beforeTitle?: string | ReactNode;
+    title: string | ReactNode;
     isOpen: boolean;
     hasCloseBtn?: boolean;
     hasMaximizeBtn?: boolean;
@@ -31,9 +34,9 @@ type ModalProps = {
     onClose?: () => void;
     onSaveAndClose?: () => void;
     onCancel?: (
-        event: React.SyntheticEvent<HTMLDivElement | HTMLDialogElement, Event> | React.KeyboardEvent,
+        event: SyntheticEvent<HTMLDivElement | HTMLDialogElement, Event> | ReactKeyboardEvent,
     ) => void;
-    children: React.ReactNode;
+    children: ReactNode;
     className?: string;
     hasUnsavedChanges?: boolean;
     preventCloseIfUnsavedChanges?: boolean;

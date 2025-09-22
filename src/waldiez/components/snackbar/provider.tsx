@@ -2,14 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { type FC, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import { _registerSnackbarEnqueue, _unregisterSnackbarEnqueue } from "@waldiez/components/snackbar/compat";
 import { SnackbarContext } from "@waldiez/components/snackbar/context";
 import { Snackbar } from "@waldiez/components/snackbar/snackbar";
 import type { ShowSnackbarProps, SnackbarItem, SnackbarQueue } from "@waldiez/components/snackbar/types";
 
-export const SnackbarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const SnackbarProvider: FC<{ children: ReactNode }> = ({ children }) => {
     // Queues per flowId
     const [queues, setQueues] = useState<Record<string, SnackbarQueue>>({});
     // Current displayed snackbar per flowId

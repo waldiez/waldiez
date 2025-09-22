@@ -4,13 +4,13 @@
  */
 import * as Slider from "@radix-ui/react-slider";
 
-import React, { memo, useCallback, useMemo } from "react";
+import { type ChangeEvent, type JSX, memo, useCallback, useMemo } from "react";
 
 import { InfoLabel } from "@waldiez/components/infoLabel";
 
 type NumberInputProps = {
     name: string;
-    label: string | React.JSX.Element;
+    label: string | JSX.Element;
     value: number | null;
     min: number;
     max: number;
@@ -24,7 +24,7 @@ type NumberInputProps = {
     step?: number;
     stepDownScale?: number;
     disabled?: boolean;
-    labelInfo?: string | React.JSX.Element | null;
+    labelInfo?: string | JSX.Element | null;
     dataTestId?: string;
 };
 
@@ -82,7 +82,7 @@ export const NumberInput = memo<NumberInputProps>((props: NumberInputProps) => {
 
     // Handle input change
     const handleInputChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             try {
                 const newValue = forceInt ? parseInt(e.target.value, 10) : parseFloat(e.target.value);
 

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { type FC, memo, useCallback, useEffect, useMemo, useState } from "react";
 
 import { getToolIcon } from "@waldiez/containers/nodes/tool/utils";
 import type { WaldiezNodeAgentData, WaldiezNodeModel, WaldiezNodeTool } from "@waldiez/models/types";
@@ -22,7 +22,7 @@ type WaldiezNodeAgentBodyProps = {
  * Component for rendering the body section of a Waldiez Node Agent
  * Displays model information, tools, and a description editor
  */
-export const WaldiezNodeAgentBody: React.FC<WaldiezNodeAgentBodyProps> = memo(
+export const WaldiezNodeAgentBody: FC<WaldiezNodeAgentBodyProps> = memo(
     (props: WaldiezNodeAgentBodyProps) => {
         // console.log("WaldiezNodeAgentBody rendering for:", props.id);
         const { id, data } = props;

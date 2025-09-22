@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useMemo } from "react";
+import { type ChangeEvent, useCallback, useMemo } from "react";
 
 import type { SingleValue } from "@waldiez/components";
 import type { WaldiezNodeGroupManagerTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/groupManager/types";
@@ -185,7 +185,7 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
      * Handle group name changes
      */
     const onGroupNameChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             const groupName = event.target.value;
             onDataChange({ groupName });
         },
@@ -196,7 +196,7 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
      * Handle manager name changes
      */
     const onManagerNameChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             const newName = event.target.value;
             onDataChange({ name: newName, label: newName });
         },
@@ -207,7 +207,7 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
      * Handle description changes
      */
     const onDescriptionChange = useCallback(
-        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (event: ChangeEvent<HTMLTextAreaElement>) => {
             const description = event.target.value;
             onDataChange({ description });
         },
@@ -218,7 +218,7 @@ export const useGroupManagerTabs = (props: WaldiezNodeGroupManagerTabsProps) => 
      * Handle system message changes
      */
     const onSystemMessageChange = useCallback(
-        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (event: ChangeEvent<HTMLTextAreaElement>) => {
             const systemMessage = event.target.value;
             onDataChange({ systemMessage });
         },

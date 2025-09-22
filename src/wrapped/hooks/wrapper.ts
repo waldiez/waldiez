@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useRef } from "react";
+import { type Dispatch, useCallback, useRef } from "react";
 
 import type { WaldiezChatConfig, WaldiezChatUserInput } from "@waldiez/components/chatUI/types";
 import type { WaldiezDebugInputResponse, WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
@@ -33,8 +33,8 @@ export const useWaldiezWrapper = ({
     reset: () => void;
 } => {
     const messageSender = useRef<((msg: any) => boolean | void) | undefined>(undefined);
-    const chatDispatchRef = useRef<React.Dispatch<WaldiezChatAction> | null>(null);
-    const stepDispatchRef = useRef<React.Dispatch<WaldiezStepByStepAction> | null>(null);
+    const chatDispatchRef = useRef<Dispatch<WaldiezChatAction> | null>(null);
+    const stepDispatchRef = useRef<Dispatch<WaldiezStepByStepAction> | null>(null);
     const { preprocess, getSessionId, getPendingInputId, clearPendingInput } = useMessagePreprocessor(flowId);
     const onRunCb = useCallback(
         (

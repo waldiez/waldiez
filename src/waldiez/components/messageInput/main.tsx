@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type FC } from "react";
 
 import { CodeEditor } from "@waldiez/components/codeEditor";
 import { Dict } from "@waldiez/components/dict";
@@ -36,7 +36,7 @@ import { WaldiezMessage, type WaldiezMessageType } from "@waldiez/models";
  * @param props.onUpdateContextEntries - Callback function for updating context entries
  * @see {@link MessageInputProps}
  */
-export const MessageInput: React.FC<MessageInputProps> = (props: {
+export const MessageInput: FC<MessageInputProps> = (props: {
     current: WaldiezMessage;
     darkMode: boolean;
     defaultContent: string;

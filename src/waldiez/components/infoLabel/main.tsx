@@ -4,17 +4,17 @@
  */
 import * as Tooltip from "@radix-ui/react-tooltip";
 
-import React from "react";
+import { type FC, type JSX, type ReactNode } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 
 type InfoLabelProps = {
     htmlFor: string;
-    label: string | React.JSX.Element | (() => React.JSX.Element | string);
-    info: string | React.JSX.Element | (() => React.JSX.Element | string);
-    children?: React.ReactNode;
+    label: string | JSX.Element | (() => JSX.Element | string);
+    info: string | JSX.Element | (() => JSX.Element | string);
+    children?: ReactNode;
 };
 
-export const InfoLabel: React.FC<InfoLabelProps> = ({ htmlFor, label, info, children }) => {
+export const InfoLabel: FC<InfoLabelProps> = ({ htmlFor, label, info, children }) => {
     const labelElement = typeof label === "function" ? label() : label;
     const infoElement = typeof info === "function" ? info() : info;
 

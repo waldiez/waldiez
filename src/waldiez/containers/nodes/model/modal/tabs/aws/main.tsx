@@ -2,12 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useCallback } from "react";
+import { type ChangeEvent, type FC, memo, useCallback } from "react";
 
 import { TextInput } from "@waldiez/components";
 import type { WaldiezNodeModelData } from "@waldiez/models/types";
 
-export const WaldiezNodeModelModalAWSTab: React.FC<{
+export const WaldiezNodeModelModalAWSTab: FC<{
     data: WaldiezNodeModelData;
     onDataChange: (data: Partial<WaldiezNodeModelData>) => void;
 }> = memo(({ data, onDataChange }) => {
@@ -15,31 +15,31 @@ export const WaldiezNodeModelModalAWSTab: React.FC<{
      * Handle AWS credentials changes
      */
     const onAwsAccessKeyChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             onDataChange({ aws: { ...data.aws, accessKey: event.target.value } });
         },
         [data.aws, onDataChange],
     );
     const onAwsSecretKeyChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             onDataChange({ aws: { ...data.aws, secretKey: event.target.value } });
         },
         [data.aws, onDataChange],
     );
     const onAwsRegionChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             onDataChange({ aws: { ...data.aws, region: event.target.value } });
         },
         [data.aws, onDataChange],
     );
     const onAwsProfileNameChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             onDataChange({ aws: { ...data.aws, profileName: event.target.value } });
         },
         [data.aws, onDataChange],
     );
     const onAwsSessionTokenChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             onDataChange({ aws: { ...data.aws, sessionToken: event.target.value } });
         },
         [data.aws, onDataChange],

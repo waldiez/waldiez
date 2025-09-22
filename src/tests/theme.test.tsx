@@ -5,7 +5,7 @@
 import { render, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import React from "react";
+import { type ReactNode } from "react";
 
 import { WaldiezThemeProvider, isInitiallyDark, setIsDarkMode, useWaldiezTheme } from "@waldiez/theme";
 
@@ -81,7 +81,7 @@ describe("WaldiezThemeProvider", () => {
         });
     });
     it("should toggle the theme when calling toggleTheme", () => {
-        const wrapper = ({ children }: { children: React.ReactNode }) => (
+        const wrapper = ({ children }: { children: ReactNode }) => (
             <WaldiezThemeProvider>{children}</WaldiezThemeProvider>
         );
         const { result } = renderHook(() => useWaldiezTheme(), { wrapper });

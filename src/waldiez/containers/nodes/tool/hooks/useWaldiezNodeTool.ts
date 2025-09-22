@@ -4,7 +4,7 @@
  */
 import type { Node } from "@xyflow/react";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { type ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import isEqual from "react-fast-compare";
 
 import { getToolIcon } from "@waldiez/containers/nodes/tool/utils";
@@ -119,7 +119,7 @@ export const useWaldiezNodeTool = (id: string, data: WaldiezNodeToolData) => {
      * Handle file import
      */
     const onImport = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             const getToolByIdBound = (toolId: string) => getToolById(toolId);
             importItem(event, getToolByIdBound.bind(null, id), onImportLoad);
         },

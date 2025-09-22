@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useMemo, useState } from "react";
+import { type DragEvent, useCallback, useMemo, useState } from "react";
 
 import { type SidebarViewProps } from "@waldiez/containers/sidebar/types";
 import { useWaldiez } from "@waldiez/store";
@@ -22,7 +22,7 @@ export const useSidebarView = (props: SidebarViewProps) => {
 
     // Base drag start handler
     const onDragStart = useCallback(
-        (event: React.DragEvent<HTMLDivElement>, nodeType: string, agentType?: string) => {
+        (event: DragEvent<HTMLDivElement>, nodeType: string, agentType?: string) => {
             event.dataTransfer.setData("application/node", nodeType);
 
             if (nodeType === "agent" && agentType) {
@@ -54,49 +54,49 @@ export const useSidebarView = (props: SidebarViewProps) => {
 
     // Agent type specific drag handlers
     const onUserDragStart = useCallback(
-        (event: React.DragEvent<HTMLDivElement>) => {
+        (event: DragEvent<HTMLDivElement>) => {
             onDragStart(event, "agent", "user_proxy");
         },
         [onDragStart],
     );
 
     const onAssistantDragStart = useCallback(
-        (event: React.DragEvent<HTMLDivElement>) => {
+        (event: DragEvent<HTMLDivElement>) => {
             onDragStart(event, "agent", "assistant");
         },
         [onDragStart],
     );
 
     const onRagDragStart = useCallback(
-        (event: React.DragEvent<HTMLDivElement>) => {
+        (event: DragEvent<HTMLDivElement>) => {
             onDragStart(event, "agent", "rag_user_proxy");
         },
         [onDragStart],
     );
 
     const onDocDragStart = useCallback(
-        (event: React.DragEvent<HTMLDivElement>) => {
+        (event: DragEvent<HTMLDivElement>) => {
             onDragStart(event, "agent", "doc_agent");
         },
         [onDragStart],
     );
 
     const onReasoningDragStart = useCallback(
-        (event: React.DragEvent<HTMLDivElement>) => {
+        (event: DragEvent<HTMLDivElement>) => {
             onDragStart(event, "agent", "reasoning");
         },
         [onDragStart],
     );
 
     const onCaptainDragStart = useCallback(
-        (event: React.DragEvent<HTMLDivElement>) => {
+        (event: DragEvent<HTMLDivElement>) => {
             onDragStart(event, "agent", "captain");
         },
         [onDragStart],
     );
 
     const onManagerDragStart = useCallback(
-        (event: React.DragEvent<HTMLDivElement>) => {
+        (event: DragEvent<HTMLDivElement>) => {
             onDragStart(event, "agent", "group_manager");
         },
         [onDragStart],

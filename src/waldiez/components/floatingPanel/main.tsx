@@ -3,16 +3,26 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable complexity */
-import React, { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+    type CSSProperties,
+    type FC,
+    type PointerEventHandler,
+    type ReactNode,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 
 import { type CSSSize, clampOpt, toPixels } from "@waldiez/components/floatingPanel/utils";
 
 type FloatingPanelProps = {
     flowId: string;
-    title?: React.ReactNode | string;
-    headerLeft?: React.ReactNode | string;
-    headerRight?: React.ReactNode | string;
+    title?: ReactNode | string;
+    headerLeft?: ReactNode | string;
+    headerRight?: ReactNode | string;
     headerClassName?: string;
     headerStyle?: CSSProperties;
     minWidth?: CSSSize; // default 320
@@ -23,10 +33,10 @@ type FloatingPanelProps = {
     bottomOffset?: number; // default 10
     initialWidth?: CSSSize; // default 35vw
     initialHeight?: CSSSize; // default: 100px;
-    children?: React.ReactNode;
+    children?: ReactNode;
 };
 
-export const FloatingPanel: React.FC<FloatingPanelProps> = ({
+export const FloatingPanel: FC<FloatingPanelProps> = ({
     flowId,
     title = "Panel",
     headerClassName = "",
@@ -194,7 +204,7 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
     }, [isCollapsed, left, top, width, height]);
 
     // Drag handlers (header only)
-    const onHeaderPointerDown: React.PointerEventHandler<HTMLDivElement> = e => {
+    const onHeaderPointerDown: PointerEventHandler<HTMLDivElement> = e => {
         if (isCollapsed) {
             return;
         }
@@ -239,7 +249,7 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
         }
     };
 
-    const expandedStyle: React.CSSProperties = {
+    const expandedStyle: CSSProperties = {
         position: "absolute",
         left,
         top,
@@ -253,7 +263,7 @@ export const FloatingPanel: React.FC<FloatingPanelProps> = ({
         resize: "both",
     };
 
-    const collapsedStyle: React.CSSProperties = {
+    const collapsedStyle: CSSProperties = {
         position: "absolute",
         right: rightOffset,
         bottom: bottomOffset,

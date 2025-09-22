@@ -4,13 +4,14 @@
  */
 import { type NodeProps } from "@xyflow/react";
 
+import { type FC } from "react";
 import { FaCopy, FaGear, FaTrashCan } from "react-icons/fa6";
 
 import { useWaldiezNodeTool } from "@waldiez/containers/nodes/tool/hooks";
 import { WaldiezNodeToolModal } from "@waldiez/containers/nodes/tool/modal";
 import { type WaldiezNodeTool } from "@waldiez/models";
 
-export const WaldiezNodeToolView: React.FC<NodeProps<WaldiezNodeTool>> = props => {
+export const WaldiezNodeToolView: FC<NodeProps<WaldiezNodeTool>> = props => {
     const { id } = props;
     const {
         flowId,

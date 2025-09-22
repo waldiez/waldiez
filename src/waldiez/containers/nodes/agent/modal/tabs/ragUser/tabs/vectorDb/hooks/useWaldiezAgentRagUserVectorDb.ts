@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback } from "react";
+import { type ChangeEvent, useCallback } from "react";
 
 import type { SingleValue } from "@waldiez/components";
 import type { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models/types";
@@ -69,7 +69,7 @@ export const useWaldiezAgentRagUserVectorDb = (props: {
      * Handle embedding model changes
      */
     const onModelChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             setRetrieveConfigConfigData({ model: event.target.value });
         },
         [setRetrieveConfigConfigData],
@@ -105,7 +105,7 @@ export const useWaldiezAgentRagUserVectorDb = (props: {
      * Handle Qdrant local storage path changes
      */
     const onQdrantLocalStoragePathChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             updateDbConfig({
                 localStoragePath: event.target.value,
             });
@@ -129,7 +129,7 @@ export const useWaldiezAgentRagUserVectorDb = (props: {
      * Handle Chroma local storage path changes
      */
     const onChromaLocalStoragePathChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             updateDbConfig({
                 localStoragePath: event.target.value,
             });
@@ -141,7 +141,7 @@ export const useWaldiezAgentRagUserVectorDb = (props: {
      * Handle DB connection URL changes
      */
     const onDbConfigConnectionUrlChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             updateDbConfig({
                 connectionUrl: event.target.value,
             });

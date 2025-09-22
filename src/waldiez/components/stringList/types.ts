@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type JSX } from "react";
 
 export type StringListProps = {
-    viewLabel: string | React.JSX.Element | (() => React.JSX.Element | string);
-    viewLabelInfo?: string | React.JSX.Element | (() => React.JSX.Element | string);
+    viewLabel: string | JSX.Element | (() => JSX.Element | string);
+    viewLabelInfo?: string | JSX.Element | (() => JSX.Element | string);
     items: Array<string>;
     itemsType: string;
     placeholder?: string;

@@ -4,14 +4,14 @@
  */
 import { ResponsiveContainer } from "recharts";
 
-import React, { useLayoutEffect, useRef, useState } from "react";
+import { type FC, useLayoutEffect, useRef, useState } from "react";
 import { FiActivity, FiClock, FiDollarSign, FiFileText, FiUser } from "react-icons/fi";
 
 import { TimelineChart } from "@waldiez/components/timeline/chart";
 import type { WaldiezTimelineData } from "@waldiez/components/timeline/types";
 import { useWaldiezTheme } from "@waldiez/theme";
 
-export const Timeline: React.FC<{
+export const Timeline: FC<{
     data: WaldiezTimelineData;
     width?: number | string;
     height?: number | string;

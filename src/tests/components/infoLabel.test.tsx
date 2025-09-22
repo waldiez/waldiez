@@ -15,7 +15,7 @@ describe("InfoLabel", () => {
         const { baseElement } = render(<InfoLabel htmlFor="test" label={() => "test"} info={() => "test"} />);
         expect(baseElement).toBeTruthy();
     });
-    it("should render successfully with React.JSX.Element", () => {
+    it("should render successfully with JSX.Element", () => {
         const { baseElement } = render(
             <InfoLabel htmlFor="test" label={<div>test</div>} info={<div>test</div>} />,
         );

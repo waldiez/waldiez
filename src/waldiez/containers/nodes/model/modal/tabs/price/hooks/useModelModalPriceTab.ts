@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback } from "react";
+import { type ChangeEvent, useCallback } from "react";
 
 import type { WaldiezNodeModelModalPriceTabProps } from "@waldiez/containers/nodes/model/modal/tabs/types";
 
@@ -16,7 +16,7 @@ export const useModelModalPriceTab = (props: WaldiezNodeModelModalPriceTabProps)
      * Handle prompt price change
      */
     const onPricePromptChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             const parsedValue = parseFloat(e.target.value);
 
             // Skip if value is not a number
@@ -42,7 +42,7 @@ export const useModelModalPriceTab = (props: WaldiezNodeModelModalPriceTabProps)
      * Handle completion price change
      */
     const onPriceCompletionChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             const parsedValue = parseFloat(e.target.value);
 
             // Skip if value is not a number

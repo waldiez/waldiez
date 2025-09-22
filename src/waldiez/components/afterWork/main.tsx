@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useCallback, useMemo, useState } from "react";
+import { type FC, memo, useCallback, useMemo, useState } from "react";
 
 import { InfoCheckbox } from "@waldiez/components/infoCheckBox";
 import { type MultiValue, Select, type SingleValue } from "@waldiez/components/select";
@@ -47,7 +47,7 @@ const targetsToLabelsMapping: Record<TransitionTargetType, string> = {
  * Component for configuring what happens after an agent or group chat has no more work to do
  * Allows specifying transition targets like terminating, asking the user, or passing to another agent
  */
-export const AfterWork: React.FC<AfterWorkProps> = memo(
+export const AfterWork: FC<AfterWorkProps> = memo(
     ({ target, agents, onChange, isForGroupChat = true }: AfterWorkProps) => {
         // State
         const [enabled, setEnabled] = useState(!!target);

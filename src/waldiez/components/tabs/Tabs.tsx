@@ -2,17 +2,27 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { type ReactElement, memo, useCallback, useMemo, useState } from "react";
+import {
+    Children,
+    type ReactElement,
+    type ReactNode,
+    isValidElement,
+    memo,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 
 type TabItemProps = {
     id: string;
     label: string;
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 type TabItemsProps = {
     activeTabIndex?: number;
-    children: React.ReactNode;
+    children: ReactNode;
     onTabChange?: (index: number) => void;
 };
 
@@ -45,7 +55,7 @@ export const TabItems = memo<TabItemsProps>((props: TabItemsProps) => {
     const [activeTab, setActiveTab] = useState(activeTabIndex);
 
     // Update local state when prop changes
-    React.useEffect(() => {
+    useEffect(() => {
         setActiveTab(activeTabIndex);
     }, [activeTabIndex]);
 
@@ -61,9 +71,9 @@ export const TabItems = memo<TabItemsProps>((props: TabItemsProps) => {
     // Filter and extract valid TabItem children
     const tabs = useMemo(
         () =>
-            React.Children.toArray(children).filter(
+            Children.toArray(children).filter(
                 (child): child is ReactElement<TabItemProps> =>
-                    React.isValidElement(child) && child.type === TabItem,
+                    isValidElement(child) && child.type === TabItem,
             ),
         [children],
     );

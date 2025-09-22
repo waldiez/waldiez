@@ -4,7 +4,7 @@
  */
 import type { Edge, Node, ReactFlowInstance, Viewport } from "@xyflow/react";
 
-import React from "react";
+import { type PropsWithChildren } from "react";
 
 import type {
     IWaldiezAgentStore,
@@ -260,4 +260,4 @@ export type WaldiezStore = ReturnType<typeof createWaldiezStore>;
  * @param onSave - The handler for saving the flow (send to backend)
  * @param monacoVsPath - The path to the monaco vs code editor
  */
-export type WaldiezProviderProps = React.PropsWithChildren<WaldiezStoreProps>;
+export type WaldiezProviderProps = PropsWithChildren<WaldiezStoreProps>;

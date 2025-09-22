@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type ChangeEvent } from "react";
 
 import { type WaldiezNodeToolData } from "@waldiez/models";
 
@@ -18,6 +18,6 @@ export type WaldiezNodeToolModalProps = {
     onSave: () => void;
     onSaveAndClose: () => void;
     onDataChange: (data: Partial<WaldiezNodeToolData>) => void;
-    onImport: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onImport: (e: ChangeEvent<HTMLInputElement>) => void;
     onExport: () => Promise<void>;
 };

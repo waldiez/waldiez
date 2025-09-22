@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { type ReactNode, useEffect, useState } from "react";
+import { type FC, type ReactNode, useEffect, useState } from "react";
 
 import { WaldiezThemeContext } from "@waldiez/theme/useWaldiezTheme";
 import { isInitiallyDark, setIsDarkMode } from "@waldiez/theme/utils";
@@ -13,7 +13,7 @@ import { isInitiallyDark, setIsDarkMode } from "@waldiez/theme/utils";
  * @param children - The child components to be rendered within the provider.
  * @param initialDark - Optional initial theme state. If true, the theme starts in dark mode; if false or undefined, it starts in light mode.
  */
-export const WaldiezThemeProvider: React.FC<{
+export const WaldiezThemeProvider: FC<{
     children: ReactNode;
     initialDark?: boolean;
 }> = ({ children, initialDark }) => {

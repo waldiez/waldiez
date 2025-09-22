@@ -4,7 +4,7 @@
  */
 
 import * as React from "react";
-import React__default, { useMemo, useReducer, useRef, useCallback, useState, useEffect, createContext, useContext, Component, createElement, useLayoutEffect, memo, forwardRef, Fragment as Fragment$1, useImperativeHandle } from "react";
+import React__default, { useMemo, useReducer, useRef, useCallback, useState, useEffect, createContext, useContext, Component, createElement, useLayoutEffect, memo, forwardRef, Fragment as Fragment$1, useImperativeHandle, Children, isValidElement } from "react";
 import JSZip from "jszip";
 import { jsx as jsx$1, jsxs, Fragment } from "react/jsx-runtime";
 import { MarkerType, applyEdgeChanges, applyNodeChanges, useReactFlow, Panel, getSimpleBezierPath, Position, BaseEdge, EdgeLabelRenderer, Handle, NodeResizer, ReactFlow, Controls, Background, BackgroundVariant, ReactFlowProvider } from "@xyflow/react";
@@ -26182,7 +26182,7 @@ const TabItem = memo((props) => {
 const TabItems = memo((props) => {
   const { activeTabIndex = 0, children, onTabChange } = props;
   const [activeTab, setActiveTab] = useState(activeTabIndex);
-  React__default.useEffect(() => {
+  useEffect(() => {
     setActiveTab(activeTabIndex);
   }, [activeTabIndex]);
   const handleTabClick = useCallback(
@@ -26193,8 +26193,8 @@ const TabItems = memo((props) => {
     [onTabChange]
   );
   const tabs = useMemo(
-    () => React__default.Children.toArray(children).filter(
-      (child) => React__default.isValidElement(child) && child.type === TabItem
+    () => Children.toArray(children).filter(
+      (child) => isValidElement(child) && child.type === TabItem
     ),
     [children]
   );
@@ -26412,8 +26412,8 @@ const Wizard = memo((props) => {
     setCurrentStep(activeStep);
   }, [activeStep]);
   const steps = useMemo(
-    () => React__default.Children.toArray(children).filter(
-      (child) => React__default.isValidElement(child) && child.type === WizardStep
+    () => Children.toArray(children).filter(
+      (child) => isValidElement(child) && child.type === WizardStep
     ),
     [children]
   );

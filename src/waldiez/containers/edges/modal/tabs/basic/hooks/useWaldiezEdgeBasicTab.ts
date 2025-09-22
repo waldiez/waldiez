@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useMemo } from "react";
+import { type ChangeEvent, useCallback, useMemo } from "react";
 
 import type { SingleValue } from "@waldiez/components";
 import type { WaldiezEdgeBasicTabProps } from "@waldiez/containers/edges/modal/tabs/basic/types";
@@ -42,7 +42,7 @@ export const useWaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
      * Update the edge description
      */
     const onDescriptionChange = useCallback(
-        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (e: ChangeEvent<HTMLTextAreaElement>) => {
             onDataChange({ description: e.target.value });
         },
         [onDataChange],
@@ -52,7 +52,7 @@ export const useWaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
      * Update the edge label
      */
     const onLabelChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             onDataChange({ label: e.target.value });
         },
         [onDataChange],
@@ -113,7 +113,7 @@ export const useWaldiezEdgeBasicTab = (props: WaldiezEdgeBasicTabProps) => {
      * Update the LLM prompt for summary
      */
     const onLlmPromptChange = useCallback(
-        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (e: ChangeEvent<HTMLTextAreaElement>) => {
             onDataChange({
                 summary: {
                     method: data.summary.method,

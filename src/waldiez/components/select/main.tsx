@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 // react-select with common styles
-import React, { type JSX, forwardRef } from "react";
+import { type JSX, type Ref, forwardRef } from "react";
 import type { GroupBase, MultiValue, Props, SelectInstance, SingleValue } from "react-select";
 import ReactSelect from "react-select";
 
@@ -15,14 +15,14 @@ type SelectComponent = <
     Group extends GroupBase<Option> = GroupBase<Option>,
 >(
     props: Props<Option, IsMulti, Group> & {
-        ref?: React.Ref<SelectInstance<Option, IsMulti, Group>>;
+        ref?: Ref<SelectInstance<Option, IsMulti, Group>>;
     },
 ) => JSX.Element;
 
 export const Select = forwardRef(
     <Option, IsMulti extends boolean = false, Group extends GroupBase<Option> = GroupBase<Option>>(
         props: Props<Option, IsMulti, Group>,
-        ref: React.Ref<SelectInstance<Option, IsMulti, Group>>,
+        ref: Ref<SelectInstance<Option, IsMulti, Group>>,
     ) => {
         // noinspection JSUnusedGlobalSymbols
         return (

@@ -5,7 +5,7 @@
 import { waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import React from "react";
+import type { ChangeEvent } from "react";
 
 import { importItem } from "@waldiez/utils";
 
@@ -17,7 +17,7 @@ describe("importItem", () => {
             target: {
                 files: [new File(["{}"], "test.json", { type: "application/json" })],
             },
-        } as unknown as React.ChangeEvent<HTMLInputElement>;
+        } as unknown as ChangeEvent<HTMLInputElement>;
         importItem(event, itemGetter, onLoad);
         waitFor(() => expect(onLoad).toHaveBeenCalled());
     });
@@ -28,7 +28,7 @@ describe("importItem", () => {
             target: {
                 files: [new File(["{}"], "test.json", { type: "application/json" })],
             },
-        } as unknown as React.ChangeEvent<HTMLInputElement>;
+        } as unknown as ChangeEvent<HTMLInputElement>;
         importItem(event, itemGetter, onLoad);
         waitFor(() => expect(onLoad).not.toHaveBeenCalled());
     });
@@ -43,7 +43,7 @@ describe("importItem", () => {
                     }),
                 ],
             },
-        } as unknown as React.ChangeEvent<HTMLInputElement>;
+        } as unknown as ChangeEvent<HTMLInputElement>;
         importItem(event, itemGetter, onLoad);
         const errorSpy = vi.spyOn(console, "error");
         waitFor(() => expect(onLoad).not.toHaveBeenCalled());

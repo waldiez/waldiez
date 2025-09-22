@@ -4,7 +4,7 @@
  */
 import type { Edge, EdgeChange, Node, NodeChange, ReactFlowInstance } from "@xyflow/react";
 
-import React, { useCallback, useMemo } from "react";
+import { type MouseEvent as ReactMouseEvent, useCallback, useMemo } from "react";
 
 import { showSnackbar } from "@waldiez/components";
 import type { WaldiezEdge } from "@waldiez/models";
@@ -113,7 +113,7 @@ export const useFlowEvents = (flowId: string) => {
      * Handle double-clicking on edges
      */
     const onEdgeDoubleClick = useCallback(
-        (event: React.MouseEvent, edge: Edge) => {
+        (event: ReactMouseEvent, edge: Edge) => {
             if (!isReadOnly) {
                 handleEdgeDoubleClick(event, edge as WaldiezEdge);
             }
@@ -125,7 +125,7 @@ export const useFlowEvents = (flowId: string) => {
      * Handle double-clicking on nodes
      */
     const onNodeDoubleClick = useCallback(
-        (event: React.MouseEvent, node: Node) => {
+        (event: ReactMouseEvent, node: Node) => {
             if (isReadOnly) {
                 return;
             }
@@ -164,7 +164,7 @@ export const useFlowEvents = (flowId: string) => {
             });
             return false;
         }
-        // check group moanager
+        // check group manager
         const groupManager = allAgents.find(agent => agent.data.agentType === "group_manager");
         if (groupManager) {
             return true;
@@ -234,7 +234,7 @@ export const useFlowEvents = (flowId: string) => {
      * Export the flow
      */
     const onExport = useCallback(
-        async (_e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        async (_e: ReactMouseEvent<HTMLElement, MouseEvent>) => {
             if (isReadOnly) {
                 return;
             }

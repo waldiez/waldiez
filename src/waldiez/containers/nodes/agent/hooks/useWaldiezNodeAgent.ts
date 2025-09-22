@@ -4,7 +4,7 @@
  */
 import type { Connection } from "@xyflow/react";
 
-import React, { useCallback, useMemo, useState } from "react";
+import { type DragEvent, type MouseEvent, useCallback, useMemo, useState } from "react";
 
 import type { WaldiezEdge } from "@waldiez/models/types";
 import { useWaldiez } from "@waldiez/store";
@@ -87,7 +87,7 @@ export const useWaldiezNodeAgent = (id: string) => {
      * Only opens if not in read-only mode and no other modals are open
      */
     const onOpenEdgeModal = useCallback(
-        (event: React.MouseEvent) => {
+        (event: MouseEvent) => {
             if (!isReadOnly && !isNodeModalOpen && !isEdgeModalOpen) {
                 const dataEdgeId = event.currentTarget.getAttribute("data-edge-id");
                 if (dataEdgeId) {
@@ -127,7 +127,7 @@ export const useWaldiezNodeAgent = (id: string) => {
     /**
      * Handle drag over event - set dragging state to true
      */
-    const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    const onDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
         setIsDragging(true);
@@ -136,7 +136,7 @@ export const useWaldiezNodeAgent = (id: string) => {
     /**
      * Handle drag leave event - reset dragging state
      */
-    const onDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    const onDragLeave = useCallback((e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
         setIsDragging(false);
@@ -145,7 +145,7 @@ export const useWaldiezNodeAgent = (id: string) => {
     /**
      * Handle drop event - reset dragging state
      */
-    const onDrop = useCallback((_: React.DragEvent<HTMLDivElement>) => {
+    const onDrop = useCallback((_: DragEvent<HTMLDivElement>) => {
         setIsDragging(false);
     }, []);
 

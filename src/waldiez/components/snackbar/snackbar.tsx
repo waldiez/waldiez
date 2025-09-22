@@ -2,12 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useLayoutEffect, useState } from "react";
+import { type FC, useLayoutEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 import type { SnackbarItem } from "@waldiez/components/snackbar/types";
 
-export const Snackbar: React.FC<SnackbarItem & { onClose: () => void }> = ({
+export const Snackbar: FC<SnackbarItem & { onClose: () => void }> = ({
     flowId,
     message,
     level = "info",

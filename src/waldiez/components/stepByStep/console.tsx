@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { type FC, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 /**
  * SPDX-License-Identifier: Apache-2.0
@@ -342,7 +342,7 @@ const renderEvent = (ev: WaldiezEvent) => {
     }
 };
 
-export const EventConsole: React.FC<EventConsoleProps> = ({ events, printRaw, autoScroll, className }) => {
+export const EventConsole: FC<EventConsoleProps> = ({ events, printRaw, autoScroll, className }) => {
     const listRef = useRef<HTMLDivElement>(null);
     const endRef = useRef<HTMLDivElement>(null);
     const userScrolledUpRef = useRef(false);

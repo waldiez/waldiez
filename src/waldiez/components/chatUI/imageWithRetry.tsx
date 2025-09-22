@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useEffect, useRef } from "react";
+import { type FC, useEffect, useRef } from "react";
 
 import { useImageRetry } from "@waldiez/components/chatUI/hooks";
 
-export const ImageWithRetry: React.FC<{
+export const ImageWithRetry: FC<{
     src: string;
     alt?: string;
     className?: string;

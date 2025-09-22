@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback } from "react";
+import { type ChangeEvent, useCallback } from "react";
 
 import { type WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 import {
@@ -83,12 +83,12 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
      * Update tool label
      */
     const onToolLabelChange = useCallback(
-        (item: React.ChangeEvent<HTMLInputElement> | string) => {
+        (item: ChangeEvent<HTMLInputElement> | string) => {
             if (typeof item === "string") {
                 onDataChange({ label: item });
                 return;
             }
-            const e = item as React.ChangeEvent<HTMLInputElement>;
+            const e = item as ChangeEvent<HTMLInputElement>;
             onDataChange({ label: e.target.value });
         },
         [onDataChange],
@@ -98,12 +98,12 @@ export const useToolNodeModal = (props: WaldiezNodeToolModalProps) => {
      * Update tool description
      */
     const onToolDescriptionChange = useCallback(
-        (item: React.ChangeEvent<HTMLTextAreaElement> | string) => {
+        (item: ChangeEvent<HTMLTextAreaElement> | string) => {
             if (typeof item === "string") {
                 onDataChange({ description: item });
                 return;
             }
-            const e = item as React.ChangeEvent<HTMLTextAreaElement>;
+            const e = item as ChangeEvent<HTMLTextAreaElement>;
             onDataChange({ description: e.target.value });
         },
         [onDataChange],

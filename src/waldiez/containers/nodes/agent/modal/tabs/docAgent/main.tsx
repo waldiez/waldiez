@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useCallback } from "react";
+import { type ChangeEvent, memo, useCallback } from "react";
 
 import { InfoCheckbox, TextInput } from "@waldiez/components";
 import type { WaldiezNodeAgentData, WaldiezNodeAgentDocAgentData } from "@waldiez/models/types";
@@ -17,7 +17,7 @@ type WaldiezDocAgentTabProps = {
 export const WaldiezDocAgentTab = memo((props: WaldiezDocAgentTabProps) => {
     const { id, flowId, data, onDataChange } = props;
     const onCollectionNameChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             onDataChange({ collectionName: e.target.value });
         },
         [onDataChange],
@@ -42,7 +42,7 @@ export const WaldiezDocAgentTab = memo((props: WaldiezDocAgentTabProps) => {
         [data.queryEngine, onDataChange],
     );
     const onDbPathChange = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             let newValue = e.target.value || null;
             if (newValue?.trim() === "") {
                 newValue = null;

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback } from "react";
+import { type ChangeEvent, useCallback } from "react";
 
 import type { SingleValue } from "@waldiez/components";
 import type { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models/types";
@@ -38,7 +38,7 @@ export const useWaldiezAgentRagUserTextSplit = (props: {
      * Handle chunk token size changes
      */
     const onChunkTokenSizeChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             if (!event.target.value || event.target.value.trim() === "") {
                 setRetrieveConfigConfigData({ chunkTokenSize: undefined });
                 return;
@@ -63,7 +63,7 @@ export const useWaldiezAgentRagUserTextSplit = (props: {
      * Handle context max tokens changes
      */
     const onContextMaxTokensChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             if (!event.target.value || event.target.value.trim() === "") {
                 setRetrieveConfigConfigData({ contextMaxTokens: undefined });
                 return;

@@ -2,13 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type FC } from "react";
 
 import { CheckboxInput, InfoLabel, NumberInput, Select, TextInput, TextareaInput } from "@waldiez/components";
 import { useWaldiezEdgeBasicTab } from "@waldiez/containers/edges/modal/tabs/basic/hooks";
 import { type WaldiezEdgeBasicTabProps } from "@waldiez/containers/edges/modal/tabs/basic/types";
 
-export const WaldiezEdgeBasicTab: React.FC<WaldiezEdgeBasicTabProps> = (props: WaldiezEdgeBasicTabProps) => {
+export const WaldiezEdgeBasicTab: FC<WaldiezEdgeBasicTabProps> = (props: WaldiezEdgeBasicTabProps) => {
     const { data, edgeId, onTypeChange, skipDescription = false } = props;
     const {
         summaryRoleOptions,

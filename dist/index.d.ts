@@ -3,14 +3,15 @@
  * Copyright 2024 - 2026 Waldiez & contributors
  */
 
-import { ActionDispatch } from 'react';
 import { Connection } from '@xyflow/react';
-import { default as default_2 } from 'react';
+import { Dispatch } from 'react';
 import { Edge } from '@xyflow/react';
 import { EdgeChange } from '@xyflow/react';
+import { FC } from 'react';
 import { MouseEvent as MouseEvent_2 } from 'react';
 import { Node as Node_2 } from '@xyflow/react';
 import { NodeChange } from '@xyflow/react';
+import { PropsWithChildren } from 'react';
 import { ReactFlowInstance } from '@xyflow/react';
 import { ReactFlowJsonObject } from '@xyflow/react';
 import { RefObject } from 'react';
@@ -841,17 +842,17 @@ export declare const useWaldiezChat: (props: {
     deduplicationOptions?: WaldiezChatMessageDeduplicationOptions;
 }) => {
     chat: WaldiezChatConfig;
-    dispatch: ActionDispatch<[action: WaldiezChatAction]>;
-    process: (data: any) => void;
+    dispatch: Dispatch<WaldiezChatAction>;
+    process: (message: any) => void;
     reset: () => void;
     setActive: (active: boolean) => void;
     setShow: (show: boolean) => void;
-    setActiveRequest: (request: WaldiezActiveRequest | undefined, message?: WaldiezChatMessage) => void;
+    setActiveRequest: (request: WaldiezActiveRequest | undefined) => void;
     setError: (error: WaldiezChatError | undefined) => void;
     setTimeline: (timeline: WaldiezTimelineData | undefined) => void;
     setParticipants: (participants: WaldiezChatParticipant[]) => void;
-    addMessage: (message: WaldiezChatMessage, isEndOfWorkflow?: boolean) => void;
-    removeMessage: (id: string) => void;
+    addMessage: (message: WaldiezChatMessage) => void;
+    removeMessage: (messageId: string) => void;
     clearMessages: () => void;
 };
 
@@ -895,8 +896,8 @@ export declare const useWaldiezMessaging: (props: {
     process: (data: any) => void;
     reset: () => void;
     dispatch: {
-        chat: React.Dispatch<WaldiezChatAction>;
-        step: React.Dispatch<WaldiezStepByStepAction>;
+        chat: Dispatch<WaldiezChatAction>;
+        step: Dispatch<WaldiezStepByStepAction>;
     };
     chat: WaldiezChatConfig;
     stepByStep: WaldiezStepByStep;
@@ -949,7 +950,7 @@ export declare const useWaldiezStepByStep: (props: {
     deduplicationOptions?: WaldiezStepByStepMessageDeduplicationOptions;
 }) => {
     stepByStep: WaldiezStepByStep;
-    dispatch: React.Dispatch<WaldiezStepByStepAction>;
+    dispatch: Dispatch<WaldiezStepByStepAction>;
     process: (data: any) => void;
     reset: () => void;
     setActive: (active: boolean) => void;
@@ -1003,7 +1004,7 @@ export declare const useWaldiezWsChat: (props: {
     };
 }) => {
     chat: WaldiezChatConfig;
-    dispatch: React.Dispatch<WaldiezChatAction>;
+    dispatch: Dispatch<WaldiezChatAction>;
     reset: () => void;
     connected: boolean;
     getConnectionState: () => number;
@@ -1089,8 +1090,8 @@ export declare const useWaldiezWsMessaging: (props: {
         };
     };
     dispatch: {
-        chat: React.Dispatch<WaldiezChatAction>;
-        step: React.Dispatch<WaldiezStepByStepAction>;
+        chat: Dispatch<WaldiezChatAction>;
+        step: Dispatch<WaldiezStepByStepAction>;
     };
     chat: WaldiezChatConfig;
     stepByStep: WaldiezStepByStep;
@@ -1120,7 +1121,7 @@ export declare const useWaldiezWsStepByStep: (props: {
     };
 }) => {
     stepByStep: WaldiezStepByStep;
-    dispatch: React.Dispatch<WaldiezStepByStepAction>;
+    dispatch: Dispatch<WaldiezStepByStepAction>;
     reset: () => void;
     connected: boolean;
     getConnectionState: () => number;
@@ -1213,7 +1214,7 @@ export declare const ValidTransitionTargetTypes: TransitionTargetType[];
  ```
  * @see {@link WaldiezProps}
  */
-declare const Waldiez: default_2.FC<Partial<WaldiezProps>>;
+declare const Waldiez: FC<Partial<WaldiezProps>>;
 export { Waldiez }
 export default Waldiez;
 
@@ -4184,7 +4185,7 @@ export declare type WaldiezProps = WaldiezFlowProps & {
  * @param onSave - The handler for saving the flow (send to backend)
  * @param monacoVsPath - The path to the monaco vs code editor
  */
-export declare type WaldiezProviderProps = default_2.PropsWithChildren<WaldiezStoreProps>;
+export declare type WaldiezProviderProps = PropsWithChildren<WaldiezStoreProps>;
 
 /**
  * WaldiezRagUserRetrieveConfig

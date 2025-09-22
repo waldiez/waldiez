@@ -2,14 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type FC } from "react";
 import { FaEye, FaEyeSlash, FaPlus, FaSave, FaTrash } from "react-icons/fa";
 
 import { useDict } from "@waldiez/components/dict/hooks";
 import type { DictProps } from "@waldiez/components/dict/types";
 import { InfoLabel } from "@waldiez/components/infoLabel";
 
-export const Dict: React.FC<DictProps> = (props: DictProps) => {
+export const Dict: FC<DictProps> = (props: DictProps) => {
     const { viewLabel, viewLabelInfo, items, itemsType, areValuesSecret = false } = props;
     const {
         visible,

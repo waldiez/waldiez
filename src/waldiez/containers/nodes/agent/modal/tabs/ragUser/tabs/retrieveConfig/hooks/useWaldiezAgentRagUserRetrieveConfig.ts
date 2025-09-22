@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback } from "react";
+import { type ChangeEvent, useCallback } from "react";
 
 import type { SingleValue } from "@waldiez/components";
 import type { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models/types";
@@ -129,7 +129,7 @@ export const useWaldiezAgentRagUserRetrieveConfig = (props: {
      * Handle collection name changes
      */
     const onCollectionNameChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             setRetrieveConfigConfigData({ collectionName: event.target.value });
         },
         [setRetrieveConfigConfigData],
@@ -139,7 +139,7 @@ export const useWaldiezAgentRagUserRetrieveConfig = (props: {
      * Handle number of results changes
      */
     const onNResultsChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             if (!event.target.value || event.target.value.trim() === "") {
                 setRetrieveConfigConfigData({ nResults: null });
                 return;
@@ -162,7 +162,7 @@ export const useWaldiezAgentRagUserRetrieveConfig = (props: {
      * Handle distance threshold changes
      */
     const onDistanceThresholdChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             if (!event.target.value || event.target.value.trim() === "") {
                 setRetrieveConfigConfigData({ distanceThreshold: null });
                 return;

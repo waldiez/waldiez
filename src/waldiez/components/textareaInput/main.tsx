@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useEffect, useRef } from "react";
+import { type ChangeEvent, type FC, useCallback, useEffect, useRef } from "react";
 
-export const TextareaInput: React.FC<{
+export const TextareaInput: FC<{
     value: string | undefined;
-    onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
     autoFocus?: boolean;
     [key: string]: any; // Allow other props like className, style, etc.
 }> = ({ value, onChange, autoFocus = false, ...props }) => {
@@ -23,7 +23,7 @@ export const TextareaInput: React.FC<{
     const isFirstRender = useRef(true);
 
     const handleChange = useCallback(
-        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (e: ChangeEvent<HTMLTextAreaElement>) => {
             const { selectionStart, selectionEnd } = e.target;
             cursorPositionRef.current = { selectionStart, selectionEnd };
             onChange(e);

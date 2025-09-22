@@ -4,7 +4,7 @@
  */
 import { NodeResizer } from "@xyflow/react";
 
-import React, { useMemo } from "react";
+import { type FC, useMemo } from "react";
 import { FaCopy } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa6";
 import { VscSettings } from "react-icons/vsc";
@@ -34,7 +34,7 @@ const RESIZE_LIMITS = {
  * Component for rendering a Waldiez Agent Node
  * Handles node appearance, drag interactions, and modal management
  */
-export const WaldiezNodeAgentView: React.FC<WaldiezNodeAgentProps> = props => {
+export const WaldiezNodeAgentView: FC<WaldiezNodeAgentProps> = props => {
     const { id, data, selected } = props;
     const agentType = data.agentType;
 

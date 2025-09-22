@@ -2,22 +2,22 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useCallback, useMemo, useState } from "react";
+import { type CSSProperties, type ChangeEvent, type JSX, memo, useCallback, useMemo, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { InfoLabel } from "@waldiez/components/infoLabel";
 
 type TextInputProps = {
     name: string;
-    label: string | React.JSX.Element;
+    label: string | JSX.Element;
     value: string | undefined | null;
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
     onNull?: string;
     disabled?: boolean;
-    labelInfo?: string | React.JSX.Element | null;
+    labelInfo?: string | JSX.Element | null;
     dataTestId?: string;
-    style?: React.CSSProperties;
+    style?: CSSProperties;
     isPassword?: boolean;
     fullWidth?: boolean;
     className?: string;
@@ -30,15 +30,15 @@ type TextInputProps = {
  */
 export const TextInput = memo<{
     name: string;
-    label: string | React.JSX.Element;
+    label: string | JSX.Element;
     value: string | undefined | null;
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
     placeholder?: string;
     onNull?: string;
     disabled?: boolean;
-    labelInfo?: string | React.JSX.Element | null;
+    labelInfo?: string | JSX.Element | null;
     dataTestId?: string;
-    style?: React.CSSProperties;
+    style?: CSSProperties;
     isPassword?: boolean;
     fullWidth?: boolean;
     className?: string;
@@ -68,7 +68,7 @@ export const TextInput = memo<{
 
     // Handle input change
     const handleChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             if (!disabled) {
                 onChange(event);
             }

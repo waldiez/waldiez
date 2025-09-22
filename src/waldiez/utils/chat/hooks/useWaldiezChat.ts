@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useMemo, useReducer, useRef } from "react";
+import { type Dispatch, useCallback, useMemo, useReducer, useRef } from "react";
 
 import type {
     WaldiezActiveRequest,
@@ -16,7 +16,7 @@ import { getMessageKey } from "@waldiez/components/chatUI/utils/messageKey";
 import type { WaldiezTimelineData } from "@waldiez/components/timeline/types";
 import { WORKFLOW_DONE } from "@waldiez/utils/chat/constants";
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat/processor";
-import { waldiezChatReducer } from "@waldiez/utils/chat/reducer";
+import { type WaldiezChatAction, waldiezChatReducer } from "@waldiez/utils/chat/reducer";
 import type { WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat/types";
 
 /**
@@ -55,7 +55,27 @@ const defaultChatDeduplicationOptions: Required<WaldiezChatMessageDeduplicationO
 /**
  * useWaldiezChat hook.
  */
-export const useWaldiezChat = (props: {
+export const useWaldiezChat: (props: {
+    initialConfig?: Partial<WaldiezChatConfig>;
+    handlers?: WaldiezChatHandlers;
+    preprocess?: (message: any) => { handled: boolean; updated?: any };
+    onPreview?: (requestId: string) => string;
+    deduplicationOptions?: WaldiezChatMessageDeduplicationOptions;
+}) => {
+    chat: WaldiezChatConfig;
+    dispatch: Dispatch<WaldiezChatAction>;
+    process: (message: any) => void;
+    reset: () => void;
+    setActive: (active: boolean) => void;
+    setShow: (show: boolean) => void;
+    setActiveRequest: (request: WaldiezActiveRequest | undefined) => void;
+    setError: (error: WaldiezChatError | undefined) => void;
+    setTimeline: (timeline: WaldiezTimelineData | undefined) => void;
+    setParticipants: (participants: WaldiezChatParticipant[]) => void;
+    addMessage: (message: WaldiezChatMessage) => void;
+    removeMessage: (messageId: string) => void;
+    clearMessages: () => void;
+} = (props: {
     initialConfig?: Partial<WaldiezChatConfig>;
     handlers?: WaldiezChatHandlers;
     preprocess?: (message: any) => { handled: boolean; updated?: any };

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback } from "react";
+import { type ChangeEvent, useCallback } from "react";
 
 import type { WaldiezNodeAgentData, WaldiezNodeAgentRagUserData } from "@waldiez/models/types";
 
@@ -36,7 +36,7 @@ export const useWaldiezAgentRagUserAdvanced = (props: {
      * Handle customized prompt changes
      */
     const onCustomizedPromptChange = useCallback(
-        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (event: ChangeEvent<HTMLTextAreaElement>) => {
             setRetrieveConfigConfigData({
                 customizedPrompt: event.target.value,
             });
@@ -48,7 +48,7 @@ export const useWaldiezAgentRagUserAdvanced = (props: {
      * Handle customized answer prefix changes
      */
     const onCustomizedAnswerPrefixChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             setRetrieveConfigConfigData({
                 customizedAnswerPrefix: event.target.value,
             });

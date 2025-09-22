@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type ChangeEvent } from "react";
 
 import { CheckboxInput, TextareaInput } from "@waldiez/components";
 import { HandleASyncChatOrderAndPrerequisites } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/basic/asyncChat";
@@ -12,11 +12,11 @@ import { type EditFlowModalModalTabBasicProps } from "@waldiez/containers/sideba
 export const EditFlowModalModalTabBasic = (props: EditFlowModalModalTabBasicProps) => {
     const { flowId, data, sortedEdges, remainingEdges, onDataChange } = props;
     const { name, description, isAsync } = data;
-    const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onNameChange = (event: ChangeEvent<HTMLInputElement>) => {
         const name = event.target.value;
         onDataChange({ name });
     };
-    const onDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const onDescriptionChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
         const description = event.target.value;
         onDataChange({ description });
     };

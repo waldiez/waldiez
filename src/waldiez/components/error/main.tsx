@@ -4,7 +4,7 @@
  */
 import { motion } from "framer-motion";
 
-import React from "react";
+import { type FC } from "react";
 
 import { AGENT_ICONS } from "@waldiez/theme";
 
@@ -48,7 +48,7 @@ const bots = [
     { src: AGENT_ICONS.captain, alt: "Captain Waldiez" },
     { src: AGENT_ICONS.user_proxy, alt: "User Waldiez" },
 ];
-export const ErrorPage: React.FC<{ error?: Error }> = ({ error }) => {
+export const ErrorPage: FC<{ error?: Error }> = ({ error }) => {
     return (
         <div className="waldiez-error-container" data-testid="error-boundary">
             <div className="waldiez-bots-row">

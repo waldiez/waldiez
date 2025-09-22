@@ -2,14 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type FC } from "react";
 
 import { Modal, Wizard, WizardStep } from "@waldiez/components";
 import { useImportFlowModal } from "@waldiez/containers/flow/modals/importFlowModal/hooks";
 import { FlowDataPreviewStep, LoadFlowStep } from "@waldiez/containers/flow/modals/importFlowModal/steps";
 import type { ImportFlowModalProps } from "@waldiez/containers/flow/modals/importFlowModal/types";
 
-export const ImportFlowModal: React.FC<ImportFlowModalProps> = (props: ImportFlowModalProps) => {
+export const ImportFlowModal: FC<ImportFlowModalProps> = (props: ImportFlowModalProps) => {
     const { flowId, isOpen } = props;
     const { state, initialState, onStateChange, onClose, onBack, onForward } = useImportFlowModal(props);
     return (

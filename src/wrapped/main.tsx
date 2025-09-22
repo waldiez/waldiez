@@ -4,7 +4,7 @@
  */
 import Waldiez, { showSnackbar } from "@waldiez";
 
-import React, { useCallback } from "react";
+import { type FC, useCallback } from "react";
 
 import type { WaldiezProps } from "@waldiez/types";
 
@@ -16,7 +16,7 @@ type WaldiezWrapperProps = {
     protocols?: string | string[] | undefined;
 };
 
-export const WaldiezWrapper: React.FC<WaldiezWrapperProps> = ({
+export const WaldiezWrapper: FC<WaldiezWrapperProps> = ({
     waldiezProps,
     wsUrl = "ws://localhost:8765",
     protocols = undefined,

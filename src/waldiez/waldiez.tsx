@@ -13,7 +13,7 @@ import "@fontsource/fredoka/600.css";
 import { ReactFlowProvider } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
-import React, { useEffect } from "react";
+import { type FC, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { HotkeysProvider } from "react-hotkeys-hook";
 
@@ -94,7 +94,7 @@ function ExistingFlow() {
 ```
  * @see {@link WaldiezProps}
  */
-export const Waldiez: React.FC<Partial<WaldiezProps>> = (props: Partial<WaldiezProps>) => {
+export const Waldiez: FC<Partial<WaldiezProps>> = (props: Partial<WaldiezProps>) => {
     const flowId: string = props.flowId ?? `wf-${getId()}`;
     const skipImport = typeof props.skipImport === "boolean" ? props.skipImport : false;
     const skipExport = typeof props.skipExport === "boolean" ? props.skipExport : false;

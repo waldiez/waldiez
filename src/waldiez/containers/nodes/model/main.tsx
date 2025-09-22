@@ -4,6 +4,7 @@
  */
 import type { NodeProps } from "@xyflow/react";
 
+import type { FC } from "react";
 import { FaCopy, FaGear, FaTrashCan } from "react-icons/fa6";
 import { TbSettingsCheck } from "react-icons/tb";
 
@@ -12,7 +13,7 @@ import { useWaldiezNodeModel } from "@waldiez/containers/nodes/model/hooks";
 import { WaldiezNodeModelModal } from "@waldiez/containers/nodes/model/modal";
 import type { WaldiezNodeModel } from "@waldiez/models";
 
-export const WaldiezNodeModelView: React.FC<NodeProps<WaldiezNodeModel>> = ({ id, data }) => {
+export const WaldiezNodeModelView: FC<NodeProps<WaldiezNodeModel>> = ({ id, data }) => {
     const {
         flowId,
         isOpen,

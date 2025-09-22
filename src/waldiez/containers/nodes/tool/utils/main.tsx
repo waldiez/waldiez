@@ -2,14 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type JSX, type ReactNode } from "react";
 import { FaCode, FaRegFileCode } from "react-icons/fa6";
 
 import { TOOL_ICONS } from "@waldiez/theme/icons";
 
 const ICON_SIZE = 14;
 
-export const PREDEFINED_TOOL_INSTRUCTIONS: { [key: string]: React.ReactNode | undefined } = {
+export const PREDEFINED_TOOL_INSTRUCTIONS: { [key: string]: ReactNode | undefined } = {
     wikipedia_search: undefined,
     youtube_search: (
         <div className="info">
@@ -154,11 +154,7 @@ export const PREDEFINED_TOOL_INSTRUCTIONS: { [key: string]: React.ReactNode | un
     custom: undefined,
 };
 
-export const getToolIcon = (
-    toolLabel: string,
-    toolType: string,
-    size: number = ICON_SIZE,
-): React.JSX.Element => {
+export const getToolIcon = (toolLabel: string, toolType: string, size: number = ICON_SIZE): JSX.Element => {
     const defaultIcon = <FaCode aria-hidden="true" size={size} style={{ width: size, height: size }} />;
     if (toolType === "custom") {
         return defaultIcon;
@@ -229,7 +225,7 @@ export const getToolIcon = (
     }
 };
 
-export const TOOL_TYPE_OPTIONS: { value: string; label: string; icon?: React.JSX.Element }[] = [
+export const TOOL_TYPE_OPTIONS: { value: string; label: string; icon?: JSX.Element }[] = [
     {
         value: "shared",
         label: "Shared Code",

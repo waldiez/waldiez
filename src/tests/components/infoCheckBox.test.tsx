@@ -21,7 +21,7 @@ describe("InfoCheckbox", () => {
         expect(baseElement).toBeTruthy();
     });
 
-    it("should render with label as React.JSX.Element", () => {
+    it("should render with label as JSX.Element", () => {
         const onChange = vi.fn();
         const infoCheckboxProps = {
             label: <div>test</div>,
@@ -47,7 +47,7 @@ describe("InfoCheckbox", () => {
         expect(baseElement).toBeTruthy();
     });
 
-    it("should render with info as React.JSX.Element", () => {
+    it("should render with info as JSX.Element", () => {
         const onChange = vi.fn();
         const infoCheckboxProps = {
             label: "test",

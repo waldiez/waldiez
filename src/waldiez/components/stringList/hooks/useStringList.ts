@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useState } from "react";
+import { type ChangeEvent, type KeyboardEvent, type MouseEvent, useCallback, useState } from "react";
 
 import type { StringListProps } from "@waldiez/components/stringList/types";
 
@@ -25,7 +25,7 @@ export const useStringList = (props: StringListProps) => {
 
     // Handler for deleting an entry
     const onDeleteEntry = useCallback(
-        (event: React.MouseEvent<HTMLButtonElement>) => {
+        (event: MouseEvent<HTMLButtonElement>) => {
             if (!onItemDeleted) {
                 return;
             }
@@ -38,7 +38,7 @@ export const useStringList = (props: StringListProps) => {
 
     // Handler for changing an existing entry
     const onEntryChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             if (!onItemChange) {
                 return;
             }
@@ -54,13 +54,13 @@ export const useStringList = (props: StringListProps) => {
     );
 
     // Handler for changing the new entry input
-    const onNewEntryChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const onNewEntryChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setNewEntry(event.target.value);
     }, []);
 
     // Handler for key down events - allow Enter to add new item
     const onNewEntryKeyDown = useCallback(
-        (event: React.KeyboardEvent<HTMLInputElement>) => {
+        (event: KeyboardEvent<HTMLInputElement>) => {
             if (event.key === "Enter") {
                 event.preventDefault();
                 onAddEntry();

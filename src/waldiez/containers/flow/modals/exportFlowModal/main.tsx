@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useCallback, useState } from "react";
+import { type ChangeEvent, type MouseEvent as ReactMouseEvent, memo, useCallback, useState } from "react";
 
 import { CheckboxInput, DropZone, Modal, TextInput, showSnackbar } from "@waldiez/components";
 
@@ -17,7 +17,7 @@ const SNACKBAR_DURATION = 5000; // 5 seconds
 type ExportFlowModalProps = {
     flowId: string;
     isOpen: boolean;
-    onDownload: (e: React.MouseEvent<HTMLElement, MouseEvent>) => Promise<void>;
+    onDownload: (e: ReactMouseEvent<HTMLElement, MouseEvent>) => Promise<void>;
     onExport: () => string | null;
     onClose: () => void;
 };
@@ -39,7 +39,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
         setAlsoUpload(checked);
     }, []);
 
-    const onHubApiTokenChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const onHubApiTokenChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setHubApiToken(e.target.value);
     }, []);
 
@@ -60,7 +60,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
     // Handle uploading to hub
     const onUploadToHub = useCallback(
         // eslint-disable-next-line max-statements
-        async (_e: React.MouseEvent<HTMLButtonElement>) => {
+        async (_e: ReactMouseEvent<HTMLButtonElement>) => {
             // Prevent multiple simultaneous uploads
             if (isUploading) {
                 return;

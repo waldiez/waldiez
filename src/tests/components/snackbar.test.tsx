@@ -5,13 +5,13 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import React from "react";
+import type { FC, ReactNode } from "react";
 
 import { Snackbar, SnackbarProvider, showSnackbar, useSnackbar } from "@waldiez/components/snackbar";
 
 const FLOW_ID = "test-flow";
 
-const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+const Wrapper: FC<{ children: ReactNode }> = ({ children }) => (
     <div id={`rf-root-${FLOW_ID}`} className="flow-wrapper">
         <SnackbarProvider>{children}</SnackbarProvider>
     </div>

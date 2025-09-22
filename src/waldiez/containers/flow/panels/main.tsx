@@ -4,7 +4,7 @@
  */
 import { Panel } from "@xyflow/react";
 
-import React from "react";
+import { type FC, type MouseEvent as ReactMouseEvent } from "react";
 import { FaPlusCircle } from "react-icons/fa";
 import { FaCirclePlay, FaFileImport, FaGithub, FaMoon, FaPython, FaSun } from "react-icons/fa6";
 import { MdIosShare } from "react-icons/md";
@@ -27,10 +27,10 @@ type WaldiezFlowPanelsProps = {
     onConvertToPy: () => void;
     onConvertToIpynb: () => void;
     onOpenImportModal: () => void;
-    onExport: (e: React.MouseEvent<HTMLElement, MouseEvent>) => Promise<void>;
+    onExport: (e: ReactMouseEvent<HTMLElement, MouseEvent>) => Promise<void>;
 };
 // eslint-disable-next-line complexity
-export const WaldiezFlowPanels: React.FC<WaldiezFlowPanelsProps> = (props: WaldiezFlowPanelsProps) => {
+export const WaldiezFlowPanels: FC<WaldiezFlowPanelsProps> = (props: WaldiezFlowPanelsProps) => {
     const {
         flowId,
         skipExport,

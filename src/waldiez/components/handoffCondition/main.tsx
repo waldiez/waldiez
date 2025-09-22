@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from "react";
 
 import { Select, type SingleValue } from "@waldiez/components/select";
 import { TextInput } from "@waldiez/components/textInput";
@@ -27,10 +27,10 @@ const conditionTypeOptions: { value: ConditionType; label: string }[] = [
 // Types for condition field updates
 type ConditionFieldUpdater = {
     field: string;
-    handler: (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
+    handler: (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
 };
 
-export const HandoffCondition: React.FC<{
+export const HandoffCondition: FC<{
     condition: WaldiezHandoffCondition;
     onDataChange: (condition: WaldiezHandoffCondition) => void;
 }> = props => {

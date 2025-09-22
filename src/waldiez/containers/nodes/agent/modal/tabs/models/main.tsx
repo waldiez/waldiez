@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useCallback, useMemo } from "react";
+import { type FC, memo, useCallback, useMemo } from "react";
 
 import { type MultiValue, Select, type SingleValue } from "@waldiez/components";
 import { type WaldiezNodeAgentData, type WaldiezNodeModel } from "@waldiez/types";
@@ -18,7 +18,7 @@ type WaldiezAgentModelProps = {
  * Component for selecting the models to use with an agent
  * Allows choosing from available models in the workspace
  */
-export const WaldiezAgentModels: React.FC<WaldiezAgentModelProps> = memo((props: WaldiezAgentModelProps) => {
+export const WaldiezAgentModels: FC<WaldiezAgentModelProps> = memo((props: WaldiezAgentModelProps) => {
     const { id, data, models, onDataChange } = props;
 
     /**

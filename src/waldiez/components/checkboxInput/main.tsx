@@ -4,11 +4,11 @@
  */
 import * as Checkbox from "@radix-ui/react-checkbox";
 
-import React, { memo } from "react";
+import { type FC, type JSX, memo } from "react";
 
-export const CheckboxInput: React.FC<{
+export const CheckboxInput: FC<{
     id: string;
-    label: string | React.JSX.Element;
+    label: string | JSX.Element;
     isChecked: boolean;
     onCheckedChange: (checked: boolean) => void;
 }> = memo(({ id, label, isChecked, onCheckedChange }) => {

@@ -2,12 +2,12 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type FC } from "react";
 import { FaCircle, FaCog, FaCommentDots, FaHourglassHalf } from "react-icons/fa";
 
 export type ActivityType = "thinking" | "tool" | "message" | (string & {}) | null | undefined;
 
-export const ActivityIcon: React.FC<{
+export const ActivityIcon: FC<{
     activity: ActivityType;
     title?: string;
     className?: string;

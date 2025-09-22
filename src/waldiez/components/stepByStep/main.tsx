@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable complexity */
-import React, { useCallback, useMemo, useState } from "react";
+import { type ChangeEvent, type FC, type KeyboardEvent, useCallback, useMemo, useState } from "react";
 import { FaStepForward } from "react-icons/fa";
 import { FaBug, FaPlay, FaStop, FaX } from "react-icons/fa6";
 import { MdTimeline } from "react-icons/md";
@@ -19,7 +19,7 @@ import { TimelineModal } from "@waldiez/components/timeline/timelineModal";
 /**
  * Main step-by-step debug view component
  */
-export const StepByStepView: React.FC<{
+export const StepByStepView: FC<{
     flowId: string;
     stepByStep?: WaldiezStepByStep | null;
     className?: string;
@@ -39,7 +39,7 @@ export const StepByStepView: React.FC<{
     const canClose =
         !stepByStep?.active && !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
 
-    const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setResponseText(e.target.value);
     }, []);
 
@@ -58,7 +58,7 @@ export const StepByStepView: React.FC<{
     }, [requestId, responseText, stepByStep?.handlers]);
 
     const onInputKeyDown = useCallback(
-        (e: React.KeyboardEvent<HTMLInputElement>) => {
+        (e: KeyboardEvent<HTMLInputElement>) => {
             if (e.key !== "Enter") {
                 return;
             }

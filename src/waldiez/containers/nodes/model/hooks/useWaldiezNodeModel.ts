@@ -4,7 +4,7 @@
  */
 import type { Node } from "@xyflow/react";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { type ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import isEqual from "react-fast-compare";
 
 import { showSnackbar } from "@waldiez/components/snackbar";
@@ -83,7 +83,7 @@ export const useWaldiezNodeModel = (id: string, data: WaldiezNodeModelData) => {
      * Handle file import
      */
     const onImport = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             const getModelByIdBound = (modelId: string) => getModelById(modelId);
             importItem(event, getModelByIdBound.bind(null, id), onImportLoad);
         },

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type ReactNode } from "react";
 
 import type { WaldiezEdge } from "@waldiez/models/types";
 
@@ -15,7 +15,7 @@ export const EdgePosition = ({
     edge: WaldiezEdge | undefined;
     transform: string;
     edgeNumber?: number;
-    children?: React.ReactNode;
+    children?: ReactNode;
 }) => {
     if (!edge) {
         return null;

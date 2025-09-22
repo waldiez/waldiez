@@ -4,7 +4,7 @@
  */
 import { type EdgeProps, getSimpleBezierPath } from "@xyflow/react";
 
-import React, { useCallback, useMemo } from "react";
+import { type ChangeEvent, type MouseEvent, useCallback, useMemo } from "react";
 
 import { ValidAgentTypes } from "@waldiez/models";
 import type {
@@ -65,7 +65,7 @@ export const useWaldiezEdge = (props: EdgeProps<WaldiezEdge> & { type: WaldiezEd
      * Open edge modal on double click
      */
     const onOpenModal = useCallback(
-        (event: React.MouseEvent) => {
+        (event: MouseEvent) => {
             const edge = getEdgeById(id);
             if (edge) {
                 onEdgeDoubleClick(event, edge);
@@ -121,7 +121,7 @@ export const useWaldiezEdge = (props: EdgeProps<WaldiezEdge> & { type: WaldiezEd
      * Handle edge description change
      */
     const onDescriptionChange = useCallback(
-        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (event: ChangeEvent<HTMLTextAreaElement>) => {
             const edge = getEdgeById(id);
             if (!edge) {
                 return;

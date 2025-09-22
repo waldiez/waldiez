@@ -2,11 +2,11 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { type ReactNode, useEffect, useState } from "react";
+import { type FC, type ReactNode, useEffect, useState } from "react";
 
 import { SidebarContext } from "@waldiez/containers/sidebar/hooks";
 
-export const SidebarProvider: React.FC<{
+export const SidebarProvider: FC<{
     children: ReactNode;
     collapsed?: boolean;
 }> = ({ children, collapsed }) => {

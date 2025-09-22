@@ -2,17 +2,27 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { type ReactElement, memo, useCallback, useEffect, useMemo, useState } from "react";
+import {
+    Children,
+    type ReactElement,
+    type ReactNode,
+    isValidElement,
+    memo,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 
 type WizardStepProps = {
     id: string;
     title: string;
-    children: React.ReactNode;
+    children: ReactNode;
 };
 
 export type WizardProps = {
     activeStep: number;
-    children: React.ReactNode;
+    children: ReactNode;
     canGoForward?: boolean | ((step: number) => boolean);
     canGoBack?: boolean | ((step: number) => boolean);
     firstBackTitle?: string;
@@ -61,9 +71,9 @@ export const Wizard = memo<WizardProps>((props: WizardProps) => {
     // Extract valid WizardStep children
     const steps = useMemo(
         () =>
-            React.Children.toArray(children).filter(
+            Children.toArray(children).filter(
                 (child): child is ReactElement<WizardStepProps> =>
-                    React.isValidElement(child) && child.type === WizardStep,
+                    isValidElement(child) && child.type === WizardStep,
             ),
         [children],
     );

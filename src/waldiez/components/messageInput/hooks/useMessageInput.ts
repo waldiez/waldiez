@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback } from "react";
+import { type ChangeEvent, useCallback } from "react";
 
 import type { MessageInputProps } from "@waldiez/components/messageInput/types";
 import type { WaldiezMessage } from "@waldiez/models/types";
@@ -51,7 +51,7 @@ export const useMessageInput = (props: MessageInputProps) => {
 
     // Content update handlers for different message types
     const onContentUpdate = useCallback(
-        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (e: ChangeEvent<HTMLTextAreaElement>) => {
             onMessageChange({
                 type: "string",
                 useCarryover: current.useCarryover,
@@ -63,7 +63,7 @@ export const useMessageInput = (props: MessageInputProps) => {
     );
 
     const onRagProblemUpdate = useCallback(
-        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (e: ChangeEvent<HTMLTextAreaElement>) => {
             onMessageChange({
                 type: "rag_message_generator",
                 content: null,

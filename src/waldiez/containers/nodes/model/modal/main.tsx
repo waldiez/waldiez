@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useEffect, useState } from "react";
+import { type FC, useEffect, useState } from "react";
 
 import { Modal, TabItem, TabItems } from "@waldiez/components";
 import {
@@ -13,9 +13,7 @@ import {
 } from "@waldiez/containers/nodes/model/modal/tabs";
 import type { WaldiezNodeModelModalProps } from "@waldiez/containers/nodes/model/modal/types";
 
-export const WaldiezNodeModelModal: React.FC<WaldiezNodeModelModalProps> = (
-    props: WaldiezNodeModelModalProps,
-) => {
+export const WaldiezNodeModelModal: FC<WaldiezNodeModelModalProps> = (props: WaldiezNodeModelModalProps) => {
     const {
         flowId,
         modelId,

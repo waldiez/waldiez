@@ -4,20 +4,20 @@
  */
 import * as Tooltip from "@radix-ui/react-tooltip";
 
-import React, { memo } from "react";
+import { type FC, type JSX, memo } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 
 import { CheckboxInput } from "@waldiez/components/checkboxInput";
 
 type InfoCheckboxProps = {
     id: string; // Add id for the checkbox
-    label: string | React.JSX.Element | (() => React.JSX.Element | string);
-    info: string | React.JSX.Element | (() => React.JSX.Element | string);
+    label: string | JSX.Element | (() => JSX.Element | string);
+    info: string | JSX.Element | (() => JSX.Element | string);
     checked: boolean;
     onChange: (checked: boolean) => void; // Updated to match Radix checkbox API
 };
 
-export const InfoCheckbox: React.FC<InfoCheckboxProps> = memo((props: InfoCheckboxProps) => {
+export const InfoCheckbox: FC<InfoCheckboxProps> = memo((props: InfoCheckboxProps) => {
     const { id, label, info, checked, onChange } = props;
 
     const labelElement = typeof label === "function" ? label() : label;

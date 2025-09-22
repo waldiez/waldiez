@@ -4,7 +4,7 @@
  */
 import type { Node } from "@xyflow/react";
 
-import React, { useCallback, useEffect, useState } from "react";
+import { type ChangeEvent, useCallback, useEffect, useState } from "react";
 import isEqual from "react-fast-compare";
 
 import { defaultRetrieveConfig } from "@waldiez/models";
@@ -376,7 +376,7 @@ export const useWaldiezNodeAgentModal = (
      * Handle import button change
      */
     const onImport = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             importItem(event, getAgentById.bind(null, id), onImportLoad);
         },
         [id, getAgentById, onImportLoad],

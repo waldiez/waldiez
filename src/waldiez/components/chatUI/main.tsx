@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { type FC, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { FaRegUser } from "react-icons/fa6";
 
 import { useImageRetry } from "@waldiez/components/chatUI/hooks";
@@ -21,7 +21,7 @@ type ChatUIMessage = {
     node: ReactNode;
 };
 
-export const ChatUI: React.FC<ChatUIProps> = ({ messages, isDarkMode, userParticipants }) => {
+export const ChatUI: FC<ChatUIProps> = ({ messages, isDarkMode, userParticipants }) => {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const chatContainer = useRef<HTMLDivElement>(null);
     const { resetRetries } = useImageRetry();

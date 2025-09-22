@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type ChangeEvent } from "react";
 
 import { CheckboxInput, StringList } from "@waldiez/components";
 import { type EditFlowModalModalTabOtherProps } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/other/types";
@@ -37,7 +37,7 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
     const onCacheSeedToggleChange = (checked: boolean) => {
         onDataChange({ cacheSeed: checked ? null : 42 });
     };
-    const onCacheSeedValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onCacheSeedValueChange = (e: ChangeEvent<HTMLInputElement>) => {
         try {
             const cacheSeed = parseInt(e.target.value);
             onDataChange({ cacheSeed });

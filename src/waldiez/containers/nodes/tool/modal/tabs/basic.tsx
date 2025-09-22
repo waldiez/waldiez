@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useCallback, useMemo } from "react";
+import { type ChangeEvent, type JSX, memo, useCallback, useMemo } from "react";
 
 import { CodeEditor, Select, type SingleValue, TextInput, TextareaInput } from "@waldiez/components";
 import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
@@ -72,7 +72,7 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
     const contentEditorId = `tool-content-editor-${toolId}`;
 
     const onPredefinedToolEnvChange = useCallback(
-        (envVar: string, event: React.ChangeEvent<HTMLInputElement>) => {
+        (envVar: string, event: ChangeEvent<HTMLInputElement>) => {
             const value = event.target.value;
             onAddSecret(envVar, value);
         },
@@ -80,7 +80,7 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
     );
 
     const onPredefinedToolArgChange = useCallback(
-        (kwarg: string, event: React.ChangeEvent<HTMLInputElement>) => {
+        (kwarg: string, event: ChangeEvent<HTMLInputElement>) => {
             const value = event.target.value;
             onSetToolKwarg(kwarg, value);
         },
@@ -88,7 +88,7 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
     );
 
     const ToolOptionWithIcon = memo(
-        (props: { innerProps: any; data: { icon?: React.JSX.Element; label: string } }) => {
+        (props: { innerProps: any; data: { icon?: JSX.Element; label: string } }) => {
             const { innerProps, data } = props;
             return (
                 <div {...innerProps} className="flex margin-5 clickable">

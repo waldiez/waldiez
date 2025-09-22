@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from "react";
 
 import { CheckboxInput } from "@waldiez/components/checkboxInput";
 import { Select, type SingleValue } from "@waldiez/components/select";
@@ -14,7 +14,7 @@ const availabilityTypeOptions = [
     { value: "expression", label: "Use an expression" },
 ];
 
-export const HandoffAvailability: React.FC<{
+export const HandoffAvailability: FC<{
     available: WaldiezHandoffAvailability;
     onDataChange: (condition: WaldiezHandoffAvailability) => void;
 }> = props => {
@@ -67,7 +67,7 @@ export const HandoffAvailability: React.FC<{
     );
     // Handler for availability value change
     const onAvailabilityValueChange = useCallback(
-        (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
             const updatedAvailability: WaldiezHandoffAvailability = {
                 ...currentAvailability,
                 value: event.target.value,

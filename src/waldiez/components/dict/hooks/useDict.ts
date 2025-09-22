@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useEffect, useState } from "react";
+import { type ChangeEvent, useCallback, useEffect, useState } from "react";
 
 import type { DictProps } from "@waldiez/components/dict/types";
 
@@ -30,7 +30,7 @@ export const useDict = (props: DictProps) => {
     }, [items]);
 
     // Handle key change for existing entry
-    const onKeyChange = useCallback((index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const onKeyChange = useCallback((index: number, event: ChangeEvent<HTMLInputElement>) => {
         const newKey = event.target.value;
 
         setStateItems(prevItems =>
@@ -39,7 +39,7 @@ export const useDict = (props: DictProps) => {
     }, []);
 
     // Handle value change for existing entry
-    const onValueChange = useCallback((index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const onValueChange = useCallback((index: number, event: ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target.value;
 
         setStateItems(prevItems =>
@@ -77,13 +77,13 @@ export const useDict = (props: DictProps) => {
     }, [newEntry, allowEmptyValues, onAdd]);
 
     // Handle key change for new entry
-    const onNewEntryKeyChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const onNewEntryKeyChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const newKey = event.target.value;
         setNewEntry(prev => ({ ...prev, key: newKey }));
     }, []);
 
     // Handle value change for new entry
-    const onNewEntryValueChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const onNewEntryValueChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const newValue = event.target.value;
         setNewEntry(prev => ({ ...prev, value: newValue }));
     }, []);

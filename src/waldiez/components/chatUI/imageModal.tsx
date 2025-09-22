@@ -2,10 +2,10 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useEffect, useState } from "react";
+import { type FC, type MouseEvent, useEffect, useState } from "react";
 import { FaX } from "react-icons/fa6";
 
-export const ImageModal: React.FC<{
+export const ImageModal: FC<{
     isOpen: boolean;
     imageUrl: string | null;
     onClose: () => void;
@@ -28,7 +28,7 @@ export const ImageModal: React.FC<{
     if (!isOpen || !imageUrl) {
         return null;
     }
-    const onImageClick = (event: React.MouseEvent<HTMLImageElement>) => {
+    const onImageClick = (event: MouseEvent<HTMLImageElement>) => {
         event.stopPropagation();
     };
     const onImageError = () => {

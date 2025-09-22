@@ -2,13 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type FC } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
 
 import { useDropZone } from "@waldiez/components/dropZone/hooks";
 import type { DropZoneProps } from "@waldiez/components/dropZone/types";
 
-export const DropZone: React.FC<DropZoneProps> = (props: DropZoneProps) => {
+export const DropZone: FC<DropZoneProps> = (props: DropZoneProps) => {
     const { flowId, multiple = false } = props;
     const { onFileDragOver, onFileDragLeave, onOpenUploadDialog, onFileDrop } = useDropZone(props);
     const instruction = multiple

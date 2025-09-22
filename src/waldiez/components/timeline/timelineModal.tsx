@@ -2,14 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type FC } from "react";
 import { FaX } from "react-icons/fa6";
 
 import { Modal } from "@waldiez/components/modal";
 import { Timeline } from "@waldiez/components/timeline/main";
 import type { WaldiezTimelineData } from "@waldiez/components/timeline/types";
 
-export const TimelineModal: React.FC<{
+export const TimelineModal: FC<{
     flowId: string;
     isOpen: boolean;
     onClose: () => void;

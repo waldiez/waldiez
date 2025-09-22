@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback } from "react";
+import { type ChangeEvent, useCallback } from "react";
 
 import type { SingleValue } from "@waldiez/components";
 import type { WaldiezAgentHumanInputMode, WaldiezNodeAgentData } from "@waldiez/models/types";
@@ -42,7 +42,7 @@ export const useWaldiezAgentBasic = (props: {
      * Handle agent name change
      */
     const onNameChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             const label = event.target.value;
             onDataChange({ label });
         },
@@ -53,7 +53,7 @@ export const useWaldiezAgentBasic = (props: {
      * Handle agent description change
      */
     const onDescriptionChange = useCallback(
-        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (event: ChangeEvent<HTMLTextAreaElement>) => {
             const description = event.target.value;
             onDataChange({ description });
         },
@@ -64,7 +64,7 @@ export const useWaldiezAgentBasic = (props: {
      * Handle system message change
      */
     const onSystemMessageChange = useCallback(
-        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (event: ChangeEvent<HTMLTextAreaElement>) => {
             const systemMessage = event.target.value;
             onDataChange({ systemMessage });
         },
@@ -103,7 +103,7 @@ export const useWaldiezAgentBasic = (props: {
      * Handle agent default auto reply change
      */
     const onAgentDefaultAutoReplyChange = useCallback(
-        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (event: ChangeEvent<HTMLTextAreaElement>) => {
             const agentDefaultAutoReply = event.target.value;
             onDataChange({ agentDefaultAutoReply });
         },

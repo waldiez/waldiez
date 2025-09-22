@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useMemo } from "react";
+import { type ChangeEvent, useCallback, useMemo } from "react";
 
 import type { MultiValue } from "@waldiez/components";
 import type { WaldiezNodeAgentData, WaldiezNodeTool } from "@waldiez/models/types";
@@ -71,7 +71,7 @@ export const useWaldiezAgentCodeExecution = (props: {
      * Handle work directory path changes
      */
     const onCodeExecutionWorkDirChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             const workDir = event.target.value;
             onDataChange({
                 codeExecutionConfig:

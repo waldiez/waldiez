@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type ChangeEvent } from "react";
 
 /**
  * Utility function to import an item from a JSON file.
@@ -14,7 +14,7 @@ import React from "react";
  * @returns void
  */
 export const importItem = <T>(
-    event: React.ChangeEvent<HTMLInputElement>,
+    event: ChangeEvent<HTMLInputElement>,
     itemGetter: () => T | null,
     onLoad: (item: T, data: { [key: string]: unknown }) => void,
 ) => {

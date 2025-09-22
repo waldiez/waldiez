@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from "react";
 
 import { CheckboxInput } from "@waldiez/components/checkboxInput";
 import { CodeEditor } from "@waldiez/components/codeEditor";
@@ -36,7 +36,7 @@ def custom_update_system_message(
     ...
 `;
 
-export const UpdateState: React.FC<UpdateStateProps> = props => {
+export const UpdateState: FC<UpdateStateProps> = props => {
     const { data, onDataChange, darkMode } = props;
 
     /**
@@ -148,7 +148,7 @@ export const UpdateState: React.FC<UpdateStateProps> = props => {
      * Handle string content change
      */
     const onUpdateSystemMessageStringChange = useCallback(
-        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (event: ChangeEvent<HTMLTextAreaElement>) => {
             onDataChange({
                 updateAgentStateBeforeReply: [
                     {

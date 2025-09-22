@@ -2,17 +2,15 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type FC } from "react";
 
 import { Editor } from "@monaco-editor/react";
 
-type EditorProps = {
+export const CodeEditor: FC<{
     value: string;
     onChange: (value: string | undefined) => void;
     darkMode: boolean;
-};
-
-export const CodeEditor: React.FC<EditorProps> = (props: EditorProps) => {
+}> = (props: { value: string; onChange: (value: string | undefined) => void; darkMode: boolean }) => {
     const { value, onChange, darkMode } = props;
     const theme = darkMode ? "vs-dark" : "vs-light";
     return (

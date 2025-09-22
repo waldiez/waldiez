@@ -2,13 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React from "react";
+import { type FC } from "react";
 
 import { MessageInput } from "@waldiez/components";
 import { useWaldiezEdgeMessageTab } from "@waldiez/containers/edges/modal/tabs/message/hooks";
 import { type WaldiezEdgeMessageTabProps } from "@waldiez/containers/edges/modal/tabs/message/types";
 
-export const WaldiezEdgeMessageTab: React.FC<WaldiezEdgeMessageTabProps> = props => {
+export const WaldiezEdgeMessageTab: FC<WaldiezEdgeMessageTabProps> = props => {
     const { edgeId, data, darkMode, skipRagOption, skipCarryoverOption, skipContextVarsOption } = props;
     const {
         onMessageTypeChange,

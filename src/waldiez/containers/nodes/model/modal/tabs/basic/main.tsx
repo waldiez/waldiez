@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useMemo } from "react";
+import { type FC, memo, useMemo } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import { Collapsible, InfoLabel, Select } from "@waldiez/components";
@@ -17,7 +17,7 @@ import { capitalize } from "@waldiez/utils";
 /**
  * Basic tab component for model properties in model modal
  */
-export const WaldiezNodeModelModalBasicTab: React.FC<WaldiezNodeModelModalBasicTabProps> = memo(
+export const WaldiezNodeModelModalBasicTab: FC<WaldiezNodeModelModalBasicTabProps> = memo(
     (props: WaldiezNodeModelModalBasicTabProps) => {
         const { id, data } = props;
         const { label, apiType, apiKey, baseUrl } = data;

@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback } from "react";
+import { type Dispatch, useCallback } from "react";
 
 import type { WaldiezChatConfig, WaldiezChatHandlers } from "@waldiez/components/chatUI/types";
 import {
@@ -28,7 +28,7 @@ export const useWaldiezWsChat: (props: {
     };
 }) => {
     chat: WaldiezChatConfig;
-    dispatch: React.Dispatch<WaldiezChatAction>;
+    dispatch: Dispatch<WaldiezChatAction>;
     reset: () => void;
     connected: boolean;
     getConnectionState: () => number;

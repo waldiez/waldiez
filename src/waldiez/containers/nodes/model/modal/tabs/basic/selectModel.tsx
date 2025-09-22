@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useMemo } from "react";
+import { type Ref, memo, useMemo } from "react";
 
 import { type GroupBase, Select, type SingleValue } from "@waldiez/components";
 import { predefinedModels } from "@waldiez/containers/nodes/model/utils";
@@ -22,7 +22,7 @@ interface IModelItem {
  * Interface for ModelSelector props
  */
 interface IModelSelectorProps {
-    ref: React.Ref<any>;
+    ref: Ref<any>;
     onChange: (value?: { label: string; apiType: WaldiezModelAPIType }) => void;
 }
 

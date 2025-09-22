@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { useCallback } from "react";
+import { type ChangeEvent, useCallback } from "react";
 
 import { showSnackbar } from "@waldiez/components";
 import type { ImportFlowState, SearchResult } from "@waldiez/containers/flow/modals/importFlowModal/types";
@@ -136,7 +136,7 @@ export const useLoadFlowStep = (props: {
      * Handle remote URL input change
      */
     const onRemoteUrlChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             setRemoteUrl(event.target.value);
         },
         [setRemoteUrl],
@@ -215,7 +215,7 @@ export const useLoadFlowStep = (props: {
      * Handle search input change
      */
     const onSearchChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             const searchTerm = event.target.value.trim();
             onStateChange({ searchTerm });
         },

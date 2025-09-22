@@ -5,7 +5,7 @@
 /**
  * Custom hook for handling file drag and drop functionality
  */
-import React, { useCallback } from "react";
+import { type DragEvent, useCallback } from "react";
 
 import type { DropZoneProps } from "@waldiez/components/dropZone/types";
 import { showSnackbar } from "@waldiez/components/snackbar";
@@ -73,14 +73,14 @@ export const useDropZone = (props: DropZoneProps) => {
     );
 
     // Handler for drag over event
-    const onFileDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    const onFileDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
         event.currentTarget.classList.add("drag-over");
     }, []);
 
     // Handler for drag leave event
-    const onFileDragLeave = useCallback((event: React.DragEvent<HTMLDivElement>) => {
+    const onFileDragLeave = useCallback((event: DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         event.stopPropagation();
         event.currentTarget.classList.remove("drag-over");
@@ -88,7 +88,7 @@ export const useDropZone = (props: DropZoneProps) => {
 
     // Handler for file drop event
     const onFileDrop = useCallback(
-        (event: React.DragEvent<HTMLDivElement>) => {
+        (event: DragEvent<HTMLDivElement>) => {
             event.preventDefault();
             event.stopPropagation();
             event.currentTarget.classList.remove("drag-over");

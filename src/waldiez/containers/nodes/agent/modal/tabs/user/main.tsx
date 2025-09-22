@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useCallback } from "react";
+import { type ChangeEvent, type FC, memo, useCallback } from "react";
 
 import { NumberInput, TabItem, TabItems, TextInput, TextareaInput } from "@waldiez/components";
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
@@ -15,7 +15,7 @@ import type {
     WaldiezNodeTool,
 } from "@waldiez/models/types";
 
-export const WaldiezAgentUserTabs: React.FC<{
+export const WaldiezAgentUserTabs: FC<{
     id: string;
     data: WaldiezNodeAgentData;
     agents: WaldiezNodeAgent[];
@@ -30,7 +30,7 @@ export const WaldiezAgentUserTabs: React.FC<{
     const { id, flowId, data, tools, showNestedChatsTab, onDataChange, agentConnections, agents } = props;
 
     const onNameChange = useCallback(
-        (event: React.ChangeEvent<HTMLInputElement>) => {
+        (event: ChangeEvent<HTMLInputElement>) => {
             onDataChange({ label: event.target.value });
         },
         [onDataChange],
@@ -44,7 +44,7 @@ export const WaldiezAgentUserTabs: React.FC<{
     );
 
     const onAgentDefaultAutoReplyChange = useCallback(
-        (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        (event: ChangeEvent<HTMLTextAreaElement>) => {
             onDataChange({ agentDefaultAutoReply: event.target.value });
         },
         [onDataChange],

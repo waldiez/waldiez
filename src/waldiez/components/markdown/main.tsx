@@ -7,7 +7,7 @@ import { Marked } from "marked";
 import { markedHighlight } from "marked-highlight";
 import Renderer from "marked-react";
 
-import React, { type JSX, useMemo } from "react";
+import { type FC, type JSX, type ReactNode, useMemo } from "react";
 
 type MarkdownRendererProps = {
     content: any;
@@ -131,7 +131,7 @@ const extractText = (obj: any): string => {
 /**
  * Component to render markdown content
  */
-export const Markdown: React.FC<MarkdownRendererProps> = ({ content, isDarkMode = false, onImageClick }) => {
+export const Markdown: FC<MarkdownRendererProps> = ({ content, isDarkMode = false, onImageClick }) => {
     const strContent = useMemo(() => extractText(content), [content]);
 
     // Skip markdown processing for short texts or if it doesn't look like markdown
@@ -170,7 +170,7 @@ export const Markdown: React.FC<MarkdownRendererProps> = ({ content, isDarkMode 
     const renderer = useMemo(
         () => ({
             // Custom rendering for links
-            link: (children: React.ReactNode, href?: string) => (
+            link: (children: ReactNode, href?: string) => (
                 <a href={href} target="_blank" rel="noopener noreferrer" className="markdown-link">
                     {children}
                 </a>
@@ -187,40 +187,40 @@ export const Markdown: React.FC<MarkdownRendererProps> = ({ content, isDarkMode 
             ),
 
             // Heading components
-            heading: (children: React.ReactNode, level: 1 | 2 | 3 | 4 | 5 | 6) => {
+            heading: (children: ReactNode, level: 1 | 2 | 3 | 4 | 5 | 6) => {
                 const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
                 return <HeadingTag className={`markdown-h${level}`}>{children}</HeadingTag>;
             },
 
             // List components
-            list: (children: React.ReactNode, ordered: boolean) => {
+            list: (children: ReactNode, ordered: boolean) => {
                 const ListTag = ordered ? "ol" : "ul";
                 const className = ordered ? "markdown-ol" : "markdown-ul";
                 return <ListTag className={className}>{children}</ListTag>;
             },
 
-            listitem: (children: React.ReactNode) => <li className="markdown-li">{children}</li>,
+            listitem: (children: ReactNode) => <li className="markdown-li">{children}</li>,
 
             // Block elements
-            blockquote: (children: React.ReactNode) => (
+            blockquote: (children: ReactNode) => (
                 <blockquote className="markdown-blockquote">{children}</blockquote>
             ),
 
             // Table components
-            table: (children: React.ReactNode) => <table className="markdown-table">{children}</table>,
-            thead: (children: React.ReactNode) => <thead className="markdown-thead">{children}</thead>,
-            tbody: (children: React.ReactNode) => <tbody className="markdown-tbody">{children}</tbody>,
-            tablerow: (children: React.ReactNode) => <tr className="markdown-tr">{children}</tr>,
-            tablecell: (children: React.ReactNode, header: boolean) => {
+            table: (children: ReactNode) => <table className="markdown-table">{children}</table>,
+            thead: (children: ReactNode) => <thead className="markdown-thead">{children}</thead>,
+            tbody: (children: ReactNode) => <tbody className="markdown-tbody">{children}</tbody>,
+            tablerow: (children: ReactNode) => <tr className="markdown-tr">{children}</tr>,
+            tablecell: (children: ReactNode, header: boolean) => {
                 const CellTag = header ? "th" : "td";
                 const className = header ? "markdown-th" : "markdown-td";
                 return <CellTag className={className}>{children}</CellTag>;
             },
 
             // Code components
-            codespan: (children: React.ReactNode) => <code className="markdown-inline-code">{children}</code>,
+            codespan: (children: ReactNode) => <code className="markdown-inline-code">{children}</code>,
 
-            code: (children: React.ReactNode, lang?: string) => {
+            code: (children: ReactNode, lang?: string) => {
                 if (lang) {
                     return (
                         <div className="markdown-code-block-wrapper">
@@ -242,7 +242,7 @@ export const Markdown: React.FC<MarkdownRendererProps> = ({ content, isDarkMode 
             },
 
             // Paragraph
-            paragraph: (children: React.ReactNode) => <p className="markdown-p">{children}</p>,
+            paragraph: (children: ReactNode) => <p className="markdown-p">{children}</p>,
 
             // Horizontal rule
             hr: () => <hr className="markdown-hr" />,

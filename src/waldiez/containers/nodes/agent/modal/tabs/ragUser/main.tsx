@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import React, { memo, useEffect, useState } from "react";
+import { type FC, memo, useEffect, useState } from "react";
 
 import { TabItem, TabItems } from "@waldiez/components";
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
@@ -22,7 +22,7 @@ import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/to
  * Component for configuring RAG User settings
  * Provides tabs for retrieve config, text splitting, vector DB, custom functions, and advanced settings
  */
-export const WaldiezAgentRagUserTabs: React.FC<WaldiezAgentRagUserTabsProps> = memo(
+export const WaldiezAgentRagUserTabs: FC<WaldiezAgentRagUserTabsProps> = memo(
     (props: WaldiezAgentRagUserTabsProps) => {
         const {
             id,

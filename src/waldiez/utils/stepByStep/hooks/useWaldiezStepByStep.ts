@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 /* eslint-disable max-statements */
-import { useCallback, useMemo, useReducer, useRef } from "react";
+import { type Dispatch, useCallback, useMemo, useReducer, useRef } from "react";
 
 import type { WaldiezActiveRequest, WaldiezChatParticipant } from "@waldiez/components/chatUI/types";
 import type {
@@ -67,7 +67,7 @@ export const useWaldiezStepByStep: (props: {
     deduplicationOptions?: WaldiezStepByStepMessageDeduplicationOptions;
 }) => {
     stepByStep: WaldiezStepByStep;
-    dispatch: React.Dispatch<WaldiezStepByStepAction>;
+    dispatch: Dispatch<WaldiezStepByStepAction>;
     process: (data: any) => void;
     reset: () => void;
     setActive: (active: boolean) => void;

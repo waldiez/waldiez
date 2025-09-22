@@ -4,7 +4,7 @@
  */
 import { BaseEdge, EdgeLabelRenderer, type EdgeProps } from "@xyflow/react";
 
-import React, { memo, useCallback, useMemo, useState } from "react";
+import { type FocusEvent, type MouseEvent, memo, useCallback, useMemo, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { GiNestEggs, GiShakingHands } from "react-icons/gi";
 import { GoAlert } from "react-icons/go";
@@ -220,7 +220,7 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
 
     // Event handlers
     const onEdgeClick = useCallback(
-        (event: React.MouseEvent) => {
+        (event: MouseEvent) => {
             if (isReadOnly === true) {
                 return;
             }
@@ -236,7 +236,7 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
         [isReadOnly, focussed],
     );
 
-    const onEdgeBlur = useCallback((event: React.FocusEvent) => {
+    const onEdgeBlur = useCallback((event: FocusEvent) => {
         (event.target as HTMLDivElement).blur();
         setFocussed(false);
     }, []);

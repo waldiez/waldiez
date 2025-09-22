@@ -22,7 +22,7 @@ describe("NumberInput", () => {
         expect(baseElement).toBeTruthy();
     });
 
-    it("should render with label as React.JSX.Element", () => {
+    it("should render with label as JSX.Element", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: <div>test</div>,
@@ -51,7 +51,7 @@ describe("NumberInput", () => {
         expect(baseElement).toBeTruthy();
     });
 
-    it("should render with info as React.JSX.Element", () => {
+    it("should render with info as JSX.Element", () => {
         const onChange = vi.fn();
         const numberInputProps = {
             label: "test",

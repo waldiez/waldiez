@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback } from "react";
+import { type Dispatch, useCallback } from "react";
 
 import type { WaldiezStepByStep, WaldiezStepHandlers } from "@waldiez/components/stepByStep/types";
 import {
@@ -32,7 +32,7 @@ export const useWaldiezWsStepByStep: (props: {
     };
 }) => {
     stepByStep: WaldiezStepByStep;
-    dispatch: React.Dispatch<WaldiezStepByStepAction>;
+    dispatch: Dispatch<WaldiezStepByStepAction>;
     reset: () => void;
     connected: boolean;
     getConnectionState: () => number;
