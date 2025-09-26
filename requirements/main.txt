@@ -1,5 +1,5 @@
 ag2[openai]==0.9.9
-aiocsv==1.3.2
+aiocsv==1.4.0
 aiofiles==24.1.0
 aiosqlite==0.21.0
 click<8.2
