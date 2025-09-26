@@ -50,6 +50,10 @@ class BaseSubprocessRunner:
         self.dot_env = dot_env
         self.logger = logger or logging.getLogger(self.__class__.__name__)
         self.waiting_for_input = False
+        breakpoints = kwargs.get("breakpoints", [])
+        if not isinstance(breakpoints, list):
+            breakpoints = []
+        self.breakpoints: list[str] = breakpoints
 
     def build_command(
         self,
@@ -110,6 +114,10 @@ class BaseSubprocessRunner:
         if self.dot_env:
             cmd.extend(["--dot-env", str(self.dot_env)])
 
+        if self.breakpoints:
+            for entry in self.breakpoints:
+                cmd.extend(["--breakpoints", entry])
+        self.logger.debug("Runner command: %s", " ".join(cmd))
         return cmd
 
     def parse_output(

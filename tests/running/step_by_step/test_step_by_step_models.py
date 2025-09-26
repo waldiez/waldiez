@@ -196,22 +196,20 @@ class TestWaldiezBreakpoint:
                 )
             assert "Event type must start with a letter" in str(exc_info.value)
 
-    def test_breakpoint_validation_agent_name_whitespace(self) -> None:
-        """Test agent_name validation with whitespace handling."""
+    def test_breakpoint_validation_agent_whitespace(self) -> None:
+        """Test agent validation with whitespace handling."""
         # Valid names with whitespace (should be stripped)
         bp = WaldiezBreakpoint(
-            type=WaldiezBreakpointType.AGENT, agent_name="  user  "
+            type=WaldiezBreakpointType.AGENT, agent="  user  "
         )
-        assert bp.agent_name == "user"
+        assert bp.agent == "user"
 
         # Invalid names (empty after strip)
         invalid_names = ["", "   ", "\t\n\r", "\t   \n"]
-        for agent_name in invalid_names:
+        for agent in invalid_names:
             with pytest.raises(ValidationError) as exc_info:
-                WaldiezBreakpoint(
-                    type=WaldiezBreakpointType.AGENT, agent_name=agent_name
-                )
-            assert "Agent name cannot be empty or just whitespace" in str(
+                WaldiezBreakpoint(type=WaldiezBreakpointType.AGENT, agent=agent)
+            assert "Agent cannot be empty or just whitespace" in str(
                 exc_info.value
             )
 
@@ -229,12 +227,12 @@ class TestWaldiezBreakpoint:
         # Test agent: prefix
         bp = WaldiezBreakpoint.from_string("agent:user")
         assert bp.type == WaldiezBreakpointType.AGENT
-        assert bp.agent_name == "user"
+        assert bp.agent == "user"
 
         # Test agent:event format
         bp = WaldiezBreakpoint.from_string("assistant:tool_call")
         assert bp.type == WaldiezBreakpointType.AGENT_EVENT
-        assert bp.agent_name == "assistant"
+        assert bp.agent == "assistant"
         assert bp.event_type == "tool_call"
 
         # Test default to event type
@@ -269,13 +267,14 @@ class TestWaldiezBreakpoint:
             WaldiezBreakpoint.from_string("event:")
 
         with pytest.raises(
-            ValueError, match="Agent name cannot be empty after 'agent:'"
+            ValueError, match="Agent identifier cannot be empty after 'agent:'"
         ):
             WaldiezBreakpoint.from_string("agent:")
 
         # Invalid agent:event format
         with pytest.raises(
-            ValueError, match="Both agent name and event type must be specified"
+            ValueError,
+            match="Both agent identifier and event type must be specified",
         ):
             WaldiezBreakpoint.from_string(":")
 
@@ -310,24 +309,24 @@ class TestWaldiezBreakpoint:
 
         # AGENT type matches on sender OR recipient
         bp_agent_sender = WaldiezBreakpoint(
-            type=WaldiezBreakpointType.AGENT, agent_name="user"
+            type=WaldiezBreakpointType.AGENT, agent="user"
         )
         assert bp_agent_sender.matches(event) is True
 
         bp_agent_recipient = WaldiezBreakpoint(
-            type=WaldiezBreakpointType.AGENT, agent_name="assistant"
+            type=WaldiezBreakpointType.AGENT, agent="assistant"
         )
         assert bp_agent_recipient.matches(event) is True
 
         bp_agent_no_match = WaldiezBreakpoint(
-            type=WaldiezBreakpointType.AGENT, agent_name="other"
+            type=WaldiezBreakpointType.AGENT, agent="other"
         )
         assert bp_agent_no_match.matches(event) is False
 
         # AGENT_EVENT type matches on both event type AND (sender OR recipient)
         bp_agent_event = WaldiezBreakpoint(
             type=WaldiezBreakpointType.AGENT_EVENT,
-            agent_name="user",
+            agent="user",
             event_type="message",
         )
         assert bp_agent_event.matches(event) is True
@@ -335,7 +334,7 @@ class TestWaldiezBreakpoint:
         # Wrong event type
         bp_agent_event_wrong_type = WaldiezBreakpoint(
             type=WaldiezBreakpointType.AGENT_EVENT,
-            agent_name="user",
+            agent="user",
             event_type="tool_call",
         )
         assert bp_agent_event_wrong_type.matches(event) is False
@@ -343,7 +342,7 @@ class TestWaldiezBreakpoint:
         # Wrong agent
         bp_agent_event_wrong_agent = WaldiezBreakpoint(
             type=WaldiezBreakpointType.AGENT_EVENT,
-            agent_name="other",
+            agent="other",
             event_type="message",
         )
         assert bp_agent_event_wrong_agent.matches(event) is False
@@ -358,14 +357,14 @@ class TestWaldiezBreakpoint:
 
         # AGENT type
         bp_agent = WaldiezBreakpoint(
-            type=WaldiezBreakpointType.AGENT, agent_name="user"
+            type=WaldiezBreakpointType.AGENT, agent="user"
         )
         assert str(bp_agent) == "agent:user"
 
         # AGENT_EVENT type
         bp_agent_event = WaldiezBreakpoint(
             type=WaldiezBreakpointType.AGENT_EVENT,
-            agent_name="assistant",
+            agent="assistant",
             event_type="tool_call",
         )
         assert str(bp_agent_event) == "assistant:tool_call"
@@ -462,7 +461,7 @@ class TestBreakpointMessageClasses:
 
         # Object breakpoint
         bp_original = WaldiezBreakpoint(
-            type=WaldiezBreakpointType.AGENT, agent_name="user"
+            type=WaldiezBreakpointType.AGENT, agent="user"
         )
         msg_obj = WaldiezDebugBreakpointAdded(breakpoint=bp_original)
         bp_returned = msg_obj.breakpoint_object
@@ -474,7 +473,7 @@ class TestBreakpointMessageClasses:
         msg_str = WaldiezDebugBreakpointRemoved(breakpoint="agent:assistant")
         bp_obj = msg_str.breakpoint_object
         assert bp_obj.type == WaldiezBreakpointType.AGENT
-        assert bp_obj.agent_name == "assistant"
+        assert bp_obj.agent == "assistant"
 
         # Object breakpoint
         bp_original = WaldiezBreakpoint(type=WaldiezBreakpointType.ALL)
@@ -519,9 +518,7 @@ def test_breakpoint_edge_cases_matches() -> None:
     assert bp_event.matches(incomplete_event) is True
 
     # AGENT type should not match (no sender/recipient)
-    bp_agent = WaldiezBreakpoint(
-        type=WaldiezBreakpointType.AGENT, agent_name="user"
-    )
+    bp_agent = WaldiezBreakpoint(type=WaldiezBreakpointType.AGENT, agent="user")
     assert bp_agent.matches(incomplete_event) is False
 
     # Test with None values in event
@@ -531,7 +528,5 @@ def test_breakpoint_edge_cases_matches() -> None:
         "recipient": None,
     }
 
-    bp_agent = WaldiezBreakpoint(
-        type=WaldiezBreakpointType.AGENT, agent_name="user"
-    )
+    bp_agent = WaldiezBreakpoint(type=WaldiezBreakpointType.AGENT, agent="user")
     assert bp_agent.matches(event_with_nones) is False

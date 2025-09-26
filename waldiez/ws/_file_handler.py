@@ -69,7 +69,7 @@ class FileRequestHandler:
                 ).model_dump(mode="json")
 
             # Parent dir already created by resolve_output_path
-            output_path.write_text(msg.data, encoding="utf-8")
+            output_path.write_text(msg.data, encoding="utf-8", newline="\n")
 
             return SaveFlowResponse.ok(
                 path=str(output_path.relative_to(workspace_dir))

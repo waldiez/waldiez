@@ -167,7 +167,7 @@ class ExportOrchestrator:
                 tags=self.waldiez.tags,
                 for_notebook=self.config.for_notebook,
             ),
-            position=ExportPosition.TOP,  # befoe everything
+            position=ExportPosition.TOP,  # before everything
             order=ContentOrder.EARLY_SETUP,
         )
         merged_result.add_content(
@@ -224,6 +224,12 @@ class ExportOrchestrator:
             position=ExportPosition.IMPORTS,  # imports section
             order=ContentOrder.EARLY_SETUP,  # top position
         )
+        known_agents_string = self._get_the_known_agents_string()
+        merged_result.add_content(
+            known_agents_string,
+            position=ExportPosition.AGENTS,
+            order=ContentOrder.POST_CONTENT.value + 100,
+        )
         return merged_result
 
     def get_after_run_content(self) -> str:
@@ -239,6 +245,14 @@ class ExportOrchestrator:
             agent_names=self.agent_names,
             tabs=1,
         )
+
+    def _get_the_known_agents_string(self) -> str:
+        """Get the __KNOWN_AGENTS__ file variable."""
+        content = "__KNOWN_AGENTS__ = [\n"
+
+        for agent_name in self.agent_names.values():
+            content += "    " + agent_name + ",\n"
+        return content + "]\n"
 
     def _get_tools_exporter(self) -> ToolsExporter:
         """Get or create tools exporter."""

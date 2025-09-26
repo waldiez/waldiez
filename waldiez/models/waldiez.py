@@ -132,7 +132,7 @@ class Waldiez:
         data: dict[str, Any] = {}
         if not Path(waldiez_file).exists():
             raise ValueError(f"File not found: {waldiez_file}")
-        with open(waldiez_file, "r", encoding="utf-8") as file:
+        with open(waldiez_file, "r", encoding="utf-8", newline="\n") as file:
             try:
                 data = json.load(file)
             except json.decoder.JSONDecodeError as error:

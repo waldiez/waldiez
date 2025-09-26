@@ -81,12 +81,12 @@ def create_runner(
             f"Unknown runner mode '{mode}'. Available: {available}"
         )
 
-    runner_class = runners[mode]
+    runner_cls = runners[mode]
     if mode == "subprocess":
         subprocess_mode = kwargs.pop("subprocess_mode", "run")
         if subprocess_mode not in ["run", "debug"]:
             subprocess_mode = "run"
-        return runner_class(
+        return runner_cls(
             waldiez=waldiez,
             output_path=output_path,
             uploads_root=uploads_root,
@@ -95,7 +95,9 @@ def create_runner(
             mode=subprocess_mode,
             **kwargs,
         )
-    return runner_class(
+    if mode != "debug" and "breakpoints" in kwargs:  # pragma: no cover
+        kwargs.pop("breakpoints", None)
+    return runner_cls(
         waldiez=waldiez,
         output_path=output_path,
         uploads_root=uploads_root,

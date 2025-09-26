@@ -157,7 +157,7 @@ def get_simple_chat_string(
     )
     chat_string += message_arg
     chat_string += "\n" + f"{tab})" + "\n"
-    chat_string += get_event_handler_string(tab=tab, is_async=is_async)
+    chat_string += get_event_handler_string(space=tab, is_async=is_async)
     return chat_string, additional_methods_string
 
 
@@ -212,7 +212,7 @@ def get_empty_simple_chat_string(
     )
     content += message_arg
     content += f"{tab})" + "\n"
-    content += get_event_handler_string(tab=tab, is_async=is_async)
+    content += get_event_handler_string(space=tab, is_async=is_async)
     return content, ""
 
 

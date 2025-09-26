@@ -140,10 +140,10 @@ def test_sequential_chat() -> None:
             },
         ])
 """
-    tab = "    " * 2
+    space = "    " * 2
     assert (
         exporter.extras.chat_initiation
-        == expected + get_event_handler_string(tab=tab, is_async=False)
+        == expected + get_event_handler_string(space=space, is_async=False)
     )
     imports = exporter.get_imports()
     assert imports is not None

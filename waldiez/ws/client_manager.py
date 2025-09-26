@@ -340,7 +340,6 @@ class ClientManager:
         except Exception as e:
             return RunWorkflowResponse.fail(
                 error=f"Invalid flow_data: {e}",
-                mode=msg.mode,
                 session_id="",
             ).model_dump(mode="json")
         # structured path preferred
@@ -372,7 +371,6 @@ class ClientManager:
             return StepRunWorkflowResponse.fail(
                 error=f"Invalid flow_data: {e}",
                 session_id="",
-                auto_continue=msg.auto_continue,
                 breakpoints=msg.breakpoints,
             ).model_dump(mode="json")
         session_id = self._next_session_id()
@@ -381,6 +379,7 @@ class ClientManager:
             on_output=self._mk_on_output(session_id),
             on_input_request=self._mk_on_input_request(session_id),
             mode="debug",  # step-by-step via CLI
+            breakpoints=msg.breakpoints,
         )
 
         await self._create_session_for_runner(
@@ -392,7 +391,6 @@ class ClientManager:
         if session:
             session.state.metadata.update(
                 {
-                    "auto_continue": msg.auto_continue,
                     "breakpoints": list(msg.breakpoints),
                 }
             )
@@ -401,7 +399,6 @@ class ClientManager:
 
         return StepRunWorkflowResponse.ok(
             session_id=session_id,
-            auto_continue=msg.auto_continue,
             breakpoints=list(msg.breakpoints),
         ).model_dump(mode="json")
 

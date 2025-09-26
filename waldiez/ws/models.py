@@ -130,11 +130,7 @@ class RunWorkflowRequest(BaseRequest):
 
     type: Literal["run"] = "run"
     data: str  # JSON string of workflow
-    mode: ExecutionMode = ExecutionMode.STANDARD
-    structured_io: bool = True
-    uploads_root: str | None = None
-    dot_env_path: str | None = None
-    output_path: str | None = None
+    path: str | None = None
 
 
 class StepRunWorkflowRequest(BaseRequest):
@@ -142,12 +138,8 @@ class StepRunWorkflowRequest(BaseRequest):
 
     type: Literal["step_run"] = "step_run"
     data: str  # JSON string of workflow
-    auto_continue: bool = False
     breakpoints: list[str] = Field(default_factory=list)
-    structured_io: bool = True
-    uploads_root: str | None = None
-    dot_env_path: str | None = None
-    output_path: str | None = None
+    path: str | None = None
 
 
 class StepControlRequest(BaseRequest):
@@ -272,7 +264,6 @@ class RunWorkflowResponse(BaseResponse):
 
     type: Literal["run_response"] = "run_response"
     session_id: str
-    mode: ExecutionMode
     error: str | None = None
 
 
@@ -281,7 +272,6 @@ class StepRunWorkflowResponse(BaseResponse):
 
     type: Literal["step_run_response"] = "step_run_response"
     session_id: str
-    auto_continue: bool
     breakpoints: list[str]
     error: str | None = None
 

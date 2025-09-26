@@ -185,7 +185,7 @@ def test_set_breakpoints_success(mixin: DummyBreakpointsMixin) -> None:
     assert mixin.set_breakpoints(specs)
     assert len(mixin._breakpoints) == 2
     assert any(bp.event_type == "message" for bp in mixin._breakpoints)
-    assert any(bp.agent_name == "user" for bp in mixin._breakpoints)
+    assert any(bp.agent == "user" for bp in mixin._breakpoints)
 
 
 def test_set_breakpoints_with_objects(mixin: DummyBreakpointsMixin) -> None:

@@ -4,6 +4,7 @@
 # pylint: disable=unused-argument
 """Utilities for running code."""
 
+import asyncio
 import datetime
 import json
 import shutil
@@ -78,6 +79,47 @@ def after_run(
     shutil.rmtree(temp_dir)
 
 
+async def a_after_run(
+    temp_dir: Path,
+    output_file: Optional[Union[str, Path]],
+    flow_name: str,
+    waldiez_file: Path,
+    uploads_root: Optional[Path] = None,
+    skip_mmd: bool = False,
+    skip_timeline: bool = False,
+) -> None:
+    """Actions to perform after running the flow.
+
+    Parameters
+    ----------
+    temp_dir : Path
+        The temporary directory.
+    output_file : Optional[Union[str, Path]]
+        The output file.
+    flow_name : str
+        The flow name.
+    waldiez_file : Path
+        The path of the waldiez file used (or dumped) for the run.
+    uploads_root : Optional[Path], optional
+        The runtime uploads root, by default None
+    skip_mmd : bool, optional
+        Whether to skip the mermaid sequence diagram generation,
+        by default, False
+    skip_timeline : bool, optional
+        Whether to skip the timeline processing, by default False
+    """
+    await asyncio.to_thread(
+        after_run,
+        temp_dir,
+        output_file,
+        flow_name,
+        waldiez_file,
+        uploads_root,
+        skip_mmd,
+        skip_timeline,
+    )
+
+
 # noinspection PyBroadException
 def _make_mermaid_diagram(
     temp_dir: Path,
@@ -121,7 +163,9 @@ def _make_timeline_json(
                     functions_file=log_files["functions"],
                 )
                 results = processor.process_timeline()
-                with open(output_file, "w", encoding="utf-8") as f:
+                with open(
+                    output_file, "w", encoding="utf-8", newline="\n"
+                ) as f:
                     json.dump(results, f, indent=2, default=str)
                 short_results = TimelineProcessor.get_short_results(results)
                 printer = get_printer()

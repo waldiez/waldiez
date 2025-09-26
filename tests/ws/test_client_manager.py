@@ -353,7 +353,9 @@ class TestClientManager:
             assert response["type"] == "save_response"
             assert response["success"] is True
             assert f"waldiez_{self.client_id}.waldiez" in response["path"]
-            mock_write.assert_called_once_with(flow_data, encoding="utf-8")
+            mock_write.assert_called_once_with(
+                flow_data, encoding="utf-8", newline="\n"
+            )
 
     @pytest.mark.asyncio
     async def test_handle_convert_request(self) -> None:
@@ -432,7 +434,6 @@ class TestClientManager:
                 {
                     "type": "run",
                     "data": flow_data,
-                    "mode": "standard",
                 }
             )
 
@@ -453,7 +454,6 @@ class TestClientManager:
                     assert response["type"] == "run_response"
                     assert response["success"] is True
                     assert "session_id" in response
-                    assert response["mode"] == "standard"
 
                     # Verify runner was created and task was scheduled
                     mock_runner_class.assert_called_once()
@@ -468,7 +468,6 @@ class TestClientManager:
             {
                 "type": "run",
                 "data": "invalid json",
-                "mode": "standard",
             }
         )
 
@@ -492,7 +491,6 @@ class TestClientManager:
                 {
                     "type": "step_run",
                     "data": flow_data,
-                    "auto_continue": True,
                     "breakpoints": ["event1", "event2"],
                 }
             )
@@ -514,7 +512,6 @@ class TestClientManager:
                     assert response is not None
                     assert response["type"] == "step_run_response"
                     assert response["success"] is True
-                    assert response["auto_continue"] is True
                     assert response["breakpoints"] == ["event1", "event2"]
 
         finally:

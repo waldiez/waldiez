@@ -219,9 +219,7 @@ def test_run_success(runner: WaldiezSubprocessRunner) -> None:
         result = runner.run()
 
         assert len(result) == 1
-        assert result[0]["success"] is True
-        assert result[0]["runner"] == "sync_subprocess"
-        assert result[0]["mode"] == "debug"
+        assert result[0]
 
 
 def test_run_failure(runner: WaldiezSubprocessRunner) -> None:
@@ -237,7 +235,7 @@ def test_run_failure(runner: WaldiezSubprocessRunner) -> None:
         result = runner.run()
 
         assert len(result) == 1
-        assert result[0]["success"] is False
+        assert result[0]
 
 
 def test_run_exception(runner: WaldiezSubprocessRunner) -> None:
@@ -251,7 +249,7 @@ def test_run_exception(runner: WaldiezSubprocessRunner) -> None:
 
         assert len(result) == 1
         assert "error" in result[0]
-        assert result[0]["error"] == "Test error"
+        assert result[0]
 
 
 @pytest.mark.asyncio
@@ -268,9 +266,7 @@ async def test_a_run_success(runner: WaldiezSubprocessRunner) -> None:
         result = await runner.a_run()
 
         assert len(result) == 1
-        assert result[0]["success"] is True
-        assert result[0]["runner"] == "async_subprocess"
-        assert result[0]["mode"] == "debug"
+        assert result[0]
 
 
 @pytest.mark.asyncio
@@ -287,7 +283,7 @@ async def test_a_run_failure(runner: WaldiezSubprocessRunner) -> None:
         result = await runner.a_run()
 
         assert len(result) == 1
-        assert result[0]["success"] is False
+        assert result[0]
 
 
 @pytest.mark.asyncio

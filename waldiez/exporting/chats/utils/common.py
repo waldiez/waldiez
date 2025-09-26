@@ -52,22 +52,23 @@ def get_chat_message_string(
     return function_name, function_content
 
 
-def _stop_logging(tab: str, is_async: bool) -> str:
+def _stop_logging(space: str, is_async: bool) -> str:
+    tab = "    "
     if is_async:
-        return f"{tab}                await stop_logging()\n"
-    return f"{tab}                stop_logging()\n"
+        return f"{space}{tab}{tab}{tab}{tab}await stop_logging()\n"
+    return f"{space}{tab}{tab}{tab}{tab}stop_logging()\n"
 
 
 def get_event_handler_string(
-    tab: str,
+    space: str,
     is_async: bool,
 ) -> str:
     """Get the event handler string.
 
     Parameters
     ----------
-    tab : str
-        The tab string.
+    space : str
+        The space before the content.
     is_async : bool
         Whether the handler is asynchronous.
 
@@ -76,49 +77,51 @@ def get_event_handler_string(
     str
         The event handler string.
     """
+    tab = "    "
     content = (
-        f"{tab}if not isinstance(results, list):\n"
-        f"{tab}    results = [results]  # pylint: disable=redefined-variable-type\n"
-        f"{tab}if on_event:\n"
-        f"{tab}    for index, result in enumerate(results):\n"
+        f"{space}if not isinstance(results, list):\n"
+        f"{space}{tab}results = [results]  # pylint: disable=redefined-variable-type\n"
+        f"{space}if on_event:\n"
+        f"{space}{tab}for index, result in enumerate(results):\n"
     )
     if is_async:
         content += (
-            f"{tab}        async for event in result.events:\n"
-            f"{tab}            try:\n"
-            f"{tab}                should_continue = await on_event(event)\n"
-            f"{tab}            except BaseException as e:\n{_stop_logging(tab, is_async)}"
-            f'{tab}                print(f"Error in event handler: {{e}}")\n'
-            f"{tab}                raise SystemExit(\n"
-            f'{tab}                    "Error in event handler: " + str(e)\n'
-            f"{tab}                ) from e\n"
+            f"{space}{tab}{tab}async for event in result.events:\n"
+            f"{space}{tab}{tab}{tab}try:\n"
+            f"{space}{tab}{tab}{tab}{tab}should_continue = await on_event(event, __KNOWN_AGENTS__)\n"
+            f"{space}{tab}{tab}{tab}except BaseException as e:\n{_stop_logging(space, is_async)}"
+            f"{space}{tab}{tab}{tab}{tab}store_error(e)\n"
+            f"{space}{tab}{tab}{tab}{tab}raise SystemExit(\n"
+            f'{space}{tab}{tab}{tab}{tab}{tab}"Error in event handler: " + str(e)\n'
+            f"{space}{tab}{tab}{tab}{tab}) from e\n"
         )
     else:
         content += (
-            f"{tab}        for event in result.events:\n"
-            f"{tab}            try:\n"
-            f"{tab}                should_continue = on_event(event)\n"
-            f"{tab}            except BaseException as e:\n{_stop_logging(tab, is_async)}"
-            f'{tab}                print(f"Error in event handler: {{e}}")\n'
-            f"{tab}                raise SystemExit(\n"
-            f'{tab}                    "Error in event handler: " + str(e)\n'
-            f"{tab}                ) from e\n"
+            f"{space}{tab}{tab}for event in result.events:\n"
+            f"{space}{tab}{tab}{tab}try:\n"
+            f"{space}{tab}{tab}{tab}{tab}should_continue = on_event(event, __KNOWN_AGENTS__)\n"
+            f"{space}{tab}{tab}{tab}except BaseException as e:\n{_stop_logging(space, is_async)}"
+            f"{space}{tab}{tab}{tab}{tab}store_error(e)\n"
+            f"{space}{tab}{tab}{tab}{tab}raise SystemExit(\n"
+            f'{space}{tab}{tab}{tab}{tab}{tab}"Error in event handler: " + str(e)\n'
+            f"{space}{tab}{tab}{tab}{tab}) from e\n"
         )
     content += (
-        f'{tab}            if event.type == "run_completion":\n'
-        f"{tab}                break\n"
-        f"{tab}            if not should_continue:\n{_stop_logging(tab, is_async)}"
-        f'{tab}                raise SystemExit("Event handler stopped processing")\n'
+        f'{space}{tab}{tab}{tab}if event.type == "run_completion":\n'
+        f"{space}{tab}{tab}{tab}{tab}break\n"
+        f"{space}{tab}{tab}{tab}if not should_continue:\n{_stop_logging(space, is_async)}"
+        f"{space}{tab}{tab}{tab}{tab}store_error()\n"
+        f'{space}{tab}{tab}{tab}{tab}raise SystemExit("Event handler stopped processing")\n'
     )
-    content += get_result_dicts_string(tab, is_async)
+    content += get_result_dicts_string(space, is_async)
     content += (
-        f"{tab}else:\n{tab}    for index, result in enumerate(results):\n"
+        f"{space}else:\n{space}{tab}for index, result in enumerate(results):\n"
     )
     if is_async:
-        content += f"{tab}        await result.process()\n"
+        content += f"{space}{tab}{tab}await result.process()\n"
     else:
-        content += f"{tab}        result.process()\n"
-    content += get_result_dicts_string(tab, is_async)
+        content += f"{space}{tab}{tab}result.process()\n"
+    content += get_result_dicts_string(space, is_async)
 
     return content
 

@@ -58,7 +58,7 @@ class WaldiezBreakpoint(BaseModel):
 
     type: WaldiezBreakpointType
     event_type: str | None = None  # Required for EVENT and AGENT_EVENT
-    agent_name: str | None = None  # Required for AGENT and AGENT_EVENT
+    agent: str | None = None  # Required for AGENT and AGENT_EVENT
     description: str | None = None  # Human-readable description
 
     # noinspection PyNestedDecorators,PyUnusedLocal
@@ -100,38 +100,38 @@ class WaldiezBreakpoint(BaseModel):
         return v
 
     # noinspection PyNestedDecorators,PyUnusedLocal
-    @field_validator("agent_name")
+    @field_validator("agent")
     @classmethod
-    def validate_agent_name(
+    def validate_agent(
         cls,
         v: str | None,
         info: ValidationInfo,
     ) -> str | None:
-        """Validate agent name format.
+        """Validate agent name/id format.
 
         Parameters
         ----------
         v : str | None
-            The agent name to validate.
+            The agent name or id to validate.
         info : ValidationInfo
             Validation context information.
 
         Returns
         -------
         str | None
-            The validated agent name or None if not provided.
+            The validated agent or None if not provided.
 
         Raises
         ------
         ValueError
-            If the agent name format is invalid.
+            If the agent format is invalid.
         """
         if v is None:
             return v
 
-        # Agent names should not be empty or just whitespace
+        # Agent name/id should not be empty or just whitespace
         if not v.strip():
-            raise ValueError("Agent name cannot be empty or just whitespace")
+            raise ValueError("Agent cannot be empty or just whitespace")
 
         return v.strip()
 
@@ -146,11 +146,11 @@ class WaldiezBreakpoint(BaseModel):
         if self.type == WaldiezBreakpointType.EVENT and not self.event_type:
             raise ValueError("EVENT breakpoints require an event_type")
 
-        if self.type == WaldiezBreakpointType.AGENT and not self.agent_name:
+        if self.type == WaldiezBreakpointType.AGENT and not self.agent:
             raise ValueError("AGENT breakpoints require an agent_name")
 
         if self.type == WaldiezBreakpointType.AGENT_EVENT:
-            if not self.event_type or not self.agent_name:
+            if not self.event_type or not self.agent:
                 raise ValueError(
                     "AGENT_EVENT breakpoints require both"
                     " event_type and agent_name"
@@ -158,16 +158,16 @@ class WaldiezBreakpoint(BaseModel):
 
     def __hash__(self) -> int:
         """Get the hash value for the breakpoint."""
-        return hash((self.type, self.event_type, self.agent_name))
+        return hash((self.type, self.event_type, self.agent))
 
     def __str__(self) -> str:
         """Get the string representation for display."""
         if self.type == WaldiezBreakpointType.EVENT:
             return f"event:{self.event_type}"
         if self.type == WaldiezBreakpointType.AGENT:
-            return f"agent:{self.agent_name}"
+            return f"agent:{self.agent}"
         if self.type == WaldiezBreakpointType.AGENT_EVENT:
-            return f"{self.agent_name}:{self.event_type}"
+            return f"{self.agent}:{self.event_type}"
         # else:  # ALL
         return "all"
 
@@ -213,42 +213,51 @@ class WaldiezBreakpoint(BaseModel):
             event_type = breakpoint_str[6:]  # Remove "event:" prefix
             if not event_type:
                 raise ValueError("Event type cannot be empty after 'event:'")
-            return cls(type=WaldiezBreakpointType.EVENT, event_type=event_type)
+            return cls(
+                type=WaldiezBreakpointType.EVENT,
+                event_type=event_type,
+            )
 
         if breakpoint_str.startswith("agent:"):
-            agent_name = breakpoint_str[6:]  # Remove "agent:" prefix
-            if not agent_name:
-                raise ValueError("Agent name cannot be empty after 'agent:'")
-            return cls(type=WaldiezBreakpointType.AGENT, agent_name=agent_name)
+            agent = breakpoint_str[6:]  # Remove "agent:" prefix
+            if not agent:
+                raise ValueError(
+                    "Agent identifier cannot be empty after 'agent:'"
+                )
+            return cls(
+                type=WaldiezBreakpointType.AGENT,
+                agent=agent,
+            )
 
         if ":" in breakpoint_str and not breakpoint_str.startswith(
             ("event:", "agent:")
         ):
-            # Format: "agent_name:event_type"
+            # Format: "agent:event_type"
             parts = breakpoint_str.split(":", 1)
             if len(parts) != 2:
                 raise ValueError("Invalid agent:event format")
 
-            agent_name, event_type = parts
-            if not agent_name or not event_type:
+            agent, event_type = parts
+            if not agent or not event_type:
                 raise ValueError(
-                    "Both agent name and event type must be specified"
+                    "Both agent identifier and event type must be specified"
                 )
 
             return cls(
                 type=WaldiezBreakpointType.AGENT_EVENT,
-                agent_name=agent_name,
+                agent=agent,
                 event_type=event_type,
             )
-
-        # Default to event type - but validate it's reasonable
         if ":" in breakpoint_str:
             raise ValueError(
                 "Invalid breakpoint format. Use 'event:type', 'agent:name', "
                 "'agent:event', or 'all'"
             )
 
-        return cls(type=WaldiezBreakpointType.EVENT, event_type=breakpoint_str)
+        return cls(
+            type=WaldiezBreakpointType.EVENT,
+            event_type=breakpoint_str,
+        )
 
     def matches(self, event: dict[str, Any]) -> bool:
         """Check if this breakpoint matches the given event.
@@ -271,21 +280,20 @@ class WaldiezBreakpoint(BaseModel):
 
         if self.type == WaldiezBreakpointType.AGENT:
             return (
-                event.get("sender") == self.agent_name
-                or event.get("recipient") == self.agent_name
+                event.get("sender") == self.agent
+                or event.get("recipient") == self.agent
             )
 
         if self.type == WaldiezBreakpointType.AGENT_EVENT:
             return event.get("type") == self.event_type and (
-                event.get("sender") == self.agent_name
-                or event.get("recipient") == self.agent_name
+                event.get("sender") == self.agent
+                or event.get("recipient") == self.agent
             )
 
         # noinspection PyUnreachableCode
         return False
 
 
-# Enhanced configuration class for runtime settings
 class WaldiezDebugConfig(BaseModel):
     """Configuration for debug session settings."""
 
@@ -296,7 +304,6 @@ class WaldiezDebugConfig(BaseModel):
     command_timeout_seconds: float = Field(default=300.0, gt=0)
 
 
-# Rest of the existing message classes remain the same...
 class WaldiezDebugBreakpointsList(BaseModel):
     """Debug breakpoints message."""
 
@@ -314,7 +321,6 @@ class WaldiezDebugBreakpointsList(BaseModel):
                 try:
                     result.append(WaldiezBreakpoint.from_string(bp))
                 except ValueError:
-                    # Skip invalid breakpoints rather than failing
                     continue
             else:
                 result.append(bp)

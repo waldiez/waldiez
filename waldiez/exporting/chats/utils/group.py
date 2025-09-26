@@ -40,19 +40,19 @@ def export_group_chats(
     tuple[str, str]
         The group chat string and the import string.
     """
-    tab = "    " * tabs
+    space = "    " * tabs
     run_group_chat = "run_group_chat"
     if is_async:
         run_group_chat = "await a_run_group_chat"
     manager_name = agent_names[manager.id]
     pattern_name = f"{manager_name}_pattern"
-    content = f"{tab}results = {run_group_chat}(" + "\n"
-    content += f"{tab}    pattern={pattern_name}," + "\n"
+    content = f"{space}results = {run_group_chat}(" + "\n"
+    content += f"{space}    pattern={pattern_name}," + "\n"
     if initial_chat:
-        content += f"{tab}    messages={json.dumps(initial_chat)}," + "\n"
+        content += f"{space}    messages={json.dumps(initial_chat)}," + "\n"
     else:
-        content += f'{tab}    messages="",\n'
-    content += f"{tab}    max_rounds={manager.data.max_round},\n"
-    content += f"{tab})\n"
-    content += get_event_handler_string(tab=tab, is_async=is_async)
+        content += f'{space}    messages="",\n'
+    content += f"{space}    max_rounds={manager.data.max_round},\n"
+    content += f"{space})\n"
+    content += get_event_handler_string(space=space, is_async=is_async)
     return content

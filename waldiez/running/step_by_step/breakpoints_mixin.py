@@ -57,9 +57,13 @@ def handle_breakpoint_errors(func: Callable[..., bool]) -> Callable[..., bool]:
 class BreakpointsMixin:
     """Mixin class for managing breakpoints in step-by-step debugging."""
 
+    _breakpoints: set[WaldiezBreakpoint]
+    _agent_id_to_name: dict[str, str]
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize breakpoints storage."""
-        self._breakpoints: set[WaldiezBreakpoint] = set()
+        self._breakpoints = set()
+        self._agent_id_to_name = {}
 
         # Statistics for monitoring
         self._breakpoint_stats = {
@@ -72,6 +76,44 @@ class BreakpointsMixin:
         self._check_breakpoint_match_cached = lru_cache(maxsize=1000)(
             self._check_breakpoint_match_impl
         )
+
+    @staticmethod
+    def get_initial_breakpoints(
+        items: Iterable[Any],
+    ) -> set[WaldiezBreakpoint]:
+        """Get initial breakpoints.
+
+        Parameters
+        ----------
+        items : Iterable[Any]
+            The items to parse for getting the endpoints.
+
+        Returns
+        -------
+        set[WaldiezBreakpoint]
+            The parsed breakpoints.
+        """
+        breakpoints: set[WaldiezBreakpoint] = set()
+        for item in items:
+            if isinstance(item, str):
+                try:
+                    entry = WaldiezBreakpoint.from_string(item)
+                    breakpoints.add(entry)
+                except BaseException:  # pylint: disable=broad-exception-caught
+                    pass
+            elif isinstance(item, WaldiezBreakpoint):
+                breakpoints.add(item)
+        return breakpoints
+
+    def set_agent_id_to_name(self, mapping: dict[str, str]) -> None:
+        """Set the agent id to agent name mapping.
+
+        Parameters
+        ----------
+        mapping : dict[str, str]
+            The agent id to agent name mapping.
+        """
+        self._agent_id_to_name = mapping
 
     # noinspection PyTypeHints
     def emit(self, message: WaldiezDebugMessage) -> None:
@@ -119,8 +161,8 @@ class BreakpointsMixin:
         """
         event_dict = {
             "type": event_type,
-            "sender": sender,
-            "recipient": recipient,
+            "sender": self._agent_id_to_name.get(sender, sender),
+            "recipient": self._agent_id_to_name.get(recipient, recipient),
         }
 
         # Reconstruct breakpoints from signature for cache safety
@@ -410,7 +452,7 @@ class BreakpointsMixin:
             {
                 "type": bp.type.value,
                 "event_type": bp.event_type,
-                "agent_name": bp.agent_name,
+                "agent_name": bp.agent,
                 "description": bp.description,
                 "string_repr": str(bp),
             }

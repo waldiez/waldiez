@@ -14,6 +14,7 @@ BUILTIN_IMPORTS = [
     "import os",
     "import sqlite3",
     "import sys",
+    "import traceback",
     "from dataclasses import asdict",
     "from pprint import pprint",
     "from types import ModuleType",

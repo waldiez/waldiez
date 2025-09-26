@@ -104,8 +104,8 @@ def run(
     structured: bool = typer.Option(  # noqa: B008
         False,
         help=(
-            "If set, the output will be structured as a directory with "
-            "the flow file and any additional generated files in it."
+            "If set, structured messages will be used for I/O when "
+            "using print and/or input"
         ),
     ),
     force: bool = typer.Option(  # noqa: B008
@@ -134,6 +134,14 @@ def run(
             "This will pause execution after each step, allowing for debugging."
         ),
         is_eager=True,
+        rich_help_panel="Debug",
+    ),
+    breakpoints: list[str] = typer.Option(  # noqa: B008
+        ...,
+        "--breakpoints",
+        "-b",
+        default_factory=list,
+        help="Optional list with initial breakpoints (if using step mode).",
         rich_help_panel="Debug",
     ),
     subprocess: bool = typer.Option(
@@ -171,6 +179,7 @@ def run(
             dot_env=env_file,
             subprocess_mode=subprocess_mode,
             waldiez_file=file,
+            breakpoints=breakpoints,
         )
     except FileNotFoundError as error:
         typer.echo(f"File not found: {file}")

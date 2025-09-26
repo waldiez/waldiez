@@ -3,6 +3,7 @@
 # pylint: disable=import-error,line-too-long
 # pyright: reportUnknownMemberType=false,reportUnknownVariableType=false
 # pyright: reportUnknownArgumentType=false,reportAttributeAccessIssue=false
+# pyright: reportGeneralTypeIssues=false
 # flake8: noqa: E501
 """Utilities for WebSocket server management."""
 

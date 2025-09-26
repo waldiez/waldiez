@@ -4,18 +4,19 @@
 """Waldiez subprocess runner that inherits from BaseRunner."""
 
 import asyncio
+import json
 import re
 from pathlib import Path
 from typing import Any, Callable, Literal
 
+import aiofiles
+
 from waldiez.models import Waldiez
 
 from ..base_runner import WaldiezBaseRunner
+from ..step_by_step.breakpoints_mixin import BreakpointsMixin
 from ._async_runner import AsyncSubprocessRunner
 from ._sync_runner import SyncSubprocessRunner
-
-# TODO: check output directory and return the results from the JSON logs
-# in self._run and self._a_run
 
 
 # noinspection PyUnusedLocal
@@ -71,6 +72,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             dot_env=dot_env,
             **kwargs,
         )
+        self.breakpoints = self._parse_breakpoints(**kwargs)
 
         # Store callbacks
         self.sync_on_output = on_output or self._default_sync_output
@@ -106,9 +108,19 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         # noinspection RegExpRedundantEscape
         file_name = re.sub(r"[^a-zA-Z0-9_\-\.]", "_", file_name)[:30]
         file_name = f"{file_name}.waldiez"
-        with open(file_name, "w", encoding="utf-8") as f:
+        with open(file_name, "w", encoding="utf-8", newline="\n") as f:
             f.write(self.waldiez.model_dump_json())
         return Path(file_name).resolve()
+
+    @staticmethod
+    def _parse_breakpoints(**kwargs: Any) -> list[str]:
+        initial_breakpoints = kwargs.get("breakpoints")
+        if isinstance(initial_breakpoints, (list, set, tuple)):
+            breakpoints = BreakpointsMixin.get_initial_breakpoints(
+                initial_breakpoints  # pyright: ignore
+            )
+            return [str(item) for item in breakpoints]
+        return []
 
     def _default_sync_output(self, data: dict[str, Any]) -> None:
         """Get the default sync output handler."""
@@ -141,6 +153,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             uploads_root=self.uploads_root,
             dot_env=self.dot_env_path,
             logger=self.log,
+            breakpoints=self.breakpoints,
         )
         return self.async_runner
 
@@ -153,6 +166,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             uploads_root=self.uploads_root,
             dot_env=self.dot_env_path,
             logger=self.log,
+            breakpoints=self.breakpoints,
         )
         return self.sync_runner
 
@@ -243,13 +257,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
 
             # Run subprocess
             success = runner.run_subprocess(self._waldiez_file, mode=self.mode)
-            return [
-                {
-                    "success": success,
-                    "runner": "sync_subprocess",
-                    "mode": self.mode,
-                }
-            ]
+            return self._read_from_output(success, output_file.parent)
 
         except Exception as e:
             self.log.error("Error in sync subprocess execution: %s", e)
@@ -360,13 +368,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
                 self._waldiez_file,
                 mode=self.mode,
             )
-            return [
-                {
-                    "success": success,
-                    "runner": "async_subprocess",
-                    "mode": self.mode,
-                }
-            ]
+            return await self._a_read_from_output(success, output_file.parent)
 
         except Exception as e:
             self.log.error("Error in async subprocess execution: %s", e)
@@ -524,6 +526,56 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         """
         # Cleanup subprocess runners
         self._cleanup_subprocess_runners()
+
+    @staticmethod
+    async def _a_read_from_output(
+        success: bool,
+        output_dir: Path,
+    ) -> list[dict[str, Any]]:
+        """Read from output dir results.json or error.json."""
+        # pylint: disable=broad-exception-caught,too-many-try-statements
+        error_json = output_dir / "error.json"
+        results_json = output_dir / "results.json"
+        try:
+            if success and results_json.is_file():
+                async with aiofiles.open(
+                    results_json, "r", encoding="utf-8"
+                ) as file:
+                    results = await file.read()
+                    return json.loads(results).get("results", [])
+            if error_json.is_file():
+                async with aiofiles.open(
+                    error_json, "r", encoding="utf-8"
+                ) as file:
+                    results = await file.read()
+                    reason = json.loads(results).get("error", "Flow failed")
+                    return [{"error": reason}]
+        except BaseException as e:
+            return [{"error": str(e)}]
+        return [{"error": "Could not gather result details."}]
+
+    @staticmethod
+    def _read_from_output(
+        success: bool,
+        output_dir: Path,
+    ) -> list[dict[str, Any]]:
+        """Read from output dir results.json or error.json."""
+        # pylint: disable=broad-exception-caught,too-many-try-statements
+        error_json = output_dir / "error.json"
+        results_json = output_dir / "results.json"
+        try:
+            if success and results_json.is_file():
+                with open(results_json, "r", encoding="utf-8") as file:
+                    results = file.read()
+                    return json.loads(results).get("results", [])
+            if error_json.is_file():
+                with open(error_json, "r", encoding="utf-8") as file:
+                    results = file.read()
+                    reason = json.loads(results).get("error", "Flow failed")
+                    return [{"error": reason}]
+        except BaseException as e:
+            return [{"error": str(e)}]
+        return [{"error": "Could not gather result details."}]
 
     @classmethod
     def create_with_callbacks(

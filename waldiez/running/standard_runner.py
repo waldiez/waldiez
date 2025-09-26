@@ -14,7 +14,7 @@ variables specified in the waldiez file are set.
 import asyncio
 import traceback
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from waldiez.models.waldiez import Waldiez
 from waldiez.running.run_results import WaldiezRunResults
@@ -22,6 +22,7 @@ from waldiez.running.run_results import WaldiezRunResults
 from .base_runner import WaldiezBaseRunner
 
 if TYPE_CHECKING:
+    from autogen.agentchat import ConversableAgent  # type: ignore
     from autogen.events import BaseEvent  # type: ignore
     from autogen.messages import BaseMessage  # type: ignore
 
@@ -133,6 +134,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
     def _on_event(
         self,
         event: Union["BaseEvent", "BaseMessage"],
+        agents: Optional[list["ConversableAgent"]] = None,
     ) -> bool:
         """Process an event from the workflow."""
         self._event_count += 1
@@ -159,6 +161,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
     async def _a_on_event(
         self,
         event: Union["BaseEvent", "BaseMessage"],
+        agents: Optional[list["ConversableAgent"]] = None,
     ) -> bool:
         """Process an event from the workflow asynchronously."""
         self._event_count += 1

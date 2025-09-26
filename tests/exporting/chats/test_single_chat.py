@@ -123,9 +123,9 @@ def callable_message(sender, recipient, context):
             message=callable_message_chat1,
         )
 """
-    tab = "        "
+    space = "        "
     assert generated == expected + get_event_handler_string(
-        tab=tab,
+        space=space,
         is_async=False,
     )
 
@@ -203,16 +203,16 @@ def test_empty_chat() -> None:
     before_export = exporter.extras.chat_prerequisites
     assert not before_export
     generated = exporter.extras.chat_initiation
-    tab = "        "
+    space = "        "
     expected = (
-        f"\n{tab}results = agent1.run("
-        f"\n{tab}    agent2,"
-        f"\n{tab}    cache=cache,"
-        f"\n{tab}    clear_history=True,"
-        f"\n{tab})\n"
+        f"\n{space}results = agent1.run("
+        f"\n{space}    agent2,"
+        f"\n{space}    cache=cache,"
+        f"\n{space}    clear_history=True,"
+        f"\n{space})\n"
     )
     assert generated == expected + get_event_handler_string(
-        tab=tab,
+        space=space,
         is_async=False,
     )
 
@@ -323,7 +323,7 @@ def test_chat_with_rag_and_carryover() -> None:
         f"{space})"
         "\n"
     ) + get_event_handler_string(
-        tab=space,
+        space=space,
         is_async=False,
     )
     assert generated == expected
@@ -423,7 +423,7 @@ def test_chat_with_rag_no_carryover() -> None:
         f"{space})"
         "\n"
     ) + get_event_handler_string(
-        tab=space,
+        space=space,
         is_async=False,
     )
     assert generated == expected

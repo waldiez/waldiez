@@ -14,7 +14,7 @@ import threading
 import traceback
 from collections import deque
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Iterable, Union
+from typing import TYPE_CHECKING, Any, Iterable, Optional, Union
 
 from pydantic import ValidationError
 
@@ -40,6 +40,7 @@ from .step_by_step_models import (
 )
 
 if TYPE_CHECKING:
+    from autogen.agentchat import ConversableAgent  # type: ignore
     from autogen.events import BaseEvent  # type: ignore
     from autogen.messages import BaseMessage  # type: ignore
 
@@ -67,7 +68,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         structured_io: bool = False,
         dot_env: str | Path | None = None,
         auto_continue: bool = False,
-        breakpoints: Iterable[str] | None = None,
+        breakpoints: Iterable[Any] | None = None,
         config: WaldiezDebugConfig | None = None,
         **kwargs: Any,
     ) -> None:
@@ -81,6 +82,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             **kwargs,
         )
         BreakpointsMixin.__init__(self)
+        self.set_agent_id_to_name(waldiez.flow.unique_names["agent_names"])
 
         # Configuration
         self._config = config or WaldiezDebugConfig()
@@ -608,7 +610,11 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
 
         return results_container["results"]
 
-    def _on_event(self, event: Union["BaseEvent", "BaseMessage"]) -> bool:
+    def _on_event(
+        self,
+        event: Union["BaseEvent", "BaseMessage"],
+        _agents: Optional[list["ConversableAgent"]] = None,
+    ) -> bool:
         """Process an event with step-by-step debugging."""
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
@@ -713,7 +719,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             return []
 
     async def _a_on_event(
-        self, event: Union["BaseEvent", "BaseMessage"]
+        self,
+        event: Union["BaseEvent", "BaseMessage"],
+        _agents: Optional[list["ConversableAgent"]] = None,
     ) -> bool:
         """Process an event with step-by-step debugging asynchronously."""
         # pylint: disable=too-many-try-statements,broad-exception-caught

@@ -68,6 +68,81 @@ class ExecutionGenerator:
         )
 
     @staticmethod
+    def generate_store_results(is_async: bool) -> str:
+        """Generate the part that writes the results to results.json.
+
+        Parameters
+        ----------
+        is_async : bool
+            Whether the flow is async or not.
+
+        Returns
+        -------
+        str
+            The part that generates the code to store the results.
+        """
+        content = "async " if is_async else ""
+        tab = "    "
+        content += (
+            "def store_results(result_dicts: list[dict[str, Any]]) -> None:\n"
+        )
+        content += f'{tab}"""Store the results to results.json.\n'
+        content += f"{tab}Parameters\n"
+        content += f"{tab}----------\n"
+        content += f"{tab}result_dicts : list[dict[str, Any]]\n"
+        content += f"{tab}{tab}The list of the results.\n"
+        content += f'{tab}"""\n'
+        if is_async:
+            content += f'{tab}async with aiofiles.open("results.json", "w", encoding="utf-8", newline="\\n") as file:\n'
+            content += f"{tab}{tab}await file.write(json.dumps({{'results': result_dicts}}, indent=4, ensure_ascii=False))\n"
+        else:
+            content += f'{tab}with open("results.json", "w", encoding="utf-8", newline="\\n") as file:\n'
+            content += f"{tab}{tab}file.write(json.dumps({{'results': result_dicts}}, indent=4, ensure_ascii=False))\n"
+        return content
+
+    @staticmethod
+    def generate_store_error(is_async: bool) -> str:
+        """Generate the part that writes an error to error.json.
+
+        Parameters
+        ----------
+        is_async : bool
+            Whether the flow is async or not.
+
+        Returns
+        -------
+        str
+            The content for writing the error to file.
+        """
+        content = "async" if is_async else ""
+        content += '''
+def store_error(exc: BaseException | None = None) -> None:
+    """Store the error in error.json.
+
+    Parameters
+    ----------
+    exc : BaseException | None
+        The exception we got if any.
+    """
+    reason = "Event handler stopped processing" if not exc else traceback.format_exc()
+    try:
+'''
+        if is_async:
+            content += """
+        async with aiofiles.open("error.json", "w", encoding="utf-8", newline="\\n") as file:
+            await file.write(json.dumps({"error": reason}))"""
+        else:
+            content += """
+        with open("error.json", "w", encoding="utf-8", newline="\\n") as file:
+            file.write(json.dumps({"error": reason}))"""
+        content += """
+    except BaseException: # pylint: disable=broad-exception-caught
+        pass
+"""
+
+        return content
+
+    @staticmethod
     def generate_main_function(
         content: str,
         is_async: bool,
@@ -108,11 +183,11 @@ class ExecutionGenerator:
         flow_content += f"{comment}\n"
         if is_async:
             flow_content += "async "
-        on_event_arg = "on_event: Optional[Callable[[BaseEvent], bool]] = None"
+        on_event_arg = "on_event: Optional[Callable[[BaseEvent, Optional[list[ConversableAgent]]], bool]] = None"
         if is_async:
             on_event_arg = (
                 "on_event: Optional["
-                "Callable[[BaseEvent], Coroutine[None, None, bool]]"
+                "Callable[[BaseEvent, Optional[list[ConversableAgent]]], Coroutine[None, None, bool]]"
                 "] = None"
             )
         return_type_hint = "list[dict[str, Any]]"
@@ -133,17 +208,33 @@ class ExecutionGenerator:
             space = f"{space}    "
         flow_content += f"{content}" + "\n"
         if not skip_logging:
-            if is_async:
-                flow_content += f"{space}await stop_logging()"
-            else:
-                flow_content += f"{space}stop_logging()"
+            flow_content += ExecutionGenerator._get_stop_logging_call(
+                space, is_async
+            )
         flow_content += "\n"
         if after_run:
             flow_content += after_run + "\n"
         if cache_seed is not None:
             space = space[4:]
+        flow_content += ExecutionGenerator._get_store_results_call(
+            space, is_async
+        )
         flow_content += f"{space}return result_dicts\n"
         return flow_content
+
+    @staticmethod
+    def _get_stop_logging_call(space: str, is_async: bool) -> str:
+        """Get stop logging call."""
+        if is_async:
+            return f"{space}await stop_logging()"
+        return f"{space}stop_logging()"
+
+    @staticmethod
+    def _get_store_results_call(space: str, is_async: bool) -> str:
+        """Get store results call."""
+        if is_async:
+            return f"{space}await store_results(result_dicts)\n"
+        return f"{space}store_results(result_dicts)\n"
 
     @staticmethod
     def generate_call_main_function(is_async: bool, for_notebook: bool) -> str:

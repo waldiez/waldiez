@@ -126,7 +126,7 @@ def get_sync_sqlite_out() -> str:
     content += "        csv_writer.writeheader()\n"
     content += "        csv_writer.writerows(data)\n"
     content += '    json_file = csv_file.replace(".csv", ".json")\n'
-    content += '    with open(json_file, "w", encoding="utf-8") as file:\n'
+    content += '    with open(json_file, "w", encoding="utf-8", newline="\\n") as file:\n'
     content += "        json.dump(data, file, indent=4, ensure_ascii=False)\n"
     content += "\n"
     return content
@@ -172,7 +172,7 @@ def get_async_sqlite_out() -> str:
     content += "        await csv_writer.writeheader()\n"
     content += "        await csv_writer.writerows(data)\n"
     content += '    json_file = csv_file.replace(".csv", ".json")\n'
-    content += '    async with aiofiles.open(json_file, "w", encoding="utf-8") as file:\n'
+    content += '    async with aiofiles.open(json_file, "w", encoding="utf-8", newline="\\n") as file:\n'
     content += "        await file.write(json.dumps(data, indent=4, ensure_ascii=False))\n"
     content += "\n"
     # fmt: on

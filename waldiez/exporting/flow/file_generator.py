@@ -172,7 +172,9 @@ class FileGenerator(ContentGenerator):
         )
         execution_gen = ExecutionGenerator()
         chat_contents = "\n".join(chat.content for chat in chats_content)
-        main = execution_gen.generate_main_function(
+        before_main = execution_gen.generate_store_error(is_async) + "\n\n"
+        before_main += execution_gen.generate_store_results(is_async) + "\n\n"
+        main = before_main + execution_gen.generate_main_function(
             content=chat_contents,
             is_async=is_async,
             for_notebook=for_notebook,

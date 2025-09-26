@@ -29,7 +29,10 @@ from .dir_utils import a_chdir, chdir
 from .environment import reset_env_vars, set_env_vars
 from .exceptions import StopRunningException
 from .io_utils import input_async, input_sync
-from .post_run import after_run
+from .post_run import (
+    a_after_run,
+    after_run,
+)
 from .pre_run import RequirementsMixin
 from .protocol import WaldiezRunnerProtocol
 
@@ -375,15 +378,22 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         skip_timeline: bool,
     ) -> None:
         """Run after the flow execution asynchronously."""
-        self._after_run(
-            results=results,
-            output_file=output_file,
-            uploads_root=uploads_root,
-            temp_dir=temp_dir,
-            skip_mmd=skip_mmd,
-            skip_timeline=skip_timeline,
-            waldiez_file=waldiez_file,
-        )
+        self._last_results = results
+        self._stop_requested.clear()
+        # pylint: disable=broad-exception-caught
+        try:
+            await a_after_run(
+                temp_dir=temp_dir,
+                output_file=output_file,
+                flow_name=self._waldiez.name,
+                waldiez_file=waldiez_file,
+                uploads_root=uploads_root,
+                skip_mmd=skip_mmd,
+                skip_timeline=skip_timeline,
+            )
+        except BaseException as exc:  # pragma: no cover
+            self.log.warning("Error occurred during a_after_run: %s", exc)
+        self.log.info("Cleanup completed")
 
     @staticmethod
     def _prepare_paths(
@@ -940,13 +950,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         )
 
     def stop(self) -> None:
-        """Stop the workflow execution.
-
-        This method sets the stop flag that will be checked by the event
-        handlers and other parts of the workflow execution to gracefully
-        terminate the workflow execution.
-        Note: Stopping will occur at the "next" AutoGen event, not immediately.
-        """
+        """Stop the workflow execution."""
         self.log.info("Stop requested - setting stop flag")
         self._stop_requested.set()
 
