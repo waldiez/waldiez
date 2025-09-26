@@ -8,11 +8,14 @@ and run an autogen workflow. It has the model/LLM configurations, the agent
 definitions and their optional additional tools to be used.
 """
 
+import asyncio
 import json
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterator
+
+import aiofiles
 
 from .agents import (
     WaldiezAgent,
@@ -135,6 +138,59 @@ class Waldiez:
         with open(waldiez_file, "r", encoding="utf-8", newline="\n") as file:
             try:
                 data = json.load(file)
+            except json.decoder.JSONDecodeError as error:
+                raise ValueError(f"Invalid JSON: {waldiez_file}") from error
+        return cls.from_dict(
+            data,
+            name=name,
+            description=description,
+            tags=tags,
+            requirements=requirements,
+        )
+
+    @classmethod
+    async def a_load(
+        cls,
+        waldiez_file: str | Path,
+        name: str | None = None,
+        description: str | None = None,
+        tags: list[str] | None = None,
+        requirements: list[str] | None = None,
+    ) -> "Waldiez":
+        """Load a Waldiez from a file.
+
+        Parameters
+        ----------
+        waldiez_file : Union[str, Path]
+            The Waldiez file.
+        name: str | None, optional
+            The name, by default None (retrieved from data).
+        description : str | None, optional
+            The description, by default None (retrieved from data).
+        tags: list[str] | None, optional
+            The tags, by default None (retrieved from data).
+        requirements: list[str] | None, optional
+            The requirements, by default None (retrieved from data).
+
+        Returns
+        -------
+        Waldiez
+            The Waldiez.
+
+        Raises
+        ------
+        ValueError
+            If the file is not found or invalid JSON.
+        """
+        data: dict[str, Any] = {}
+        if not Path(waldiez_file).exists():
+            raise ValueError(f"File not found: {waldiez_file}")
+        async with aiofiles.open(
+            waldiez_file, "r", encoding="utf-8", newline="\n"
+        ) as file:
+            try:
+                contents = await file.read()
+                data = json.loads(contents)
             except json.decoder.JSONDecodeError as error:
                 raise ValueError(f"Invalid JSON: {waldiez_file}") from error
         return cls.from_dict(
@@ -369,12 +425,12 @@ class Waldiez:
             return []
         return self.flow.get_group_chat_members(agent.id)
 
-    def dump(self, output_path: str | Path | None) -> Path:
+    def dump(self, to: str | Path | None = None) -> Path:
         """Dump waldiez flow to a file.
 
         Parameters
         ----------
-        output_path : str | Path | None
+        to : str | Path | None
             Optional output path to determine the directory to save the flow to.
 
         Returns
@@ -382,7 +438,7 @@ class Waldiez:
         Path
             The path to the generated file.
         """
-        file_path = Path(output_path) if output_path else None
+        file_path = Path(to) if to else None
         if file_path:
             file_name = file_path.name
             if not file_name.endswith(".waldiez"):
@@ -402,4 +458,39 @@ class Waldiez:
             "w", encoding="utf-8", errors="replace", newline="\n"
         ) as f_open:
             f_open.write(self.model_dump_json())
+        return output_path
+
+    async def a_dump(self, to: str | Path | None = None) -> Path:
+        """Dump waldiez flow to a file asynchronously.
+
+        Parameters
+        ----------
+        to : str | Path | None
+            Optional output path to determine the directory to save the flow to.
+
+        Returns
+        -------
+        Path
+            The path to the generated file.
+        """
+        file_path = Path(to) if to else None
+        if file_path:
+            file_name = file_path.name
+            if not file_name.endswith(".waldiez"):
+                file_path.with_suffix(".waldiez")
+        else:
+            full_name = self.name
+            file_name = safe_filename(full_name, "waldiez")
+        file_dir: Path
+        if file_path:
+            file_dir = file_path if file_path.is_dir() else file_path.parent
+        else:
+            tmp_dir = await asyncio.to_thread(tempfile.mkdtemp)
+            file_dir = Path(tmp_dir)
+        file_dir.mkdir(parents=True, exist_ok=True)
+        output_path = file_dir / file_name
+        async with aiofiles.open(
+            output_path, "w", encoding="utf-8", errors="replace", newline="\n"
+        ) as f_open:
+            await f_open.write(self.model_dump_json())
         return output_path

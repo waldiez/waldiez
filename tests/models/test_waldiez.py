@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 
+import aiofiles
 import pytest
 from autogen.version import __version__ as ag2_version  # type: ignore
 
@@ -28,9 +29,8 @@ def test_waldiez(tmp_path: Path) -> None:
     assert waldiez.name == flow.name
 
     flow_dump = waldiez.model_dump_json(by_alias=True)
-    # pylint: disable=consider-using-with
     file_path = os.path.join(tmp_path, "test_waldiez.waldiez")
-    with open(file_path, "w", encoding="utf-8") as file:
+    with open(file_path, "w", encoding="utf-8", newline="\n") as file:
         file.write(flow_dump)
     waldiez2 = Waldiez.load(file_path)
     flow_dump2 = waldiez2.model_dump_json(by_alias=True)
@@ -115,3 +115,83 @@ def test_waldiez_errors(tmp_path: Path) -> None:
     with pytest.raises(ValueError):
         waldiez = Waldiez(WaldiezFlow.default())
         waldiez.get_root_group_manager()
+
+
+async def test_load(tmp_path: Path) -> None:
+    """Test load class method.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        A pytest fixture to provide a temporary directory.
+    """
+    flow = get_flow()
+    waldiez = Waldiez(flow=flow)
+    flow_dump = waldiez.model_dump_json(by_alias=True)
+    file_path = os.path.join(tmp_path, "test_load.waldiez")
+    with open(file_path, "w", encoding="utf-8", newline="\n") as file:
+        file.write(flow_dump)
+    loaded = Waldiez.load(file_path)
+    assert loaded.name == flow.name
+
+
+@pytest.mark.asyncio
+async def test_a_load(tmp_path: Path) -> None:
+    """Test a_load class method.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        A pytest fixture to provide a temporary directory.
+    """
+    flow = get_flow()
+    waldiez = Waldiez(flow=flow)
+    flow_dump = waldiez.model_dump_json(by_alias=True)
+    file_path = os.path.join(tmp_path, "test_a_load.waldiez")
+    async with aiofiles.open(
+        file_path, "w", encoding="utf-8", newline="\n"
+    ) as file:
+        await file.write(flow_dump)
+    loaded = await Waldiez.a_load(file_path)
+    assert loaded.name == flow.name
+
+
+def test_dump(tmp_path: Path) -> None:
+    """Test dump a flow to a file.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        A pytest fixture to provide a temporary directory.
+    """
+    dst = tmp_path / "test_dump.waldiez"
+    flow = get_flow()
+    waldiez = Waldiez(flow=flow)
+    output = waldiez.dump(dst)
+    assert output == dst
+    assert output.is_file()
+
+    output2 = waldiez.dump()
+    assert output2 != output
+    assert output2.is_file()
+
+
+@pytest.mark.asyncio
+async def test_a_dump(tmp_path: Path) -> None:
+    """Test dump a flow to a file asynchronously.
+
+    Parameters
+    ----------
+    tmp_path : Path
+        A pytest fixture to provide a temporary directory.
+    """
+    dst = tmp_path / "test_a_dump.waldiez"
+    flow = get_flow()
+    waldiez = Waldiez(flow=flow)
+    output = await waldiez.a_dump(dst)
+    assert output == dst
+    assert output.is_file()
+
+    output2 = await waldiez.a_dump()
+    assert output2 != output
+    assert output2.is_file()

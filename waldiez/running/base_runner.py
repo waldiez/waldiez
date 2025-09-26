@@ -118,7 +118,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         elif isinstance(waldiez_file, Path):
             waldiez_file_path = waldiez_file.resolve()
         else:
-            waldiez_file_path = waldiez.dump(output_path=output_path)
+            waldiez_file_path = waldiez.dump(to=output_path)
         if not waldiez_file_path or not waldiez_file_path.is_file():
             raise ValueError("Could not resolve a waldiez file path")
         WaldiezBaseRunner._waldiez_file = waldiez_file_path
