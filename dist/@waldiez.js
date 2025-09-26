@@ -27131,9 +27131,15 @@ const ChatModal = memo((props) => {
     },
     [isFileSelectModalOpen, handleClose]
   );
-  const handleTimelineClick = useCallback(() => {
+  const closeTimeline = useCallback(() => {
+    setTimelineOpen(false);
+  }, []);
+  const openTimeline = useCallback(() => {
     setTimelineOpen(true);
   }, []);
+  const onInterrupt = useCallback(() => {
+    chat?.handlers?.onInterrupt?.();
+  }, [chat?.handlers]);
   const inputId = `rf-${flowId}-chat-modal-input`;
   const imageInputId = `rf-${flowId}-chat-modal-image`;
   const modalTestId = `rf-${flowId}-chat-modal`;
@@ -27143,21 +27149,21 @@ const ChatModal = memo((props) => {
     {
       role: "button",
       className: "chat-modal-action clickable",
-      onClick: handleTimelineClick,
+      onClick: openTimeline,
       title: "View Timeline",
       "data-testid": `rf-${flowId}-chat-modal-timeline`,
       children: /* @__PURE__ */ jsx$1(MdTimeline, { size: 18 })
     }
-  ) : chat?.handlers?.onInterrupt && !chat.active ? /* @__PURE__ */ jsx$1(
-    "div",
-    {
-      role: "button",
-      className: "chat-modal-action clickable",
-      onClick: () => chat?.handlers?.onInterrupt?.(),
-      title: "Interrupt",
-      children: /* @__PURE__ */ jsx$1(FaStop$1, { size: 18 })
+  ) : chat?.handlers?.onInterrupt && !chat.active ? /* @__PURE__ */ jsx$1("div", { role: "button", className: "chat-modal-action clickable", onClick: onInterrupt, title: "Interrupt", children: /* @__PURE__ */ jsx$1(FaStop$1, { size: 18 }) }) : void 0;
+  const hasCloseBtn = useMemo(() => {
+    if (!chat || !chat?.active) {
+      return true;
     }
-  ) : void 0;
+    if (chat.messages.length < 1) {
+      return false;
+    }
+    return Boolean(chat.messages[chat.messages.length - 1]?.type === "error");
+  }, [chat]);
   const allowImage = !chat || !chat?.mediaConfig ? true : chat?.mediaConfig?.allowedTypes.includes("image");
   if (timelineOpen && chat?.timeline) {
     return /* @__PURE__ */ jsx$1(
@@ -27165,7 +27171,7 @@ const ChatModal = memo((props) => {
       {
         flowId,
         isOpen: timelineOpen,
-        onClose: () => setTimelineOpen(false),
+        onClose: closeTimeline,
         data: chat.timeline
       }
     );
@@ -27182,7 +27188,7 @@ const ChatModal = memo((props) => {
       beforeTitle: leftIcon,
       className: "chat-modal",
       hasMaximizeBtn: true,
-      hasCloseBtn: !chat?.active,
+      hasCloseBtn,
       dataTestId: modalTestId,
       hasUnsavedChanges: false,
       preventCloseIfUnsavedChanges: false,

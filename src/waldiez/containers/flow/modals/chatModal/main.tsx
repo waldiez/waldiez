@@ -9,6 +9,7 @@ import {
     memo,
     useCallback,
     useEffect,
+    useMemo,
     useRef,
     useState,
 } from "react";
@@ -24,7 +25,7 @@ import { type ChatModalProps } from "@waldiez/containers/flow/modals/chatModal/t
  * Modal component for collecting user input with optional image upload
  */
 
-// eslint-disable-next-line complexity
+// eslint-disable-next-line complexity, max-lines-per-function
 export const ChatModal = memo((props: ChatModalProps) => {
     const { flowId, chat } = props;
 
@@ -57,9 +58,6 @@ export const ChatModal = memo((props: ChatModalProps) => {
         }
     }, [chat?.show, chat?.activeRequest?.request_id, chat?.messages]);
 
-    /**
-     * Create an input response object with current data
-     */
     const createInputResponse = useCallback(
         (includeData = true) => {
             const data = [];
@@ -89,10 +87,6 @@ export const ChatModal = memo((props: ChatModalProps) => {
         },
         [flowId, chat?.activeRequest, textInput, imagePreview],
     );
-
-    /**
-     * Submit user input
-     */
     const handleSubmit = useCallback(() => {
         chat?.handlers?.onUserInput?.(createInputResponse());
 
@@ -102,10 +96,6 @@ export const ChatModal = memo((props: ChatModalProps) => {
             setImagePreview(null);
         }, 10);
     }, [chat?.handlers, createInputResponse]);
-
-    /**
-     * Handle keyboard events
-     */
     const handleKeyDown = useCallback(
         (event: KeyboardEvent) => {
             if (event.key === "Enter" && !event.shiftKey) {
@@ -115,17 +105,9 @@ export const ChatModal = memo((props: ChatModalProps) => {
         },
         [handleSubmit],
     );
-
-    /**
-     * Handle text input changes
-     */
     const handleTextChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setTextInput(event.target.value);
     }, []);
-
-    /**
-     * Handle image file selection
-     */
     const handleImageChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -140,22 +122,13 @@ export const ChatModal = memo((props: ChatModalProps) => {
         event.target.value = "";
         setIsFileSelectModalOpen(false);
     }, []);
-
-    /**
-     * Clear selected image
-     */
     const clearImage = useCallback(() => {
         setImagePreview(null);
     }, []);
-
-    /**
-     * Close modal
-     */
     const handleClose = useCallback(() => {
         // Reset input state
         setTextInput("");
         setImagePreview(null);
-        // chat?.handlers?.onClose?.();
         if (chat?.handlers?.onClose) {
             chat.handlers.onClose();
         } else {
@@ -163,26 +136,16 @@ export const ChatModal = memo((props: ChatModalProps) => {
             setIsLocallyOpen(false);
         }
     }, [chat?.handlers]);
-
-    /**
-     * Handle file select modal interactions
-     */
     const openFileSelectModal = useCallback(() => {
         setIsFileSelectModalOpen(true);
     }, []);
-
     const closeFileSelectModal = useCallback(() => {
         setIsFileSelectModalOpen(false);
-
         // Focus back on text input
         setTimeout(() => {
             inputRef.current?.focus();
         }, 0);
     }, []);
-
-    /**
-     * Handle modal cancel
-     */
     const handleCancel = useCallback(
         (event: SyntheticEvent<HTMLDialogElement | HTMLDivElement, Event> | KeyboardEvent) => {
             event.preventDefault();
@@ -196,15 +159,16 @@ export const ChatModal = memo((props: ChatModalProps) => {
         },
         [isFileSelectModalOpen, handleClose],
     );
-
-    /**
-     * Handle timeline click
-     */
-    const handleTimelineClick = useCallback(() => {
+    const closeTimeline = useCallback(() => {
+        setTimelineOpen(false);
+    }, []);
+    const openTimeline = useCallback(() => {
         setTimelineOpen(true);
     }, []);
+    const onInterrupt = useCallback(() => {
+        chat?.handlers?.onInterrupt?.();
+    }, [chat?.handlers]);
 
-    // Generate unique IDs
     const inputId = `rf-${flowId}-chat-modal-input`;
     const imageInputId = `rf-${flowId}-chat-modal-image`;
     const modalTestId = `rf-${flowId}-chat-modal`;
@@ -214,29 +178,33 @@ export const ChatModal = memo((props: ChatModalProps) => {
         <div
             role="button"
             className="chat-modal-action clickable"
-            onClick={handleTimelineClick}
+            onClick={openTimeline}
             title="View Timeline"
             data-testid={`rf-${flowId}-chat-modal-timeline`}
         >
             <MdTimeline size={18} />
         </div>
     ) : chat?.handlers?.onInterrupt && !chat.active ? (
-        <div
-            role="button"
-            className="chat-modal-action clickable"
-            onClick={() => chat?.handlers?.onInterrupt?.()}
-            title="Interrupt"
-        >
+        <div role="button" className="chat-modal-action clickable" onClick={onInterrupt} title="Interrupt">
             <FaStop size={18} />
         </div>
     ) : undefined;
+    const hasCloseBtn = useMemo(() => {
+        if (!chat || !chat?.active) {
+            return true;
+        }
+        if (chat.messages.length < 1) {
+            return false;
+        }
+        return Boolean(chat.messages[chat.messages.length - 1]?.type === "error");
+    }, [chat]);
     const allowImage = !chat || !chat?.mediaConfig ? true : chat?.mediaConfig?.allowedTypes.includes("image");
     if (timelineOpen && chat?.timeline) {
         return (
             <TimelineModal
                 flowId={flowId}
                 isOpen={timelineOpen}
-                onClose={() => setTimelineOpen(false)}
+                onClose={closeTimeline}
                 data={chat.timeline}
             />
         );
@@ -253,7 +221,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
             beforeTitle={leftIcon}
             className="chat-modal"
             hasMaximizeBtn={true}
-            hasCloseBtn={!chat?.active}
+            hasCloseBtn={hasCloseBtn}
             dataTestId={modalTestId}
             hasUnsavedChanges={false}
             preventCloseIfUnsavedChanges={false}
