@@ -37,13 +37,9 @@ from .pre_run import RequirementsMixin
 from .protocol import WaldiezRunnerProtocol
 
 if TYPE_CHECKING:
-    # pylint: disable=line-too-long
-    from autogen.events import (  # type: ignore[import-untyped,import-not-found,unused-ignore]  # noqa: E501
-        BaseEvent,
-    )
-    from autogen.messages import (  # type: ignore[import-untyped,import-not-found,unused-ignore] # noqa: E501
-        BaseMessage,
-    )
+    from autogen.agentchat import ConversableAgent  # type: ignore
+    from autogen.events import BaseEvent  # type: ignore
+    from autogen.messages import BaseMessage  # type: ignore
 
 
 # pylint: disable=too-many-public-methods
@@ -417,6 +413,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
     @staticmethod
     async def a_process_event(
         event: Union["BaseEvent", "BaseMessage"],
+        agents: list["ConversableAgent"],  # pylint: disable=unused-argument
         skip_send: bool = False,
     ) -> None:
         """Process an event or message asynchronously.
@@ -425,6 +422,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         ----------
         event : Union[BaseEvent, BaseMessage]
             The event or message to process.
+        agents : list["ConversableAgent"]
+            The known agents in the flow.
         skip_send : bool
             Skip sending the event.
         """
@@ -448,6 +447,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
     @staticmethod
     def process_event(
         event: Union["BaseEvent", "BaseMessage"],
+        agents: list["ConversableAgent"],  # pylint: disable=unused-argument
         skip_send: bool = False,
     ) -> None:
         """Process an event or message synchronously.
@@ -456,6 +456,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         ----------
         event : Union[BaseEvent, BaseMessage]
             The event or message to process.
+        agents : list["ConversableAgent"]
+            The known agents in the flow.
         skip_send : bool
             Skip sending the event.
         """

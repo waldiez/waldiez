@@ -62,20 +62,20 @@ def test_on_event_processing_and_stop(runner: WaldiezStandardRunner) -> None:
     event.type = "normal"
 
     with patch(f"{BASE_RUNNER}.process_event") as mock_process:
-        result = runner._on_event(event)
+        result = runner._on_event(event, [])
         assert result is True
-        mock_process.assert_called_once_with(event)
+        mock_process.assert_called_once_with(event, [])
 
     # Set stop_requested before event processing
     runner._stop_requested.set()
-    result = runner._on_event(event)
+    result = runner._on_event(event, [])
     assert result is False
     runner._stop_requested.clear()
 
     # Raise exception in process_event
     with patch(f"{BASE_RUNNER}.process_event", side_effect=Exception("fail")):
         with pytest.raises(RuntimeError):
-            runner._on_event(event)
+            runner._on_event(event, [])
 
 
 @pytest.mark.asyncio
@@ -89,18 +89,18 @@ async def test_async_on_event_processing_and_stop(
     with patch(
         f"{BASE_RUNNER}.a_process_event", new_callable=AsyncMock
     ) as mock_process:
-        result = await runner._a_on_event(event)
+        result = await runner._a_on_event(event, [])
         assert result is True
-        mock_process.assert_called_once_with(event)
+        mock_process.assert_called_once_with(event, [])
 
     runner._stop_requested.set()
-    result = await runner._a_on_event(event)
+    result = await runner._a_on_event(event, [])
     assert result is False
     runner._stop_requested.clear()
 
     with patch(f"{BASE_RUNNER}.a_process_event", side_effect=Exception("fail")):
         with pytest.raises(RuntimeError):
-            await runner._a_on_event(event)
+            await runner._a_on_event(event, [])
 
 
 @pytest.mark.asyncio

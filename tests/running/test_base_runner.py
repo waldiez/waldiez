@@ -201,7 +201,7 @@ def test_process_event_calls_send(
         assert e == event
 
     monkeypatch.setattr(WaldiezBaseRunner, "_send", staticmethod(fake_send))
-    WaldiezBaseRunner.process_event(event)
+    WaldiezBaseRunner.process_event(event, [])
     assert called.get("sent") is True
 
 
@@ -241,7 +241,7 @@ def test_process_event_input_request(
         staticmethod(lambda prompt, password=False: "user_input"),
     )
 
-    WaldiezBaseRunner.process_event(event)
+    WaldiezBaseRunner.process_event(event, [])
     assert responded == "user_input"
 
 
@@ -268,7 +268,7 @@ async def test_a_process_event_calls_send(
         assert e == event
 
     monkeypatch.setattr(WaldiezBaseRunner, "_send", staticmethod(fake_send))
-    await WaldiezBaseRunner.a_process_event(event)
+    await WaldiezBaseRunner.a_process_event(event, [])
     assert called.get("sent") is True
 
 
@@ -315,7 +315,7 @@ async def test_a_process_event_input_request(
         staticmethod(fake_input),
     )
 
-    await WaldiezBaseRunner.a_process_event(event)
+    await WaldiezBaseRunner.a_process_event(event, [])
     assert responded == "user_input"
 
 

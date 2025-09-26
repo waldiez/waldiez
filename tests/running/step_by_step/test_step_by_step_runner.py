@@ -160,15 +160,15 @@ def test_on_event_breaks_and_continues(
     with patch.object(runner, "_handle_step_interaction", return_value=True):
         # Patch WaldiezBaseRunner.process_event to do nothing
         with patch(f"{BASE_RUNNER}.process_event") as mock_process:
-            result = runner._on_event(text_event)
+            result = runner._on_event(text_event, [])
             assert result is True
-            mock_process.assert_called_once_with(text_event, skip_send=True)
+            mock_process.assert_called_once_with(text_event, [], skip_send=True)
 
     # Patch _handle_step_interaction to return False (stop)
     with patch.object(runner, "_handle_step_interaction", return_value=False):
         with patch(f"{BASE_RUNNER}.process_event") as mock_process:
             with pytest.raises(StopRunningException):
-                runner._on_event(text_event)
+                runner._on_event(text_event, [])
             mock_process.assert_not_called()
 
 
@@ -187,9 +187,9 @@ async def test_async_on_event_continues_and_stops(
         with patch(
             f"{BASE_RUNNER}.a_process_event", AsyncMock()
         ) as mock_process:
-            result = await runner._a_on_event(text_event)
+            result = await runner._a_on_event(text_event, [])
             assert result is True
-            mock_process.assert_called_once_with(text_event, skip_send=True)
+            mock_process.assert_called_once_with(text_event, [], skip_send=True)
 
     # Patch _a_handle_step_interaction to return False (stop)
     with patch.object(
@@ -199,7 +199,7 @@ async def test_async_on_event_continues_and_stops(
             f"{BASE_RUNNER}.a_process_event", AsyncMock()
         ) as mock_process:
             with pytest.raises(StopRunningException):
-                await runner._a_on_event(text_event)
+                await runner._a_on_event(text_event, [])
             mock_process.assert_not_called()
 
 
@@ -382,7 +382,7 @@ def test_on_event_raises_runtime_error_on_generic_exception(
     runner._step_mode = False  # to skip break logic
     with patch(f"{BASE_RUNNER}.process_event", side_effect=ValueError("fail")):
         with pytest.raises(RuntimeError) as exc_info:
-            runner._on_event(text_event)
+            runner._on_event(text_event, [])
         assert "fail" in str(exc_info.value)
 
 
@@ -396,7 +396,7 @@ def test_on_event_propagates_stop_running_exception(
         f"{BASE_RUNNER}.process_event", side_effect=StopRunningException("stop")
     ):
         with pytest.raises(StopRunningException):
-            runner._on_event(text_event)
+            runner._on_event(text_event, [])
 
 
 @pytest.mark.asyncio
@@ -410,7 +410,7 @@ async def test_async_on_event_raises_runtime_error_on_generic_exception(
         f"{BASE_RUNNER}.a_process_event", side_effect=ValueError("fail")
     ):
         with pytest.raises(RuntimeError) as exc_info:
-            await runner._a_on_event(text_event)
+            await runner._a_on_event(text_event, [])
         assert "fail" in str(exc_info.value)
 
 
@@ -426,7 +426,7 @@ async def test_async_on_event_propagates_stop_running_exception(
         side_effect=StopRunningException("stop"),
     ):
         with pytest.raises(StopRunningException):
-            await runner._a_on_event(text_event)
+            await runner._a_on_event(text_event, [])
 
 
 def test_run_handles_stop_running_exception(
@@ -672,7 +672,7 @@ def test_on_event_returns_false_if_stop_requested(
 ) -> None:
     """Test that _on_event returns False immediately if stop is requested."""
     runner._stop_requested.set()
-    result = runner._on_event(text_event)
+    result = runner._on_event(text_event, [])
     assert result is False
 
 
@@ -682,7 +682,7 @@ async def test_async_on_event_returns_false_if_stop_requested(
 ) -> None:
     """Test that async _a_on_event returns False immediately if stop is requested."""
     runner._stop_requested.set()
-    result = await runner._a_on_event(text_event)
+    result = await runner._a_on_event(text_event, [])
     assert result is False
 
 

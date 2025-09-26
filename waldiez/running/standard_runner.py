@@ -14,7 +14,7 @@ variables specified in the waldiez file are set.
 import asyncio
 import traceback
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Union
 
 from waldiez.models.waldiez import Waldiez
 from waldiez.running.run_results import WaldiezRunResults
@@ -134,7 +134,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
     def _on_event(
         self,
         event: Union["BaseEvent", "BaseMessage"],
-        agents: Optional[list["ConversableAgent"]] = None,
+        agents: list["ConversableAgent"],
     ) -> bool:
         """Process an event from the workflow."""
         self._event_count += 1
@@ -144,7 +144,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             )
             return False
         try:
-            WaldiezBaseRunner.process_event(event)
+            WaldiezBaseRunner.process_event(event, agents)
             self._processed_events += 1
         except SystemExit:  # pragma: no cover
             self.log.debug("Execution stopped by user (sync)")
@@ -161,7 +161,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
     async def _a_on_event(
         self,
         event: Union["BaseEvent", "BaseMessage"],
-        agents: Optional[list["ConversableAgent"]] = None,
+        agents: list["ConversableAgent"],
     ) -> bool:
         """Process an event from the workflow asynchronously."""
         self._event_count += 1
@@ -171,7 +171,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             )
             return False
         try:
-            await WaldiezBaseRunner.a_process_event(event)
+            await WaldiezBaseRunner.a_process_event(event, agents)
             self._processed_events += 1
         except SystemExit:  # pragma: no cover
             self.log.debug("Execution stopped by user (async)")

@@ -14,7 +14,7 @@ import threading
 import traceback
 from collections import deque
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Iterable, Optional, Union
+from typing import TYPE_CHECKING, Any, Iterable, Union
 
 from pydantic import ValidationError
 
@@ -613,7 +613,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
     def _on_event(
         self,
         event: Union["BaseEvent", "BaseMessage"],
-        _agents: Optional[list["ConversableAgent"]] = None,
+        agents: list["ConversableAgent"],
     ) -> bool:
         """Process an event with step-by-step debugging."""
         # pylint: disable=too-many-try-statements,broad-exception-caught
@@ -637,7 +637,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     raise StopRunningException(StopRunningException.reason)
 
             # Process the actual event
-            WaldiezBaseRunner.process_event(event, skip_send=True)
+            WaldiezBaseRunner.process_event(event, agents, skip_send=True)
             self._processed_events += 1
 
         except Exception as e:
@@ -721,7 +721,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
     async def _a_on_event(
         self,
         event: Union["BaseEvent", "BaseMessage"],
-        _agents: Optional[list["ConversableAgent"]] = None,
+        agents: list["ConversableAgent"],
     ) -> bool:
         """Process an event with step-by-step debugging asynchronously."""
         # pylint: disable=too-many-try-statements,broad-exception-caught
@@ -745,7 +745,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     raise StopRunningException(StopRunningException.reason)
 
             # Process the actual event
-            await WaldiezBaseRunner.a_process_event(event, skip_send=True)
+            await WaldiezBaseRunner.a_process_event(
+                event, agents, skip_send=True
+            )
             self._processed_events += 1
 
         except Exception as e:
