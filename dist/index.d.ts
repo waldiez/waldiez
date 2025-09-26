@@ -861,7 +861,7 @@ export declare const useWaldiezMessaging: (props: {
     onSave?: (contents: string, path?: string | null, force?: boolean) => void | Promise<void>;
     onConvert?: (contents: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>;
     onRun?: (contents: string, path?: string | null) => void | Promise<void>;
-    onStepRun?: (contents: string) => void | Promise<void>;
+    onStepRun?: (contents: string, path?: string | null, breakpoints?: string[]) => void | Promise<void>;
     preprocess?: (message: any) => {
         handled: boolean;
         updated?: any;
@@ -890,7 +890,7 @@ export declare const useWaldiezMessaging: (props: {
     save: (contents: string) => Promise<void>;
     convert: (contents: string, to: "py" | "ipynb", path?: string | null) => Promise<void>;
     run: (contents: string, path?: string | null) => Promise<void>;
-    stepRun: (contents: string) => Promise<void>;
+    stepRun: (contents: string, path?: string | null, breakpoints?: string[]) => Promise<void>;
     getRunningMode: () => "chat" | "step" | undefined;
     setRunningMode: (mode: "chat" | "step" | undefined) => void;
     process: (data: any) => void;
@@ -1016,8 +1016,8 @@ export declare const useWaldiezWsMessaging: (props: {
     flowId: string;
     onSave?: (contents: string, path?: string | null) => void | Promise<void>;
     onConvert?: (contents: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>;
-    onRun?: (contents: string) => void | Promise<void>;
-    onStepRun?: (contents: string) => void | Promise<void>;
+    onRun?: (contents: string, path?: string | null) => void | Promise<void>;
+    onStepRun?: (contents: string, path?: string | null, breakpoints?: string[]) => void | Promise<void>;
     preprocess?: (message: any) => {
         handled: boolean;
         updated?: any;
@@ -1051,8 +1051,8 @@ export declare const useWaldiezWsMessaging: (props: {
 }) => {
     save: (contents: string, path?: string | null) => Promise<void>;
     convert: (contents: string, to: "py" | "ipynb", path?: string | null) => Promise<void>;
-    run: (contents: string) => Promise<void>;
-    stepRun: (contents: string) => Promise<void>;
+    run: (contents: string, path?: string | null) => Promise<void>;
+    stepRun: (contents: string, path?: string | null, breakpoints?: string[]) => Promise<void>;
     getRunningMode: () => "chat" | "step" | undefined;
     setRunningMode: (mode: "chat" | "step" | undefined) => void;
     reset: () => void;
@@ -2179,7 +2179,7 @@ export declare class WaldiezAgentUserProxyData extends WaldiezAgentData {
 export declare type WaldiezBreakpoint = {
     type: WaldiezBreakpointType;
     event_type?: string;
-    agent_name?: string;
+    agent?: string;
     description?: string;
 };
 
@@ -4635,7 +4635,7 @@ export declare type WaldiezStoreProps = {
     viewport?: Viewport;
     previousViewport?: Viewport;
     onRun?: ((flow: string, path?: string | null) => void | Promise<void>) | null;
-    onStepRun?: ((flow: string, path?: string | null) => void | Promise<void>) | null;
+    onStepRun?: ((flow: string, path?: string | null, breakpoints?: string[]) => void | Promise<void>) | null;
     onConvert?: ((flow: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>) | null;
     onUpload?: ((files: File[], path?: string | null) => string[] | Promise<string[]>) | null;
     onChange?: ((content: string, path?: string | null) => void | Promise<void>) | null;

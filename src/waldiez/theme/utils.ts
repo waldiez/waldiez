@@ -37,6 +37,7 @@ export const isInitiallyDark = () => {
 export const setIsDarkMode = (isDark: boolean) => {
     setBodyClass(isDark);
     setStorageTheme(isDark);
+    setDocumentClass(isDark);
 };
 
 /**
@@ -44,12 +45,20 @@ export const setIsDarkMode = (isDark: boolean) => {
  * @param isDark - boolean - True for dark mode, false for light mode.
  */
 const setBodyClass = (isDark: boolean) => {
+    document.body.classList.remove("waldiez-light", "waldiez-dark");
     if (isDark) {
-        document.body.classList.remove("waldiez-light");
         document.body.classList.add("waldiez-dark");
     } else {
-        document.body.classList.remove("waldiez-dark");
         document.body.classList.add("waldiez-light");
+    }
+};
+
+const setDocumentClass = (isDark: boolean) => {
+    document.documentElement.classList.remove("dark", "light");
+    if (isDark) {
+        document.documentElement.classList.add("dark");
+    } else {
+        document.documentElement.classList.add("light");
     }
 };
 

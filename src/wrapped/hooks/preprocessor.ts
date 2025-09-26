@@ -11,6 +11,30 @@ import { isConvertWorkflowResponse, isSaveFlowResponse } from "./types";
 export const useMessagePreprocessor = (flowId: string) => {
     const sessionIdRef = useRef<string | undefined>(undefined);
     const pendingInputIdRef = useRef<string | undefined>(undefined);
+    const processStepRunResponse = useCallback(
+        (data: { success: boolean; error?: string; data?: string; path?: string }) => {
+            if (!data.success) {
+                showSnackbar({
+                    message: "Error starting workflow.",
+                    details: data.error || null,
+                    level: "error",
+                    flowId,
+                    withCloseButton: true,
+                    duration: 3000,
+                });
+            } else {
+                showSnackbar({
+                    message: "Workflow started.",
+                    details: data.path || null,
+                    level: "success",
+                    flowId,
+                    withCloseButton: true,
+                    duration: 3000,
+                });
+            }
+        },
+        [flowId],
+    );
     const processConvertResult = useCallback(
         (data: { success: boolean; error?: string; data?: string; path?: string }) => {
             if (!data.success) {
@@ -81,9 +105,13 @@ export const useMessagePreprocessor = (flowId: string) => {
             ) {
                 pendingInputIdRef.current = data.request_id;
             }
+            if (data.type === "step_run_response" || data.type === "run_response") {
+                processStepRunResponse(data);
+                return { handled: true };
+            }
             return { handled: false, updated: data };
         },
-        [processSaveResult, processConvertResult],
+        [processSaveResult, processConvertResult, processStepRunResponse],
     );
 
     const preprocess = useCallback(

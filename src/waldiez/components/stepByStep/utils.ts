@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import type { WaldiezBreakpoint } from "@waldiez/components/stepByStep/types";
 
 /** get event's key/id
  * @param event - The event.
@@ -31,4 +32,16 @@ export const getEventKey = (event: Record<string, unknown>) => {
         }
     });
     return eventId;
+};
+
+export const WaldiezBreakpointToString: (breakpoint: WaldiezBreakpoint) => string = bp => {
+    let bp_string = "";
+    if (bp.type === "event" && bp.event_type) {
+        bp_string += `${bp.type}:${bp.event_type}`;
+    } else if (bp.type === "agent" && bp.agent) {
+        bp_string += `${bp.type}:${bp.agent}`;
+    } else if (bp.type === "agent_event") {
+        //
+    }
+    return bp_string;
 };

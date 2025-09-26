@@ -231,7 +231,7 @@ export type WaldiezBreakpointType = "event" | "agent" | "agent_event" | "all";
 export type WaldiezBreakpoint = {
     type: WaldiezBreakpointType;
     event_type?: string; // Required for EVENT and AGENT_EVENT
-    agent_name?: string; // Required for AGENT and AGENT_EVENT
+    agent?: string; // Required for AGENT and AGENT_EVENT
     description?: string; // Human-readable description
 };
 

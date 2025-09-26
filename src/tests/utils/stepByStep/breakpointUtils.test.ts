@@ -32,7 +32,7 @@ describe("WaldiezBreakpointUtils", () => {
 
             expect(result).toEqual({
                 type: "agent",
-                agent_name: "user",
+                agent: "user",
             });
         });
 
@@ -41,7 +41,7 @@ describe("WaldiezBreakpointUtils", () => {
 
             expect(result).toEqual({
                 type: "agent_event",
-                agent_name: "user",
+                agent: "user",
                 event_type: "message",
             });
         });
@@ -60,7 +60,7 @@ describe("WaldiezBreakpointUtils", () => {
 
             expect(result).toEqual({
                 type: "agent",
-                agent_name: "",
+                agent: "",
             });
         });
 
@@ -68,21 +68,21 @@ describe("WaldiezBreakpointUtils", () => {
             const result1 = WaldiezBreakpointUtils.fromString(":message");
             expect(result1).toEqual({
                 type: "agent_event",
-                agent_name: "",
+                agent: "",
                 event_type: "message",
             });
 
             const result2 = WaldiezBreakpointUtils.fromString("user:");
             expect(result2).toEqual({
                 type: "agent_event",
-                agent_name: "user",
+                agent: "user",
                 event_type: "",
             });
 
             const result3 = WaldiezBreakpointUtils.fromString(":");
             expect(result3).toEqual({
                 type: "agent_event",
-                agent_name: "",
+                agent: "",
                 event_type: "",
             });
         });
@@ -101,7 +101,7 @@ describe("WaldiezBreakpointUtils", () => {
 
             expect(result).toEqual({
                 type: "agent_event",
-                agent_name: "user",
+                agent: "user",
                 event_type: "message",
             });
         });
@@ -116,7 +116,7 @@ describe("WaldiezBreakpointUtils", () => {
             const result2 = WaldiezBreakpointUtils.fromString("agent:user:message");
             expect(result2).toEqual({
                 type: "agent",
-                agent_name: "user:message",
+                agent: "user:message",
             });
         });
 
@@ -161,7 +161,7 @@ describe("WaldiezBreakpointUtils", () => {
         it("should convert agent breakpoint to string", () => {
             const breakpoint: WaldiezBreakpoint = {
                 type: "agent",
-                agent_name: "user",
+                agent: "user",
             };
 
             const result = WaldiezBreakpointUtils.toString(breakpoint);
@@ -172,7 +172,7 @@ describe("WaldiezBreakpointUtils", () => {
         it("should convert agent_event breakpoint to string", () => {
             const breakpoint: WaldiezBreakpoint = {
                 type: "agent_event",
-                agent_name: "user",
+                agent: "user",
                 event_type: "message",
             };
 
@@ -190,13 +190,13 @@ describe("WaldiezBreakpointUtils", () => {
 
             const agentBreakpoint: WaldiezBreakpoint = {
                 type: "agent",
-                agent_name: undefined,
+                agent: undefined,
             };
             expect(WaldiezBreakpointUtils.toString(agentBreakpoint)).toBe("agent:undefined");
 
             const agentEventBreakpoint: WaldiezBreakpoint = {
                 type: "agent_event",
-                agent_name: undefined,
+                agent: undefined,
                 event_type: undefined,
             };
             expect(WaldiezBreakpointUtils.toString(agentEventBreakpoint)).toBe("undefined:undefined");
@@ -211,13 +211,13 @@ describe("WaldiezBreakpointUtils", () => {
 
             const agentBreakpoint: WaldiezBreakpoint = {
                 type: "agent",
-                agent_name: "",
+                agent: "",
             };
             expect(WaldiezBreakpointUtils.toString(agentBreakpoint)).toBe("agent:");
 
             const agentEventBreakpoint: WaldiezBreakpoint = {
                 type: "agent_event",
-                agent_name: "",
+                agent: "",
                 event_type: "",
             };
             expect(WaldiezBreakpointUtils.toString(agentEventBreakpoint)).toBe(":");
@@ -309,7 +309,7 @@ describe("WaldiezBreakpointUtils", () => {
             it("should match event where agent is sender", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent",
-                    agent_name: "user",
+                    agent: "user",
                 };
                 const event = { sender: "user", recipient: "assistant" };
 
@@ -319,7 +319,7 @@ describe("WaldiezBreakpointUtils", () => {
             it("should match event where agent is recipient", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent",
-                    agent_name: "assistant",
+                    agent: "assistant",
                 };
                 const event = { sender: "user", recipient: "assistant" };
 
@@ -329,7 +329,7 @@ describe("WaldiezBreakpointUtils", () => {
             it("should match when agent is both sender and recipient", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent",
-                    agent_name: "user",
+                    agent: "user",
                 };
                 const event = { sender: "user", recipient: "user" };
 
@@ -339,7 +339,7 @@ describe("WaldiezBreakpointUtils", () => {
             it("should not match when agent is neither sender nor recipient", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent",
-                    agent_name: "other",
+                    agent: "other",
                 };
                 const event = { sender: "user", recipient: "assistant" };
 
@@ -349,27 +349,27 @@ describe("WaldiezBreakpointUtils", () => {
             it("should not match event without sender or recipient", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent",
-                    agent_name: "user",
+                    agent: "user",
                 };
                 const event = { type: "message" };
 
                 expect(WaldiezBreakpointUtils.matches(breakpoint, event)).toBe(false);
             });
 
-            it("should handle empty agent_name", () => {
+            it("should handle empty agent", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent",
-                    agent_name: "",
+                    agent: "",
                 };
                 const event = { sender: "", recipient: "assistant" };
 
                 expect(WaldiezBreakpointUtils.matches(breakpoint, event)).toBe(true);
             });
 
-            it("should handle undefined agent_name", () => {
+            it("should handle undefined agent", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent",
-                    agent_name: undefined,
+                    agent: undefined,
                 };
                 const event = { sender: undefined, recipient: "assistant" };
 
@@ -381,7 +381,7 @@ describe("WaldiezBreakpointUtils", () => {
             it("should match when both agent and event type match", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent_event",
-                    agent_name: "user",
+                    agent: "user",
                     event_type: "message",
                 };
                 const event = {
@@ -396,7 +396,7 @@ describe("WaldiezBreakpointUtils", () => {
             it("should match when agent is recipient and event type matches", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent_event",
-                    agent_name: "assistant",
+                    agent: "assistant",
                     event_type: "message",
                 };
                 const event = {
@@ -411,7 +411,7 @@ describe("WaldiezBreakpointUtils", () => {
             it("should not match when agent matches but event type differs", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent_event",
-                    agent_name: "user",
+                    agent: "user",
                     event_type: "message",
                 };
                 const event = {
@@ -426,7 +426,7 @@ describe("WaldiezBreakpointUtils", () => {
             it("should not match when event type matches but agent differs", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent_event",
-                    agent_name: "other",
+                    agent: "other",
                     event_type: "message",
                 };
                 const event = {
@@ -441,7 +441,7 @@ describe("WaldiezBreakpointUtils", () => {
             it("should not match when neither agent nor event type match", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent_event",
-                    agent_name: "other",
+                    agent: "other",
                     event_type: "tool_call",
                 };
                 const event = {
@@ -456,7 +456,7 @@ describe("WaldiezBreakpointUtils", () => {
             it("should handle empty properties", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent_event",
-                    agent_name: "",
+                    agent: "",
                     event_type: "",
                 };
                 const event = {
@@ -471,7 +471,7 @@ describe("WaldiezBreakpointUtils", () => {
             it("should handle undefined properties", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent_event",
-                    agent_name: undefined,
+                    agent: undefined,
                     event_type: undefined,
                 };
                 const event = {
@@ -497,7 +497,7 @@ describe("WaldiezBreakpointUtils", () => {
             it("should handle event with non-string properties", () => {
                 const breakpoint: WaldiezBreakpoint = {
                     type: "agent",
-                    agent_name: "user",
+                    agent: "user",
                 };
                 const event = { sender: 123, recipient: null };
 
@@ -556,12 +556,12 @@ describe("WaldiezBreakpointUtils", () => {
 
             expect(WaldiezBreakpointUtils.normalize("agent:user")).toEqual({
                 type: "agent",
-                agent_name: "user",
+                agent: "user",
             });
 
             expect(WaldiezBreakpointUtils.normalize("user:message")).toEqual({
                 type: "agent_event",
-                agent_name: "user",
+                agent: "user",
                 event_type: "message",
             });
 
@@ -574,7 +574,7 @@ describe("WaldiezBreakpointUtils", () => {
         it("should handle complex breakpoint objects", () => {
             const breakpoint: WaldiezBreakpoint = {
                 type: "agent_event",
-                agent_name: "user",
+                agent: "user",
                 event_type: "message",
                 description: "Custom description",
             };
@@ -609,7 +609,7 @@ describe("WaldiezBreakpointUtils", () => {
         it("should return display name for 'agent' breakpoint", () => {
             const breakpoint: WaldiezBreakpoint = {
                 type: "agent",
-                agent_name: "user",
+                agent: "user",
             };
 
             const result = WaldiezBreakpointUtils.getDisplayName(breakpoint);
@@ -620,7 +620,7 @@ describe("WaldiezBreakpointUtils", () => {
         it("should return display name for 'agent_event' breakpoint", () => {
             const breakpoint: WaldiezBreakpoint = {
                 type: "agent_event",
-                agent_name: "user",
+                agent: "user",
                 event_type: "message",
             };
 
@@ -640,14 +640,14 @@ describe("WaldiezBreakpointUtils", () => {
             expect(
                 WaldiezBreakpointUtils.getDisplayName({
                     type: "agent",
-                    agent_name: undefined,
+                    agent: undefined,
                 }),
             ).toBe("Agent: undefined");
 
             expect(
                 WaldiezBreakpointUtils.getDisplayName({
                     type: "agent_event",
-                    agent_name: undefined,
+                    agent: undefined,
                     event_type: undefined,
                 }),
             ).toBe("undefined → undefined");
@@ -664,14 +664,14 @@ describe("WaldiezBreakpointUtils", () => {
             expect(
                 WaldiezBreakpointUtils.getDisplayName({
                     type: "agent",
-                    agent_name: "",
+                    agent: "",
                 }),
             ).toBe("Agent: ");
 
             expect(
                 WaldiezBreakpointUtils.getDisplayName({
                     type: "agent_event",
-                    agent_name: "",
+                    agent: "",
                     event_type: "",
                 }),
             ).toBe(" → ");

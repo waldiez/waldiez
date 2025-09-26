@@ -4,6 +4,7 @@
  */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import dotenv from "dotenv";
 import fs from "fs-extra";
@@ -152,6 +153,7 @@ export default defineConfig(({ command }) => {
         },
         plugins: [
             react(),
+            tailwindcss(),
             transformPublicFiles("web"),
             // addHeaderToDistFiles(),
             viteStaticCopy({

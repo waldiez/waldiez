@@ -2770,7 +2770,6 @@ const useWaldiezStepByStep = (props) => {
   const addEvent = useCallback(
     (event) => {
       if (isEventDuplicate(event)) {
-        console.log("Duplicate event detected, skipping:", getEventKey(event));
         return;
       }
       dispatch({ type: "ADD_EVENT", event, makeItCurrent: true });
@@ -2884,14 +2883,12 @@ const useWaldiezStepByStep = (props) => {
       if (typeof preprocess === "function") {
         const { handled, updated } = preprocess(data);
         if (handled || !updated) {
-          console.debug({ handled, updated });
           return;
         }
         dataToProcess = updated;
       }
       try {
         const result = WaldiezStepByStepProcessor.process(dataToProcess);
-        console.debug({ result });
         if (!result) {
           const chatResult = WaldiezChatMessageProcessor.process(dataToProcess);
           if (!chatResult) {
@@ -2972,10 +2969,10 @@ const useWaldiezMessaging = ({ onSave, onConvert, onRun, chat, stepByStep, prepr
     [onRun, chatHook]
   );
   const stepRun = useCallback(
-    async (contents) => {
+    async (contents, path, breakpoints) => {
       setRunningMode("step");
       if (onStepRun) {
-        const result = onStepRun(contents);
+        const result = onStepRun(contents, path, breakpoints);
         if (isPromise(result)) {
           await result;
         }
@@ -3138,14 +3135,14 @@ class WaldiezBreakpointUtils {
       return { type: "event", event_type };
     }
     if (breakpointStr.startsWith("agent:")) {
-      const agent_name = breakpointStr.slice(6);
-      return { type: "agent", agent_name };
+      const agent = breakpointStr.slice(6);
+      return { type: "agent", agent };
     }
     if (breakpointStr.includes(":") && !breakpointStr.startsWith("event:") && !breakpointStr.startsWith("agent:")) {
-      const [agent_name, event_type] = breakpointStr.split(":", 2);
+      const [agent, event_type] = breakpointStr.split(":", 2);
       return {
         type: "agent_event",
-        agent_name,
+        agent,
         event_type
       };
     }
@@ -3159,9 +3156,9 @@ class WaldiezBreakpointUtils {
       case "event":
         return `event:${breakpoint.event_type}`;
       case "agent":
-        return `agent:${breakpoint.agent_name}`;
+        return `agent:${breakpoint.agent}`;
       case "agent_event":
-        return `${breakpoint.agent_name}:${breakpoint.event_type}`;
+        return `${breakpoint.agent}:${breakpoint.event_type}`;
       case "all":
       default:
         return "all";
@@ -3177,9 +3174,9 @@ class WaldiezBreakpointUtils {
       case "event":
         return event.type === breakpoint.event_type;
       case "agent":
-        return event.sender === breakpoint.agent_name || event.recipient === breakpoint.agent_name;
+        return event.sender === breakpoint.agent || event.recipient === breakpoint.agent;
       case "agent_event":
-        return event.type === breakpoint.event_type && (event.sender === breakpoint.agent_name || event.recipient === breakpoint.agent_name);
+        return event.type === breakpoint.event_type && (event.sender === breakpoint.agent || event.recipient === breakpoint.agent);
       default:
         return false;
     }
@@ -3198,9 +3195,9 @@ class WaldiezBreakpointUtils {
       case "event":
         return `Event: ${breakpoint.event_type}`;
       case "agent":
-        return `Agent: ${breakpoint.agent_name}`;
+        return `Agent: ${breakpoint.agent}`;
       case "agent_event":
-        return `${breakpoint.agent_name} → ${breakpoint.event_type}`;
+        return `${breakpoint.agent} → ${breakpoint.event_type}`;
       case "all":
         return "All Events";
       default:
@@ -5290,14 +5287,22 @@ const isInitiallyDark = () => {
 const setIsDarkMode = (isDark) => {
   setBodyClass(isDark);
   setStorageTheme(isDark);
+  setDocumentClass(isDark);
 };
 const setBodyClass = (isDark) => {
+  document.body.classList.remove("waldiez-light", "waldiez-dark");
   if (isDark) {
-    document.body.classList.remove("waldiez-light");
     document.body.classList.add("waldiez-dark");
   } else {
-    document.body.classList.remove("waldiez-dark");
     document.body.classList.add("waldiez-light");
+  }
+};
+const setDocumentClass = (isDark) => {
+  document.documentElement.classList.remove("dark", "light");
+  if (isDark) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.add("light");
   }
 };
 const setStorageTheme = (isDark) => {
@@ -26902,44 +26907,60 @@ const useFlowEvents = (flowId) => {
     const { used, remaining } = getFlowEdges();
     return used.length > 0 && remaining.length === 0;
   }, [isReadOnly, getAgents2, getFlowEdges, flowId]);
-  const convertToPy = useCallback(() => {
-    if (!isReadOnly && onConvert) {
-      const flow = onFlowChanged();
-      onConvert(JSON.stringify(flow), "py");
-    }
-  }, [isReadOnly, onFlowChanged, onConvert]);
-  const convertToIpynb = useCallback(() => {
-    if (!isReadOnly && onConvert) {
-      const flow = onFlowChanged();
-      onConvert(JSON.stringify(flow), "ipynb");
-    }
-  }, [isReadOnly, onFlowChanged, onConvert]);
-  const onRun = useCallback(() => {
-    if (isReadOnly || typeof runner !== "function") {
-      return;
-    }
-    if (canRun()) {
+  const convertToPy = useCallback(
+    (path) => {
+      if (!isReadOnly && onConvert) {
+        const flow = onFlowChanged();
+        const { path: flowPath } = getFlowInfo();
+        onConvert(JSON.stringify(flow), "py", path || flowPath);
+      }
+    },
+    [isReadOnly, onFlowChanged, onConvert, getFlowInfo]
+  );
+  const convertToIpynb = useCallback(
+    (path) => {
+      if (!isReadOnly && onConvert) {
+        const flow = onFlowChanged();
+        const { path: flowPath } = getFlowInfo();
+        onConvert(JSON.stringify(flow), "ipynb", path || flowPath);
+      }
+    },
+    [isReadOnly, onFlowChanged, onConvert, getFlowInfo]
+  );
+  const onRun = useCallback(
+    (path) => {
+      if (isReadOnly || typeof runner !== "function") {
+        return;
+      }
+      if (canRun()) {
+        const flow = onFlowChanged();
+        if (flow) {
+          const { path: flowPath } = getFlowInfo();
+          runner(JSON.stringify(flow), path || flowPath);
+        }
+      } else {
+        const openEditFlowButtonId = `edit-flow-${flowId}-sidebar-button`;
+        const openEditFlowButton = document.getElementById(openEditFlowButtonId);
+        if (openEditFlowButton) {
+          openEditFlowButton.click();
+        }
+      }
+    },
+    [isReadOnly, runner, canRun, onFlowChanged, getFlowInfo, flowId]
+  );
+  const onStepRun = useCallback(
+    (path, breakpoints) => {
+      if (isReadOnly || typeof stepRunner !== "function") {
+        return;
+      }
       const flow = onFlowChanged();
       if (flow) {
-        runner(JSON.stringify(flow));
+        const { path: flowPath } = getFlowInfo();
+        stepRunner(JSON.stringify(flow), path || flowPath, breakpoints);
       }
-    } else {
-      const openEditFlowButtonId = `edit-flow-${flowId}-sidebar-button`;
-      const openEditFlowButton = document.getElementById(openEditFlowButtonId);
-      if (openEditFlowButton) {
-        openEditFlowButton.click();
-      }
-    }
-  }, [isReadOnly, runner, canRun, onFlowChanged, flowId]);
-  const onStepRun = useCallback(() => {
-    if (isReadOnly || typeof stepRunner !== "function") {
-      return;
-    }
-    const flow = onFlowChanged();
-    if (flow) {
-      stepRunner(JSON.stringify(flow));
-    }
-  }, [isReadOnly, stepRunner, onFlowChanged]);
+    },
+    [isReadOnly, stepRunner, onFlowChanged, getFlowInfo]
+  );
   const onExport = useCallback(
     async (_e) => {
       if (isReadOnly) {
@@ -28565,6 +28586,18 @@ const WaldiezFlowPanels = (props) => {
   const includeConvertIcons = !isReadOnly && typeof onConvert === "function";
   const includeStepByStepRun = !isReadOnly && typeof stepRunner === "function";
   const { isDark, toggleTheme } = useWaldiezTheme();
+  const doRun = useCallback(() => {
+    onRun();
+  }, [onRun]);
+  const doStepRun = useCallback(() => {
+    onStepRun();
+  }, [onStepRun]);
+  const doConvertToPy = useCallback(() => {
+    onConvertToPy();
+  }, [onConvertToPy]);
+  const doConvertToIpynb = useCallback(() => {
+    onConvertToIpynb();
+  }, [onConvertToIpynb]);
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     selectedNodeType !== "agent" && readOnly === false && /* @__PURE__ */ jsx$1(Panel, { position: "top-left", children: /* @__PURE__ */ jsxs(
       "button",
@@ -28588,7 +28621,7 @@ const WaldiezFlowPanels = (props) => {
           {
             type: "button",
             className: "editor-nav-action",
-            onClick: onStepRun,
+            onClick: doStepRun,
             title: "Run step-by-step",
             "data-testid": `step-by-step-${flowId}`,
             children: /* @__PURE__ */ jsx$1(VscDebugAlt, {})
@@ -28599,7 +28632,7 @@ const WaldiezFlowPanels = (props) => {
           {
             type: "button",
             className: "editor-nav-action",
-            onClick: onRun,
+            onClick: doRun,
             title: "Run flow",
             "data-testid": `run-${flowId}`,
             children: /* @__PURE__ */ jsx$1(FaCirclePlay, {})
@@ -28610,7 +28643,7 @@ const WaldiezFlowPanels = (props) => {
           {
             type: "button",
             className: "editor-nav-action to-python",
-            onClick: onConvertToPy,
+            onClick: doConvertToPy,
             title: "Convert to Python",
             "data-testid": `convert-${flowId}-to-py`,
             children: /* @__PURE__ */ jsx$1(FaPython, {})
@@ -28621,7 +28654,7 @@ const WaldiezFlowPanels = (props) => {
           {
             type: "button",
             className: "editor-nav-action to-jupyter",
-            onClick: onConvertToIpynb,
+            onClick: doConvertToIpynb,
             title: "Convert to Jupyter Notebook",
             "data-testid": `convert-${flowId}-to-ipynb`,
             children: /* @__PURE__ */ jsx$1(SiJupyter, {})
@@ -39656,6 +39689,7 @@ const WaldiezFlowView = memo((props) => {
   const [_selectedNodeTypeToggle, setSelectedNodeTypeToggle] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isStepRunModalOpen, setStepRunModalOpen] = useState(false);
   const nodes = useWaldiez((s) => s.nodes);
   const edges = useWaldiez((s) => s.edges);
   const readOnly = useWaldiez((s) => s.isReadOnly);
@@ -39684,6 +39718,16 @@ const WaldiezFlowView = memo((props) => {
     onNodeDoubleClick,
     onEdgeDoubleClick
   } = useFlowEvents(flowId);
+  const handleStepRun = useCallback(() => {
+    {
+      onStepRun(null, []);
+    }
+  }, [isImportModalOpen, isExportModalOpen, onStepRun]);
+  const doRun = useCallback(() => {
+    if (!isExportModalOpen && !isImportModalOpen && !isStepRunModalOpen) {
+      onRun();
+    }
+  }, [isExportModalOpen, isImportModalOpen, isStepRunModalOpen, onRun]);
   useEffect(() => {
     showNodes("agent");
   }, [showNodes]);
@@ -39692,8 +39736,10 @@ const WaldiezFlowView = memo((props) => {
     setSelectedNodeTypeToggle((prev2) => !prev2);
   }, []);
   const onOpenImportModal = useCallback(() => {
-    setIsImportModalOpen(true);
-  }, []);
+    if (!isExportModalOpen && !isStepRunModalOpen) {
+      setIsImportModalOpen(true);
+    }
+  }, [isExportModalOpen, isStepRunModalOpen]);
   const onCloseImportModal = useCallback(() => {
     setIsImportModalOpen(false);
   }, []);
@@ -39809,8 +39855,8 @@ const WaldiezFlowView = memo((props) => {
                     skipHub,
                     selectedNodeType: selectedNodeType.current,
                     onAddNode,
-                    onRun,
-                    onStepRun,
+                    onRun: doRun,
+                    onStepRun: handleStepRun,
                     onConvertToPy: convertToPy,
                     onConvertToIpynb: convertToIpynb,
                     onOpenImportModal,

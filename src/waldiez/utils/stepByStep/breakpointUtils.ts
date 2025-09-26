@@ -17,19 +17,19 @@ export class WaldiezBreakpointUtils {
             return { type: "event", event_type };
         }
         if (breakpointStr.startsWith("agent:")) {
-            const agent_name = breakpointStr.slice(6); // Remove "agent:" prefix
-            return { type: "agent", agent_name };
+            const agent = breakpointStr.slice(6); // Remove "agent:" prefix
+            return { type: "agent", agent };
         }
         if (
             breakpointStr.includes(":") &&
             !breakpointStr.startsWith("event:") &&
             !breakpointStr.startsWith("agent:")
         ) {
-            // Format: "agent_name:event_type"
-            const [agent_name, event_type] = breakpointStr.split(":", 2);
+            // Format: "agent:event_type"
+            const [agent, event_type] = breakpointStr.split(":", 2);
             return {
                 type: "agent_event",
-                agent_name,
+                agent,
                 event_type,
             };
         }
@@ -45,9 +45,9 @@ export class WaldiezBreakpointUtils {
             case "event":
                 return `event:${breakpoint.event_type}`;
             case "agent":
-                return `agent:${breakpoint.agent_name}`;
+                return `agent:${breakpoint.agent}`;
             case "agent_event":
-                return `${breakpoint.agent_name}:${breakpoint.event_type}`;
+                return `${breakpoint.agent}:${breakpoint.event_type}`;
             case "all":
             default:
                 return "all";
@@ -64,11 +64,11 @@ export class WaldiezBreakpointUtils {
             case "event":
                 return event.type === breakpoint.event_type;
             case "agent":
-                return event.sender === breakpoint.agent_name || event.recipient === breakpoint.agent_name;
+                return event.sender === breakpoint.agent || event.recipient === breakpoint.agent;
             case "agent_event":
                 return (
                     event.type === breakpoint.event_type &&
-                    (event.sender === breakpoint.agent_name || event.recipient === breakpoint.agent_name)
+                    (event.sender === breakpoint.agent || event.recipient === breakpoint.agent)
                 );
             default:
                 return false;
@@ -90,9 +90,9 @@ export class WaldiezBreakpointUtils {
             case "event":
                 return `Event: ${breakpoint.event_type}`;
             case "agent":
-                return `Agent: ${breakpoint.agent_name}`;
+                return `Agent: ${breakpoint.agent}`;
             case "agent_event":
-                return `${breakpoint.agent_name} → ${breakpoint.event_type}`;
+                return `${breakpoint.agent} → ${breakpoint.event_type}`;
             case "all":
                 return "All Events";
             default:

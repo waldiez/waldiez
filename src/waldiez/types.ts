@@ -12,6 +12,22 @@ export type * from "@waldiez/store/types";
 export type * from "@waldiez/utils/chat/types";
 export type * from "@waldiez/utils/stepByStep/types";
 
+export type EventType =
+    | "post_carryover_processing"
+    | "group_chat_run_chat"
+    | "using_auto_reply"
+    | "tool_call"
+    | "execute_function"
+    | "executed_function"
+    | "input_request"
+    | "tool_response"
+    | "termination"
+    | "run_completion"
+    | "generate_code_execution_reply"
+    | "group_chat_resume"
+    | "error"
+    | "termination_and_human_reply_no_input";
+
 /**
  * WaldiezFlowProps
  * @param flowId - The id of the flow

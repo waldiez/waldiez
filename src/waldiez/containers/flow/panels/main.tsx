@@ -4,7 +4,7 @@
  */
 import { Panel } from "@xyflow/react";
 
-import { type FC, type MouseEvent as ReactMouseEvent } from "react";
+import { type FC, type MouseEvent as ReactMouseEvent, useCallback } from "react";
 import { FaPlusCircle } from "react-icons/fa";
 import { FaCirclePlay, FaFileImport, FaGithub, FaMoon, FaPython, FaSun } from "react-icons/fa6";
 import { MdIosShare } from "react-icons/md";
@@ -13,7 +13,7 @@ import { VscDebugAlt } from "react-icons/vsc";
 
 import { useWaldiez } from "@waldiez/store";
 import { useWaldiezTheme } from "@waldiez/theme";
-import type { WaldiezNodeType } from "@waldiez/types";
+import { type WaldiezNodeType } from "@waldiez/types";
 
 type WaldiezFlowPanelsProps = {
     flowId: string;
@@ -22,10 +22,10 @@ type WaldiezFlowPanelsProps = {
     skipHub?: boolean;
     selectedNodeType: WaldiezNodeType;
     onAddNode: () => void;
-    onRun: () => void;
-    onStepRun: () => void;
-    onConvertToPy: () => void;
-    onConvertToIpynb: () => void;
+    onRun: (path?: string | null) => void;
+    onStepRun: (path?: string | null, breakpoints?: string[]) => void;
+    onConvertToPy: (path?: string | null) => void;
+    onConvertToIpynb: (path?: string | null) => void;
     onOpenImportModal: () => void;
     onExport: (e: ReactMouseEvent<HTMLElement, MouseEvent>) => Promise<void>;
 };
@@ -55,6 +55,18 @@ export const WaldiezFlowPanels: FC<WaldiezFlowPanelsProps> = (props: WaldiezFlow
     const includeConvertIcons = !isReadOnly && typeof onConvert === "function";
     const includeStepByStepRun = !isReadOnly && typeof stepRunner === "function";
     const { isDark, toggleTheme } = useWaldiezTheme();
+    const doRun = useCallback(() => {
+        onRun();
+    }, [onRun]);
+    const doStepRun = useCallback(() => {
+        onStepRun();
+    }, [onStepRun]);
+    const doConvertToPy = useCallback(() => {
+        onConvertToPy();
+    }, [onConvertToPy]);
+    const doConvertToIpynb = useCallback(() => {
+        onConvertToIpynb();
+    }, [onConvertToIpynb]);
     return (
         <>
             {selectedNodeType !== "agent" && readOnly === false && (
@@ -79,7 +91,7 @@ export const WaldiezFlowPanels: FC<WaldiezFlowPanelsProps> = (props: WaldiezFlow
                                 <button
                                     type="button"
                                     className="editor-nav-action"
-                                    onClick={onStepRun}
+                                    onClick={doStepRun}
                                     title="Run step-by-step"
                                     data-testid={`step-by-step-${flowId}`}
                                 >
@@ -90,7 +102,7 @@ export const WaldiezFlowPanels: FC<WaldiezFlowPanelsProps> = (props: WaldiezFlow
                                 <button
                                     type="button"
                                     className="editor-nav-action"
-                                    onClick={onRun}
+                                    onClick={doRun}
                                     title="Run flow"
                                     data-testid={`run-${flowId}`}
                                 >
@@ -101,7 +113,7 @@ export const WaldiezFlowPanels: FC<WaldiezFlowPanelsProps> = (props: WaldiezFlow
                                 <button
                                     type="button"
                                     className="editor-nav-action to-python"
-                                    onClick={onConvertToPy}
+                                    onClick={doConvertToPy}
                                     title="Convert to Python"
                                     data-testid={`convert-${flowId}-to-py`}
                                 >
@@ -112,7 +124,7 @@ export const WaldiezFlowPanels: FC<WaldiezFlowPanelsProps> = (props: WaldiezFlow
                                 <button
                                     type="button"
                                     className="editor-nav-action to-jupyter"
-                                    onClick={onConvertToIpynb}
+                                    onClick={doConvertToIpynb}
                                     title="Convert to Jupyter Notebook"
                                     data-testid={`convert-${flowId}-to-ipynb`}
                                 >

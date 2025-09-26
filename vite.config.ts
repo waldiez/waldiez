@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import dotenv from "dotenv";
 import fs from "fs-extra";
@@ -104,7 +105,8 @@ export default defineConfig(({ command }) => ({
     server: {
         headers: {
             "content-security-policy-report-only":
-                "default-src 'none'; style-src 'self' 'unsafe-inline'; worker-src 'self' blob:; script-src 'self' blob: https://cdn.jsdelivr.net/npm/ https://drag-drop-touch-js.github.io/; font-src 'self'; img-src 'self' data:; connect-src *; report-to /_/csp",
+                "default-src 'none'; manifest-src 'self'; style-src 'self' https://cdn.jsdelivr.net/npm/ data: 'unsafe-inline'; worker-src 'self' blob: https://cdn.jsdelivr.net/npm/; script-src 'self' blob: https://cdn.jsdelivr.net/npm/ https://drag-drop-touch-js.github.io/; font-src 'self' https://cdn.jsdelivr.net/npm/ data:; img-src 'self' https://cdn.jsdelivr.net/npm/ data:; connect-src *; report-to /_/csp",
+            "content-security-policy": "manifest-src 'self';",
         },
     },
     define: {
@@ -191,6 +193,7 @@ export default defineConfig(({ command }) => ({
     },
     plugins: [
         react(),
+        tailwindcss(),
         externalizeDeps(),
         dts({
             insertTypesEntry: true,

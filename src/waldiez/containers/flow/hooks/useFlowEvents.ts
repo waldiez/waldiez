@@ -177,58 +177,74 @@ export const useFlowEvents = (flowId: string) => {
     /**
      * Convert flow to Python
      */
-    const convertToPy = useCallback(() => {
-        if (!isReadOnly && onConvert) {
-            const flow = onFlowChanged();
-            onConvert(JSON.stringify(flow), "py");
-        }
-    }, [isReadOnly, onFlowChanged, onConvert]);
+    const convertToPy = useCallback(
+        (path?: string | null) => {
+            if (!isReadOnly && onConvert) {
+                const flow = onFlowChanged();
+                const { path: flowPath } = getFlowInfo();
+                onConvert(JSON.stringify(flow), "py", path || flowPath);
+            }
+        },
+        [isReadOnly, onFlowChanged, onConvert, getFlowInfo],
+    );
 
     /**
      * Convert flow to Jupyter Notebook
      */
-    const convertToIpynb = useCallback(() => {
-        if (!isReadOnly && onConvert) {
-            const flow = onFlowChanged();
-            onConvert(JSON.stringify(flow), "ipynb");
-        }
-    }, [isReadOnly, onFlowChanged, onConvert]);
+    const convertToIpynb = useCallback(
+        (path?: string | null) => {
+            if (!isReadOnly && onConvert) {
+                const flow = onFlowChanged();
+                const { path: flowPath } = getFlowInfo();
+                onConvert(JSON.stringify(flow), "ipynb", path || flowPath);
+            }
+        },
+        [isReadOnly, onFlowChanged, onConvert, getFlowInfo],
+    );
 
     /**
      * Run the flow
      */
-    const onRun = useCallback(() => {
-        if (isReadOnly || typeof runner !== "function") {
-            return;
-        }
+    const onRun = useCallback(
+        (path?: string | null) => {
+            if (isReadOnly || typeof runner !== "function") {
+                return;
+            }
 
-        if (canRun()) {
-            const flow = onFlowChanged();
-            if (flow) {
-                runner(JSON.stringify(flow));
+            if (canRun()) {
+                const flow = onFlowChanged();
+                if (flow) {
+                    const { path: flowPath } = getFlowInfo();
+                    runner(JSON.stringify(flow), path || flowPath);
+                }
+            } else {
+                // Open edit flow sidebar if flow isn't ready to run
+                const openEditFlowButtonId = `edit-flow-${flowId}-sidebar-button`;
+                const openEditFlowButton = document.getElementById(openEditFlowButtonId);
+                if (openEditFlowButton) {
+                    openEditFlowButton.click();
+                }
             }
-        } else {
-            // Open edit flow sidebar if flow isn't ready to run
-            const openEditFlowButtonId = `edit-flow-${flowId}-sidebar-button`;
-            const openEditFlowButton = document.getElementById(openEditFlowButtonId);
-            if (openEditFlowButton) {
-                openEditFlowButton.click();
-            }
-        }
-    }, [isReadOnly, runner, canRun, onFlowChanged, flowId]);
+        },
+        [isReadOnly, runner, canRun, onFlowChanged, getFlowInfo, flowId],
+    );
 
     /**
      * Run the flow step-by-step
      */
-    const onStepRun = useCallback(() => {
-        if (isReadOnly || typeof stepRunner !== "function") {
-            return;
-        }
-        const flow = onFlowChanged();
-        if (flow) {
-            stepRunner(JSON.stringify(flow));
-        }
-    }, [isReadOnly, stepRunner, onFlowChanged]);
+    const onStepRun = useCallback(
+        (path?: string | null, breakpoints?: string[]) => {
+            if (isReadOnly || typeof stepRunner !== "function") {
+                return;
+            }
+            const flow = onFlowChanged();
+            if (flow) {
+                const { path: flowPath } = getFlowInfo();
+                stepRunner(JSON.stringify(flow), path || flowPath, breakpoints);
+            }
+        },
+        [isReadOnly, stepRunner, onFlowChanged, getFlowInfo],
+    );
 
     /**
      * Export the flow

@@ -34,6 +34,8 @@ type WaldiezFlowViewProps = {
     skipHub?: boolean;
 };
 
+const haveStepModal = false;
+
 /**
  * Main flow view component for the Waldiez application
  */
@@ -48,6 +50,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
     const [_selectedNodeTypeToggle, setSelectedNodeTypeToggle] = useState(false);
     const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false);
     const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
+    const [isStepRunModalOpen, setStepRunModalOpen] = useState<boolean>(false);
 
     // Get global state from store
     const nodes = useWaldiez(s => s.nodes);
@@ -84,6 +87,47 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
         onEdgeDoubleClick,
     } = useFlowEvents(flowId);
 
+    /**
+     * Open the stepRunModal to select initial breakpoints.
+     */
+    const handleStepRun = useCallback(() => {
+        if (haveStepModal) {
+            if (!isImportModalOpen && !isExportModalOpen) {
+                setStepRunModalOpen(true);
+            }
+        } else {
+            // not yet, start with no initial breakpoints
+            onStepRun(null, []);
+        }
+    }, [isImportModalOpen, isExportModalOpen, onStepRun]);
+
+    /**
+     * Close the stepRunModal
+     */
+    // const closeStepRunModal = useCallback(() => {
+    //     setStepRunModalOpen(false);
+    // }, []);
+
+    /**
+     * Call the onStepRun callback with the selected breakpoints if any.
+     */
+    // const doStepRun = useCallback(
+    //     (breakpoints: string[]) => {
+    //         setStepRunModalOpen(false);
+    //         onStepRun(null, breakpoints);
+    //     },
+    //     [onStepRun],
+    // );
+
+    /**
+     * Start running, is no other modals are open.
+     */
+    const doRun = useCallback(() => {
+        if (!isExportModalOpen && !isImportModalOpen && !isStepRunModalOpen) {
+            onRun();
+        }
+    }, [isExportModalOpen, isImportModalOpen, isStepRunModalOpen, onRun]);
+
     // Initialize by showing agent nodes
     useEffect(() => {
         showNodes("agent");
@@ -101,8 +145,10 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
      * Open import modal
      */
     const onOpenImportModal = useCallback(() => {
-        setIsImportModalOpen(true);
-    }, []);
+        if (!isExportModalOpen && !isStepRunModalOpen) {
+            setIsImportModalOpen(true);
+        }
+    }, [isExportModalOpen, isStepRunModalOpen]);
 
     /**
      * Close import modal
@@ -250,8 +296,8 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
                             skipHub={skipHub}
                             selectedNodeType={selectedNodeType.current}
                             onAddNode={onAddNode}
-                            onRun={onRun}
-                            onStepRun={onStepRun}
+                            onRun={doRun}
+                            onStepRun={handleStepRun}
                             onConvertToPy={convertToPy}
                             onConvertToIpynb={convertToIpynb}
                             onOpenImportModal={onOpenImportModal}
@@ -264,10 +310,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
             </div>
 
             <StepByStepView flowId={flowId} stepByStep={stepByStep} />
-
-            {/* Modals */}
             <ChatModal flowId={flowId} chat={chat} isDarkMode={isDark} />
-
             {isImportModalOpen && (
                 <ImportFlowModal
                     flowId={flowId}

@@ -487,7 +487,7 @@ describe("Step-by-step type guards", () => {
                 breakpoints: [
                     "message",
                     { type: "event", event_type: "tool_call" },
-                    { type: "agent", agent_name: "user" },
+                    { type: "agent", agent: "user" },
                     "error",
                 ],
             };
@@ -560,7 +560,7 @@ describe("Step-by-step type guards", () => {
                 type: "debug_breakpoint_added",
                 breakpoint: {
                     type: "agent_event",
-                    agent_name: "user",
+                    agent: "user",
                     event_type: "message",
                     description: "User messages",
                 },
@@ -632,7 +632,7 @@ describe("Step-by-step type guards", () => {
         it("should return true for valid debug_breakpoint_removed message with object breakpoint", () => {
             const message: WaldiezDebugBreakpointRemoved = {
                 type: "debug_breakpoint_removed",
-                breakpoint: { type: "agent", agent_name: "assistant" },
+                breakpoint: { type: "agent", agent: "assistant" },
             };
 
             expect(isDebugBreakpointRemoved(message)).toBe(true);

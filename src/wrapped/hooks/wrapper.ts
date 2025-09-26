@@ -25,8 +25,8 @@ export const useWaldiezWrapper = ({
 }): {
     chat: WaldiezChatConfig;
     stepByStep: WaldiezStepByStep;
-    onRun: (flowJson: string) => void;
-    onStepRun: (flowJson: string) => void;
+    onRun: (flowJson: string, path?: string | null) => void;
+    onStepRun: (flowJson: string, path?: string | null, breakpoints?: string[]) => void;
     onSave: (flowJson: string, path?: string | null) => void;
     onConvert: (flowJson: string, to: "py" | "ipynb", path?: string | null) => void;
     sendMessage: (message: unknown) => boolean | void;
@@ -36,53 +36,22 @@ export const useWaldiezWrapper = ({
     const chatDispatchRef = useRef<Dispatch<WaldiezChatAction> | null>(null);
     const stepDispatchRef = useRef<Dispatch<WaldiezStepByStepAction> | null>(null);
     const { preprocess, getSessionId, getPendingInputId, clearPendingInput } = useMessagePreprocessor(flowId);
-    const onRunCb = useCallback(
-        (
-            data: string,
-            opts?: {
-                uploads_root?: string | null;
-                dot_env_path?: string | null;
-                output_path?: string | null;
-                structured_io?: boolean;
-            },
-        ) => {
-            messageSender.current?.({
-                type: "run",
-                data,
-                mode: "standard",
-                structured_io: opts?.structured_io ?? true,
-                uploads_root: opts?.uploads_root ?? null,
-                dot_env_path: opts?.dot_env_path ?? null,
-                output_path: opts?.output_path ?? null,
-            });
-        },
-        [],
-    );
-    const onStepRunCb = useCallback(
-        (
-            data: string,
-            opts?: {
-                auto_continue?: boolean;
-                breakpoints?: string[];
-                uploads_root?: string | null;
-                dot_env_path?: string | null;
-                output_path?: string | null;
-                structured_io?: boolean;
-            },
-        ) => {
-            messageSender.current?.({
-                type: "step_run",
-                data,
-                auto_continue: !!opts?.auto_continue,
-                breakpoints: opts?.breakpoints ?? [],
-                structured_io: opts?.structured_io ?? true,
-                uploads_root: opts?.uploads_root ?? null,
-                dot_env_path: opts?.dot_env_path ?? null,
-                output_path: opts?.output_path ?? null,
-            });
-        },
-        [],
-    );
+    const onRunCb = useCallback((data: string, path?: string | null) => {
+        messageSender.current?.({
+            type: "run",
+            data,
+            mode: "standard",
+            path,
+        });
+    }, []);
+    const onStepRunCb = useCallback((data: string, path?: string | null, breakpoints?: string[]) => {
+        messageSender.current?.({
+            type: "step_run",
+            data,
+            breakpoints,
+            path,
+        });
+    }, []);
     const onInterrupt = useCallback(
         (sessionId?: string, force = false) => {
             const sid = typeof sessionId === "string" ? sessionId : getSessionId();

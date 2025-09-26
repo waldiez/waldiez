@@ -187,7 +187,6 @@ export const useWaldiezStepByStep: (props: {
     const addEvent = useCallback(
         (event: Record<string, unknown>) => {
             if (isEventDuplicate(event)) {
-                console.log("Duplicate event detected, skipping:", getEventKey(event));
                 return;
             }
             dispatch({ type: "ADD_EVENT", event, makeItCurrent: true });
@@ -311,14 +310,12 @@ export const useWaldiezStepByStep: (props: {
             if (typeof preprocess === "function") {
                 const { handled, updated } = preprocess(data);
                 if (handled || !updated) {
-                    console.debug({ handled, updated });
                     return;
                 }
                 dataToProcess = updated;
             }
             try {
                 const result = WaldiezStepByStepProcessor.process(dataToProcess);
-                console.debug({ result });
                 if (!result) {
                     const chatResult = WaldiezChatMessageProcessor.process(dataToProcess);
                     if (!chatResult) {

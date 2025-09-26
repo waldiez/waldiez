@@ -43,3 +43,5 @@
 @import url("./tabs.css");
 @import url("./tooltip.css");
 @import url("./wizard.css");
+/* stylelint-disable-next-line import-notation */
+@import "tailwindcss";

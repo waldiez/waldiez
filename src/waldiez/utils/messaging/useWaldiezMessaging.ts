@@ -35,7 +35,7 @@ export const useWaldiezMessaging: (props: {
     onSave?: (contents: string, path?: string | null, force?: boolean) => void | Promise<void>;
     onConvert?: (contents: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>;
     onRun?: (contents: string, path?: string | null) => void | Promise<void>;
-    onStepRun?: (contents: string) => void | Promise<void>;
+    onStepRun?: (contents: string, path?: string | null, breakpoints?: string[]) => void | Promise<void>;
     preprocess?: (message: any) => { handled: boolean; updated?: any };
     chat?: {
         initialConfig?: Partial<WaldiezChatConfig>;
@@ -55,7 +55,7 @@ export const useWaldiezMessaging: (props: {
     save: (contents: string) => Promise<void>;
     convert: (contents: string, to: "py" | "ipynb", path?: string | null) => Promise<void>;
     run: (contents: string, path?: string | null) => Promise<void>;
-    stepRun: (contents: string) => Promise<void>;
+    stepRun: (contents: string, path?: string | null, breakpoints?: string[]) => Promise<void>;
     getRunningMode: () => "chat" | "step" | undefined;
     setRunningMode: (mode: "chat" | "step" | undefined) => void;
     process: (data: any) => void;
@@ -147,10 +147,10 @@ export const useWaldiezMessaging: (props: {
     );
 
     const stepRun = useCallback(
-        async (contents: string) => {
+        async (contents: string, path?: string | null, breakpoints?: string[]) => {
             setRunningMode("step");
             if (onStepRun) {
-                const result = onStepRun(contents);
+                const result = onStepRun(contents, path, breakpoints);
                 if (isPromise(result)) {
                     await result;
                 }

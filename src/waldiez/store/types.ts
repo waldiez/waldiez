@@ -67,7 +67,7 @@ export type WaldiezStoreProps = {
     viewport?: Viewport;
     previousViewport?: Viewport; // used to store the previous viewport when switching node types
     onRun?: ((flow: string, path?: string | null) => void | Promise<void>) | null; // handler for running the flow (send to backend)
-    onStepRun?: ((flow: string, path?: string | null) => void | Promise<void>) | null; // handler for step run events (send to backend)
+    onStepRun?: ((flow: string, path?: string | null, breakpoints?: string[]) => void | Promise<void>) | null; // handler for running the flow in step-by-step mode (send to backend)
     onConvert?: ((flow: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>) | null; // handler for converting the flow (send to backend)
     onUpload?: ((files: File[], path?: string | null) => string[] | Promise<string[]>) | null; // handler for file uploads (send to backend)
     onChange?: ((content: string, path?: string | null) => void | Promise<void>) | null; // handler for changes in the flow (send to backend)
