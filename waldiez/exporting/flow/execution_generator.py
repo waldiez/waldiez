@@ -114,9 +114,8 @@ class ExecutionGenerator:
         str
             The content for writing the error to file.
         """
-        content = "async" if is_async else ""
-        content += '''
-def store_error(exc: BaseException | None = None) -> None:
+        content = "\nasync " if is_async else "\n"
+        content += '''def store_error(exc: BaseException | None = None) -> None:
     """Store the error in error.json.
 
     Parameters
@@ -125,8 +124,7 @@ def store_error(exc: BaseException | None = None) -> None:
         The exception we got if any.
     """
     reason = "Event handler stopped processing" if not exc else traceback.format_exc()
-    try:
-'''
+    try:'''
         if is_async:
             content += """
         async with aiofiles.open("error.json", "w", encoding="utf-8", newline="\\n") as file:
