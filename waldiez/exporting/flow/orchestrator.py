@@ -253,7 +253,10 @@ def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = ["""
         group_manager: WaldiezGroupManager | None = None
         for agent in self.waldiez.agents:
-            if isinstance(agent, WaldiezGroupManager):
+            if (
+                isinstance(agent, WaldiezGroupManager)
+                and self.waldiez.is_group_pattern_based
+            ):
                 group_manager = agent
             else:
                 agent_name = self.agent_names.get(agent.id)

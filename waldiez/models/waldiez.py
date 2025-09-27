@@ -258,6 +258,26 @@ class Waldiez:
         return self.flow.ordered_flow
 
     @property
+    def is_group_pattern_based(
+        self,
+    ) -> bool:
+        """Check if the group manager should use pattern strategy.
+
+        Returns
+        -------
+        bool
+            True if pattern strategy should be used, False otherwise.
+        """
+        if not self.initial_chats:
+            return True
+
+        first_chat = self.initial_chats[0]["chat"]
+        return (
+            isinstance(first_chat.data.message, str)
+            or not first_chat.data.message.is_method()
+        )
+
+    @property
     def agents(self) -> Iterator[WaldiezAgent]:
         """Get the agents.
 
