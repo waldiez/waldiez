@@ -10262,7 +10262,7 @@ function getOverflowAncestors(node2, list, traverseIframes) {
 function getFrameElement(win) {
   return win.parent && Object.getPrototypeOf(win.parent) ? win.frameElement : null;
 }
-function getCssDimensions$1(element) {
+function getCssDimensions(element) {
   const css4 = getComputedStyle$1(element);
   let width = parseFloat(css4.width) || 0;
   let height = parseFloat(css4.height) || 0;
@@ -10280,11 +10280,11 @@ function getCssDimensions$1(element) {
     $: shouldFallback
   };
 }
-function unwrapElement$1(element) {
+function unwrapElement(element) {
   return !isElement(element) ? element.contextElement : element;
 }
-function getScale$1(element) {
-  const domElement = unwrapElement$1(element);
+function getScale(element) {
+  const domElement = unwrapElement(element);
   if (!isHTMLElement(domElement)) {
     return createCoords(1);
   }
@@ -10293,7 +10293,7 @@ function getScale$1(element) {
     width,
     height,
     $
-  } = getCssDimensions$1(domElement);
+  } = getCssDimensions(domElement);
   let x = ($ ? round(rect.width) : rect.width) / width;
   let y = ($ ? round(rect.height) : rect.height) / height;
   if (!x || !Number.isFinite(x)) {
@@ -10307,18 +10307,18 @@ function getScale$1(element) {
     y
   };
 }
-const noOffsets$1 = /* @__PURE__ */ createCoords(0);
-function getVisualOffsets$1(element) {
+const noOffsets = /* @__PURE__ */ createCoords(0);
+function getVisualOffsets(element) {
   const win = getWindow(element);
   if (!isWebKit() || !win.visualViewport) {
-    return noOffsets$1;
+    return noOffsets;
   }
   return {
     x: win.visualViewport.offsetLeft,
     y: win.visualViewport.offsetTop
   };
 }
-function shouldAddVisualOffsets$1(element, isFixed, floatingOffsetParent) {
+function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
   if (isFixed === void 0) {
     isFixed = false;
   }
@@ -10327,7 +10327,7 @@ function shouldAddVisualOffsets$1(element, isFixed, floatingOffsetParent) {
   }
   return isFixed;
 }
-function getBoundingClientRect$1(element, includeScale, isFixedStrategy, offsetParent) {
+function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetParent) {
   if (includeScale === void 0) {
     includeScale = false;
   }
@@ -10335,18 +10335,18 @@ function getBoundingClientRect$1(element, includeScale, isFixedStrategy, offsetP
     isFixedStrategy = false;
   }
   const clientRect = element.getBoundingClientRect();
-  const domElement = unwrapElement$1(element);
+  const domElement = unwrapElement(element);
   let scale = createCoords(1);
   if (includeScale) {
     if (offsetParent) {
       if (isElement(offsetParent)) {
-        scale = getScale$1(offsetParent);
+        scale = getScale(offsetParent);
       }
     } else {
-      scale = getScale$1(element);
+      scale = getScale(element);
     }
   }
-  const visualOffsets = shouldAddVisualOffsets$1(domElement, isFixedStrategy, offsetParent) ? getVisualOffsets$1(domElement) : createCoords(0);
+  const visualOffsets = shouldAddVisualOffsets(domElement, isFixedStrategy, offsetParent) ? getVisualOffsets(domElement) : createCoords(0);
   let x = (clientRect.left + visualOffsets.x) / scale.x;
   let y = (clientRect.top + visualOffsets.y) / scale.y;
   let width = clientRect.width / scale.x;
@@ -10357,7 +10357,7 @@ function getBoundingClientRect$1(element, includeScale, isFixedStrategy, offsetP
     let currentWin = win;
     let currentIFrame = getFrameElement(currentWin);
     while (currentIFrame && offsetParent && offsetWin !== currentWin) {
-      const iframeScale = getScale$1(currentIFrame);
+      const iframeScale = getScale(currentIFrame);
       const iframeRect = currentIFrame.getBoundingClientRect();
       const css4 = getComputedStyle$1(currentIFrame);
       const left = iframeRect.left + (currentIFrame.clientLeft + parseFloat(css4.paddingLeft)) * iframeScale.x;
@@ -10382,7 +10382,7 @@ function getBoundingClientRect$1(element, includeScale, isFixedStrategy, offsetP
 function getWindowScrollBarX(element, rect) {
   const leftScroll = getNodeScroll(element).scrollLeft;
   if (!rect) {
-    return getBoundingClientRect$1(getDocumentElement(element)).left + leftScroll;
+    return getBoundingClientRect(getDocumentElement(element)).left + leftScroll;
   }
   return rect.left + leftScroll;
 }
@@ -10420,8 +10420,8 @@ function convertOffsetParentRelativeRectToViewportRelativeRect(_ref3) {
       scroll = getNodeScroll(offsetParent);
     }
     if (isHTMLElement(offsetParent)) {
-      const offsetRect = getBoundingClientRect$1(offsetParent);
-      scale = getScale$1(offsetParent);
+      const offsetRect = getBoundingClientRect(offsetParent);
+      scale = getScale(offsetParent);
       offsets.x = offsetRect.x + offsetParent.clientLeft;
       offsets.y = offsetRect.y + offsetParent.clientTop;
     }
@@ -10495,10 +10495,10 @@ function getViewportRect(element, strategy) {
 }
 const absoluteOrFixed = /* @__PURE__ */ new Set(["absolute", "fixed"]);
 function getInnerBoundingClientRect(element, strategy) {
-  const clientRect = getBoundingClientRect$1(element, true, strategy === "fixed");
+  const clientRect = getBoundingClientRect(element, true, strategy === "fixed");
   const top = clientRect.top + element.clientTop;
   const left = clientRect.left + element.clientLeft;
-  const scale = isHTMLElement(element) ? getScale$1(element) : createCoords(1);
+  const scale = isHTMLElement(element) ? getScale(element) : createCoords(1);
   const width = element.clientWidth * scale.x;
   const height = element.clientHeight * scale.y;
   const x = left * scale.x;
@@ -10519,7 +10519,7 @@ function getClientRectFromClippingAncestor(element, clippingAncestor, strategy) 
   } else if (isElement(clippingAncestor)) {
     rect = getInnerBoundingClientRect(clippingAncestor, strategy);
   } else {
-    const visualOffsets = getVisualOffsets$1(element);
+    const visualOffsets = getVisualOffsets(element);
     rect = {
       x: clippingAncestor.x - visualOffsets.x,
       y: clippingAncestor.y - visualOffsets.y,
@@ -10591,7 +10591,7 @@ function getDimensions(element) {
   const {
     width,
     height
-  } = getCssDimensions$1(element);
+  } = getCssDimensions(element);
   return {
     width,
     height
@@ -10601,7 +10601,7 @@ function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
   const isOffsetParentAnElement = isHTMLElement(offsetParent);
   const documentElement = getDocumentElement(offsetParent);
   const isFixed = strategy === "fixed";
-  const rect = getBoundingClientRect$1(element, true, isFixed, offsetParent);
+  const rect = getBoundingClientRect(element, true, isFixed, offsetParent);
   let scroll = {
     scrollLeft: 0,
     scrollTop: 0
@@ -10615,7 +10615,7 @@ function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
       scroll = getNodeScroll(offsetParent);
     }
     if (isOffsetParentAnElement) {
-      const offsetRect = getBoundingClientRect$1(offsetParent, true, isFixed, offsetParent);
+      const offsetRect = getBoundingClientRect(offsetParent, true, isFixed, offsetParent);
       offsets.x = offsetRect.x + offsetParent.clientLeft;
       offsets.y = offsetRect.y + offsetParent.clientTop;
     } else if (documentElement) {
@@ -10700,14 +10700,14 @@ const platform = {
   getElementRects,
   getClientRects,
   getDimensions,
-  getScale: getScale$1,
+  getScale,
   isElement,
   isRTL
 };
-function rectsAreEqual$1(a, b2) {
+function rectsAreEqual(a, b2) {
   return a.x === b2.x && a.y === b2.y && a.width === b2.width && a.height === b2.height;
 }
-function observeMove$1(element, onMove) {
+function observeMove(element, onMove) {
   let io = null;
   let timeoutId;
   const root = getDocumentElement(element);
@@ -10762,7 +10762,7 @@ function observeMove$1(element, onMove) {
           refresh(false, ratio);
         }
       }
-      if (ratio === 1 && !rectsAreEqual$1(elementRectForRootMargin, element.getBoundingClientRect())) {
+      if (ratio === 1 && !rectsAreEqual(elementRectForRootMargin, element.getBoundingClientRect())) {
         refresh();
       }
       isFirstUpdate = false;
@@ -10781,7 +10781,7 @@ function observeMove$1(element, onMove) {
   refresh(true);
   return cleanup;
 }
-function autoUpdate$1(reference, floating, update, options2) {
+function autoUpdate(reference, floating, update, options2) {
   if (options2 === void 0) {
     options2 = {};
   }
@@ -10792,7 +10792,7 @@ function autoUpdate$1(reference, floating, update, options2) {
     layoutShift = typeof IntersectionObserver === "function",
     animationFrame = false
   } = options2;
-  const referenceEl = unwrapElement$1(reference);
+  const referenceEl = unwrapElement(reference);
   const ancestors = ancestorScroll || ancestorResize ? [...referenceEl ? getOverflowAncestors(referenceEl) : [], ...getOverflowAncestors(floating)] : [];
   ancestors.forEach((ancestor) => {
     ancestorScroll && ancestor.addEventListener("scroll", update, {
@@ -10800,7 +10800,7 @@ function autoUpdate$1(reference, floating, update, options2) {
     });
     ancestorResize && ancestor.addEventListener("resize", update);
   });
-  const cleanupIo = referenceEl && layoutShift ? observeMove$1(referenceEl, update) : null;
+  const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update) : null;
   let reobserveFrame = -1;
   let resizeObserver = null;
   if (elementResize) {
@@ -10822,13 +10822,13 @@ function autoUpdate$1(reference, floating, update, options2) {
     resizeObserver.observe(floating);
   }
   let frameId;
-  let prevRefRect = animationFrame ? getBoundingClientRect$1(reference) : null;
+  let prevRefRect = animationFrame ? getBoundingClientRect(reference) : null;
   if (animationFrame) {
     frameLoop();
   }
   function frameLoop() {
-    const nextRefRect = getBoundingClientRect$1(reference);
-    if (prevRefRect && !rectsAreEqual$1(prevRefRect, nextRefRect)) {
+    const nextRefRect = getBoundingClientRect(reference);
+    if (prevRefRect && !rectsAreEqual(prevRefRect, nextRefRect)) {
       update();
     }
     prevRefRect = nextRefRect;
@@ -11272,7 +11272,7 @@ var PopperContent = React.forwardRef(
       strategy: "fixed",
       placement: desiredPlacement,
       whileElementsMounted: (...args) => {
-        const cleanup = autoUpdate$1(...args, {
+        const cleanup = autoUpdate(...args, {
           animationFrame: updatePositionStrategy === "always"
         });
         return cleanup;
@@ -14301,257 +14301,6 @@ function _taggedTemplateLiteral(e, t) {
       value: Object.freeze(t)
     }
   }));
-}
-function getCssDimensions(element) {
-  const css4 = getComputedStyle$1(element);
-  let width = parseFloat(css4.width) || 0;
-  let height = parseFloat(css4.height) || 0;
-  const hasOffset = isHTMLElement(element);
-  const offsetWidth = hasOffset ? element.offsetWidth : width;
-  const offsetHeight = hasOffset ? element.offsetHeight : height;
-  const shouldFallback = round(width) !== offsetWidth || round(height) !== offsetHeight;
-  if (shouldFallback) {
-    width = offsetWidth;
-    height = offsetHeight;
-  }
-  return {
-    width,
-    height,
-    $: shouldFallback
-  };
-}
-function unwrapElement(element) {
-  return !isElement(element) ? element.contextElement : element;
-}
-function getScale(element) {
-  const domElement = unwrapElement(element);
-  if (!isHTMLElement(domElement)) {
-    return createCoords(1);
-  }
-  const rect = domElement.getBoundingClientRect();
-  const {
-    width,
-    height,
-    $
-  } = getCssDimensions(domElement);
-  let x = ($ ? round(rect.width) : rect.width) / width;
-  let y = ($ ? round(rect.height) : rect.height) / height;
-  if (!x || !Number.isFinite(x)) {
-    x = 1;
-  }
-  if (!y || !Number.isFinite(y)) {
-    y = 1;
-  }
-  return {
-    x,
-    y
-  };
-}
-const noOffsets = /* @__PURE__ */ createCoords(0);
-function getVisualOffsets(element) {
-  const win = getWindow(element);
-  if (!isWebKit() || !win.visualViewport) {
-    return noOffsets;
-  }
-  return {
-    x: win.visualViewport.offsetLeft,
-    y: win.visualViewport.offsetTop
-  };
-}
-function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
-  {
-    return false;
-  }
-}
-function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetParent) {
-  if (includeScale === void 0) {
-    includeScale = false;
-  }
-  const clientRect = element.getBoundingClientRect();
-  const domElement = unwrapElement(element);
-  let scale = createCoords(1);
-  if (includeScale) {
-    {
-      scale = getScale(element);
-    }
-  }
-  const visualOffsets = shouldAddVisualOffsets() ? getVisualOffsets(domElement) : createCoords(0);
-  let x = (clientRect.left + visualOffsets.x) / scale.x;
-  let y = (clientRect.top + visualOffsets.y) / scale.y;
-  let width = clientRect.width / scale.x;
-  let height = clientRect.height / scale.y;
-  if (domElement) {
-    const win = getWindow(domElement);
-    const offsetWin = offsetParent;
-    let currentWin = win;
-    let currentIFrame = getFrameElement(currentWin);
-    while (currentIFrame && offsetParent && offsetWin !== currentWin) {
-      const iframeScale = getScale(currentIFrame);
-      const iframeRect = currentIFrame.getBoundingClientRect();
-      const css4 = getComputedStyle$1(currentIFrame);
-      const left = iframeRect.left + (currentIFrame.clientLeft + parseFloat(css4.paddingLeft)) * iframeScale.x;
-      const top = iframeRect.top + (currentIFrame.clientTop + parseFloat(css4.paddingTop)) * iframeScale.y;
-      x *= iframeScale.x;
-      y *= iframeScale.y;
-      width *= iframeScale.x;
-      height *= iframeScale.y;
-      x += left;
-      y += top;
-      currentWin = getWindow(currentIFrame);
-      currentIFrame = getFrameElement(currentWin);
-    }
-  }
-  return rectToClientRect({
-    width,
-    height,
-    x,
-    y
-  });
-}
-function rectsAreEqual(a, b2) {
-  return a.x === b2.x && a.y === b2.y && a.width === b2.width && a.height === b2.height;
-}
-function observeMove(element, onMove) {
-  let io = null;
-  let timeoutId;
-  const root = getDocumentElement(element);
-  function cleanup() {
-    var _io;
-    clearTimeout(timeoutId);
-    (_io = io) == null || _io.disconnect();
-    io = null;
-  }
-  function refresh(skip, threshold) {
-    if (skip === void 0) {
-      skip = false;
-    }
-    if (threshold === void 0) {
-      threshold = 1;
-    }
-    cleanup();
-    const elementRectForRootMargin = element.getBoundingClientRect();
-    const {
-      left,
-      top,
-      width,
-      height
-    } = elementRectForRootMargin;
-    if (!skip) {
-      onMove();
-    }
-    if (!width || !height) {
-      return;
-    }
-    const insetTop = floor(top);
-    const insetRight = floor(root.clientWidth - (left + width));
-    const insetBottom = floor(root.clientHeight - (top + height));
-    const insetLeft = floor(left);
-    const rootMargin = -insetTop + "px " + -insetRight + "px " + -insetBottom + "px " + -insetLeft + "px";
-    const options2 = {
-      rootMargin,
-      threshold: max(0, min(1, threshold)) || 1
-    };
-    let isFirstUpdate = true;
-    function handleObserve(entries) {
-      const ratio = entries[0].intersectionRatio;
-      if (ratio !== threshold) {
-        if (!isFirstUpdate) {
-          return refresh();
-        }
-        if (!ratio) {
-          timeoutId = setTimeout(() => {
-            refresh(false, 1e-7);
-          }, 1e3);
-        } else {
-          refresh(false, ratio);
-        }
-      }
-      if (ratio === 1 && !rectsAreEqual(elementRectForRootMargin, element.getBoundingClientRect())) {
-        refresh();
-      }
-      isFirstUpdate = false;
-    }
-    try {
-      io = new IntersectionObserver(handleObserve, {
-        ...options2,
-        // Handle <iframe>s
-        root: root.ownerDocument
-      });
-    } catch (_e) {
-      io = new IntersectionObserver(handleObserve, options2);
-    }
-    io.observe(element);
-  }
-  refresh(true);
-  return cleanup;
-}
-function autoUpdate(reference, floating, update, options2) {
-  if (options2 === void 0) {
-    options2 = {};
-  }
-  const {
-    ancestorScroll = true,
-    ancestorResize = true,
-    elementResize = typeof ResizeObserver === "function",
-    layoutShift = typeof IntersectionObserver === "function",
-    animationFrame = false
-  } = options2;
-  const referenceEl = unwrapElement(reference);
-  const ancestors = ancestorScroll || ancestorResize ? [...referenceEl ? getOverflowAncestors(referenceEl) : [], ...getOverflowAncestors(floating)] : [];
-  ancestors.forEach((ancestor) => {
-    ancestorScroll && ancestor.addEventListener("scroll", update, {
-      passive: true
-    });
-    ancestorResize && ancestor.addEventListener("resize", update);
-  });
-  const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update) : null;
-  let reobserveFrame = -1;
-  let resizeObserver = null;
-  if (elementResize) {
-    resizeObserver = new ResizeObserver((_ref3) => {
-      let [firstEntry] = _ref3;
-      if (firstEntry && firstEntry.target === referenceEl && resizeObserver) {
-        resizeObserver.unobserve(floating);
-        cancelAnimationFrame(reobserveFrame);
-        reobserveFrame = requestAnimationFrame(() => {
-          var _resizeObserver;
-          (_resizeObserver = resizeObserver) == null || _resizeObserver.observe(floating);
-        });
-      }
-      update();
-    });
-    if (referenceEl && !animationFrame) {
-      resizeObserver.observe(referenceEl);
-    }
-    resizeObserver.observe(floating);
-  }
-  let frameId;
-  let prevRefRect = animationFrame ? getBoundingClientRect(reference) : null;
-  if (animationFrame) {
-    frameLoop();
-  }
-  function frameLoop() {
-    const nextRefRect = getBoundingClientRect(reference);
-    if (prevRefRect && !rectsAreEqual(prevRefRect, nextRefRect)) {
-      update();
-    }
-    prevRefRect = nextRefRect;
-    frameId = requestAnimationFrame(frameLoop);
-  }
-  update();
-  return () => {
-    var _resizeObserver2;
-    ancestors.forEach((ancestor) => {
-      ancestorScroll && ancestor.removeEventListener("scroll", update);
-      ancestorResize && ancestor.removeEventListener("resize", update);
-    });
-    cleanupIo == null || cleanupIo();
-    (_resizeObserver2 = resizeObserver) == null || _resizeObserver2.disconnect();
-    resizeObserver = null;
-    if (animationFrame) {
-      cancelAnimationFrame(frameId);
-    }
-  };
 }
 var index = useLayoutEffect;
 var _excluded$4 = ["className", "clearValue", "cx", "getStyles", "getClassNames", "getValue", "hasValue", "isMulti", "isRtl", "options", "selectOption", "selectProps", "setValue", "theme"];
