@@ -36,6 +36,7 @@ class GroupManagerProcessor:
         all_models: list[WaldiezModel],
         serializer: Callable[..., str],
         cache_seed: Optional[int] = None,
+        strategy: Optional[GroupManagerStrategy] = None,
     ):
         """Initialize the group manager processor.
 
@@ -57,6 +58,8 @@ class GroupManagerProcessor:
             Function to serialize data into a string format.
         cache_seed : Optional[int], optional
             Seed for caching purposes, by default None.
+        strategy :  Optional[GroupManagerStrategy]
+            Optional strategy to force (pattern based or traditional)
         """
         self.agent = agent
         self.initial_chats = initial_chats
@@ -66,6 +69,7 @@ class GroupManagerProcessor:
         self.all_models = all_models
         self.serializer = serializer
         self.cache_seed = cache_seed
+        self.strategy = strategy
 
     def process(
         self,
@@ -133,6 +137,8 @@ class GroupManagerProcessor:
 
     def _determine_strategy(self) -> GroupManagerStrategy:
         """Determine which strategy to use for this group manager."""
+        if self.strategy is not None:
+            return self.strategy
         if self.is_pattern_strategy(self.initial_chats):
             # Use AG2 Pattern system
             return GroupManagerStrategy.PATTERN
