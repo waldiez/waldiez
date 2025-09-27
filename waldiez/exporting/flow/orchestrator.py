@@ -4,7 +4,7 @@
 
 from typing import Any, Callable
 
-from waldiez.models import Waldiez, WaldiezAgent
+from waldiez.models import Waldiez, WaldiezAgent, WaldiezGroupManager
 
 from ..agent import AgentExporter, create_agent_exporter
 from ..chats import ChatsExporter, create_chats_exporter
@@ -248,11 +248,33 @@ class ExportOrchestrator:
 
     def _get_the_known_agents_string(self) -> str:
         """Get the __KNOWN_AGENTS__ file variable."""
-        content = "__KNOWN_AGENTS__ = [\n"
-
-        for agent_name in self.agent_names.values():
-            content += "    " + agent_name + ",\n"
-        return content + "]\n"
+        content = """
+def _get_known_agents() -> list[ConversableAgent]:
+    _known_agents: list[ConversableAgent] = ["""
+        group_manager: WaldiezGroupManager | None = None
+        for agent in self.waldiez.agents:
+            if isinstance(agent, WaldiezGroupManager):
+                group_manager = agent
+            else:
+                agent_name = self.agent_names.get(agent.id)
+                if agent_name:
+                    content += "    " + agent_name + ",\n"
+        content += "]\n"
+        if group_manager:
+            manager_name = self.agent_names.get(group_manager.id)
+            if manager_name:
+                pattern_name = f"{manager_name}_pattern"
+                content += f"""
+    for _group_member in {pattern_name}.agents:
+        if _group_member not in _known_agents:
+            _known_agents.append(_group_member)
+        _manager = getattr(_group_member, "_group_manager")
+        if _manager and _manager not in _known_agents:
+            _known_agents.append(_manager)
+"""
+        content += "    return _known_agents\n\n"
+        content += "__KNOWN_AGENTS__ = _get_known_agents()\n"
+        return content
 
     def _get_tools_exporter(self) -> ToolsExporter:
         """Get or create tools exporter."""
