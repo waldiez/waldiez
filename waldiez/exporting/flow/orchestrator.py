@@ -271,7 +271,7 @@ def _get_known_agents() -> list[ConversableAgent]:
     for _group_member in {pattern_name}.agents:
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-        _manager = getattr(_group_member, "_group_manager")
+        _manager = getattr(_group_member, "_group_manager", None)
         if _manager and _manager not in _known_agents:
             _known_agents.append(_manager)
 """
