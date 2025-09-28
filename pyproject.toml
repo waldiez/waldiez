@@ -363,6 +363,7 @@ build = [
   "python -m twine check out/dist/*.whl out/dist/*.tar.gz"
 ]
 image = "python scripts/image.py"
+dev = "python scripts/dev.py"
 
 check = [
   "hatch run clean",
