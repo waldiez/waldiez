@@ -27,7 +27,6 @@ exports[`All > should render Waldiez components 1`] = `
           >
             <div
               class="sidebar-header"
-              style="justify-content: space-between;"
             >
               <div
                 class="title"
@@ -71,7 +70,7 @@ exports[`All > should render Waldiez components 1`] = `
                   title="Edit flow"
                 >
                   <div
-                    class="flex-align-center"
+                    class="flex items-center"
                   >
                     <svg
                       fill="currentColor"
@@ -97,7 +96,7 @@ exports[`All > should render Waldiez components 1`] = `
                   data-testid="show-models"
                 >
                   <div
-                    class="flex-align-center"
+                    class="flex items-center"
                   >
                     <svg
                       fill="none"
@@ -149,7 +148,7 @@ exports[`All > should render Waldiez components 1`] = `
                   data-testid="show-tools"
                 >
                   <div
-                    class="flex-align-center"
+                    class="flex items-center"
                   >
                     <svg
                       fill="currentColor"
@@ -175,7 +174,7 @@ exports[`All > should render Waldiez components 1`] = `
                   data-testid="show-agents"
                 >
                   <div
-                    class="flex-align-center"
+                    class="flex items-center"
                   >
                     <svg
                       fill="currentColor"
@@ -587,7 +586,6 @@ exports[`All > should render Waldiez components 1`] = `
         >
           <div
             class="sidebar-header"
-            style="justify-content: space-between;"
           >
             <div
               class="title"
@@ -631,7 +629,7 @@ exports[`All > should render Waldiez components 1`] = `
                 title="Edit flow"
               >
                 <div
-                  class="flex-align-center"
+                  class="flex items-center"
                 >
                   <svg
                     fill="currentColor"
@@ -657,7 +655,7 @@ exports[`All > should render Waldiez components 1`] = `
                 data-testid="show-models"
               >
                 <div
-                  class="flex-align-center"
+                  class="flex items-center"
                 >
                   <svg
                     fill="none"
@@ -709,7 +707,7 @@ exports[`All > should render Waldiez components 1`] = `
                 data-testid="show-tools"
               >
                 <div
-                  class="flex-align-center"
+                  class="flex items-center"
                 >
                   <svg
                     fill="currentColor"
@@ -735,7 +733,7 @@ exports[`All > should render Waldiez components 1`] = `
                 data-testid="show-agents"
               >
                 <div
-                  class="flex-align-center"
+                  class="flex items-center"
                 >
                   <svg
                     fill="currentColor"
