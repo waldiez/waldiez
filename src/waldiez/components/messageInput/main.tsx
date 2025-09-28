@@ -118,7 +118,7 @@ export const MessageInput: FC<MessageInputProps> = (props: {
             />
             {labelView}
             {current.type === "string" && (
-                <div className="full-width">
+                <div className="w-full">
                     <TextareaInput
                         placeholder="Enter the message"
                         className="fill-available-width"
@@ -135,7 +135,7 @@ export const MessageInput: FC<MessageInputProps> = (props: {
                         Use the RAG user's `sender.message_generator` method to generate a message.
                     </div>
                     <label>Problem:</label>
-                    <div className="full-width">
+                    <div className="w-full">
                         <TextareaInput
                             placeholder="Enter the problem"
                             rows={3}

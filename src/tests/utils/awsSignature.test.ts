@@ -9,6 +9,7 @@ import { awsSignatureUtils } from "@waldiez/utils/awsSignature";
 describe("awsSignatureUtils", () => {
     // Test data from AWS documentation examples
     const testCredentials = {
+        // cspell: disable-next-line
         accessKey: "AKIAIOSFODNN7EXAMPLE",
         secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
         region: "us-east-1",
@@ -316,6 +317,7 @@ describe("awsSignatureUtils", () => {
                 "https://examplebucket.s3.amazonaws.com/",
                 "us-east-1",
                 "s3",
+                // cspell: disable-next-line
                 "AKIAIOSFODNN7EXAMPLE",
                 "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
                 null,

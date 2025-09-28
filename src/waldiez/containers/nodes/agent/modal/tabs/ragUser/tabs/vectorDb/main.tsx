@@ -123,7 +123,7 @@ export const WaldiezAgentRagUserVectorDb = memo((props: WaldiezAgentRagUserVecto
     const showConnectionUrl = !isQdrant || (isQdrant && !usesMemoryStorage && !usesLocalStorage);
 
     return (
-        <div className="flex-column vector-db-config" data-testid={`rag-vector-db-config-${id}`}>
+        <div className="flex flex-col vector-db-config" data-testid={`rag-vector-db-config-${id}`}>
             {/* Vector DB Type Selection */}
             <label htmlFor={`rag-vector-db-${id}`}>Vector DB:</label>
             <Select
@@ -227,7 +227,7 @@ export const WaldiezAgentRagUserVectorDb = memo((props: WaldiezAgentRagUserVecto
 
             {/* Connection URL (for non-Qdrant or Qdrant with remote connection) */}
             {showConnectionUrl && (
-                <div className="flex-column">
+                <div className="flex flex-col">
                     <InfoLabel
                         htmlFor={`rag-vector-db-connection-url-${id}`}
                         label="Connection URL:"

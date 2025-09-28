@@ -179,7 +179,7 @@ export const WaldiezAgentRagUserCustomFunctions = memo((props: WaldiezAgentRagUs
                 dataTestId={`${flowId}-rag-use-custom-embedding`}
                 aria-label="Embedding function settings"
             >
-                <div className="flex-column" style={collapsibleStyle}>
+                <div className="flex flex-col" style={collapsibleStyle}>
                     <div className="info">
                         <div className="info-tooltip">
                             If selected, the agent will use a custom embedding function. Default is False.
@@ -214,7 +214,7 @@ export const WaldiezAgentRagUserCustomFunctions = memo((props: WaldiezAgentRagUs
                 dataTestId={`${flowId}-rag-use-custom-tokenCount`}
                 aria-label="Token count function settings"
             >
-                <div className="flex-column" style={collapsibleStyle}>
+                <div className="flex flex-col" style={collapsibleStyle}>
                     <div className="info">
                         <div className="info-tooltip">
                             If selected, the agent will use a custom token count function. Default is False.
@@ -251,7 +251,7 @@ export const WaldiezAgentRagUserCustomFunctions = memo((props: WaldiezAgentRagUs
                 dataTestId={`${flowId}-rag-use-custom-textSplit`}
                 aria-label="Text split function settings"
             >
-                <div className="flex-column" style={collapsibleStyle}>
+                <div className="flex flex-col" style={collapsibleStyle}>
                     <div className="info">
                         <div className="info-tooltip">
                             If selected, the agent will use a custom text split function. Default is False.

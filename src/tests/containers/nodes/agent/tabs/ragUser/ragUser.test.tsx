@@ -36,7 +36,7 @@ describe("Rag User tab main", () => {
         const advancedTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-advanced`);
         expect(advancedTab).toBeInTheDocument();
     });
-    // eslint-disable-next-line max-statements
+
     it("should change the active tab", async () => {
         goToRagTab();
         const retrieveConfigTab = screen.getByTestId(`tab-id-wf-${flowId}-wa-${agentId}-rag-retrieveConfig`);

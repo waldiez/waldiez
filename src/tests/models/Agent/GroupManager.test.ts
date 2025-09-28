@@ -30,7 +30,7 @@ describe("WaldiezAgentGroupManager", () => {
         expect(manager2).toBeDefined();
         expect(manager2.data.humanInputMode).toBe("NEVER");
     });
-    /* eslint-disable max-statements */
+
     it("should create a new instance with custom data", () => {
         const speakers = new WaldiezAgentGroupManagerSpeakers({
             selectionMethod: "random",

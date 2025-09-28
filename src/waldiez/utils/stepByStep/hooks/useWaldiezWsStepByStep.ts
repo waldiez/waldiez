@@ -25,7 +25,7 @@ export const useWaldiezWsStepByStep: (props: {
     };
     stepByStep?: {
         initialConfig?: Partial<WaldiezStepByStep>;
-        handlers?: WaldiezStepHandlers;
+        handlers?: Partial<WaldiezStepHandlers>;
         preprocess?: (message: any) => { handled: boolean; updated?: any };
         onPreview?: (requestId: string) => string;
         deduplicationOptions?: WaldiezStepByStepMessageDeduplicationOptions;

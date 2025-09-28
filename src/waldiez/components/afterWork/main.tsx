@@ -223,8 +223,8 @@ export const AfterWork: FC<AfterWorkProps> = memo(
                     onChange={onEnabledChange}
                 />
                 {enabled && (
-                    <div className="flex-align-center flex-column margin-bottom-10">
-                        <div className="full-width margin-bottom-10">
+                    <div className="flex items-center flex-col margin-bottom-10">
+                        <div className="w-full margin-bottom-10">
                             <label htmlFor="afterWorkTargetType">Action to perform after work:</label>
                             <div className="margin-top-10" />
                             <Select
@@ -236,7 +236,7 @@ export const AfterWork: FC<AfterWorkProps> = memo(
                             />
                         </div>
                         {selectedTargetType === "AgentTarget" && (
-                            <div className="full-width margin-bottom-10">
+                            <div className="w-full margin-bottom-10">
                                 <label htmlFor="afterWorkTargetId">Agent to pass the floor to:</label>
                                 <div className="margin-top-10" />
                                 <Select
@@ -251,7 +251,7 @@ export const AfterWork: FC<AfterWorkProps> = memo(
                             </div>
                         )}
                         {selectedTargetType === "RandomAgentTarget" && (
-                            <div className="full-width">
+                            <div className="w-full">
                                 <label htmlFor="afterWorkTargetIds">Agents to choose from:</label>
                                 <div className="margin-top-10" />
                                 <Select

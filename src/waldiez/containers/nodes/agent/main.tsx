@@ -73,7 +73,7 @@ export const WaldiezNodeAgentView: FC<WaldiezNodeAgentProps> = props => {
         }
 
         if (agentType === "group_manager") {
-            classes += " flex-column flex-1";
+            classes += " flex flex-col flex-1";
             if (isDragging) {
                 classes += " dragging";
             }

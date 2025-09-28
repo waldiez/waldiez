@@ -99,7 +99,7 @@ describe("DebugInputRequestHandler", () => {
 
         it("should handle debug_input_request with long descriptive prompt", () => {
             const prompt =
-                "The workflow is paused at a breakpoint. Available commands: step, continue, break <event>, unbreak <event>, list, help. Enter your command:";
+                "The workflow is paused at a breakpoint. Available commands: step, continue, break <event>, un-break <event>, list, help. Enter your command:";
             const data = {
                 type: "debug_input_request",
                 request_id: "req-detailed",

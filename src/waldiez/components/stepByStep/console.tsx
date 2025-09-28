@@ -105,7 +105,7 @@ const ResumeSpinner = () => {
         return () => clearTimeout(t);
     }, []);
     return phase === "spin" ? (
-        <div className="flex-align-center items-center gap-2">
+        <div className="flex items-center gap-2">
             <span className="animate-spin inline-block">⏳</span>
             <span>Resuming a previously stored state…</span>
         </div>
@@ -201,7 +201,7 @@ const renderEvent = (ev: WaldiezEvent) => {
                                     ? tc.function.arguments
                                     : "none";
                             return (
-                                <div key={i} className="flex-align-center items-start gap-2">
+                                <div key={i} className="flex items-start gap-2">
                                     <span>🔧</span>
                                     <div>
                                         <div className="font-semibold">Calling: {tc.function.name}</div>
@@ -389,12 +389,10 @@ export const EventConsole: FC<EventConsoleProps> = ({ events, printRaw, autoScro
 
     return (
         <div
-            className={["flex-align-center flex-column full-height json", className]
-                .filter(Boolean)
-                .join(" ")}
+            className={["flex items-center flex-col h-full json", className].filter(Boolean).join(" ")}
             data-testid="events-console"
         >
-            <div ref={listRef} className="flex-1 full-width overflow-auto text-sm font-mono leading-5">
+            <div ref={listRef} className="flex-1 w-full overflow-auto text-sm font-mono leading-5">
                 <div className="p-3 space-y-3">
                     {events.map((ev, idx) => (
                         <div key={ev.id ?? idx} className={ev.type === "empty" ? "center" : "entry"}>

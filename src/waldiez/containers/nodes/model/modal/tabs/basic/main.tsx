@@ -58,7 +58,7 @@ export const WaldiezNodeModelModalBasicTab: FC<WaldiezNodeModelModalBasicTabProp
         // Generate useful links section
         const usefulLinks = useMemo(
             () => (
-                <div className="flex-column">
+                <div className="flex flex-col">
                     {Object.entries(modelLinks)
                         .filter(([_, link]) => link.length > 0)
                         .map(([key, link]) => (
@@ -95,7 +95,7 @@ export const WaldiezNodeModelModalBasicTab: FC<WaldiezNodeModelModalBasicTabProp
         const baseUrlInputId = `model-base-url-input-${id}`;
 
         return (
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <div className="info margin-bottom-10">
                     You can select one of the predefined models from the list below or manually enter the
                     model name and type. In the latter case, make sure that the model's name is a valid name
@@ -109,7 +109,7 @@ export const WaldiezNodeModelModalBasicTab: FC<WaldiezNodeModelModalBasicTabProp
                         title="Useful Links"
                         expanded={false}
                         fullWidth
-                        className="transparent color-info no-padding margin-top-5 margin-bottom-5"
+                        className="bg-transparent color-info no-padding margin-top-5 margin-bottom-5"
                         contentClassName="background-info"
                     >
                         {usefulLinks}
@@ -128,7 +128,7 @@ export const WaldiezNodeModelModalBasicTab: FC<WaldiezNodeModelModalBasicTabProp
                         onChange={onLabelChange}
                         title="Model name"
                         data-testid="model-name-input"
-                        className="full-width"
+                        className="w-full"
                         aria-label="Model name"
                     />
                 </div>
@@ -151,13 +151,13 @@ export const WaldiezNodeModelModalBasicTab: FC<WaldiezNodeModelModalBasicTabProp
                         onChange={onApiTypeChange}
                         inputId={apiTypeSelectId}
                         aria-label="Model API type"
-                        className="full-width"
+                        className="w-full"
                     />
                 </div>
                 {apiType !== "bedrock" && (
                     <div className="margin-top-0">
                         <InfoLabel label="API Key:" info={apiKeyInfo} htmlFor={apiKeyInputId} />
-                        <div className="flex full-width">
+                        <div className="flex w-full">
                             <input
                                 id={apiKeyInputId}
                                 className="flex-1 margin-right-10"
@@ -196,7 +196,7 @@ export const WaldiezNodeModelModalBasicTab: FC<WaldiezNodeModelModalBasicTabProp
                             value={baseUrl || ""}
                             onChange={onBaseUrlChange}
                             data-testid="model-base-url-input"
-                            className="full-width"
+                            className="w-full"
                             aria-label="Base URL"
                         />
                     ) : (
@@ -208,7 +208,7 @@ export const WaldiezNodeModelModalBasicTab: FC<WaldiezNodeModelModalBasicTabProp
                             disabled
                             value={readOnlyBaseUrl}
                             data-testid="model-base-url-input-read-only"
-                            className="full-width"
+                            className="w-full"
                             aria-label="Base URL (read-only)"
                         />
                     )}

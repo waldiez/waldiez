@@ -26,7 +26,6 @@ import {
     updatedAt,
 } from "./data";
 
-// eslint-disable-next-line max-statements
 export const renderAgent = (
     type: WaldiezNodeAgentType,
     options: {

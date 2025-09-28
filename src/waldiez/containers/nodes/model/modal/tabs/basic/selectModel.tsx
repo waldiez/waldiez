@@ -82,12 +82,7 @@ export const ModelSelector = memo((props: IModelSelectorProps) => {
                 <img
                     src={logo}
                     alt={`${group.label} logo`}
-                    style={{
-                        width: 20,
-                        height: 20,
-                        marginRight: 10,
-                        backgroundColor: "transparent",
-                    }}
+                    className="w-[20px] h-[20px] mr-[10px] bg-transparent"
                 />
                 <strong>{group.label}</strong>
             </div>
@@ -108,7 +103,7 @@ export const ModelSelector = memo((props: IModelSelectorProps) => {
                 isSearchable
                 isClearable
                 aria-label="Predefined models"
-                className="full-width"
+                className="w-full"
             />
         </div>
     );

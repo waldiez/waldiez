@@ -37,7 +37,6 @@ const agents = {
 const models = [] as WaldiezModel[];
 const tools = [] as WaldiezTool[];
 
-/* eslint-disable max-statements */
 const nodesWithoutData = nodes.map((node: Node) => {
     const nodeType = node.type;
     if (nodeType === "agent") {

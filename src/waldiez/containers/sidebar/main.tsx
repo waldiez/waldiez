@@ -40,7 +40,7 @@ export const SideBar = (props: SidebarViewProps) => {
             <div
                 className="sidebar-header"
                 style={{
-                    justifyContent: isCollapsed ? "center" : "space-between",
+                    justifyContent: isCollapsed ? "center" : "between",
                 }}
             >
                 {!isCollapsed && <div className="title">Waldiez</div>}
@@ -70,7 +70,7 @@ export const SideBar = (props: SidebarViewProps) => {
                         {isCollapsed ? (
                             <FaEdit />
                         ) : (
-                            <div className="flex-align-center">
+                            <div className="flex items-center">
                                 <FaEdit />
                                 <div>Edit flow</div>
                             </div>
@@ -85,7 +85,7 @@ export const SideBar = (props: SidebarViewProps) => {
                         {isCollapsed ? (
                             <LuBrain />
                         ) : (
-                            <div className="flex-align-center">
+                            <div className="flex items-center">
                                 <LuBrain />
                                 <div>Models</div>
                             </div>
@@ -100,7 +100,7 @@ export const SideBar = (props: SidebarViewProps) => {
                         {isCollapsed ? (
                             <FaTools />
                         ) : (
-                            <div className="flex-align-center">
+                            <div className="flex items-center">
                                 <FaTools />
                                 <div>Tools</div>
                             </div>
@@ -112,7 +112,7 @@ export const SideBar = (props: SidebarViewProps) => {
                         data-testid="show-agents"
                         onClick={onShowAgents}
                     >
-                        <div className="flex-align-center">
+                        <div className="flex items-center">
                             <FaRobot />
                             {!isCollapsed && <span>Agents</span>}
                         </div>

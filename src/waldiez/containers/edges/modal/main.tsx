@@ -237,7 +237,7 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                         )}
                         {groupChatType === "nested" && (
                             <TabItem label="Message" id={`wc-${flowId}-edge-nested-chat-${edgeId}-message`}>
-                                <div className="flex-column">
+                                <div className="flex flex-col">
                                     <MessageInput
                                         darkMode={isDark}
                                         current={currentNestedMessageInput}

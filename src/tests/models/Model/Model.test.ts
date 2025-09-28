@@ -6,7 +6,6 @@ import { describe, expect, it } from "vitest";
 
 import { WaldiezModel, WaldiezModelData } from "@waldiez/models/Model";
 
-/* eslint-disable max-statements */
 describe("WaldiezModel", () => {
     it("should create an instance", () => {
         const modelData = new WaldiezModelData();

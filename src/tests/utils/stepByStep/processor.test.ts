@@ -426,6 +426,7 @@ describe("WaldiezStepByStepProcessor", () => {
             const message = JSON.stringify({
                 type: "debug_input_request",
                 request_id: "req-456",
+                // cspell: disable-next-line
                 prompt: "[Step] (c)ontinue, (s)tep, (q)uit:",
             });
 
@@ -434,6 +435,7 @@ describe("WaldiezStepByStepProcessor", () => {
             expect(result?.debugMessage?.type).toBe("debug_input_request");
             expect(result?.stateUpdate?.pendingControlInput).toEqual({
                 request_id: "req-456",
+                // cspell: disable-next-line
                 prompt: "[Step] (c)ontinue, (s)tep, (q)uit:",
             });
         });

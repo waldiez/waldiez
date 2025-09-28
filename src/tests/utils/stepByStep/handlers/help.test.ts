@@ -300,7 +300,7 @@ describe("DebugHelpHandler", () => {
                                 desc: "Set breakpoint on event type",
                             },
                             {
-                                cmds: ["unbreak", "ub"],
+                                cmds: ["un-break", "ub"],
                                 desc: "Remove breakpoint",
                             },
                             {

@@ -7,10 +7,6 @@
   color: currentcolor;
 }
 
-.transparent {
-  background-color: transparent;
-}
-
 .hidden {
   visibility: hidden;
   margin: 0 !important;
@@ -23,36 +19,16 @@ label.hidden {
   display: block !important;
 }
 
-.full-width {
-  width: 100%;
-}
-
-.full-height {
-  height: 100%;
-}
-
-.full-size {
-  width: 100%;
-  height: 100%;
-}
-
 .no-border {
   border: none;
 }
 
-.flex-start {
-  display: flex;
-  align-items: flex-start !important;
+.no-margin {
+  margin: 0;
 }
 
-.flex-end {
-  display: flex;
-  align-items: flex-end !important;
-}
-
-.flex-baseline {
-  display: flex;
-  align-items: baseline !important;
+.no-padding {
+  padding: 0;
 }
 
 /* noinspection CssInvalidPropertyValue */
@@ -69,79 +45,22 @@ label.hidden {
   height: stretch;
 }
 
-.relative {
-  position: relative;
-}
-
-.pointer-events-none {
-  pointer-events: none;
-}
-
-.absolute {
-  position: absolute;
-}
-
 .bold {
   font-weight: bold;
 }
 
-.italic {
-  font-style: italic;
+.font-mono {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-.underline {
-  text-decoration: underline;
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
 }
 
-.uppercase {
-  text-transform: uppercase;
-}
-
-.lowercase {
-  text-transform: lowercase;
-}
-
-.truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.overflow-auto {
-  overflow: auto;
-}
-
-.flex-column {
-  display: flex;
-  flex-direction: column;
-}
-
-.flex-align-center {
-  display: flex;
-  align-items: center;
-}
-
-.flex-justify-center {
-  display: flex;
-  justify-content: center;
-}
-
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.flex-1 {
-  flex: 1;
-}
-
-.space-between {
-  justify-content: space-between;
-}
-
-.no-margin {
-  margin: 0;
+.break-words {
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .margin-10 {
@@ -244,10 +163,6 @@ label.hidden {
   margin-right: -20px;
 }
 
-.no-padding {
-  padding: 0;
-}
-
 .padding-5 {
   padding: 5px;
 }
@@ -306,27 +221,4 @@ label.hidden {
 
 .padding-right-20 {
   padding-right: 20px;
-}
-
-.font-mono {
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
-
-.shadow-sm {
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 5%);
-}
-
-.border {
-  border-width: 1px;
-  border-style: solid;
-}
-
-.break-words {
-  overflow-wrap: break-word;
-  word-break: normal;
-}
-
-.whitespace-pre-wrap {
-  white-space: pre-wrap;
 }

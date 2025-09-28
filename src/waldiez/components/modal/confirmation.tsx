@@ -28,7 +28,7 @@ export const renderConfirmationContent = (props: {
                 <div className="modal-actions">
                     {onSaveAndClose ? (
                         <>
-                            <div className="modal-actions flex-center margin-top--10 margin-bottom--10">
+                            <div className="modal-actions flex items-center justify-center margin-top--10 margin-bottom--10">
                                 <button
                                     className="secondary"
                                     data-testid="modal-action-confirm-cancel"
@@ -39,7 +39,7 @@ export const renderConfirmationContent = (props: {
                                     Don't Close
                                 </button>
                             </div>
-                            <div className="modal-actions flex-center margin-top--10 margin-bottom--10">
+                            <div className="modal-actions flex items-center justify-center margin-top--10 margin-bottom--10">
                                 <button
                                     className="save margin-right-10"
                                     data-testid="modal-action-confirm-save"

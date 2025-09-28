@@ -25,7 +25,7 @@ export const EditFlowModalModalTabBasic = (props: EditFlowModalModalTabBasicProp
     };
     const edgesCount = sortedEdges.length + remainingEdges.length;
     return (
-        <div className="flex-column padding-left-10 padding-right-10" id={`rf-${flowId}-edit-flow-modal`}>
+        <div className="flex flex-col padding-left-10 padding-right-10" id={`rf-${flowId}-edit-flow-modal`}>
             <label htmlFor={`rf-${flowId}-edit-flow-modal-name`}>Name</label>
             <input
                 type="text"

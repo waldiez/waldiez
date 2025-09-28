@@ -10262,7 +10262,7 @@ function getOverflowAncestors(node2, list, traverseIframes) {
 function getFrameElement(win) {
   return win.parent && Object.getPrototypeOf(win.parent) ? win.frameElement : null;
 }
-function getCssDimensions(element) {
+function getCssDimensions$1(element) {
   const css4 = getComputedStyle$1(element);
   let width = parseFloat(css4.width) || 0;
   let height = parseFloat(css4.height) || 0;
@@ -10280,11 +10280,11 @@ function getCssDimensions(element) {
     $: shouldFallback
   };
 }
-function unwrapElement(element) {
+function unwrapElement$1(element) {
   return !isElement(element) ? element.contextElement : element;
 }
-function getScale(element) {
-  const domElement = unwrapElement(element);
+function getScale$1(element) {
+  const domElement = unwrapElement$1(element);
   if (!isHTMLElement(domElement)) {
     return createCoords(1);
   }
@@ -10293,7 +10293,7 @@ function getScale(element) {
     width,
     height,
     $
-  } = getCssDimensions(domElement);
+  } = getCssDimensions$1(domElement);
   let x = ($ ? round(rect.width) : rect.width) / width;
   let y = ($ ? round(rect.height) : rect.height) / height;
   if (!x || !Number.isFinite(x)) {
@@ -10307,18 +10307,18 @@ function getScale(element) {
     y
   };
 }
-const noOffsets = /* @__PURE__ */ createCoords(0);
-function getVisualOffsets(element) {
+const noOffsets$1 = /* @__PURE__ */ createCoords(0);
+function getVisualOffsets$1(element) {
   const win = getWindow(element);
   if (!isWebKit() || !win.visualViewport) {
-    return noOffsets;
+    return noOffsets$1;
   }
   return {
     x: win.visualViewport.offsetLeft,
     y: win.visualViewport.offsetTop
   };
 }
-function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
+function shouldAddVisualOffsets$1(element, isFixed, floatingOffsetParent) {
   if (isFixed === void 0) {
     isFixed = false;
   }
@@ -10327,7 +10327,7 @@ function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
   }
   return isFixed;
 }
-function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetParent) {
+function getBoundingClientRect$1(element, includeScale, isFixedStrategy, offsetParent) {
   if (includeScale === void 0) {
     includeScale = false;
   }
@@ -10335,18 +10335,18 @@ function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetPar
     isFixedStrategy = false;
   }
   const clientRect = element.getBoundingClientRect();
-  const domElement = unwrapElement(element);
+  const domElement = unwrapElement$1(element);
   let scale = createCoords(1);
   if (includeScale) {
     if (offsetParent) {
       if (isElement(offsetParent)) {
-        scale = getScale(offsetParent);
+        scale = getScale$1(offsetParent);
       }
     } else {
-      scale = getScale(element);
+      scale = getScale$1(element);
     }
   }
-  const visualOffsets = shouldAddVisualOffsets(domElement, isFixedStrategy, offsetParent) ? getVisualOffsets(domElement) : createCoords(0);
+  const visualOffsets = shouldAddVisualOffsets$1(domElement, isFixedStrategy, offsetParent) ? getVisualOffsets$1(domElement) : createCoords(0);
   let x = (clientRect.left + visualOffsets.x) / scale.x;
   let y = (clientRect.top + visualOffsets.y) / scale.y;
   let width = clientRect.width / scale.x;
@@ -10357,7 +10357,7 @@ function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetPar
     let currentWin = win;
     let currentIFrame = getFrameElement(currentWin);
     while (currentIFrame && offsetParent && offsetWin !== currentWin) {
-      const iframeScale = getScale(currentIFrame);
+      const iframeScale = getScale$1(currentIFrame);
       const iframeRect = currentIFrame.getBoundingClientRect();
       const css4 = getComputedStyle$1(currentIFrame);
       const left = iframeRect.left + (currentIFrame.clientLeft + parseFloat(css4.paddingLeft)) * iframeScale.x;
@@ -10382,7 +10382,7 @@ function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetPar
 function getWindowScrollBarX(element, rect) {
   const leftScroll = getNodeScroll(element).scrollLeft;
   if (!rect) {
-    return getBoundingClientRect(getDocumentElement(element)).left + leftScroll;
+    return getBoundingClientRect$1(getDocumentElement(element)).left + leftScroll;
   }
   return rect.left + leftScroll;
 }
@@ -10420,8 +10420,8 @@ function convertOffsetParentRelativeRectToViewportRelativeRect(_ref3) {
       scroll = getNodeScroll(offsetParent);
     }
     if (isHTMLElement(offsetParent)) {
-      const offsetRect = getBoundingClientRect(offsetParent);
-      scale = getScale(offsetParent);
+      const offsetRect = getBoundingClientRect$1(offsetParent);
+      scale = getScale$1(offsetParent);
       offsets.x = offsetRect.x + offsetParent.clientLeft;
       offsets.y = offsetRect.y + offsetParent.clientTop;
     }
@@ -10495,10 +10495,10 @@ function getViewportRect(element, strategy) {
 }
 const absoluteOrFixed = /* @__PURE__ */ new Set(["absolute", "fixed"]);
 function getInnerBoundingClientRect(element, strategy) {
-  const clientRect = getBoundingClientRect(element, true, strategy === "fixed");
+  const clientRect = getBoundingClientRect$1(element, true, strategy === "fixed");
   const top = clientRect.top + element.clientTop;
   const left = clientRect.left + element.clientLeft;
-  const scale = isHTMLElement(element) ? getScale(element) : createCoords(1);
+  const scale = isHTMLElement(element) ? getScale$1(element) : createCoords(1);
   const width = element.clientWidth * scale.x;
   const height = element.clientHeight * scale.y;
   const x = left * scale.x;
@@ -10519,7 +10519,7 @@ function getClientRectFromClippingAncestor(element, clippingAncestor, strategy) 
   } else if (isElement(clippingAncestor)) {
     rect = getInnerBoundingClientRect(clippingAncestor, strategy);
   } else {
-    const visualOffsets = getVisualOffsets(element);
+    const visualOffsets = getVisualOffsets$1(element);
     rect = {
       x: clippingAncestor.x - visualOffsets.x,
       y: clippingAncestor.y - visualOffsets.y,
@@ -10591,7 +10591,7 @@ function getDimensions(element) {
   const {
     width,
     height
-  } = getCssDimensions(element);
+  } = getCssDimensions$1(element);
   return {
     width,
     height
@@ -10601,7 +10601,7 @@ function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
   const isOffsetParentAnElement = isHTMLElement(offsetParent);
   const documentElement = getDocumentElement(offsetParent);
   const isFixed = strategy === "fixed";
-  const rect = getBoundingClientRect(element, true, isFixed, offsetParent);
+  const rect = getBoundingClientRect$1(element, true, isFixed, offsetParent);
   let scroll = {
     scrollLeft: 0,
     scrollTop: 0
@@ -10615,7 +10615,7 @@ function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
       scroll = getNodeScroll(offsetParent);
     }
     if (isOffsetParentAnElement) {
-      const offsetRect = getBoundingClientRect(offsetParent, true, isFixed, offsetParent);
+      const offsetRect = getBoundingClientRect$1(offsetParent, true, isFixed, offsetParent);
       offsets.x = offsetRect.x + offsetParent.clientLeft;
       offsets.y = offsetRect.y + offsetParent.clientTop;
     } else if (documentElement) {
@@ -10700,14 +10700,14 @@ const platform = {
   getElementRects,
   getClientRects,
   getDimensions,
-  getScale,
+  getScale: getScale$1,
   isElement,
   isRTL
 };
-function rectsAreEqual(a, b2) {
+function rectsAreEqual$1(a, b2) {
   return a.x === b2.x && a.y === b2.y && a.width === b2.width && a.height === b2.height;
 }
-function observeMove(element, onMove) {
+function observeMove$1(element, onMove) {
   let io = null;
   let timeoutId;
   const root = getDocumentElement(element);
@@ -10762,7 +10762,7 @@ function observeMove(element, onMove) {
           refresh(false, ratio);
         }
       }
-      if (ratio === 1 && !rectsAreEqual(elementRectForRootMargin, element.getBoundingClientRect())) {
+      if (ratio === 1 && !rectsAreEqual$1(elementRectForRootMargin, element.getBoundingClientRect())) {
         refresh();
       }
       isFirstUpdate = false;
@@ -10781,7 +10781,7 @@ function observeMove(element, onMove) {
   refresh(true);
   return cleanup;
 }
-function autoUpdate(reference, floating, update, options2) {
+function autoUpdate$1(reference, floating, update, options2) {
   if (options2 === void 0) {
     options2 = {};
   }
@@ -10792,7 +10792,7 @@ function autoUpdate(reference, floating, update, options2) {
     layoutShift = typeof IntersectionObserver === "function",
     animationFrame = false
   } = options2;
-  const referenceEl = unwrapElement(reference);
+  const referenceEl = unwrapElement$1(reference);
   const ancestors = ancestorScroll || ancestorResize ? [...referenceEl ? getOverflowAncestors(referenceEl) : [], ...getOverflowAncestors(floating)] : [];
   ancestors.forEach((ancestor) => {
     ancestorScroll && ancestor.addEventListener("scroll", update, {
@@ -10800,7 +10800,7 @@ function autoUpdate(reference, floating, update, options2) {
     });
     ancestorResize && ancestor.addEventListener("resize", update);
   });
-  const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update) : null;
+  const cleanupIo = referenceEl && layoutShift ? observeMove$1(referenceEl, update) : null;
   let reobserveFrame = -1;
   let resizeObserver = null;
   if (elementResize) {
@@ -10822,13 +10822,13 @@ function autoUpdate(reference, floating, update, options2) {
     resizeObserver.observe(floating);
   }
   let frameId;
-  let prevRefRect = animationFrame ? getBoundingClientRect(reference) : null;
+  let prevRefRect = animationFrame ? getBoundingClientRect$1(reference) : null;
   if (animationFrame) {
     frameLoop();
   }
   function frameLoop() {
-    const nextRefRect = getBoundingClientRect(reference);
-    if (prevRefRect && !rectsAreEqual(prevRefRect, nextRefRect)) {
+    const nextRefRect = getBoundingClientRect$1(reference);
+    if (prevRefRect && !rectsAreEqual$1(prevRefRect, nextRefRect)) {
       update();
     }
     prevRefRect = nextRefRect;
@@ -11272,7 +11272,7 @@ var PopperContent = React.forwardRef(
       strategy: "fixed",
       placement: desiredPlacement,
       whileElementsMounted: (...args) => {
-        const cleanup = autoUpdate(...args, {
+        const cleanup = autoUpdate$1(...args, {
           animationFrame: updatePositionStrategy === "always"
         });
         return cleanup;
@@ -12440,7 +12440,7 @@ const CheckboxInput = memo(({ id, label, isChecked, onCheckedChange }) => {
   return /* @__PURE__ */ jsxs(
     "div",
     {
-      className: "flex-align-center margin-bottom-10 margin-top-5",
+      className: "flex items-center margin-bottom-10 margin-top-5",
       "data-testid": `checkbox-input-container-${id}`,
       children: [
         /* @__PURE__ */ jsx$1(
@@ -14301,6 +14301,257 @@ function _taggedTemplateLiteral(e, t) {
       value: Object.freeze(t)
     }
   }));
+}
+function getCssDimensions(element) {
+  const css4 = getComputedStyle$1(element);
+  let width = parseFloat(css4.width) || 0;
+  let height = parseFloat(css4.height) || 0;
+  const hasOffset = isHTMLElement(element);
+  const offsetWidth = hasOffset ? element.offsetWidth : width;
+  const offsetHeight = hasOffset ? element.offsetHeight : height;
+  const shouldFallback = round(width) !== offsetWidth || round(height) !== offsetHeight;
+  if (shouldFallback) {
+    width = offsetWidth;
+    height = offsetHeight;
+  }
+  return {
+    width,
+    height,
+    $: shouldFallback
+  };
+}
+function unwrapElement(element) {
+  return !isElement(element) ? element.contextElement : element;
+}
+function getScale(element) {
+  const domElement = unwrapElement(element);
+  if (!isHTMLElement(domElement)) {
+    return createCoords(1);
+  }
+  const rect = domElement.getBoundingClientRect();
+  const {
+    width,
+    height,
+    $
+  } = getCssDimensions(domElement);
+  let x = ($ ? round(rect.width) : rect.width) / width;
+  let y = ($ ? round(rect.height) : rect.height) / height;
+  if (!x || !Number.isFinite(x)) {
+    x = 1;
+  }
+  if (!y || !Number.isFinite(y)) {
+    y = 1;
+  }
+  return {
+    x,
+    y
+  };
+}
+const noOffsets = /* @__PURE__ */ createCoords(0);
+function getVisualOffsets(element) {
+  const win = getWindow(element);
+  if (!isWebKit() || !win.visualViewport) {
+    return noOffsets;
+  }
+  return {
+    x: win.visualViewport.offsetLeft,
+    y: win.visualViewport.offsetTop
+  };
+}
+function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
+  {
+    return false;
+  }
+}
+function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetParent) {
+  if (includeScale === void 0) {
+    includeScale = false;
+  }
+  const clientRect = element.getBoundingClientRect();
+  const domElement = unwrapElement(element);
+  let scale = createCoords(1);
+  if (includeScale) {
+    {
+      scale = getScale(element);
+    }
+  }
+  const visualOffsets = shouldAddVisualOffsets() ? getVisualOffsets(domElement) : createCoords(0);
+  let x = (clientRect.left + visualOffsets.x) / scale.x;
+  let y = (clientRect.top + visualOffsets.y) / scale.y;
+  let width = clientRect.width / scale.x;
+  let height = clientRect.height / scale.y;
+  if (domElement) {
+    const win = getWindow(domElement);
+    const offsetWin = offsetParent;
+    let currentWin = win;
+    let currentIFrame = getFrameElement(currentWin);
+    while (currentIFrame && offsetParent && offsetWin !== currentWin) {
+      const iframeScale = getScale(currentIFrame);
+      const iframeRect = currentIFrame.getBoundingClientRect();
+      const css4 = getComputedStyle$1(currentIFrame);
+      const left = iframeRect.left + (currentIFrame.clientLeft + parseFloat(css4.paddingLeft)) * iframeScale.x;
+      const top = iframeRect.top + (currentIFrame.clientTop + parseFloat(css4.paddingTop)) * iframeScale.y;
+      x *= iframeScale.x;
+      y *= iframeScale.y;
+      width *= iframeScale.x;
+      height *= iframeScale.y;
+      x += left;
+      y += top;
+      currentWin = getWindow(currentIFrame);
+      currentIFrame = getFrameElement(currentWin);
+    }
+  }
+  return rectToClientRect({
+    width,
+    height,
+    x,
+    y
+  });
+}
+function rectsAreEqual(a, b2) {
+  return a.x === b2.x && a.y === b2.y && a.width === b2.width && a.height === b2.height;
+}
+function observeMove(element, onMove) {
+  let io = null;
+  let timeoutId;
+  const root = getDocumentElement(element);
+  function cleanup() {
+    var _io;
+    clearTimeout(timeoutId);
+    (_io = io) == null || _io.disconnect();
+    io = null;
+  }
+  function refresh(skip, threshold) {
+    if (skip === void 0) {
+      skip = false;
+    }
+    if (threshold === void 0) {
+      threshold = 1;
+    }
+    cleanup();
+    const elementRectForRootMargin = element.getBoundingClientRect();
+    const {
+      left,
+      top,
+      width,
+      height
+    } = elementRectForRootMargin;
+    if (!skip) {
+      onMove();
+    }
+    if (!width || !height) {
+      return;
+    }
+    const insetTop = floor(top);
+    const insetRight = floor(root.clientWidth - (left + width));
+    const insetBottom = floor(root.clientHeight - (top + height));
+    const insetLeft = floor(left);
+    const rootMargin = -insetTop + "px " + -insetRight + "px " + -insetBottom + "px " + -insetLeft + "px";
+    const options2 = {
+      rootMargin,
+      threshold: max(0, min(1, threshold)) || 1
+    };
+    let isFirstUpdate = true;
+    function handleObserve(entries) {
+      const ratio = entries[0].intersectionRatio;
+      if (ratio !== threshold) {
+        if (!isFirstUpdate) {
+          return refresh();
+        }
+        if (!ratio) {
+          timeoutId = setTimeout(() => {
+            refresh(false, 1e-7);
+          }, 1e3);
+        } else {
+          refresh(false, ratio);
+        }
+      }
+      if (ratio === 1 && !rectsAreEqual(elementRectForRootMargin, element.getBoundingClientRect())) {
+        refresh();
+      }
+      isFirstUpdate = false;
+    }
+    try {
+      io = new IntersectionObserver(handleObserve, {
+        ...options2,
+        // Handle <iframe>s
+        root: root.ownerDocument
+      });
+    } catch (_e) {
+      io = new IntersectionObserver(handleObserve, options2);
+    }
+    io.observe(element);
+  }
+  refresh(true);
+  return cleanup;
+}
+function autoUpdate(reference, floating, update, options2) {
+  if (options2 === void 0) {
+    options2 = {};
+  }
+  const {
+    ancestorScroll = true,
+    ancestorResize = true,
+    elementResize = typeof ResizeObserver === "function",
+    layoutShift = typeof IntersectionObserver === "function",
+    animationFrame = false
+  } = options2;
+  const referenceEl = unwrapElement(reference);
+  const ancestors = ancestorScroll || ancestorResize ? [...referenceEl ? getOverflowAncestors(referenceEl) : [], ...getOverflowAncestors(floating)] : [];
+  ancestors.forEach((ancestor) => {
+    ancestorScroll && ancestor.addEventListener("scroll", update, {
+      passive: true
+    });
+    ancestorResize && ancestor.addEventListener("resize", update);
+  });
+  const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update) : null;
+  let reobserveFrame = -1;
+  let resizeObserver = null;
+  if (elementResize) {
+    resizeObserver = new ResizeObserver((_ref3) => {
+      let [firstEntry] = _ref3;
+      if (firstEntry && firstEntry.target === referenceEl && resizeObserver) {
+        resizeObserver.unobserve(floating);
+        cancelAnimationFrame(reobserveFrame);
+        reobserveFrame = requestAnimationFrame(() => {
+          var _resizeObserver;
+          (_resizeObserver = resizeObserver) == null || _resizeObserver.observe(floating);
+        });
+      }
+      update();
+    });
+    if (referenceEl && !animationFrame) {
+      resizeObserver.observe(referenceEl);
+    }
+    resizeObserver.observe(floating);
+  }
+  let frameId;
+  let prevRefRect = animationFrame ? getBoundingClientRect(reference) : null;
+  if (animationFrame) {
+    frameLoop();
+  }
+  function frameLoop() {
+    const nextRefRect = getBoundingClientRect(reference);
+    if (prevRefRect && !rectsAreEqual(prevRefRect, nextRefRect)) {
+      update();
+    }
+    prevRefRect = nextRefRect;
+    frameId = requestAnimationFrame(frameLoop);
+  }
+  update();
+  return () => {
+    var _resizeObserver2;
+    ancestors.forEach((ancestor) => {
+      ancestorScroll && ancestor.removeEventListener("scroll", update);
+      ancestorResize && ancestor.removeEventListener("resize", update);
+    });
+    cleanupIo == null || cleanupIo();
+    (_resizeObserver2 = resizeObserver) == null || _resizeObserver2.disconnect();
+    resizeObserver = null;
+    if (animationFrame) {
+      cancelAnimationFrame(frameId);
+    }
+  };
 }
 var index = useLayoutEffect;
 var _excluded$4 = ["className", "clearValue", "cx", "getStyles", "getClassNames", "getValue", "hasValue", "isMulti", "isRtl", "options", "selectOption", "selectProps", "setValue", "theme"];
@@ -17857,8 +18108,8 @@ const AfterWork = memo(
           onChange: onEnabledChange
         }
       ),
-      enabled && /* @__PURE__ */ jsxs("div", { className: "flex-align-center flex-column margin-bottom-10", children: [
-        /* @__PURE__ */ jsxs("div", { className: "full-width margin-bottom-10", children: [
+      enabled && /* @__PURE__ */ jsxs("div", { className: "flex items-center flex-col margin-bottom-10", children: [
+        /* @__PURE__ */ jsxs("div", { className: "w-full margin-bottom-10", children: [
           /* @__PURE__ */ jsx$1("label", { htmlFor: "afterWorkTargetType", children: "Action to perform after work:" }),
           /* @__PURE__ */ jsx$1("div", { className: "margin-top-10" }),
           /* @__PURE__ */ jsx$1(
@@ -17872,7 +18123,7 @@ const AfterWork = memo(
             }
           )
         ] }),
-        selectedTargetType === "AgentTarget" && /* @__PURE__ */ jsxs("div", { className: "full-width margin-bottom-10", children: [
+        selectedTargetType === "AgentTarget" && /* @__PURE__ */ jsxs("div", { className: "w-full margin-bottom-10", children: [
           /* @__PURE__ */ jsx$1("label", { htmlFor: "afterWorkTargetId", children: "Agent to pass the floor to:" }),
           /* @__PURE__ */ jsx$1("div", { className: "margin-top-10" }),
           /* @__PURE__ */ jsx$1(
@@ -17888,7 +18139,7 @@ const AfterWork = memo(
             }
           )
         ] }),
-        selectedTargetType === "RandomAgentTarget" && /* @__PURE__ */ jsxs("div", { className: "full-width", children: [
+        selectedTargetType === "RandomAgentTarget" && /* @__PURE__ */ jsxs("div", { className: "w-full", children: [
           /* @__PURE__ */ jsx$1("label", { htmlFor: "afterWorkTargetIds", children: "Agents to choose from:" }),
           /* @__PURE__ */ jsx$1("div", { className: "margin-top-10" }),
           /* @__PURE__ */ jsx$1(
@@ -18858,7 +19109,7 @@ const Collapsible = memo((props) => {
   const onToggle = useCallback(() => {
     setIsOpen((prevIsOpen) => !prevIsOpen);
   }, []);
-  const containerClassName = `collapsible ${fullWidth ? "full-width" : ""} ${className}`.trim();
+  const containerClassName = `collapsible ${fullWidth ? "w-full" : ""} ${className}`.trim();
   const headerClassName = `collapsible-header ${className}`.trim();
   return /* @__PURE__ */ jsxs("div", { className: containerClassName, "data-testid": dataTestId, children: [
     /* @__PURE__ */ jsxs("div", { className: headerClassName, onClick: onToggle, children: [
@@ -18962,8 +19213,8 @@ const useDict = (props) => {
 const InfoLabel = ({ htmlFor, label, info, children }) => {
   const labelElement = typeof label === "function" ? label() : label;
   const infoElement = typeof info === "function" ? info() : info;
-  return /* @__PURE__ */ jsxs("div", { className: "flex-align-center flex-row gap-1", children: [
-    /* @__PURE__ */ jsxs("div", { className: "flex-align-center items-center gap-2", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex items-center flex-row gap-1", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
       /* @__PURE__ */ jsx$1("label", { htmlFor, className: "text-sm info-label", children: labelElement }),
       /* @__PURE__ */ jsx$1(Provider, { delayDuration: 100, children: /* @__PURE__ */ jsxs(Root3, { children: [
         /* @__PURE__ */ jsx$1(Trigger, { asChild: true, children: /* @__PURE__ */ jsx$1(
@@ -19324,7 +19575,7 @@ const HandoffAvailability = (props) => {
     },
     [currentAvailability, onDataChange]
   );
-  const renderExpressionInput = () => /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
+  const renderExpressionInput = () => /* @__PURE__ */ jsxs("div", { className: "flex flex-col margin-top-10", children: [
     /* @__PURE__ */ jsx$1("label", { className: "hidden", htmlFor: "expression-input", children: "Expression" }),
     /* @__PURE__ */ jsx$1(
       TextareaInput,
@@ -19339,7 +19590,7 @@ const HandoffAvailability = (props) => {
       }
     )
   ] });
-  const renderStringInput = () => /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
+  const renderStringInput = () => /* @__PURE__ */ jsxs("div", { className: "flex flex-col margin-top-10", children: [
     /* @__PURE__ */ jsx$1("label", { className: "hidden", htmlFor: "string-input", children: "Variable Name" }),
     /* @__PURE__ */ jsx$1(
       "input",
@@ -19354,7 +19605,7 @@ const HandoffAvailability = (props) => {
       }
     )
   ] });
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
     /* @__PURE__ */ jsxs("div", { className: "info margin-bottom-5", children: [
       "You can optionally handle the availability of this transition by checking a variable or using an expression.",
       /* @__PURE__ */ jsxs("ul", { children: [
@@ -19393,7 +19644,7 @@ const HandoffAvailability = (props) => {
         "aria-label": "Enable availability check"
       }
     ) }),
-    available.type !== "none" && /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
+    available.type !== "none" && /* @__PURE__ */ jsxs("div", { className: "flex flex-col margin-top-10", children: [
       /* @__PURE__ */ jsx$1("label", { className: "hidden", htmlFor: "select-availability-type", children: "Availability Type" }),
       /* @__PURE__ */ jsx$1(
         Select,
@@ -19462,7 +19713,7 @@ const TextInput = memo((props) => {
   };
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     renderLabel(),
-    /* @__PURE__ */ jsxs("div", { className: `text-input-container flex-align-center ${className}`, children: [
+    /* @__PURE__ */ jsxs("div", { className: `text-input-container flex items-center ${className}`, children: [
       /* @__PURE__ */ jsx$1(
         "input",
         {
@@ -19643,7 +19894,7 @@ const HandoffCondition = (props) => {
         return null;
     }
   }, [currentHandoffCondition, fieldUpdaters]);
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
     /* @__PURE__ */ jsxs("div", { className: "info margin-bottom-5", children: [
       "You can control when this transition happens. Conditions allow you to check values or evaluate logic based on the current context. There are four types of conditions you can choose from:",
       /* @__PURE__ */ jsxs("ul", { className: "no-margin", children: [
@@ -19717,7 +19968,7 @@ const HandoffCondition = (props) => {
         ] })
       ] })
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col margin-top-10", children: [
       /* @__PURE__ */ jsx$1("label", { className: "hidden", htmlFor: "select-condition-type", children: "Condition Type" }),
       /* @__PURE__ */ jsx$1(
         Select,
@@ -20202,7 +20453,7 @@ const MessageInput = (props) => {
       }
     ),
     labelView,
-    current.type === "string" && /* @__PURE__ */ jsx$1("div", { className: "full-width", children: /* @__PURE__ */ jsx$1(
+    current.type === "string" && /* @__PURE__ */ jsx$1("div", { className: "w-full", children: /* @__PURE__ */ jsx$1(
       TextareaInput,
       {
         placeholder: "Enter the message",
@@ -20216,7 +20467,7 @@ const MessageInput = (props) => {
     current.type === "rag_message_generator" && /* @__PURE__ */ jsxs("div", { children: [
       /* @__PURE__ */ jsx$1("div", { className: "info margin-bottom-20", children: "Use the RAG user's `sender.message_generator` method to generate a message." }),
       /* @__PURE__ */ jsx$1("label", { children: "Problem:" }),
-      /* @__PURE__ */ jsx$1("div", { className: "full-width", children: /* @__PURE__ */ jsx$1(
+      /* @__PURE__ */ jsx$1("div", { className: "w-full", children: /* @__PURE__ */ jsx$1(
         TextareaInput,
         {
           placeholder: "Enter the problem",
@@ -20287,7 +20538,7 @@ const renderConfirmationContent = (props) => {
   return /* @__PURE__ */ jsx$1("div", { className: "modal-confirmation padding-10", children: /* @__PURE__ */ jsxs("div", { className: "modal-confirmation-content", children: [
     /* @__PURE__ */ jsx$1("h4", { className: "warning", children: "Are you sure you want to close this modal? Any unsaved changes will be lost." }),
     /* @__PURE__ */ jsx$1("div", { className: "modal-actions", children: onSaveAndClose ? /* @__PURE__ */ jsxs(Fragment, { children: [
-      /* @__PURE__ */ jsx$1("div", { className: "modal-actions flex-center margin-top--10 margin-bottom--10", children: /* @__PURE__ */ jsx$1(
+      /* @__PURE__ */ jsx$1("div", { className: "modal-actions flex items-center justify-center margin-top--10 margin-bottom--10", children: /* @__PURE__ */ jsx$1(
         "button",
         {
           className: "secondary",
@@ -20298,7 +20549,7 @@ const renderConfirmationContent = (props) => {
           children: "Don't Close"
         }
       ) }),
-      /* @__PURE__ */ jsxs("div", { className: "modal-actions flex-center margin-top--10 margin-bottom--10", children: [
+      /* @__PURE__ */ jsxs("div", { className: "modal-actions flex items-center justify-center margin-top--10 margin-bottom--10", children: [
         /* @__PURE__ */ jsx$1(
           "button",
           {
@@ -21788,7 +22039,7 @@ const ResumeSpinner = () => {
     const t = setTimeout(() => setPhase("done"), 2e3);
     return () => clearTimeout(t);
   }, []);
-  return phase === "spin" ? /* @__PURE__ */ jsxs("div", { className: "flex-align-center items-center gap-2", children: [
+  return phase === "spin" ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
     /* @__PURE__ */ jsx$1("span", { className: "animate-spin inline-block", children: "⏳" }),
     /* @__PURE__ */ jsx$1("span", { children: "Resuming a previously stored state…" })
   ] }) : /* @__PURE__ */ jsx$1("div", { children: "✅ Resume complete!" });
@@ -21867,7 +22118,7 @@ const renderEvent = (ev) => {
         ] }),
         /* @__PURE__ */ jsx$1("div", { className: "space-y-1", children: c.tool_calls?.map((tc, i) => {
           const args = tc.function.arguments && tc.function.arguments !== "{}" ? tc.function.arguments : "none";
-          return /* @__PURE__ */ jsxs("div", { className: "flex-align-center items-start gap-2", children: [
+          return /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-2", children: [
             /* @__PURE__ */ jsx$1("span", { children: "🔧" }),
             /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
@@ -22023,9 +22274,9 @@ const EventConsole = ({ events, printRaw, autoScroll, className }) => {
   return /* @__PURE__ */ jsx$1(
     "div",
     {
-      className: ["flex-align-center flex-column full-height json", className].filter(Boolean).join(" "),
+      className: ["flex items-center flex-col h-full json", className].filter(Boolean).join(" "),
       "data-testid": "events-console",
-      children: /* @__PURE__ */ jsxs("div", { ref: listRef, className: "flex-1 full-width overflow-auto text-sm font-mono leading-5", children: [
+      children: /* @__PURE__ */ jsxs("div", { ref: listRef, className: "flex-1 w-full overflow-auto text-sm font-mono leading-5", children: [
         /* @__PURE__ */ jsx$1("div", { className: "p-3 space-y-3", children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: ev.type === "empty" ? "center" : "entry", children: [
           printRaw && /* @__PURE__ */ jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
             "Raw event: ",
@@ -25468,7 +25719,7 @@ const Timeline = ({ data, height = 400 }) => {
       }
     }
   }, []);
-  return /* @__PURE__ */ jsxs("div", { className: "full-width padding-10", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "w-full padding-10", children: [
     /* @__PURE__ */ jsx$1("div", { className: "timeline-grid margin-bottom-10", children: [
       { label: "Sessions", value: data.summary.total_sessions, icon: FiActivity },
       {
@@ -25509,7 +25760,7 @@ const Timeline = ({ data, height = 400 }) => {
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "card-content", children: [
-        /* @__PURE__ */ jsx$1("div", { className: "full-width", children: /* @__PURE__ */ jsx$1(ResponsiveContainer, { width: "100%", height, children: /* @__PURE__ */ jsx$1(
+        /* @__PURE__ */ jsx$1("div", { className: "w-full", children: /* @__PURE__ */ jsx$1(ResponsiveContainer, { width: "100%", height, children: /* @__PURE__ */ jsx$1(
           TimelineChart,
           {
             width: dimensions.width,
@@ -25518,7 +25769,7 @@ const Timeline = ({ data, height = 400 }) => {
             darkMode: isDark
           }
         ) }) }),
-        data.agents.length > 0 && // <div className="mt-4 flex-align-center flex-wrap gap-2">
+        data.agents.length > 0 && // <div className="mt-4 flex items-center flex-wrap gap-2">
         /* @__PURE__ */ jsx$1("div", { className: "timeline-agent-list", children: data.agents.map((agent) => /* @__PURE__ */ jsxs("div", { className: "timeline-agent-item", children: [
           /* @__PURE__ */ jsx$1(
             "div",
@@ -26099,7 +26350,7 @@ const UpdateState = (props) => {
   );
   return /* @__PURE__ */ jsxs("div", { className: "agent-panel agent-update-state-panel", children: [
     /* @__PURE__ */ jsx$1("div", { className: "info margin-bottom-10", children: "You can update the agent's system message before replying. This can be useful if you need to control the system message based on the current conversation context. If enabled, it can be a string or a function. If text, it will be used as a template and substitute the context variables. If a function, it should accept the agent and messages as arguments and return a string." }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsx$1(
         CheckboxInput,
         {
@@ -27206,8 +27457,8 @@ const ExportFlowModal = memo((props) => {
               "data-testid": `export-flow-modal-upload-checkbox-${flowId}`
             }
           ),
-          alsoUpload && /* @__PURE__ */ jsxs("div", { className: "flex-align-center full-width flex-column", children: [
-            /* @__PURE__ */ jsx$1("div", { className: "margin-top-10 full-width", children: /* @__PURE__ */ jsx$1(
+          alsoUpload && /* @__PURE__ */ jsxs("div", { className: "flex items-center w-full flex flex-col", children: [
+            /* @__PURE__ */ jsx$1("div", { className: "margin-top-10 w-full", children: /* @__PURE__ */ jsx$1(
               TextInput,
               {
                 label: /* @__PURE__ */ jsx$1("div", { className: "no-padding margin-bottom-5", children: "Hub API Token:" }),
@@ -27216,11 +27467,11 @@ const ExportFlowModal = memo((props) => {
                 onChange: onHubApiTokenChange,
                 placeholder: "Enter your hub API token",
                 dataTestId: `hub-api-token-${flowId}`,
-                className: "full-width",
+                className: "w-full",
                 isPassword: true
               }
             ) }),
-            /* @__PURE__ */ jsxs("div", { className: "margin-top-10 margin-bottom-20 full-width", children: [
+            /* @__PURE__ */ jsxs("div", { className: "margin-top-10 margin-bottom-20 w-full", children: [
               /* @__PURE__ */ jsx$1("div", { className: "margin-bottom-10 padding-10 center", children: "Additional CSV file (results.csv) to include:" }),
               /* @__PURE__ */ jsx$1(
                 DropZone,
@@ -27236,7 +27487,7 @@ const ExportFlowModal = memo((props) => {
         ] }) }),
         /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
           /* @__PURE__ */ jsx$1("button", { type: "reset", className: "modal-action-cancel", onClick: onClose, children: "Cancel" }),
-          /* @__PURE__ */ jsxs("div", { className: "flex-align-center flex-row", children: [
+          /* @__PURE__ */ jsxs("div", { className: "flex items-center flex-row", children: [
             alsoUpload && /* @__PURE__ */ jsx$1(
               "button",
               {
@@ -27604,13 +27855,13 @@ const LoadFlowStep = (props) => {
         title: "Search the hub",
         dataTestId: `import-flow-modal-collapsible-search-${flowId}`,
         expanded: true,
-        children: /* @__PURE__ */ jsxs("div", { className: "margin-top-10 margin-bottom-10 full-width flex-column", children: [
-          /* @__PURE__ */ jsxs("div", { className: "full-width flex-align-center", children: [
+        children: /* @__PURE__ */ jsxs("div", { className: "margin-top-10 margin-bottom-10 w-full flex flex-col", children: [
+          /* @__PURE__ */ jsxs("div", { className: "w-full flex items-center", children: [
             /* @__PURE__ */ jsx$1(
               "input",
               {
                 type: "text",
-                className: "text-input full-width margin-right-10",
+                className: "text-input w-full margin-right-10",
                 placeholder: "Search",
                 onChange: onSearchChange,
                 onKeyDown: (e) => {
@@ -27658,14 +27909,14 @@ const LoadFlowStep = (props) => {
         allowedFileExtensions: [".waldiez", ".json"]
       }
     ) }) }),
-    /* @__PURE__ */ jsx$1(Collapsible, { title: "Import from URL", dataTestId: `import-flow-modal-collapsible-url-${flowId}`, children: /* @__PURE__ */ jsxs("div", { className: "margin-top-10 full-width flex-column", children: [
+    /* @__PURE__ */ jsx$1(Collapsible, { title: "Import from URL", dataTestId: `import-flow-modal-collapsible-url-${flowId}`, children: /* @__PURE__ */ jsxs("div", { className: "margin-top-10 w-full flex flex-col", children: [
       /* @__PURE__ */ jsx$1("div", { className: "warning margin-bottom-10", children: /* @__PURE__ */ jsx$1("span", { children: "Warning: Importing from an untrusted source can be harmful" }) }),
-      /* @__PURE__ */ jsxs("div", { className: "margin-top-10 full-width flex-align-center", children: [
+      /* @__PURE__ */ jsxs("div", { className: "margin-top-10 w-full flex items-center", children: [
         /* @__PURE__ */ jsx$1(
           "input",
           {
             type: "text",
-            className: "text-input full-width margin-right-10",
+            className: "text-input w-full margin-right-10",
             placeholder: "Enter URL",
             onChange: onRemoteUrlChange,
             value: state.remoteUrl,
@@ -27686,7 +27937,7 @@ const LoadFlowStep = (props) => {
         )
       ] })
     ] }) }),
-    /* @__PURE__ */ jsx$1("div", { className: "margin-top-20 center", children: loadedFlowData ? /* @__PURE__ */ jsxs("div", { className: "flex-center", children: [
+    /* @__PURE__ */ jsx$1("div", { className: "margin-top-20 center", children: loadedFlowData ? /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center", children: [
       "Loaded flow: ",
       /* @__PURE__ */ jsx$1("span", { className: "bold italic", children: loadedFlowData.name }),
       /* @__PURE__ */ jsx$1(
@@ -29245,7 +29496,7 @@ const WaldiezEdgeBasicTab = (props) => {
     onLlmPromptChange,
     onLlmSummaryRoleChange
   } = useWaldiezEdgeBasicTab(props);
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
     /* @__PURE__ */ jsxs("div", { className: "margin-top--10", children: [
       /* @__PURE__ */ jsx$1(
         InfoLabel,
@@ -29468,7 +29719,7 @@ const WaldiezEdgeMessageTab = (props) => {
   } = useWaldiezEdgeMessageTab(props);
   const noOp2 = () => {
   };
-  const handlAddContextEntry = skipContextVarsOption === true ? noOp2 : onAddMessageContextEntry;
+  const handleAddContextEntry = skipContextVarsOption === true ? noOp2 : onAddMessageContextEntry;
   const handleRemoveContextEntry = skipContextVarsOption === true ? noOp2 : onRemoveMessageContextEntry;
   const handleUpdateContextEntries = skipContextVarsOption === true ? noOp2 : onUpdateMessageContextEntries;
   return /* @__PURE__ */ jsx$1("div", { className: "margin-top-10", children: /* @__PURE__ */ jsx$1(
@@ -29486,7 +29737,7 @@ const WaldiezEdgeMessageTab = (props) => {
       includeContext: skipContextVarsOption !== true,
       onTypeChange: onMessageTypeChange,
       onMessageChange,
-      onAddContextEntry: handlAddContextEntry,
+      onAddContextEntry: handleAddContextEntry,
       onRemoveContextEntry: handleRemoveContextEntry,
       onUpdateContextEntries: handleUpdateContextEntries
     }
@@ -29593,10 +29844,10 @@ const WaldiezEdgeNestedTab = (props) => {
   };
   const noOp2 = () => {
   };
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column margin-top-10", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col margin-top-10", children: [
     /* @__PURE__ */ jsx$1("div", { className: "info margin-bottom-10", children: "When the connection is used in a nested chat, you can specify the messages to be sent and received, from the source and the target respectively." }),
     /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
-      /* @__PURE__ */ jsx$1(TabItem, { label: "Message", id: `wc-${flowId}-edge-nested-chat-${edgeId}-message`, children: /* @__PURE__ */ jsx$1("div", { className: "flex-column", children: /* @__PURE__ */ jsx$1(
+      /* @__PURE__ */ jsx$1(TabItem, { label: "Message", id: `wc-${flowId}-edge-nested-chat-${edgeId}-message`, children: /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: /* @__PURE__ */ jsx$1(
         MessageInput,
         {
           darkMode,
@@ -29616,7 +29867,7 @@ const WaldiezEdgeNestedTab = (props) => {
           onUpdateContextEntries: noOp2
         }
       ) }) }),
-      /* @__PURE__ */ jsx$1(TabItem, { label: "Reply", id: `wc-${flowId}-edge-nested-chat-${edgeId}-reply`, children: /* @__PURE__ */ jsx$1("div", { className: "flex-column", children: /* @__PURE__ */ jsx$1(
+      /* @__PURE__ */ jsx$1(TabItem, { label: "Reply", id: `wc-${flowId}-edge-nested-chat-${edgeId}-reply`, children: /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: /* @__PURE__ */ jsx$1(
         MessageInput,
         {
           darkMode,
@@ -29830,7 +30081,7 @@ const WaldiezEdgeModal = memo((props) => {
               onDataChange
             }
           ) }),
-          groupChatType === "nested" && /* @__PURE__ */ jsx$1(TabItem, { label: "Message", id: `wc-${flowId}-edge-nested-chat-${edgeId}-message`, children: /* @__PURE__ */ jsx$1("div", { className: "flex-column", children: /* @__PURE__ */ jsx$1(
+          groupChatType === "nested" && /* @__PURE__ */ jsx$1(TabItem, { label: "Message", id: `wc-${flowId}-edge-nested-chat-${edgeId}-message`, children: /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: /* @__PURE__ */ jsx$1(
             MessageInput,
             {
               darkMode: isDark,
@@ -31755,7 +32006,7 @@ const WaldiezAgentBasic = memo((props) => {
     /* @__PURE__ */ jsx$1(
       TextareaInput,
       {
-        className: "full-width margin-top-5",
+        className: "w-full margin-top-5",
         value: data.agentDefaultAutoReply ?? "",
         onChange: onAgentDefaultAutoReplyChange,
         "data-testid": `agent-default-auto-reply-input-${id}`,
@@ -32330,7 +32581,7 @@ const getHelpInstructions = () => {
       ] }),
       /* @__PURE__ */ jsxs("p", { children: [
         /* @__PURE__ */ jsx$1("strong", { children: "Example:" }),
-        " /Users/yourname/Documents/MyProject"
+        " /Users/you/Documents/MyProject"
       ] })
     ] });
   } else if (isWindows) {
@@ -32344,7 +32595,7 @@ const getHelpInstructions = () => {
       ] }),
       /* @__PURE__ */ jsxs("p", { children: [
         /* @__PURE__ */ jsx$1("strong", { children: "Example:" }),
-        " C:\\Users\\yourname\\Documents\\MyProject"
+        " C:\\Users\\you\\Documents\\MyProject"
       ] })
     ] });
   } else {
@@ -32358,7 +32609,7 @@ const getHelpInstructions = () => {
       ] }),
       /* @__PURE__ */ jsxs("p", { children: [
         /* @__PURE__ */ jsx$1("strong", { children: "Example:" }),
-        " /home/yourname/Documents/MyProject"
+        " /home/you/Documents/MyProject"
       ] })
     ] });
   }
@@ -32447,7 +32698,7 @@ const WaldiezAgentGroupMember = memo((props) => {
       !showGroupTabs ? /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx$1("label", { htmlFor: `agent-select-group-${id}`, children: "Group:" }),
         /* @__PURE__ */ jsx$1("div", { className: "margin-top-10" }),
-        /* @__PURE__ */ jsxs("div", { className: "flex-align-center space-between", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
           /* @__PURE__ */ jsx$1(
             Select,
             {
@@ -32475,7 +32726,7 @@ const WaldiezAgentGroupMember = memo((props) => {
         ] })
       ] }) : (
         /* In a group: Show group info and leave button */
-        /* @__PURE__ */ jsxs("div", { className: "flex-align-center space-between current-group-info", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between current-group-info", children: [
           /* @__PURE__ */ jsx$1(
             "div",
             {
@@ -32654,10 +32905,10 @@ const WaldiezAgentGroupNestedChatTabs = memo((props) => {
     [nestedChats, onDataChange]
   );
   return /* @__PURE__ */ jsx$1("div", { className: "agent-panel", "data-testid": `agent-group-nested-chat-tabs-${id}`, children: /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
-    /* @__PURE__ */ jsx$1(TabItem, { label: "Queue", id: `wf-${flowId}-wa-${id}-nested-chats-queue`, children: /* @__PURE__ */ jsx$1("div", { className: "flex-column margin-10 nested-chat-queue", children: nestedChats[0]?.messages.map((message, index2) => /* @__PURE__ */ jsxs(
+    /* @__PURE__ */ jsx$1(TabItem, { label: "Queue", id: `wf-${flowId}-wa-${id}-nested-chats-queue`, children: /* @__PURE__ */ jsx$1("div", { className: "flex flex-col margin-10 nested-chat-queue", children: nestedChats[0]?.messages.map((message, index2) => /* @__PURE__ */ jsxs(
       "div",
       {
-        className: "flex-align-center margin-bottom-10 queue-item",
+        className: "flex items-center margin-bottom-10 queue-item",
         "data-testid": `nested-chat-queue-item-${index2}`,
         children: [
           /* @__PURE__ */ jsxs("div", { className: "margin-right-10 reorder-buttons", children: [
@@ -33326,7 +33577,7 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
   const usesMemoryStorage = isQdrant && retrieveConfig.dbConfig.useMemory;
   const usesLocalStorage = retrieveConfig.dbConfig.useLocalStorage;
   const showConnectionUrl = !isQdrant || isQdrant && !usesMemoryStorage && !usesLocalStorage;
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column vector-db-config", "data-testid": `rag-vector-db-config-${id}`, children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col vector-db-config", "data-testid": `rag-vector-db-config-${id}`, children: [
     /* @__PURE__ */ jsx$1("label", { htmlFor: `rag-vector-db-${id}`, children: "Vector DB:" }),
     /* @__PURE__ */ jsx$1(
       Select,
@@ -33427,7 +33678,7 @@ const WaldiezAgentRagUserVectorDb = memo((props) => {
         )
       ] })
     ] }),
-    showConnectionUrl && /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    showConnectionUrl && /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsx$1(
         InfoLabel,
         {
@@ -33620,7 +33871,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
     [data.retrieveConfig.task, retrieveConfig.task]
   );
   return /* @__PURE__ */ jsxs("div", { className: "rag-retrieve-config-container", "data-testid": `rag-retrieve-config-${id}`, children: [
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsx$1(
         InfoLabel,
         {
@@ -33641,7 +33892,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       uploadsEnabled && /* @__PURE__ */ jsx$1("div", { className: "margin-top-20", children: /* @__PURE__ */ jsx$1(
         DropZone,
         {
@@ -33666,7 +33917,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsx$1(
         InfoLabel,
         {
@@ -33688,7 +33939,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsx$1(
         InfoLabel,
         {
@@ -33710,7 +33961,7 @@ const WaldiezAgentRagUserRetrieveConfig = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsx$1(
         InfoLabel,
         {
@@ -33832,7 +34083,7 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
   );
   const showEmptyLineBreak = retrieveConfig.chunkMode === "multi_lines";
   return /* @__PURE__ */ jsxs("div", { className: "text-split-config", "data-testid": `rag-text-split-config-${id}`, children: [
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsx$1(
         InfoLabel,
         {
@@ -33854,7 +34105,7 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsx$1(
         InfoLabel,
         {
@@ -33876,7 +34127,7 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsx$1(
         InfoLabel,
         {
@@ -33897,7 +34148,7 @@ const WaldiezAgentRagUserTextSplit = memo((props) => {
         }
       )
     ] }),
-    showEmptyLineBreak && /* @__PURE__ */ jsx$1("div", { className: "flex-column", children: /* @__PURE__ */ jsx$1(
+    showEmptyLineBreak && /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: /* @__PURE__ */ jsx$1(
       InfoCheckbox,
       {
         label: "Must Break at Empty Line ",
@@ -34004,7 +34255,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
     onRecursiveChange
   } = useWaldiezAgentRagUserAdvanced(props);
   return /* @__PURE__ */ jsxs("div", { className: "rag-advanced-settings", "data-testid": `rag-advanced-settings-${id}`, children: [
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsx$1(
         InfoLabel,
         {
@@ -34026,7 +34277,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsx$1(
         InfoLabel,
         {
@@ -34048,7 +34299,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsx$1("div", { className: "flex-column", children: /* @__PURE__ */ jsx$1(
+    /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: /* @__PURE__ */ jsx$1(
       InfoCheckbox,
       {
         label: "Update Context ",
@@ -34059,7 +34310,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         "aria-label": "Update context for interactive retrieval"
       }
     ) }),
-    /* @__PURE__ */ jsx$1("div", { className: "flex-column", children: /* @__PURE__ */ jsx$1(
+    /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: /* @__PURE__ */ jsx$1(
       InfoCheckbox,
       {
         label: "Get or Create ",
@@ -34070,7 +34321,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         "aria-label": "Get or create collection"
       }
     ) }),
-    /* @__PURE__ */ jsx$1("div", { className: "flex-column", children: /* @__PURE__ */ jsx$1(
+    /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: /* @__PURE__ */ jsx$1(
       InfoCheckbox,
       {
         label: "New Docs ",
@@ -34081,7 +34332,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         "aria-label": "Only add new documents"
       }
     ) }),
-    /* @__PURE__ */ jsx$1("div", { className: "flex-column", children: /* @__PURE__ */ jsx$1(
+    /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: /* @__PURE__ */ jsx$1(
       InfoCheckbox,
       {
         label: "Overwrite ",
@@ -34092,7 +34343,7 @@ const WaldiezAgentRagUserAdvanced = memo((props) => {
         "aria-label": "Overwrite existing collection"
       }
     ) }),
-    /* @__PURE__ */ jsx$1("div", { className: "flex-column", children: /* @__PURE__ */ jsx$1(
+    /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: /* @__PURE__ */ jsx$1(
       InfoCheckbox,
       {
         label: "Recursive ",
@@ -34300,7 +34551,7 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
             title: "Embedding Function",
             dataTestId: `${flowId}-rag-use-custom-embedding`,
             "aria-label": "Embedding function settings",
-            children: /* @__PURE__ */ jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
+            children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col", style: collapsibleStyle, children: [
               /* @__PURE__ */ jsx$1("div", { className: "info", children: /* @__PURE__ */ jsx$1("div", { className: "info-tooltip", children: "If selected, the agent will use a custom embedding function. Default is False." }) }),
               /* @__PURE__ */ jsx$1(
                 CheckboxInput,
@@ -34333,7 +34584,7 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
             title: "Token Count",
             dataTestId: `${flowId}-rag-use-custom-tokenCount`,
             "aria-label": "Token count function settings",
-            children: /* @__PURE__ */ jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
+            children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col", style: collapsibleStyle, children: [
               /* @__PURE__ */ jsx$1("div", { className: "info", children: /* @__PURE__ */ jsx$1("div", { className: "info-tooltip", children: "If selected, the agent will use a custom token count function. Default is False." }) }),
               /* @__PURE__ */ jsx$1(
                 CheckboxInput,
@@ -34366,7 +34617,7 @@ const WaldiezAgentRagUserCustomFunctions = memo((props) => {
             title: "Text Split",
             dataTestId: `${flowId}-rag-use-custom-textSplit`,
             "aria-label": "Text split function settings",
-            children: /* @__PURE__ */ jsxs("div", { className: "flex-column", style: collapsibleStyle, children: [
+            children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col", style: collapsibleStyle, children: [
               /* @__PURE__ */ jsx$1("div", { className: "info", children: /* @__PURE__ */ jsx$1("div", { className: "info-tooltip", children: "If selected, the agent will use a custom text split function. Default is False." }) }),
               /* @__PURE__ */ jsx$1(
                 CheckboxInput,
@@ -35345,7 +35596,7 @@ const WaldiezAgentUserTabs = memo((props) => {
       /* @__PURE__ */ jsx$1(
         TextareaInput,
         {
-          className: "full-width margin-top-5",
+          className: "w-full margin-top-5",
           value: data.agentDefaultAutoReply ?? "",
           onChange: onAgentDefaultAutoReplyChange,
           "data-testid": `agent-default-auto-reply-input-${id}`,
@@ -35815,7 +36066,7 @@ const WaldiezNodeAgentView = (props) => {
       classes += `agent-node ${agentType} group-member`;
     }
     if (agentType === "group_manager") {
-      classes += " flex-column flex-1";
+      classes += " flex flex-col flex-1";
       if (isDragging) {
         classes += " dragging";
       }
@@ -36953,7 +37204,7 @@ const WaldiezNodeModelModalAdvancedTab = memo(
       onUpdateTag,
       onDeleteTag
     } = useModelModalAdvancedTab(props);
-    return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    return /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsx$1(
         NumberInput,
         {
@@ -37059,7 +37310,7 @@ const WaldiezNodeModelModalAWSTab = memo(({ data, onDataChange }) => {
     },
     [data.aws, onDataChange]
   );
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
     /* @__PURE__ */ jsx$1(
       TextInput,
       {
@@ -37215,12 +37466,7 @@ const ModelSelector = memo((props) => {
         {
           src: logo,
           alt: `${group.label} logo`,
-          style: {
-            width: 20,
-            height: 20,
-            marginRight: 10,
-            backgroundColor: "transparent"
-          }
+          className: "w-[20px] h-[20px] mr-[10px] bg-transparent"
         }
       ),
       /* @__PURE__ */ jsx$1("strong", { children: group.label })
@@ -37241,7 +37487,7 @@ const ModelSelector = memo((props) => {
         isSearchable: true,
         isClearable: true,
         "aria-label": "Predefined models",
-        className: "full-width"
+        className: "w-full"
       }
     )
   ] });
@@ -37278,7 +37524,7 @@ const WaldiezNodeModelModalBasicTab = memo(
       [onDataChange]
     );
     const usefulLinks = useMemo(
-      () => /* @__PURE__ */ jsx$1("div", { className: "flex-column", children: Object.entries(modelLinks).filter(([_, link]) => link.length > 0).map(([key, link]) => /* @__PURE__ */ jsxs("div", { className: "flex-row margin-bottom-5", children: [
+      () => /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: Object.entries(modelLinks).filter(([_, link]) => link.length > 0).map(([key, link]) => /* @__PURE__ */ jsxs("div", { className: "flex-row margin-bottom-5", children: [
         /* @__PURE__ */ jsxs("span", { className: "flex-shrink-0", children: [
           capitalize(key),
           " models:  "
@@ -37300,7 +37546,7 @@ const WaldiezNodeModelModalBasicTab = memo(
     const apiTypeSelectId = `model-api-type-select-${id}`;
     const apiKeyInputId = `model-api-key-input-${id}`;
     const baseUrlInputId = `model-base-url-input-${id}`;
-    return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+    return /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
       /* @__PURE__ */ jsxs("div", { className: "info margin-bottom-10", children: [
         "You can select one of the predefined models from the list below or manually enter the model name and type. In the latter case, make sure that the model's name is a valid name (based on the provider). You can use the ",
         /* @__PURE__ */ jsx$1("strong", { children: "Test" }),
@@ -37314,7 +37560,7 @@ const WaldiezNodeModelModalBasicTab = memo(
             title: "Useful Links",
             expanded: false,
             fullWidth: true,
-            className: "transparent color-info no-padding margin-top-5 margin-bottom-5",
+            className: "bg-transparent color-info no-padding margin-top-5 margin-bottom-5",
             contentClassName: "background-info",
             children: usefulLinks
           }
@@ -37333,7 +37579,7 @@ const WaldiezNodeModelModalBasicTab = memo(
             onChange: onLabelChange,
             title: "Model name",
             "data-testid": "model-name-input",
-            className: "full-width",
+            className: "w-full",
             "aria-label": "Model name"
           }
         )
@@ -37360,13 +37606,13 @@ const WaldiezNodeModelModalBasicTab = memo(
             onChange: onApiTypeChange,
             inputId: apiTypeSelectId,
             "aria-label": "Model API type",
-            className: "full-width"
+            className: "w-full"
           }
         )
       ] }),
       apiType !== "bedrock" && /* @__PURE__ */ jsxs("div", { className: "margin-top-0", children: [
         /* @__PURE__ */ jsx$1(InfoLabel, { label: "API Key:", info: apiKeyInfo, htmlFor: apiKeyInputId }),
-        /* @__PURE__ */ jsxs("div", { className: "flex full-width", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex w-full", children: [
           /* @__PURE__ */ jsx$1(
             "input",
             {
@@ -37412,7 +37658,7 @@ const WaldiezNodeModelModalBasicTab = memo(
             value: baseUrl || "",
             onChange: onBaseUrlChange,
             "data-testid": "model-base-url-input",
-            className: "full-width",
+            className: "w-full",
             "aria-label": "Base URL"
           }
         ) : /* @__PURE__ */ jsx$1(
@@ -37425,7 +37671,7 @@ const WaldiezNodeModelModalBasicTab = memo(
             disabled: true,
             value: readOnlyBaseUrl,
             "data-testid": "model-base-url-input-read-only",
-            className: "full-width",
+            className: "w-full",
             "aria-label": "Base URL (read-only)"
           }
         )
@@ -37489,7 +37735,7 @@ const WaldiezNodeModelModalPriceTab = memo(
     const completionTestId = `model-modal-price-completion-${modelId}`;
     const promptInputId = `price-prompt-${modelId}`;
     const completionInputId = `price-completion-${modelId}`;
-    return /* @__PURE__ */ jsx$1("div", { className: "flex-column", children: /* @__PURE__ */ jsxs("div", { className: "model-price", children: [
+    return /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: /* @__PURE__ */ jsxs("div", { className: "model-price", children: [
       /* @__PURE__ */ jsx$1(
         InfoLabel,
         {
@@ -37498,8 +37744,8 @@ const WaldiezNodeModelModalPriceTab = memo(
           htmlFor: "prompt-price-inputs"
         }
       ),
-      /* @__PURE__ */ jsxs("div", { className: "flex-column margin-left-10 margin-bottom-10 padding-left-10", children: [
-        /* @__PURE__ */ jsxs("div", { className: "flex-column margin-bottom-10", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex flex-col margin-left-10 margin-bottom-10 padding-left-10", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex flex-col margin-bottom-10", children: [
           /* @__PURE__ */ jsx$1("label", { htmlFor: promptInputId, children: "Prompt price per 1K tokens:" }),
           /* @__PURE__ */ jsx$1(
             "input",
@@ -37517,7 +37763,7 @@ const WaldiezNodeModelModalPriceTab = memo(
             }
           )
         ] }),
-        /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
           /* @__PURE__ */ jsx$1("label", { htmlFor: completionInputId, children: "Completion price per 1K tokens:" }),
           /* @__PURE__ */ jsx$1(
             "input",
@@ -37699,7 +37945,7 @@ const WaldiezNodeModelView = ({ id, data }) => {
           children: /* @__PURE__ */ jsx$1(FaTrashCan, {})
         }
       ),
-      /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center", children: [
         /* @__PURE__ */ jsx$1(
           "div",
           {
@@ -38126,7 +38372,7 @@ const WaldiezToolBasicTab = memo((props) => {
       ] });
     }
   );
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
     /* @__PURE__ */ jsxs("div", { className: "margin-bottom-10", children: [
       /* @__PURE__ */ jsx$1("label", { htmlFor: typeSelectId, children: "Type:" }),
       /* @__PURE__ */ jsx$1("div", { className: "margin-top-10" }),
@@ -38157,7 +38403,7 @@ const WaldiezToolBasicTab = memo((props) => {
           "data-testid": labelInputId,
           id: labelInputId,
           onChange: onToolLabelChange,
-          className: "full-width",
+          className: "w-full",
           "aria-label": "Tool name"
         }
       )
@@ -38174,7 +38420,7 @@ const WaldiezToolBasicTab = memo((props) => {
           "data-testid": descriptionInputId,
           id: descriptionInputId,
           onChange: onToolDescriptionChange,
-          className: "full-width",
+          className: "w-full",
           "aria-label": "Tool description"
         }
       )
@@ -38953,7 +39199,7 @@ const EditFlowModalModalTabBasic = (props) => {
     onDataChange({ isAsync: checked });
   };
   const edgesCount = sortedEdges.length + remainingEdges.length;
-  return /* @__PURE__ */ jsxs("div", { className: "flex-column padding-left-10 padding-right-10", id: `rf-${flowId}-edit-flow-modal`, children: [
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col padding-left-10 padding-right-10", id: `rf-${flowId}-edit-flow-modal`, children: [
     /* @__PURE__ */ jsx$1("label", { htmlFor: `rf-${flowId}-edit-flow-modal-name`, children: "Name" }),
     /* @__PURE__ */ jsx$1(
       "input",
@@ -39056,7 +39302,7 @@ const EditFlowModalModalTabOther = (props) => {
             "data-testid": `edit-flow-${flowId}-modal-cache-seed-toggle`
           }
         ),
-        typeof cacheSeed === "number" && /* @__PURE__ */ jsxs("div", { className: "margin-top-5 flex-align-center", children: [
+        typeof cacheSeed === "number" && /* @__PURE__ */ jsxs("div", { className: "margin-top-5 flex items-center", children: [
           /* @__PURE__ */ jsx$1("div", { className: "margin-left-5 margin-right-5", children: " Cache seed:" }),
           /* @__PURE__ */ jsx$1(
             "input",
@@ -39237,7 +39483,7 @@ const SideBar = (props) => {
           {
             className: "sidebar-header",
             style: {
-              justifyContent: isCollapsed ? "center" : "space-between"
+              justifyContent: isCollapsed ? "center" : "between"
             },
             children: [
               !isCollapsed && /* @__PURE__ */ jsx$1("div", { className: "title", children: "Waldiez" }),
@@ -39272,7 +39518,7 @@ const SideBar = (props) => {
                 "data-testid": `edit-flow-${flowId}-sidebar-button`,
                 onClick: onOpenEditModal,
                 title: "Edit flow",
-                children: isCollapsed ? /* @__PURE__ */ jsx$1(FaEdit, {}) : /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
+                children: isCollapsed ? /* @__PURE__ */ jsx$1(FaEdit, {}) : /* @__PURE__ */ jsxs("div", { className: "flex items-center", children: [
                   /* @__PURE__ */ jsx$1(FaEdit, {}),
                   /* @__PURE__ */ jsx$1("div", { children: "Edit flow" })
                 ] })
@@ -39285,7 +39531,7 @@ const SideBar = (props) => {
                 "data-node-type": "model",
                 "data-testid": "show-models",
                 onClick: onShowModels,
-                children: isCollapsed ? /* @__PURE__ */ jsx$1(LuBrain, {}) : /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
+                children: isCollapsed ? /* @__PURE__ */ jsx$1(LuBrain, {}) : /* @__PURE__ */ jsxs("div", { className: "flex items-center", children: [
                   /* @__PURE__ */ jsx$1(LuBrain, {}),
                   /* @__PURE__ */ jsx$1("div", { children: "Models" })
                 ] })
@@ -39298,7 +39544,7 @@ const SideBar = (props) => {
                 "data-node-type": "tool",
                 "data-testid": "show-tools",
                 onClick: onShowTools,
-                children: isCollapsed ? /* @__PURE__ */ jsx$1(FaTools, {}) : /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
+                children: isCollapsed ? /* @__PURE__ */ jsx$1(FaTools, {}) : /* @__PURE__ */ jsxs("div", { className: "flex items-center", children: [
                   /* @__PURE__ */ jsx$1(FaTools, {}),
                   /* @__PURE__ */ jsx$1("div", { children: "Tools" })
                 ] })
@@ -39312,7 +39558,7 @@ const SideBar = (props) => {
                 "data-testid": "show-agents",
                 onClick: onShowAgents,
                 children: [
-                  /* @__PURE__ */ jsxs("div", { className: "flex-align-center", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center", children: [
                     /* @__PURE__ */ jsx$1(FaRobot, {}),
                     !isCollapsed && /* @__PURE__ */ jsx$1("span", { children: "Agents" })
                   ] }),

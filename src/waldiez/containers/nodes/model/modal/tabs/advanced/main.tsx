@@ -24,7 +24,7 @@ export const WaldiezNodeModelModalAdvancedTab: FC<WaldiezNodeModelModalAdvancedT
             onDeleteTag,
         } = useModelModalAdvancedTab(props);
         return (
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <NumberInput
                     name="temperature"
                     label={"Temperature:"}

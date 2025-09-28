@@ -6,7 +6,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { DebugStatsHandler } from "@waldiez/utils/stepByStep/handlers";
 
-// eslint-disable-next-line max-lines-per-function
 describe("DebugStatsHandler", () => {
     let handler: DebugStatsHandler;
 

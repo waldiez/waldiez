@@ -12,7 +12,6 @@ vi.mock("nanoid", () => ({
     nanoid: () => "mocked-id",
 }));
 
-// eslint-disable-next-line max-lines-per-function
 describe("WaldiezChatMessageUtils", () => {
     describe("isPasswordPrompt", () => {
         it("returns true for boolean true", () => {

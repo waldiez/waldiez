@@ -57,7 +57,7 @@ const defaultChatDeduplicationOptions: Required<WaldiezChatMessageDeduplicationO
  */
 export const useWaldiezChat: (props: {
     initialConfig?: Partial<WaldiezChatConfig>;
-    handlers?: WaldiezChatHandlers;
+    handlers?: Partial<WaldiezChatHandlers>;
     preprocess?: (message: any) => { handled: boolean; updated?: any };
     onPreview?: (requestId: string) => string;
     deduplicationOptions?: WaldiezChatMessageDeduplicationOptions;
@@ -77,7 +77,7 @@ export const useWaldiezChat: (props: {
     clearMessages: () => void;
 } = (props: {
     initialConfig?: Partial<WaldiezChatConfig>;
-    handlers?: WaldiezChatHandlers;
+    handlers?: Partial<WaldiezChatHandlers>;
     preprocess?: (message: any) => { handled: boolean; updated?: any };
     onPreview?: (requestId: string) => string;
     deduplicationOptions?: WaldiezChatMessageDeduplicationOptions;

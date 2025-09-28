@@ -220,4 +220,198 @@ describe("WaldiezStepByStepUtils", () => {
             });
         });
     });
+    it("should handle empty strings as valid", () => {
+        const event = {
+            sender: "",
+            recipient: "",
+            type: "message",
+        };
+
+        const result = WaldiezStepByStepUtils.extractEventParticipants(event);
+
+        expect(result).toEqual({
+            sender: "",
+            recipient: "",
+            eventType: "message",
+        });
+    });
+
+    it("should extract participants from nested event object", () => {
+        const event = {
+            event: {
+                sender: "nested_user",
+                recipient: "nested_assistant",
+                type: "nested_message",
+            },
+        };
+
+        const result = WaldiezStepByStepUtils.extractEventParticipants(event);
+
+        expect(result).toEqual({
+            sender: "nested_user",
+            recipient: "nested_assistant",
+            eventType: "nested_message",
+        });
+    });
+
+    it("should extract participants from data object", () => {
+        const event = {
+            data: {
+                sender: "data_user",
+                recipient: "data_assistant",
+                type: "data_message",
+            },
+        };
+
+        const result = WaldiezStepByStepUtils.extractEventParticipants(event);
+
+        expect(result).toEqual({
+            sender: "data_user",
+            recipient: "data_assistant",
+            eventType: "data_message",
+        });
+    });
+
+    it("should extract participants from content object including speaker", () => {
+        const event = {
+            content: {
+                sender: "content_user",
+                recipient: "content_assistant",
+                type: "content_message",
+                speaker: "group_speaker",
+            },
+        };
+
+        const result = WaldiezStepByStepUtils.extractEventParticipants(event);
+
+        expect(result).toEqual({
+            sender: "group_speaker", // speaker overrides sender
+            recipient: "content_assistant",
+            eventType: "content_message",
+        });
+    });
+
+    it("should extract participants from message object", () => {
+        const event = {
+            message: {
+                sender: "message_user",
+                recipient: "message_assistant",
+            },
+        };
+
+        const result = WaldiezStepByStepUtils.extractEventParticipants(event);
+
+        expect(result).toEqual({
+            sender: "message_user",
+            recipient: "message_assistant",
+            eventType: undefined,
+        });
+    });
+
+    it("should not prioritize direct properties over nested ones", () => {
+        const event = {
+            sender: "direct_user",
+            type: "direct_type",
+            event: {
+                sender: "nested_user",
+                type: "nested_type",
+            },
+        };
+
+        const result = WaldiezStepByStepUtils.extractEventParticipants(event);
+
+        expect(result).toEqual({
+            sender: "nested_user",
+            recipient: undefined,
+            eventType: "nested_type",
+        });
+    });
+
+    it("should handle non-object nested properties", () => {
+        const event = {
+            event: "not_an_object",
+            data: 123,
+            content: null,
+            message: false,
+        };
+
+        const result = WaldiezStepByStepUtils.extractEventParticipants(event);
+
+        expect(result).toEqual({
+            sender: undefined,
+            recipient: undefined,
+            eventType: undefined,
+        });
+    });
+    it("should handle empty strings as valid", () => {
+        const event = {
+            sender: "",
+            recipient: "",
+            type: "message",
+        };
+
+        const result = WaldiezStepByStepUtils.extractEventParticipants(event);
+
+        expect(result).toEqual({
+            sender: "",
+            recipient: "",
+            eventType: "message",
+        });
+    });
+    it("should handle exact length content", () => {
+        const event = { content: "Exactly 10" }; // 10 characters
+
+        const result = WaldiezStepByStepUtils.formatEventContent(event, 10);
+
+        expect(result).toBe("Exactly 10");
+    });
+
+    it("should preserve eventType from first nested object that has it", () => {
+        const event = {
+            data: {
+                type: "first_type",
+            },
+            content: {
+                type: "second_type",
+            },
+        };
+
+        const result = WaldiezStepByStepUtils.extractEventParticipants(event);
+
+        expect(result.eventType).toBe("first_type"); // first one wins
+    });
+    it("should handle exact length content", () => {
+        const event = { content: "Exactly 10" }; // 10 characters
+
+        const result = WaldiezStepByStepUtils.formatEventContent(event, 10);
+
+        expect(result).toBe("Exactly 10");
+    });
+    it("should handle complex nested structure with multiple levels", () => {
+        const event = {
+            sender: "top_level_user", // This should be overridden
+            event: {
+                sender: "event_level_user",
+                recipient: "event_recipient", // This should be overridden
+            },
+            data: {
+                type: "data_type", // This should be used since no previous type
+            },
+            content: {
+                speaker: "content_speaker", // This should override the sender
+            },
+            message: {
+                sender: "message_sender", // This should also override the sender
+                recipient: "message_recipient", // This should override the recipient
+            },
+        };
+
+        const result = WaldiezStepByStepUtils.extractEventParticipants(event);
+
+        expect(result).toEqual({
+            sender: "message_sender", // content.speaker overrides everything
+            recipient: "message_recipient", // first nested recipient found
+            eventType: "data_type", // first nested type found
+        });
+    });
 });

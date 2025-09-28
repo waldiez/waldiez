@@ -157,7 +157,7 @@ export type WaldiezAgentCommonData = {
     updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
     handoffs: string[]; // handoff / edge ids
     afterWork: WaldiezTransitionTarget | null;
-    // linkss
+    // links
     modelIds: string[];
     tools: WaldiezAgentLinkedTool[];
     // meta

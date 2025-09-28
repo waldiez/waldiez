@@ -61,7 +61,7 @@ const noOp = () => {};
  */
 export const useWaldiezStepByStep: (props: {
     initialConfig?: Partial<WaldiezStepByStep>;
-    handlers?: WaldiezStepHandlers;
+    handlers?: Partial<WaldiezStepHandlers>;
     preprocess?: (message: any) => { handled: boolean; updated?: any };
     onPreview?: (requestId: string) => string;
     deduplicationOptions?: WaldiezStepByStepMessageDeduplicationOptions;
@@ -75,7 +75,7 @@ export const useWaldiezStepByStep: (props: {
     setActiveRequest: (request: WaldiezActiveRequest | undefined) => void;
     setPendingControl: (controlInput: { request_id: string; prompt: string } | undefined) => void;
     setBreakpoints: (breakpoints: (string | WaldiezBreakpoint)[]) => void;
-    setError: (error: string) => void;
+    setError: (error: string | undefined) => void;
     setTimeline: (timeline: WaldiezTimelineData) => void;
     setParticipants: (participants: WaldiezChatParticipant[]) => void;
     addEvent: (event: Record<string, unknown>) => void;
@@ -83,7 +83,7 @@ export const useWaldiezStepByStep: (props: {
     clearEvents: () => void;
 } = (props: {
     initialConfig?: Partial<WaldiezStepByStep>;
-    handlers?: WaldiezStepHandlers;
+    handlers?: Partial<WaldiezStepHandlers>;
     preprocess?: (message: any) => { handled: boolean; updated?: any };
     onPreview?: (requestId: string) => string;
     deduplicationOptions?: WaldiezStepByStepMessageDeduplicationOptions;

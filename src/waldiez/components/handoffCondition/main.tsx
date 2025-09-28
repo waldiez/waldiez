@@ -186,7 +186,7 @@ export const HandoffCondition: FC<{
     }, [currentHandoffCondition, fieldUpdaters]);
 
     return (
-        <div className="flex-column">
+        <div className="flex flex-col">
             <div className="info margin-bottom-5">
                 You can control when this transition happens. Conditions allow you to check values or evaluate
                 logic based on the current context. There are four types of conditions you can choose from:
@@ -235,7 +235,7 @@ export const HandoffCondition: FC<{
                     </li>
                 </ul>
             </div>
-            <div className="flex-column margin-top-10">
+            <div className="flex flex-col margin-top-10">
                 <label className="hidden" htmlFor="select-condition-type">
                     Condition Type
                 </label>

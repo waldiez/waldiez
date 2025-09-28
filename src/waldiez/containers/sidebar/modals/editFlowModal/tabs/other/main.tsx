@@ -63,7 +63,7 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
                 data-testid={`edit-flow-${flowId}-modal-cache-seed-toggle`}
             />
             {typeof cacheSeed === "number" && (
-                <div className="margin-top-5 flex-align-center">
+                <div className="margin-top-5 flex items-center">
                     <div className="margin-left-5 margin-right-5"> Cache seed:</div>
                     <input
                         type="number"

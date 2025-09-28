@@ -27,7 +27,7 @@ export const useWaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
     const flowId = useWaldiez(s => s.flowId);
     const { isDark } = useWaldiezTheme();
 
-    // no memo, so we can get the latest edge data (and correctly compy "isDirty" state)
+    // no memo
     const edge = getEdgeById(edgeId) as WaldiezEdge | null;
 
     const sourceAgent = useMemo(() => (edge ? getEdgeSourceAgent(edge) : null), [edge, getEdgeSourceAgent]);

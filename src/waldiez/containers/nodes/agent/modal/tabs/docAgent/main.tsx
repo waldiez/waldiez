@@ -162,7 +162,7 @@ const getHelpInstructions = () => {
                     <li>Or drag the folder into Terminal to see its path</li>
                 </ol>
                 <p>
-                    <strong>Example:</strong> /Users/yourname/Documents/MyProject
+                    <strong>Example:</strong> /Users/you/Documents/MyProject
                 </p>
             </div>
         );
@@ -177,7 +177,7 @@ const getHelpInstructions = () => {
                     <li>Or right-click folder → Properties → Location</li>
                 </ol>
                 <p>
-                    <strong>Example:</strong> C:\Users\yourname\Documents\MyProject
+                    <strong>Example:</strong> C:\Users\you\Documents\MyProject
                 </p>
             </div>
         );
@@ -192,7 +192,7 @@ const getHelpInstructions = () => {
                     <li>Or right-click and check properties</li>
                 </ol>
                 <p>
-                    <strong>Example:</strong> /home/yourname/Documents/MyProject
+                    <strong>Example:</strong> /home/you/Documents/MyProject
                 </p>
             </div>
         );

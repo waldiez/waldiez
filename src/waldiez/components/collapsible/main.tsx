@@ -41,7 +41,7 @@ export const Collapsible = memo<CollapsibleProps>(props => {
     }, []);
 
     // Calculate CSS classes once
-    const containerClassName = `collapsible ${fullWidth ? "full-width" : ""} ${className}`.trim();
+    const containerClassName = `collapsible ${fullWidth ? "w-full" : ""} ${className}`.trim();
     const headerClassName = `collapsible-header ${className}`.trim();
 
     return (

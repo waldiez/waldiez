@@ -27,7 +27,7 @@ export const WaldiezEdgeBasicTab: FC<WaldiezEdgeBasicTabProps> = (props: Waldiez
         onLlmSummaryRoleChange,
     } = useWaldiezEdgeBasicTab(props);
     return (
-        <div className="flex-column">
+        <div className="flex flex-col">
             <div className="margin-top--10">
                 <InfoLabel
                     htmlFor={`select-chat-type-${edgeId}`}

@@ -31,7 +31,7 @@ export const Timeline: FC<{
         }
     }, []);
     return (
-        <div className="full-width padding-10">
+        <div className="w-full padding-10">
             <div className="timeline-grid margin-bottom-10">
                 {[
                     { label: "Sessions", value: data.summary.total_sessions, icon: FiActivity },
@@ -81,7 +81,7 @@ export const Timeline: FC<{
                     </p>
                 </div>
                 <div className="card-content">
-                    <div className="full-width">
+                    <div className="w-full">
                         <ResponsiveContainer width="100%" height={height}>
                             <TimelineChart
                                 width={dimensions.width}
@@ -93,7 +93,7 @@ export const Timeline: FC<{
                     </div>
                     {/* Agent Legend */}
                     {data.agents.length > 0 && (
-                        // <div className="mt-4 flex-align-center flex-wrap gap-2">
+                        // <div className="mt-4 flex items-center flex-wrap gap-2">
                         <div className="timeline-agent-list">
                             {data.agents.map(agent => (
                                 <div key={agent.name} className={"timeline-agent-item"}>

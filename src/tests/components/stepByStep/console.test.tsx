@@ -22,12 +22,7 @@ describe("EventConsole", () => {
     describe("rendering", () => {
         it("should render with default props", () => {
             const { container } = render(<EventConsole events={[]} />);
-            expect(container.firstChild).toHaveClass(
-                "flex-align-center",
-                "flex-column",
-                "full-height",
-                "json",
-            );
+            expect(container.firstChild).toHaveClass("flex", "items-center", "flex-col", "h-full", "json");
         });
 
         it("should apply custom className", () => {

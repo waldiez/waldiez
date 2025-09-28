@@ -30,14 +30,14 @@ export const WaldiezEdgeNestedTab = (props: WaldiezEdgeNestedTabProps) => {
     // so for now a custom method can be used to handle the context
     const noOp = () => {};
     return (
-        <div className="flex-column margin-top-10">
+        <div className="flex flex-col margin-top-10">
             <div className="info margin-bottom-10">
                 When the connection is used in a nested chat, you can specify the messages to be sent and
                 received, from the source and the target respectively.
             </div>
             <TabItems activeTabIndex={0}>
                 <TabItem label="Message" id={`wc-${flowId}-edge-nested-chat-${edgeId}-message`}>
-                    <div className="flex-column">
+                    <div className="flex flex-col">
                         <MessageInput
                             darkMode={darkMode}
                             current={currentMessageInput}
@@ -58,7 +58,7 @@ export const WaldiezEdgeNestedTab = (props: WaldiezEdgeNestedTabProps) => {
                     </div>
                 </TabItem>
                 <TabItem label="Reply" id={`wc-${flowId}-edge-nested-chat-${edgeId}-reply`}>
-                    <div className="flex-column">
+                    <div className="flex flex-col">
                         <MessageInput
                             darkMode={darkMode}
                             current={currentReplyInput}

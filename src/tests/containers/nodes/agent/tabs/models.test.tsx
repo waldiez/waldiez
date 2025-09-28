@@ -59,7 +59,7 @@ describe("Models tab", () => {
         });
         submitAgentChanges();
     });
-    it("should allow haviing two models selected", async () => {
+    it("should allow having two models selected", async () => {
         renderAgent("assistant", {
             openModal: true,
             dataOverrides: modelOverrides,

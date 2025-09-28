@@ -27,11 +27,11 @@ export const LoadFlowStep = (props: LoadFlowStepProps) => {
                 dataTestId={`import-flow-modal-collapsible-search-${flowId}`}
                 expanded
             >
-                <div className="margin-top-10 margin-bottom-10 full-width flex-column">
-                    <div className="full-width flex-align-center">
+                <div className="margin-top-10 margin-bottom-10 w-full flex flex-col">
+                    <div className="w-full flex items-center">
                         <input
                             type="text"
-                            className="text-input full-width margin-right-10"
+                            className="text-input w-full margin-right-10"
                             placeholder="Search"
                             onChange={onSearchChange}
                             onKeyDown={e => {
@@ -88,14 +88,14 @@ export const LoadFlowStep = (props: LoadFlowStepProps) => {
                 </div>
             </Collapsible>
             <Collapsible title="Import from URL" dataTestId={`import-flow-modal-collapsible-url-${flowId}`}>
-                <div className="margin-top-10 full-width flex-column">
+                <div className="margin-top-10 w-full flex flex-col">
                     <div className="warning margin-bottom-10">
                         <span>Warning: Importing from an untrusted source can be harmful</span>
                     </div>
-                    <div className="margin-top-10 full-width flex-align-center">
+                    <div className="margin-top-10 w-full flex items-center">
                         <input
                             type="text"
-                            className="text-input full-width margin-right-10"
+                            className="text-input w-full margin-right-10"
                             placeholder="Enter URL"
                             onChange={onRemoteUrlChange}
                             value={state.remoteUrl}
@@ -116,7 +116,7 @@ export const LoadFlowStep = (props: LoadFlowStepProps) => {
             </Collapsible>
             <div className="margin-top-20 center">
                 {loadedFlowData ? (
-                    <div className="flex-center">
+                    <div className="flex items-center justify-center">
                         Loaded flow: <span className="bold italic">{loadedFlowData.name}</span>
                         <FaXmark
                             className="margin-left-10 clickable"

@@ -49,7 +49,7 @@ describe("WaldiezChatMessageProcessor", () => {
             });
         });
 
-        it("should handle termination wit hreason in data", () => {
+        it("should handle termination with reason in data", () => {
             const message = {
                 type: "termination",
                 termination_reason: "Chat ended due to inactivity",

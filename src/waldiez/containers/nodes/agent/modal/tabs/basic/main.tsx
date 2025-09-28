@@ -177,7 +177,7 @@ export const WaldiezAgentBasic = memo((props: WaldiezAgentBasicProps) => {
             <label htmlFor={`agent-default-auto-reply-input-${id}`}>Default Auto Reply:</label>
             <div className="margin-top-5" />
             <TextareaInput
-                className="full-width margin-top-5"
+                className="w-full margin-top-5"
                 value={data.agentDefaultAutoReply ?? ""}
                 onChange={onAgentDefaultAutoReplyChange}
                 data-testid={`agent-default-auto-reply-input-${id}`}

@@ -79,7 +79,7 @@ export const HandoffAvailability: FC<{
     );
     // Render expression input
     const renderExpressionInput = () => (
-        <div className="flex-column margin-top-10">
+        <div className="flex flex-col margin-top-10">
             <label className="hidden" htmlFor="expression-input">
                 Expression
             </label>
@@ -96,7 +96,7 @@ export const HandoffAvailability: FC<{
     );
     // Render string input
     const renderStringInput = () => (
-        <div className="flex-column margin-top-10">
+        <div className="flex flex-col margin-top-10">
             <label className="hidden" htmlFor="string-input">
                 Variable Name
             </label>
@@ -112,7 +112,7 @@ export const HandoffAvailability: FC<{
         </div>
     );
     return (
-        <div className="flex-column">
+        <div className="flex flex-col">
             <div className="info margin-bottom-5">
                 You can optionally handle the availability of this transition by checking a variable or using
                 an expression.
@@ -141,7 +141,7 @@ export const HandoffAvailability: FC<{
                 />
             </div>
             {available.type !== "none" && (
-                <div className="flex-column margin-top-10">
+                <div className="flex flex-col margin-top-10">
                     <label className="hidden" htmlFor="select-availability-type">
                         Availability Type
                     </label>

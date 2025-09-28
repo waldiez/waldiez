@@ -39,14 +39,14 @@ export const useWaldiezMessaging: (props: {
     preprocess?: (message: any) => { handled: boolean; updated?: any };
     chat?: {
         initialConfig?: Partial<WaldiezChatConfig>;
-        handlers?: WaldiezChatHandlers;
+        handlers?: Partial<WaldiezChatHandlers>;
         preprocess?: (message: any) => { handled: boolean; updated?: any };
         onPreview?: (requestId: string) => string;
         deduplicationOptions?: WaldiezChatMessageDeduplicationOptions;
     };
     stepByStep?: {
         initialConfig?: Partial<WaldiezStepByStep>;
-        handlers?: WaldiezStepHandlers;
+        handlers?: Partial<WaldiezStepHandlers>;
         preprocess?: (message: any) => { handled: boolean; updated?: any };
         onPreview?: (requestId: string) => string;
         deduplicationOptions?: WaldiezStepByStepMessageDeduplicationOptions;

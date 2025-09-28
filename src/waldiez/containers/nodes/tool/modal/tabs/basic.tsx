@@ -102,7 +102,7 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
     );
 
     return (
-        <div className="flex-column">
+        <div className="flex flex-col">
             <div className="margin-bottom-10">
                 <label htmlFor={typeSelectId}>Type:</label>
                 <div className="margin-top-10" />
@@ -129,7 +129,7 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
                         data-testid={labelInputId}
                         id={labelInputId}
                         onChange={onToolLabelChange}
-                        className="full-width"
+                        className="w-full"
                         aria-label="Tool name"
                     />
                 </div>
@@ -145,7 +145,7 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
                         data-testid={descriptionInputId}
                         id={descriptionInputId}
                         onChange={onToolDescriptionChange}
-                        className="full-width"
+                        className="w-full"
                         aria-label="Tool description"
                     />
                 </div>

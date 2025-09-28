@@ -45,7 +45,7 @@ export const WaldiezNodeModelModalAWSTab: FC<{
         [data.aws, onDataChange],
     );
     return (
-        <div className="flex-column">
+        <div className="flex flex-col">
             <TextInput
                 value={data.aws?.accessKey || ""}
                 name="aws-access-key"

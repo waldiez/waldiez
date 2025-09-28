@@ -37,7 +37,7 @@ export const WaldiezNodeModelModalPriceTab: FC<WaldiezNodeModelModalPriceTabProp
         const completionInputId = `price-completion-${modelId}`;
 
         return (
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <div className="model-price">
                     <InfoLabel
                         label="Price:"
@@ -45,9 +45,9 @@ export const WaldiezNodeModelModalPriceTab: FC<WaldiezNodeModelModalPriceTabProp
                         htmlFor="prompt-price-inputs"
                     />
 
-                    <div className="flex-column margin-left-10 margin-bottom-10 padding-left-10">
+                    <div className="flex flex-col margin-left-10 margin-bottom-10 padding-left-10">
                         {/* Prompt Price Input */}
-                        <div className="flex-column margin-bottom-10">
+                        <div className="flex flex-col margin-bottom-10">
                             <label htmlFor={promptInputId}>Prompt price per 1K tokens:</label>
                             <input
                                 id={promptInputId}
@@ -64,7 +64,7 @@ export const WaldiezNodeModelModalPriceTab: FC<WaldiezNodeModelModalPriceTabProp
                         </div>
 
                         {/* Completion Price Input */}
-                        <div className="flex-column">
+                        <div className="flex flex-col">
                             <label htmlFor={completionInputId}>Completion price per 1K tokens:</label>
                             <input
                                 id={completionInputId}

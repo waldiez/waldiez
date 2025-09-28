@@ -2,8 +2,10 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+import cspellESLintPluginRecommended from "@cspell/eslint-plugin/recommended";
 import stylistic from "@stylistic/eslint-plugin";
 import headers from "eslint-plugin-headers";
+import importPlugin from "eslint-plugin-import";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import reactHooks from "eslint-plugin-react-hooks";
 import eslintPluginReactRefresh from "eslint-plugin-react-refresh";
@@ -21,7 +23,12 @@ const project = "./tsconfig.app.json";
 // noinspection JSCheckFunctionSignatures
 const defaultConfig = eslintTs.config({
     files: ["src/**/*.{ts,tsx}"],
-    extends: [...eslintTs.configs.recommended, eslintPluginPrettierRecommended],
+    extends: [
+        ...eslintTs.configs.recommended,
+        eslintPluginPrettierRecommended,
+        cspellESLintPluginRecommended,
+        importPlugin.flatConfigs.typescript,
+    ],
     settings: {
         "import/resolver": {
             typescript: {
@@ -136,6 +143,12 @@ const defaultConfig = eslintTs.config({
                 },
             },
         ],
+        "@cspell/spellchecker": [
+            "warn",
+            {
+                configFile: "cspell.json",
+            },
+        ],
     },
 });
 
@@ -175,8 +188,12 @@ export default [
         files: ["src/tests/**/*.{ts,tsx}"],
         rules: {
             ...config.rules,
-            complexity: ["error", 20],
-            "max-statements": ["error", 20, { ignoreTopLevelFunctions: true }],
+            complexity: ["error", 30],
+            "max-statements": ["error", 50, { ignoreTopLevelFunctions: true }],
+            "max-depth": ["error", 10],
+            "max-nested-callbacks": ["error", 10],
+            "max-lines": ["error", { max: 1000, skipBlankLines: true, skipComments: true }],
+            "max-lines-per-function": ["error", { max: 1000, skipBlankLines: true, skipComments: true }],
         },
     })),
 ];

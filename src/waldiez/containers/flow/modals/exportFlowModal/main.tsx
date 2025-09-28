@@ -202,8 +202,8 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                         data-testid={`export-flow-modal-upload-checkbox-${flowId}`}
                     />
                     {alsoUpload && (
-                        <div className="flex-align-center full-width flex-column">
-                            <div className="margin-top-10 full-width">
+                        <div className="flex items-center w-full flex flex-col">
+                            <div className="margin-top-10 w-full">
                                 <TextInput
                                     label={<div className="no-padding margin-bottom-5">Hub API Token:</div>}
                                     value={hubApiToken}
@@ -211,11 +211,11 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                                     onChange={onHubApiTokenChange}
                                     placeholder="Enter your hub API token"
                                     dataTestId={`hub-api-token-${flowId}`}
-                                    className="full-width"
+                                    className="w-full"
                                     isPassword
                                 />
                             </div>
-                            <div className="margin-top-10 margin-bottom-20 full-width">
+                            <div className="margin-top-10 margin-bottom-20 w-full">
                                 <div className="margin-bottom-10 padding-10 center">
                                     Additional CSV file (results.csv) to include:
                                 </div>
@@ -235,7 +235,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                 <button type="reset" className="modal-action-cancel" onClick={onClose}>
                     Cancel
                 </button>
-                <div className="flex-align-center flex-row">
+                <div className="flex items-center flex-row">
                     {alsoUpload && (
                         <button
                             type="button"

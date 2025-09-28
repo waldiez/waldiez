@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable max-lines, max-lines-per-function */
 import { describe, expect, it } from "vitest";
 
 import type { WaldiezBreakpoint } from "@waldiez/components/types";

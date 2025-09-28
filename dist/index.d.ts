@@ -833,7 +833,7 @@ export declare type typeOfSet = {
  */
 export declare const useWaldiezChat: (props: {
     initialConfig?: Partial<WaldiezChatConfig>;
-    handlers?: WaldiezChatHandlers;
+    handlers?: Partial<WaldiezChatHandlers>;
     preprocess?: (message: any) => {
         handled: boolean;
         updated?: any;
@@ -868,7 +868,7 @@ export declare const useWaldiezMessaging: (props: {
     };
     chat?: {
         initialConfig?: Partial<WaldiezChatConfig>;
-        handlers?: WaldiezChatHandlers;
+        handlers?: Partial<WaldiezChatHandlers>;
         preprocess?: (message: any) => {
             handled: boolean;
             updated?: any;
@@ -878,7 +878,7 @@ export declare const useWaldiezMessaging: (props: {
     };
     stepByStep?: {
         initialConfig?: Partial<WaldiezStepByStep>;
-        handlers?: WaldiezStepHandlers;
+        handlers?: Partial<WaldiezStepHandlers>;
         preprocess?: (message: any) => {
             handled: boolean;
             updated?: any;
@@ -941,7 +941,7 @@ export declare const useWaldiezMessaging: (props: {
  */
 export declare const useWaldiezStepByStep: (props: {
     initialConfig?: Partial<WaldiezStepByStep>;
-    handlers?: WaldiezStepHandlers;
+    handlers?: Partial<WaldiezStepHandlers>;
     preprocess?: (message: any) => {
         handled: boolean;
         updated?: any;
@@ -961,7 +961,7 @@ export declare const useWaldiezStepByStep: (props: {
         prompt: string;
     } | undefined) => void;
     setBreakpoints: (breakpoints: (string | WaldiezBreakpoint)[]) => void;
-    setError: (error: string) => void;
+    setError: (error: string | undefined) => void;
     setTimeline: (timeline: WaldiezTimelineData) => void;
     setParticipants: (participants: WaldiezChatParticipant[]) => void;
     addEvent: (event: Record<string, unknown>) => void;
@@ -994,7 +994,7 @@ export declare const useWaldiezWsChat: (props: {
     };
     chat?: {
         initialConfig?: Partial<WaldiezChatConfig>;
-        handlers?: WaldiezChatHandlers;
+        handlers?: Partial<WaldiezChatHandlers>;
         preprocess?: (message: any) => {
             handled: boolean;
             updated?: any;
@@ -1030,7 +1030,7 @@ export declare const useWaldiezWsMessaging: (props: {
     };
     chat?: {
         initialConfig?: Partial<WaldiezChatConfig>;
-        handlers?: WaldiezChatHandlers;
+        handlers?: Partial<WaldiezChatHandlers>;
         preprocess?: (message: any) => {
             handled: boolean;
             updated?: any;
@@ -1111,7 +1111,7 @@ export declare const useWaldiezWsStepByStep: (props: {
     };
     stepByStep?: {
         initialConfig?: Partial<WaldiezStepByStep>;
-        handlers?: WaldiezStepHandlers;
+        handlers?: Partial<WaldiezStepHandlers>;
         preprocess?: (message: any) => {
             handled: boolean;
             updated?: any;
@@ -3516,7 +3516,7 @@ export declare type WaldiezModelAWS = {
  * @param topP - The top P
  * @param maxTokens - The max tokens
  * @param aws - The AWS related fields
- * @param extras - Exatra parameters to use in the LLM Config
+ * @param extras - Extra parameters to use in the LLM Config
  * @param defaultHeaders - The default headers
  * @param price - The price
  */

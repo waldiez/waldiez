@@ -206,7 +206,7 @@ export const UpdateState: FC<UpdateStateProps> = props => {
                 variables. If a function, it should accept the agent and messages as arguments and return a
                 string.
             </div>
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <CheckboxInput
                     label="Update system message before reply"
                     isChecked={enabled}

@@ -65,7 +65,7 @@ export const WaldiezAgentRagUserTextSplit = memo((props: WaldiezAgentRagUserText
     return (
         <div className="text-split-config" data-testid={`rag-text-split-config-${id}`}>
             {/* Chunk Token Size */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoLabel
                     label="Chunk Token Size:"
                     info={
@@ -87,7 +87,7 @@ export const WaldiezAgentRagUserTextSplit = memo((props: WaldiezAgentRagUserText
             </div>
 
             {/* Context Max Tokens */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoLabel
                     label="Context Max Tokens:"
                     info={
@@ -109,7 +109,7 @@ export const WaldiezAgentRagUserTextSplit = memo((props: WaldiezAgentRagUserText
             </div>
 
             {/* Chunk Mode */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoLabel
                     htmlFor={`rag-chunk-mode-${id}`}
                     label="Chunk Mode:"
@@ -135,7 +135,7 @@ export const WaldiezAgentRagUserTextSplit = memo((props: WaldiezAgentRagUserText
 
             {/* Must Break at Empty Line (only for multi_lines mode) */}
             {showEmptyLineBreak && (
-                <div className="flex-column">
+                <div className="flex flex-col">
                     <InfoCheckbox
                         label="Must Break at Empty Line "
                         info={

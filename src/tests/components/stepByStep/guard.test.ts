@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable max-lines, max-lines-per-function */
 import { describe, expect, it } from "vitest";
 
 import {
@@ -46,6 +45,7 @@ describe("Step-by-step type guards", () => {
             const message = {
                 type: "debug_input_request",
                 request_id: "req-456",
+                // cspell: disable-next-line
                 prompt: "[Step] (c)ontinue, (s)tep, (q)uit:",
             } as WaldiezDebugMessage;
 

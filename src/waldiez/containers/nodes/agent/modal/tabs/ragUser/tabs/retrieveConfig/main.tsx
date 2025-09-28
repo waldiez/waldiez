@@ -90,7 +90,7 @@ export const WaldiezAgentRagUserRetrieveConfig = memo((props: WaldiezAgentRagUse
     return (
         <div className="rag-retrieve-config-container" data-testid={`rag-retrieve-config-${id}`}>
             {/* Task Selection */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoLabel
                     label="Task:"
                     info={
@@ -117,7 +117,7 @@ export const WaldiezAgentRagUserRetrieveConfig = memo((props: WaldiezAgentRagUse
             </div>
 
             {/* Document Paths */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 {uploadsEnabled && (
                     <div className="margin-top-20">
                         <DropZone
@@ -147,7 +147,7 @@ export const WaldiezAgentRagUserRetrieveConfig = memo((props: WaldiezAgentRagUse
             </div>
 
             {/* Collection Name */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoLabel
                     label="Collection Name:"
                     info="The name of the collection to be used in the vector database. If not provided, a default name `autogen-docs` will be used."
@@ -166,7 +166,7 @@ export const WaldiezAgentRagUserRetrieveConfig = memo((props: WaldiezAgentRagUse
             </div>
 
             {/* Number of Results */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoLabel
                     label="Number of results:"
                     info={
@@ -189,7 +189,7 @@ export const WaldiezAgentRagUserRetrieveConfig = memo((props: WaldiezAgentRagUse
             </div>
 
             {/* Distance Threshold */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoLabel
                     htmlFor={`rag-retrieve-distance-threshold-${id}`}
                     label="Distance Threshold:"

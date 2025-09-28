@@ -209,11 +209,11 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
             <TabItems activeTabIndex={0}>
                 {/* Queue Tab */}
                 <TabItem label="Queue" id={`wf-${flowId}-wa-${id}-nested-chats-queue`}>
-                    <div className="flex-column margin-10 nested-chat-queue">
+                    <div className="flex flex-col margin-10 nested-chat-queue">
                         {nestedChats[0]?.messages.map((message, index) => (
                             <div
                                 key={`agent-${id}-nestedChat-recipient-${index}`}
-                                className="flex-align-center margin-bottom-10 queue-item"
+                                className="flex items-center margin-bottom-10 queue-item"
                                 data-testid={`nested-chat-queue-item-${index}`}
                             >
                                 {/* Reorder buttons */}

@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable max-lines-per-function,max-statements */
 import { describe, expect, it } from "vitest";
 
 import type { WaldiezDebugControl } from "@waldiez/components/stepByStep/types";
@@ -376,6 +375,7 @@ describe("Step-by-step types and utilities", () => {
                 ...initialState,
                 pendingControlInput: {
                     request_id: "req-123",
+                    // cspell: disable-next-line
                     prompt: "[Step] (c)ontinue, (s)tep, (q)uit:",
                 },
             };

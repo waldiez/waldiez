@@ -18,7 +18,7 @@ export const WaldiezEdgeMessageTab: FC<WaldiezEdgeMessageTabProps> = props => {
         onUpdateMessageContextEntries,
     } = useWaldiezEdgeMessageTab(props);
     const noOp = () => {};
-    const handlAddContextEntry = skipContextVarsOption === true ? noOp : onAddMessageContextEntry;
+    const handleAddContextEntry = skipContextVarsOption === true ? noOp : onAddMessageContextEntry;
     const handleRemoveContextEntry = skipContextVarsOption === true ? noOp : onRemoveMessageContextEntry;
     const handleUpdateContextEntries = skipContextVarsOption === true ? noOp : onUpdateMessageContextEntries;
     return (
@@ -36,7 +36,7 @@ export const WaldiezEdgeMessageTab: FC<WaldiezEdgeMessageTabProps> = props => {
                 includeContext={skipContextVarsOption !== true}
                 onTypeChange={onMessageTypeChange}
                 onMessageChange={onMessageChange}
-                onAddContextEntry={handlAddContextEntry}
+                onAddContextEntry={handleAddContextEntry}
                 onRemoveContextEntry={handleRemoveContextEntry}
                 onUpdateContextEntries={handleUpdateContextEntries}
             />

@@ -14,7 +14,7 @@ import type { WaldiezModelAPIType, WaldiezModelAWS, WaldiezModelPrice } from "@w
  * @param topP - The top P
  * @param maxTokens - The max tokens
  * @param aws - The AWS related fields
- * @param extras - Exatra parameters to use in the LLM Config
+ * @param extras - Extra parameters to use in the LLM Config
  * @param defaultHeaders - The default headers
  * @param price - The price
  */

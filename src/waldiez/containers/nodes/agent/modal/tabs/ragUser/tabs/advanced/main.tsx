@@ -36,7 +36,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
     return (
         <div className="rag-advanced-settings" data-testid={`rag-advanced-settings-${id}`}>
             {/* Customized Prompt */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoLabel
                     label="Customized Prompt:"
                     info="The customized prompt for the retrieve chat. Default is None."
@@ -55,7 +55,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
             </div>
 
             {/* Customized Answer Prefix */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoLabel
                     label="Customized Answer Prefix:"
                     info={
@@ -78,7 +78,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
             </div>
 
             {/* Update Context Toggle */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoCheckbox
                     label="Update Context "
                     info="If False, will not apply `Update Context` for interactive retrieval. Default is True."
@@ -90,7 +90,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
             </div>
 
             {/* Get or Create Toggle */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoCheckbox
                     label="Get or Create "
                     info="Whether to get the collection if it exists. Default is True."
@@ -102,7 +102,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
             </div>
 
             {/* New Docs Toggle */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoCheckbox
                     label="New Docs "
                     info={
@@ -119,7 +119,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
             </div>
 
             {/* Overwrite Toggle */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoCheckbox
                     label="Overwrite "
                     info={
@@ -137,7 +137,7 @@ export const WaldiezAgentRagUserAdvanced = memo((props: WaldiezAgentRagUserAdvan
             </div>
 
             {/* Recursive Toggle */}
-            <div className="flex-column">
+            <div className="flex flex-col">
                 <InfoCheckbox
                     label="Recursive "
                     info="Whether to search documents recursively in the docs_path. Default is True."

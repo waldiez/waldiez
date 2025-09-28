@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable max-lines-per-function, max-lines */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { WaldiezChatMessageProcessor } from "@waldiez/utils/chat";

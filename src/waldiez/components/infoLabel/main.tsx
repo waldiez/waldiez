@@ -19,8 +19,8 @@ export const InfoLabel: FC<InfoLabelProps> = ({ htmlFor, label, info, children }
     const infoElement = typeof info === "function" ? info() : info;
 
     return (
-        <div className="flex-align-center flex-row gap-1">
-            <div className="flex-align-center items-center gap-2">
+        <div className="flex items-center flex-row gap-1">
+            <div className="flex items-center gap-2">
                 <label htmlFor={htmlFor} className="text-sm info-label">
                     {labelElement}
                 </label>

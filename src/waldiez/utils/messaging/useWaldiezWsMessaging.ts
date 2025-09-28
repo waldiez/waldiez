@@ -40,7 +40,7 @@ export const useWaldiezWsMessaging: (props: {
     };
     chat?: {
         initialConfig?: Partial<WaldiezChatConfig>;
-        handlers?: WaldiezChatHandlers;
+        handlers?: Partial<WaldiezChatHandlers>;
         preprocess?: (message: any) => { handled: boolean; updated?: any };
         onPreview?: (requestId: string) => string;
         deduplicationOptions?: WaldiezChatMessageDeduplicationOptions;

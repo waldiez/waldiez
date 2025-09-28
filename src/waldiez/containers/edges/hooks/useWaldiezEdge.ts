@@ -43,7 +43,7 @@ export const useWaldiezEdge = (props: EdgeProps<WaldiezEdge> & { type: WaldiezEd
     const updateEdgeData = useWaldiez(s => s.updateEdgeData);
 
     // Get source and target agents / skip memoization
-    // if th eagent type changes, we want to recalculate the edge color
+    // if the agent type changes, we want to recalculate the edge color
     const sourceAgent = getAgentById(source) as WaldiezNodeAgent | null;
     const targetAgent = getAgentById(target) as WaldiezNodeAgent | null;
 
