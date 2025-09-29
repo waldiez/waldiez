@@ -50,6 +50,7 @@ body.waldiez-dark .order-badge {
   line-height: 0.8;
   padding: 8px !important;
   transition: color 0.2s;
+  border-radius: 4px;
 }
 
 .reorder-btn:hover {

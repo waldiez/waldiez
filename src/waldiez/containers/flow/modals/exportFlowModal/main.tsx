@@ -202,7 +202,7 @@ export const ExportFlowModal = memo<ExportFlowModalProps>((props: ExportFlowModa
                         data-testid={`export-flow-modal-upload-checkbox-${flowId}`}
                     />
                     {alsoUpload && (
-                        <div className="flex items-center w-full flex flex-col">
+                        <div className="flex items-center w-full flex-col">
                             <div className="margin-top-10 w-full">
                                 <TextInput
                                     label={<div className="no-padding margin-bottom-5">Hub API Token:</div>}

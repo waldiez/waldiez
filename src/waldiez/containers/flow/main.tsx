@@ -17,7 +17,7 @@ import {
 import { StepByStepView } from "@waldiez/components";
 import type { WaldiezStepByStep } from "@waldiez/components/types";
 import { useDnD, useFlowEvents, useKeys } from "@waldiez/containers/flow/hooks";
-import { ChatModal, ExportFlowModal, ImportFlowModal } from "@waldiez/containers/flow/modals";
+import { ChatModal, ExportFlowModal, ImportFlowModal, StepRunModal } from "@waldiez/containers/flow/modals";
 import { WaldiezFlowPanels } from "@waldiez/containers/flow/panels";
 import { edgeTypes, nodeTypes } from "@waldiez/containers/rfTypes";
 import { SideBar } from "@waldiez/containers/sidebar";
@@ -33,8 +33,6 @@ type WaldiezFlowViewProps = {
     skipExport?: boolean;
     skipHub?: boolean;
 };
-
-const haveStepModal = false;
 
 /**
  * Main flow view component for the Waldiez application
@@ -91,33 +89,28 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
      * Open the stepRunModal to select initial breakpoints.
      */
     const handleStepRun = useCallback(() => {
-        if (haveStepModal) {
-            if (!isImportModalOpen && !isExportModalOpen) {
-                setStepRunModalOpen(true);
-            }
-        } else {
-            // not yet, start with no initial breakpoints
-            onStepRun(null, []);
+        if (!isImportModalOpen && !isExportModalOpen) {
+            setStepRunModalOpen(true);
         }
-    }, [isImportModalOpen, isExportModalOpen, onStepRun]);
+    }, [isImportModalOpen, isExportModalOpen]);
 
     /**
      * Close the stepRunModal
      */
-    // const closeStepRunModal = useCallback(() => {
-    //     setStepRunModalOpen(false);
-    // }, []);
+    const closeStepRunModal = useCallback(() => {
+        setStepRunModalOpen(false);
+    }, []);
 
     /**
      * Call the onStepRun callback with the selected breakpoints if any.
      */
-    // const doStepRun = useCallback(
-    //     (breakpoints: string[]) => {
-    //         setStepRunModalOpen(false);
-    //         onStepRun(null, breakpoints);
-    //     },
-    //     [onStepRun],
-    // );
+    const doStepRun = useCallback(
+        (breakpoints: string[]) => {
+            setStepRunModalOpen(false);
+            onStepRun(null, breakpoints);
+        },
+        [onStepRun],
+    );
 
     /**
      * Start running, is no other modals are open.
@@ -328,6 +321,15 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
                     onClose={onCloseExportModal}
                     onDownload={onExport}
                     onExport={handleExportToHub}
+                />
+            )}
+
+            {isStepRunModalOpen && (
+                <StepRunModal
+                    flowId={flowId}
+                    onClose={closeStepRunModal}
+                    onStart={doStepRun}
+                    darkMode={isDark}
                 />
             )}
         </div>

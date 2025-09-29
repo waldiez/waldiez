@@ -3,22 +3,28 @@
  * Copyright 2024 - 2026 Waldiez & contributors
  */
 
+import { ActionMeta } from 'react-select';
 import { Connection } from '@xyflow/react';
 import { Dispatch } from 'react';
 import { Edge } from '@xyflow/react';
 import { EdgeChange } from '@xyflow/react';
 import { FC } from 'react';
+import { GroupBase } from 'react-select';
 import { MouseEvent as MouseEvent_2 } from 'react';
+import { MultiValue } from 'react-select';
 import { Node as Node_2 } from '@xyflow/react';
 import { NodeChange } from '@xyflow/react';
 import { PropsWithChildren } from 'react';
 import { ReactFlowInstance } from '@xyflow/react';
 import { ReactFlowJsonObject } from '@xyflow/react';
 import { RefObject } from 'react';
+import { SingleValue } from 'react-select';
 import { StoreApi } from 'zustand';
 import { TemporalState } from 'zundo';
 import { Viewport } from '@xyflow/react';
 import { XYPosition } from '@xyflow/react';
+
+export { ActionMeta }
 
 /**
  * Chat UI component props
@@ -130,6 +136,8 @@ export declare const emptyFlow: WaldiezFlow;
  * @see {@link WaldiezFlow}
  */
 export declare const exportFlow: (data: any, hideSecrets?: boolean, skipLinks?: boolean) => WaldiezFlow;
+
+export { GroupBase }
 
 /**
  * The method used to select the speaker in a group chat.
@@ -673,6 +681,8 @@ export declare interface IWaldiezToolStore {
     };
 }
 
+export { MultiValue }
+
 /**
  * RAGQueryEngine
  * The configuration for the RAG query engine used by the document agent.
@@ -741,6 +751,8 @@ export declare type ShowSnackbarProps = {
     duration?: number;
     withCloseButton?: boolean;
 };
+
+export { SingleValue }
 
 export declare type SnackbarContextType = {
     enqueueSnackbar: (props: ShowSnackbarProps) => void;

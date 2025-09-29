@@ -5,3 +5,4 @@
 export { ChatModal } from "@waldiez/containers/flow/modals/chatModal";
 export { ExportFlowModal } from "@waldiez/containers/flow/modals/exportFlowModal";
 export { ImportFlowModal } from "@waldiez/containers/flow/modals/importFlowModal";
+export { StepRunModal } from "@waldiez/containers/flow/modals/stepRunModal";

@@ -84,6 +84,7 @@ export const WaldiezAgentTools = memo((props: WaldiezAgentToolsProps) => {
                     <button
                         type="button"
                         title="Add tool"
+                        className="p-2 rounded-lg text-sm"
                         disabled={!selectedTool || !selectedExecutor}
                         onClick={onAddTool}
                         data-testid={`add-agent-tool-${id}`}
@@ -121,6 +122,7 @@ export const WaldiezAgentTools = memo((props: WaldiezAgentToolsProps) => {
                                     <button
                                         type="button"
                                         title="Remove tool"
+                                        className="p-2 rounded-lg text-sm"
                                         onClick={() => onRemoveTool(index)}
                                         data-testid={`remove-agent-tool-${id}-${index}`}
                                         aria-label={`Remove ${getToolName(tool)}`}

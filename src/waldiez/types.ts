@@ -11,7 +11,6 @@ export type * from "@waldiez/models/types";
 export type * from "@waldiez/store/types";
 export type * from "@waldiez/utils/chat/types";
 export type * from "@waldiez/utils/stepByStep/types";
-
 export type EventType =
     | "post_carryover_processing"
     | "group_chat_run_chat"

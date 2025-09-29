@@ -89,7 +89,7 @@ export const WaldiezAgentGroupMember = memo((props: WaldiezAgentGroupProps) => {
                                     <button
                                         type="button"
                                         title="Join group"
-                                        className="agent-panel-select-group-action"
+                                        className="p-2 rounded-lg text-sm"
                                         onClick={onJoinGroup}
                                         disabled={isJoinButtonDisabled}
                                         data-testid={`join-group-button-agent-${id}`}
@@ -113,7 +113,7 @@ export const WaldiezAgentGroupMember = memo((props: WaldiezAgentGroupProps) => {
                                     <button
                                         title="Leave group"
                                         type="button"
-                                        className="agent-panel-group-action"
+                                        className="p-2 rounded-lg text-sm"
                                         onClick={onLeaveGroup}
                                         data-testid={`leave-group-button-agent-${id}`}
                                         aria-label="Leave current group"

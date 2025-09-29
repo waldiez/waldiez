@@ -89,16 +89,6 @@
 .flow-wrapper button:not([role="checkbox"]),
 .modal-root button:not([role="checkbox"]) {
   cursor: pointer;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
 }
 
 .flow-wrapper button:not([role="checkbox"]):disabled,

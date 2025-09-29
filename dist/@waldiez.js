@@ -1881,6 +1881,15 @@ const getEventKey = (event) => {
   });
   return eventId;
 };
+const WaldiezBreakpointToString = (bp) => {
+  let bp_string = "";
+  if (bp.type === "event" && bp.event_type) {
+    bp_string += `${bp.type}:${bp.event_type}`;
+  } else if (bp.type === "agent" && bp.agent) {
+    bp_string += `${bp.type}:${bp.agent}`;
+  } else if (bp.type === "agent_event") ;
+  return bp_string;
+};
 const isDebugInputRequest = (m) => Boolean(
   m && (m.type === "debug_input_request" || m.type === "input_request") && typeof m.request_id === "string" && typeof m.prompt === "string"
 );
@@ -3360,7 +3369,7 @@ const getDateString = (date) => {
 const getFriendlyString = (str) => {
   return str.replace(/([A-Z])/g, " $1").replace(/([0-9])/g, " $1").replace(/_/g, " ").replace(/-/g, " ").trim().toLowerCase().split(" ").map((word) => capitalize(word)).join(" ");
 };
-const toCamelCase = (str) => {
+const toCamelCase$1 = (str) => {
   return str.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/([0-9])([A-Z])/g, "$1 $2").replace(/_/g, " ").replace(/-/g, " ").trim().toLowerCase().split(" ").map((word) => capitalize(word)).join("").replace(/^[A-Z]/, (match2) => match2.toLowerCase());
 };
 class WaldiezAgent {
@@ -7692,7 +7701,7 @@ const getFlowAgents = (agentType, json, nodes, modelIds, toolIds, chatIds) => {
     keyToCheck = "docAgents";
   }
   if (!(keyToCheck in json) || !Array.isArray(json[keyToCheck])) {
-    keyToCheck = toCamelCase(keyToCheck);
+    keyToCheck = toCamelCase$1(keyToCheck);
     if (!(keyToCheck in json) || !Array.isArray(json[keyToCheck])) {
       return [];
     }
@@ -8427,9 +8436,9 @@ const oe = (t, r, n = false) => {
       return false;
   }
   return a && a.length === 1 && a.includes(h) ? true : a ? ee(a) : !a;
-}, X = createContext(void 0), ae = () => useContext(X);
+}, X$1 = createContext(void 0), ae = () => useContext(X$1);
 function fe({ addHotkey: t, removeHotkey: r, children: n }) {
-  return /* @__PURE__ */ jsx$1(X.Provider, { value: { addHotkey: t, removeHotkey: r }, children: n });
+  return /* @__PURE__ */ jsx$1(X$1.Provider, { value: { addHotkey: t, removeHotkey: r }, children: n });
 }
 function N(t, r) {
   return t && r && typeof t == "object" && typeof r == "object" ? Object.keys(t).length === Object.keys(r).length && // @ts-expect-error TS7053
@@ -25739,8 +25748,8 @@ const Timeline = ({ data, height = 400 }) => {
         value: `$${data.summary.avg_cost_per_session.toFixed(6)}`,
         icon: FiDollarSign
       }
-    ].map(({ label, value, icon: Icon }) => /* @__PURE__ */ jsx$1("div", { className: "card", children: /* @__PURE__ */ jsx$1("div", { className: "card-content", children: /* @__PURE__ */ jsxs("div", { className: "timeline-top", children: [
-      /* @__PURE__ */ jsx$1(Icon, { className: "timeline-icon" }),
+    ].map(({ label, value, icon: Icon2 }) => /* @__PURE__ */ jsx$1("div", { className: "card", children: /* @__PURE__ */ jsx$1("div", { className: "card-content", children: /* @__PURE__ */ jsxs("div", { className: "timeline-top", children: [
+      /* @__PURE__ */ jsx$1(Icon2, { className: "timeline-icon" }),
       /* @__PURE__ */ jsxs("div", { className: "timeline-top-content", children: [
         /* @__PURE__ */ jsx$1("p", { className: "timeline-label", children: label }),
         /* @__PURE__ */ jsx$1("p", { className: "timeline-value", children: value })
@@ -27457,7 +27466,7 @@ const ExportFlowModal = memo((props) => {
               "data-testid": `export-flow-modal-upload-checkbox-${flowId}`
             }
           ),
-          alsoUpload && /* @__PURE__ */ jsxs("div", { className: "flex items-center w-full flex flex-col", children: [
+          alsoUpload && /* @__PURE__ */ jsxs("div", { className: "flex items-center w-full flex-col", children: [
             /* @__PURE__ */ jsx$1("div", { className: "margin-top-10 w-full", children: /* @__PURE__ */ jsx$1(
               TextInput,
               {
@@ -28558,6 +28567,718 @@ const ImportFlowModal = (props) => {
     }
   );
 };
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const toKebabCase = (string) => string.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+const toCamelCase = (string) => string.replace(
+  /^([A-Z])|[\s-_]+(\w)/g,
+  (match2, p1, p2) => p2 ? p2.toUpperCase() : p1.toLowerCase()
+);
+const toPascalCase = (string) => {
+  const camelCase = toCamelCase(string);
+  return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
+};
+const mergeClasses = (...classes) => classes.filter((className, index2, array) => {
+  return Boolean(className) && className.trim() !== "" && array.indexOf(className) === index2;
+}).join(" ").trim();
+const hasA11yProp = (props) => {
+  for (const prop in props) {
+    if (prop.startsWith("aria-") || prop === "role" || prop === "title") {
+      return true;
+    }
+  }
+};
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+var defaultAttributes = {
+  xmlns: "http://www.w3.org/2000/svg",
+  width: 24,
+  height: 24,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 2,
+  strokeLinecap: "round",
+  strokeLinejoin: "round"
+};
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const Icon = forwardRef(
+  ({
+    color = "currentColor",
+    size: size2 = 24,
+    strokeWidth = 2,
+    absoluteStrokeWidth,
+    className = "",
+    children,
+    iconNode,
+    ...rest
+  }, ref) => createElement(
+    "svg",
+    {
+      ref,
+      ...defaultAttributes,
+      width: size2,
+      height: size2,
+      stroke: color,
+      strokeWidth: absoluteStrokeWidth ? Number(strokeWidth) * 24 / Number(size2) : strokeWidth,
+      className: mergeClasses("lucide", className),
+      ...!children && !hasA11yProp(rest) && { "aria-hidden": "true" },
+      ...rest
+    },
+    [
+      ...iconNode.map(([tag, attrs]) => createElement(tag, attrs)),
+      ...Array.isArray(children) ? children : [children]
+    ]
+  )
+);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const createLucideIcon = (iconName, iconNode) => {
+  const Component2 = forwardRef(
+    ({ className, ...props }, ref) => createElement(Icon, {
+      ref,
+      iconNode,
+      className: mergeClasses(
+        `lucide-${toKebabCase(toPascalCase(iconName))}`,
+        `lucide-${iconName}`,
+        className
+      ),
+      ...props
+    })
+  );
+  Component2.displayName = toPascalCase(iconName);
+  return Component2;
+};
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$4 = [
+  ["rect", { x: "14", y: "3", width: "5", height: "18", rx: "1", key: "kaeet6" }],
+  ["rect", { x: "5", y: "3", width: "5", height: "18", rx: "1", key: "1wsw3u" }]
+];
+const Pause = createLucideIcon("pause", __iconNode$4);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$3 = [
+  [
+    "path",
+    {
+      d: "M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z",
+      key: "10ikf1"
+    }
+  ]
+];
+const Play = createLucideIcon("play", __iconNode$3);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$2 = [
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "M12 5v14", key: "s699le" }]
+];
+const Plus = createLucideIcon("plus", __iconNode$2);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$1 = [
+  ["path", { d: "M10 11v6", key: "nco0om" }],
+  ["path", { d: "M14 11v6", key: "outv1u" }],
+  ["path", { d: "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6", key: "miytrc" }],
+  ["path", { d: "M3 6h18", key: "d0wm0j" }],
+  ["path", { d: "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2", key: "e791ji" }]
+];
+const Trash2 = createLucideIcon("trash-2", __iconNode$1);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode = [
+  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
+  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
+];
+const X = createLucideIcon("x", __iconNode);
+const eventDescriptions = {
+  post_carryover_processing: "After processing carryover messages",
+  group_chat_run_chat: "When group chat starts running",
+  using_auto_reply: "When auto-reply mechanism is triggered",
+  tool_call: "Before executing a tool/function call",
+  execute_function: "When starting function execution",
+  executed_function: "After function execution completes",
+  input_request: "When requesting user input",
+  tool_response: "When tool returns a response",
+  termination: "When chat termination occurs",
+  run_completion: "When run completes successfully",
+  generate_code_execution_reply: "When generating code execution response",
+  group_chat_resume: "When resuming a group chat",
+  error: "When an error occurs",
+  termination_and_human_reply_no_input: "Termination with no user input required"
+};
+const useStepRunModal = (_props) => {
+  const getAgents2 = useWaldiez((s) => s.getAgents);
+  const agents = getAgents2();
+  const [activeTab, setActiveTab] = useState("preset");
+  const [breakpoints, setBreakpoints] = useState([
+    { type: "all", description: "Break on all events (default)" }
+  ]);
+  const [selectedEventTypes, setSelectedEventTypes] = useState([]);
+  const [selectedAgentEventType, setSelectedAgentEventType] = useState(void 0);
+  const [selectedAgentEventAgent, setSelectedAgentEventAgent] = useState(void 0);
+  const [selectedAgents, setSelectedAgents] = useState([]);
+  const [breakpointSource, setBreakpointSource] = useState("init");
+  const agentOptions = useMemo(
+    () => agents.map((agent) => ({
+      label: agent.data.label,
+      value: agent.id
+    })),
+    [agents]
+  );
+  const agentIdToLabel = useMemo(
+    () => agents.reduce(
+      (acc, agent) => {
+        acc[agent.id] = agent.data.label;
+        return acc;
+      },
+      {}
+    ),
+    [agents]
+  );
+  const eventOptions = useMemo(
+    () => Object.entries(eventDescriptions).map(([value, _]) => ({
+      label: value,
+      value
+    })),
+    []
+  );
+  const generateDescription = useCallback(
+    (type, agent, event_type) => {
+      switch (type) {
+        case "agent":
+          return `Break on any event from agent: ${agentIdToLabel[agent || ""] || agent}`;
+        case "event":
+          return `Break on event: ${event_type} (${eventDescriptions[event_type]})`;
+        case "agent_event":
+          return `Break when agent "${agentIdToLabel[agent || ""] || agent}" triggers event: ${event_type}`;
+        case "all":
+          return "Break on all events (default)";
+        default:
+          return "";
+      }
+    },
+    [agentIdToLabel]
+  );
+  const onActiveTabChange = useCallback((tabIndex) => {
+    if (tabIndex === 0) {
+      setActiveTab("preset");
+    } else if (tabIndex === 1) {
+      setActiveTab("custom");
+    } else {
+      setActiveTab("current");
+    }
+  }, []);
+  const setPresetBreakpoints = useCallback((preset) => {
+    setBreakpointSource("preset");
+    setSelectedAgents([]);
+    setSelectedEventTypes([]);
+    setSelectedAgentEventAgent(void 0);
+    setSelectedAgentEventType(void 0);
+    switch (preset) {
+      case "all":
+        setBreakpoints([{ type: "all", description: "Break on all events (default)" }]);
+        break;
+      case "tools":
+        setBreakpoints([
+          {
+            type: "event",
+            event_type: "tool_call",
+            description: "Break on event: tool_call (Before executing a tool/function call)"
+          },
+          {
+            type: "event",
+            event_type: "execute_function",
+            description: "Break on event: execute_function (When starting function execution)"
+          },
+          {
+            type: "event",
+            event_type: "executed_function",
+            description: "Break on event: executed_function (After function execution completes)"
+          },
+          {
+            type: "event",
+            event_type: "tool_response",
+            description: "Break on event: tool_response (When tool returns a response)"
+          }
+        ]);
+        break;
+      case "errors":
+        setBreakpoints([
+          {
+            type: "event",
+            event_type: "error",
+            description: "Break on event: error (When an error occurs)"
+          }
+        ]);
+        break;
+    }
+  }, []);
+  const addBreakpoint = useCallback(
+    (type, agent, event_type) => {
+      setBreakpointSource("custom");
+      setBreakpoints((prev2) => {
+        const filteredBreakpoints = prev2.filter((bp) => bp.type !== "all");
+        const exists = filteredBreakpoints.some(
+          (bp) => bp.type === type && bp.agent === agent && bp.event_type === event_type
+        );
+        if (exists) {
+          return prev2;
+        }
+        const newBreakpoint = {
+          type,
+          ...agent && { agent },
+          ...event_type && { event_type },
+          description: generateDescription(type, agent, event_type)
+        };
+        return [...filteredBreakpoints, newBreakpoint];
+      });
+      if (type === "agent_event") {
+        setSelectedAgentEventAgent(void 0);
+        setSelectedAgentEventType(void 0);
+      }
+    },
+    [generateDescription]
+  );
+  const removeBreakpoint = useCallback((index2) => {
+    setBreakpointSource("custom");
+    setBreakpoints((prev2) => {
+      const updated = prev2.filter((_, i) => i !== index2);
+      if (updated.length === 0) {
+        return [{ type: "all", description: "Break on all events (default)" }];
+      }
+      return updated;
+    });
+  }, []);
+  useEffect(() => {
+    if (breakpointSource !== "custom") {
+      return;
+    }
+    const currentEventBreakpoints = breakpoints.filter((bp) => bp.type === "event" && bp.event_type);
+    const currentEventTypes = new Set(currentEventBreakpoints.map((bp) => bp.event_type));
+    const selectedEventTypeValues = new Set(selectedEventTypes.map((e) => e.value));
+    const needsAdd = selectedEventTypes.some((event) => !currentEventTypes.has(event.value));
+    const needsRemove = currentEventBreakpoints.some(
+      (bp) => bp.event_type && !selectedEventTypeValues.has(bp.event_type)
+    );
+    if (!needsAdd && !needsRemove) {
+      return;
+    }
+    setBreakpoints((prev2) => {
+      let updated = prev2.filter((bp) => {
+        if (bp.type !== "event") {
+          return true;
+        }
+        return bp.event_type && selectedEventTypeValues.has(bp.event_type);
+      });
+      if (selectedEventTypes.length > 0) {
+        updated = updated.filter((bp) => bp.type !== "all");
+      }
+      selectedEventTypes.forEach((event) => {
+        const exists = updated.some((bp) => bp.type === "event" && bp.event_type === event.value);
+        if (!exists) {
+          updated.push({
+            type: "event",
+            event_type: event.value,
+            description: generateDescription("event", void 0, event.value)
+          });
+        }
+      });
+      if (updated.length === 0) {
+        return [{ type: "all", description: "Break on all events (default)" }];
+      }
+      return updated;
+    });
+  }, [selectedEventTypes, breakpointSource, generateDescription]);
+  useEffect(() => {
+    if (breakpointSource !== "custom") {
+      return;
+    }
+    const currentAgentBreakpoints = breakpoints.filter((bp) => bp.type === "agent");
+    const currentAgentIds = new Set(currentAgentBreakpoints.map((bp) => bp.agent));
+    const selectedAgentIds = new Set(selectedAgents.map((a) => a.value));
+    const needsAdd = selectedAgents.some((agent) => !currentAgentIds.has(agent.value));
+    const needsRemove = currentAgentBreakpoints.some((bp) => bp.agent && !selectedAgentIds.has(bp.agent));
+    if (!needsAdd && !needsRemove) {
+      return;
+    }
+    setBreakpoints((prev2) => {
+      let updated = prev2.filter((bp) => {
+        if (bp.type !== "agent") {
+          return true;
+        }
+        return bp.agent && selectedAgentIds.has(bp.agent);
+      });
+      if (selectedAgents.length > 0) {
+        updated = updated.filter((bp) => bp.type !== "all");
+      }
+      selectedAgents.forEach((agent) => {
+        const exists = updated.some((bp) => bp.type === "agent" && bp.agent === agent.value);
+        if (!exists) {
+          updated.push({
+            type: "agent",
+            agent: agent.value,
+            description: generateDescription("agent", agent.value)
+          });
+        }
+      });
+      if (updated.length === 0) {
+        return [{ type: "all", description: "Break on all events (default)" }];
+      }
+      return updated;
+    });
+  }, [selectedAgents, breakpointSource, generateDescription]);
+  const onSelectedAgentsChange = useCallback((options2) => {
+    setBreakpointSource("custom");
+    if (!options2 || options2.length === 0) {
+      setSelectedAgents([]);
+    } else {
+      setSelectedAgents(options2.map((option) => ({ label: option.label, value: option.value })));
+    }
+  }, []);
+  const onSelectedEventTypesChange = useCallback(
+    (options2) => {
+      setBreakpointSource("custom");
+      if (!options2 || options2.length === 0) {
+        setSelectedEventTypes([]);
+      } else {
+        setSelectedEventTypes(options2.map((option) => ({ label: option.label, value: option.value })));
+      }
+    },
+    []
+  );
+  const addAgentEventBreakpoint = useCallback(() => {
+    if (!selectedAgentEventAgent || !selectedAgentEventType) {
+      return;
+    }
+    addBreakpoint("agent_event", selectedAgentEventAgent.value, selectedAgentEventType.value);
+  }, [addBreakpoint, selectedAgentEventAgent, selectedAgentEventType]);
+  return {
+    activeTab,
+    setActiveTab,
+    onActiveTabChange,
+    generateDescription,
+    setBreakpoints,
+    setPresetBreakpoints,
+    breakpoints,
+    agentOptions,
+    eventDescriptions,
+    agents,
+    eventOptions,
+    selectedAgentEventAgent,
+    selectedAgentEventType,
+    selectedEventTypes,
+    selectedAgents,
+    setSelectedAgentEventAgent,
+    setSelectedAgentEventType,
+    setSelectedEventTypes,
+    setSelectedAgents,
+    addBreakpoint,
+    removeBreakpoint,
+    addAgentEventBreakpoint,
+    onSelectedAgentsChange,
+    onSelectedEventTypesChange
+  };
+};
+const StepRunModal = memo((props) => {
+  const { darkMode: isDark, flowId, onClose, onStart } = props;
+  const {
+    activeTab,
+    setActiveTab,
+    onActiveTabChange,
+    breakpoints,
+    eventOptions,
+    selectedEventTypes,
+    agentOptions,
+    selectedAgents,
+    selectedAgentEventAgent,
+    selectedAgentEventType,
+    setSelectedAgentEventType,
+    setSelectedAgentEventAgent,
+    setBreakpoints,
+    setPresetBreakpoints,
+    removeBreakpoint,
+    onSelectedAgentsChange,
+    onSelectedEventTypesChange,
+    addAgentEventBreakpoint
+  } = useStepRunModal();
+  useEffect(() => {
+    setBreakpoints([{ type: "all", description: "Break on all events (default)" }]);
+    setActiveTab("preset");
+  }, []);
+  const doStart = () => {
+    onStart(breakpoints.map((bp) => WaldiezBreakpointToString(bp)).filter((item) => item.trim() !== ""));
+  };
+  return /* @__PURE__ */ jsxs(Modal, { isOpen: true, onClose, onCancel: onClose, flowId, title: "Set breakpoints", children: [
+    /* @__PURE__ */ jsx$1("div", { className: "modal-body", children: /* @__PURE__ */ jsxs(
+      TabItems,
+      {
+        activeTabIndex: ["preset", "custom", "current"].indexOf(activeTab),
+        onTabChange: onActiveTabChange,
+        children: [
+          /* @__PURE__ */ jsx$1(TabItem, { id: "step-run-breakpoints-preset", label: "Quick Presets", children: /* @__PURE__ */ jsx$1("div", { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-3", children: [
+            /* @__PURE__ */ jsxs(
+              "button",
+              {
+                onClick: () => setPresetBreakpoints("all"),
+                className: `p-4 flex items-center border-2 ${isDark ? "border-gray-600 hover:border-blue-400 hover:bg-gray-800" : "border-gray-200 hover:border-blue-300 hover:bg-blue-50"} rounded-lg transition-all text-left group`,
+                children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center space-x-2 mr-4 mt-2 mb-2", children: [
+                    /* @__PURE__ */ jsx$1(
+                      Pause,
+                      {
+                        className: `h-4 w-4 ${isDark ? "text-gray-400 group-hover:text-blue-400" : "text-gray-500 group-hover:text-blue-500"}`
+                      }
+                    ),
+                    /* @__PURE__ */ jsx$1(
+                      "span",
+                      {
+                        className: `font-medium ${isDark ? "text-white" : "text-gray-900"}`,
+                        children: "All Events"
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`, children: "Break on every event (default behavior)" })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxs(
+              "button",
+              {
+                onClick: () => setPresetBreakpoints("tools"),
+                className: `p-4 flex items-center border-2 ${isDark ? "border-gray-600 hover:border-green-400 hover:bg-gray-800" : "border-gray-200 hover:border-green-300 hover:bg-green-50"} rounded-lg transition-all text-left group`,
+                children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center space-x-2 mr-4 mt-2 mb-2", children: [
+                    /* @__PURE__ */ jsx$1(
+                      Play,
+                      {
+                        className: `h-4 w-4 ${isDark ? "text-gray-400 group-hover:text-green-400" : "text-gray-500 group-hover:text-green-500"}`
+                      }
+                    ),
+                    /* @__PURE__ */ jsx$1(
+                      "span",
+                      {
+                        className: `font-medium ${isDark ? "text-white" : "text-gray-900"}`,
+                        children: "Tool Execution"
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`, children: "All tool and function call events" })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxs(
+              "button",
+              {
+                onClick: () => setPresetBreakpoints("errors"),
+                className: `p-4 border-2 flex items-center ${isDark ? "border-gray-600 hover:border-red-400 hover:bg-gray-800" : "border-gray-200 hover:border-red-300 hover:bg-red-50"} rounded-lg transition-all text-left group`,
+                children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center space-x-2 mr-4 mt-2 mb-2", children: [
+                    /* @__PURE__ */ jsx$1(
+                      X,
+                      {
+                        className: `h-4 w-4 ${isDark ? "text-gray-400 group-hover:text-red-400" : "text-gray-500 group-hover:text-red-500"}`
+                      }
+                    ),
+                    /* @__PURE__ */ jsx$1(
+                      "span",
+                      {
+                        className: `font-medium ${isDark ? "text-white" : "text-gray-900"}`,
+                        children: "Errors Only"
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`, children: "Break only when errors occur" })
+                ]
+              }
+            )
+          ] }) }) }),
+          /* @__PURE__ */ jsx$1(TabItem, { id: "step-run-breakpoints-custom", label: "Custom Breakpoints", children: /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+            /* @__PURE__ */ jsxs(
+              "div",
+              {
+                className: `${isDark ? "bg-[#222] border-[#444]" : "bg-gray-50"} p-4 border rounded-lg`,
+                children: [
+                  /* @__PURE__ */ jsx$1("h4", { className: `font-medium ${isDark ? "text-white" : "text-gray-900"} mb-3`, children: "Break on Event Types" }),
+                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`, children: "Stop execution for specific event types from any agent" }),
+                  /* @__PURE__ */ jsx$1(
+                    Select,
+                    {
+                      className: "w-full rounded-md focus:ring-2",
+                      options: eventOptions,
+                      value: selectedEventTypes,
+                      isMulti: true,
+                      isClearable: true,
+                      placeholder: "Select event type(s) ...",
+                      onChange: onSelectedEventTypesChange
+                    }
+                  )
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxs(
+              "div",
+              {
+                className: `${isDark ? "bg-[#222] border-[#444]" : "bg-gray-50"} p-4 border rounded-lg`,
+                children: [
+                  /* @__PURE__ */ jsx$1("h4", { className: `font-medium ${isDark ? "text-white" : "text-gray-900"} mb-3`, children: "Break on Agents" }),
+                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`, children: "Stop execution for any event from specific agents" }),
+                  /* @__PURE__ */ jsx$1(
+                    Select,
+                    {
+                      className: "w-full rounded-md focus:ring-2",
+                      options: agentOptions,
+                      value: selectedAgents,
+                      isMulti: true,
+                      isClearable: true,
+                      placeholder: "Select agent(s) ...",
+                      onChange: onSelectedAgentsChange
+                    }
+                  )
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxs(
+              "div",
+              {
+                className: `${isDark ? "bg-[#222] border-[#444]" : "bg-gray-50"} p-4 border rounded-lg`,
+                children: [
+                  /* @__PURE__ */ jsx$1("h4", { className: `font-medium ${isDark ? "text-white" : "text-gray-900"} mb-3`, children: "Break on Agent + Event" }),
+                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`, children: "Stop execution for a specific event from a specific agent" }),
+                  /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-3", children: [
+                    /* @__PURE__ */ jsx$1(
+                      Select,
+                      {
+                        id: "agent-event-agent",
+                        className: "w-full rounded-md focus:ring-2",
+                        options: agentOptions,
+                        value: selectedAgentEventAgent,
+                        placeholder: "Select event agent ...",
+                        onChange: (option) => {
+                          if (!option) {
+                            setSelectedAgentEventAgent(void 0);
+                          } else {
+                            setSelectedAgentEventAgent({
+                              label: option.label,
+                              value: option.value
+                            });
+                          }
+                        }
+                      }
+                    ),
+                    /* @__PURE__ */ jsx$1(
+                      Select,
+                      {
+                        id: "agent-event-event",
+                        className: "w-full rounded-md focus:ring-2",
+                        options: eventOptions,
+                        value: selectedAgentEventType,
+                        placeholder: "Select event type ...",
+                        onChange: (options2) => {
+                          if (options2) {
+                            setSelectedAgentEventType(options2);
+                          }
+                        }
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsxs(
+                    "button",
+                    {
+                      onClick: addAgentEventBreakpoint,
+                      className: "mt-3 flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors",
+                      children: [
+                        /* @__PURE__ */ jsx$1(Plus, { className: "h-4 w-4" }),
+                        /* @__PURE__ */ jsx$1("span", { children: "Add Breakpoint" })
+                      ]
+                    }
+                  )
+                ]
+              }
+            )
+          ] }) })
+        ]
+      }
+    ) }),
+    /* @__PURE__ */ jsx$1("h3", { className: `text-lg font-medium ${isDark ? "text-white" : "text-gray-900"} mt-4 mb-4`, children: "Active Breakpoints" }),
+    breakpoints.length === 0 ? /* @__PURE__ */ jsx$1("p", { className: `${isDark ? "text-gray-400" : "text-gray-500"} text-sm`, children: "No breakpoints configured" }) : /* @__PURE__ */ jsx$1("div", { className: "space-y-3 max-h-64 overflow-y-auto", children: breakpoints.map((bp, index2) => /* @__PURE__ */ jsx$1(
+      "div",
+      {
+        className: `${isDark ? "bg-[#222] border-[#444]" : "bg-[#f8f8f8] border-[#ccc]"} p-3 rounded-lg border shadow-sm`,
+        children: /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between", children: [
+          /* @__PURE__ */ jsxs("div", { className: "flex-1", children: [
+            /* @__PURE__ */ jsx$1("div", { className: "flex items-center space-x-2 mb-1", children: /* @__PURE__ */ jsx$1(
+              "span",
+              {
+                className: `px-2 py-1 text-xs font-medium rounded-full ${bp.type === "all" ? isDark ? "bg-gray-600 text-gray-200" : "bg-gray-100 text-gray-700" : bp.type === "agent" ? isDark ? "bg-blue-900 text-blue-200" : "bg-blue-100 text-blue-700" : bp.type === "event" ? isDark ? "bg-green-900 text-green-200" : "bg-green-100 text-green-700" : isDark ? "bg-purple-900 text-purple-200" : "bg-purple-100 text-purple-700"}`,
+                children: bp.type.replace("_", " ")
+              }
+            ) }),
+            /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"}`, children: bp.description })
+          ] }),
+          bp.type !== "all" && /* @__PURE__ */ jsx$1(
+            "button",
+            {
+              onClick: () => removeBreakpoint(index2),
+              className: `p-1 hover:${isDark ? "bg-red-900" : "bg-red-50"} rounded-md transition-colors ml-2`,
+              children: /* @__PURE__ */ jsx$1(
+                Trash2,
+                {
+                  className: `h-3 w-3 ${isDark ? "text-red-400" : "text-red-500"}`
+                }
+              )
+            }
+          )
+        ] })
+      },
+      index2
+    )) }),
+    /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
+      /* @__PURE__ */ jsx$1("button", { type: "reset", className: "modal-action-cancel", onClick: onClose, children: "Cancel" }),
+      /* @__PURE__ */ jsx$1("div", { className: "flex-1" }),
+      /* @__PURE__ */ jsx$1("button", { type: "button", className: "primary", onClick: doStart, children: "Start" })
+    ] })
+  ] });
+});
+StepRunModal.displayName = "StepRunModal";
 function SiJupyter(props) {
   return GenIcon({ "attr": { "role": "img", "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "d": "M7.157 22.201A1.784 1.799 0 0 1 5.374 24a1.784 1.799 0 0 1-1.784-1.799 1.784 1.799 0 0 1 1.784-1.799 1.784 1.799 0 0 1 1.783 1.799zM20.582 1.427a1.415 1.427 0 0 1-1.415 1.428 1.415 1.427 0 0 1-1.416-1.428A1.415 1.427 0 0 1 19.167 0a1.415 1.427 0 0 1 1.415 1.427zM4.992 3.336A1.047 1.056 0 0 1 3.946 4.39a1.047 1.056 0 0 1-1.047-1.055A1.047 1.056 0 0 1 3.946 2.28a1.047 1.056 0 0 1 1.046 1.056zm7.336 1.517c3.769 0 7.06 1.38 8.768 3.424a9.363 9.363 0 0 0-3.393-4.547 9.238 9.238 0 0 0-5.377-1.728A9.238 9.238 0 0 0 6.95 3.73a9.363 9.363 0 0 0-3.394 4.547c1.713-2.04 5.004-3.424 8.772-3.424zm.001 13.295c-3.768 0-7.06-1.381-8.768-3.425a9.363 9.363 0 0 0 3.394 4.547A9.238 9.238 0 0 0 12.33 21a9.238 9.238 0 0 0 5.377-1.729 9.363 9.363 0 0 0 3.393-4.547c-1.712 2.044-5.003 3.425-8.772 3.425Z" }, "child": [] }] })(props);
 }
@@ -32715,7 +33436,7 @@ const WaldiezAgentGroupMember = memo((props) => {
             {
               type: "button",
               title: "Join group",
-              className: "agent-panel-select-group-action",
+              className: "p-2 rounded-lg text-sm",
               onClick: onJoinGroup,
               disabled: isJoinButtonDisabled,
               "data-testid": `join-group-button-agent-${id}`,
@@ -32740,7 +33461,7 @@ const WaldiezAgentGroupMember = memo((props) => {
             {
               title: "Leave group",
               type: "button",
-              className: "agent-panel-group-action",
+              className: "p-2 rounded-lg text-sm",
               onClick: onLeaveGroup,
               "data-testid": `leave-group-button-agent-${id}`,
               "aria-label": "Leave current group",
@@ -34830,6 +35551,7 @@ const WaldiezAgentTools = memo((props) => {
         {
           type: "button",
           title: "Add tool",
+          className: "p-2 rounded-lg text-sm",
           disabled: !selectedTool || !selectedExecutor,
           onClick: onAddTool,
           "data-testid": `add-agent-tool-${id}`,
@@ -34860,6 +35582,7 @@ const WaldiezAgentTools = memo((props) => {
               {
                 type: "button",
                 title: "Remove tool",
+                className: "p-2 rounded-lg text-sm",
                 onClick: () => onRemoveTool(index2),
                 "data-testid": `remove-agent-tool-${id}-${index2}`,
                 "aria-label": `Remove ${getToolName(tool)}`,
@@ -39720,10 +40443,20 @@ const WaldiezFlowView = memo((props) => {
     onEdgeDoubleClick
   } = useFlowEvents(flowId);
   const handleStepRun = useCallback(() => {
-    {
-      onStepRun(null, []);
+    if (!isImportModalOpen && !isExportModalOpen) {
+      setStepRunModalOpen(true);
     }
-  }, [isImportModalOpen, isExportModalOpen, onStepRun]);
+  }, [isImportModalOpen, isExportModalOpen]);
+  const closeStepRunModal = useCallback(() => {
+    setStepRunModalOpen(false);
+  }, []);
+  const doStepRun = useCallback(
+    (breakpoints) => {
+      setStepRunModalOpen(false);
+      onStepRun(null, breakpoints);
+    },
+    [onStepRun]
+  );
   const doRun = useCallback(() => {
     if (!isExportModalOpen && !isImportModalOpen && !isStepRunModalOpen) {
       onRun();
@@ -39890,6 +40623,15 @@ const WaldiezFlowView = memo((props) => {
             onClose: onCloseExportModal,
             onDownload: onExport,
             onExport: handleExportToHub
+          }
+        ),
+        isStepRunModalOpen && /* @__PURE__ */ jsx$1(
+          StepRunModal,
+          {
+            flowId,
+            onClose: closeStepRunModal,
+            onStart: doStepRun,
+            darkMode: isDark
           }
         )
       ]
