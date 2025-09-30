@@ -81,14 +81,19 @@ def get_event_handler_string(
     content = (
         f"{space}if not isinstance(results, list):\n"
         f"{space}{tab}results = [results]  # pylint: disable=redefined-variable-type\n"
+        f"{space}got_agents = False\n"
+        f"{space}known_agents: list[ConversableAgent] = []\n"
         f"{space}if on_event:\n"
         f"{space}{tab}for index, result in enumerate(results):\n"
     )
     if is_async:
         content += (
             f"{space}{tab}{tab}async for event in result.events:\n"
+            f"{space}{tab}{tab}{tab}if not got_agents:\n"
+            f"{space}{tab}{tab}{tab}{tab}known_agents = _get_known_agents()\n"
+            f"{space}{tab}{tab}{tab}{tab}got_agents = True\n"
             f"{space}{tab}{tab}{tab}try:\n"
-            f"{space}{tab}{tab}{tab}{tab}should_continue = await on_event(event, __KNOWN_AGENTS__)\n"
+            f"{space}{tab}{tab}{tab}{tab}should_continue = await on_event(event, known_agents)\n"
             f"{space}{tab}{tab}{tab}except BaseException as e:\n{_stop_logging(space, is_async)}"
             f"{space}{tab}{tab}{tab}{tab}store_error(e)\n"
             f"{space}{tab}{tab}{tab}{tab}raise SystemExit(\n"
@@ -98,8 +103,11 @@ def get_event_handler_string(
     else:
         content += (
             f"{space}{tab}{tab}for event in result.events:\n"
+            f"{space}{tab}{tab}{tab}if not got_agents:\n"
+            f"{space}{tab}{tab}{tab}{tab}known_agents = _get_known_agents()\n"
+            f"{space}{tab}{tab}{tab}{tab}got_agents = True\n"
             f"{space}{tab}{tab}{tab}try:\n"
-            f"{space}{tab}{tab}{tab}{tab}should_continue = on_event(event, __KNOWN_AGENTS__)\n"
+            f"{space}{tab}{tab}{tab}{tab}should_continue = on_event(event, known_agents)\n"
             f"{space}{tab}{tab}{tab}except BaseException as e:\n{_stop_logging(space, is_async)}"
             f"{space}{tab}{tab}{tab}{tab}store_error(e)\n"
             f"{space}{tab}{tab}{tab}{tab}raise SystemExit(\n"

@@ -247,7 +247,7 @@ class ExportOrchestrator:
         )
 
     def _get_the_known_agents_string(self) -> str:
-        """Get the __KNOWN_AGENTS__ file variable."""
+        """Get the _get_known_agents method."""
         content = """
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = ["""
@@ -276,7 +276,6 @@ def _get_known_agents() -> list[ConversableAgent]:
             _known_agents.append(_manager)
 """
         content += "    return _known_agents\n\n"
-        content += "__KNOWN_AGENTS__ = _get_known_agents()\n"
         return content
 
     def _get_tools_exporter(self) -> ToolsExporter:
