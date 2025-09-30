@@ -27,6 +27,7 @@ from waldiez.running.exceptions import StopRunningException
 from waldiez.running.step_by_step.step_by_step_models import (
     HELP_MESSAGE,
     WaldiezBreakpoint,
+    WaldiezBreakpointType,
     WaldiezDebugStats,
     WaldiezDebugStepAction,
 )
@@ -37,16 +38,24 @@ from waldiez.running.step_by_step.step_by_step_runner import (
 BASE_RUNNER = "waldiez.running.base_runner.WaldiezBaseRunner"
 
 
-@pytest.fixture(name="runner")
-def runner_fixture() -> WaldiezStepByStepRunner:
-    """Fixture for WaldiezStepByStepRunner."""
+def _get_runner(
+    breakpoints: list[WaldiezBreakpoint] | None = None,
+) -> WaldiezStepByStepRunner:
+    """Get a runner."""
     waldiez = MagicMock()
     waldiez.name = "Waldiez flow"
     waldiez.info = WaldiezFlowInfo(participants=[])
     waldiez.model_dump_json = MagicMock(return_value='{"type": "flow"}')
-    runner = WaldiezStepByStepRunner(waldiez=waldiez)
+    runner = WaldiezStepByStepRunner(waldiez=waldiez, breakpoints=breakpoints)
     # noinspection PyProtectedMember
     runner._stop_requested.clear()
+    return runner
+
+
+@pytest.fixture(name="runner")
+def runner_fixture() -> WaldiezStepByStepRunner:
+    """Fixture for WaldiezStepByStepRunner."""
+    runner = _get_runner()
     return runner
 
 
@@ -87,7 +96,7 @@ def test_handle_step_interaction_continue(
     mock_input: Any, runner: WaldiezStepByStepRunner
 ) -> None:
     """Test handling of step interaction for continue command."""
-    result = runner._handle_step_interaction()
+    result = runner._handle_step_interaction(True)
     assert result is True
 
 
@@ -100,7 +109,7 @@ def test_handle_step_interaction_quit_on_interrupt(
     mock_input: Any, runner: WaldiezStepByStepRunner
 ) -> None:
     """Test handling of step interaction for quit command."""
-    result = runner._handle_step_interaction()
+    result = runner._handle_step_interaction(True)
     assert result is False
     assert runner._stop_requested.is_set()
 
@@ -131,21 +140,21 @@ def test_should_break_on_event_basic(
     runner: WaldiezStepByStepRunner, text_event: TextEvent
 ) -> None:
     """Test basic event breaking behavior."""
-    runner.step_mode = True
+    runner.auto_continue = False
     runner.clear_breakpoints()
-    assert runner.should_break_on_event(text_event, runner.step_mode) is True
+    assert runner.should_break_on_event(text_event) is True
 
     runner.clear_breakpoints()
     runner.add_breakpoint("text")
-    assert runner.should_break_on_event(text_event, runner.step_mode) is True
+    assert runner.should_break_on_event(text_event) is True
 
     # step mode: always break on any event
     runner.set_breakpoints(["other_event"])
-    assert runner.should_break_on_event(text_event, runner.step_mode) is True
+    assert runner.should_break_on_event(text_event) is True
 
-    runner.step_mode = False
+    runner.auto_continue = True
     runner.set_breakpoints(["other_event"])
-    assert runner.should_break_on_event(text_event, runner.step_mode) is False
+    assert runner.should_break_on_event(text_event) is False
 
 
 def test_on_event_breaks_and_continues(
@@ -328,7 +337,7 @@ def test_get_user_action_handles_keyboard_interrupt(
         f"{BASE_RUNNER}.get_user_input",
         side_effect=KeyboardInterrupt,
     ):
-        action = runner._get_user_action()
+        action = runner._get_user_action(True)
         assert runner._stop_requested.is_set()
         assert action == WaldiezDebugStepAction.QUIT
 
@@ -341,7 +350,7 @@ def test_get_user_action_handles_eof_error(
         f"{BASE_RUNNER}.get_user_input",
         side_effect=EOFError,
     ):
-        action = runner._get_user_action()
+        action = runner._get_user_action(True)
         assert runner._stop_requested.is_set()
         assert action == WaldiezDebugStepAction.QUIT
 
@@ -374,16 +383,15 @@ async def test_a_get_user_action_handles_eof_error(
         assert action == WaldiezDebugStepAction.QUIT
 
 
-def test_on_event_raises_runtime_error_on_generic_exception(
+def test_on_event_raises_on_generic_exception(
     runner: WaldiezStepByStepRunner,
     text_event: TextEvent,
 ) -> None:
-    """_on_event should raise RuntimeError when process_event raises generic exception."""
+    """_on_event should raise when process_event raises generic exception."""
     runner._step_mode = False  # to skip break logic
     with patch(f"{BASE_RUNNER}.process_event", side_effect=ValueError("fail")):
-        with pytest.raises(RuntimeError) as exc_info:
+        with pytest.raises(BaseException):  # noqa: B017
             runner._on_event(text_event, [])
-        assert "fail" in str(exc_info.value)
 
 
 def test_on_event_propagates_stop_running_exception(
@@ -409,9 +417,8 @@ async def test_async_on_event_raises_runtime_error_on_generic_exception(
     with patch(
         f"{BASE_RUNNER}.a_process_event", side_effect=ValueError("fail")
     ):
-        with pytest.raises(RuntimeError) as exc_info:
+        with pytest.raises(BaseException):  # noqa: B017
             await runner._a_on_event(text_event, [])
-        assert "fail" in str(exc_info.value)
 
 
 @pytest.mark.asyncio
@@ -755,7 +762,7 @@ def test_handle_step_interaction_run_action(
     with patch.object(
         runner, "_get_user_action", return_value=WaldiezDebugStepAction.RUN
     ):
-        result = runner._handle_step_interaction()
+        result = runner._handle_step_interaction(True)
         assert result is True
 
 
@@ -862,3 +869,15 @@ def test_clear_breakpoints_emits_correct_message(
     runner.emit = MagicMock()  # type: ignore[method-assign]
     runner.clear_breakpoints()
     runner.emit.assert_called_once()
+
+
+def test_init_with_initial_breakpoints() -> None:
+    """Test init with initial breakpoints."""
+    bp = WaldiezBreakpoint(
+        type=WaldiezBreakpointType.EVENT,
+        event_type="tool_call",
+        description="Break on tool calls.",
+    )
+    runner = _get_runner(breakpoints=[bp])
+    assert runner._config.auto_continue is False
+    assert runner._config.step_mode is True

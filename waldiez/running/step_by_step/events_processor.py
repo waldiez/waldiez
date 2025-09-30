@@ -46,9 +46,7 @@ class EventProcessor:
         self._manage_event_history(event_info)
         self._check_for_input_request(event_info)
 
-        should_break = self.runner.should_break_on_event(
-            event, self.runner.step_mode
-        )
+        should_break = self.runner.should_break_on_event(event)
 
         return {
             "action": "continue",

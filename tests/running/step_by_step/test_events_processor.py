@@ -14,6 +14,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from waldiez.running.step_by_step.events_processor import EventProcessor
+from waldiez.running.step_by_step.step_by_step_models import WaldiezDebugConfig
 
 
 @pytest.fixture(name="runner")
@@ -27,11 +28,13 @@ def runner_fixture() -> MagicMock:
     runner.event_history = deque()
     runner.max_event_history = 1000
     runner.step_mode = True
+    runner.auto_continue = False
     runner.is_stop_requested = MagicMock(return_value=False)
     runner.event_plus_one = MagicMock()
     runner.add_to_history = MagicMock()
     runner.pop_event = MagicMock()
     runner.should_break_on_event = MagicMock(return_value=True)
+    runner._config = WaldiezDebugConfig()
     return runner
 
 
@@ -175,9 +178,7 @@ def test_process_event_should_break_called(
 
     result = processor.process_event(mock_event)
 
-    runner.should_break_on_event.assert_called_once_with(
-        mock_event, runner.step_mode
-    )
+    runner.should_break_on_event.assert_called_once_with(mock_event)
     assert result["should_break"] is True
 
 

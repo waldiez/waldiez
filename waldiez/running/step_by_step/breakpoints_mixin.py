@@ -13,6 +13,7 @@ from .step_by_step_models import (
     WaldiezDebugBreakpointCleared,
     WaldiezDebugBreakpointRemoved,
     WaldiezDebugBreakpointsList,
+    WaldiezDebugConfig,
     WaldiezDebugError,
     WaldiezDebugMessage,
 )
@@ -59,6 +60,7 @@ class BreakpointsMixin:
 
     _breakpoints: set[WaldiezBreakpoint]
     _agent_id_to_name: dict[str, str]
+    _config: WaldiezDebugConfig
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize breakpoints storage."""
@@ -76,6 +78,7 @@ class BreakpointsMixin:
         self._check_breakpoint_match_cached = lru_cache(maxsize=1000)(
             self._check_breakpoint_match_impl
         )
+        self._config = kwargs.get("config", WaldiezDebugConfig())
 
     @staticmethod
     def get_initial_breakpoints(
@@ -172,10 +175,16 @@ class BreakpointsMixin:
                 WaldiezBreakpoint.from_string(bp_str)
                 for bp_str in breakpoints_sig
             }
-            return any(bp.matches(event_dict) for bp in breakpoints)
+            return any(
+                bp.matches(event_dict, self._agent_id_to_name)
+                for bp in breakpoints
+            )
         except Exception:  # pylint: disable=broad-exception-caught
             # Fallback to current breakpoints if signature is malformed
-            return any(bp.matches(event_dict) for bp in self._breakpoints)
+            return any(
+                bp.matches(event_dict, self._agent_id_to_name)
+                for bp in self._breakpoints
+            )
 
     @handle_breakpoint_errors
     def add_breakpoint(self, spec: str) -> bool:
@@ -362,8 +371,72 @@ class BreakpointsMixin:
         except ValueError:
             return False
 
+    @staticmethod
+    def _get_event_core(event_dict: dict[str, Any]) -> tuple[str, str, str]:
+        event_type = event_dict.get("type", "unknown")
+        sender = event_dict.get("sender", "")
+        if not sender:
+            event_content = event_dict.get("content", {})
+            if isinstance(event_content, dict):
+                sender = event_content.get(  # pyright: ignore
+                    "sender",
+                    event_content.get("speaker", ""),  # pyright: ignore
+                )
+        if not isinstance(sender, str):
+            sender = ""
+        recipient = event_dict.get("recipient", "")
+        if not recipient:
+            event_content = event_dict.get("content", {})
+            if isinstance(event_content, dict):
+                recipient = event_content.get("recipient")  # pyright: ignore
+        if not isinstance(recipient, str):
+            recipient = ""
+        return event_type, sender, recipient
+
+    def _got_breakpoint_match(self, event_dump: dict[str, Any]) -> bool:
+        event_type, sender, recipient = BreakpointsMixin._get_event_core(
+            event_dump
+        )
+        event_dict = {
+            "type": event_type,
+            "sender": sender,
+            "recipient": recipient,
+        }
+
+        has_agent_breakpoints = any(
+            bp.agent is not None for bp in self._breakpoints
+        )
+        if has_agent_breakpoints:
+            # Don't use cache for agent-based breakpoints
+            # (we might have a mix of agent ids and names)
+            matches_breakpoint = any(
+                bp.matches(event_dict, self._agent_id_to_name)
+                for bp in self._breakpoints
+            )
+        else:
+            # Get current breakpoints signature for cache invalidation
+            breakpoints_sig = self._get_breakpoints_signature()
+
+            # Check cached result
+            # noinspection PyBroadException
+            try:
+                matches_breakpoint = self._check_breakpoint_match_cached(
+                    event_type, sender, recipient, breakpoints_sig
+                )
+                self._breakpoint_stats["cache_hits"] += 1
+            except Exception:  # pylint: disable=broad-exception-caught
+                # Fallback to non-cached check
+                matches_breakpoint = any(
+                    bp.matches(event_dict, self._agent_id_to_name)
+                    for bp in self._breakpoints
+                )
+                self._breakpoint_stats["cache_misses"] += 1
+
+        return matches_breakpoint
+
     def should_break_on_event(
-        self, event: Union["BaseEvent", "BaseMessage"], step_mode: bool = True
+        self,
+        event: Union["BaseEvent", "BaseMessage"],
     ) -> bool:
         """Determine if we should break on this event.
 
@@ -371,8 +444,6 @@ class BreakpointsMixin:
         ----------
         event : Union[BaseEvent, BaseMessage]
             The event to check.
-        step_mode : bool, optional
-            Whether step mode is enabled, by default True.
 
         Returns
         -------
@@ -386,59 +457,28 @@ class BreakpointsMixin:
         if event_type == "input_request":
             return False
 
-        # Quick path: if no breakpoints and not in step mode, don't break
-        if not self._breakpoints and not step_mode:
-            return False
-
-        # Quick path: if step mode and no specific breakpoints,
-        # break on everything
-        if step_mode and not self._breakpoints:
-            return True
+        if not self._breakpoints:
+            return not bool(self._config.auto_continue)
 
         # Check if this event matches any breakpoint using caching
-        if hasattr(event, "model_dump"):
-            # pylint: disable=too-many-try-statements,broad-exception-caught
-            try:
-                event_dict = event.model_dump(
-                    mode="python", exclude_none=True, fallback=str
-                )
-
-                # Extract event details for cache key
-                event_type_key = event_dict.get("type", "unknown")
-                sender = event_dict.get("sender", "")
-                recipient = event_dict.get("recipient", "")
-
-                # Get current breakpoints signature for cache invalidation
-                breakpoints_sig = self._get_breakpoints_signature()
-
-                # Check cached result
-                # noinspection PyBroadException
-                try:
-                    matches_breakpoint = self._check_breakpoint_match_cached(
-                        event_type_key, sender, recipient, breakpoints_sig
-                    )
-                    self._breakpoint_stats["cache_hits"] += 1
-                except Exception:
-                    # Fallback to non-cached check
-                    matches_breakpoint = any(
-                        bp.matches(event_dict) for bp in self._breakpoints
-                    )
-                    self._breakpoint_stats["cache_misses"] += 1
-
+        if not hasattr(event, "model_dump"):
+            return not bool(self._config.auto_continue)
+        # pylint: disable=too-many-try-statements,broad-exception-caught
+        try:
+            event_dump = event.model_dump(
+                mode="python", exclude_none=True, fallback=str
+            )
+            matches_breakpoint = self._got_breakpoint_match(event_dump)
+            # If any breakpoint matches: break regardless of step_mode
+            if matches_breakpoint:
                 self._breakpoint_stats["total_matches"] += 1
+                return True
 
-                # If any breakpoint matches: break regardless of step_mode
-                if matches_breakpoint:
-                    return True
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            logging.warning("Error processing event for breakpoints: %s", e)
+            self._breakpoint_stats["cache_misses"] += 1
 
-            except Exception as e:  # pylint: disable=broad-exception-caught
-                logging.warning("Error processing event for breakpoints: %s", e)
-                self._breakpoint_stats["cache_misses"] += 1
-
-        # No specific breakpoints matched:
-        # - If step_mode, break on every event (single-step behavior)
-        # - If not step_mode, do not break
-        return bool(step_mode)
+        return not bool(self._config.auto_continue)
 
     def get_breakpoint_stats(self) -> dict[str, Any]:
         """Get breakpoint statistics including performance metrics.
@@ -452,7 +492,7 @@ class BreakpointsMixin:
             {
                 "type": bp.type.value,
                 "event_type": bp.event_type,
-                "agent_name": bp.agent,
+                "agent": bp.agent,
                 "description": bp.description,
                 "string_repr": str(bp),
             }
@@ -517,6 +557,23 @@ class BreakpointsMixin:
             List of breakpoint specifications as strings.
         """
         return [str(bp) for bp in sorted(self._breakpoints, key=str)]
+
+    def is_auto_run(self) -> bool:
+        """Check if we are in auto-run mode.
+
+        Returns
+        -------
+        bool
+            False if we don't have any breakpoints and
+            we don't have any 'all' breakpoints, True otherwise.
+        """
+        if not self._breakpoints:
+            return False
+        if any(bp.type.value == "all" for bp in self._breakpoints):
+            self._breakpoints.clear()
+            self._invalidate_cache()
+            return False
+        return True
 
     def import_breakpoints(
         self, breakpoint_specs: list[str]

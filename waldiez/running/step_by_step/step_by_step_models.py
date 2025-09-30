@@ -259,13 +259,50 @@ class WaldiezBreakpoint(BaseModel):
             event_type=breakpoint_str,
         )
 
-    def matches(self, event: dict[str, Any]) -> bool:
+    def matches_agent(
+        self, event: dict[str, Any], agent_id_to_name: dict[str, str]
+    ) -> bool:
+        """Check if the event's sender or recipient matches the breakpoint's agent.
+
+        Parameters
+        ----------
+        event : dict[str, Any]
+            The event to check against.
+        agent_id_to_name : dict[str, str]
+            The mapping between an agent's id and its name.
+
+        Returns
+        -------
+        bool
+            True if the event's sender or recipient matches the breakpoint's agent.
+        """
+        if not self.agent:
+            return False
+        # Normalize both the event's sender/recipient and the breakpoint's agent
+        _event_sender = event.get("sender", "")
+        event_sender = agent_id_to_name.get(_event_sender, _event_sender)
+        _event_recipient = event.get("recipient", "")
+        event_recipient = agent_id_to_name.get(
+            _event_recipient, _event_recipient
+        )
+        breakpoint_agent = (
+            agent_id_to_name.get(self.agent, self.agent) if self.agent else ""
+        )
+        if not breakpoint_agent:
+            return False
+        return breakpoint_agent in (event_sender, event_recipient)
+
+    def matches(
+        self, event: dict[str, Any], agent_id_to_name: dict[str, str]
+    ) -> bool:
         """Check if this breakpoint matches the given event.
 
         Parameters
         ----------
         event : dict[str, Any]
             The event to check against.
+        agent_id_to_name : dict[str, str]
+            The mapping between an agent's id and its name.
 
         Returns
         -------
@@ -279,16 +316,13 @@ class WaldiezBreakpoint(BaseModel):
             return event.get("type") == self.event_type
 
         if self.type == WaldiezBreakpointType.AGENT:
-            return (
-                event.get("sender") == self.agent
-                or event.get("recipient") == self.agent
-            )
+            return self.matches_agent(event, agent_id_to_name)
 
         if self.type == WaldiezBreakpointType.AGENT_EVENT:
-            return event.get("type") == self.event_type and (
-                event.get("sender") == self.agent
-                or event.get("recipient") == self.agent
-            )
+            event_type = event.get("type", "")
+            if event_type != self.event_type:
+                return False
+            return self.matches_agent(event, agent_id_to_name)
 
         # noinspection PyUnreachableCode
         return False

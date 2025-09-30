@@ -19,6 +19,7 @@ from waldiez.running.step_by_step.breakpoints_mixin import (
 )
 from waldiez.running.step_by_step.step_by_step_models import (
     WaldiezBreakpoint,
+    WaldiezDebugConfig,
     WaldiezDebugError,
 )
 
@@ -28,7 +29,9 @@ class DummyBreakpointsMixin(BreakpointsMixin):
 
     def __init__(self) -> None:
         """Initialize test class."""
-        super().__init__()
+        config = WaldiezDebugConfig()
+        config.auto_continue = False
+        super().__init__(config=config)
         self.emitted_messages: list[Any] = []
 
     def emit(self, message: Any) -> None:
@@ -247,18 +250,7 @@ def test_should_break_on_event_input_request(
     event.type = "input_request"
     event.model_dump.return_value = {"type": "input_request"}
 
-    assert not mixin.should_break_on_event(event, step_mode=True)
-
-
-def test_should_break_on_event_no_breakpoints_no_step_mode(
-    mixin: DummyBreakpointsMixin,
-) -> None:
-    """Test should_break_on_event with no breakpoints and no step mode."""
-    event = MagicMock()
-    event.type = "message"
-    event.model_dump.return_value = {"type": "message"}
-
-    assert not mixin.should_break_on_event(event, step_mode=False)
+    assert not mixin.should_break_on_event(event)
 
 
 def test_should_break_on_event_step_mode_no_breakpoints(
@@ -269,7 +261,7 @@ def test_should_break_on_event_step_mode_no_breakpoints(
     event.type = "message"
     event.model_dump.return_value = {"type": "message"}
 
-    assert mixin.should_break_on_event(event, step_mode=True)
+    assert mixin.should_break_on_event(event)
 
 
 def test_should_break_on_event_matching_breakpoint(
@@ -282,23 +274,7 @@ def test_should_break_on_event_matching_breakpoint(
     event.type = "message"
     event.model_dump.return_value = {"type": "message", "sender": "user"}
 
-    assert mixin.should_break_on_event(event, step_mode=False)
-
-
-def test_should_break_on_event_non_matching_breakpoint(
-    mixin: DummyBreakpointsMixin,
-) -> None:
-    """Test should_break_on_event with non-matching breakpoint."""
-    mixin.add_breakpoint("event:other")
-
-    event = MagicMock()
-    event.type = "message"
-    event.model_dump.return_value = {"type": "message", "sender": "user"}
-
-    # Should break because step_mode=True overrides
-    assert mixin.should_break_on_event(event, step_mode=True)
-    # Should not break with step_mode=False and non-matching breakpoint
-    assert not mixin.should_break_on_event(event, step_mode=False)
+    assert mixin.should_break_on_event(event)
 
 
 def test_should_break_on_event_caching(mixin: DummyBreakpointsMixin) -> None:
@@ -310,10 +286,10 @@ def test_should_break_on_event_caching(mixin: DummyBreakpointsMixin) -> None:
     event.model_dump.return_value = {"type": "message", "sender": "user"}
 
     # First call - cache miss
-    result1 = mixin.should_break_on_event(event, step_mode=False)
+    result1 = mixin.should_break_on_event(event)
 
     # Second call with same event - cache hit
-    result2 = mixin.should_break_on_event(event, step_mode=False)
+    result2 = mixin.should_break_on_event(event)
     cache_hits_after_second = mixin._breakpoint_stats["cache_hits"]
 
     assert result1 == result2
@@ -328,7 +304,7 @@ def test_should_break_on_event_exception_handling(
     event.type = "message"
     event.model_dump.side_effect = Exception("Test exception")
 
-    result = mixin.should_break_on_event(event, step_mode=True)
+    result = mixin.should_break_on_event(event)
     assert result is True  # Falls back to step_mode
 
 
@@ -341,7 +317,7 @@ def test_get_breakpoint_stats(mixin: DummyBreakpointsMixin) -> None:
     event = MagicMock()
     event.type = "message"
     event.model_dump.return_value = {"type": "message"}
-    mixin.should_break_on_event(event, step_mode=False)
+    mixin.should_break_on_event(event)
 
     stats = mixin.get_breakpoint_stats()
 
@@ -412,7 +388,7 @@ def test_agent_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
         "recipient": "assistant",
     }
 
-    assert mixin.should_break_on_event(event1, step_mode=False)
+    assert mixin.should_break_on_event(event1)
 
     # Test event where user is recipient
     event2 = MagicMock()
@@ -423,11 +399,13 @@ def test_agent_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
         "recipient": "user",
     }
 
-    assert mixin.should_break_on_event(event2, step_mode=False)
+    assert mixin.should_break_on_event(event2)
 
 
 def test_agent_event_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
     """Test agent-specific event breakpoint matching."""
+    auto_continue = mixin._config.auto_continue
+    mixin._config.auto_continue = True
     mixin.add_breakpoint("user:message")
 
     # Test matching event
@@ -439,7 +417,7 @@ def test_agent_event_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
         "recipient": "assistant",
     }
 
-    assert mixin.should_break_on_event(event1, step_mode=False)
+    assert mixin.should_break_on_event(event1)
 
     # Test non-matching event type
     event2 = MagicMock()
@@ -450,7 +428,7 @@ def test_agent_event_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
         "recipient": "assistant",
     }
 
-    assert not mixin.should_break_on_event(event2, step_mode=False)
+    assert not mixin.should_break_on_event(event2)
 
     # Test non-matching agent
     event3 = MagicMock()
@@ -461,4 +439,5 @@ def test_agent_event_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
         "recipient": "other",
     }
 
-    assert not mixin.should_break_on_event(event3, step_mode=False)
+    assert not mixin.should_break_on_event(event3)
+    mixin._config.auto_continue = auto_continue

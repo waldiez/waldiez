@@ -81,7 +81,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             dot_env=dot_env,
             **kwargs,
         )
-        BreakpointsMixin.__init__(self)
+        BreakpointsMixin.__init__(self, config=config)
         self.set_agent_id_to_name(waldiez.flow.unique_names["agent_names"])
 
         # Configuration
@@ -114,6 +114,8 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         # Command handling
         self._command_handler = CommandHandler(self)
         self._event_processor = EventProcessor(self)
+        auto_run = self.is_auto_run()
+        self._config.auto_continue = auto_run
 
     @property
     def auto_continue(self) -> bool:
@@ -465,11 +467,20 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
 
         return self._command_handler.handle_command(user_input or "")
 
-    def _get_user_action(self) -> WaldiezDebugStepAction:
-        """Get user action with timeout support."""
+    def _get_user_action(self, force: bool) -> WaldiezDebugStepAction:
+        """Get user action with timeout support.
+
+        Parameters
+        ----------
+        force : bool
+            Force getting the user's action, even if in auto-run mode.
+        """
         if self._config.auto_continue:
             self.step_mode = True
-            return WaldiezDebugStepAction.CONTINUE
+            if force:
+                self._config.auto_continue = False
+            else:
+                return WaldiezDebugStepAction.CONTINUE
 
         while True:
             request_id = gen_id()
@@ -521,16 +532,23 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             except (KeyboardInterrupt, EOFError):
                 return WaldiezDebugStepAction.QUIT
 
-    def _handle_step_interaction(self) -> bool:
-        """Handle step-by-step user interaction."""
+    def _handle_step_interaction(self, force: bool) -> bool:
+        """Handle step-by-step user interaction.
+
+        Parameters
+        ----------
+        force : bool
+            Force getting the user's action, even if in auto-run mode.
+        """
         while True:
-            action = self._get_user_action()
+            action = self._get_user_action(force)
             if action in (
                 WaldiezDebugStepAction.CONTINUE,
                 WaldiezDebugStepAction.STEP,
             ):
                 return True
             if action == WaldiezDebugStepAction.RUN:
+                self._config.auto_continue = True
                 return True
             if action == WaldiezDebugStepAction.QUIT:
                 return False
@@ -629,13 +647,12 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             self.emit_event(result["event_info"])
             # Handle breakpoint logic
             if result["should_break"]:
-                if not self._handle_step_interaction():
+                if not self._handle_step_interaction(True):
                     self._stop_requested.set()
                     if hasattr(event, "type") and event.type == "input_request":
                         event.content.respond("exit")
                         return True
                     raise StopRunningException(StopRunningException.reason)
-
             # Process the actual event
             WaldiezBaseRunner.process_event(event, agents, skip_send=True)
             self._processed_events += 1
@@ -734,16 +751,19 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     "Async step-by-step execution stopped before event processing"
                 )
                 return False
-            self.emit_event(result["event_info"])
+            sent = False
             # Handle breakpoint logic
             if result["should_break"]:
+                self.emit_event(result["event_info"])
+                sent = True
                 if not await self._a_handle_step_interaction():
                     self._stop_requested.set()
                     if hasattr(event, "type") and event.type == "input_request":
                         event.content.respond("exit")
                         return True
                     raise StopRunningException(StopRunningException.reason)
-
+            if not sent:
+                self.emit_event(result["event_info"])
             # Process the actual event
             await WaldiezBaseRunner.a_process_event(
                 event, agents, skip_send=True
