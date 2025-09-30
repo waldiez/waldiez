@@ -2307,6 +2307,8 @@ declare type WaldiezChatAction = {
 } | {
     type: "SET_STATE";
     state: Partial<WaldiezChatConfig>;
+} | {
+    type: "DONE";
 };
 
 /**
@@ -4442,6 +4444,8 @@ declare type WaldiezStepByStepAction = {
 } | {
     type: "SET_STATE";
     state: Partial<WaldiezStepByStep>;
+} | {
+    type: "DONE";
 };
 
 /**

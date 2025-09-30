@@ -84,6 +84,15 @@ export const useMessagePreprocessor = (flowId: string) => {
         [flowId],
     );
 
+    const processDebugStep = useCallback((data: any) => {
+        const handled = false;
+        const updated = data.data;
+        if (data.debug_type === "info") {
+            updated.type = "debug_event_info";
+        }
+        return { handled, updated };
+    }, []);
+
     const handleParsedContent = useCallback(
         (data: any) => {
             if (data.type === "save_response") {
@@ -109,9 +118,12 @@ export const useMessagePreprocessor = (flowId: string) => {
                 processStepRunResponse(data);
                 return { handled: true };
             }
+            if (data.type === "step_debug") {
+                return processDebugStep(data);
+            }
             return { handled: false, updated: data };
         },
-        [processSaveResult, processConvertResult, processStepRunResponse],
+        [processSaveResult, processConvertResult, processStepRunResponse, processDebugStep],
     );
 
     const preprocess = useCallback(

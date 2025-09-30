@@ -8,7 +8,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { WaldiezActiveRequest, WaldiezChatParticipant } from "@waldiez/components/chatUI/types";
 import type { WaldiezStepByStep, WaldiezStepHandlers } from "@waldiez/components/stepByStep/types";
 import type { WaldiezTimelineData } from "@waldiez/components/timeline/types";
-import type { WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat";
+import { type WaldiezChatMessageProcessingResult } from "@waldiez/utils/chat";
 import {
     type WaldiezStepByStepMessageDeduplicationOptions,
     defaultStepByStep,
@@ -28,6 +28,7 @@ vi.mock("@waldiez/utils/chat", () => ({
     WaldiezChatMessageProcessor: {
         process: vi.fn(),
     },
+    WORKFLOW_DONE: "<Waldiez> - Done running the flow.",
 }));
 
 vi.mock("@waldiez/components/stepByStep/utils", () => ({

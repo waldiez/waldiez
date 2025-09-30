@@ -25,7 +25,8 @@ export type WaldiezChatAction =
     | { type: "SET_PARTICIPANTS"; participants: WaldiezChatParticipant[] }
     | { type: "SET_ACTIVE_REQUEST"; request?: WaldiezActiveRequest; message?: WaldiezChatMessage }
     | { type: "SET_CHAT_HANDLERS"; handlers?: Partial<WaldiezChatHandlers> | undefined }
-    | { type: "SET_STATE"; state: Partial<WaldiezChatConfig> };
+    | { type: "SET_STATE"; state: Partial<WaldiezChatConfig> }
+    | { type: "DONE" };
 
 export const waldiezChatReducer = (
     state: WaldiezChatConfig,
@@ -112,6 +113,12 @@ export const waldiezChatReducer = (
             return {
                 ...state,
                 ...action.state,
+            };
+        case "DONE":
+            return {
+                ...state,
+                active: false,
+                activeRequest: undefined,
             };
         default:
             return state;

@@ -136,7 +136,6 @@ export const useWaldiezWsMessaging: (props: {
             } catch (_) {
                 process(event.data);
             }
-            // console.debug(chatHook.chat.messages);
         },
         [process],
     );

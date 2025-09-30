@@ -1170,7 +1170,7 @@ class WaldiezChatMessageProcessor {
     return handler;
   }
 }
-const getContentString = (content, onPreview) => {
+const getContentString$1 = (content, onPreview) => {
   if (typeof content === "string") {
     return content;
   }
@@ -1215,18 +1215,18 @@ const getMessageString = (message, onPreview) => {
     return message.content;
   }
   if (Array.isArray(message.content)) {
-    return message.content.map((entry) => getContentString(entry, onPreview)).join(" ");
+    return message.content.map((entry) => getContentString$1(entry, onPreview)).join(" ");
   }
   if ("content" in message.content) {
     if (typeof message.content.content === "string") {
       return message.content.content;
     }
     if (Array.isArray(message.content.content)) {
-      return message.content.content.map((entry) => getContentString(entry, onPreview)).join(" ");
+      return message.content.content.map((entry) => getContentString$1(entry, onPreview)).join(" ");
     }
-    return getContentString(message.content.content);
+    return getContentString$1(message.content.content);
   }
-  return getContentString(message.content);
+  return getContentString$1(message.content);
 };
 const waldiezChatReducer = (state, action) => {
   switch (action.type) {
@@ -1310,6 +1310,12 @@ const waldiezChatReducer = (state, action) => {
       return {
         ...state,
         ...action.state
+      };
+    case "DONE":
+      return {
+        ...state,
+        active: false,
+        activeRequest: void 0
       };
     default:
       return state;
@@ -2667,6 +2673,13 @@ const waldiezStepByStepReducer = (state, action) => {
         ...state,
         ...action.state
       };
+    case "DONE":
+      return {
+        ...state,
+        active: false,
+        activeRequest: void 0,
+        pendingControlInput: void 0
+      };
     default:
       return state;
   }
@@ -2886,6 +2899,20 @@ const useWaldiezStepByStep = (props) => {
     },
     [addEvent, setParticipants, setTimeline, setActiveRequest, config.activeRequest?.request_id]
   );
+  const isWorkflowDone = useCallback((data) => {
+    if (typeof data === "string" && WORKFLOW_DONE.includes(data)) {
+      return true;
+    }
+    if (typeof data === "object" && data) {
+      if ("data" in data && typeof data.data === "string" && WORKFLOW_DONE.includes(data.data)) {
+        return true;
+      }
+      if ("content" in data && typeof data.content === "string" && WORKFLOW_DONE.includes(data.content)) {
+        return true;
+      }
+    }
+    return false;
+  }, []);
   const process2 = useCallback(
     (data) => {
       let dataToProcess = data;
@@ -2895,6 +2922,10 @@ const useWaldiezStepByStep = (props) => {
           return;
         }
         dataToProcess = updated;
+      }
+      if (isWorkflowDone(dataToProcess)) {
+        dispatch({ type: "DONE" });
+        return;
       }
       try {
         const result = WaldiezStepByStepProcessor.process(dataToProcess);
@@ -2912,7 +2943,7 @@ const useWaldiezStepByStep = (props) => {
         setError(msg);
       }
     },
-    [preprocess, setError, handleChatProcessorResult, handleProcessorResult]
+    [preprocess, setError, handleChatProcessorResult, handleProcessorResult, isWorkflowDone]
   );
   return {
     stepByStep: config,
@@ -22053,6 +22084,26 @@ const ResumeSpinner = () => {
     /* @__PURE__ */ jsx$1("span", { children: "Resuming a previously stored state…" })
   ] }) : /* @__PURE__ */ jsx$1("div", { children: "✅ Resume complete!" });
 };
+const getContentString = (data) => {
+  if (typeof data === "string") {
+    return data;
+  }
+  if (Array.isArray(data)) {
+    return data.map((entry) => getContentString(entry)).join(", ");
+  }
+  if (typeof data === "object") {
+    if ("type" in data) {
+      if (data.type === "text" && "text" in data) {
+        return getContentString(data.text);
+      }
+    }
+    if ("content" in data) {
+      return getContentString(data.content);
+    }
+    return JSON.stringify(data);
+  }
+  return String(data);
+};
 const getParticipants = (ev) => {
   const sender = ev.sender || ev.content.sender;
   const recipient = ev.recipient || ev.content.recipient;
@@ -22068,10 +22119,12 @@ const renderEvent = (ev) => {
   switch (ev.type) {
     case "empty": {
       const c = ev;
-      return /* @__PURE__ */ jsx$1("div", { className: "text-gray-700 font-large", children: c.content });
+      const content = getContentString(c);
+      return /* @__PURE__ */ jsx$1("div", { className: "text-gray-700 font-large", children: content });
     }
     case "text": {
       const c = ev.content;
+      const content = getContentString(c);
       const { sender, recipient } = getParticipants(ev);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("div", { className: "text-amber-500 font-semibold", children: [
@@ -22081,7 +22134,7 @@ const renderEvent = (ev) => {
           " ",
           recipient
         ] }),
-        typeof c.content === "string" ? /* @__PURE__ */ jsx$1("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.content }) : typeof c.content === "object" ? /* @__PURE__ */ jsx$1("pre", { className: "whitespace-pre-wrap break-words mt-1", children: JSON.stringify(c.content) }) : /* @__PURE__ */ jsx$1("pre", { className: "whitespace-pre-wrap break-words mt-1", children: String(c.content) })
+        /* @__PURE__ */ jsx$1("pre", { className: "whitespace-pre-wrap break-words mt-1", children: content })
       ] });
     }
     case "post_carryover_processing": {
@@ -22163,17 +22216,24 @@ const renderEvent = (ev) => {
     }
     case "executed_function": {
       const c = ev.content ? ev.content : ev;
-      const ok = !!c.is_exec_success;
+      const ok = "is_exec_success" in c ? !!c.is_exec_success : true;
       const transferred = typeof c.content === "object" && c.content && "agent_name" in c.content ? c.content.agent_name : void 0;
+      const recipient = typeof c.recipient === "string" ? c.recipient : void 0;
+      const details = c.func_name || getContentString(c);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("div", { className: ok ? "text-green-600 font-semibold" : "text-red-600 font-semibold", children: [
           ok ? "✅ Success" : "❌ Failed",
           ": ",
-          c.func_name
+          details
         ] }),
         transferred && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
           "→ Transferred to: ",
           transferred
+        ] }),
+        !transferred && recipient && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
+          "→ Transferring to: ",
+          recipient,
+          " "
         ] })
       ] });
     }
@@ -28775,7 +28835,7 @@ const useStepRunModal = (_props) => {
     [agents]
   );
   const eventOptions = useMemo(
-    () => Object.entries(eventDescriptions).map(([value, _]) => ({
+    () => Object.entries(eventDescriptions).filter(([v]) => v !== "input_request").map(([value, _]) => ({
       label: value,
       value
     })),
@@ -28785,7 +28845,7 @@ const useStepRunModal = (_props) => {
     (type, agent, event_type) => {
       switch (type) {
         case "agent":
-          return `Break on any event from agent: ${agentIdToLabel[agent || ""] || agent}`;
+          return `Break on any event from/to agent: ${agentIdToLabel[agent || ""] || agent}`;
         case "event":
           return `Break on event: ${event_type} (${eventDescriptions[event_type]})`;
         case "agent_event":
@@ -29160,7 +29220,7 @@ const StepRunModal = memo((props) => {
                 className: `${isDark ? "bg-[#222] border-[#444]" : "bg-gray-50"} p-4 border rounded-lg`,
                 children: [
                   /* @__PURE__ */ jsx$1("h4", { className: `font-medium ${isDark ? "text-white" : "text-gray-900"} mb-3`, children: "Break on Agents" }),
-                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`, children: "Stop execution for any event from specific agents" }),
+                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`, children: "Stop execution for any event from/to specific agents" }),
                   /* @__PURE__ */ jsx$1(
                     Select,
                     {
@@ -29182,7 +29242,7 @@ const StepRunModal = memo((props) => {
                 className: `${isDark ? "bg-[#222] border-[#444]" : "bg-gray-50"} p-4 border rounded-lg`,
                 children: [
                   /* @__PURE__ */ jsx$1("h4", { className: `font-medium ${isDark ? "text-white" : "text-gray-900"} mb-3`, children: "Break on Agent + Event" }),
-                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`, children: "Stop execution for a specific event from a specific agent" }),
+                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`, children: "Stop execution for a specific event from/to a specific agent" }),
                   /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-3", children: [
                     /* @__PURE__ */ jsx$1(
                       Select,
@@ -40443,10 +40503,13 @@ const WaldiezFlowView = memo((props) => {
     onEdgeDoubleClick
   } = useFlowEvents(flowId);
   const handleStepRun = useCallback(() => {
+    if (stepByStep?.show === true) {
+      return;
+    }
     if (!isImportModalOpen && !isExportModalOpen) {
       setStepRunModalOpen(true);
     }
-  }, [isImportModalOpen, isExportModalOpen]);
+  }, [isImportModalOpen, isExportModalOpen, stepByStep?.show]);
   const closeStepRunModal = useCallback(() => {
     setStepRunModalOpen(false);
   }, []);

@@ -89,10 +89,13 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
      * Open the stepRunModal to select initial breakpoints.
      */
     const handleStepRun = useCallback(() => {
+        if (stepByStep?.show === true) {
+            return;
+        }
         if (!isImportModalOpen && !isExportModalOpen) {
             setStepRunModalOpen(true);
         }
-    }, [isImportModalOpen, isExportModalOpen]);
+    }, [isImportModalOpen, isExportModalOpen, stepByStep?.show]);
 
     /**
      * Close the stepRunModal

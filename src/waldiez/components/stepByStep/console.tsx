@@ -22,16 +22,17 @@ type EventBase<TType extends string, TContent> = {
     timestamp?: string;
 };
 
-type TextContent = { sender: string; recipient: string; content: string };
+type TextContent = { sender: string; recipient: string; content: any };
 type PostCarryoverContent = { sender: string; recipient: string; message: string };
 type GroupChatRunChatContent = { speaker: string };
 type UsingAutoReplyContent = { sender: string; recipient: string };
 type ToolCallContent = { sender: string; recipient: string; tool_calls: ToolCall[] };
 type ExecuteFunctionContent = { func_name: string; recipient: string; arguments?: unknown };
 type ExecutedFunctionContent = {
-    func_name: string;
-    is_exec_success: boolean;
-    content?: { agent_name?: string } | string | null;
+    func_name?: string;
+    is_exec_success?: boolean;
+    recipient?: string;
+    content?: any;
 };
 type InputRequestContent = {
     prompt?: string;
@@ -114,6 +115,27 @@ const ResumeSpinner = () => {
     );
 };
 
+const getContentString: (data: any) => string = (data: any) => {
+    if (typeof data === "string") {
+        return data;
+    }
+    if (Array.isArray(data)) {
+        return data.map((entry: any) => getContentString(entry)).join(", ");
+    }
+    if (typeof data === "object") {
+        if ("type" in data) {
+            if (data.type === "text" && "text" in data) {
+                return getContentString(data.text);
+            }
+        }
+        if ("content" in data) {
+            return getContentString(data.content);
+        }
+        return JSON.stringify(data);
+    }
+    return String(data);
+};
+
 const getParticipants = (ev: WaldiezEvent) => {
     const sender = ev.sender || ev.content.sender;
     const recipient = ev.recipient || ev.content.recipient;
@@ -131,25 +153,19 @@ const renderEvent = (ev: WaldiezEvent) => {
     switch (ev.type) {
         case "empty": {
             const c = ev as TextContent;
-            return <div className="text-gray-700 font-large">{c.content}</div>;
+            const content = getContentString(c);
+            return <div className="text-gray-700 font-large">{content}</div>;
         }
         case "text": {
             const c = ev.content as TextContent;
+            const content = getContentString(c);
             const { sender, recipient } = getParticipants(ev);
             return (
                 <div>
                     <div className="text-amber-500 font-semibold">
                         {sender} <span className="text-gray-400">→</span> {recipient}
                     </div>
-                    {typeof c.content === "string" ? (
-                        <pre className="whitespace-pre-wrap break-words mt-1">{c.content}</pre>
-                    ) : typeof c.content === "object" ? (
-                        <pre className="whitespace-pre-wrap break-words mt-1">
-                            {JSON.stringify(c.content)}
-                        </pre>
-                    ) : (
-                        <pre className="whitespace-pre-wrap break-words mt-1">{String(c.content)}</pre>
-                    )}
+                    <pre className="whitespace-pre-wrap break-words mt-1">{content}</pre>
                 </div>
             );
         }
@@ -228,23 +244,26 @@ const renderEvent = (ev: WaldiezEvent) => {
                 </div>
             );
         }
-
         case "executed_function": {
             const c = (ev as any).content
                 ? (ev.content as ExecutedFunctionContent)
                 : (ev as any as ExecutedFunctionContent);
-            const ok = !!c.is_exec_success;
+            const ok = "is_exec_success" in c ? !!c.is_exec_success : true;
             const transferred =
                 typeof c.content === "object" && c.content && "agent_name" in c.content
                     ? (c.content as any).agent_name
                     : undefined;
-
+            const recipient = typeof c.recipient === "string" ? c.recipient : undefined;
+            const details = c.func_name || getContentString(c);
             return (
                 <div>
                     <div className={ok ? "text-green-600 font-semibold" : "text-red-600 font-semibold"}>
-                        {ok ? "✅ Success" : "❌ Failed"}: {c.func_name}
+                        {ok ? "✅ Success" : "❌ Failed"}: {details}
                     </div>
                     {transferred && <div className="text-sm">→ Transferred to: {transferred}</div>}
+                    {!transferred && recipient && (
+                        <div className="text-sm">→ Transferring to: {recipient} </div>
+                    )}
                 </div>
             );
         }

@@ -13,7 +13,11 @@ import type {
 } from "@waldiez/components/stepByStep/types";
 import { getEventKey } from "@waldiez/components/stepByStep/utils";
 import type { WaldiezTimelineData } from "@waldiez/components/timeline/types";
-import { type WaldiezChatMessageProcessingResult, WaldiezChatMessageProcessor } from "@waldiez/utils/chat";
+import {
+    WORKFLOW_DONE,
+    type WaldiezChatMessageProcessingResult,
+    WaldiezChatMessageProcessor,
+} from "@waldiez/utils/chat";
 import { WaldiezStepByStepProcessor } from "@waldiez/utils/stepByStep/processor";
 import { type WaldiezStepByStepAction, waldiezStepByStepReducer } from "@waldiez/utils/stepByStep/reducer";
 import type { WaldiezStepByStepProcessingResult } from "@waldiez/utils/stepByStep/types";
@@ -304,6 +308,25 @@ export const useWaldiezStepByStep: (props: {
         [addEvent, setParticipants, setTimeline, setActiveRequest, config.activeRequest?.request_id],
     );
 
+    const isWorkflowDone = useCallback((data: any) => {
+        if (typeof data === "string" && WORKFLOW_DONE.includes(data)) {
+            return true;
+        }
+        if (typeof data === "object" && data) {
+            if ("data" in data && typeof data.data === "string" && WORKFLOW_DONE.includes(data.data)) {
+                return true;
+            }
+            if (
+                "content" in data &&
+                typeof data.content === "string" &&
+                WORKFLOW_DONE.includes(data.content)
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }, []);
+
     const process = useCallback(
         (data: any) => {
             let dataToProcess = data;
@@ -313,6 +336,10 @@ export const useWaldiezStepByStep: (props: {
                     return;
                 }
                 dataToProcess = updated;
+            }
+            if (isWorkflowDone(dataToProcess)) {
+                dispatch({ type: "DONE" });
+                return;
             }
             try {
                 const result = WaldiezStepByStepProcessor.process(dataToProcess);
@@ -331,7 +358,7 @@ export const useWaldiezStepByStep: (props: {
                 setError(msg);
             }
         },
-        [preprocess, setError, handleChatProcessorResult, handleProcessorResult],
+        [preprocess, setError, handleChatProcessorResult, handleProcessorResult, isWorkflowDone],
     );
 
     return {

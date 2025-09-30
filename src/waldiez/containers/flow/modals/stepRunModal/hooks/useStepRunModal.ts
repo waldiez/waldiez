@@ -68,10 +68,13 @@ export const useStepRunModal = (_props: StepRunModalProps) => {
 
     const eventOptions: { label: string; value: EventType }[] = useMemo(
         () =>
-            Object.entries(eventDescriptions).map(([value, _]) => ({
-                label: value,
-                value: value as EventType,
-            })),
+            Object.entries(eventDescriptions)
+                // always breaking on input requests
+                .filter(([v]) => v !== "input_request")
+                .map(([value, _]) => ({
+                    label: value,
+                    value: value as EventType,
+                })),
         [],
     );
 
@@ -79,7 +82,7 @@ export const useStepRunModal = (_props: StepRunModalProps) => {
         (type: WaldiezBreakpointType, agent?: string, event_type?: string): string => {
             switch (type) {
                 case "agent":
-                    return `Break on any event from agent: ${agentIdToLabel[agent || ""] || agent}`;
+                    return `Break on any event from/to agent: ${agentIdToLabel[agent || ""] || agent}`;
                 case "event":
                     return `Break on event: ${event_type} (${eventDescriptions[event_type as EventType]})`;
                 case "agent_event":

@@ -32,7 +32,8 @@ export type WaldiezStepByStepAction =
     | { type: "ADD_EVENTS"; events: Record<string, unknown>[]; makeLastCurrent?: boolean }
     | { type: "REMOVE_EVENT"; id: string }
     | { type: "CLEAR_EVENTS" }
-    | { type: "SET_STATE"; state: Partial<WaldiezStepByStep> };
+    | { type: "SET_STATE"; state: Partial<WaldiezStepByStep> }
+    | { type: "DONE" };
 
 // eslint-disable-next-line complexity
 export const waldiezStepByStepReducer = (
@@ -131,6 +132,13 @@ export const waldiezStepByStepReducer = (
             return {
                 ...state,
                 ...action.state,
+            };
+        case "DONE":
+            return {
+                ...state,
+                active: false,
+                activeRequest: undefined,
+                pendingControlInput: undefined,
             };
         default:
             return state;
