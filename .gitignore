@@ -8,6 +8,7 @@ lib/
 site/
 out/
 .idea/
+/*.waldiez
 public/**/*
 !public/.gitignore
 **/coverage/
