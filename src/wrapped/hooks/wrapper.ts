@@ -5,7 +5,11 @@
 import { type Dispatch, useCallback, useRef } from "react";
 
 import type { WaldiezChatConfig, WaldiezChatUserInput } from "@waldiez/components/chatUI/types";
-import type { WaldiezDebugInputResponse, WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
+import type {
+    WaldiezBreakpoint,
+    WaldiezDebugInputResponse,
+    WaldiezStepByStep,
+} from "@waldiez/components/stepByStep/types";
 import { useWaldiezWsMessaging } from "@waldiez/utils";
 import type { WaldiezChatAction } from "@waldiez/utils/chat/reducer";
 import type { WaldiezStepByStepAction } from "@waldiez/utils/stepByStep/reducer";
@@ -26,7 +30,7 @@ export const useWaldiezWrapper = ({
     chat: WaldiezChatConfig;
     stepByStep: WaldiezStepByStep;
     onRun: (flowJson: string, path?: string | null) => void;
-    onStepRun: (flowJson: string, path?: string | null, breakpoints?: string[]) => void;
+    onStepRun: (flowJson: string, breakpoints?: (string | WaldiezBreakpoint)[], path?: string | null) => void;
     onSave: (flowJson: string, path?: string | null) => void;
     onConvert: (flowJson: string, to: "py" | "ipynb", path?: string | null) => void;
     sendMessage: (message: unknown) => boolean | void;
@@ -44,14 +48,17 @@ export const useWaldiezWrapper = ({
             path,
         });
     }, []);
-    const onStepRunCb = useCallback((data: string, path?: string | null, breakpoints?: string[]) => {
-        messageSender.current?.({
-            type: "step_run",
-            data,
-            breakpoints,
-            path,
-        });
-    }, []);
+    const onStepRunCb = useCallback(
+        (data: string, breakpoints?: (string | WaldiezBreakpoint)[], path?: string | null) => {
+            messageSender.current?.({
+                type: "step_run",
+                data,
+                breakpoints,
+                path,
+            });
+        },
+        [],
+    );
     const onInterrupt = useCallback(
         (sessionId?: string, force = false) => {
             const sid = typeof sessionId === "string" ? sessionId : getSessionId();

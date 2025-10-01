@@ -110,7 +110,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
     const doStepRun = useCallback(
         (breakpoints: string[]) => {
             setStepRunModalOpen(false);
-            onStepRun(null, breakpoints);
+            onStepRun(breakpoints);
         },
         [onStepRun],
     );

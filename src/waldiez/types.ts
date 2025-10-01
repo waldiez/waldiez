@@ -4,7 +4,7 @@
  */
 import type { Edge, Node, ReactFlowJsonObject, Viewport } from "@xyflow/react";
 
-import type { WaldiezChatConfig, WaldiezStepByStep } from "@waldiez/components/types";
+import type { WaldiezBreakpoint, WaldiezChatConfig, WaldiezStepByStep } from "@waldiez/components/types";
 
 export type * from "@waldiez/components/types";
 export type * from "@waldiez/models/types";
@@ -90,8 +90,8 @@ export type WaldiezProps = WaldiezFlowProps & {
     skipHub?: boolean;
     onUpload?: (files: File[]) => Promise<string[]>;
     onChange?: (flow: string) => void;
-    onRun?: (flow: string) => void;
-    onStepRun?: (flow: string) => void;
-    onConvert?: (flow: string, to: "py" | "ipynb") => void;
-    onSave?: (flow: string) => void;
+    onRun?: (flow: string, path?: string | null) => void;
+    onStepRun?: (flow: string, breakpoints?: (string | WaldiezBreakpoint)[], path?: string | null) => void;
+    onConvert?: (flow: string, to: "py" | "ipynb", path?: string | null) => void;
+    onSave?: (flow: string, path?: string | null) => void;
 };

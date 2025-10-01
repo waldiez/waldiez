@@ -30,7 +30,11 @@ export const useWaldiezWsMessaging: (props: {
     onSave?: (contents: string, path?: string | null) => void | Promise<void>;
     onConvert?: (contents: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>;
     onRun?: (contents: string, path?: string | null) => void | Promise<void>;
-    onStepRun?: (contents: string, path?: string | null, breakpoints?: string[]) => void | Promise<void>;
+    onStepRun?: (
+        contents: string,
+        breakpoints?: (string | WaldiezBreakpoint)[],
+        path?: string | null,
+    ) => void | Promise<void>;
     preprocess?: (message: any) => { handled: boolean; updated?: any };
     ws: {
         url: string;
@@ -56,7 +60,11 @@ export const useWaldiezWsMessaging: (props: {
     save: (contents: string, path?: string | null) => Promise<void>;
     convert: (contents: string, to: "py" | "ipynb", path?: string | null) => Promise<void>;
     run: (contents: string, path?: string | null) => Promise<void>;
-    stepRun: (contents: string, path?: string | null, breakpoints?: string[]) => Promise<void>;
+    stepRun: (
+        contents: string,
+        breakpoints?: (string | WaldiezBreakpoint)[],
+        path?: string | null,
+    ) => Promise<void>;
     getRunningMode: () => "chat" | "step" | undefined;
     setRunningMode: (mode: "chat" | "step" | undefined) => void;
     reset: () => void;

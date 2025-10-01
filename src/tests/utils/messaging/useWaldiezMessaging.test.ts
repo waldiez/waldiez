@@ -307,10 +307,10 @@ describe("useWaldiezMessaging", () => {
             const breakpoints = ["message"];
 
             await act(async () => {
-                await result.current.stepRun("content", "/path", breakpoints);
+                await result.current.stepRun("content", breakpoints, "/path");
             });
 
-            expect(mockHandlers.onStepRun).toHaveBeenCalledWith("content", "/path", breakpoints);
+            expect(mockHandlers.onStepRun).toHaveBeenCalledWith("content", breakpoints, "/path");
             expect(result.current.getRunningMode()).toBe("step");
             expect(mockStepByStepHook.setShow).toHaveBeenCalledWith(true);
         });

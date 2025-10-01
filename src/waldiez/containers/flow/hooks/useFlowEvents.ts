@@ -233,14 +233,14 @@ export const useFlowEvents = (flowId: string) => {
      * Run the flow step-by-step
      */
     const onStepRun = useCallback(
-        (path?: string | null, breakpoints?: string[]) => {
+        (breakpoints?: string[], path?: string | null) => {
             if (isReadOnly || typeof stepRunner !== "function") {
                 return;
             }
             const flow = onFlowChanged();
             if (flow) {
                 const { path: flowPath } = getFlowInfo();
-                stepRunner(JSON.stringify(flow), path || flowPath, breakpoints);
+                stepRunner(JSON.stringify(flow), breakpoints, path || flowPath);
             }
         },
         [isReadOnly, stepRunner, onFlowChanged, getFlowInfo],

@@ -559,9 +559,9 @@ describe("useWaldiezWsMessaging", () => {
             );
 
             const breakpoints = ["message"];
-            await result.current.stepRun("content", "/path", breakpoints);
+            await result.current.stepRun("content", breakpoints, "/path");
 
-            expect(mockMessagingHook.stepRun).toHaveBeenCalledWith("content", "/path", breakpoints);
+            expect(mockMessagingHook.stepRun).toHaveBeenCalledWith("content", breakpoints, "/path");
         });
 
         it("should delegate running mode management", () => {

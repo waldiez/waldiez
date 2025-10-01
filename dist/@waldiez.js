@@ -3009,10 +3009,10 @@ const useWaldiezMessaging = ({ onSave, onConvert, onRun, chat, stepByStep, prepr
     [onRun, chatHook]
   );
   const stepRun = useCallback(
-    async (contents, path, breakpoints) => {
+    async (contents, breakpoints, path) => {
       setRunningMode("step");
       if (onStepRun) {
-        const result = onStepRun(contents, path, breakpoints);
+        const result = onStepRun(contents, breakpoints, path);
         if (isPromise(result)) {
           await result;
         }
@@ -27018,14 +27018,14 @@ const useFlowEvents = (flowId) => {
     [isReadOnly, runner, canRun, onFlowChanged, getFlowInfo, flowId]
   );
   const onStepRun = useCallback(
-    (path, breakpoints) => {
+    (breakpoints, path) => {
       if (isReadOnly || typeof stepRunner !== "function") {
         return;
       }
       const flow = onFlowChanged();
       if (flow) {
         const { path: flowPath } = getFlowInfo();
-        stepRunner(JSON.stringify(flow), path || flowPath, breakpoints);
+        stepRunner(JSON.stringify(flow), breakpoints, path || flowPath);
       }
     },
     [isReadOnly, stepRunner, onFlowChanged, getFlowInfo]
@@ -40516,7 +40516,7 @@ const WaldiezFlowView = memo((props) => {
   const doStepRun = useCallback(
     (breakpoints) => {
       setStepRunModalOpen(false);
-      onStepRun(null, breakpoints);
+      onStepRun(breakpoints);
     },
     [onStepRun]
   );
