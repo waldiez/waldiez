@@ -85,10 +85,11 @@ def get_event_handler_string(
         f"{space}known_agents: list[ConversableAgent] = []\n"
         f"{space}if on_event:\n"
         f"{space}{tab}for index, result in enumerate(results):\n"
+        f"{space}{tab}{tab}result_events: list[dict[str, Any]] = []\n"
     )
     if is_async:
         content += (
-            f"{space}{tab}{tab}async for event in result.events:\n"
+            f"{space}{tab}{tab}async for event in result.events:\n{_add_event_dump(space, tab)}"
             f"{space}{tab}{tab}{tab}if not got_agents:\n"
             f"{space}{tab}{tab}{tab}{tab}known_agents = _get_known_agents()\n"
             f"{space}{tab}{tab}{tab}{tab}got_agents = True\n"
@@ -102,7 +103,7 @@ def get_event_handler_string(
         )
     else:
         content += (
-            f"{space}{tab}{tab}for event in result.events:\n"
+            f"{space}{tab}{tab}for event in result.events:\n{_add_event_dump(space, tab)}"
             f"{space}{tab}{tab}{tab}if not got_agents:\n"
             f"{space}{tab}{tab}{tab}{tab}known_agents = _get_known_agents()\n"
             f"{space}{tab}{tab}{tab}{tab}got_agents = True\n"
@@ -124,14 +125,30 @@ def get_event_handler_string(
     content += get_result_dicts_string(space, is_async)
     content += (
         f"{space}else:\n{space}{tab}for index, result in enumerate(results):\n"
+        f"{space}{tab}{tab}result_events: list[dict[str, Any]] = []\n"
     )
     if is_async:
-        content += f"{space}{tab}{tab}await result.process()\n"
+        content += (
+            f"{space}{tab}{tab}await result.process()\n"
+            f"{space}{tab}{tab}async for event in result.events:\n"
+        )
     else:
-        content += f"{space}{tab}{tab}result.process()\n"
+        content += (
+            f"{space}{tab}{tab}result.process()\n"
+            f"{space}{tab}{tab}for event in result.events:\n"
+        )
+    content += _add_event_dump(space, tab)
     content += get_result_dicts_string(space, is_async)
-
     return content
+
+
+def _add_event_dump(space: str, tab: str) -> str:
+    return (
+        f"{space}{tab}{tab}{tab}try:\n"
+        f'{space}{tab}{tab}{tab}{tab}result_events.append(event.model_dump(mode="json", fallback=str))\n'
+        f"{space}{tab}{tab}{tab}except BaseException:  # pylint: disable=broad-exception-caught\n"
+        f"{space}{tab}{tab}{tab}{tab}pass\n"
+    )
 
 
 def get_result_dicts_string(tab: str, is_async: bool) -> str:
@@ -149,24 +166,25 @@ def get_result_dicts_string(tab: str, is_async: bool) -> str:
     str
         The result dicts string.
     """
+    # fmt: off
     space = f"{tab}        "
     flow_content = f"{space}result_dict = {{\n"
     flow_content += f'{space}    "index": index,\n'
+    flow_content += f'{space}    "uuid": str(result.uuid),\n'
+    flow_content += f'{space}    "events": result_events,\n'
     if is_async:
         flow_content += f'{space}    "messages": await result.messages,\n'
         flow_content += f'{space}    "summary": await result.summary,\n'
         flow_content += f'{space}    "cost": (await result.cost).model_dump(mode="json", fallback=str) if await result.cost else None,\n'
         flow_content += f'{space}    "context_variables": (await result.context_variables).model_dump(mode="json", fallback=str) if await result.context_variables else None,\n'
-        flow_content += (
-            f'{space}    "last_speaker": await result.last_speaker,\n'
-        )
+        flow_content += f'{space}    "last_speaker": await result.last_speaker,\n'
     else:
         flow_content += f'{space}    "messages": result.messages,\n'
         flow_content += f'{space}    "summary": result.summary,\n'
         flow_content += f'{space}    "cost": result.cost.model_dump(mode="json", fallback=str) if result.cost else None,\n'
         flow_content += f'{space}    "context_variables": result.context_variables.model_dump(mode="json", fallback=str) if result.context_variables else None,\n'
         flow_content += f'{space}    "last_speaker": result.last_speaker,\n'
-    flow_content += f'{space}    "uuid": str(result.uuid),\n'
     flow_content += f"{space}}}\n"
     flow_content += f"{space}result_dicts.append(result_dict)\n"
+    # fmt: on
     return flow_content
