@@ -4,12 +4,9 @@
 """Waldiez subprocess runner that inherits from BaseRunner."""
 
 import asyncio
-import json
 import re
 from pathlib import Path
 from typing import Any, Callable, Literal
-
-import aiofiles
 
 from waldiez.models import Waldiez
 
@@ -128,7 +125,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             self.log.error(data.get("data", ""))
         else:
             content = data.get("data", data)
-            self._print(content)
+            self.print(content)
 
     def _default_sync_input_request(self, prompt: str) -> None:
         """Get the default sync input request handler."""
@@ -256,8 +253,8 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             runner = self._create_sync_subprocess_runner()
 
             # Run subprocess
-            success = runner.run_subprocess(self._waldiez_file, mode=self.mode)
-            return self._read_from_output(success, output_file.parent)
+            runner.run_subprocess(self._waldiez_file, mode=self.mode)
+            return self.read_from_output(output_file.parent)
 
         except Exception as e:
             self.log.error("Error in sync subprocess execution: %s", e)
@@ -364,11 +361,11 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             runner = self._create_async_subprocess_runner()
 
             # Run subprocess
-            success = await runner.run_subprocess(
+            await runner.run_subprocess(
                 self._waldiez_file,
                 mode=self.mode,
             )
-            return await self._a_read_from_output(success, output_file.parent)
+            return await self.a_read_from_output(output_file.parent)
 
         except Exception as e:
             self.log.error("Error in async subprocess execution: %s", e)
@@ -466,6 +463,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
     def _after_run(
         self,
         results: list[dict[str, Any]],
+        error: BaseException | None,
         output_file: Path,
         waldiez_file: Path,
         uploads_root: Path | None,
@@ -478,7 +476,9 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         Parameters
         ----------
         results : list[dict[str, Any]]
-            Results from the workflow execution
+            Results from the workflow execution.
+        error : BaseException | None
+            Optional error during the run.
         output_file : Path
             Output file path
         waldiez_file : Path
@@ -498,6 +498,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
     async def _a_after_run(
         self,
         results: list[dict[str, Any]],
+        error: BaseException | None,
         output_file: Path,
         waldiez_file: Path,
         uploads_root: Path | None,
@@ -510,7 +511,9 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         Parameters
         ----------
         results : list[dict[str, Any]]
-            Results from the workflow execution
+            Results from the workflow execution.
+        error : BaseException | None
+            Optional error during the run.
         output_file : Path
             Output file path
         waldiez_file : Path
@@ -526,56 +529,6 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         """
         # Cleanup subprocess runners
         self._cleanup_subprocess_runners()
-
-    @staticmethod
-    async def _a_read_from_output(
-        success: bool,
-        output_dir: Path,
-    ) -> list[dict[str, Any]]:
-        """Read from output dir results.json or error.json."""
-        # pylint: disable=broad-exception-caught,too-many-try-statements
-        error_json = output_dir / "error.json"
-        results_json = output_dir / "results.json"
-        try:
-            if success and results_json.is_file():
-                async with aiofiles.open(
-                    results_json, "r", encoding="utf-8"
-                ) as file:
-                    results = await file.read()
-                    return json.loads(results).get("results", [])
-            if error_json.is_file():
-                async with aiofiles.open(
-                    error_json, "r", encoding="utf-8"
-                ) as file:
-                    results = await file.read()
-                    reason = json.loads(results).get("error", "Flow failed")
-                    return [{"error": reason}]
-        except BaseException as e:
-            return [{"error": str(e)}]
-        return [{"error": "Could not gather result details."}]
-
-    @staticmethod
-    def _read_from_output(
-        success: bool,
-        output_dir: Path,
-    ) -> list[dict[str, Any]]:
-        """Read from output dir results.json or error.json."""
-        # pylint: disable=broad-exception-caught,too-many-try-statements
-        error_json = output_dir / "error.json"
-        results_json = output_dir / "results.json"
-        try:
-            if success and results_json.is_file():
-                with open(results_json, "r", encoding="utf-8") as file:
-                    results = file.read()
-                    return json.loads(results).get("results", [])
-            if error_json.is_file():
-                with open(error_json, "r", encoding="utf-8") as file:
-                    results = file.read()
-                    reason = json.loads(results).get("error", "Flow failed")
-                    return [{"error": reason}]
-        except BaseException as e:
-            return [{"error": str(e)}]
-        return [{"error": "Could not gather result details."}]
 
     @classmethod
     def create_with_callbacks(

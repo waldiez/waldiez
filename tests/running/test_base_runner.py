@@ -19,6 +19,7 @@ import pytest
 from waldiez.models.flow.flow import WaldiezFlow
 from waldiez.models.waldiez import Waldiez
 from waldiez.running.base_runner import WaldiezBaseRunner
+from waldiez.running.events_mixin import EventsMixin
 from waldiez.running.exceptions import StopRunningException
 
 
@@ -121,7 +122,7 @@ def test_run_sets_running_flag_and_returns_results(
         structured_io=False,
     )
     results = runner.run(output_path=str(file_path))
-    assert results == [{"result": "sync"}]
+    assert results[0].get("result") == "sync"
     assert not runner.is_running()
 
 
@@ -140,7 +141,7 @@ async def test_async_run_sets_running_flag_and_returns_results(
         structured_io=False,
     )
     results = await runner.a_run(output_path=str(file_path))
-    assert results == [{"result": "async"}]
+    assert results[0].get("result") == "async"
     assert not runner.is_running()
 
 
@@ -200,8 +201,8 @@ def test_process_event_calls_send(
         called["sent"] = True
         assert e == event
 
-    monkeypatch.setattr(WaldiezBaseRunner, "_send", staticmethod(fake_send))
-    WaldiezBaseRunner.process_event(event, [])
+    monkeypatch.setattr(EventsMixin, "_send", staticmethod(fake_send))
+    EventsMixin.process_event(event, [])
     assert called.get("sent") is True
 
 
@@ -236,12 +237,12 @@ def test_process_event_input_request(
     event.content = DummyContent()
 
     monkeypatch.setattr(
-        WaldiezBaseRunner,
+        EventsMixin,
         "get_user_input",
         staticmethod(lambda prompt, password=False: "user_input"),
     )
 
-    WaldiezBaseRunner.process_event(event, [])
+    EventsMixin.process_event(event, [])
     assert responded == "user_input"
 
 
@@ -267,8 +268,8 @@ async def test_a_process_event_calls_send(
         called["sent"] = True
         assert e == event
 
-    monkeypatch.setattr(WaldiezBaseRunner, "_send", staticmethod(fake_send))
-    await WaldiezBaseRunner.a_process_event(event, [])
+    monkeypatch.setattr(EventsMixin, "_send", staticmethod(fake_send))
+    await EventsMixin.a_process_event(event, [])
     assert called.get("sent") is True
 
 
@@ -310,12 +311,12 @@ async def test_a_process_event_input_request(
     event.content = DummyContent()
 
     monkeypatch.setattr(
-        WaldiezBaseRunner,
+        EventsMixin,
         "a_get_user_input",
         staticmethod(fake_input),
     )
 
-    await WaldiezBaseRunner.a_process_event(event, [])
+    await EventsMixin.a_process_event(event, [])
     assert responded == "user_input"
 
 
@@ -395,8 +396,8 @@ def test_get_input_function_overrides(
         """Fake input function."""
         return "custom input"
 
-    WaldiezBaseRunner._input = fake_input
-    input_func = WaldiezBaseRunner.get_input_function()
+    EventsMixin._input = fake_input
+    input_func = EventsMixin.get_input_function()
     assert input_func == fake_input  # pylint: disable=comparison-with-callable
 
 
@@ -411,8 +412,8 @@ def test_get_user_input_sync_and_async(
         uploads_root=None,
         structured_io=False,
     )
-    WaldiezBaseRunner._input = lambda prompt, password=False: "sync_input"
-    val = WaldiezBaseRunner.get_user_input("Prompt")
+    EventsMixin._input = lambda prompt, password=False: "sync_input"
+    val = EventsMixin.get_user_input("Prompt")
     assert val == "sync_input"
 
     # noinspection PyUnusedLocal
@@ -420,9 +421,9 @@ def test_get_user_input_sync_and_async(
         """Fake async input function."""
         return "async_input"
 
-    WaldiezBaseRunner._input = async_input
+    EventsMixin._input = async_input
     # Should run async input with sync call via syncify
-    val = WaldiezBaseRunner.get_user_input("Prompt")
+    val = EventsMixin.get_user_input("Prompt")
     assert val == "async_input"
 
 
@@ -435,8 +436,8 @@ async def test_async_get_user_input(monkeypatch: pytest.MonkeyPatch) -> None:
         """Fake async input function."""
         return "async_input"
 
-    WaldiezBaseRunner._input = async_input
-    val = await WaldiezBaseRunner.a_get_user_input("Prompt")
+    EventsMixin._input = async_input
+    val = await EventsMixin.a_get_user_input("Prompt")
     assert val == "async_input"
 
 

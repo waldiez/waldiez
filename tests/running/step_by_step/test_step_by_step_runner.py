@@ -35,7 +35,7 @@ from waldiez.running.step_by_step.step_by_step_runner import (
     WaldiezStepByStepRunner,
 )
 
-BASE_RUNNER = "waldiez.running.base_runner.WaldiezBaseRunner"
+EVENTS_MIXIN = "waldiez.running.events_mixin.EventsMixin"
 
 
 def _get_runner(
@@ -91,7 +91,7 @@ def test_parse_user_action_known_and_unknown(
 
 
 # noinspection PyUnusedLocal
-@patch(f"{BASE_RUNNER}.get_user_input", return_value="c")
+@patch(f"{EVENTS_MIXIN}.get_user_input", return_value="c")
 def test_handle_step_interaction_continue(
     mock_input: Any, runner: WaldiezStepByStepRunner
 ) -> None:
@@ -102,7 +102,7 @@ def test_handle_step_interaction_continue(
 
 # noinspection PyUnusedLocal
 @patch(
-    f"{BASE_RUNNER}.get_user_input",
+    f"{EVENTS_MIXIN}.get_user_input",
     side_effect=KeyboardInterrupt,
 )
 def test_handle_step_interaction_quit_on_interrupt(
@@ -115,7 +115,7 @@ def test_handle_step_interaction_quit_on_interrupt(
 
 
 @pytest.mark.asyncio
-@patch(f"{BASE_RUNNER}.a_get_user_input", new_callable=AsyncMock)
+@patch(f"{EVENTS_MIXIN}.a_get_user_input", new_callable=AsyncMock)
 async def test_async_handle_step_interaction_continue(
     mock_async_input: AsyncMock, runner: WaldiezStepByStepRunner
 ) -> None:
@@ -126,7 +126,7 @@ async def test_async_handle_step_interaction_continue(
 
 
 @pytest.mark.asyncio
-@patch(f"{BASE_RUNNER}.a_get_user_input", new_callable=AsyncMock)
+@patch(f"{EVENTS_MIXIN}.a_get_user_input", new_callable=AsyncMock)
 async def test_async_handle_step_interaction_quit_on_interrupt(
     mock_async_input: AsyncMock, runner: WaldiezStepByStepRunner
 ) -> None:
@@ -168,14 +168,14 @@ def test_on_event_breaks_and_continues(
     # Patch _handle_step_interaction to return True so it continues
     with patch.object(runner, "_handle_step_interaction", return_value=True):
         # Patch WaldiezBaseRunner.process_event to do nothing
-        with patch(f"{BASE_RUNNER}.process_event") as mock_process:
+        with patch(f"{EVENTS_MIXIN}.process_event") as mock_process:
             result = runner._on_event(text_event, [])
             assert result is True
             mock_process.assert_called_once_with(text_event, [], skip_send=True)
 
     # Patch _handle_step_interaction to return False (stop)
     with patch.object(runner, "_handle_step_interaction", return_value=False):
-        with patch(f"{BASE_RUNNER}.process_event") as mock_process:
+        with patch(f"{EVENTS_MIXIN}.process_event") as mock_process:
             with pytest.raises(StopRunningException):
                 runner._on_event(text_event, [])
             mock_process.assert_not_called()
@@ -194,7 +194,7 @@ async def test_async_on_event_continues_and_stops(
         runner, "_a_handle_step_interaction", AsyncMock(return_value=True)
     ):
         with patch(
-            f"{BASE_RUNNER}.a_process_event", AsyncMock()
+            f"{EVENTS_MIXIN}.a_process_event", AsyncMock()
         ) as mock_process:
             result = await runner._a_on_event(text_event, [])
             assert result is True
@@ -205,7 +205,7 @@ async def test_async_on_event_continues_and_stops(
         runner, "_a_handle_step_interaction", AsyncMock(return_value=False)
     ):
         with patch(
-            f"{BASE_RUNNER}.a_process_event", AsyncMock()
+            f"{EVENTS_MIXIN}.a_process_event", AsyncMock()
         ) as mock_process:
             with pytest.raises(StopRunningException):
                 await runner._a_on_event(text_event, [])
@@ -334,7 +334,7 @@ def test_get_user_action_handles_keyboard_interrupt(
 ) -> None:
     """Test get_user_action handles keyboard interrupt."""
     with patch(
-        f"{BASE_RUNNER}.get_user_input",
+        f"{EVENTS_MIXIN}.get_user_input",
         side_effect=KeyboardInterrupt,
     ):
         action = runner._get_user_action(True)
@@ -347,7 +347,7 @@ def test_get_user_action_handles_eof_error(
 ) -> None:
     """Test get_user_action handles EOF error."""
     with patch(
-        f"{BASE_RUNNER}.get_user_input",
+        f"{EVENTS_MIXIN}.get_user_input",
         side_effect=EOFError,
     ):
         action = runner._get_user_action(True)
@@ -362,7 +362,7 @@ async def test_a_get_user_action_handles_keyboard_interrupt(
     """Test get_user_action handles keyboard interrupt."""
     async_mock = AsyncMock(side_effect=KeyboardInterrupt)
     with patch(
-        f"{BASE_RUNNER}.a_get_user_input",
+        f"{EVENTS_MIXIN}.a_get_user_input",
         async_mock,
     ):
         action = await runner._a_get_user_action()
@@ -376,7 +376,7 @@ async def test_a_get_user_action_handles_eof_error(
     """Test get_user_action handles EOF error."""
     async_mock = AsyncMock(side_effect=EOFError)
     with patch(
-        f"{BASE_RUNNER}.a_get_user_input",
+        f"{EVENTS_MIXIN}.a_get_user_input",
         async_mock,
     ):
         action = await runner._a_get_user_action()
@@ -389,7 +389,7 @@ def test_on_event_raises_on_generic_exception(
 ) -> None:
     """_on_event should raise when process_event raises generic exception."""
     runner._step_mode = False  # to skip break logic
-    with patch(f"{BASE_RUNNER}.process_event", side_effect=ValueError("fail")):
+    with patch(f"{EVENTS_MIXIN}.process_event", side_effect=ValueError("fail")):
         with pytest.raises(BaseException):  # noqa: B017
             runner._on_event(text_event, [])
 
@@ -401,7 +401,8 @@ def test_on_event_propagates_stop_running_exception(
     """_on_event should propagate StopRunningException without wrapping."""
     runner._step_mode = False
     with patch(
-        f"{BASE_RUNNER}.process_event", side_effect=StopRunningException("stop")
+        f"{EVENTS_MIXIN}.process_event",
+        side_effect=StopRunningException("stop"),
     ):
         with pytest.raises(StopRunningException):
             runner._on_event(text_event, [])
@@ -415,7 +416,7 @@ async def test_async_on_event_raises_runtime_error_on_generic_exception(
     """_a_on_event should raise RuntimeError when a_process_event raises generic exception."""
     runner._step_mode = False
     with patch(
-        f"{BASE_RUNNER}.a_process_event", side_effect=ValueError("fail")
+        f"{EVENTS_MIXIN}.a_process_event", side_effect=ValueError("fail")
     ):
         with pytest.raises(BaseException):  # noqa: B017
             await runner._a_on_event(text_event, [])
@@ -429,7 +430,7 @@ async def test_async_on_event_propagates_stop_running_exception(
     """_a_on_event should propagate StopRunningException without wrapping."""
     runner._step_mode = False
     with patch(
-        f"{BASE_RUNNER}.a_process_event",
+        f"{EVENTS_MIXIN}.a_process_event",
         side_effect=StopRunningException("stop"),
     ):
         with pytest.raises(StopRunningException):

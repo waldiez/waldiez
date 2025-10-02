@@ -446,6 +446,7 @@ def test_runner_after_run(
     with patch("asyncio.create_task"):
         runner._after_run(
             results=[],
+            error=None,
             output_file=Path("output.py"),
             waldiez_file=Path("input.waldiez"),
             uploads_root=None,
@@ -471,6 +472,7 @@ def test_runner_after_run_sync_running(
     with patch("asyncio.create_task"):
         runner._after_run(
             results=[],
+            error=None,
             output_file=Path("output.py"),
             waldiez_file=Path("input.waldiez"),
             uploads_root=None,
@@ -498,6 +500,7 @@ async def test_a_runner_after_run_sync(
     with patch("asyncio.create_task"):
         await runner._a_after_run(
             results=[],
+            error=None,
             output_file=Path("output.py"),
             waldiez_file=Path("input.waldiez"),
             uploads_root=None,
@@ -526,6 +529,7 @@ async def test_a_runner_after_run_async(
 
     await runner._a_after_run(
         results=[],
+        error=None,
         output_file=Path("output.py"),
         waldiez_file=waldiez_file,
         uploads_root=None,

@@ -24,6 +24,7 @@ from waldiez.running.step_by_step.command_handler import CommandHandler
 from waldiez.running.step_by_step.events_processor import EventProcessor
 
 from ..base_runner import WaldiezBaseRunner
+from ..events_mixin import EventsMixin
 from ..exceptions import StopRunningException
 from ..run_results import WaldiezRunResults
 from .breakpoints_mixin import BreakpointsMixin
@@ -210,19 +211,6 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
     def max_event_history(self) -> int:
         """Get the maximum event history size."""
         return self._config.max_event_history
-
-    @staticmethod
-    def print(*args: Any, **kwargs: Any) -> None:
-        """Print method.
-
-        Parameters
-        ----------
-        *args : Any
-            Positional arguments to print.
-        **kwargs : Any
-            Keyword arguments to print.
-        """
-        WaldiezBaseRunner.print(*args, **kwargs)
 
     def add_to_history(self, event_info: dict[str, Any]) -> None:
         """Add an event to the history.
@@ -494,7 +482,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             except Exception as e:  # pylint: disable=broad-exception-caught
                 self.log.warning("Failed to emit input request: %s", e)
             try:
-                user_input = WaldiezBaseRunner.get_user_input(
+                user_input = EventsMixin.get_user_input(
                     DEBUG_INPUT_PROMPT
                 ).strip()
                 return self._parse_user_action(
@@ -521,7 +509,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     )
                 )
 
-                user_input = await WaldiezBaseRunner.a_get_user_input(
+                user_input = await EventsMixin.a_get_user_input(
                     DEBUG_INPUT_PROMPT
                 )
                 user_input = user_input.strip()
@@ -606,9 +594,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             else:
                 stream = IOStream.get_default()
 
-            WaldiezBaseRunner._print = stream.print
-            WaldiezBaseRunner._input = stream.input
-            WaldiezBaseRunner._send = stream.send
+            EventsMixin.set_print_function(stream.print)
+            EventsMixin.set_input_function(stream.input)
+            EventsMixin.set_send_function(stream.send)
 
             self.print(MESSAGES["workflow_starting"])
             self.print(self.waldiez.info.model_dump_json())
@@ -654,7 +642,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                         return True
                     raise StopRunningException(StopRunningException.reason)
             # Process the actual event
-            WaldiezBaseRunner.process_event(event, agents, skip_send=True)
+            EventsMixin.process_event(event, agents, skip_send=True)
             self._processed_events += 1
 
         except Exception as e:
@@ -700,9 +688,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 else:
                     stream = IOStream.get_default()
 
-                WaldiezBaseRunner._print = stream.print
-                WaldiezBaseRunner._input = stream.input
-                WaldiezBaseRunner._send = stream.send
+                EventsMixin.set_print_function(stream.print)
+                EventsMixin.set_input_function(stream.input)
+                EventsMixin.set_send_function(stream.send)
 
                 self.print(MESSAGES["workflow_starting"])
                 self.print(self.waldiez.info.model_dump_json())
@@ -765,9 +753,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             if not sent:
                 self.emit_event(result["event_info"])
             # Process the actual event
-            await WaldiezBaseRunner.a_process_event(
-                event, agents, skip_send=True
-            )
+            await EventsMixin.a_process_event(event, agents, skip_send=True)
             self._processed_events += 1
 
         except Exception as e:

@@ -16,7 +16,7 @@ class RequirementsMixin:
 
     _waldiez: Waldiez
     _called_install_requirements: bool
-    _print: Callable[..., None]
+    print: Callable[..., None]
 
     def __init__(self) -> None:
         """Initialize the instance."""
@@ -47,7 +47,7 @@ class RequirementsMixin:
             extra_requirements = self.gather_requirements()
             if extra_requirements:  # pragma: no branch
                 self._python_manager.pip_install(
-                    extra_requirements, printer=self._print
+                    extra_requirements, printer=self.print
                 )
             refresh_environment()
 
@@ -58,6 +58,6 @@ class RequirementsMixin:
             extra_requirements = self.gather_requirements()
             if extra_requirements:  # pragma: no branch
                 await self._python_manager.a_pip_install(
-                    extra_requirements, printer=self._print
+                    extra_requirements, printer=self.print
                 )
             refresh_environment()

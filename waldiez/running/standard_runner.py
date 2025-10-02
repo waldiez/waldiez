@@ -20,6 +20,7 @@ from waldiez.models.waldiez import Waldiez
 from waldiez.running.run_results import WaldiezRunResults
 
 from .base_runner import WaldiezBaseRunner
+from .events_mixin import EventsMixin
 
 if TYPE_CHECKING:
     from autogen.agentchat import ConversableAgent  # type: ignore
@@ -60,19 +61,6 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         self._event_count = 0
         self._processed_events = 0
 
-    @staticmethod
-    def print(*args: Any, **kwargs: Any) -> None:
-        """Print.
-
-        Parameters
-        ----------
-        *args : Any
-            Positional arguments to print.
-        **kwargs : Any
-            Keyword arguments to print.
-        """
-        WaldiezBaseRunner.print(*args, **kwargs)
-
     # pylint: disable=unused-argument
     def _run(
         self,
@@ -109,9 +97,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 )
             else:
                 stream = IOStream.get_default()
-            WaldiezBaseRunner._print = stream.print
-            WaldiezBaseRunner._input = stream.input
-            WaldiezBaseRunner._send = stream.send
+            EventsMixin.set_print_function(stream.print)
+            EventsMixin.set_input_function(stream.input)
+            EventsMixin.set_send_function(stream.send)
             self.print(MESSAGES["workflow_starting"])
             self.print(self.waldiez.info.model_dump_json())
             results = loaded_module.main(
@@ -144,7 +132,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             )
             return False
         try:
-            WaldiezBaseRunner.process_event(event, agents)
+            EventsMixin.process_event(event, agents)
             self._processed_events += 1
         except SystemExit:  # pragma: no cover
             self.log.debug("Execution stopped by user (sync)")
@@ -171,7 +159,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             )
             return False
         try:
-            await WaldiezBaseRunner.a_process_event(event, agents)
+            await EventsMixin.a_process_event(event, agents)
             self._processed_events += 1
         except SystemExit:  # pragma: no cover
             self.log.debug("Execution stopped by user (async)")
@@ -223,9 +211,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                     )
                 else:
                     stream = IOStream.get_default()
-                WaldiezBaseRunner._print = stream.print
-                WaldiezBaseRunner._input = stream.input
-                WaldiezBaseRunner._send = stream.send
+                EventsMixin.set_print_function(stream.print)
+                EventsMixin.set_input_function(stream.input)
+                EventsMixin.set_send_function(stream.send)
                 self.print(MESSAGES["workflow_starting"])
                 self.print(self.waldiez.info.model_dump_json())
                 results = await loaded_module.main(  # pyright: ignore

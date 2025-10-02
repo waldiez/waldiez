@@ -16,6 +16,7 @@ from waldiez.models.flow.info import WaldiezFlowInfo
 from waldiez.running.standard_runner import WaldiezStandardRunner
 
 BASE_RUNNER = "waldiez.running.base_runner.WaldiezBaseRunner"
+EVENTS_MIXIN = "waldiez.running.events_mixin.EventsMixin"
 
 
 @pytest.fixture(name="runner")
@@ -61,7 +62,7 @@ def test_on_event_processing_and_stop(runner: WaldiezStandardRunner) -> None:
     event = MagicMock()
     event.type = "normal"
 
-    with patch(f"{BASE_RUNNER}.process_event") as mock_process:
+    with patch(f"{EVENTS_MIXIN}.process_event") as mock_process:
         result = runner._on_event(event, [])
         assert result is True
         mock_process.assert_called_once_with(event, [])
@@ -73,7 +74,7 @@ def test_on_event_processing_and_stop(runner: WaldiezStandardRunner) -> None:
     runner._stop_requested.clear()
 
     # Raise exception in process_event
-    with patch(f"{BASE_RUNNER}.process_event", side_effect=Exception("fail")):
+    with patch(f"{EVENTS_MIXIN}.process_event", side_effect=Exception("fail")):
         with pytest.raises(RuntimeError):
             runner._on_event(event, [])
 
@@ -87,7 +88,7 @@ async def test_async_on_event_processing_and_stop(
     event.type = "normal"
 
     with patch(
-        f"{BASE_RUNNER}.a_process_event", new_callable=AsyncMock
+        f"{EVENTS_MIXIN}.a_process_event", new_callable=AsyncMock
     ) as mock_process:
         result = await runner._a_on_event(event, [])
         assert result is True
@@ -98,7 +99,9 @@ async def test_async_on_event_processing_and_stop(
     assert result is False
     runner._stop_requested.clear()
 
-    with patch(f"{BASE_RUNNER}.a_process_event", side_effect=Exception("fail")):
+    with patch(
+        f"{EVENTS_MIXIN}.a_process_event", side_effect=Exception("fail")
+    ):
         with pytest.raises(RuntimeError):
             await runner._a_on_event(event, [])
 
@@ -134,7 +137,7 @@ async def test_async_run_cancellation_and_success(
 
 def test_print_calls_base_runner_print(runner: WaldiezStandardRunner) -> None:
     """Test print calls to base runner."""
-    with patch(f"{BASE_RUNNER}._print") as mock_print:
+    with patch(f"{EVENTS_MIXIN}._print") as mock_print:
         runner.print("hello")
         mock_print.assert_called_once_with("hello")
 

@@ -6,7 +6,6 @@
 """Base runner for Waldiez workflows."""
 
 import importlib.util
-import inspect
 import json
 import shutil
 import sys
@@ -14,7 +13,7 @@ import tempfile
 import threading
 from pathlib import Path
 from types import ModuleType, TracebackType
-from typing import TYPE_CHECKING, Any, Callable, Coroutine, Type, Union
+from typing import Any, Type
 
 from aiofiles.os import wrap
 from anyio.from_thread import start_blocking_portal
@@ -24,56 +23,26 @@ from waldiez.exporter import WaldiezExporter
 from waldiez.logger import WaldiezLogger, get_logger
 from waldiez.models import Waldiez
 
-from .async_utils import is_async_callable, syncify
 from .dir_utils import a_chdir, chdir
 from .environment import reset_env_vars, set_env_vars
+from .events_mixin import EventsMixin
 from .exceptions import StopRunningException
-from .io_utils import input_async, input_sync
-from .post_run import (
-    a_after_run,
-    after_run,
-)
-from .pre_run import RequirementsMixin
+from .post_run import a_after_run, after_run
 from .protocol import WaldiezRunnerProtocol
-
-if TYPE_CHECKING:
-    from autogen.agentchat import ConversableAgent  # type: ignore
-    from autogen.events import BaseEvent  # type: ignore
-    from autogen.messages import BaseMessage  # type: ignore
+from .requirements_mixin import RequirementsMixin
+from .run_results import ResultsMixin
 
 
 # pylint: disable=too-many-public-methods
-class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
-    """Base runner for Waldiez.
-
-    Initialization parameters:
-        - waldiez: The Waldiez flow to run.
-        - output_path: Path to save the output file.
-        - uploads_root: Root directory for uploads.
-        - structured_io: Whether to use structured I/O.
-        - dot_env: Path to a .env file for environment variables.
-
-    Methods to possibly override:
-        - prepare: Prepare the environment and paths for running the flow.
-        - _before_run: Actions to perform before running the flow.
-        - a_prepare: Async version of the prepare method.
-        - _a_before_run: Async actions to perform before running the flow.
-        - _run: Actual implementation of the run logic.
-        - _a_run: Async implementation of the run logic.
-        - _after_run: Actions to perform after running the flow.
-        - _a_after_run: Async actions to perform after running the flow.
-    """
+class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
+    """Base runner for Waldiez."""
 
     _structured_io: bool
     _output_path: str | Path | None
     _uploads_root: str | Path | None
     _dot_env_path: str | Path | None
     _running: bool
-    _is_async: bool
     _waldiez_file: Path
-    _input: Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
-    _print: Callable[..., None]
-    _send: Callable[[Union["BaseEvent", "BaseMessage"]], None]
 
     def __init__(
         self,
@@ -90,10 +59,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         WaldiezBaseRunner._output_path = output_path
         WaldiezBaseRunner._uploads_root = uploads_root
         WaldiezBaseRunner._dot_env_path = dot_env
-        WaldiezBaseRunner._input = input
-        WaldiezBaseRunner._print = print
-        WaldiezBaseRunner._send = print
-        WaldiezBaseRunner._is_async = waldiez.is_async
+        EventsMixin.set_input_function(input)
+        EventsMixin.set_print_function(print)
+        EventsMixin.set_send_function(print)
+        EventsMixin.set_async(waldiez.is_async)
         RequirementsMixin.__init__(self)
         self._waldiez = waldiez
         self._called_install_requirements = False
@@ -121,7 +90,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
 
     @staticmethod
     def print(*args: Any, **kwargs: Any) -> None:
-        """Print a message to the console.
+        """Print a message to the output stream.
 
         Parameters
         ----------
@@ -132,9 +101,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         """
         if len(args) == 1 and isinstance(args[0], dict):
             arg = json.dumps(args[0], default=str, ensure_ascii=False)
-            WaldiezBaseRunner._print(arg, **kwargs)
+            EventsMixin.do_print(arg, **kwargs)
         else:
-            WaldiezBaseRunner._print(*args, **kwargs)
+            EventsMixin.do_print(*args, **kwargs)
 
     def is_running(self) -> bool:
         """Check if the workflow is currently running.
@@ -146,99 +115,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         """
         with self._running_lock:
             return WaldiezBaseRunner._running
-
-    @staticmethod
-    def get_input_function() -> (
-        Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
-    ):
-        """Get the input function for user interaction.
-
-        Returns
-        -------
-        Callable[[str, bool], str]
-            A function that takes a prompt and a password flag,
-            returning user input.
-        """
-        if hasattr(WaldiezBaseRunner, "_input") and callable(
-            WaldiezBaseRunner._input
-        ):
-            return WaldiezBaseRunner._input
-        if WaldiezBaseRunner._is_async:
-            return input_async
-        return input_sync
-
-    @staticmethod
-    async def a_get_user_input(
-        prompt: str, *, password: bool = False, **kwargs: Any
-    ) -> str:
-        """Get user input with an optional password prompt.
-
-        Parameters
-        ----------
-        prompt : str
-            The prompt to display to the user.
-        password : bool, optional
-            If True, the input will be hidden (default is False).
-        **kwargs : Any
-            Additional keyword arguments to pass to the input function.
-
-        Returns
-        -------
-        str
-            The user input.
-        """
-        input_function = WaldiezBaseRunner.get_input_function()
-        if is_async_callable(input_function):
-            try:
-                result = await input_function(  # type: ignore
-                    prompt,
-                    password=password,
-                    **kwargs,
-                )
-            except TypeError:
-                result = await input_function(prompt)  # type: ignore
-        else:
-            try:
-                result = input_function(prompt, password=password, **kwargs)
-            except TypeError:
-                result = input_function(prompt)
-        return result  # pyright: ignore
-
-    @staticmethod
-    def get_user_input(
-        prompt: str,
-        *,
-        password: bool = False,
-        **kwargs: Any,
-    ) -> str:
-        """Get user input with an optional password prompt.
-
-        Parameters
-        ----------
-        prompt : str
-            The prompt to display to the user.
-        password : bool, optional
-            If True, the input will be hidden (default is False).
-        **kwargs : Any
-            Additional keyword arguments to pass to the input function.
-
-        Returns
-        -------
-        str
-            The user input.
-        """
-        input_function = WaldiezBaseRunner.get_input_function()
-        if inspect.iscoroutinefunction(input_function):
-            try:
-                return syncify(input_function)(
-                    prompt, password=password, **kwargs
-                )
-            except TypeError:
-                return syncify(input_function)(prompt)
-        try:
-            return str(input_function(prompt, password=password, **kwargs))
-        except TypeError:
-            return str(input_function(prompt))
 
     def _load_module(self, output_file: Path, temp_dir: Path) -> ModuleType:
         """Load the module from the waldiez file."""
@@ -335,13 +211,14 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
     def _after_run(
         self,
         results: list[dict[str, Any]],
+        error: BaseException | None,
         output_file: Path,
         waldiez_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
-    ) -> None:
+    ) -> Path | None:
         """Run after the flow execution."""
         # Save results
         self._last_results = results
@@ -350,7 +227,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         self._stop_requested.clear()
         # pylint: disable=broad-exception-caught
         try:
-            after_run(
+            return after_run(
+                results=results,
+                error=error,
                 temp_dir=temp_dir,
                 output_file=output_file,
                 flow_name=self._waldiez.name,
@@ -362,23 +241,27 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         except BaseException as exc:  # pragma: no cover
             self.log.warning("Error occurred during after_run: %s", exc)
         self.log.info("Cleanup completed")
+        return None
 
     async def _a_after_run(
         self,
         results: list[dict[str, Any]],
+        error: BaseException | None,
         output_file: Path,
         waldiez_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
-    ) -> None:
+    ) -> Path | None:
         """Run after the flow execution asynchronously."""
         self._last_results = results
         self._stop_requested.clear()
         # pylint: disable=broad-exception-caught
         try:
-            await a_after_run(
+            return await a_after_run(
+                results=results,
+                error=error,
                 temp_dir=temp_dir,
                 output_file=output_file,
                 flow_name=self._waldiez.name,
@@ -390,6 +273,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         except BaseException as exc:  # pragma: no cover
             self.log.warning("Error occurred during a_after_run: %s", exc)
         self.log.info("Cleanup completed")
+        return None
 
     @staticmethod
     def _prepare_paths(
@@ -409,74 +293,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             WaldiezBaseRunner._output_path = Path.cwd() / "waldiez_flow.py"
         output_file: Path = Path(WaldiezBaseRunner._output_path)
         return output_file, uploads_root_path
-
-    @staticmethod
-    async def a_process_event(
-        event: Union["BaseEvent", "BaseMessage"],
-        agents: list["ConversableAgent"],  # pylint: disable=unused-argument
-        skip_send: bool = False,
-    ) -> None:
-        """Process an event or message asynchronously.
-
-        Parameters
-        ----------
-        event : Union[BaseEvent, BaseMessage]
-            The event or message to process.
-        agents : list["ConversableAgent"]
-            The known agents in the flow.
-        skip_send : bool
-            Skip sending the event.
-        """
-        if hasattr(event, "type"):  # pragma: no branch
-            if event.type == "input_request":
-                prompt = getattr(
-                    event, "prompt", getattr(event.content, "prompt", "> ")
-                )
-                password = getattr(
-                    event,
-                    "password",
-                    getattr(event.content, "password", False),
-                )
-                user_input = await WaldiezBaseRunner.a_get_user_input(
-                    prompt, password=password
-                )
-                await event.content.respond(user_input)
-            elif not skip_send:
-                WaldiezBaseRunner._send(event)
-
-    @staticmethod
-    def process_event(
-        event: Union["BaseEvent", "BaseMessage"],
-        agents: list["ConversableAgent"],  # pylint: disable=unused-argument
-        skip_send: bool = False,
-    ) -> None:
-        """Process an event or message synchronously.
-
-        Parameters
-        ----------
-        event : Union[BaseEvent, BaseMessage]
-            The event or message to process.
-        agents : list["ConversableAgent"]
-            The known agents in the flow.
-        skip_send : bool
-            Skip sending the event.
-        """
-        if hasattr(event, "type"):  # pragma: no branch
-            if event.type == "input_request":
-                prompt = getattr(
-                    event, "prompt", getattr(event.content, "prompt", "> ")
-                )
-                password = getattr(
-                    event,
-                    "password",
-                    getattr(event.content, "password", False),
-                )
-                user_input = WaldiezBaseRunner.get_user_input(
-                    prompt, password=password
-                )
-                event.content.respond(user_input)
-            elif not skip_send:
-                WaldiezBaseRunner._send(event)
 
     def before_run(
         self,
@@ -626,7 +442,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         )
         WaldiezBaseRunner._running = True
         results: list[dict[str, Any]] = []
+        error: BaseException | None = None
         old_env_vars = set_env_vars(self._waldiez.get_flow_env_vars())
+        output_dir = output_file.parent
         try:
             with chdir(to=temp_dir):
                 sys.path.insert(0, str(temp_dir))
@@ -638,25 +456,30 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
                     skip_timeline=skip_timeline,
                 )
         except (SystemExit, StopRunningException, KeyboardInterrupt) as exc:
+            error = exc
             raise StopRunningException(StopRunningException.reason) from exc
         except BaseException as exc:  # pylint: disable=broad-exception-caught
             self.log.error("Error occurred while running workflow: %s", exc)
-            results = [{"error": str(exc)}]
+            error = exc
+            results = []
         finally:
             WaldiezBaseRunner._running = False
             reset_env_vars(old_env_vars)
-            self.after_run(
+            output = self.after_run(
                 results=results,
+                error=error,
                 output_file=output_file,
                 uploads_root=uploads_root_path,
                 temp_dir=temp_dir,
                 skip_mmd=skip_mmd,
                 skip_timeline=skip_timeline,
             )
-        self._print("<Waldiez> - Done running the flow.")
+            if output:
+                output_dir = output
+        EventsMixin.do_print("<Waldiez> - Done running the flow.")
         if sys.path[0] == str(temp_dir):
             sys.path.pop(0)
-        return results
+        return self.get_results(results, output_dir)
 
     async def a_prepare(
         self,
@@ -746,6 +569,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
         )
         WaldiezBaseRunner._running = True
         results: list[dict[str, Any]] = []
+        error: BaseException | None = None
+        output_dir = output_file.parent
         old_env_vars = set_env_vars(self._waldiez.get_flow_env_vars())
         try:
             async with a_chdir(to=temp_dir):
@@ -758,40 +583,48 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
                     skip_timeline=skip_timeline,
                 )
         except (SystemExit, StopRunningException, KeyboardInterrupt) as exc:
+            error = exc
             raise StopRunningException(StopRunningException.reason) from exc
         except BaseException as exc:  # pylint: disable=broad-exception-caught
-            results = [{"error": str(exc)}]
+            self.log.error("Error occurred while running workflow: %s", exc)
+            error = exc
+            results = []
         finally:
             WaldiezBaseRunner._running = False
             reset_env_vars(old_env_vars)
-            await self._a_after_run(
+            output = await self.a_after_run(
                 results=results,
+                error=error,
                 output_file=output_file,
                 uploads_root=uploads_root_path,
-                waldiez_file=WaldiezBaseRunner._waldiez_file,
                 temp_dir=temp_dir,
                 skip_mmd=skip_mmd,
                 skip_timeline=skip_timeline,
             )
+            if output:
+                output_dir = output
         if sys.path[0] == str(temp_dir):
             sys.path.pop(0)
-        return results
+        return await self.a_get_results(results, output_dir)
 
     def after_run(
         self,
         results: list[dict[str, Any]],
+        error: BaseException | None,
         output_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
-    ) -> None:
+    ) -> Path | None:
         """Actions to perform after running the flow.
 
         Parameters
         ----------
         results : list[dict[str, Any]]
             The results of the flow run.
+        error : BaseException | None
+            Optional error during the run.
         output_file : Path
             The path to the output file.
         uploads_root : Path | None
@@ -802,9 +635,15 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
+
+        Returns
+        -------
+        Path | None
+            The destination directory if output file, else None
         """
-        self._after_run(
+        return self._after_run(
             results=results,
+            error=error,
             output_file=output_file,
             waldiez_file=WaldiezBaseRunner._waldiez_file,
             uploads_root=uploads_root,
@@ -816,18 +655,21 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
     async def a_after_run(
         self,
         results: list[dict[str, Any]],
+        error: BaseException | None,
         output_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
-    ) -> None:
+    ) -> Path | None:
         """Asynchronously perform actions after running the flow.
 
         Parameters
         ----------
         results : list[dict[str, Any]]
             The results of the flow run.
+        error : BaseException | None
+            Optional error during the run.
         output_file : Path
             The path to the output file.
         uploads_root : Path | None
@@ -838,9 +680,14 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
 
+        Returns
+        -------
+        Path | None
+            The destination directory if output file, else None
         """
-        await self._a_after_run(
+        return await self._a_after_run(
             results=results,
+            error=error,
             output_file=output_file,
             uploads_root=uploads_root,
             temp_dir=temp_dir,
@@ -953,7 +800,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin):
 
     def stop(self) -> None:
         """Stop the workflow execution."""
-        self.log.info("Stop requested - setting stop flag")
         self._stop_requested.set()
 
     def is_stop_requested(self) -> bool:

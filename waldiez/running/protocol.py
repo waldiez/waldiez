@@ -136,18 +136,21 @@ class WaldiezRunnerProtocol(Protocol):
     def after_run(
         self,
         results: list[dict[str, Any]],
+        error: BaseException | None,
         output_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
-    ) -> None:
+    ) -> Path | None:
         """Actions to perform after running the flow.
 
         Parameters
         ----------
         results : list[dict[str, Any]]
             The results of the run.
+        error : BaseException | None
+            Optional error during the run.
         output_file : Path
             The path to the output file.
         uploads_root : Path | None
@@ -163,18 +166,21 @@ class WaldiezRunnerProtocol(Protocol):
     async def a_after_run(
         self,
         results: list[dict[str, Any]],
+        error: BaseException | None,
         output_file: Path,
         uploads_root: Path | None,
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
-    ) -> None:
+    ) -> Path | None:
         """Asynchronously perform actions after running the flow.
 
         Parameters
         ----------
         results : list[dict[str, Any]]
             The results of the run.
+        error : BaseException | None
+            Optional error during the run.
         output_file : Path
             The path to the output file.
         uploads_root : Path | None
