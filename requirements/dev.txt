@@ -24,7 +24,7 @@ pre-commit==4.3.0
 pydocstyle==6.3.0
 pylint==3.3.8
 python-dotenv>=1.1.1
-ruff==0.13.2
+ruff==0.13.3
 toml==0.10.2; python_version <= '3.10'
 types-aiofiles==24.1.0.20250822
 types-jsonschema==4.25.1.20250822
