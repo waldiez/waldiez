@@ -22124,8 +22124,11 @@ const renderEvent = (ev) => {
     }
     case "text": {
       const c = ev.content;
-      const content = getContentString(c);
       const { sender, recipient } = getParticipants(ev);
+      if (!sender || !recipient) {
+        return null;
+      }
+      const content = getContentString(c);
       return /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsxs("div", { className: "text-amber-500 font-semibold", children: [
           sender,

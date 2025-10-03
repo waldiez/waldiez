@@ -158,8 +158,11 @@ const renderEvent = (ev: WaldiezEvent) => {
         }
         case "text": {
             const c = ev.content as TextContent;
-            const content = getContentString(c);
             const { sender, recipient } = getParticipants(ev);
+            if (!sender || !recipient) {
+                return null;
+            }
+            const content = getContentString(c);
             return (
                 <div>
                     <div className="text-amber-500 font-semibold">
