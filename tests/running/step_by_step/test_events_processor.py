@@ -65,7 +65,7 @@ def test_process_event_basic_flow(
     """Test basic flow of process_event."""
     runner.event_count = 5
 
-    result = processor.process_event(mock_event)
+    result = processor.process_event(mock_event, [])
 
     # Verify event counter was incremented
     runner.event_plus_one.assert_called_once()
@@ -95,7 +95,7 @@ def test_process_event_stop_requested(
     """Test process_event when stop is requested."""
     runner.is_stop_requested.return_value = True
 
-    result = processor.process_event(mock_event)
+    result = processor.process_event(mock_event, [])
 
     assert result["action"] == "stop"
     assert result["reason"] == "stop_requested"
@@ -120,7 +120,7 @@ def test_process_event_event_info_enrichment(
     del mock_event.sender
     del mock_event.recipient
 
-    result = processor.process_event(mock_event)
+    result = processor.process_event(mock_event, [])
 
     event_info = result["event_info"]
     assert event_info["count"] == 10
@@ -133,7 +133,7 @@ def test_process_event_updates_last_participants(
     processor: EventProcessor, runner: MagicMock, mock_event: MagicMock
 ) -> None:
     """Test that last_sender and last_recipient are updated."""
-    processor.process_event(mock_event)
+    processor.process_event(mock_event, [])
 
     assert runner.last_sender == "user"
     assert runner.last_recipient == "assistant"
@@ -143,7 +143,7 @@ def test_process_event_adds_to_history(
     processor: EventProcessor, runner: MagicMock, mock_event: MagicMock
 ) -> None:
     """Test that event is added to history."""
-    processor.process_event(mock_event)
+    processor.process_event(mock_event, [])
 
     runner.add_to_history.assert_called_once()
     # Verify the event_info passed to add_to_history
@@ -163,7 +163,7 @@ def test_process_event_history_size_limit(
     ]  # Exceeds max of 1000
     runner.max_event_history = 1000
 
-    processor.process_event(mock_event)
+    processor.process_event(mock_event, [])
 
     # Should call pop_event 100 times to remove excess events
     assert runner.pop_event.call_count == 100
@@ -175,7 +175,7 @@ def test_process_event_should_break_called(
     """Test that should_break_on_event is called correctly."""
     runner.should_break_on_event.return_value = True
 
-    result = processor.process_event(mock_event)
+    result = processor.process_event(mock_event, [])
 
     runner.should_break_on_event.assert_called_once_with(mock_event)
     assert result["action"] == "break"
@@ -187,7 +187,7 @@ def test_process_event_should_not_break(
     """Test when should_break_on_event returns False."""
     runner.should_break_on_event.return_value = False
 
-    result = processor.process_event(mock_event)
+    result = processor.process_event(mock_event, [])
 
     assert result["action"] == "continue"
 
@@ -199,7 +199,7 @@ def test_process_event_history_exactly_at_limit(
     runner.event_history = [f"event_{i}" for i in range(1000)]  # Exactly at max
     runner.max_event_history = 1000
 
-    processor.process_event(mock_event)
+    processor.process_event(mock_event, [])
 
     # Should not call pop_event since we're at exactly the limit
     runner.pop_event.assert_not_called()
@@ -214,7 +214,7 @@ def test_process_event_history_under_limit(
     ]  # Under max of 1000
     runner.max_event_history = 1000
 
-    processor.process_event(mock_event)
+    processor.process_event(mock_event, [])
 
     # Should not call pop_event since we're under the limit
     runner.pop_event.assert_not_called()
@@ -233,7 +233,7 @@ def test_process_event_return_structure(
     """Test that process_event returns correct structure."""
     runner.should_break_on_event.return_value = True
 
-    result = processor.process_event(mock_event)
+    result = processor.process_event(mock_event, [])
 
     # Verify all required keys are present
     required_keys = ["action", "event_info"]
@@ -251,7 +251,7 @@ def test_process_event_event_count_increment(
     """Test that event count is properly used and incremented."""
     runner.event_count = 42
 
-    result = processor.process_event(mock_event)
+    result = processor.process_event(mock_event, [])
 
     # Should increment count
     runner.event_plus_one.assert_called_once()
@@ -265,7 +265,7 @@ def test_process_event_model_dump_called_correctly(
     processor: EventProcessor, runner: MagicMock, mock_event: MagicMock
 ) -> None:
     """Test that model_dump is called with correct parameters."""
-    processor.process_event(mock_event)
+    processor.process_event(mock_event, [])
 
     mock_event.model_dump.assert_called_once_with(
         mode="json", exclude_none=True, fallback=str
@@ -289,12 +289,12 @@ def test_process_event_multiple_calls_update_participants(
     event2.recipient = "recipient2"
 
     # Process first event
-    processor.process_event(event1)
+    processor.process_event(event1, [])
     assert runner.last_sender == "sender1"
     assert runner.last_recipient == "recipient1"
 
     # Process second event
-    processor.process_event(event2)
+    processor.process_event(event2, [])
     assert runner.last_sender == "sender2"
     assert runner.last_recipient == "recipient2"
 
@@ -306,7 +306,7 @@ def test_process_event_empty_event_history(
     runner.event_history = []
     runner.max_event_history = 1000
 
-    processor.process_event(mock_event)
+    processor.process_event(mock_event, [])
 
     # Should not call pop_event with empty history
     runner.pop_event.assert_not_called()
@@ -324,7 +324,7 @@ def test_swap_participant_names_on_input_request(
     event.sender = "sender"
     event.recipient = "recipient"
 
-    result = processor.process_event(event)
+    result = processor.process_event(event, [])
     assert runner.last_sender == "recipient"
     assert runner.last_recipient == "sender"
     event_info = result["event_info"]

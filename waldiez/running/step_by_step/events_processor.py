@@ -3,9 +3,11 @@
 # pylint: disable=unused-argument,no-self-use
 """Command handler for step-by-step execution."""
 
-from typing import TYPE_CHECKING, Any, Union
+import inspect
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 if TYPE_CHECKING:
+    from autogen.agentchat import ConversableAgent  # type: ignore
     from autogen.events.base_event import BaseEvent  # type: ignore
     from autogen.messages.base_message import BaseMessage  # type: ignore
 
@@ -21,7 +23,9 @@ class EventProcessor:
         self.runner = runner
 
     def process_event(
-        self, event: Union["BaseEvent", "BaseMessage"]
+        self,
+        event: Union["BaseEvent", "BaseMessage"],
+        agents: list["ConversableAgent"],
     ) -> dict[str, Any]:
         """Shared logic for both sync and async event processing.
 
@@ -29,6 +33,8 @@ class EventProcessor:
         ----------
         event : BaseEvent | BaseMessage
             The event to process.
+        agents : list[ConversableAgent]
+            The workflow's known agents.
 
         Returns
         -------
@@ -45,6 +51,7 @@ class EventProcessor:
         self._update_participant_info(event_info)
         self._manage_event_history(event_info)
         self._check_for_input_request(event_info)
+        self._add_agent_info(event_info, agents)
 
         should_break = self.runner.should_break_on_event(event)
 
@@ -54,7 +61,8 @@ class EventProcessor:
         }
 
     def _create_event_info(
-        self, event: Union["BaseEvent", "BaseMessage"]
+        self,
+        event: Union["BaseEvent", "BaseMessage"],
     ) -> dict[str, Any]:
         """Create event info dictionary from event object.
 
@@ -89,7 +97,7 @@ class EventProcessor:
         if not event_info["sender"] or not event_info["recipient"]:
             self._extract_participants_from_content(event_info)
 
-        self._handle_group_chat_speaker(event_info)
+        self._check_for_event_speaker(event_info)
         self._extract_participants_from_direct_content(event_info)
 
         # Update last known participants
@@ -119,7 +127,7 @@ class EventProcessor:
         if not event_info["recipient"] and "recipient" in content:
             event_info["recipient"] = content["recipient"]
 
-    def _handle_group_chat_speaker(self, event_info: dict[str, Any]) -> None:
+    def _check_for_event_speaker(self, event_info: dict[str, Any]) -> None:
         """Handle speaker information for group chat events.
 
         Parameters
@@ -127,11 +135,7 @@ class EventProcessor:
         event_info : dict[str, Any]
             Event information dictionary to update.
         """
-        if (
-            event_info.get("type") == "group_chat_run_chat"
-            and "content" in event_info
-            and isinstance(event_info["content"], dict)
-        ):
+        if "content" in event_info and isinstance(event_info["content"], dict):
             content = event_info.get("content", {})
             speaker = content.get("speaker")
             if isinstance(speaker, str) and speaker:
@@ -194,3 +198,36 @@ class EventProcessor:
             event_info["recipient"] = sender
             self.runner.last_sender = recipient
             self.runner.last_recipient = sender
+
+    @staticmethod
+    def _get_agent_dump(
+        agent: Optional["ConversableAgent"],
+    ) -> dict[str, Any] | None:
+        if not agent:
+            return None
+        dump = {
+            name: value
+            for name, value in inspect.getmembers(agent)
+            if not name.startswith("_")
+            and not inspect.ismethod(value)
+            and not inspect.isfunction(value)
+        }
+        dump["cost"] = {
+            "actual": agent.get_actual_usage(),
+            "total": agent.get_total_usage(),
+        }
+        return dump
+
+    def _add_agent_info(
+        self, event_info: dict[str, Any], agents: list["ConversableAgent"]
+    ) -> None:
+        """Add agent info if sender or recipient is in agents."""
+        sender = event_info.get("sender", self.runner.last_sender)
+        recipient = event_info.get("recipient", self.runner.last_recipient)
+
+        agent_map = {agent.name: agent for agent in agents}
+
+        event_info["agents"] = {
+            "sender": self._get_agent_dump(agent_map.get(sender, None)),
+            "recipient": self._get_agent_dump(agent_map.get(recipient, None)),
+        }

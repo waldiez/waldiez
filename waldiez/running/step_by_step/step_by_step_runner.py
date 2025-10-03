@@ -555,6 +555,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             ):
                 return True
             if action == WaldiezDebugStepAction.RUN:
+                self._config.auto_continue = True
                 return True
             if action == WaldiezDebugStepAction.QUIT:
                 return False
@@ -619,6 +620,15 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
 
         return results_container["results"]
 
+    def _re_emit_if_needed(self, event_info: dict[str, Any]) -> None:
+        # emit again if type is text, swapping the sender and without recipient
+        if event_info.get("type", "") == "text":
+            event_info["sender"] = event_info["recipient"]
+            event_info["recipient"] = None
+            event_info["agents"]["sender"] = event_info["agents"]["recipient"]
+            event_info["agents"]["recipient"] = None
+            self.emit_event(event_info)
+
     def _on_event(
         self,
         event: Union["BaseEvent", "BaseMessage"],
@@ -628,14 +638,15 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
             # Use the event processor for core logic
-            result = self._event_processor.process_event(event)
+            result = self._event_processor.process_event(event, agents)
 
             if result["action"] == "stop":
                 self.log.debug(
                     "Step-by-step execution stopped before event processing"
                 )
                 return False
-            self.emit_event(result["event_info"])
+            event_info = result["event_info"]
+            self.emit_event(event_info)
             # Handle breakpoint logic
             if result["action"] == "break":
                 if not self._handle_step_interaction(force=True):
@@ -644,6 +655,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                         event.content.respond("exit")
                         return True
                     raise StopRunningException(StopRunningException.reason)
+                self._re_emit_if_needed(event_info)
             # Process the actual event
             EventsMixin.process_event(event, agents, skip_send=True)
             self._processed_events += 1
@@ -735,26 +747,24 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
             # Use the event processor for core logic
-            result = self._event_processor.process_event(event)
+            result = self._event_processor.process_event(event, agents)
 
             if result["action"] == "stop":
                 self.log.debug(
                     "Async step-by-step execution stopped before event processing"
                 )
                 return False
-            sent = False
+            event_info = result["event_info"]
+            self.emit_event(event_info)
             # Handle breakpoint logic
             if result["action"] == "break":
-                self.emit_event(result["event_info"])
-                sent = True
                 if not await self._a_handle_step_interaction(force=True):
                     self._stop_requested.set()
                     if hasattr(event, "type") and event.type == "input_request":
                         await event.content.respond("exit")
                         return True
                     raise StopRunningException(StopRunningException.reason)
-            if not sent:
-                self.emit_event(result["event_info"])
+                self._re_emit_if_needed(event_info)
             # Process the actual event
             await EventsMixin.a_process_event(event, agents, skip_send=True)
             self._processed_events += 1
