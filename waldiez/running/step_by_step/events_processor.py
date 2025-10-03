@@ -49,8 +49,7 @@ class EventProcessor:
         should_break = self.runner.should_break_on_event(event)
 
         return {
-            "action": "continue",
-            "should_break": should_break,
+            "action": "break" if should_break else "continue",
             "event_info": event_info,
         }
 

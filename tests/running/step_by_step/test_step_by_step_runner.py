@@ -121,7 +121,7 @@ async def test_async_handle_step_interaction_continue(
 ) -> None:
     """Test handling of step interaction for continue command."""
     mock_async_input.return_value = "c"
-    result = await runner._a_handle_step_interaction()
+    result = await runner._a_handle_step_interaction(True)
     assert result is True
 
 
@@ -132,7 +132,7 @@ async def test_async_handle_step_interaction_quit_on_interrupt(
 ) -> None:
     """Test handling of step interaction for quit command."""
     mock_async_input.side_effect = KeyboardInterrupt
-    result = await runner._a_handle_step_interaction()
+    result = await runner._a_handle_step_interaction(True)
     assert result is False
 
 
@@ -365,7 +365,7 @@ async def test_a_get_user_action_handles_keyboard_interrupt(
         f"{EVENTS_MIXIN}.a_get_user_input",
         async_mock,
     ):
-        action = await runner._a_get_user_action()
+        action = await runner._a_get_user_action(True)
         assert action == WaldiezDebugStepAction.QUIT
 
 
@@ -379,7 +379,7 @@ async def test_a_get_user_action_handles_eof_error(
         f"{EVENTS_MIXIN}.a_get_user_input",
         async_mock,
     ):
-        action = await runner._a_get_user_action()
+        action = await runner._a_get_user_action(True)
         assert action == WaldiezDebugStepAction.QUIT
 
 
@@ -777,7 +777,7 @@ async def test_async_handle_step_interaction_run_action(
         "_a_get_user_action",
         AsyncMock(return_value=WaldiezDebugStepAction.RUN),
     ):
-        result = await runner._a_handle_step_interaction()
+        result = await runner._a_handle_step_interaction(True)
         assert result is True
 
 

@@ -79,8 +79,7 @@ def test_process_event_basic_flow(
     )
 
     # Verify result structure
-    assert result["action"] == "continue"
-    assert "should_break" in result
+    assert "action" in result
     assert "event_info" in result
 
     # Check event_info was enriched with count and participants
@@ -179,7 +178,7 @@ def test_process_event_should_break_called(
     result = processor.process_event(mock_event)
 
     runner.should_break_on_event.assert_called_once_with(mock_event)
-    assert result["should_break"] is True
+    assert result["action"] == "break"
 
 
 def test_process_event_should_not_break(
@@ -190,7 +189,7 @@ def test_process_event_should_not_break(
 
     result = processor.process_event(mock_event)
 
-    assert result["should_break"] is False
+    assert result["action"] == "continue"
 
 
 def test_process_event_history_exactly_at_limit(
@@ -237,13 +236,12 @@ def test_process_event_return_structure(
     result = processor.process_event(mock_event)
 
     # Verify all required keys are present
-    required_keys = ["action", "should_break", "event_info"]
+    required_keys = ["action", "event_info"]
     for key in required_keys:
         assert key in result
 
     # Verify values
-    assert result["action"] == "continue"
-    assert isinstance(result["should_break"], bool)
+    assert result["action"] == "break"
     assert isinstance(result["event_info"], dict)
 
 

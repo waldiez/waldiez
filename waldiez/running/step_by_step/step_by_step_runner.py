@@ -493,11 +493,14 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 self._stop_requested.set()
                 return WaldiezDebugStepAction.QUIT
 
-    async def _a_get_user_action(self) -> WaldiezDebugStepAction:
+    async def _a_get_user_action(self, force: bool) -> WaldiezDebugStepAction:
         """Get user action asynchronously."""
         if self._config.auto_continue:
             self.step_mode = True
-            return WaldiezDebugStepAction.CONTINUE
+            if force:
+                self._config.auto_continue = False
+            else:
+                return WaldiezDebugStepAction.CONTINUE
 
         while True:
             request_id = gen_id()
@@ -542,10 +545,10 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 return False
             # For other actions (info, help, etc.), continue the loop
 
-    async def _a_handle_step_interaction(self) -> bool:
+    async def _a_handle_step_interaction(self, force: bool) -> bool:
         """Handle step-by-step user interaction asynchronously."""
         while True:
-            action = await self._a_get_user_action()
+            action = await self._a_get_user_action(force)
             if action in (
                 WaldiezDebugStepAction.CONTINUE,
                 WaldiezDebugStepAction.STEP,
@@ -634,8 +637,8 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 return False
             self.emit_event(result["event_info"])
             # Handle breakpoint logic
-            if result["should_break"]:
-                if not self._handle_step_interaction(True):
+            if result["action"] == "break":
+                if not self._handle_step_interaction(force=True):
                     self._stop_requested.set()
                     if hasattr(event, "type") and event.type == "input_request":
                         event.content.respond("exit")
@@ -741,13 +744,13 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 return False
             sent = False
             # Handle breakpoint logic
-            if result["should_break"]:
+            if result["action"] == "break":
                 self.emit_event(result["event_info"])
                 sent = True
-                if not await self._a_handle_step_interaction():
+                if not await self._a_handle_step_interaction(force=True):
                     self._stop_requested.set()
                     if hasattr(event, "type") and event.type == "input_request":
-                        event.content.respond("exit")
+                        await event.content.respond("exit")
                         return True
                     raise StopRunningException(StopRunningException.reason)
             if not sent:
