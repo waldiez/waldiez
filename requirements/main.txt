@@ -1,4 +1,4 @@
-ag2[openai]==0.9.9
+ag2[openai]==0.9.10
 aiocsv==1.4.0
 aiofiles==24.1.0
 aiosqlite==0.21.0
