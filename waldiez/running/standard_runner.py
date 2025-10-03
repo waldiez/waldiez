@@ -17,10 +17,10 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Union
 
 from waldiez.models.waldiez import Waldiez
-from waldiez.running.run_results import WaldiezRunResults
 
 from .base_runner import WaldiezBaseRunner
 from .events_mixin import EventsMixin
+from .results_mixin import WaldiezRunResults
 
 if TYPE_CHECKING:
     from autogen.agentchat import ConversableAgent  # type: ignore

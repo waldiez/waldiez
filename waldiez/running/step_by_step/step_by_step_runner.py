@@ -26,7 +26,7 @@ from waldiez.running.step_by_step.events_processor import EventProcessor
 from ..base_runner import WaldiezBaseRunner
 from ..events_mixin import EventsMixin
 from ..exceptions import StopRunningException
-from ..run_results import WaldiezRunResults
+from ..results_mixin import WaldiezRunResults
 from .breakpoints_mixin import BreakpointsMixin
 from .step_by_step_models import (
     VALID_CONTROL_COMMANDS,

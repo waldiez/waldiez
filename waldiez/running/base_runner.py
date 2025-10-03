@@ -27,10 +27,9 @@ from .dir_utils import a_chdir, chdir
 from .environment import reset_env_vars, set_env_vars
 from .events_mixin import EventsMixin
 from .exceptions import StopRunningException
-from .post_run import a_after_run, after_run
 from .protocol import WaldiezRunnerProtocol
 from .requirements_mixin import RequirementsMixin
-from .run_results import ResultsMixin
+from .results_mixin import ResultsMixin
 
 
 # pylint: disable=too-many-public-methods
@@ -227,7 +226,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         self._stop_requested.clear()
         # pylint: disable=broad-exception-caught
         try:
-            return after_run(
+            return ResultsMixin.post_run(
                 results=results,
                 error=error,
                 temp_dir=temp_dir,
@@ -259,7 +258,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         self._stop_requested.clear()
         # pylint: disable=broad-exception-caught
         try:
-            return await a_after_run(
+            return await ResultsMixin.a_post_run(
                 results=results,
                 error=error,
                 temp_dir=temp_dir,
@@ -457,11 +456,11 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 )
         except (SystemExit, StopRunningException, KeyboardInterrupt) as exc:
             error = exc
+            self.log.warning("Execution stopped: %s", exc)
             raise StopRunningException(StopRunningException.reason) from exc
         except BaseException as exc:  # pylint: disable=broad-exception-caught
             self.log.error("Error occurred while running workflow: %s", exc)
             error = exc
-            results = []
         finally:
             WaldiezBaseRunner._running = False
             reset_env_vars(old_env_vars)
@@ -583,12 +582,12 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                     skip_timeline=skip_timeline,
                 )
         except (SystemExit, StopRunningException, KeyboardInterrupt) as exc:
+            self.log.warning("Execution stopped: %s", exc)
             error = exc
             raise StopRunningException(StopRunningException.reason) from exc
         except BaseException as exc:  # pylint: disable=broad-exception-caught
             self.log.error("Error occurred while running workflow: %s", exc)
             error = exc
-            results = []
         finally:
             WaldiezBaseRunner._running = False
             reset_env_vars(old_env_vars)
