@@ -172,7 +172,7 @@ dev = [
   "nodeenv>=1.9.1",
   "pre-commit==4.3.0",
   "pydocstyle==6.3.0",
-  "pylint==3.3.8",
+  "pylint==3.3.9",
   "python-dotenv>=1.1.1",
   "ruff==0.13.3",
   "types-aiofiles==24.1.0.20250822",
