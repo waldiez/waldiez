@@ -74,43 +74,47 @@ const predefinedOpenAIModels = [
 // https://docs.anthropic.com/en/docs/about-claude/models/all-models
 const predefinedAnthropicModels = [
     {
-        label: "Claude 4.1 Opus",
+        label: "Claude Sonnet 4.5",
+        value: "claude-sonnet-4-5-20250929",
+    },
+    {
+        label: "Claude Opus 4.1",
         value: "claude-opus-4-1-20250805",
     },
     {
-        label: "Claude 4 Sonnet",
+        label: "Claude Sonnet 4",
         value: "claude-sonnet-4-20250514",
     },
     {
-        label: "Claude 4 Opus",
+        label: "Claude Opus 4",
         value: "claude-opus-4-20250514",
     },
     {
-        label: "Claude 3.7 Sonnet",
+        label: "Claude Sonnet 3.7",
         value: "claude-3-7-sonnet-20250219",
     },
     {
-        label: "Claude 3.5 Haiku",
+        label: "Claude Haiku 3.5",
         value: "claude-3-5-haiku-20241022",
     },
     {
-        label: "Claude 3.5 Sonnet v2",
+        label: "Claude Sonnet 3.5 v2",
         value: "claude-3-5-sonnet-20241022",
     },
     {
-        label: "Claude 3.5 Sonnet",
+        label: "Claude Sonnet 3.5",
         value: "claude-3-5-sonnet-20240620",
     },
     {
-        label: "Claude 3 Opus",
+        label: "Claude Opus 3",
         value: "claude-3-opus-20240229",
     },
     {
-        label: "Claude 3 Sonnet",
+        label: "Claude Sonnet 3",
         value: "claude-3-sonnet-20240229",
     },
     {
-        label: "Claude 3 Haiku",
+        label: "Claude Haiku3 ",
         value: "claude-3-haiku-20240307",
     },
 ];
