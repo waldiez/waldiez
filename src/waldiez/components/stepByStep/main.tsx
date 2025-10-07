@@ -5,12 +5,13 @@
 /* eslint-disable complexity */
 import { type ChangeEvent, type FC, type KeyboardEvent, useCallback, useMemo, useState } from "react";
 import { FaStepForward } from "react-icons/fa";
-import { FaBug, FaPlay, FaStop, FaX } from "react-icons/fa6";
+import { FaBug, FaCaretLeft, FaInfo, FaPlay, FaStop, FaX } from "react-icons/fa6";
 import { MdTimeline } from "react-icons/md";
 
 import { nanoid } from "nanoid";
 
 import { FloatingPanel } from "@waldiez/components/floatingPanel";
+import { AgentEventInfo } from "@waldiez/components/stepByStep/agentInfo";
 import { EventConsole } from "@waldiez/components/stepByStep/console";
 import { useAgentClassUpdates } from "@waldiez/components/stepByStep/hooks";
 import { type WaldiezStepByStep, controlToResponse } from "@waldiez/components/stepByStep/types";
@@ -21,12 +22,14 @@ import { TimelineModal } from "@waldiez/components/timeline/timelineModal";
  */
 export const StepByStepView: FC<{
     flowId: string;
+    isDarkMode: boolean;
     stepByStep?: WaldiezStepByStep | null;
     className?: string;
-}> = ({ flowId, stepByStep }) => {
+}> = ({ flowId, stepByStep, isDarkMode }) => {
     useAgentClassUpdates(stepByStep);
     const [responseText, setResponseText] = useState("");
     const [timelineModalOpen, setTimelineModalOpen] = useState(false);
+    const [detailsViewActive, setDetailsViewActive] = useState(false);
 
     const openTimelineModal = useCallback(() => {
         setTimelineModalOpen(true);
@@ -143,11 +146,31 @@ export const StepByStepView: FC<{
         return "Running";
     }, [stepByStep, reducedHistory, canClose]);
 
+    const toggleDetailsView = useCallback(() => {
+        setDetailsViewActive(prev => !prev);
+    }, []);
+    const doContinue = useCallback(() => {
+        onControl("continue");
+        setDetailsViewActive(false);
+    }, [onControl]);
+    const doRun = useCallback(() => {
+        onControl("run");
+        setDetailsViewActive(false);
+    }, [onControl]);
+    const doQuit = useCallback(() => {
+        onControl("quit");
+        setDetailsViewActive(false);
+    }, [onControl]);
     if (!stepByStep?.active && !canClose) {
         return null;
     }
     // if the state is "error", enable close (if there is such handler)
     const mayClose = canClose || (!!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error");
+    const currentEvent = stepByStep?.currentEvent;
+    const eventAgents = currentEvent?.agents;
+    const currentSender = (eventAgents as any)?.sender;
+    const currentRecipient = (eventAgents as any)?.recipient;
+    const haveAgent = Boolean(currentSender || currentRecipient);
     const headerLeft = (
         <div className="header">
             <FaBug className="icon-bug" size={18} />
@@ -198,7 +221,7 @@ export const StepByStepView: FC<{
                             <button
                                 className="btn btn-primary"
                                 type="button"
-                                onClick={() => onControl("continue")}
+                                onClick={doContinue}
                                 disabled={!stepByStep?.pendingControlInput}
                             >
                                 <FaStepForward /> <span>Continue</span>
@@ -206,7 +229,7 @@ export const StepByStepView: FC<{
                             <button
                                 className="btn btn-secondary"
                                 type="button"
-                                onClick={() => onControl("run")}
+                                onClick={doRun}
                                 disabled={!stepByStep?.pendingControlInput}
                             >
                                 <FaPlay /> <span>Run</span>
@@ -214,11 +237,32 @@ export const StepByStepView: FC<{
                             <button
                                 className="btn btn-danger"
                                 type="button"
-                                onClick={() => onControl("quit")}
+                                onClick={doQuit}
                                 disabled={!stepByStep?.pendingControlInput}
                             >
                                 <FaStop /> <span>Quit</span>
                             </button>
+                            {currentSender ? (
+                                detailsViewActive ? (
+                                    <button
+                                        className="btn"
+                                        type="button"
+                                        onClick={toggleDetailsView}
+                                        disabled={!stepByStep?.pendingControlInput}
+                                    >
+                                        <FaCaretLeft /> <span>Back</span>
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="btn"
+                                        type="button"
+                                        onClick={toggleDetailsView}
+                                        disabled={!stepByStep?.pendingControlInput}
+                                    >
+                                        <FaInfo /> <span>Info</span>
+                                    </button>
+                                )
+                            ) : null}
                         </div>
                     )}
                     {/* Pending input */}
@@ -244,8 +288,16 @@ export const StepByStepView: FC<{
                             </div>
                         </div>
                     )}
-                    {/* Event history / raw logs */}
-                    {reducedHistory.length > 0 ? (
+                    {haveAgent && detailsViewActive ? (
+                        <div className="event-sender-details">
+                            {currentSender && (
+                                <AgentEventInfo agentData={currentSender} darkMode={isDarkMode} />
+                            )}
+                            {currentRecipient && (
+                                <AgentEventInfo agentData={currentRecipient} darkMode={isDarkMode} />
+                            )}
+                        </div>
+                    ) : reducedHistory.length > 0 ? (
                         <div className="event-history">
                             <EventConsole events={reducedHistory} autoScroll />
                         </div>

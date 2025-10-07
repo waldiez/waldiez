@@ -13,7 +13,7 @@ import { motion } from "framer-motion";
 import * as ReactDOM from "react-dom";
 import ReactDOM__default, { createPortal } from "react-dom";
 import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStepForward, FaStop as FaStop$1, FaPlusCircle, FaHourglassHalf, FaCog, FaCommentDots, FaCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
-import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaBug, FaPlay, FaStop, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
+import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaBug, FaPlay, FaStop, FaCaretLeft, FaInfo, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
 import hljs from "highlight.js";
 import { Marked } from "marked";
 import { MdTimeline, MdIosShare, MdMessage } from "react-icons/md";
@@ -19293,67 +19293,70 @@ const Dict = (props) => {
   } = useDict(props);
   return /* @__PURE__ */ jsxs("div", { className: "dict-entries-view", children: [
     viewLabelInfo ? /* @__PURE__ */ jsx$1(InfoLabel, { htmlFor: `dict-entry-${itemsType}`, label: viewLabel, info: viewLabelInfo }) : /* @__PURE__ */ jsx$1("label", { className: "margin-bottom-5", children: viewLabel }),
-    /* @__PURE__ */ jsx$1("div", { className: "dict-entries-list", children: Object.entries(items).map(([key, value], index2) => /* @__PURE__ */ jsxs("div", { className: "dict-entry", children: [
-      /* @__PURE__ */ jsx$1(
-        "input",
-        {
-          type: "text",
-          defaultValue: key,
-          onChange: onKeyChange.bind(null, index2),
-          "data-testid": `key-input-${itemsType}-${index2}`,
-          placeholder: "Key"
-        },
-        `${key}-${value}-${index2}`
-      ),
-      /* @__PURE__ */ jsx$1(
-        "input",
-        {
-          type: areValuesSecret ? visible[key] ? "text" : "password" : "text",
-          defaultValue: String(value),
-          onChange: onValueChange.bind(null, index2),
-          "data-testid": `value-input-${itemsType}-${index2}`,
-          id: `dict-value-input-${itemsType}-${index2}`,
-          placeholder: "Value"
-        },
-        `${value}-${index2}-${key}`
-      ),
-      areValuesSecret && /* @__PURE__ */ jsx$1(
-        "button",
-        {
-          type: "button",
-          className: "toggle-visibility-btn",
-          onClick: onVisibilityChange.bind(null, key),
-          title: "Toggle visibility",
-          id: `visibility-${itemsType}-${index2}`,
-          "data-testid": `visibility-${itemsType}-${index2}`,
-          children: visible[key] ? /* @__PURE__ */ jsx$1(FaEyeSlash, {}) : /* @__PURE__ */ jsx$1(FaEye, {})
-        }
-      ),
-      /* @__PURE__ */ jsx$1(
-        "button",
-        {
-          type: "button",
-          onClick: onDeleteEntry.bind(null, key),
-          title: "Delete",
-          className: "trash-button",
-          id: `delete-dict-item-${itemsType}-${index2}`,
-          "data-testid": `delete-dict-item-${itemsType}-${index2}`,
-          children: /* @__PURE__ */ jsx$1(FaTrash, {})
-        }
-      ),
-      isDirty(index2) && /* @__PURE__ */ jsx$1(
-        "button",
-        {
-          onClick: onSaveEntry,
-          title: "Save",
-          id: `save-dict-item-${itemsType}-${index2}`,
-          "data-testid": `save-dict-item-${itemsType}-${index2}`,
-          type: "button",
-          className: "save-button",
-          children: /* @__PURE__ */ jsx$1(FaSave, {})
-        }
-      )
-    ] }, key)) }),
+    /* @__PURE__ */ jsx$1("div", { className: "dict-entries-list", children: Object.entries(items).map(([key, value], index2) => {
+      const valueDisplay = typeof value === "object" ? JSON.stringify(value) : String(value);
+      return /* @__PURE__ */ jsxs("div", { className: "dict-entry", children: [
+        /* @__PURE__ */ jsx$1(
+          "input",
+          {
+            type: "text",
+            defaultValue: key,
+            onChange: onKeyChange.bind(null, index2),
+            "data-testid": `key-input-${itemsType}-${index2}`,
+            placeholder: "Key"
+          },
+          `${key}-${value}-${index2}`
+        ),
+        /* @__PURE__ */ jsx$1(
+          "input",
+          {
+            type: areValuesSecret ? visible[key] ? "text" : "password" : "text",
+            defaultValue: valueDisplay,
+            onChange: onValueChange.bind(null, index2),
+            "data-testid": `value-input-${itemsType}-${index2}`,
+            id: `dict-value-input-${itemsType}-${index2}`,
+            placeholder: "Value"
+          },
+          `${value}-${index2}-${key}`
+        ),
+        areValuesSecret && /* @__PURE__ */ jsx$1(
+          "button",
+          {
+            type: "button",
+            className: "toggle-visibility-btn",
+            onClick: onVisibilityChange.bind(null, key),
+            title: "Toggle visibility",
+            id: `visibility-${itemsType}-${index2}`,
+            "data-testid": `visibility-${itemsType}-${index2}`,
+            children: visible[key] ? /* @__PURE__ */ jsx$1(FaEyeSlash, {}) : /* @__PURE__ */ jsx$1(FaEye, {})
+          }
+        ),
+        /* @__PURE__ */ jsx$1(
+          "button",
+          {
+            type: "button",
+            onClick: onDeleteEntry.bind(null, key),
+            title: "Delete",
+            className: "trash-button",
+            id: `delete-dict-item-${itemsType}-${index2}`,
+            "data-testid": `delete-dict-item-${itemsType}-${index2}`,
+            children: /* @__PURE__ */ jsx$1(FaTrash, {})
+          }
+        ),
+        isDirty(index2) && /* @__PURE__ */ jsx$1(
+          "button",
+          {
+            onClick: onSaveEntry,
+            title: "Save",
+            id: `save-dict-item-${itemsType}-${index2}`,
+            "data-testid": `save-dict-item-${itemsType}-${index2}`,
+            type: "button",
+            className: "save-button",
+            children: /* @__PURE__ */ jsx$1(FaSave, {})
+          }
+        )
+      ] }, key);
+    }) }),
     /* @__PURE__ */ jsxs("div", { className: "add-dict-entry-view", children: [
       /* @__PURE__ */ jsx$1(
         "input",
@@ -22056,6 +22059,385 @@ const FloatingPanel = ({
           }
         ),
         !isCollapsed && /* @__PURE__ */ jsx$1("div", { className: "fp-content", children: children ?? /* @__PURE__ */ jsx$1("div", { className: "padding-10", children: "..." }) })
+      ]
+    }
+  );
+};
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const toKebabCase = (string) => string.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+const toCamelCase = (string) => string.replace(
+  /^([A-Z])|[\s-_]+(\w)/g,
+  (match2, p1, p2) => p2 ? p2.toUpperCase() : p1.toLowerCase()
+);
+const toPascalCase = (string) => {
+  const camelCase = toCamelCase(string);
+  return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
+};
+const mergeClasses = (...classes) => classes.filter((className, index2, array) => {
+  return Boolean(className) && className.trim() !== "" && array.indexOf(className) === index2;
+}).join(" ").trim();
+const hasA11yProp = (props) => {
+  for (const prop in props) {
+    if (prop.startsWith("aria-") || prop === "role" || prop === "title") {
+      return true;
+    }
+  }
+};
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+var defaultAttributes = {
+  xmlns: "http://www.w3.org/2000/svg",
+  width: 24,
+  height: 24,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 2,
+  strokeLinecap: "round",
+  strokeLinejoin: "round"
+};
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const Icon = forwardRef(
+  ({
+    color = "currentColor",
+    size: size2 = 24,
+    strokeWidth = 2,
+    absoluteStrokeWidth,
+    className = "",
+    children,
+    iconNode,
+    ...rest
+  }, ref) => createElement(
+    "svg",
+    {
+      ref,
+      ...defaultAttributes,
+      width: size2,
+      height: size2,
+      stroke: color,
+      strokeWidth: absoluteStrokeWidth ? Number(strokeWidth) * 24 / Number(size2) : strokeWidth,
+      className: mergeClasses("lucide", className),
+      ...!children && !hasA11yProp(rest) && { "aria-hidden": "true" },
+      ...rest
+    },
+    [
+      ...iconNode.map(([tag, attrs]) => createElement(tag, attrs)),
+      ...Array.isArray(children) ? children : [children]
+    ]
+  )
+);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const createLucideIcon = (iconName, iconNode) => {
+  const Component2 = forwardRef(
+    ({ className, ...props }, ref) => createElement(Icon, {
+      ref,
+      iconNode,
+      className: mergeClasses(
+        `lucide-${toKebabCase(toPascalCase(iconName))}`,
+        `lucide-${iconName}`,
+        className
+      ),
+      ...props
+    })
+  );
+  Component2.displayName = toPascalCase(iconName);
+  return Component2;
+};
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$9 = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$9);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$8 = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$8);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$7 = [
+  [
+    "path",
+    {
+      d: "M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z",
+      key: "18887p"
+    }
+  ]
+];
+const MessageSquare = createLucideIcon("message-square", __iconNode$7);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$6 = [
+  ["rect", { x: "14", y: "3", width: "5", height: "18", rx: "1", key: "kaeet6" }],
+  ["rect", { x: "5", y: "3", width: "5", height: "18", rx: "1", key: "1wsw3u" }]
+];
+const Pause = createLucideIcon("pause", __iconNode$6);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$5 = [
+  [
+    "path",
+    {
+      d: "M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z",
+      key: "10ikf1"
+    }
+  ]
+];
+const Play = createLucideIcon("play", __iconNode$5);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$4 = [
+  ["path", { d: "M5 12h14", key: "1ays0h" }],
+  ["path", { d: "M12 5v14", key: "s699le" }]
+];
+const Plus = createLucideIcon("plus", __iconNode$4);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$3 = [
+  ["path", { d: "M10 11v6", key: "nco0om" }],
+  ["path", { d: "M14 11v6", key: "outv1u" }],
+  ["path", { d: "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6", key: "miytrc" }],
+  ["path", { d: "M3 6h18", key: "d0wm0j" }],
+  ["path", { d: "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2", key: "e791ji" }]
+];
+const Trash2 = createLucideIcon("trash-2", __iconNode$3);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$2 = [
+  ["path", { d: "M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2", key: "975kel" }],
+  ["circle", { cx: "12", cy: "7", r: "4", key: "17ys0d" }]
+];
+const User = createLucideIcon("user", __iconNode$2);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$1 = [
+  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
+  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
+];
+const X = createLucideIcon("x", __iconNode$1);
+/**
+ * @license lucide-react v0.544.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode = [
+  [
+    "path",
+    {
+      d: "M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z",
+      key: "1xq2db"
+    }
+  ]
+];
+const Zap = createLucideIcon("zap", __iconNode);
+const AgentEventInfo = ({ agentData, darkMode }) => {
+  const [expanded, setExpanded] = useState(false);
+  const data = typeof agentData === "string" ? JSON.parse(agentData) : agentData;
+  const agentName = data.name || "Unknown Agent";
+  const systemMessage = data.system_message || data.description || "";
+  const totalCost = data.cost?.total?.total_cost || data.cost?.actual?.total_cost || 0;
+  const messageCount = data.chat_messages ? Object.values(data.chat_messages).flat().length : 0;
+  const getLastMessage = () => {
+    if (!data.chat_messages) {
+      return "No messages";
+    }
+    const allMessages = Object.values(data.chat_messages).flat();
+    if (allMessages.length === 0) {
+      return "No messages";
+    }
+    const lastMsg = allMessages[allMessages.length - 1];
+    const content = lastMsg?.content || "Unknown";
+    return content.length > 50 ? content.substring(0, 50) + "..." : content;
+  };
+  const contextVars = data.context_variables?.data || data.context_variables || null;
+  const hasContextVars = contextVars && Object.keys(contextVars).length > 0;
+  const formatValue = (value) => {
+    if (typeof value === "boolean") {
+      return value ? "✓" : "✗";
+    }
+    if (typeof value === "string" && ["true", "false"].includes(value.toLowerCase())) {
+      return value[0] === "t" ? "✓" : "✗";
+    }
+    if (typeof value === "object") {
+      return JSON.stringify(value);
+    }
+    if (typeof value === "string" && value.length > 30) {
+      return value.substring(0, 30) + "...";
+    }
+    return String(value);
+  };
+  return /* @__PURE__ */ jsxs(
+    "div",
+    {
+      className: `border rounded-lg p-3 mb-2 shadow-sm hover:shadow-md transition-shadow ${darkMode ? " border-gray-800" : "border-gray-200"}`,
+      children: [
+        /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: "flex items-center justify-between cursor-pointer",
+            onClick: () => setExpanded(!expanded),
+            children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 flex-1", children: [
+                /* @__PURE__ */ jsx$1(User, { className: `w-4 h-4 ${darkMode ? "text-gray-400" : "text-gray-600"}` }),
+                /* @__PURE__ */ jsx$1("span", { className: `font-semibold text-sm ${darkMode ? "text-gray-100" : "text-gray-800"}`, children: agentName })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+                /* @__PURE__ */ jsxs(
+                  "div",
+                  {
+                    className: `flex items-center gap-1 text-xs ${darkMode ? "text-gray-400" : "text-gray-600"}`,
+                    children: [
+                      /* @__PURE__ */ jsx$1(MessageSquare, { className: "w-3 h-3" }),
+                      /* @__PURE__ */ jsx$1("span", { children: messageCount })
+                    ]
+                  }
+                ),
+                totalCost > 0 && /* @__PURE__ */ jsxs(
+                  "div",
+                  {
+                    className: `flex items-center gap-1 text-xs ${darkMode ? "text-gray-400" : "text-gray-600"}`,
+                    children: [
+                      /* @__PURE__ */ jsx$1(Zap, { className: "w-3 h-3" }),
+                      /* @__PURE__ */ jsxs("span", { children: [
+                        "$",
+                        totalCost.toFixed(4)
+                      ] })
+                    ]
+                  }
+                ),
+                expanded ? /* @__PURE__ */ jsx$1(ChevronDown, { className: `w-4 h-4 ${darkMode ? "text-gray-500" : "text-gray-400"}` }) : /* @__PURE__ */ jsx$1(ChevronRight, { className: `w-4 h-4 ${darkMode ? "text-gray-500" : "text-gray-400"}` })
+              ] })
+            ]
+          }
+        ),
+        expanded && /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: `mt-3 pt-3 border-t space-y-2 ${darkMode ? "border-gray-700" : "border-gray-100"}`,
+            children: [
+              systemMessage && /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx$1(
+                  "div",
+                  {
+                    className: `text-xs font-medium mb-1 ${darkMode ? "text-gray-400" : "text-gray-600"}`,
+                    children: "Role"
+                  }
+                ),
+                /* @__PURE__ */ jsx$1(
+                  "div",
+                  {
+                    className: `text-xs p-2 rounded ${darkMode ? "text-gray-300 bg-gray-900" : "text-gray-700 bg-gray-50"}`,
+                    children: systemMessage.length > 150 ? systemMessage.substring(0, 150) + "..." : systemMessage
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx$1(
+                  "div",
+                  {
+                    className: `text-xs font-medium mb-1 ${darkMode ? "text-gray-400" : "text-gray-600"}`,
+                    children: "Last Activity"
+                  }
+                ),
+                /* @__PURE__ */ jsx$1(
+                  "div",
+                  {
+                    className: `text-xs p-2 rounded ${darkMode ? "text-gray-300 bg-gray-900" : "text-gray-700 bg-gray-50"}`,
+                    children: getLastMessage()
+                  }
+                )
+              ] }),
+              hasContextVars && /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx$1(
+                  "div",
+                  {
+                    className: `text-xs font-medium mb-1 ${darkMode ? "text-gray-400" : "text-gray-600"}`,
+                    children: "Context Variables"
+                  }
+                ),
+                /* @__PURE__ */ jsx$1(
+                  "div",
+                  {
+                    className: `text-xs p-2 rounded space-y-1 ${darkMode ? "bg-gray-900" : "bg-gray-50"}`,
+                    children: Object.entries(contextVars).map(([key, value]) => /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-2", children: [
+                      /* @__PURE__ */ jsxs(
+                        "span",
+                        {
+                          className: `font-mono ${darkMode ? "text-blue-400" : "text-blue-600"}`,
+                          children: [
+                            key,
+                            ":"
+                          ]
+                        }
+                      ),
+                      /* @__PURE__ */ jsx$1(
+                        "span",
+                        {
+                          className: `flex-1 ${darkMode ? "text-gray-300" : "text-gray-700"}`,
+                          children: formatValue(value)
+                        }
+                      )
+                    ] }, key))
+                  }
+                )
+              ] })
+            ]
+          }
+        )
       ]
     }
   );
@@ -25893,10 +26275,11 @@ const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
     }
   );
 };
-const StepByStepView = ({ flowId, stepByStep }) => {
+const StepByStepView = ({ flowId, stepByStep, isDarkMode }) => {
   useAgentClassUpdates(stepByStep);
   const [responseText, setResponseText] = useState("");
   const [timelineModalOpen, setTimelineModalOpen] = useState(false);
+  const [detailsViewActive, setDetailsViewActive] = useState(false);
   const openTimelineModal = useCallback(() => {
     setTimelineModalOpen(true);
   }, []);
@@ -25984,10 +26367,30 @@ const StepByStepView = ({ flowId, stepByStep }) => {
     }
     return "Running";
   }, [stepByStep, reducedHistory, canClose]);
+  const toggleDetailsView = useCallback(() => {
+    setDetailsViewActive((prev2) => !prev2);
+  }, []);
+  const doContinue = useCallback(() => {
+    onControl("continue");
+    setDetailsViewActive(false);
+  }, [onControl]);
+  const doRun = useCallback(() => {
+    onControl("run");
+    setDetailsViewActive(false);
+  }, [onControl]);
+  const doQuit = useCallback(() => {
+    onControl("quit");
+    setDetailsViewActive(false);
+  }, [onControl]);
   if (!stepByStep?.active && !canClose) {
     return null;
   }
   const mayClose = canClose || !!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error";
+  const currentEvent = stepByStep?.currentEvent;
+  const eventAgents = currentEvent?.agents;
+  const currentSender = eventAgents?.sender;
+  const currentRecipient = eventAgents?.recipient;
+  const haveAgent = Boolean(currentSender || currentRecipient);
   const headerLeft = /* @__PURE__ */ jsxs("div", { className: "header", children: [
     /* @__PURE__ */ jsx$1(FaBug, { className: "icon-bug", size: 18 }),
     stepByStep.timeline && /* @__PURE__ */ jsx$1(
@@ -26036,7 +26439,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
               {
                 className: "btn btn-primary",
                 type: "button",
-                onClick: () => onControl("continue"),
+                onClick: doContinue,
                 disabled: !stepByStep?.pendingControlInput,
                 children: [
                   /* @__PURE__ */ jsx$1(FaStepForward, {}),
@@ -26050,7 +26453,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
               {
                 className: "btn btn-secondary",
                 type: "button",
-                onClick: () => onControl("run"),
+                onClick: doRun,
                 disabled: !stepByStep?.pendingControlInput,
                 children: [
                   /* @__PURE__ */ jsx$1(FaPlay, {}),
@@ -26064,7 +26467,7 @@ const StepByStepView = ({ flowId, stepByStep }) => {
               {
                 className: "btn btn-danger",
                 type: "button",
-                onClick: () => onControl("quit"),
+                onClick: doQuit,
                 disabled: !stepByStep?.pendingControlInput,
                 children: [
                   /* @__PURE__ */ jsx$1(FaStop, {}),
@@ -26072,7 +26475,34 @@ const StepByStepView = ({ flowId, stepByStep }) => {
                   /* @__PURE__ */ jsx$1("span", { children: "Quit" })
                 ]
               }
-            )
+            ),
+            currentSender ? detailsViewActive ? /* @__PURE__ */ jsxs(
+              "button",
+              {
+                className: "btn",
+                type: "button",
+                onClick: toggleDetailsView,
+                disabled: !stepByStep?.pendingControlInput,
+                children: [
+                  /* @__PURE__ */ jsx$1(FaCaretLeft, {}),
+                  " ",
+                  /* @__PURE__ */ jsx$1("span", { children: "Back" })
+                ]
+              }
+            ) : /* @__PURE__ */ jsxs(
+              "button",
+              {
+                className: "btn",
+                type: "button",
+                onClick: toggleDetailsView,
+                disabled: !stepByStep?.pendingControlInput,
+                children: [
+                  /* @__PURE__ */ jsx$1(FaInfo, {}),
+                  " ",
+                  /* @__PURE__ */ jsx$1("span", { children: "Info" })
+                ]
+              }
+            ) : null
           ] }),
           stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
             /* @__PURE__ */ jsx$1("div", { className: "card-title", children: "Waiting for input" }),
@@ -26095,7 +26525,10 @@ const StepByStepView = ({ flowId, stepByStep }) => {
               /* @__PURE__ */ jsx$1("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
             ] })
           ] }),
-          reducedHistory.length > 0 ? /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
+          haveAgent && detailsViewActive ? /* @__PURE__ */ jsxs("div", { className: "event-sender-details", children: [
+            currentSender && /* @__PURE__ */ jsx$1(AgentEventInfo, { agentData: currentSender, darkMode: isDarkMode }),
+            currentRecipient && /* @__PURE__ */ jsx$1(AgentEventInfo, { agentData: currentRecipient, darkMode: isDarkMode })
+          ] }) : reducedHistory.length > 0 ? /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
         ] })
       }
     ),
@@ -28630,168 +29063,6 @@ const ImportFlowModal = (props) => {
     }
   );
 };
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const toKebabCase = (string) => string.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
-const toCamelCase = (string) => string.replace(
-  /^([A-Z])|[\s-_]+(\w)/g,
-  (match2, p1, p2) => p2 ? p2.toUpperCase() : p1.toLowerCase()
-);
-const toPascalCase = (string) => {
-  const camelCase = toCamelCase(string);
-  return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
-};
-const mergeClasses = (...classes) => classes.filter((className, index2, array) => {
-  return Boolean(className) && className.trim() !== "" && array.indexOf(className) === index2;
-}).join(" ").trim();
-const hasA11yProp = (props) => {
-  for (const prop in props) {
-    if (prop.startsWith("aria-") || prop === "role" || prop === "title") {
-      return true;
-    }
-  }
-};
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-var defaultAttributes = {
-  xmlns: "http://www.w3.org/2000/svg",
-  width: 24,
-  height: 24,
-  viewBox: "0 0 24 24",
-  fill: "none",
-  stroke: "currentColor",
-  strokeWidth: 2,
-  strokeLinecap: "round",
-  strokeLinejoin: "round"
-};
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const Icon = forwardRef(
-  ({
-    color = "currentColor",
-    size: size2 = 24,
-    strokeWidth = 2,
-    absoluteStrokeWidth,
-    className = "",
-    children,
-    iconNode,
-    ...rest
-  }, ref) => createElement(
-    "svg",
-    {
-      ref,
-      ...defaultAttributes,
-      width: size2,
-      height: size2,
-      stroke: color,
-      strokeWidth: absoluteStrokeWidth ? Number(strokeWidth) * 24 / Number(size2) : strokeWidth,
-      className: mergeClasses("lucide", className),
-      ...!children && !hasA11yProp(rest) && { "aria-hidden": "true" },
-      ...rest
-    },
-    [
-      ...iconNode.map(([tag, attrs]) => createElement(tag, attrs)),
-      ...Array.isArray(children) ? children : [children]
-    ]
-  )
-);
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const createLucideIcon = (iconName, iconNode) => {
-  const Component2 = forwardRef(
-    ({ className, ...props }, ref) => createElement(Icon, {
-      ref,
-      iconNode,
-      className: mergeClasses(
-        `lucide-${toKebabCase(toPascalCase(iconName))}`,
-        `lucide-${iconName}`,
-        className
-      ),
-      ...props
-    })
-  );
-  Component2.displayName = toPascalCase(iconName);
-  return Component2;
-};
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$4 = [
-  ["rect", { x: "14", y: "3", width: "5", height: "18", rx: "1", key: "kaeet6" }],
-  ["rect", { x: "5", y: "3", width: "5", height: "18", rx: "1", key: "1wsw3u" }]
-];
-const Pause = createLucideIcon("pause", __iconNode$4);
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$3 = [
-  [
-    "path",
-    {
-      d: "M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z",
-      key: "10ikf1"
-    }
-  ]
-];
-const Play = createLucideIcon("play", __iconNode$3);
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$2 = [
-  ["path", { d: "M5 12h14", key: "1ays0h" }],
-  ["path", { d: "M12 5v14", key: "s699le" }]
-];
-const Plus = createLucideIcon("plus", __iconNode$2);
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$1 = [
-  ["path", { d: "M10 11v6", key: "nco0om" }],
-  ["path", { d: "M14 11v6", key: "outv1u" }],
-  ["path", { d: "M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6", key: "miytrc" }],
-  ["path", { d: "M3 6h18", key: "d0wm0j" }],
-  ["path", { d: "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2", key: "e791ji" }]
-];
-const Trash2 = createLucideIcon("trash-2", __iconNode$1);
-/**
- * @license lucide-react v0.544.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode = [
-  ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
-  ["path", { d: "m6 6 12 12", key: "d8bk6v" }]
-];
-const X = createLucideIcon("x", __iconNode);
 const eventDescriptions = {
   post_carryover_processing: "After processing carryover messages",
   group_chat_run_chat: "When group chat starts running",
@@ -40673,7 +40944,7 @@ const WaldiezFlowView = memo((props) => {
             }
           ) })
         ] }),
-        /* @__PURE__ */ jsx$1(StepByStepView, { flowId, stepByStep }),
+        /* @__PURE__ */ jsx$1(StepByStepView, { flowId, stepByStep, isDarkMode: isDark }),
         /* @__PURE__ */ jsx$1(ChatModal, { flowId, chat, isDarkMode: isDark }),
         isImportModalOpen && /* @__PURE__ */ jsx$1(
           ImportFlowModal,

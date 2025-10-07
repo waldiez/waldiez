@@ -305,7 +305,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
                 </div>
             </div>
 
-            <StepByStepView flowId={flowId} stepByStep={stepByStep} />
+            <StepByStepView flowId={flowId} stepByStep={stepByStep} isDarkMode={isDark} />
             <ChatModal flowId={flowId} chat={chat} isDarkMode={isDark} />
             {isImportModalOpen && (
                 <ImportFlowModal

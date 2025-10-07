@@ -213,6 +213,11 @@
   overflow: auto;
 }
 
+.waldiez-step-by-step-view .event-sender-details {
+  min-height: 0;
+  overflow: auto;
+}
+
 .waldiez-step-by-step-view .json {
   border: 1px solid var(--card-border);
   border-radius: var(--card-radius, 8px);

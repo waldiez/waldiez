@@ -33,7 +33,7 @@ vi.mock("react-icons/fa6", () => ({
 const _renderView = (stepByStep?: WaldiezStepByStep | null) => {
     return render(
         <WaldiezProvider flowId="flow-123" edges={[]} nodes={[]}>
-            <StepByStepView flowId="flow-123" stepByStep={stepByStep} />
+            <StepByStepView flowId="flow-123" stepByStep={stepByStep} isDarkMode={false} />
         </WaldiezProvider>,
     );
 };
