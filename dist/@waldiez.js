@@ -22064,7 +22064,7 @@ const FloatingPanel = ({
   );
 };
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22089,7 +22089,7 @@ const hasA11yProp = (props) => {
   }
 };
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22106,7 +22106,7 @@ var defaultAttributes = {
   strokeLinejoin: "round"
 };
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22141,7 +22141,7 @@ const Icon = forwardRef(
   )
 );
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22163,7 +22163,7 @@ const createLucideIcon = (iconName, iconNode) => {
   return Component2;
 };
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22171,7 +22171,7 @@ const createLucideIcon = (iconName, iconNode) => {
 const __iconNode$9 = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
 const ChevronDown = createLucideIcon("chevron-down", __iconNode$9);
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22179,7 +22179,7 @@ const ChevronDown = createLucideIcon("chevron-down", __iconNode$9);
 const __iconNode$8 = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
 const ChevronRight = createLucideIcon("chevron-right", __iconNode$8);
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22195,7 +22195,7 @@ const __iconNode$7 = [
 ];
 const MessageSquare = createLucideIcon("message-square", __iconNode$7);
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22206,7 +22206,7 @@ const __iconNode$6 = [
 ];
 const Pause = createLucideIcon("pause", __iconNode$6);
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22222,7 +22222,7 @@ const __iconNode$5 = [
 ];
 const Play = createLucideIcon("play", __iconNode$5);
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22233,7 +22233,7 @@ const __iconNode$4 = [
 ];
 const Plus = createLucideIcon("plus", __iconNode$4);
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22247,7 +22247,7 @@ const __iconNode$3 = [
 ];
 const Trash2 = createLucideIcon("trash-2", __iconNode$3);
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22258,7 +22258,7 @@ const __iconNode$2 = [
 ];
 const User = createLucideIcon("user", __iconNode$2);
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
@@ -22269,7 +22269,7 @@ const __iconNode$1 = [
 ];
 const X = createLucideIcon("x", __iconNode$1);
 /**
- * @license lucide-react v0.544.0 - ISC
+ * @license lucide-react v0.545.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
