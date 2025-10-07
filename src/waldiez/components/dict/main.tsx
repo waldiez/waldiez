@@ -32,61 +32,64 @@ export const Dict: FC<DictProps> = (props: DictProps) => {
                 <label className={"margin-bottom-5"}>{viewLabel}</label>
             )}
             <div className="dict-entries-list">
-                {Object.entries(items).map(([key, value], index) => (
-                    <div className="dict-entry" key={key}>
-                        <input
-                            type="text"
-                            key={`${key}-${value}-${index}`}
-                            defaultValue={key}
-                            onChange={onKeyChange.bind(null, index)}
-                            data-testid={`key-input-${itemsType}-${index}`}
-                            placeholder="Key"
-                        />
-                        <input
-                            type={areValuesSecret ? (visible[key] ? "text" : "password") : "text"}
-                            key={`${value}-${index}-${key}`}
-                            defaultValue={String(value)}
-                            onChange={onValueChange.bind(null, index)}
-                            data-testid={`value-input-${itemsType}-${index}`}
-                            id={`dict-value-input-${itemsType}-${index}`}
-                            placeholder="Value"
-                        />
-                        {areValuesSecret && (
+                {Object.entries(items).map(([key, value], index) => {
+                    const valueDisplay = typeof value === "object" ? JSON.stringify(value) : String(value);
+                    return (
+                        <div className="dict-entry" key={key}>
+                            <input
+                                type="text"
+                                key={`${key}-${value}-${index}`}
+                                defaultValue={key}
+                                onChange={onKeyChange.bind(null, index)}
+                                data-testid={`key-input-${itemsType}-${index}`}
+                                placeholder="Key"
+                            />
+                            <input
+                                type={areValuesSecret ? (visible[key] ? "text" : "password") : "text"}
+                                key={`${value}-${index}-${key}`}
+                                defaultValue={valueDisplay}
+                                onChange={onValueChange.bind(null, index)}
+                                data-testid={`value-input-${itemsType}-${index}`}
+                                id={`dict-value-input-${itemsType}-${index}`}
+                                placeholder="Value"
+                            />
+                            {areValuesSecret && (
+                                <button
+                                    type="button"
+                                    className="toggle-visibility-btn"
+                                    onClick={onVisibilityChange.bind(null, key)}
+                                    title="Toggle visibility"
+                                    id={`visibility-${itemsType}-${index}`}
+                                    data-testid={`visibility-${itemsType}-${index}`}
+                                >
+                                    {visible[key] ? <FaEyeSlash /> : <FaEye />}
+                                </button>
+                            )}
                             <button
                                 type="button"
-                                className="toggle-visibility-btn"
-                                onClick={onVisibilityChange.bind(null, key)}
-                                title="Toggle visibility"
-                                id={`visibility-${itemsType}-${index}`}
-                                data-testid={`visibility-${itemsType}-${index}`}
+                                onClick={onDeleteEntry.bind(null, key)}
+                                title="Delete"
+                                className="trash-button"
+                                id={`delete-dict-item-${itemsType}-${index}`}
+                                data-testid={`delete-dict-item-${itemsType}-${index}`}
                             >
-                                {visible[key] ? <FaEyeSlash /> : <FaEye />}
+                                <FaTrash />
                             </button>
-                        )}
-                        <button
-                            type="button"
-                            onClick={onDeleteEntry.bind(null, key)}
-                            title="Delete"
-                            className="trash-button"
-                            id={`delete-dict-item-${itemsType}-${index}`}
-                            data-testid={`delete-dict-item-${itemsType}-${index}`}
-                        >
-                            <FaTrash />
-                        </button>
-                        {isDirty(index) && (
-                            <button
-                                onClick={onSaveEntry}
-                                title="Save"
-                                id={`save-dict-item-${itemsType}-${index}`}
-                                data-testid={`save-dict-item-${itemsType}-${index}`}
-                                type="button"
-                                className="save-button"
-                            >
-                                <FaSave />
-                            </button>
-                        )}
-                    </div>
-                ))}
+                            {isDirty(index) && (
+                                <button
+                                    onClick={onSaveEntry}
+                                    title="Save"
+                                    id={`save-dict-item-${itemsType}-${index}`}
+                                    data-testid={`save-dict-item-${itemsType}-${index}`}
+                                    type="button"
+                                    className="save-button"
+                                >
+                                    <FaSave />
+                                </button>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
             <div className="add-dict-entry-view">
                 <input
