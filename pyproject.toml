@@ -154,7 +154,7 @@ dev = [
   "bandit==1.8.6",
   "black[jupyter]==25.9.0",
   "build==1.3.0",
-  "fakeredis==2.31.3",
+  "fakeredis==2.32.0",
   "flake8==7.3.0",
   "jsonschema==4.25.1",
   "jupyterlab==4.4.9",
@@ -173,10 +173,11 @@ dev = [
   "pre-commit==4.3.0",
   "pydocstyle==6.3.0",
   "pylint==3.3.9",
+  "pyright==1.1.406",
   "python-dotenv>=1.1.1",
-  "ruff==0.13.3",
+  "ruff==0.14.0",
   "types-aiofiles==24.1.0.20250822",
-  "types-jsonschema==4.25.1.20250822",
+  "types-jsonschema==4.25.1.20251008",
   "types-pyyaml==6.0.12.20250915",
   "types-psutil==7.0.0.20251001",
   "types-redis==4.6.0.20241004",
@@ -213,7 +214,7 @@ docs = [
 test = [
   "ag2[redis]==0.9.10",
   "ag2[websockets]==0.9.10",
-  "fakeredis==2.31.3",
+  "fakeredis==2.32.0",
   "paho-mqtt>=2.1.0,<3.0",
   "pytest==8.4.2",
   "pytest-asyncio==1.2.0",
@@ -308,6 +309,7 @@ format = [
 
 lint-black = "black --config pyproject.toml --check --diff waldiez tests scripts"
 lint-mypy = "mypy --config pyproject.toml waldiez tests scripts"
+lint-pyright = "pyright -p pyproject.toml waldiez tests scripts"
 lint-flake8 = "flake8 --config .flake8 waldiez tests scripts"
 lint-bandit = "bandit -r -c pyproject.toml waldiez scripts"
 lint-yamllint = "yamllint ."
@@ -316,6 +318,7 @@ lint-pylint = "pylint --rcfile=pyproject.toml waldiez tests scripts"
 lint = [
   "hatch run lint-black",
   "hatch run lint-mypy",
+  "hatch run lint-pyright",
   "hatch run lint-flake8",
   "hatch run lint-bandit",
   "hatch run lint-yamllint",
@@ -447,6 +450,12 @@ disable_error_code = ["call-arg"]
 init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
+
+
+[tool.pyright]
+include = ["waldiez", "tests", "scripts"]
+
+reportCallIssue = false
 
 # pylint
 [tool.pylint.master]

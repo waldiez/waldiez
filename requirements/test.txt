@@ -1,7 +1,7 @@
 -r main.txt
 ag2[redis]==0.9.10
 ag2[websockets]==0.9.10
-fakeredis==2.31.3
+fakeredis==2.32.0
 paho-mqtt>=2.1.0,<3.0
 pytest-asyncio==1.2.0
 pytest-cov==7.0.0
