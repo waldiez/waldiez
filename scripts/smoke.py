@@ -261,6 +261,7 @@ def diff_has_only_id_changes(file_path: str) -> bool:
         capture_output=True,
         text=True,
         check=True,
+        encoding="utf-8",
         cwd=str(EXAMPLES_CWD),
     )
     diff_output = result.stdout.strip()
@@ -308,6 +309,7 @@ def git_restore(*files: str) -> None:
         capture_output=True,
         text=True,
         check=True,
+        encoding="utf-8",
         cwd=str(EXAMPLES_CWD),
     )
     if result.returncode != 0:
@@ -339,6 +341,7 @@ def diff_has_path_changes(file_path: str) -> bool:
         capture_output=True,
         text=True,
         check=True,
+        encoding="utf-8",
         cwd=str(EXAMPLES_CWD),
     )
     diff_output = result.stdout.strip()
@@ -520,6 +523,7 @@ def lint_example(example_path: str) -> None:
         result = subprocess.run(
             [tool, example_path],
             capture_output=True,
+            encoding="utf-8",
             text=True,
             check=True,
         )

@@ -93,6 +93,7 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
+                encoding="utf-8",
                 text=True,
                 bufsize=1,  # Line buffered
             )

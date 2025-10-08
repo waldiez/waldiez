@@ -320,11 +320,13 @@ class MqttIOStream(IOStream):
             LOG.debug(
                 "Received message on topic %s: %s",
                 msg.topic,
-                msg.payload.decode(),
+                msg.payload.decode("utf-8", errors="replace"),
             )
 
             if msg.topic == self.input_response_topic:  # pragma: no branch
-                self._handle_input_response(msg.payload.decode())
+                self._handle_input_response(
+                    msg.payload.decode("utf-8", errors="replace")
+                )
 
         except Exception as e:  # pragma: no cover
             LOG.error("Error handling message: %s", e)

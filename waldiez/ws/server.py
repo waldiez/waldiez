@@ -189,7 +189,9 @@ class WaldiezWsServer:
                 try:
                     # Parse message
                     if isinstance(raw_message, bytes):
-                        message_str = raw_message.decode("utf-8")
+                        message_str = raw_message.decode(
+                            "utf-8", errors="replace"
+                        )
                     else:
                         # noinspection PyUnreachableCode
                         message_str = (

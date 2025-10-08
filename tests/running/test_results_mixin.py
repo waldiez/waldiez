@@ -79,9 +79,7 @@ def test_extract_messages_from_text_events() -> None:
             },
         },
     ]
-
     messages = _extract_messages_from_events(events)
-
     assert len(messages) == 2
     assert messages[0]["content"] == "Hello"
     assert messages[0]["role"] == "user"
@@ -106,9 +104,7 @@ def test_extract_messages_filters_handoffs() -> None:
             "content": {"content": "Actual message", "sender": "user"},
         },
     ]
-
     messages = _extract_messages_from_events(events)
-
     assert len(messages) == 1
     assert messages[0]["content"] == "Actual message"
 
@@ -123,9 +119,7 @@ def test_extract_messages_filters_none_content() -> None:
             "content": {"content": "Valid message", "sender": "user"},
         },
     ]
-
     messages = _extract_messages_from_events(events)
-
     assert len(messages) == 1
     assert messages[0]["content"] == "Valid message"
 
@@ -142,9 +136,7 @@ def test_extract_messages_avoids_duplicates() -> None:
             "content": {"content": "Same message", "sender": "user"},
         },
     ]
-
     messages = _extract_messages_from_events(events)
-
     assert len(messages) == 1
 
 
@@ -157,9 +149,7 @@ def test_extract_summary_from_run_completion() -> None:
             "content": {"summary": "This is the summary"},
         }
     ]
-
     summary = _extract_summary_from_events(events)
-
     assert summary == "This is the summary"
 
 
@@ -171,9 +161,7 @@ def test_extract_summary_from_history() -> None:
             "content": {"history": [{"content": "Last message in history"}]},
         }
     ]
-
     summary = _extract_summary_from_events(events)
-
     assert summary == "Last message in history"
 
 
@@ -183,9 +171,7 @@ def test_extract_summary_fallback_to_text() -> None:
         {"type": "text", "content": {"content": "Regular message"}},
         {"type": "text", "content": {"content": "Last message"}},
     ]
-
     summary = _extract_summary_from_events(events)
-
     assert summary == "Last message"
 
 
@@ -195,9 +181,7 @@ def test_extract_summary_skips_handoffs() -> None:
         {"type": "text", "content": {"content": "Valid summary"}},
         {"type": "text", "content": {"content": "[Handing off to agent]"}},
     ]
-
     summary = _extract_summary_from_events(events)
-
     assert summary == "Valid summary"
 
 
@@ -205,9 +189,7 @@ def test_extract_summary_skips_handoffs() -> None:
 def test_calculate_total_cost() -> None:
     """Test calculating total cost from completions."""
     completions = [{"cost": 0.001}, {"cost": 0.002}, {"cost": 0.003}]
-
     cost = _calculate_total_cost(completions)
-
     assert cost == 0.006
 
 
@@ -218,18 +200,14 @@ def test_calculate_total_cost_with_none_values() -> None:
         {"cost": None},
         {"cost": 0.002},
     ]
-
     cost = _calculate_total_cost(completions)
-
     assert cost == 0.003
 
 
 def test_calculate_total_cost_returns_none_for_zero() -> None:
     """Test that zero cost returns None."""
     completions: list[dict[str, Any]] = [{"cost": 0.0}, {"cost": None}]
-
     cost = _calculate_total_cost(completions)
-
     assert cost is None
 
 
@@ -244,9 +222,7 @@ def test_extract_context_from_executed_function() -> None:
             },
         }
     ]
-
     context = _extract_last_context_variables(events)
-
     assert context == {"key": "value"}
 
 
@@ -258,9 +234,7 @@ def test_extract_context_from_run_completion() -> None:
             "content": {"context_variables": {"key": "value"}},
         }
     ]
-
     context = _extract_last_context_variables(events)
-
     assert context == {"key": "value"}
 
 
@@ -280,9 +254,7 @@ def test_extract_last_context_variables_returns_last() -> None:
             },
         },
     ]
-
     context = _extract_last_context_variables(events)
-
     assert context == {"last": 2}
 
 
@@ -295,9 +267,7 @@ def test_extract_last_speaker_from_run_completion() -> None:
             "content": {"last_speaker": "agent_name"},
         }
     ]
-
     speaker = _extract_last_speaker(events)
-
     assert speaker == "agent_name"
 
 
@@ -309,9 +279,7 @@ def test_extract_last_speaker_from_history() -> None:
             "content": {"history": [{"name": "agent_from_history"}]},
         }
     ]
-
     speaker = _extract_last_speaker(events)
-
     assert speaker == "agent_from_history"
 
 
@@ -321,9 +289,7 @@ def test_extract_last_speaker_fallback_to_text() -> None:
         {"type": "text", "content": {"sender": "first_agent"}},
         {"type": "text", "content": {"sender": "last_agent"}},
     ]
-
     speaker = _extract_last_speaker(events)
-
     assert speaker == "last_agent"
 
 
@@ -333,9 +299,7 @@ def test_extract_last_speaker_skips_manager() -> None:
         {"type": "text", "content": {"sender": "real_agent"}},
         {"type": "text", "content": {"sender": "manager"}},
     ]
-
     speaker = _extract_last_speaker(events)
-
     assert speaker == "real_agent"
 
 
@@ -351,12 +315,9 @@ def test_get_results_from_json_with_valid_file(tmp_path: Path) -> None:
             }
         ]
     }
-
     with open(results_file, "w", encoding="utf-8") as f:
         json.dump(results_data, f)
-
     results = _get_results_from_json(tmp_path)
-
     assert len(results) == 1
     assert results[0]["index"] == 0
 
@@ -365,19 +326,15 @@ def test_get_results_from_json_with_empty_results(tmp_path: Path) -> None:
     """Test reading empty results returns empty list."""
     results_file = tmp_path / "results.json"
     results_data: dict[str, Any] = {"results": []}
-
     with open(results_file, "w", encoding="utf-8") as f:
         json.dump(results_data, f)
-
     results = _get_results_from_json(tmp_path)
-
     assert not results
 
 
 def test_get_results_from_json_nonexistent_file(tmp_path: Path) -> None:
     """Test reading from nonexistent file returns empty list."""
     results = _get_results_from_json(tmp_path)
-
     assert not results
 
 
@@ -385,9 +342,7 @@ def test_remove_results_json(tmp_path: Path) -> None:
     """Test removing results.json file."""
     results_file = tmp_path / "results.json"
     results_file.write_text("{}")
-
     _remove_results_json(tmp_path)
-
     assert not results_file.exists()
 
 
@@ -402,7 +357,6 @@ def test_fill_results_from_logs(tmp_path: Path) -> None:
     # Setup directory structure
     logs_dir = tmp_path / "logs"
     logs_dir.mkdir()
-
     # Create results.json with empty fields
     results_data: dict[str, Any] = {
         "results": [
@@ -423,20 +377,16 @@ def test_fill_results_from_logs(tmp_path: Path) -> None:
             }
         ]
     }
-
     results_file = tmp_path / "results.json"
     with open(results_file, "w", encoding="utf-8") as f:
         json.dump(results_data, f)
 
-    # Create chat_completions.json
     completions = [{"cost": 0.001}]
     completions_file = logs_dir / "chat_completions.json"
     with open(completions_file, "w", encoding="utf-8") as f:
         json.dump(completions, f)
 
-    # Fill results
     filled = _fill_results_from_logs(tmp_path)
-
     result = filled["results"][0]
     assert len(result["messages"]) == 1
     assert result["messages"][0]["content"] == "Hello"
@@ -444,13 +394,10 @@ def test_fill_results_from_logs(tmp_path: Path) -> None:
     assert result["cost"] == 0.001
 
 
-# Test ResultsMixin methods
 def test_ensure_results_json_creates_file(tmp_path: Path) -> None:
     """Test ensure_results_json creates file if not exists."""
     results: list[dict[str, Any]] = [{"index": 0, "messages": []}]
-
     ResultsMixin.ensure_results_json(tmp_path, results)
-
     results_file = tmp_path / "results.json"
     assert results_file.exists()
 
@@ -461,12 +408,9 @@ def test_get_results_returns_from_file(tmp_path: Path) -> None:
     file_results: dict[str, Any] = {
         "results": [{"index": 0, "messages": [{"content": "from file"}]}]
     }
-
     with open(results_file, "w", encoding="utf-8") as f:
         json.dump(file_results, f)
-
     results = ResultsMixin.get_results([], tmp_path)
-
     assert len(results) == 1
     assert results[0]["messages"][0]["content"] == "from file"
 
@@ -474,9 +418,7 @@ def test_get_results_returns_from_file(tmp_path: Path) -> None:
 def test_get_results_returns_passed_results(tmp_path: Path) -> None:
     """Test get_results returns passed results if no file."""
     passed_results: list[dict[str, Any]] = [{"index": 0, "messages": []}]
-
     results = ResultsMixin.get_results(passed_results, tmp_path)
-
     assert results == passed_results
 
 
@@ -487,12 +429,9 @@ async def test_a_get_results_returns_from_file(tmp_path: Path) -> None:
     file_results: dict[str, Any] = {
         "results": [{"index": 0, "messages": [{"content": "from file"}]}]
     }
-
     with open(results_file, "w", encoding="utf-8") as f:
         json.dump(file_results, f)
-
     results = await ResultsMixin.a_get_results([], tmp_path)
-
     assert len(results) == 1
     assert results[0]["messages"][0]["content"] == "from file"
 
@@ -501,12 +440,9 @@ def test_read_from_output_with_results(tmp_path: Path) -> None:
     """Test reading from output with results.json."""
     results_file = tmp_path / "results.json"
     results_data = {"results": [{"index": 0}]}
-
     with open(results_file, "w", encoding="utf-8") as f:
         json.dump(results_data, f)
-
     results = ResultsMixin.read_from_output(tmp_path)
-
     assert len(results) == 1
     assert results[0]["index"] == 0
 
@@ -515,12 +451,9 @@ def test_read_from_output_with_error(tmp_path: Path) -> None:
     """Test reading from output with error.json."""
     error_file = tmp_path / "error.json"
     error_data = {"error": "Something went wrong"}
-
     with open(error_file, "w", encoding="utf-8") as f:
         json.dump(error_data, f)
-
     results = ResultsMixin.read_from_output(tmp_path)
-
     assert len(results) == 1
     assert results[0]["error"] == "Something went wrong"
 
@@ -528,7 +461,6 @@ def test_read_from_output_with_error(tmp_path: Path) -> None:
 def test_read_from_output_no_files(tmp_path: Path) -> None:
     """Test reading from output with no files."""
     results = ResultsMixin.read_from_output(tmp_path)
-
     assert len(results) == 1
     assert "error" in results[0]
 
@@ -538,12 +470,9 @@ async def test_a_read_from_output_with_results(tmp_path: Path) -> None:
     """Test async reading from output with results.json."""
     results_file = tmp_path / "results.json"
     results_data = {"results": [{"index": 0}]}
-
     with open(results_file, "w", encoding="utf-8") as f:
         json.dump(results_data, f)
-
     results = await ResultsMixin.a_read_from_output(tmp_path)
-
     assert len(results) == 1
     assert results[0]["index"] == 0
 
@@ -553,12 +482,9 @@ async def test_a_read_from_output_with_error(tmp_path: Path) -> None:
     """Test async reading from output with error.json."""
     error_file = tmp_path / "error.json"
     error_data = {"error": "Something went wrong"}
-
     with open(error_file, "w", encoding="utf-8") as f:
         json.dump(error_data, f)
-
     results = await ResultsMixin.a_read_from_output(tmp_path)
-
     assert len(results) == 1
     assert results[0]["error"] == "Something went wrong"
 
@@ -569,7 +495,6 @@ def test_store_full_results(tmp_path: Path) -> None:
     # Setup
     logs_dir = tmp_path / "logs"
     logs_dir.mkdir()
-
     results_data: dict[str, Any] = {
         "results": [
             {
@@ -588,22 +513,15 @@ def test_store_full_results(tmp_path: Path) -> None:
             }
         ]
     }
-
     results_file = tmp_path / "results.json"
     with open(results_file, "w", encoding="utf-8") as f:
         json.dump(results_data, f)
-
     completions_file = logs_dir / "chat_completions.json"
     with open(completions_file, "w", encoding="utf-8") as f:
         json.dump([{"cost": 0.5}], f)
-
-    # Execute
     _store_full_results(tmp_path)
-
-    # Verify
     with open(results_file, "r", encoding="utf-8") as f:
         stored = json.load(f)
-
     result = stored["results"][0]
     assert len(result["messages"]) == 1
     assert result["summary"] == "Test"
@@ -614,15 +532,11 @@ def test_ensure_error_json(tmp_path: Path) -> None:
     """Test _ensure_error_json function."""
     output_dir = tmp_path
     error = ValueError("Test error message")
-
     _ensure_error_json(output_dir, error)
-
     error_file = output_dir / "error.json"
     assert error_file.exists()
-
     with open(error_file, "r", encoding="utf-8") as f:
         error_data = json.load(f)
-
     assert error_data["error"] == "Test error message"
 
 
@@ -630,18 +544,12 @@ def test_ensure_error_json_not_overwrite(tmp_path: Path) -> None:
     """Test _ensure_error_json doesn't overwrite existing file."""
     output_dir = tmp_path
     error_file = output_dir / "error.json"
-
-    # Create existing error file
     with open(error_file, "w", encoding="utf-8") as f:
         json.dump({"error": "Original error"}, f)
-
     error = ValueError("New error")
     _ensure_error_json(output_dir, error)
-
-    # Should not overwrite
     with open(error_file, "r", encoding="utf-8") as f:
         error_data = json.load(f)
-
     assert error_data["error"] == "Original error"
 
 
@@ -649,7 +557,6 @@ def test_get_sqlite_out(tmp_path: Path) -> None:
     """Test get_sqlite_out function."""
     db_path = tmp_path / "test.db"
     csv_path = tmp_path / "output.csv"
-
     # Create a test database and table
     conn = sqlite3.connect(db_path)
     conn.execute("CREATE TABLE test_table (id INTEGER, name TEXT)")
@@ -657,18 +564,13 @@ def test_get_sqlite_out(tmp_path: Path) -> None:
     conn.execute("INSERT INTO test_table VALUES (2, 'Bob')")
     conn.commit()
     conn.close()
-
     _get_sqlite_out(str(db_path), "test_table", str(csv_path))
-
-    # Check CSV was created
     assert csv_path.exists()
     with open(csv_path, "r", encoding="utf-8") as f:
         content = f.read()
         assert "id,name" in content
         assert "1,Alice" in content
         assert "2,Bob" in content
-
-    # Check JSON was created
     json_path = tmp_path / "output.json"
     assert json_path.exists()
     with open(json_path, "r", encoding="utf-8") as f:
@@ -682,15 +584,9 @@ def test_get_sqlite_out_with_invalid_table(tmp_path: Path) -> None:
     """Test get_sqlite_out with invalid table name."""
     db_path = tmp_path / "test.db"
     csv_path = tmp_path / "output.csv"
-
-    # Create an empty database
     conn = sqlite3.connect(db_path)
     conn.close()
-
-    # Should not raise an error
     _get_sqlite_out(str(db_path), "nonexistent_table", str(csv_path))
-
-    # CSV should not be created
     assert not csv_path.exists()
 
 
@@ -698,8 +594,6 @@ def test_ensure_db_outputs(tmp_path: Path) -> None:
     """Test _ensure_db_outputs function."""
     output_dir = tmp_path
     db_path = output_dir / "flow.db"
-
-    # Create database with test tables
     conn = sqlite3.connect(db_path)
     tables = [
         "chat_completions",
@@ -719,10 +613,7 @@ def test_ensure_db_outputs(tmp_path: Path) -> None:
         )
     conn.commit()
     conn.close()
-
     ResultsMixin.ensure_db_outputs(output_dir)
-
-    # Check that CSV and JSON files were created
     logs_dir = output_dir / "logs"
     assert logs_dir.exists()
 
@@ -736,11 +627,7 @@ def test_ensure_db_outputs(tmp_path: Path) -> None:
 def test_ensure_db_outputs_no_database(tmp_path: Path) -> None:
     """Test _ensure_db_outputs when no database exists."""
     output_dir = tmp_path
-
-    # Should not raise an error
     ResultsMixin.ensure_db_outputs(output_dir)
-
-    # Logs directory should not be created
     logs_dir = output_dir / "logs"
     assert not logs_dir.exists()
 
@@ -751,21 +638,14 @@ def test_ensure_db_outputs_existing_files(tmp_path: Path) -> None:
     db_path = output_dir / "flow.db"
     logs_dir = output_dir / "logs"
     logs_dir.mkdir()
-
-    # Create database
     conn = sqlite3.connect(db_path)
     conn.execute("CREATE TABLE agents (id INTEGER)")
     conn.execute("INSERT INTO agents VALUES (1)")
     conn.commit()
     conn.close()
-
-    # Create existing files
     (logs_dir / "agents.csv").write_text("existing csv")
     (logs_dir / "agents.json").write_text("existing json")
-
     ResultsMixin.ensure_db_outputs(output_dir)
-
-    # Files should still be there (not regenerated)
     assert (logs_dir / "agents.csv").read_text() == "existing csv"
     assert (logs_dir / "agents.json").read_text() == "existing json"
 
@@ -780,7 +660,6 @@ def test_post_run_with_output_file(tmp_path: Path) -> None:
     output_file.touch()
     waldiez_file = tmp_path / "flow.waldiez"
     waldiez_file.touch()
-
     result = ResultsMixin.post_run(
         results=[{"index": 0, "messages": []}],
         error=None,
@@ -792,7 +671,6 @@ def test_post_run_with_output_file(tmp_path: Path) -> None:
         skip_mmd=True,
         skip_timeline=True,
     )
-
     assert result is not None
     assert result.exists()
     assert result.name.startswith("2025")  # timestamp directory
@@ -805,7 +683,6 @@ def test_post_run_without_output_file(tmp_path: Path) -> None:
     tmp_dir.mkdir(parents=True, exist_ok=True)
     waldiez_file = tmp_path / "flow.waldiez"
     waldiez_file.touch()
-
     result = ResultsMixin.post_run(
         results=[{"index": 0, "messages": []}],
         error=None,
@@ -816,7 +693,6 @@ def test_post_run_without_output_file(tmp_path: Path) -> None:
         skip_mmd=True,
         skip_timeline=True,
     )
-
     assert result is None
     assert not tmp_dir.exists()  # temp dir should be removed
 
@@ -830,7 +706,6 @@ def test_post_run_with_error(tmp_path: Path) -> None:
     waldiez_file = tmp_path / "flow.waldiez"
     waldiez_file.touch()
     error = RuntimeError("Test error")
-
     output_dir = ResultsMixin.post_run(
         results=[],
         error=error,
@@ -842,7 +717,6 @@ def test_post_run_with_error(tmp_path: Path) -> None:
         skip_timeline=True,
     )
     assert output_dir
-
     error_file = output_dir / "error.json"
     assert error_file.exists()
     with open(error_file, "r", encoding="utf-8") as f:
@@ -858,7 +732,6 @@ async def test_a_post_run(tmp_path: Path) -> None:
     tmp_dir.mkdir(parents=True, exist_ok=True)
     waldiez_file = tmp_path / "flow.waldiez"
     waldiez_file.touch()
-
     result = await ResultsMixin.a_post_run(
         results=[{"index": 0, "messages": []}],
         error=None,
@@ -869,7 +742,6 @@ async def test_a_post_run(tmp_path: Path) -> None:
         skip_mmd=True,
         skip_timeline=True,
     )
-
     assert result is None
 
 
@@ -877,37 +749,25 @@ def test_copy_results(tmp_path: Path) -> None:
     """Test copy_results function."""
     temp_dir = tmp_path / "temp"
     temp_dir.mkdir(parents=True, exist_ok=True)
-
-    # Create some test files and directories
     test_file = temp_dir / "test.txt"
     test_file.write_text("test content")
-
     test_dir = temp_dir / "subdir"
     test_dir.mkdir()
     (test_dir / "nested.txt").write_text("nested content")
-
-    # Create files that should be skipped
+    # should be skipped
     pycache_dir = temp_dir / "__pycache__"
     pycache_dir.mkdir()
     (pycache_dir / "test.pyc").touch()
-
     (temp_dir / ".cache").touch()
     (temp_dir / ".env").touch()
     (temp_dir / "test.pyc").touch()
-
     output_file = tmp_path / "output.py"
     output_file.touch()
-
     destination_dir = tmp_path / "destination"
     destination_dir.mkdir(parents=True, exist_ok=True)
-
     _copy_results(temp_dir, output_file, destination_dir)
-
-    # Check that valid files were copied
     assert (destination_dir / "test.txt").exists()
     assert (destination_dir / "subdir" / "nested.txt").exists()
-
-    # Check that invalid files were not copied
     assert not (destination_dir / "__pycache__").exists()
     assert not (destination_dir / ".cache").exists()
     assert not (destination_dir / ".env").exists()
@@ -918,28 +778,19 @@ def test_copy_results_with_special_files(tmp_path: Path) -> None:
     """Test copy_results with tree of thoughts and reasoning tree files."""
     temp_dir = tmp_path / "temp"
     temp_dir.mkdir(parents=True, exist_ok=True)
-
     # Create special files
     tot_file = temp_dir / "tree_of_thoughts.png"
     tot_file.write_bytes(b"fake image data")
-
     reasoning_file = temp_dir / "reasoning_tree.json"
     reasoning_file.write_text('{"tree": "data"}')
-
     output_file = tmp_path / "output" / "output.py"
     output_file.parent.mkdir(parents=True, exist_ok=True)
     output_file.touch()
-
     destination_dir = tmp_path / "destination"
     destination_dir.mkdir(parents=True, exist_ok=True)
-
     _copy_results(temp_dir, output_file, destination_dir)
-
-    # Check that special files were copied to output directory
     assert (output_file.parent / "tree_of_thoughts.png").exists()
     assert (output_file.parent / "reasoning_tree.json").exists()
-
-    # And also to destination
     assert (destination_dir / "tree_of_thoughts.png").exists()
     assert (destination_dir / "reasoning_tree.json").exists()
 
@@ -948,21 +799,14 @@ def test_copy_results_with_waldiez_file(tmp_path: Path) -> None:
     """Test copy_results with .waldiez output file."""
     temp_dir = tmp_path / "temp"
     temp_dir.mkdir(parents=True, exist_ok=True)
-
-    # Create a Python file in temp dir
     py_file = temp_dir / "flow.py"
     py_file.write_text("print('hello')")
-
     output_file = tmp_path / "output" / "flow.waldiez"
     output_file.parent.mkdir(parents=True, exist_ok=True)
     output_file.touch()
-
     destination_dir = tmp_path / "destination"
     destination_dir.mkdir(parents=True, exist_ok=True)
-
     _copy_results(temp_dir, output_file, destination_dir)
-
-    # Should copy to output directory with .py extension
     expected = output_file.parent / "flow.py"
     assert expected.exists()
 
@@ -973,8 +817,6 @@ def test_make_mermaid_diagram(tmp_path: Path) -> None:
     temp_dir.mkdir()
     logs_dir = temp_dir / "logs"
     logs_dir.mkdir()
-
-    # Create events.csv
     events_csv = logs_dir / "events.csv"
     with open(events_csv, "w", encoding="utf-8", newline="\n") as f:
         f.write(
@@ -982,14 +824,10 @@ def test_make_mermaid_diagram(tmp_path: Path) -> None:
             "agent_class_name,id,json_state,timestamp\n"
             "start,1,agent1,module,class,1,{},2025-01-01 00:00:00\n"
         )
-
     output_file = tmp_path / "output.py"
     flow_name = "test_flow"
     mmd_dir = tmp_path
-
     _make_mermaid_diagram(temp_dir, output_file, flow_name, mmd_dir)
-
-    # Check mermaid file was created
     mmd_file = temp_dir / f"{flow_name}.mmd"
     assert mmd_file.exists()
 
@@ -998,14 +836,10 @@ def test_make_mermaid_diagram_no_events(tmp_path: Path) -> None:
     """Test _make_mermaid_diagram when events.csv doesn't exist."""
     temp_dir = tmp_path / "temp"
     temp_dir.mkdir()
-
     output_file = tmp_path / "output.py"
     flow_name = "test_flow"
     mmd_dir = tmp_path
-
-    # Should not raise an error
     _make_mermaid_diagram(temp_dir, output_file, flow_name, mmd_dir)
-
     mmd_file = temp_dir / f"{flow_name}.mmd"
     assert not mmd_file.exists()
 
@@ -1014,10 +848,7 @@ def test_make_timeline_json_no_events(tmp_path: Path) -> None:
     """Test _make_timeline_json when events.csv doesn't exist."""
     temp_dir = tmp_path / "temp"
     temp_dir.mkdir()
-
-    # Should not raise an error
     _make_timeline_json(temp_dir)
-
     timeline_file = temp_dir / "timeline.json"
     assert not timeline_file.exists()
 
@@ -1032,7 +863,6 @@ def test_post_run_string_output_file(tmp_path: Path) -> None:
     Path(output_file).touch()
     waldiez_file = tmp_path / "flow.waldiez"
     waldiez_file.touch()
-
     result = ResultsMixin.post_run(
         results=[{"index": 0, "messages": []}],
         error=None,
@@ -1043,6 +873,5 @@ def test_post_run_string_output_file(tmp_path: Path) -> None:
         skip_mmd=True,
         skip_timeline=True,
     )
-
     assert result is not None
     assert result.exists()

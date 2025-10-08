@@ -218,7 +218,7 @@ class PythonManager:
                 if not stream:  # pragma: no cover
                     return
                 async for raw in stream:
-                    text = strip_ansi(raw.decode().rstrip())
+                    text = strip_ansi(raw.decode(errors="replace").rstrip())
                     if text:
                         printer(text)
 

@@ -103,7 +103,7 @@ class WebSocketsAdapter:
                 self.websocket.recv(), timeout=timeout
             )
             if isinstance(response, bytes):
-                return response.decode("utf-8")
+                return response.decode("utf-8", errors="replace")
             # noinspection PyUnreachableCode
             return response if isinstance(response, str) else str(response)
         except asyncio.TimeoutError:

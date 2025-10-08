@@ -42,12 +42,12 @@ class TestPythonManager:
         original_app_root = os.environ.get(WALDIEZ_APP_ROOT)
         # pylint: disable=too-many-try-statements
         try:
-            test_app_path = "/custom/app/root"
+            test_app_path = os.path.join("custom", "app", "root")
             os.environ[WALDIEZ_APP_ROOT] = test_app_path
 
             with patch.object(Path, "is_dir", return_value=True):
                 result = pm.app_dir
-                assert str(result) == test_app_path
+                assert test_app_path in str(result)
 
         finally:
             if original_app_root is not None:
@@ -74,12 +74,12 @@ class TestPythonManager:
         original_site_packages = os.environ.get(WALDIEZ_SITE_PACKAGES)
         # pylint: disable=too-many-try-statements
         try:
-            test_site_packages_path = "/custom/site/packages"
+            test_site_packages_path = os.path.join("custom", "site", "packages")
             os.environ[WALDIEZ_SITE_PACKAGES] = test_site_packages_path
             with patch.object(Path, "is_dir", return_value=True):
                 result = pm.site_packages_directory
                 assert result is not None
-                assert str(result) == test_site_packages_path
+                assert test_site_packages_path in str(result)
 
         finally:
             if original_site_packages is not None:
@@ -93,7 +93,9 @@ class TestPythonManager:
         with patch.object(Path, "exists", return_value=True):
             result = pm.site_packages_directory
             assert result is not None
-            assert "bundled_python/site-packages" in str(result)
+            assert os.path.join("bundled_python", "site-packages") in str(
+                result
+            )
 
     def test_get_python_executable_not_frozen(self) -> None:
         pm = PythonManager()
@@ -146,11 +148,12 @@ class TestPythonManager:
     def test_pip_install_with_target(self) -> None:
         pm = PythonManager()
         pm.is_frozen = True
-
+        bundled_packages = os.path.join("bundled", "site-packages")
+        original_site_packages = os.environ.pop(WALDIEZ_SITE_PACKAGES, None)
         with patch.object(
             pm,
             "_get_site_packages_path",
-            return_value=Path("/bundled/site-packages"),
+            return_value=Path(bundled_packages),
         ):
             with patch("subprocess.Popen") as mock_popen:
                 mock_proc = Mock()
@@ -163,17 +166,22 @@ class TestPythonManager:
 
                 call_args = mock_popen.call_args[0][0]
                 assert "--target" in call_args
-                assert "/bundled/site-packages" in call_args
+                assert bundled_packages in call_args
+        if original_site_packages is not None:
+            os.environ[WALDIEZ_SITE_PACKAGES] = original_site_packages
+        else:
+            os.environ.pop(WALDIEZ_SITE_PACKAGES, None)
 
     @pytest.mark.asyncio
     async def test_a_pip_install_with_target(self) -> None:
         pm = PythonManager()
         pm.is_frozen = True
+        bundled_packages = os.path.join("bundled", "site-packages")
 
         with patch.object(
             pm,
             "_get_site_packages_path",
-            return_value=Path("/bundled/site-packages"),
+            return_value=Path(bundled_packages),
         ):
             with patch("asyncio.create_subprocess_exec") as mock_subprocess:
                 # Mock the async subprocess
@@ -206,7 +214,7 @@ class TestPythonManager:
                 assert (
                     "--target" in mock_subprocess.call_args[0]
                 )  # positional args
-                assert "/bundled/site-packages" in mock_subprocess.call_args[0]
+                assert bundled_packages in mock_subprocess.call_args[0]
 
                 # Verify output was captured
                 assert any(
@@ -216,15 +224,15 @@ class TestPythonManager:
 
     def test_get_debug_info(self) -> None:
         pm = PythonManager()
+        mock_resource = os.path.join("mock", "resource")
+        mock_packages = os.path.join("mock", "site-packages")
 
         # Mock some properties for consistent testing
-        with patch.object(
-            pm, "_get_app_dir", return_value=Path("/mock/resource")
-        ):
+        with patch.object(pm, "_get_app_dir", return_value=Path(mock_resource)):
             with patch.object(
                 pm,
                 "_get_site_packages_path",
-                return_value=Path("/mock/site-packages"),
+                return_value=Path(mock_packages),
             ):
                 with patch.object(
                     pm, "get_python_executable", return_value="/usr/bin/python3"
@@ -252,8 +260,7 @@ class TestPythonManager:
                     ]
                     assert isinstance(debug_info["is_frozen"], bool)
                     assert (
-                        debug_info["site_packages_directory"]
-                        == "/mock/site-packages"
+                        debug_info["site_packages_directory"] == mock_packages
                     )
                     assert debug_info["python_executable"] == "/usr/bin/python3"
                     assert isinstance(debug_info["sys_path"], list)
