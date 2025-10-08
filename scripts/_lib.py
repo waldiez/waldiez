@@ -240,6 +240,21 @@ def run_mypy(in_dir: Path = ROOT_DIR) -> None:
     )
 
 
+def run_pyright(in_dir: Path = ROOT_DIR) -> None:
+    """Run pyright.
+
+    Parameters
+    ----------
+    in_dir : Path
+        Directory to run pyright in.
+    """
+    ensure_package_exists("pyright")
+    run_command(
+        ["pyright", "-p", "pyproject.toml", "."],
+        cwd=in_dir,
+    )
+
+
 def run_flake8(in_dir: Path = ROOT_DIR) -> None:
     """Run flake8.
 
