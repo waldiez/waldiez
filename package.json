@@ -47,6 +47,7 @@
     ],
     "scripts": {
         "prepare": "node .husky/install.mjs",
+        "check:tailwind": "node --import=tsx scripts/tailwind_windows_arm64.ts",
         "dev": "bun monaco && vite --host",
         "typecheck": "tsc -b --noEmit",
         "monaco": "bun scripts/monaco.ts",
