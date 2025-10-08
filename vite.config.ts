@@ -17,11 +17,6 @@ import { addHeaderToDistFiles, transformPublicFiles } from "./vite.plugins";
 
 dotenv.config({ quiet: true, encoding: "utf8" });
 const normalizedResolve = (...paths: string[]): string => normalizePath(resolve(__dirname, ...paths));
-const nameCachePath = normalizedResolve(".terser-name-cache.json");
-let nameCache: any = {};
-if (fs.existsSync(nameCachePath)) {
-    nameCache = JSON.parse(fs.readFileSync(nameCachePath, "utf-8"));
-}
 const defaultIncludes = ["**/tests/**/*.test.{ts,tsx}"];
 const defaultBrowserIncludes = ["**/ui-tests/**/*.test.{ts,tsx}"];
 const isBrowserTest = process.argv.includes("--browser.enabled");
@@ -189,7 +184,6 @@ export default defineConfig(({ command }) => ({
                 drop_debugger: true,
             },
             mangle: true,
-            nameCache,
         },
     },
     resolve: {
@@ -235,16 +229,6 @@ export default defineConfig(({ command }) => ({
                           ["min-maps/*", "min-maps"],
                       ]),
         }),
-        ,
-        {
-            name: "save-terser-cache",
-            closeBundle() {
-                // Save the cache after build
-                fs.writeFileSync(nameCachePath, JSON.stringify(nameCache, null, 2) + "\n", {
-                    encoding: "utf-8",
-                });
-            },
-        },
     ],
     test: {
         include: isBrowserTest ? defaultBrowserIncludes : defaultIncludes,

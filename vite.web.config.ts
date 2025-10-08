@@ -17,11 +17,6 @@ import { transformPublicFiles } from "./vite.plugins";
 
 dotenv.config({ quiet: true, encoding: "utf8" });
 const normalizedResolve = (...paths: string[]): string => normalizePath(path.resolve(__dirname, ...paths));
-const nameCachePath = normalizedResolve(".terser-name-cache.json");
-let nameCache: any = {};
-if (fs.existsSync(nameCachePath)) {
-    nameCache = JSON.parse(fs.readFileSync(nameCachePath, "utf-8"));
-}
 
 // noinspection DuplicatedCode
 /**
@@ -128,7 +123,6 @@ export default defineConfig(({ command }) => {
                     drop_debugger: true,
                 },
                 mangle: true,
-                nameCache,
             },
             target: "esnext",
             outDir: normalizedResolve(__dirname, "out", "static"),
@@ -181,15 +175,6 @@ export default defineConfig(({ command }) => {
                     ["min-maps/*", "min-maps"],
                 ]),
             }),
-            {
-                name: "save-terser-cache",
-                closeBundle() {
-                    // Save the cache after build
-                    fs.writeFileSync(nameCachePath, JSON.stringify(nameCache, null, 2) + "\n", {
-                        encoding: "utf-8",
-                    });
-                },
-            },
         ],
     };
 });
