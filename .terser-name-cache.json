@@ -2724,7 +2724,10 @@
       "$importFlow": "jY",
       "$featureFlags": "kY",
       "$flowId": "NY",
-      "$defaultWaldiezProps": "TY"
+      "$defaultWaldiezProps": "TY",
+      "$getCssDimensions": "tX",
+      "$noOffsets": "eX",
+      "$getVisualOffsets": "nX"
     }
   }
 }
