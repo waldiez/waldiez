@@ -72,7 +72,7 @@ class WaldiezChatMessage(WaldiezBase):
                 "the `sender.message_generator` method will be used."
             ),
         ),
-    ] = "none"
+    ]
     use_carryover: Annotated[
         bool,
         Field(
@@ -80,7 +80,7 @@ class WaldiezChatMessage(WaldiezBase):
             title="Use Carryover",
             description="Use the carryover from the context.",
         ),
-    ] = False
+    ]
     content: Annotated[
         Optional[str],
         Field(
@@ -88,7 +88,7 @@ class WaldiezChatMessage(WaldiezBase):
             title="Content",
             description="The content of the message (string or method).",
         ),
-    ] = None
+    ]
     context: Annotated[
         dict[str, Any],
         Field(
@@ -96,7 +96,7 @@ class WaldiezChatMessage(WaldiezBase):
             title="Context",
             description="Extra context of the message.",
         ),
-    ] = {}
+    ]
 
     _content_body: Optional[str] = None
 

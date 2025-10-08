@@ -27,7 +27,7 @@ class MergeStatistics:
     total_content_items: int = 0
     total_env_vars: int = 0
     deduplicated_env_vars: int = 0
-    conflicts_found: list[str] = field(default_factory=list[str])
+    conflicts_found: list[str] = field(default_factory=list)  # pyright: ignore
 
 
 class ContentMerger:

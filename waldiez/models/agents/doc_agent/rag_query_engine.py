@@ -36,7 +36,7 @@ class WaldiezDocAgentQueryEngine(WaldiezBase):
             default=None,
             alias="dbPath",
         ),
-    ] = None
+    ]
     enable_query_citations: Annotated[
         bool,
         Field(
@@ -47,7 +47,7 @@ class WaldiezDocAgentQueryEngine(WaldiezBase):
             default=False,
             alias="enableQueryCitations",
         ),
-    ] = False
+    ]
     citation_chunk_size: Annotated[
         int,
         Field(
@@ -56,7 +56,7 @@ class WaldiezDocAgentQueryEngine(WaldiezBase):
             default=512,
             alias="citationChunkSize",
         ),
-    ] = 512
+    ]
 
     @model_validator(mode="after")
     def validate_db_path(self) -> Self:

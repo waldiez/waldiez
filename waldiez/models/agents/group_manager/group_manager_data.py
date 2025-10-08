@@ -47,7 +47,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
             description="The human input mode, Defaults to `NEVER`",
             alias="humanInputMode",
         ),
-    ] = "NEVER"
+    ]
     max_round: Annotated[
         int,
         Field(
@@ -56,7 +56,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
             description="The maximum number of rounds to have in the group.",
             alias="maxRound",
         ),
-    ] = 20
+    ]
     admin_name: Annotated[
         Optional[str],
         Field(
@@ -68,7 +68,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
             ),
             alias="adminName",
         ),
-    ] = None
+    ]
     speakers: Annotated[
         WaldiezGroupManagerSpeakers,
         Field(
@@ -85,7 +85,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
             description="Enable clearing the history in the chat group.",
             alias="enableClearHistory",
         ),
-    ] = None
+    ]
     send_introductions: Annotated[
         bool,
         Field(
@@ -94,7 +94,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
             description="Send the group members' introductions.",
             alias="sendIntroductions",
         ),
-    ] = False
+    ]
     group_name: Annotated[
         Optional[str],
         Field(
@@ -103,7 +103,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
             description="The name of the group.",
             alias="groupName",
         ),
-    ] = None
+    ]
     initial_agent_id: Annotated[
         str,
         Field(

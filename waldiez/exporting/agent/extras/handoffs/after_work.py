@@ -27,7 +27,7 @@ class AfterWorkResult:
 
     content: str = ""
     before_content: str = ""
-    extra_imports: set[str] = field(default_factory=set[str])
+    extra_imports: set[str] = field(default_factory=set)  # pyright: ignore
 
 
 class AfterWorkProcessor:

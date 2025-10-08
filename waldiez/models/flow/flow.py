@@ -58,7 +58,7 @@ class WaldiezFlow(WaldiezBase):
             description="The version waldiez that was used to create the flow",
             title="Version",
         ),
-    ] = "0.0.0"  # default to 0.0.0 if not found
+    ]
     type: Annotated[
         Literal["flow"],
         Field(
@@ -85,7 +85,7 @@ class WaldiezFlow(WaldiezBase):
     ]
     tags: Annotated[
         list[str],
-        Field(
+        Field(  # pyright: ignore
             description="The tags of the flow",
             title="Tags",
             default_factory=list,
@@ -93,7 +93,7 @@ class WaldiezFlow(WaldiezBase):
     ]
     requirements: Annotated[
         list[str],
-        Field(
+        Field(  # pyright: ignore
             description="The requirements of the flow",
             title="Requirements",
             default_factory=list,

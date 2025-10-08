@@ -31,7 +31,7 @@ class WaldiezDocAgent(WaldiezAgent):
             description="The agent type: 'doc_agent' for a document agent",
             alias="agentType",
         ),
-    ] = "doc_agent"
+    ]
     data: Annotated[  # pyright: ignore
         WaldiezDocAgentData,
         Field(

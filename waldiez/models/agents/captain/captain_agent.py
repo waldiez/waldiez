@@ -34,7 +34,7 @@ class WaldiezCaptainAgent(WaldiezAgent):
             description="The agent type: 'captain' for a captain agent",
             alias="agentType",
         ),
-    ] = "captain"
+    ]
     data: Annotated[  # pyright: ignore
         WaldiezCaptainAgentData,
         Field(

@@ -35,7 +35,7 @@ class WaldiezAgentCodeExecutionConfig(WaldiezBase):
             description="The working directory for the code execution.",
             alias="workDir",
         ),
-    ] = None
+    ]
     use_docker: Annotated[
         Optional[bool],
         Field(
@@ -44,7 +44,7 @@ class WaldiezAgentCodeExecutionConfig(WaldiezBase):
             description="Run the code in a docker container.",
             alias="useDocker",
         ),
-    ] = None
+    ]
     timeout: Annotated[
         Optional[float],
         Field(
@@ -54,7 +54,7 @@ class WaldiezAgentCodeExecutionConfig(WaldiezBase):
                 "The timeout for the code execution.Default: No timeout"
             ),
         ),
-    ] = None
+    ]
     last_n_messages: Annotated[
         Optional[int],
         Field(
@@ -62,7 +62,7 @@ class WaldiezAgentCodeExecutionConfig(WaldiezBase):
             title="Last N Messages",
             description="The number of previous messages in the chat to use.",
         ),
-    ] = None
+    ]
     functions: Annotated[
         list[str],
         Field(
@@ -70,4 +70,4 @@ class WaldiezAgentCodeExecutionConfig(WaldiezBase):
             title="Functions",
             description="If not using docker, the function ids to use",
         ),
-    ] = []
+    ]

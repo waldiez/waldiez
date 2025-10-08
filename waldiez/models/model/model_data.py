@@ -66,7 +66,7 @@ class WaldiezModelData(WaldiezBase):
             description="The base url of the model",
             alias="baseUrl",
         ),
-    ] = None
+    ]
     api_key: Annotated[
         Optional[str],
         Field(
@@ -75,7 +75,7 @@ class WaldiezModelData(WaldiezBase):
             title="API Key",
             description="The api key to use with the model",
         ),
-    ] = None
+    ]
     api_type: Annotated[
         WaldiezModelAPIType,
         Field(
@@ -84,7 +84,7 @@ class WaldiezModelData(WaldiezBase):
             title="API Type",
             description="The api type of the model",
         ),
-    ] = "other"
+    ]
     api_version: Annotated[
         Optional[str],
         Field(
@@ -93,7 +93,7 @@ class WaldiezModelData(WaldiezBase):
             title="API Version",
             description="The api version of the model",
         ),
-    ] = None
+    ]
     temperature: Annotated[
         Optional[float],
         Field(
@@ -102,7 +102,7 @@ class WaldiezModelData(WaldiezBase):
             title="Temperature",
             description="The temperature of the model",
         ),
-    ] = None
+    ]
     top_p: Annotated[
         Optional[float],
         Field(
@@ -111,7 +111,7 @@ class WaldiezModelData(WaldiezBase):
             title="Top P",
             description="The top p of the model",
         ),
-    ] = None
+    ]
     max_tokens: Annotated[
         Optional[int],
         Field(
@@ -120,7 +120,7 @@ class WaldiezModelData(WaldiezBase):
             title="Max Tokens",
             description="The max tokens of the model",
         ),
-    ] = None
+    ]
     aws: Annotated[
         Optional[WaldiezModelAWS],
         Field(
@@ -129,7 +129,7 @@ class WaldiezModelData(WaldiezBase):
             title="AWS",
             description="The AWS related parameters",
         ),
-    ] = None
+    ]
     extras: Annotated[
         dict[str, Any],
         Field(
@@ -138,7 +138,7 @@ class WaldiezModelData(WaldiezBase):
             title="Extras",
             description="Any extra attributes to include in the LLM Config",
         ),
-    ] = {}
+    ]
     default_headers: Annotated[
         dict[str, str],
         Field(
@@ -147,13 +147,13 @@ class WaldiezModelData(WaldiezBase):
             title="Default Headers",
             description="The default headers of the model",
         ),
-    ] = {}
+    ]
     price: Annotated[
         Optional[WaldiezModelPrice],
         Field(
             default=None, title="Price", description="The price of the model"
         ),
-    ] = None
+    ]
 
     @model_validator(mode="after")
     def validate_model_data(self) -> Self:

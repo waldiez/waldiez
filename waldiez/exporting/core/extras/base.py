@@ -18,14 +18,14 @@ class BaseExtras(ExportContributor):
     """Base class for all exporter extras with export contribution."""
 
     instance_id: str
-    extra_imports: list[ImportStatement] = field(
-        default_factory=list[ImportStatement]
+    extra_imports: list[ImportStatement] = field(  # pyright: ignore
+        default_factory=list,
     )
     before_agent: str = ""
     after_agent: str = ""
     after_all_agents: str = ""
-    extra_args: list[InstanceArgument] = field(
-        default_factory=list[InstanceArgument]
+    extra_args: list[InstanceArgument] = field(  # pyright: ignore
+        default_factory=list,
     )
 
     def get_extra_args_content(self) -> str:

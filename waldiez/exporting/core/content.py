@@ -22,7 +22,7 @@ class PositionedContent:
     order: int = 0
     agent_id: Optional[str] = None
     agent_position: Optional[AgentPosition] = None
-    metadata: dict[str, Any] = field(default_factory=dict[str, Any])
+    metadata: dict[str, Any] = field(default_factory=dict)  # pyright: ignore
 
     def __post_init__(self) -> None:
         """Validate positioned content."""
@@ -65,5 +65,5 @@ class ContentMetadata:
 
     content_type: ContentType
     source_id: Optional[str] = None
-    dependencies: list[str] = field(default_factory=list[str])
-    tags: set[str] = field(default_factory=set[str])
+    dependencies: list[str] = field(default_factory=list)  # pyright: ignore
+    tags: set[str] = field(default_factory=set)  # pyright: ignore

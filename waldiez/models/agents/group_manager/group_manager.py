@@ -32,14 +32,14 @@ class WaldiezGroupManager(WaldiezAgent):
     agent_type: Annotated[  # pyright: ignore
         Literal["group_manager", "manager"],
         Field(
-            "manager",
+            "group_manager",
             title="Agent type",
             description=(
                 "The agent type: 'group_manager' for a group manager agent"
             ),
             alias="agentType",
         ),
-    ] = "group_manager"
+    ]
     data: Annotated[  # pyright: ignore
         WaldiezGroupManagerData,
         Field(

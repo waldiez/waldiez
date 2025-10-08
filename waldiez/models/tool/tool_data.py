@@ -34,7 +34,7 @@ class WaldiezToolData(WaldiezBase):
                 "The type of the tool: shared, custom, langchain, crewai."
             ),
         ),
-    ] = "custom"
+    ]
     content: Annotated[
         str,
         Field(
@@ -60,7 +60,7 @@ class WaldiezToolData(WaldiezBase):
                 "Keyword arguments for the tool, used for initialization."
             ),
         ),
-    ] = {}
+    ]
 
     _raw_content: str = ""
 

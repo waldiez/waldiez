@@ -56,7 +56,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
             title="Model",
             description="The model to use for the vector db embeddings.",
         ),
-    ] = None
+    ]
     use_memory: Annotated[
         bool,
         Field(
@@ -66,7 +66,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
                 "Whether to use memory for the vector db (if qdrant is used)."
             ),
         ),
-    ] = True
+    ]
     use_local_storage: Annotated[
         bool,
         Field(
@@ -77,7 +77,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
                 "(if qdrant or chroma is used)."
             ),
         ),
-    ] = False
+    ]
     local_storage_path: Annotated[
         Optional[str],
         Field(
@@ -88,7 +88,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
                 "(if qdrant is used)."
             ),
         ),
-    ] = None
+    ]
     connection_url: Annotated[
         Optional[str],
         Field(
@@ -96,7 +96,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
             title="Connection URL",
             description="The connection url for the vector db.",
         ),
-    ] = None
+    ]
     wait_until_index_ready: Annotated[
         Optional[float],
         Field(
@@ -107,7 +107,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
                 "None, the default, means no wait."
             ),
         ),
-    ] = None
+    ]
     wait_until_document_ready: Annotated[
         Optional[float],
         Field(
@@ -118,7 +118,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
                 "are ready. None, the default, means no wait."
             ),
         ),
-    ] = None
+    ]
     metadata: Annotated[
         Optional[dict[str, Any]],
         Field(
@@ -131,7 +131,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
                 '"hnsw:M": 32}'
             ),
         ),
-    ] = None
+    ]
 
     @model_validator(mode="after")
     def validate_vector_db_config(self) -> Self:

@@ -26,7 +26,7 @@ class GroupManagerExtras(StandardExtras):
     # Pattern-based content
     pattern_definition: str = ""
     pattern_class_name: str = "AutoPattern"
-    pattern_imports: set[str] = field(default_factory=set[str])
+    pattern_imports: set[str] = field(default_factory=set)  # pyright: ignore
 
     # Traditional GroupChat content
     group_chat_definition: str = ""
@@ -88,7 +88,7 @@ class GroupManagerExtras(StandardExtras):
                     order=ContentOrder.LATE_CLEANUP,
                 )
 
-            # Add grop chat argument if specified
+            # Add group chat argument if specified
             if self.group_chat_argument:
                 self.add_arg(self.group_chat_argument, tabs=1)
 

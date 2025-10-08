@@ -25,11 +25,11 @@ class GroupMemberProcessorResult:
 
     before_agent: str = ""
     after_agent: str = ""
-    extra_arguments: list[InstanceArgument] = field(
-        default_factory=list[InstanceArgument]
+    extra_arguments: list[InstanceArgument] = field(  # pyright: ignore
+        default_factory=list,
     )
-    extra_imports: set[ImportStatement] = field(
-        default_factory=set[ImportStatement]
+    extra_imports: set[ImportStatement] = field(  # pyright: ignore
+        default_factory=set,
     )
 
 
@@ -108,10 +108,10 @@ class GroupMemberAgentProcessor:
         tab = "    "
         arg_string = "["
 
-        arcg_content = self._process_update_functions()
+        arg_content = self._process_update_functions()
 
-        if arcg_content:
-            arg_string += f"{arcg_content}\n{tab}"
+        if arg_content:
+            arg_string += f"{arg_content}\n{tab}"
             self.result.extra_imports.add(
                 ImportStatement("from autogen import UpdateSystemMessage")
             )

@@ -25,7 +25,7 @@ class WaldiezModelAWS(WaldiezBase):
     session_token : Optional[str]
         The AWS session token, by default None.
     profile_name : Optional[str]
-        The AWS profile name, by default Nonde.
+        The AWS profile name, by default None.
     """
 
     region: Annotated[
@@ -36,7 +36,7 @@ class WaldiezModelAWS(WaldiezBase):
             title="Region",
             description="The AWS region",
         ),
-    ] = None
+    ]
     access_key: Annotated[
         Optional[str],
         Field(
@@ -45,7 +45,7 @@ class WaldiezModelAWS(WaldiezBase):
             title="Access Ke",
             description="The AWS access key",
         ),
-    ] = None
+    ]
     secret_key: Annotated[
         Optional[str],
         Field(
@@ -54,7 +54,7 @@ class WaldiezModelAWS(WaldiezBase):
             title="Secret Key",
             description="The AWS secret key",
         ),
-    ] = None
+    ]
     session_token: Annotated[
         Optional[str],
         Field(
@@ -63,7 +63,7 @@ class WaldiezModelAWS(WaldiezBase):
             title="Session Token",
             description="The AWS session token",
         ),
-    ] = None
+    ]
     profile_name: Annotated[
         Optional[str],
         Field(
@@ -72,4 +72,4 @@ class WaldiezModelAWS(WaldiezBase):
             title="Profile Name",
             description="The AWS Profile name to use",
         ),
-    ] = None
+    ]

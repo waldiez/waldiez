@@ -43,7 +43,7 @@ class WaldiezReasoningAgentReasonConfig(WaldiezBase):
             title="Method",
             description="The search strategy to use.",
         ),
-    ] = "beam_search"
+    ]
     max_depth: Annotated[
         int,
         Field(
@@ -51,7 +51,7 @@ class WaldiezReasoningAgentReasonConfig(WaldiezBase):
             title="Maximum depth",
             description="Maximum depth of reasoning tree.",
         ),
-    ] = 3
+    ]
     forest_size: Annotated[
         int,
         Field(
@@ -59,7 +59,7 @@ class WaldiezReasoningAgentReasonConfig(WaldiezBase):
             title="Forest size",
             description="Number of independent trees to maintain.",
         ),
-    ] = 1
+    ]
     rating_scale: Annotated[
         int,
         Field(
@@ -67,7 +67,7 @@ class WaldiezReasoningAgentReasonConfig(WaldiezBase):
             title="Rating scale",
             description="Scale for grading responses, e.g. 1-10.",
         ),
-    ] = 10
+    ]
     beam_size: Annotated[
         int,
         Field(
@@ -75,7 +75,7 @@ class WaldiezReasoningAgentReasonConfig(WaldiezBase):
             title="Beam size",
             description="Number of parallel paths to maintain.",
         ),
-    ] = 3
+    ]
     answer_approach: Annotated[
         Literal["pool", "best"],
         Field(
@@ -83,7 +83,7 @@ class WaldiezReasoningAgentReasonConfig(WaldiezBase):
             title="Answer approach",
             description="How to select final answer.",
         ),
-    ] = "pool"
+    ]
     nsim: Annotated[
         int,
         Field(
@@ -91,7 +91,7 @@ class WaldiezReasoningAgentReasonConfig(WaldiezBase):
             title="Number of simulations",
             description="Number of simulations to run.",
         ),
-    ] = 3
+    ]
     exploration_constant: Annotated[
         float,
         Field(
@@ -99,7 +99,7 @@ class WaldiezReasoningAgentReasonConfig(WaldiezBase):
             title="Exploration constant",
             description="UCT exploration parameter.",
         ),
-    ] = 1.41
+    ]
 
 
 # reason_config (dict): Configuration for the reasoning method.

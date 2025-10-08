@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pyright: reportArgumentType=false
 """Reasoning agent data model."""
 
 from typing import Any
@@ -22,7 +23,7 @@ class WaldiezReasoningAgentData(WaldiezAgentData):
             description="The human input mode, Defaults to `NEVER`",
             alias="humanInputMode",
         ),
-    ] = "NEVER"
+    ]
     verbose: Annotated[
         bool,
         Field(
@@ -30,7 +31,7 @@ class WaldiezReasoningAgentData(WaldiezAgentData):
             title="Verbose",
             description="Whether to show intermediate steps",
         ),
-    ] = True
+    ]
     reason_config: Annotated[
         WaldiezReasoningAgentReasonConfig,
         Field(

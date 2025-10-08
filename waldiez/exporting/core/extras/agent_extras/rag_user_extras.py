@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""RAG related extas."""
+"""RAG related extras."""
 
 from dataclasses import dataclass, field
 
@@ -15,7 +15,7 @@ class RAGUserExtras(StandardExtras):
     """RAG configuration."""
 
     before_content: str = ""
-    imports: set[str] = field(default_factory=set[str])
+    imports: set[str] = field(default_factory=set)  # pyright: ignore
 
     def _contribute_specific_content(self, result: ExportResult) -> None:
         """Contribute RAG specific content to the export result."""

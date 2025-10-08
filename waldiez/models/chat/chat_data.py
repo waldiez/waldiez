@@ -71,7 +71,7 @@ class WaldiezChatData(WaldiezBase):
             title="Description",
             description="The description of the chat.",
         ),
-    ] = "A new chat"
+    ]
     position: Annotated[
         int,
         Field(
@@ -79,7 +79,7 @@ class WaldiezChatData(WaldiezBase):
             title="Position",
             description="The position of the chat in the flow (Ignored).",
         ),
-    ] = -1
+    ]
     order: Annotated[
         int,
         Field(
@@ -87,7 +87,7 @@ class WaldiezChatData(WaldiezBase):
             title="Order",
             description="The order of the chat in the flow.",
         ),
-    ] = -1
+    ]
     clear_history: Annotated[
         bool,
         Field(
@@ -96,13 +96,13 @@ class WaldiezChatData(WaldiezBase):
             title="Clear History",
             description="Whether to clear the chat history.",
         ),
-    ] = True
+    ]
     message: Annotated[
         Union[str, WaldiezChatMessage],
         Field(
             title="Message",
             description="The message of the chat.",
-            default_factory=WaldiezChatMessage,
+            default_factory=WaldiezChatMessage,  # pyright: ignore
         ),
     ]
     nested_chat: Annotated[
@@ -111,13 +111,13 @@ class WaldiezChatData(WaldiezBase):
             title="Nested Chat",
             description="The nested chat.",
             alias="nestedChat",
-            default_factory=WaldiezChatNested,
+            default_factory=WaldiezChatNested,  # pyright: ignore
         ),
     ]
     summary: Annotated[
         WaldiezChatSummary,
         Field(
-            default_factory=WaldiezChatSummary,
+            default_factory=WaldiezChatSummary,  # pyright: ignore
             title="Summary",
             description="The summary method options for the chat.",
         ),
@@ -130,7 +130,7 @@ class WaldiezChatData(WaldiezBase):
             title="Max Turns",
             description="The maximum number of turns for the chat.",
         ),
-    ] = None
+    ]
     prerequisites: Annotated[
         list[str],
         Field(
@@ -138,7 +138,7 @@ class WaldiezChatData(WaldiezBase):
             description="The prerequisites (chat ids) for the chat (if async).",
             default_factory=list,
         ),
-    ] = []
+    ]
     silent: Annotated[
         bool,
         Field(
@@ -146,7 +146,7 @@ class WaldiezChatData(WaldiezBase):
             title="Silent",
             description="Whether to run the chat silently.",
         ),
-    ] = False
+    ]
     real_source: Annotated[
         Optional[str],
         Field(
@@ -155,7 +155,7 @@ class WaldiezChatData(WaldiezBase):
             title="Real Source",
             description="The real source of the chat (overrides the source).",
         ),
-    ] = None
+    ]
     real_target: Annotated[
         Optional[str],
         Field(
@@ -164,7 +164,7 @@ class WaldiezChatData(WaldiezBase):
             title="Real Target",
             description="The real target of the chat (overrides the target).",
         ),
-    ] = None
+    ]
     source_type: Annotated[
         WaldiezAgentType,
         Field(
@@ -211,7 +211,7 @@ class WaldiezChatData(WaldiezBase):
             ),
             alias="afterWork",
         ),
-    ] = None
+    ]
     _message_content: Optional[str] = None
     _chat_id: int = 0
     _prerequisites: list[int] = []

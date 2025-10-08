@@ -42,7 +42,7 @@ class WaldiezChatNested(WaldiezBase):
             title="Message",
             description="The message in a nested chat (sender -> recipient).",
         ),
-    ] = None
+    ]
     reply: Annotated[
         Optional[WaldiezChatMessage],
         Field(
@@ -50,7 +50,7 @@ class WaldiezChatNested(WaldiezBase):
             title="Reply",
             description="The reply in a nested chat (recipient -> sender).",
         ),
-    ] = None
+    ]
 
     _message_content: Optional[str] = None
     _reply_content: Optional[str] = None

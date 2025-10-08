@@ -52,11 +52,11 @@ class WaldiezFlowInfo(WaldiezBase):
 
     participants: Annotated[
         list[WaldiezAgentInfo],
-        Field(
+        Field(  # pyright: ignore
             description="List of chat participants with their info",
-            default_factory=list[WaldiezAgentInfo],
+            default_factory=list,
         ),
-    ] = []
+    ]
 
     @classmethod
     def create(

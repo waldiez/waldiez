@@ -266,8 +266,8 @@ class ExportConfig:
     description: str = (
         "Make AG2 Agents Collaborate: Drag, Drop, and Orchestrate with Waldiez"
     )
-    requirements: list[str] = field(default_factory=list[str])
-    tags: list[str] = field(default_factory=list[str])
+    requirements: list[str] = field(default_factory=list)  # pyright: ignore
+    tags: list[str] = field(default_factory=list)  # pyright: ignore
     output_extension: str = "py"
     is_async: bool = False
     output_directory: Optional[str | Path] = None

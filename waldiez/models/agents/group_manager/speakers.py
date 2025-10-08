@@ -85,7 +85,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             description="The next speaker selection method",
             alias="selectionMethod",
         ),
-    ] = "auto"
+    ]
     selection_custom_method: Annotated[
         Optional[str],
         Field(
@@ -102,7 +102,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="selectionCustomMethod",
         ),
-    ] = None
+    ]
     max_retries_for_selecting: Annotated[
         Optional[int],
         Field(
@@ -114,7 +114,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="maxRetriesForSelecting",
         ),
-    ] = None
+    ]
     selection_mode: Annotated[
         WaldiezGroupManagerSpeakersSelectionMode,
         Field(
@@ -127,7 +127,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="selectionMode",
         ),
-    ] = "repeat"
+    ]
     allow_repeat: Annotated[
         Union[bool, list[str]],
         Field(
@@ -139,7 +139,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="allowRepeat",
         ),
-    ] = True
+    ]
     allowed_or_disallowed_transitions: Annotated[
         dict[str, list[str]],
         Field(
@@ -151,7 +151,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="allowedOrDisallowedTransitions",
         ),
-    ] = {}
+    ]
     transitions_type: Annotated[
         WaldiezGroupManagerSpeakersTransitionsType,
         Field(
@@ -164,7 +164,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
             alias="transitionsType",
         ),
-    ] = "allowed"
+    ]
     order: Annotated[
         list[str],
         Field(
@@ -176,7 +176,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
                 "will be determined by the order of the agents in the flow."
             ),
         ),
-    ] = []
+    ]
     _custom_method_string: Optional[str] = None
     _order: Optional[list[str]] = None
 

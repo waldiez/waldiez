@@ -39,7 +39,7 @@ class WaldiezRagUserProxy(WaldiezAgent):
             ),
             alias="agentType",
         ),
-    ] = "rag_user_proxy"
+    ]
 
     data: Annotated[  # pyright: ignore
         WaldiezRagUserProxyData,

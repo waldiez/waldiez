@@ -22,11 +22,11 @@ class ValidationResult:
     """Result of validation operations."""
 
     is_valid: bool
-    errors: list[ValidationError] = field(
-        default_factory=list[ValidationError],
+    errors: list[ValidationError] = field(  # pyright: ignore
+        default_factory=list,
     )
-    warnings: list[ValidationError] = field(
-        default_factory=list[ValidationError],
+    warnings: list[ValidationError] = field(  # pyright: ignore
+        default_factory=list,
     )
 
     def add_error(

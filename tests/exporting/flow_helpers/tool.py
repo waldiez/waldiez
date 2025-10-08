@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pyright: reportCallIssue=false
 """Helper functions for Waldiez models."""
 
 from typing_extensions import Literal

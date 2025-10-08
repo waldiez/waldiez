@@ -14,7 +14,7 @@ class TransitionAvailableResult:
     """Result from processing transition availability."""
 
     content: str = ""
-    extra_imports: set[str] = field(default_factory=set[str])
+    extra_imports: set[str] = field(default_factory=set)  # pyright: ignore
 
 
 class TransitionAvailableProcessor:

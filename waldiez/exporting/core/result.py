@@ -32,20 +32,20 @@ class ExportResult:
     """Complete export result with all components."""
 
     main_content: Optional[str] = None
-    imports: set[ImportStatement] = field(
-        default_factory=set[ImportStatement],
+    imports: set[ImportStatement] = field(  # pyright: ignore
+        default_factory=set,
     )
-    positioned_content: list[PositionedContent] = field(
-        default_factory=list[PositionedContent],
+    positioned_content: list[PositionedContent] = field(  # pyright: ignore
+        default_factory=list,
     )
-    instance_arguments: list[InstanceArgument] = field(
-        default_factory=list[InstanceArgument],
+    instance_arguments: list[InstanceArgument] = field(  # pyright: ignore
+        default_factory=list,
     )
-    environment_variables: list[EnvironmentVariable] = field(
-        default_factory=list[EnvironmentVariable]
+    environment_variables: list[EnvironmentVariable] = field(  # pyright: ignore
+        default_factory=list
     )
     validation_result: Optional[ValidationResult] = None
-    metadata: dict[str, Any] = field(default_factory=dict[str, Any])
+    metadata: dict[str, Any] = field(default_factory=dict)  # pyright: ignore
 
     def add_import(
         self, statement: str, position: ImportPosition = DEFAULT_IMPORT_POSITION

@@ -29,4 +29,4 @@ class WaldiezUserProxyData(WaldiezAgentData):
             description="The human input mode, Defaults to `ALWAYS`",
             alias="humanInputMode",
         ),
-    ] = "ALWAYS"
+    ]

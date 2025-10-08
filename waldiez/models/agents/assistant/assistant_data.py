@@ -31,7 +31,7 @@ class WaldiezAssistantData(WaldiezAgentData):
             description="The human input mode, Defaults to `NEVER`",
             alias="humanInputMode",
         ),
-    ] = "NEVER"
+    ]
     is_multimodal: Annotated[
         bool,
         Field(
@@ -40,4 +40,4 @@ class WaldiezAssistantData(WaldiezAgentData):
             description="A flag to indicate if the agent is multimodal.",
             alias="isMultimodal",
         ),
-    ] = False
+    ]

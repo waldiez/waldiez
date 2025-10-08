@@ -71,7 +71,7 @@ class WaldiezAgent(WaldiezBase):
             title="Type",
             description="The type of the 'node' in a graph.",
         ),
-    ] = "agent"
+    ]
     agent_type: Annotated[
         WaldiezAgentType,
         Field(
@@ -93,7 +93,7 @@ class WaldiezAgent(WaldiezBase):
             title="Description",
             description="The description of the agent",
         ),
-    ] = "Agent's description"
+    ]
     tags: Annotated[
         list[str],
         Field(
@@ -101,7 +101,7 @@ class WaldiezAgent(WaldiezBase):
             description="Tags of the agent",
             default_factory=list,
         ),
-    ] = []
+    ]
     requirements: Annotated[
         list[str],
         Field(
@@ -109,7 +109,7 @@ class WaldiezAgent(WaldiezBase):
             description="Python requirements for the agent",
             default_factory=list,
         ),
-    ] = []
+    ]
     created_at: Annotated[
         str,
         Field(
@@ -139,7 +139,7 @@ class WaldiezAgent(WaldiezBase):
         list[WaldiezHandoff],
         Field(
             init=False,  # this is not a field in the constructor
-            default_factory=list[WaldiezHandoff],
+            default_factory=list,  # pyright: ignore
             title="Handoffs",
             description=(
                 "A list of handoffs (target ids) to register. "
@@ -148,10 +148,10 @@ class WaldiezAgent(WaldiezBase):
         ),
     ] = []
 
-    _checked_nested_chats: Annotated[bool, Field(init=False, default=False)] = (
+    _checked_nested_chats: Annotated[bool, Field(default=False, init=False)] = (
         False
     )
-    _checked_handoffs: Annotated[bool, Field(init=False, default=False)] = False
+    _checked_handoffs: Annotated[bool, Field(default=False, init=False)] = False
 
     @property
     def args_to_skip(self) -> list[str]:

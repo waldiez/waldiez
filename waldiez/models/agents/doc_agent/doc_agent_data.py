@@ -32,7 +32,7 @@ class WaldiezDocAgentData(WaldiezAgentData):
             default=None,
             alias="collectionName",
         ),
-    ] = None
+    ]
     reset_collection: Annotated[
         bool,
         Field(
@@ -43,7 +43,7 @@ class WaldiezDocAgentData(WaldiezAgentData):
             default=False,
             alias="resetCollection",
         ),
-    ] = False
+    ]
     parsed_docs_path: Annotated[
         Optional[Union[str, Path]],
         Field(
@@ -54,7 +54,7 @@ class WaldiezDocAgentData(WaldiezAgentData):
             default=None,
             alias="parsedDocsPath",
         ),
-    ] = None
+    ]
     query_engine: Annotated[
         Optional[WaldiezDocAgentQueryEngine],
         Field(
@@ -63,7 +63,7 @@ class WaldiezDocAgentData(WaldiezAgentData):
             default=None,
             alias="queryEngine",
         ),
-    ] = None
+    ]
 
     @model_validator(mode="after")
     def validate_parsed_docs_path(self) -> Self:
@@ -92,7 +92,7 @@ class WaldiezDocAgentData(WaldiezAgentData):
             The query engine for the document agent.
         """
         if not self.query_engine:
-            self.query_engine = WaldiezDocAgentQueryEngine()
+            self.query_engine = WaldiezDocAgentQueryEngine()  # pyright: ignore
         return self.query_engine
 
     def get_db_path(self) -> str:

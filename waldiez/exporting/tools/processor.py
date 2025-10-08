@@ -18,10 +18,12 @@ class ToolProcessingResult:
     """Result from processing tools."""
 
     content: str = ""
-    builtin_imports: list[str] = field(default_factory=list[str])
-    third_party_imports: list[str] = field(default_factory=list[str])
-    environment_variables: list[EnvironmentVariable] = field(
-        default_factory=list[EnvironmentVariable]
+    builtin_imports: list[str] = field(default_factory=list)  # pyright: ignore
+    third_party_imports: list[str] = field(  # pyright: ignore
+        default_factory=list,
+    )
+    environment_variables: list[EnvironmentVariable] = field(  # pyright: ignore
+        default_factory=list,
     )
 
 

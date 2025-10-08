@@ -115,13 +115,13 @@ class WaldiezSimpleTarget(WaldiezBase):
         Field(
             "TerminateTarget", description="The type of the transition target."
         ),
-    ] = "TerminateTarget"
+    ]
     value: Annotated[
         list[str],
-        Field(
+        Field(  # pyright: ignore
             default_factory=list,
         ),
-    ] = []  # not actually used (just for consistency with other targets)
+    ]  # not actually used (just for consistency with other targets)
 
 
 class WaldiezGroupOrNestedTarget(WaldiezBase):
@@ -172,7 +172,7 @@ class WaldiezStringLLMCondition(WaldiezBase):
 
     condition_type: Literal["string_llm"]
     prompt: str
-    data: dict[str, Any] = Field(default_factory=dict)
+    data: dict[str, Any] = Field(default_factory=dict)  # pyright: ignore
 
     def is_not_empty(self) -> bool:
         """Check if the condition is not empty.
@@ -202,7 +202,7 @@ class WaldiezContextStrLLMCondition(WaldiezBase):
 
     condition_type: Literal["context_str_llm"]
     context_str: str
-    data: dict[str, Any] = Field(default_factory=dict)
+    data: dict[str, Any] = Field(default_factory=dict)  # pyright: ignore
 
     def is_not_empty(self) -> bool:
         """Check if the condition is not empty.
@@ -267,7 +267,7 @@ class WaldiezExpressionContextCondition(WaldiezBase):
 
     condition_type: Literal["expression_context"]
     expression: str
-    data: dict[str, Any] = Field(default_factory=dict)
+    data: dict[str, Any] = Field(default_factory=dict)  # pyright: ignore
 
     def is_not_empty(self) -> bool:
         """Check if the condition is not empty.

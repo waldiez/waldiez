@@ -81,7 +81,7 @@ class WaldiezTool(WaldiezBase):
             description="The tags of the tool.",
             default_factory=list,
         ),
-    ] = []
+    ]
     requirements: Annotated[
         list[str],
         Field(
@@ -89,7 +89,7 @@ class WaldiezTool(WaldiezBase):
             description="The requirements of the tool.",
             default_factory=list,
         ),
-    ] = []
+    ]
     data: Annotated[
         WaldiezToolData,
         Field(..., title="Data", description="The data of the tool."),

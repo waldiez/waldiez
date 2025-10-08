@@ -64,53 +64,53 @@ class WaldiezFlowData(WaldiezBase):
     # (they for graph connections, positions, etc.)
     nodes: Annotated[
         list[dict[str, Any]],
-        Field(
+        Field(  # pyright: ignore
             default_factory=list,
             title="Nodes",
             description="The nodes of the flow",
         ),
-    ] = []
+    ]
     edges: Annotated[
         list[dict[str, Any]],
-        Field(
+        Field(  # pyright: ignore
             default_factory=list,
             title="Edges",
             description="The edges of the flow",
         ),
-    ] = []
+    ]
     viewport: Annotated[
         dict[str, Any],
-        Field(
+        Field(  # pyright: ignore
             default_factory=dict,
             title="Viewport",
             description="The viewport of the flow",
         ),
-    ] = {}
+    ]
     # these are the ones we use.
     agents: Annotated[
         WaldiezAgents,
-        Field(
+        Field(  # pyright: ignore
             description="The agents of the flow",
             title="Agents",
-            default_factory=WaldiezAgents,
+            default_factory=WaldiezAgents,  # pyright: ignore
         ),
     ]
     models: Annotated[
         list[WaldiezModel],
-        Field(
+        Field(  # pyright: ignore
             description="The models of the flow",
             title="Models",
             default_factory=list,
         ),
-    ] = []
+    ]
     tools: Annotated[
         list[WaldiezTool],
-        Field(
+        Field(  # pyright: ignore
             description="The tools of the flow",
             title="Tools",
             default_factory=list,
         ),
-    ] = []
+    ]
     chats: Annotated[
         list[WaldiezChat],
         Field(
@@ -118,7 +118,7 @@ class WaldiezFlowData(WaldiezBase):
             title="Chats",
             default_factory=list,
         ),
-    ] = []
+    ]
     is_async: Annotated[
         bool,
         Field(
@@ -126,7 +126,7 @@ class WaldiezFlowData(WaldiezBase):
             description="Whether the flow is asynchronous or not",
             title="Is Async",
         ),
-    ] = False
+    ]
     cache_seed: Annotated[
         Optional[int],
         Field(
@@ -138,7 +138,7 @@ class WaldiezFlowData(WaldiezBase):
             ),
             title="Cache Seed",
         ),
-    ] = 42
+    ]
 
     @model_validator(mode="after")
     def validate_flow_chats(self) -> Self:
@@ -200,6 +200,7 @@ class WaldiezFlowData(WaldiezBase):
         WaldiezFlowData
             The default flow data.
         """
+        termination = WaldiezAgentTerminationMessage()  # pyright: ignore
         return cls(
             nodes=[],
             edges=[],
@@ -212,8 +213,8 @@ class WaldiezFlowData(WaldiezBase):
                         name="Assistant 1",
                         created_at=now(),
                         updated_at=now(),
-                        data=WaldiezAssistantData(
-                            termination=WaldiezAgentTerminationMessage()
+                        data=WaldiezAssistantData(  # pyright: ignore
+                            termination=termination,
                         ),
                     ),
                     WaldiezAssistant(
@@ -221,15 +222,17 @@ class WaldiezFlowData(WaldiezBase):
                         name="Assistant 2",
                         created_at=now(),
                         updated_at=now(),
-                        data=WaldiezAssistantData(
+                        data=WaldiezAssistantData(  # pyright: ignore
                             # is_multimodal=True,  # we need an api key for this
-                            termination=WaldiezAgentTerminationMessage(),
+                            termination=termination,
                         ),
                     ),
                 ],
                 ragUserProxyAgents=[],
                 reasoningAgents=[],
                 captainAgents=[],
+                groupManagerAgents=[],
+                docAgents=[],
             ),
             models=[],
             tools=[],
@@ -239,20 +242,20 @@ class WaldiezFlowData(WaldiezBase):
                     type="chat",
                     source="assistant1",
                     target="assistant2",
-                    data=WaldiezChatData(
+                    data=WaldiezChatData(  # pyright: ignore
                         name="Chat 1",
                         order=0,
                         position=0,
                         source_type="assistant",
                         target_type="assistant",
-                        summary=WaldiezChatSummary(),
-                        message=WaldiezChatMessage(
+                        summary=WaldiezChatSummary(),  # pyright: ignore
+                        message=WaldiezChatMessage(  # pyright: ignore
                             type="string",
                             content="Hello, how can I help you?",
                         ),
                         condition=WaldiezDefaultCondition.create(),
                         available=WaldiezTransitionAvailability(),
-                        nested_chat=WaldiezChatNested(),
+                        nested_chat=WaldiezChatNested(),  # pyright: ignore
                     ),
                 ),
                 WaldiezChat(
@@ -260,20 +263,20 @@ class WaldiezFlowData(WaldiezBase):
                     type="chat",
                     source="assistant2",
                     target="assistant1",
-                    data=WaldiezChatData(
+                    data=WaldiezChatData(  # pyright: ignore
                         name="Chat 2",
                         order=1,
                         position=1,
                         source_type="assistant",
                         target_type="assistant",
-                        summary=WaldiezChatSummary(),
-                        message=WaldiezChatMessage(
+                        summary=WaldiezChatSummary(),  # pyright: ignore
+                        message=WaldiezChatMessage(  # pyright: ignore
                             type="string",
                             content="Hello, I need some help.",
                         ),
                         condition=WaldiezDefaultCondition.create(),
                         available=WaldiezTransitionAvailability(),
-                        nested_chat=WaldiezChatNested(),
+                        nested_chat=WaldiezChatNested(),  # pyright: ignore
                         prerequisites=["chat1"],
                     ),
                 ),

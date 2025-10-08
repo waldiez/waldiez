@@ -38,7 +38,7 @@ def test_waldiez_agent() -> None:
         requirements=["req-1", "req-2"],
         created_at="2021-01-01T00:00:00.000Z",
         updated_at="2021-01-01T00:00:00.000Z",
-        data=WaldiezAgentData(
+        data=WaldiezAgentData(  # pyright: ignore
             system_message="system_message",
             human_input_mode="NEVER",
             agent_default_auto_reply="auto_reply",
