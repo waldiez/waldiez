@@ -61,7 +61,7 @@ jobs:
           submodules: "recursive"
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -79,7 +79,7 @@ jobs:
           python -m twine check dist/python/*
 
       - name: Download the react docs artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: waldiez-react
           path: dist/react
@@ -113,13 +113,13 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Download artifact from react package
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: waldiez-react
           path: dist/react
 
       - name: Download artifact from python package
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: waldiez-python
           path: dist/python
@@ -134,7 +134,7 @@ jobs:
           mv dist/python/* dist/waldiez
 
       - name: Sign with Sigstore
-        uses: sigstore/gh-action-sigstore-python@v3.0.0
+        uses: sigstore/gh-action-sigstore-python@v3.0.1
         with:
           inputs: >-
             dist/waldiez/*.whl
