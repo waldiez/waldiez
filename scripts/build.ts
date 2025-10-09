@@ -49,54 +49,15 @@ function setupDockerignore(): () => void {
 
     // Create optimized .dockerignore for build
     const dockerignoreContent = `
-# skip python related
-pyproject.tom
-waldiez
-tests
-*.py
-# Node modules (will be installed in container)
-node_modules/
-# Build output (will be generated)
-dist/
-build/
-out/
-site/
-# Git hooks (not needed in container)
-.husky/
-# Cache and temp files
-.cache/
-.temp/
-.tmp/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-# Git
-.git/
-.gitignore
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-# OS
-.DS_Store
-Thumbs.db
-# Test and coverage
-coverage/
-.nyc_output/
-*.test.ts
-*.spec.ts
-__tests__/
-__mocks__/
-# Docs and misc
-docs/
-*.md
-LICENSE
-.github/
-.dockerignore.backup
-.Containerfile.build
+# ignore everything
+**/*
+# but not these files...
+!package.json
+!bun.lock
+!src
+!vite*
+!tsconfig*
+!public/icons/
 `.trim();
 
     writeFileSync(dockerignorePath, dockerignoreContent);
@@ -125,14 +86,19 @@ function buildInContainer(runtime: "docker" | "podman") {
     console.log(`🐳 Building in ${runtime} container (non-Linux host)...`);
 
     const image = "oven/bun:latest";
+    const targetPlatform = "linux/amd64";
     const workdir = "/app";
 
     const containerfileContent = `
-FROM ${image}
+ARG PLATFORM_TARGET=${targetPlatform}
+FROM --platform=\${PLATFORM_TARGET} ${image}
 WORKDIR ${workdir}
 COPY package.json bun.lock ./
-RUN bun install
-COPY . .
+RUN bun install --frozen-lockfile
+COPY vite.config.* tsconfig*.json ./
+COPY vite.plugins/ ./vite.plugins/
+COPY src/ ./src/
+COPY public/icons/ ./public/icons/
 RUN bun run build:lib:local
 `.trim();
 
@@ -144,7 +110,11 @@ RUN bun run build:lib:local
 
         // Build image
         console.log("📦 Building container image...");
-        execSync(`${runtime} build -f ${containerfilePath} -t waldiez-react-builder .`, { stdio: "inherit" });
+        const runtimeArg = runtime === "podman" ? runtime : `${runtime} buildx`;
+        const buildArgs = `--platform=${targetPlatform}`;
+        execSync(`${runtimeArg} build ${buildArgs} -f ${containerfilePath} -t waldiez-react-builder .`, {
+            stdio: "inherit",
+        });
 
         // Run container and copy dist
         console.log("🚀 Running build in container...");
@@ -157,7 +127,9 @@ RUN bun run build:lib:local
         }
 
         // Create container, run build, copy dist
-        const containerId = execSync(`${runtime} create waldiez-react-builder`, { encoding: "utf-8" }).trim();
+        const containerId = execSync(`${runtime} create --platform=${targetPlatform} waldiez-react-builder`, {
+            encoding: "utf-8",
+        }).trim();
 
         execSync(`${runtime} cp ${containerId}:${workdir}/dist ./dist`, {
             stdio: "inherit",
