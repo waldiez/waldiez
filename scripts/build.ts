@@ -4,7 +4,7 @@
  */
 /* eslint-disable max-statements */
 import { execSync } from "child_process";
-import { existsSync, renameSync, unlinkSync, writeFileSync } from "fs";
+import { existsSync, renameSync, rmSync, unlinkSync, writeFileSync } from "fs";
 import { platform } from "os";
 
 const isCI = process.env.CI === "true";
@@ -17,7 +17,7 @@ function getContainerRuntime(): "docker" | "podman" | null {
 
     for (const runtime of runtimes) {
         try {
-            execSync(`${runtime} --version`, { stdio: "pipe" });
+            execSync(`${runtime} ps`, { stdio: "pipe" });
             return runtime as "docker" | "podman";
         } catch {
             continue;
@@ -150,7 +150,11 @@ RUN bun run build:lib:local
         console.log("🚀 Running build in container...");
 
         // Remove old dist
-        execSync("rm -rf dist", { stdio: "inherit" });
+        try {
+            rmSync("dist", { recursive: true, force: true });
+        } catch (error) {
+            console.warn(`⚠️  Could not remove old dist folder: ${error}`);
+        }
 
         // Create container, run build, copy dist
         const containerId = execSync(`${runtime} create waldiez-react-builder`, { encoding: "utf-8" }).trim();

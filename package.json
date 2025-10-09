@@ -46,7 +46,7 @@
         "README.md"
     ],
     "scripts": {
-        "prepare": "node -e \"try{require('./.husky/install.mjs')}catch(e){}\"",
+        "prepare": "node -e \"(async () => { await import('./.husky/install.mjs').catch(() => {}) })()\"",
         "check:tailwind": "node --import=tsx scripts/tailwind_windows_arm64.ts",
         "dev": "bun monaco && vite --host",
         "typecheck": "tsc -b --noEmit",
