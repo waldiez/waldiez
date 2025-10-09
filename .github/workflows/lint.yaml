@@ -20,12 +20,12 @@ jobs:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5.0.0
         with:
           submodules: "recursive"
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v6.0.0
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -33,7 +33,7 @@ jobs:
         run: python -c "import sys; print(sys.version)"
 
       - name: Cache pip dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v4.3.0
         with:
           path: |
             ~/.cache/pip
@@ -45,10 +45,10 @@ jobs:
             pip-lint-${{ runner.os }}-
 
       - name: Setup bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@v2.0.2
 
       - name: Cache bun dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v4.3.0
         with:
           path: |
             ~/.bun/install/cache

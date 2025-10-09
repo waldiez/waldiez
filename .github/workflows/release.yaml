@@ -20,12 +20,12 @@ jobs:
     name: Package React 🌐 distribution 📦
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5.0.0
         with:
           submodules: "recursive"
 
       - name: Setup bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@v2.0.2
 
       - name: Install dependencies
         run: |
@@ -46,7 +46,7 @@ jobs:
           mv docs/reference/react dist/react/docs
 
       - name: Store the distribution packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: waldiez-react
           path: dist/react
@@ -56,12 +56,12 @@ jobs:
     needs: package_waldiez_react
     name: Package Python 🐍 distribution 📦
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5.0.0
         with:
           submodules: "recursive"
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v6.0.0
         with:
           python-version: "3.12"
 
@@ -79,7 +79,7 @@ jobs:
           python -m twine check dist/python/*
 
       - name: Download the react docs artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v5.0.0
         with:
           name: waldiez-react
           path: dist/react
@@ -93,7 +93,7 @@ jobs:
           mv site dist/python/docs
 
       - name: Store the distribution packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: waldiez-python
           path: |
@@ -107,19 +107,19 @@ jobs:
       - package_waldiez_python
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v5.0.0
 
       - name: Setup bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@v2.0.2
 
       - name: Download artifact from react package
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v5.0.0
         with:
           name: waldiez-react
           path: dist/react
 
       - name: Download artifact from python package
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v5.0.0
         with:
           name: waldiez-python
           path: dist/python
@@ -215,7 +215,7 @@ jobs:
 
       - name: Store artifacts (Dry Run Mode)
         if: github.event.inputs.dry_run == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.6.2
         with:
           name: waldiez
           path: dist

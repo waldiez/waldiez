@@ -20,12 +20,12 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v5.0.0
         with:
           submodules: "recursive"
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v6.0.0
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -37,7 +37,7 @@ jobs:
         run: sudo apt update && sudo apt install -y lcov
 
       - name: Cache pip dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v4.3.0
         with:
           path: |
             ~/.cache/pip
@@ -54,10 +54,10 @@ jobs:
           pip install -r requirements/main.txt -r requirements/dev.txt -r requirements/test.txt
 
       - name: Setup bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@v2.0.2
 
       - name: Cache bun dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v4.3.0
         with:
           path: |
             ~/.bun/install/cache
@@ -70,7 +70,7 @@ jobs:
         run: bun install
 
       - name: Cache Playwright browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v4.3.0
         with:
           path: |
             ~/.cache/ms-playwright
@@ -91,7 +91,7 @@ jobs:
       - name: Report to Coveralls
         # don't spam coveralls with multiple reports
         if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@v2.3.6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ./coverage/lcov.info

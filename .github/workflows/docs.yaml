@@ -24,16 +24,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v5.0.0
         with:
           submodules: "recursive"
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6.0.0
         with:
           python-version: 3.12
 
       - name: Cache pip dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v4.3.0
         with:
           path: ~/.cache/pip
           key: pip-docs-${{ runner.os }}-${{ hashFiles('requirements/*.txt') }}
@@ -41,10 +41,10 @@ jobs:
             pip-docs-${{ runner.os }}-
 
       - name: Setup bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@v2.0.2
 
       - name: Cache bun dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v4.3.0
         with:
           path: |
             ~/.bun/install/cache
@@ -68,10 +68,10 @@ jobs:
           mkdocs build --config-file mkdocs.yml
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v5.0.0
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v4.0.0
         with:
           path: "./site"
 
@@ -85,4 +85,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4.0.5
