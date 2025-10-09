@@ -46,14 +46,15 @@
         "README.md"
     ],
     "scripts": {
-        "prepare": "node .husky/install.mjs",
+        "prepare": "node -e \"try{require('./.husky/install.mjs')}catch(e){}\"",
         "check:tailwind": "node --import=tsx scripts/tailwind_windows_arm64.ts",
         "dev": "bun monaco && vite --host",
         "typecheck": "tsc -b --noEmit",
         "monaco": "bun scripts/monaco.ts",
         "build": "bun clean && bun build:lib && bun build:web && bun archive",
-        "build:lib": "tsc -b && vite build",
-        "build:web": "bun monaco && bun build:lib --config vite.web.config.ts",
+        "build:lib:local": "tsc -b && vite build",
+        "build:lib": "node --import=tsx scripts/build.ts",
+        "build:web": "bun monaco && tsc -b && vite build --config vite.web.config.ts",
         "build:site": "bun monaco && bun build:web && bun scripts/afterSite.ts",
         "build:all": "bun build:lib && bun build:web && bun build:site && bun archive",
         "docs": "typedoc --tsconfig tsconfig.docs.json",
