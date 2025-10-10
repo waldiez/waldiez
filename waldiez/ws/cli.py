@@ -5,8 +5,10 @@
 
 import asyncio
 import logging
+import os
 import re
 import sys
+import traceback
 from pathlib import Path
 from typing import Annotated, Any, Optional, Set
 
@@ -34,6 +36,7 @@ except ImportError:
 
 
 DEFAULT_WORKSPACE_DIR = Path.cwd()
+DEFAULT_WS_PORT = 8765
 
 
 def setup_logging(verbose: bool = False) -> None:
@@ -69,12 +72,27 @@ app = typer.Typer(
 )
 
 
+def _get_ws_port() -> int:
+    """Get the default ws server port to use."""
+    vite_ws_config = os.environ.get("VITE_DEV_WS_URL", "")
+    if not vite_ws_config:
+        return DEFAULT_WS_PORT
+    # VITE_DEV_WS_URL=ws://localhost:8765
+    server_parts = vite_ws_config.rsplit(":", maxsplit=1)
+    if not server_parts:
+        return DEFAULT_WS_PORT
+    try:
+        return int(server_parts[-1])
+    except Exception:  # pylint: disable=broad-exception-caught
+        return DEFAULT_WS_PORT
+
+
 @app.command()
 def serve(
     host: Annotated[
         str, typer.Option(help="Server host address")
     ] = "localhost",
-    port: Annotated[int, typer.Option(help="Server port")] = 8765,
+    port: Annotated[int, typer.Option(help="Server port")] = _get_ws_port(),
     max_clients: Annotated[
         int,
         typer.Option(
@@ -226,8 +244,9 @@ def serve(
         )
     except KeyboardInterrupt:
         logger.info("Server stopped by user")
-    except Exception as e:  # pylint: disable=broad-exception-caught
-        logger.error("Server error: %s", e)
+    except Exception:  # pylint: disable=broad-exception-caught
+        tb = traceback.format_exc()
+        logger.error("Server error: %s", tb)
         sys.exit(1)
 
 

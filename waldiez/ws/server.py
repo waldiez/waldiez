@@ -455,9 +455,14 @@ async def run_server(
 
     # Register signal handlers
     loop = asyncio.get_running_loop()
-    for sig in (signal.SIGTERM, signal.SIGINT):
-        # noinspection PyTypeChecker
-        loop.add_signal_handler(sig, signal_handler)
+    try:
+        for sig in (signal.SIGTERM, signal.SIGINT):
+            # noinspection PyTypeChecker
+            loop.add_signal_handler(sig, signal_handler)
+    except NotImplementedError:
+        # Fallback for Windows
+        signal.signal(signal.SIGINT, lambda s, f: signal_handler())
+        signal.signal(signal.SIGTERM, lambda s, f: signal_handler())
 
     # Set up auto-reload if requested
     file_watcher = None
