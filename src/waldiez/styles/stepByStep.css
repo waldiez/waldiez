@@ -1,13 +1,13 @@
-/* Header */
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 .waldiez-step-by-step-view .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   padding: 8px 10px;
-
-  /* border-bottom: 1px solid var(--card-border);
-  background: color-mix(in srgb, var(--card-background) 92%, var(--text-color) 8%); */
 }
 
 .waldiez-step-by-step-view .header-left {
@@ -55,7 +55,6 @@
   border: 1px solid var(--card-border);
 }
 
-/* Content */
 .waldiez-step-by-step-view .content {
   padding: 12px;
   display: flex;
@@ -66,7 +65,6 @@
   overflow: hidden;
 }
 
-/* Controls */
 .waldiez-step-by-step-view .controls {
   display: flex;
   align-items: center;
@@ -74,7 +72,6 @@
   gap: 8px;
 }
 
-/* Buttons (use your theme vars; pick two accent hues from your palette) */
 .waldiez-step-by-step-view .btn {
   display: inline-flex;
   align-items: center;

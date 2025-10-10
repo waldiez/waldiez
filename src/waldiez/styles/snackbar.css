@@ -215,7 +215,6 @@
   color: #fff !important;
 }
 
-/* Multiple snackbars stacking */
 .snackbar:nth-last-child(2) {
   transform: translateY(-60px) scale(0.95);
   opacity: 0.8;
@@ -244,7 +243,6 @@
   transform: translateY(-120px) scale(0.9);
 }
 
-/* Responsive improvements */
 @media (width <= 480px) {
   .snackbar {
     left: 16px;
@@ -273,7 +271,6 @@
   }
 }
 
-/* high contrast mode support */
 @media (prefers-contrast: more) {
   .snackbar {
     border: 2px solid currentcolor;
@@ -285,7 +282,6 @@
   }
 }
 
-/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .snackbar {
     transition: opacity 0.2s ease;

@@ -58,7 +58,6 @@
   gap: 8px;
 }
 
-/* Info icon */
 .info-checkbox-icon {
   cursor: help;
   font-size: 14px;
@@ -71,7 +70,6 @@
   color: #0056b3;
 }
 
-/* Show description on hover */
 .info-checkbox-icon:hover + .info-description {
   display: block;
 }

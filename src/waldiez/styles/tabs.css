@@ -78,7 +78,6 @@ body.waldiez-dark .tab-btn.active {
   border-bottom-color: #3b82f6;
 }
 
-/* Tab content */
 body.waldiez-light .tab-content {
   padding: 1rem;
 }
@@ -88,7 +87,6 @@ body.waldiez-dark .tab-content {
 }
 
 .tab-panel {
-  /* margin-top: 1em; */
   padding: 0.5rem;
   border-radius: 0.5em;
 }
@@ -115,7 +113,6 @@ body.waldiez-dark .tab-btn--active {
   border-bottom: 1px solid #444;
 }
 
-/* Tab container styling */
 body.waldiez-light .tab-items {
   display: flex;
   flex-direction: column;

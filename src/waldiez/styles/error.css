@@ -93,8 +93,6 @@
   word-break: normal;
   overflow-wrap: anywhere;
   max-height: 20rem;
-
-  /* word-break: break-word; */
 }
 
 .waldiez-error-details pre {

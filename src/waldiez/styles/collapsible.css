@@ -21,9 +21,6 @@
 .collapsible-content {
   padding: 18px;
   margin-left: 0;
-
-  /* width: 100%; */
-
   border-radius: 4px;
   max-height: 80vh;
   overflow-y: auto;

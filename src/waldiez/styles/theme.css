@@ -82,10 +82,6 @@
   opacity: 0.8;
 }
 
-/* button {
-  all: unset;
-} */
-
 .flow-wrapper button:not([role="checkbox"]),
 .modal-root button:not([role="checkbox"]) {
   cursor: pointer;

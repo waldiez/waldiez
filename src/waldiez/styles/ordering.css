@@ -71,12 +71,10 @@ body.waldiez-dark .reorder-btn {
   color: #a0a0a0;
 }
 
-/* Ordered items container */
 .ordered-items-list {
   margin: 0.5rem 0;
 }
 
-/* Individual order item */
 .ordered-item {
   display: flex;
   align-items: center;

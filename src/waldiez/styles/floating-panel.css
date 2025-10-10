@@ -9,7 +9,7 @@
 }
 
 .floating-panel.is-collapsed {
-  width: auto; /* shrink to content */
+  width: auto;
   max-width: 420px;
 }
 
@@ -23,7 +23,6 @@
   cursor: move;
 }
 
-/* Title text */
 .floating-panel .fp-title {
   font-size: 14px;
   font-weight: 600;
@@ -33,7 +32,6 @@
   max-width: 60vw;
 }
 
-/* Toggle button */
 .floating-panel .fp-toggle {
   all: unset;
   display: inline-flex;
@@ -50,11 +48,8 @@
   background: rgb(255 255 255 / 14%);
 }
 
-/* Content area */
 .floating-panel .fp-content {
-  height: calc(100% - 40px); /* minus header */
-
-  /* overflow: auto; */
+  height: calc(100% - 40px);
   overflow: hidden;
   min-height: 0;
   display: flex;
@@ -62,7 +57,6 @@
   background: var(--card-background, #111);
 }
 
-/* Resize handle (bottom-right corner only) */
 .floating-panel .fp-resize-handle {
   position: absolute;
   right: 4px;
@@ -70,8 +64,6 @@
   width: 16px;
   height: 16px;
   cursor: nwse-resize;
-
-  /* simple visual glyph */
   background: linear-gradient(135deg, transparent 50%, rgb(255 255 255 / 35%) 50%) right bottom/12px 12px
     no-repeat;
   pointer-events: auto;

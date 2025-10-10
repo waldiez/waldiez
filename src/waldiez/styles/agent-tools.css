@@ -173,7 +173,6 @@
   }
 }
 
-/* Enhanced focus states for accessibility */
 .agent-panel-add-tool *:focus,
 .agent-panel-current-tools *:focus {
   outline: 2px solid color-mix(in srgb, var(--text-color) 50%, transparent);

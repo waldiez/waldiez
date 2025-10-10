@@ -61,7 +61,6 @@
 
 .tool-node .description,
 .tool-content .description {
-  /* white-space: nowrap !important; */
   overflow: hidden !important;
   display: -webkit-box !important;
   -webkit-box-orient: vertical;

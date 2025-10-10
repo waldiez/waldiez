@@ -43,16 +43,12 @@ body.waldiez-dark .w-select__input-container {
   color: unset !important;
 }
 
-.w-select__input {
-  outline: none !important;
-  box-shadow: none !important;
-  border: none !important;
-}
-
+.w-select__input,
 .w-select__input:focus {
   outline: none !important;
   box-shadow: none !important;
-  border: none !important;
+  background: 0 center !important;
+  border: 0 !important;
 }
 
 body.waldiez-light .w-select__multi-value,

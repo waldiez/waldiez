@@ -23,8 +23,6 @@
   background-color: var(--background-color);
   border: 1px solid color-mix(in srgb, var(--text-color) 15%, var(--background-color));
   backdrop-filter: blur(8px);
-
-  /* transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); this makes moving the modal not smooth */
 }
 
 .agent-node .modal {
@@ -143,21 +141,12 @@ body.waldiez-dark .modal {
 .modal-close-btn:hover {
   background: color-mix(in srgb, #ef4444 15%, var(--background-color));
   color: #ef4444;
-
-  /* transform: scale(1.05); */
 }
 
 .modal-fullscreen-btn:hover {
   background: color-mix(in srgb, #3b82f6 15%, var(--background-color));
   color: #3b82f6;
-
-  /* transform: scale(1.05); */
 }
-
-/* .modal-close-btn:active,
-.modal-fullscreen-btn:active {
-  transform: scale(0.95);
-} */
 
 .modal-minimize-btn {
   all: unset;
@@ -175,19 +164,9 @@ body.waldiez-dark .modal {
 }
 
 .modal-minimize-btn:hover {
-  /* background: color-mix(in srgb, var(--text-color) 10%, var(--background-color));
-  color: color-mix(in srgb, var(--text-color) 60%, var(--background-color)); */
-
-  /* transform: scale(1.05); */
-
   background-color: rgb(245 158 11 / 15%);
   color: #d97706;
 }
-
-/*
-.modal-minimize-btn:active {
-  transform: scale(0.95);
-} */
 
 .modal-header-import-export {
   display: flex;
@@ -226,7 +205,6 @@ body.waldiez-dark .modal {
 .modal-header-export-button:hover:not(:disabled) {
   background: color-mix(in srgb, #3b82f6 15%, var(--background-color));
   color: #3b82f6;
-  transform: scale(1.05);
 }
 
 .modal-header-import-button svg,
@@ -269,8 +247,6 @@ body.waldiez-dark .modal {
   align-items: center;
   justify-content: flex-end;
   padding: 20px 0 0;
-
-  /* border-top: 1px solid color-mix(in srgb, var(--text-color) 8%, var(--background-color)); */
   margin-top: auto;
 }
 
@@ -313,7 +289,6 @@ body.waldiez-dark .modal {
   gap: 8px;
 }
 
-/* Secondary button (Cancel) */
 .modal-actions button.secondary,
 .modal-actions button[data-action="cancel"],
 .modal-actions button:first-child:not(.primary, .danger, .save, .neutral, .danger) {
@@ -323,7 +298,6 @@ body.waldiez-dark .modal {
   box-shadow: 0 2px 8px color-mix(in srgb, #9e37a2 25%, transparent) !important;
 }
 
-/* Primary button */
 .modal-actions button[type="submit"],
 .modal-actions button.primary,
 .modal-actions button:last-child:not(.secondary, .danger, .save) {
@@ -333,7 +307,6 @@ body.waldiez-dark .modal {
   box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 25%, transparent) !important;
 }
 
-/* Save button */
 .modal-actions button.save,
 .modal-actions button[data-action="save"]:not([data-action="save-close"]) {
   background: color-mix(in srgb, #3b82f6 12%, var(--background-color)) !important;
@@ -342,7 +315,6 @@ body.waldiez-dark .modal {
   box-shadow: 0 2px 8px color-mix(in srgb, #3b82f6 15%, transparent) !important;
 }
 
-/* Neutral button  no colors */
 .modal-actions button.neutral,
 .modal-actions button[data-action="neutral"] {
   background: color-mix(in srgb, var(--text-color) 5%, var(--background-color)) !important;

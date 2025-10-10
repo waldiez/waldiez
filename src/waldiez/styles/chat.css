@@ -3,7 +3,6 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 
-/* Chat Input Container */
 .chat-input-container {
   padding: 8px;
   border-radius: 8px !important;
@@ -20,7 +19,6 @@ body.waldiez-dark .chat-input-container {
   background-color: #222;
 }
 
-/* Chat Input Actions */
 .chat-input-actions {
   display: flex;
   align-items: center;
@@ -44,7 +42,6 @@ body.waldiez-dark .chat-upload-button {
   color: #ddd;
 }
 
-/* Chat Image Preview */
 .chat-image-preview {
   margin-bottom: 8px;
   display: flex;
@@ -91,7 +88,6 @@ body.waldiez-dark .chat-remove-image-button {
   display: none;
 }
 
-/* Chat Text Input */
 .chat-text-input {
   flex-grow: 1;
   border-radius: 8px !important;
@@ -111,7 +107,6 @@ body.waldiez-dark .chat-text-input {
   color: #eee !important;
 }
 
-/* Chat Send Button */
 .chat-send-button {
   display: flex;
   align-items: center;
@@ -149,7 +144,6 @@ body.waldiez-dark .chat-send-button:disabled {
   cursor: not-allowed !important;
 }
 
-/* Chat Container */
 .chat-wrapper {
   border-radius: 5px;
   padding: 10px;
@@ -210,7 +204,6 @@ body.waldiez-dark .chat-container::-webkit-scrollbar-thumb:hover {
   background: #888;
 }
 
-/* Message Bubbles */
 .message-bubble {
   padding: 12px;
   border-radius: 12px !important;
@@ -245,7 +238,6 @@ body.waldiez-dark .assistant-message {
 }
 
 .participant-message {
-  /* align-self: center; */
   align-self: flex-end;
   background-color: #e8e8e8;
   color: #333;
@@ -290,7 +282,6 @@ body.waldiez-dark .request-message {
   color: #69c0ff;
 }
 
-/* Message Header */
 .message-header {
   display: flex;
   align-items: center;
@@ -332,13 +323,11 @@ body.waldiez-dark .assistant-message .message-sender {
   color: rgb(255 255 255 / 85%);
 }
 
-/* Message Content */
 .message-content {
   overflow-wrap: anywhere;
   line-height: 1.4;
 }
 
-/* Chat Images */
 .chat-image {
   max-width: 100%;
   max-height: 100px;
@@ -399,7 +388,6 @@ body.waldiez-dark .chat-image.loading::after {
   }
 }
 
-/* Structured Content */
 .structured-content {
   display: flex;
   flex-direction: column;
@@ -415,7 +403,6 @@ body.waldiez-dark .chat-image.loading::after {
   margin-top: 8px;
 }
 
-/* Content with Images */
 .content-with-images {
   display: flex;
   flex-wrap: wrap;
@@ -423,7 +410,6 @@ body.waldiez-dark .chat-image.loading::after {
   align-items: center;
 }
 
-/* Image Placeholder */
 .image-placeholder {
   display: flex;
   align-items: center;
@@ -445,7 +431,6 @@ body.waldiez-dark .image-placeholder {
   color: #aaa;
 }
 
-/* Image Modal for Fullscreen View */
 .timeline-modal,
 .image-modal {
   position: fixed;
@@ -543,25 +528,21 @@ body.waldiez-dark .image-placeholder {
   }
 }
 
-/* Password Input Styling */
 .chat-input-field-container {
   width: 100%;
   position: relative;
   margin-bottom: 8px;
 }
 
-/* Password toggle container */
 .password-toggle-container {
   position: relative;
   width: 100%;
 }
 
-/* Input styling for password fields */
 .password-input {
-  padding-right: 40px !important; /* Make room for the toggle button */
+  padding-right: 40px !important;
 }
 
-/* Password toggle button */
 .password-toggle-button {
   position: absolute;
   right: 8px;
@@ -599,12 +580,6 @@ body.waldiez-light .password-toggle-button:hover {
 body.waldiez-dark .password-toggle-button:hover {
   background-color: rgb(255 255 255 / 10%) !important;
 }
-
-/* .avatar-container {
-  display: flex;
-  align-items: center;
-  margin-bottom: 6px;
-} */
 
 .avatar {
   width: 40px;

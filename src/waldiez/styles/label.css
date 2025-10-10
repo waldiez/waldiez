@@ -89,7 +89,6 @@ body.waldiez-dark .info-label .info-description {
   border: 1px solid #374151;
 }
 
-/* on info-icon hover */
 .info-label .info-icon:hover {
   color: #0056b3;
   cursor: help;

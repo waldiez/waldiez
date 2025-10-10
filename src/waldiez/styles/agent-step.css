@@ -1,29 +1,24 @@
-/* ── Active sender styles ─────────────────────────────────────────────── */
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright 2024 - 2025 Waldiez & contributors
+ */
 .agent-node.active-sender {
   border: 3px solid #28a745 !important;
   box-shadow: 0 0 14px rgb(40 167 69 / 60%) !important;
   animation: pulse-sender 1.5s ease-in-out infinite;
 }
 
-/* ── Active recipient styles ──────────────────────────────────────────── */
 .agent-node.active-recipient {
   border: 3px solid #007bff !important;
   box-shadow: 0 0 14px rgb(0 123 255 / 60%) !important;
   animation: pulse-recipient 1.5s ease-in-out infinite;
 }
 
-/* ── Both active ─────────────────────────────────────────────────────── */
 .agent-node.active-sender.active-recipient {
   border: 3px solid #ffc107 !important;
   box-shadow: 0 0 14px rgb(255 193 7 / 60%) !important;
   animation: pulse-both 1.5s ease-in-out infinite;
 }
-
-/* ── Badge container (absolute, centered above node) ─────────────────── */
-
-/* .agent-node {  // in ./agent.css,
-  position: relative; // ensure children can be absolutely positioned
-} */
 
 .agent-badge-wrap {
   position: absolute;
@@ -38,8 +33,6 @@
   z-index: 1000;
 }
 
-/* ── Colored chip (SENDING / RECEIVING) ──────────────────────────────── */
-
 .agent-badge-chip {
   display: inline-block;
   padding: 4px 6px;
@@ -51,7 +44,6 @@
   line-height: 1;
 }
 
-/* chip color by state */
 .agent-node.active-sender .agent-badge-chip {
   background: #28a745;
 }
@@ -65,25 +57,21 @@
   color: #212529;
 }
 
-/* ── Plain activity label (no background) ────────────────────────────── */
 .agent-activity-label {
   font-size: 12px;
   font-weight: 700;
   line-height: 1;
-  color: #28a745; /* default to sender tint; overridden below when needed */
+  color: #28a745;
 }
 
-/* if node is only recipient-active, tint activity blue */
 .agent-node.active-recipient:not(.active-sender) .agent-activity-label {
   color: #007bff;
 }
 
-/* both active → neutral/dark tint for activity */
 .agent-node.active-sender.active-recipient .agent-activity-label {
   color: #495057;
 }
 
-/* ── Animations */
 @keyframes pulse-sender {
   0% {
     box-shadow: 0 0 14px rgb(40 167 69 / 60%);
@@ -126,7 +114,6 @@
   }
 }
 
-/* ── Dark theme ──────────────────────────────────────────────────────── */
 body.waldiez-dark .agent-node.active-sender {
   border-color: #20c997 !important;
   box-shadow: 0 0 14px rgb(32 201 151 / 60%) !important;
@@ -166,7 +153,6 @@ body.waldiez-dark .agent-node.active-sender.active-recipient .agent-activity-lab
   color: #ced4da;
 }
 
-/* ── Small nodes (container query) ───────────────────────────────────── */
 @container (max-width: 130px) {
   .agent-badge-wrap {
     top: -25px;
@@ -178,16 +164,15 @@ body.waldiez-dark .agent-node.active-sender.active-recipient .agent-activity-lab
     font-size: 10px;
   }
 
-  /* abbreviations */
   .agent-node.active-sender .agent-badge-chip {
     content: none;
-  } /* content not used; text comes from DOM */
+  }
+
   .agent-node.active-recipient .agent-badge-chip {
     content: none;
   }
 }
 
-/* ── Reduced motion ─────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .agent-node.active-sender,
   .agent-node.active-recipient {
@@ -248,7 +233,6 @@ body.waldiez-dark .agent-node.active-sender.active-recipient .agent-activity-lab
   }
 }
 
-/* Gear rotates while "tool" is active */
 .agent-activity-icon.is-tool .gear {
   animation: spin-gear 1.2s linear infinite;
   transform-origin: 50% 50%;
@@ -260,7 +244,6 @@ body.waldiez-dark .agent-node.active-sender.active-recipient .agent-activity-lab
   }
 }
 
-/* Chat bubble gently floats on "message" */
 .agent-activity-icon.is-message .bubble {
   animation: float-bubble 2.2s ease-in-out infinite;
   transform-origin: 50% 50%;
@@ -279,7 +262,6 @@ body.waldiez-dark .agent-node.active-sender.active-recipient .agent-activity-lab
   }
 }
 
-/* Thinking: subtle halo pulse behind dots */
 .agent-activity-icon.is-thinking {
   position: relative;
 }
@@ -312,7 +294,6 @@ body.waldiez-dark .agent-node.active-sender.active-recipient .agent-activity-lab
   }
 }
 
-/* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .agent-activity-icon .typing-dots i,
   .agent-activity-icon.is-tool .gear,

@@ -4,7 +4,6 @@
  */
 /* stylelint-disable no-descending-specificity */
 
-/* Container styling - shared across all nested chat components */
 body.waldiez-light .nested-chat-container,
 body.waldiez-light .nested-chat-triggers,
 body.waldiez-light .nested-chat-messages {
@@ -97,7 +96,6 @@ body.waldiez-dark .nested-chat-select-trigger-view:hover {
   width: 100%;
 }
 
-/* Message addition controls */
 .nested-chats-add-message {
   display: flex;
   align-items: center;
@@ -165,7 +163,6 @@ body.waldiez-dark .nested-chat-add-button button:disabled {
   opacity: 0.7;
 }
 
-/* Message list section */
 .nested-chats-registered-messages {
   margin-top: 0.5rem;
 }
@@ -230,7 +227,6 @@ body.waldiez-dark .reply-indicator {
   font-weight: 600;
 }
 
-/* Message actions */
 .nested-chat-message-actions {
   display: flex;
   align-items: center;
@@ -311,7 +307,6 @@ body.waldiez-dark .nested-chat-queue {
   flex-direction: column;
 }
 
-/* Queue item styling */
 body.waldiez-light .queue-item {
   display: flex;
   align-items: center;
@@ -346,7 +341,6 @@ body.waldiez-dark .queue-item:hover {
   box-shadow: 0 2px 4px rgb(0 0 0 / 30%);
 }
 
-/* Reorder buttons styling */
 body.waldiez-light .queue-item .reorder-buttons {
   display: flex;
   flex-direction: column;
@@ -389,7 +383,6 @@ body.waldiez-dark .queue-item .reorder-buttons button:hover {
   color: #3b82f6;
 }
 
-/* Recipient name styling */
 body.waldiez-light .agent-nested-recipient-name {
   font-size: 0.9rem;
   font-weight: 500;

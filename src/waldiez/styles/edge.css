@@ -21,16 +21,6 @@
   justify-content: center;
 }
 
-/* body.waldiez-light .agent-edge-view {
-  background-color: #f8f8f8;
-  border: 1px solid #cccccc50;
-}
-
-body.waldiez-dark .agent-edge-view {
-  background-color: #222;
-  border: 1px solid #33333350;
-} */
-
 .agent-edge-box.assistant .agent-edge-view {
   color: var(--assistant-agent-color);
 }
@@ -125,13 +115,11 @@ body.waldiez-light .edge-position-warning-icon {
 }
 
 body.waldiez-dark .edge-actions {
-  /* background-color: #222; */
   border-color: #333;
   background-color: rgb(34 34 34 / 80%);
 }
 
 body.waldiez-light .edge-actions {
-  /* background-color: #f8f8f8; */
   border-color: #ccc;
   background-color: rgb(248 248 248 / 80%);
 }

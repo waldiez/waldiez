@@ -194,8 +194,6 @@ body.waldiez-dark .agent-model-preview .agent-model-img.openai img {
   padding: 8px 12px;
   transform: translateX(-50%);
   align-items: center;
-
-  /* width: 100%; */
   display: flex;
   justify-content: space-between;
 }
@@ -296,10 +294,6 @@ body.waldiez-dark .agent-model-preview .agent-model-img.openai img {
 .agent-node.captain:hover {
   box-shadow: 0 0 8px var(--captain-agent-alt-color);
 }
-
-/* .agent-node.group_manager:hover {
-  box-shadow: 0 0 8px var(--group-manager-agent-alt-color);
-} */
 
 .agent-panel {
   display: flex;

@@ -3,7 +3,6 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 
-/* Light/Dark mode variables */
 body.waldiez-light .markdown-renderer {
   --md-text: #333;
   --md-link: #0366d6;
@@ -56,7 +55,6 @@ body.waldiez-dark .markdown-renderer {
   --md-heading-border: #30363d;
 }
 
-/* Base container */
 /* stylelint-disable-next-line no-descending-specificity */
 .markdown-renderer {
   width: 100%;
@@ -65,7 +63,6 @@ body.waldiez-dark .markdown-renderer {
   overflow-wrap: anywhere;
 }
 
-/* Headings */
 .markdown-h1,
 .markdown-h2,
 .markdown-h3,
@@ -107,13 +104,11 @@ body.waldiez-dark .markdown-renderer {
   color: var(--md-blockquote-text);
 }
 
-/* Paragraphs */
 .markdown-p {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
 
-/* Lists */
 .markdown-ul,
 .markdown-ol {
   padding-left: 1.5em;
@@ -130,7 +125,6 @@ body.waldiez-dark .markdown-renderer {
   margin-bottom: 0.25em;
 }
 
-/* Blockquotes */
 .markdown-blockquote {
   margin: 0.5em 0;
   padding-left: 1em;
@@ -138,7 +132,6 @@ body.waldiez-dark .markdown-renderer {
   border-left: 3px solid var(--md-blockquote-border);
 }
 
-/* Code blocks and inline code */
 .markdown-pre,
 .markdown-code-block-wrapper {
   margin: 0.5em 0;
@@ -187,7 +180,6 @@ body.waldiez-dark .markdown-renderer {
   font-weight: 600;
 }
 
-/* Fix pre and code overflow */
 .message-content .markdown-pre,
 .message-content .markdown-code,
 .message-content .markdown-code-block-wrapper {
@@ -198,7 +190,6 @@ body.waldiez-dark .markdown-renderer {
   word-break: normal;
 }
 
-/* Tables */
 .markdown-table {
   border-collapse: collapse;
   margin: 0.5em 0;
@@ -227,7 +218,6 @@ body.waldiez-dark .markdown-renderer {
   background-color: var(--md-table-bg-alt);
 }
 
-/* Links */
 .markdown-link {
   color: var(--md-link);
   text-decoration: none;
@@ -237,14 +227,12 @@ body.waldiez-dark .markdown-renderer {
   text-decoration: underline;
 }
 
-/* Images - use existing .chat-image class */
 .markdown-image {
   max-width: 100%;
   border-radius: 8px;
   cursor: pointer;
 }
 
-/* Horizontal rule */
 .markdown-hr {
   height: 1px;
   margin: 1em 0;
@@ -252,7 +240,6 @@ body.waldiez-dark .markdown-renderer {
   border: none;
 }
 
-/* Adjust for message bubbles */
 .user-message .markdown-link {
   color: #fff;
   text-decoration: underline;
@@ -268,7 +255,6 @@ body.waldiez-dark .markdown-renderer {
   color: #fff;
 }
 
-/* Mobile adjustments */
 @media (width <= 768px) {
   .markdown-table {
     font-size: 0.9em;
@@ -287,7 +273,6 @@ body.waldiez-dark .markdown-renderer {
   }
 }
 
-/* Syntax highlighting for code blocks */
 .language-js .keyword,
 .language-javascript .keyword,
 .language-typescript .keyword,
@@ -312,7 +297,6 @@ body.waldiez-dark .markdown-renderer {
   color: #6a9955;
 }
 
-/* Dark mode syntax highlighting (override if necessary) */
 body.waldiez-dark .language-js .keyword,
 body.waldiez-dark .language-javascript .keyword,
 body.waldiez-dark .language-typescript .keyword,

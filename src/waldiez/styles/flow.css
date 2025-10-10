@@ -53,11 +53,6 @@
   margin: 10px 4px;
 }
 
-/* .edit-flow-modal .modal-actions,
-.chat-modal .modal-actions {
-  margin-top: 1rem;
-} */
-
 .flow-data-preview {
   max-height: 60vh;
   overflow-y: auto;
@@ -137,8 +132,8 @@ body.waldiez-dark .search-result-title {
 }
 
 body.waldiez-dark .search-result-tag {
-  background-color: #334155; /* slate-800 */
-  color: #60a5fa; /* blue-400 */
+  background-color: #334155;
+  color: #60a5fa;
 }
 
 body.waldiez-dark .search-result-description {
