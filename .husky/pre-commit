@@ -41,7 +41,7 @@ if command -v prek >/dev/null 2>&1 && [ -f ".pre-commit-config.yaml" ]; then
     else
         if [ -n "${PY_FILES}" ]; then
             echo "Running prek on staged Python files..."
-            prek hook-impl --config=.pre-commit-config.yaml --hook-dir "${HERE}" --hook-type=pre-commit
+            prek hook-impl --config=.pre-commit-config.yaml --hook-dir "${HERE}" --hook-type=pre-commit --script-version=2
         else
             echo "No PY/YAML/MD/TOML files to lint."
         fi
