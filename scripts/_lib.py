@@ -158,17 +158,15 @@ def ensure_package_exists(package_name: str) -> None:
             ):
                 return
         print(f"Package {package_name} not found. Installing...")
-        run_command(["ensurepip"])
         run_command(["pip", "install", package_name])
 
 
 def _ensure_requirements(requirements_file: Path) -> None:
-    if "--no-deps" in sys.argv or os.getenv("CI") == "true":
+    if "--no-deps" in sys.argv:
         return
     for cmd_group in [
-        ["ensurepip"],
-        ["pip", "install", "--upgrade", "pip"],
-        ["pip", "install", "-r", str(requirements_file)],
+        ["pip", "install", "--upgrade", "-qq", "pip"],
+        ["pip", "install", "-qq", "-r", str(requirements_file)],
     ]:
         run_command(cmd_group, ROOT_DIR)
 
