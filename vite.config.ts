@@ -107,6 +107,23 @@ export default defineConfig(({ command }) => ({
                 "default-src 'none'; manifest-src 'self'; style-src 'self' https://cdn.jsdelivr.net/npm/ data: 'unsafe-inline'; worker-src 'self' blob: https://cdn.jsdelivr.net/npm/; script-src 'self' blob: https://cdn.jsdelivr.net/npm/ https://drag-drop-touch-js.github.io/; font-src 'self' https://cdn.jsdelivr.net/npm/ data:; img-src 'self' https://cdn.jsdelivr.net/npm/ data:; connect-src *; report-to /_/csp",
             "content-security-policy": "manifest-src 'self';",
         },
+        watch: {
+            ignored: [
+                "**/node_modules/**",
+                "**/.git/**",
+                "**/.venv/**",
+                "**/.local/**",
+                "**/coverage/**",
+                "**/__pycache__/**",
+                "**/.mypy_cache/**",
+                "**/.pytest_cache/**",
+                "**/.ruff_cache/**",
+                "**/out/**",
+                "**/dist/**",
+                "/waldiez/**",
+                "/tests/**",
+            ],
+        },
     },
     define: {
         __WALDIEZ_VERSION__: getVersion(),
