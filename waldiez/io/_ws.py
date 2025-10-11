@@ -5,6 +5,7 @@
 # pyright: reportUnknownMemberType=false,reportUnknownParameterType=false
 # pyright: reportUnknownVariableType=false,reportUnknownArgumentType=false
 # pyright: reportConstantRedefinition=false,reportUnnecessaryIsInstance=false
+# pyright: reportMissingImports=false
 
 """WebSocket IOStream implementation for AsyncIO."""
 

@@ -9,7 +9,7 @@ from .utils import check_conflicts
 
 # flake8: noqa: F401
 # pylint: disable=import-error,line-too-long
-# pyright: reportMissingImports=false
+# pyright: reportMissingImports=false,reportUnknownVariableType=false
 try:
     # noqa: I001
     from ._version import __version__  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
