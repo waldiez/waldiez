@@ -27,8 +27,8 @@ pyright==1.1.406
 python-dotenv>=1.1.1
 ruff==0.14.0
 toml==0.10.2; python_version <= '3.10'
-types-aiofiles==24.1.0.20250822
-types-jsonschema==4.25.1.20251008
+types-aiofiles==25.1.0.20251011
+types-jsonschema==4.25.1.20251009
 types-psutil==7.0.0.20251001
 types-pyyaml==6.0.12.20250915
 types-redis==4.6.0.20241004
