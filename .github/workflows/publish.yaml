@@ -36,7 +36,7 @@ jobs:
           mkdir -p .local
           mv README.md .local/README.md.bak
           mv README.npm.md README.md
-          bun build:lib:local
+          bun build:lib
           bun publish
           mv README.md README.npm.md 2>/dev/null || true
           mv .local/README.md.bak README.md 2>/dev/null || true
@@ -48,7 +48,7 @@ jobs:
         run: |
           bun install
           bun clean
-          bun build:lib:local
+          bun build:lib
           bun publish --dry-run
 
   package_waldiez_python:

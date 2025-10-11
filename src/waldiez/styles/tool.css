@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 .tool-node {
-  border-radius: 10px;
+  border-radius: 8px;
   width: 180px;
   min-width: 180px;
   max-width: 180px;
@@ -67,7 +67,8 @@
   -webkit-line-clamp: 2 !important;
   line-clamp: 2 !important;
   text-overflow: ellipsis !important;
-  line-height: 1.3rem;
+  line-height: 1.1rem;
+  font-size: 0.9rem;
 }
 
 .tool-node .date-info {
