@@ -163,6 +163,7 @@
         "@vitest/ui": "^3.2.4",
         "ajv": "^8.17.1",
         "all-contributors-cli": "^6.26.1",
+        "canvas": "^3.2.0",
         "cross-spawn": "^7.0.6",
         "dotenv": "^17.2.3",
         "eslint": "^9.37.0",
