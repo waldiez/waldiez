@@ -26,14 +26,24 @@ from .utils import get_available_port, is_port_available
 
 HAS_WATCHDOG = False
 try:
-    from .reloader import create_file_watcher
+    from .reloader import FileWatcher, create_file_watcher  # pyright: ignore
 
     HAS_WATCHDOG = True  # pyright: ignore
 except ImportError:
-    # pylint: disable=unused-argument,missing-param-doc,missing-return-doc
-    # noinspection PyUnusedLocal
-    def create_file_watcher(*args: Any, **kwargs: Any) -> Any:  # type: ignore
+
+    class FileWatcher:  # type: ignore[no-redef]
+        """Mock fileWatcher for typing."""
+
+        def start(self) -> None:
+            """Start the watcher."""
+
+        def stop(self) -> None:
+            """Stop the watcher."""
+
+    # pylint: disable=missing-param-doc,missing-return-doc
+    def create_file_watcher(*args: Any, **kwargs: Any) -> FileWatcher:  # type: ignore
         """No file watcher available."""
+        return FileWatcher(*args, **kwargs)
 
 
 HAS_WEBSOCKETS = False
@@ -413,6 +423,52 @@ class WaldiezWsServer:
         return successful
 
 
+def _get_file_watcher(
+    auto_reload: bool, watch_dirs: set[Path] | None
+) -> FileWatcher | None:
+    file_watcher: FileWatcher | None = None
+    if auto_reload and HAS_WATCHDOG:
+        # pylint: disable=import-outside-toplevel,too-many-try-statements
+        try:
+            # Determine watch directories
+            if watch_dirs is None:
+                project_root = Path(__file__).parents[2]
+
+                # Watch the actual waldiez package directory
+                waldiez_dir = project_root / "waldiez"
+                if waldiez_dir.exists():
+                    watch_dirs = {waldiez_dir}
+                    logger.info(
+                        "Auto-reload: watching waldiez package at %s",
+                        waldiez_dir,
+                    )
+                else:
+                    # Fallback: watch current directory
+                    watch_dirs = {Path.cwd()}
+                    logger.warning(
+                        "Auto-reload: fallback to current directory %s",
+                        Path.cwd(),
+                    )
+
+            # Create file watcher with restart callback
+            file_watcher = create_file_watcher(
+                root_dir=Path(__file__).parents[2],
+                additional_dirs=list(watch_dirs),
+                restart_callback=None,
+            )
+            file_watcher.start()
+            logger.info(
+                "Auto-reload enabled for directories: %s",
+                {str(dir_) for dir_ in watch_dirs},
+            )
+
+        except ImportError as e:
+            logger.warning("Auto-reload not available: %s", e)
+        except Exception as e:  # pylint: disable=broad-exception-caught
+            logger.error("Failed to set up auto-reload: %s", e)
+    return file_watcher
+
+
 async def run_server(
     host: str = "localhost",
     port: int = 8765,
@@ -465,47 +521,9 @@ async def run_server(
         signal.signal(signal.SIGTERM, lambda s, f: signal_handler())
 
     # Set up auto-reload if requested
-    file_watcher = None
-    if auto_reload and HAS_WATCHDOG:
-        # pylint: disable=import-outside-toplevel,too-many-try-statements
-        try:
-            # Determine watch directories
-            if watch_dirs is None:
-                project_root = Path(__file__).parents[2]
-
-                # Watch the actual waldiez package directory
-                waldiez_dir = project_root / "waldiez"
-                if waldiez_dir.exists():
-                    watch_dirs = {waldiez_dir}
-                    logger.info(
-                        "Auto-reload: watching waldiez package at %s",
-                        waldiez_dir,
-                    )
-                else:
-                    # Fallback: watch current directory
-                    watch_dirs = {Path.cwd()}
-                    logger.warning(
-                        "Auto-reload: fallback to current directory %s",
-                        Path.cwd(),
-                    )
-
-            # Create file watcher with restart callback
-            file_watcher = create_file_watcher(
-                root_dir=Path(__file__).parents[2],
-                additional_dirs=list(watch_dirs),
-                restart_callback=None,
-            )
-            file_watcher.start()
-            logger.info(
-                "Auto-reload enabled for directories: %s",
-                {str(dir_) for dir_ in watch_dirs},
-            )
-
-        except ImportError as e:
-            logger.warning("Auto-reload not available: %s", e)
-        except Exception as e:  # pylint: disable=broad-exception-caught
-            logger.error("Failed to set up auto-reload: %s", e)
-
+    file_watcher = _get_file_watcher(
+        auto_reload=auto_reload, watch_dirs=watch_dirs
+    )
     try:
         # Start server
         await server.start()
