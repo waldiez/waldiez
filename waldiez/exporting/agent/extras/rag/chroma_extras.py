@@ -3,7 +3,6 @@
 """Get chroma db related imports and content."""
 
 from pathlib import Path
-from typing import Set
 
 from waldiez.models import WaldiezRagUserProxy
 
@@ -33,7 +32,8 @@ def _get_chroma_client_string(agent: WaldiezRagUserProxy) -> tuple[str, str]:
         local_path = Path(agent.retrieve_config.db_config.local_storage_path)
         client_str += (
             "PersistentClient(\n"
-            f'    path=r"{local_path}",' + "\n"
+            f'    path=r"{local_path}",'
+            "\n"
             "    settings=Settings(anonymized_telemetry=False),\n"
             ")"
         )
@@ -80,7 +80,7 @@ def _get_chroma_embedding_function_string(
 
 def get_chroma_db_args(
     agent: WaldiezRagUserProxy, agent_name: str
-) -> tuple[str, Set[str], str, str]:
+) -> tuple[str, set[str], str, str]:
     """Get the 'kwargs to use for ChromaVectorDB.
 
     Parameters
@@ -107,8 +107,10 @@ def get_chroma_db_args(
     if to_import_embedding:
         to_import.add(to_import_embedding)
     kwarg_string = (
-        f"            client={agent_name}_client," + "\n"
-        f"            embedding_function={embedding_function_arg}," + "\n"
+        f"            client={agent_name}_client,"
+        "\n"
+        f"            embedding_function={embedding_function_arg},"
+        "\n"
     )
     # The RAG example:
     # https://ag2ai.github.io/ag2/docs/notebooks/agentchat_groupchat_RAG/
@@ -123,30 +125,36 @@ def get_chroma_db_args(
         content_before += (
             f"{agent_name}_embedding_function = "
             "SentenceTransformerEmbeddingFunction(\n"
-            f'    model_name="{vector_db_model}",' + "\n"
-            ")\n"
+            f'    model_name="{vector_db_model}",'
+            "\n)\n"
         )
     collection_name = agent.retrieve_config.collection_name
     get_or_create = agent.retrieve_config.get_or_create
     if collection_name:
         if get_or_create:
             content_before += (
-                f"{agent_name}_client.get_or_create_collection" + "(\n"
-                f'    "{collection_name}",' + "\n"
-                f"    embedding_function={embedding_function_arg}," + "\n"
-                ")" + "\n"
+                f"{agent_name}_client.get_or_create_collection"
+                "(\n"
+                f'    "{collection_name}",'
+                "\n"
+                f"    embedding_function={embedding_function_arg},"
+                "\n)\n"
             )
         else:
             content_before += (
                 "try:\n"
-                f"    {agent_name}_client.get_collection(" + "\n"
-                f'        "{collection_name}",' + "\n"
-                f"        embedding_function={embedding_function_arg}," + "\n"
-                "    )\n"
+                f"    {agent_name}_client.get_collection("
+                "\n"
+                f'        "{collection_name}",'
+                "\n"
+                f"        embedding_function={embedding_function_arg},"
+                "\n    )\n"
                 "except ValueError:\n"
-                f"    {agent_name}_client.create_collection(" + "\n"
-                f'        "{collection_name}",' + "\n"
-                f"        embedding_function={embedding_function_arg}," + "\n"
-                "    )\n"
+                f"    {agent_name}_client.create_collection("
+                "\n"
+                f'        "{collection_name}",'
+                "\n"
+                f"        embedding_function={embedding_function_arg},"
+                "\n    )\n"
             )
     return kwarg_string, to_import, embedding_function_body, content_before

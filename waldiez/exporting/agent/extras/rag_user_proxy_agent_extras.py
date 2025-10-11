@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """RAG user proxy agent configuration processor."""
 
-from typing import Union
-
 from waldiez.models import (
     WaldiezAgent,
     WaldiezRagUserProxy,
@@ -115,7 +113,7 @@ class RagUserProxyAgentProcessor:
             self.agent.retrieve_config
         )
         if not retrieve_config:
-            return "", ""
+            return "", ""  # pyright: ignore[reportUnreachable]
         args_dict = self._get_args_dict()
         if not args_dict:
             return "", ""
@@ -146,7 +144,7 @@ class RagUserProxyAgentProcessor:
 
     def _get_args_string(
         self,
-        args_dict: dict[str, Union[str, list[str]]],
+        args_dict: dict[str, str | list[str]],
         vector_db_extras: VectorDBExtras,
         before_agent: str,
     ) -> str:
@@ -193,11 +191,11 @@ class RagUserProxyAgentProcessor:
             return f"{new_model_name}"
         return WaldiezRagUserProxyModels[self.agent.retrieve_config.vector_db]
 
-    def _get_args_dict(self) -> dict[str, Union[str, list[str]]]:
+    def _get_args_dict(self) -> dict[str, str | list[str]]:
         if not isinstance(self.agent, WaldiezRagUserProxy):
             return {}
         model_arg = self._get_model_arg()
-        args_dict: dict[str, Union[str, list[str]]] = {
+        args_dict: dict[str, str | list[str]] = {
             "task": self.agent.retrieve_config.task,
             "model": model_arg,
         }
@@ -212,7 +210,7 @@ class RagUserProxyAgentProcessor:
             if arg_value is not None:
                 args_dict[arg] = arg_value
                 args_dict[arg] = getattr(self.agent.retrieve_config, arg)
-        docs_path: Union[str, list[str]] = []
+        docs_path: str | list[str] = []
         if self.agent.retrieve_config.docs_path:
             doc_paths = (
                 self.agent.retrieve_config.docs_path

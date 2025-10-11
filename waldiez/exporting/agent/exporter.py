@@ -2,10 +2,11 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=too-many-arguments,too-many-positional-arguments
 # pylint: disable=too-many-return-statements,too-many-instance-attributes
+# pyright: reportUnusedParameter=false
 """Export agents."""
 
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable
 
 from waldiez.models import (
     WaldiezAgent,
@@ -45,14 +46,12 @@ class AgentExporter(Exporter[StandardExtras]):
         tool_names: dict[str, str],
         is_async: bool = False,
         for_notebook: bool = False,
-        cache_seed: Optional[int] = None,
-        initial_chats: Optional[list[WaldiezAgentConnection]] = None,
-        group_chat_members: Optional[list[WaldiezAgent]] = None,
-        arguments_resolver: Optional[
-            Callable[[WaldiezAgent], list[str]]
-        ] = None,
-        output_dir: Optional[Union[str, Path]] = None,
-        context: Optional[ExporterContext] = None,
+        cache_seed: int | None = None,
+        initial_chats: list[WaldiezAgentConnection] | None = None,
+        group_chat_members: list[WaldiezAgent] | None = None,
+        arguments_resolver: Callable[[WaldiezAgent], list[str]] | None = None,
+        output_dir: str | Path | None = None,
+        context: ExporterContext | None = None,
         **kwargs: Any,
     ):
         """Initialize the agent exporter.
@@ -336,7 +335,7 @@ class AgentExporter(Exporter[StandardExtras]):
 
         return reason_extras
 
-    def generate_main_content(self) -> Optional[str]:
+    def generate_main_content(self) -> str | None:
         """Generate the main agent definition.
 
         Returns

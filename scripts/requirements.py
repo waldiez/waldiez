@@ -5,7 +5,7 @@
 # pylint: disable=import-error,import-outside-toplevel,too-few-public-methods
 # pylint: disable=broad-exception-caught
 # isort: skip_file
-# pyright: reportReturnType=none
+# pyright: reportReturnType=false,reportUnreachable=false
 """Generate requirements/*.txt files from pyproject.toml."""
 
 import os
@@ -77,11 +77,12 @@ def get_loader() -> TomlLoader:
 
                 return toml.load
             except Exception as err:
-                raise ImportError(
+                msg = (
                     "Failed to install the `toml` library. "
                     "Please install it manually.\n"
                     f"Error: {err}"
-                ) from err
+                )
+                raise ImportError(msg) from err
 
 
 def _write_all_dot_txt(project_dir: Path, extras: list[str]) -> None:

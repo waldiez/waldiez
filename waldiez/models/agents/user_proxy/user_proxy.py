@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportArgumentType=false,reportIncompatibleVariableOverride=false
+
 """User proxy agent model."""
 
 from pydantic import Field
@@ -24,7 +27,7 @@ class WaldiezUserProxy(WaldiezAgent):
         The user proxy agent's data
     """
 
-    agent_type: Annotated[  # pyright: ignore
+    agent_type: Annotated[
         Literal["user", "user_proxy"],
         Field(
             "user_proxy",
@@ -37,11 +40,11 @@ class WaldiezUserProxy(WaldiezAgent):
             alias="agentType",
         ),
     ]
-    data: Annotated[  # pyright: ignore
+    data: Annotated[
         WaldiezUserProxyData,
         Field(
             title="Data",
             description="The user proxy agent's data",
-            default_factory=WaldiezUserProxyData,  # pyright: ignore
+            default_factory=WaldiezUserProxyData,
         ),
     ]

@@ -1,11 +1,18 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
 # pylint: disable=unused-argument
+# pyright: reportDeprecated=false, reportMissingTypeStubs=false
+# pyright: reportUnusedParameter=false, reportUnnecessaryIsInstance=false
+# pyright: reportUnknownMemberType=false, reportUnknownVariableType=false
+# pyright: reportUnknownArgumentType=false
+
 """Breakpoints management mixin for step-by-step debugging."""
 
 import logging
+from collections.abc import Iterable
 from functools import lru_cache
-from typing import TYPE_CHECKING, Any, Callable, Iterable, Union
+from typing import TYPE_CHECKING, Any, Callable, Union
 
 from .step_by_step_models import (
     WaldiezBreakpoint,
@@ -200,7 +207,7 @@ class BreakpointsMixin:
         bool
             True if the breakpoint was added successfully, False otherwise.
         """
-        if not spec or not isinstance(spec, str):  # pyright: ignore
+        if not spec or not isinstance(spec, str):
             self.emit(
                 WaldiezDebugError(
                     error="Invalid event type: must be a non-empty string"
@@ -248,7 +255,7 @@ class BreakpointsMixin:
         if isinstance(spec, WaldiezBreakpoint):
             breakpoint_obj = spec
             spec_str = str(spec)
-        elif isinstance(spec, str) and spec:  # pyright: ignore
+        elif isinstance(spec, str) and spec:
             try:
                 breakpoint_obj = WaldiezBreakpoint.from_string(spec)
                 spec_str = spec
@@ -378,9 +385,9 @@ class BreakpointsMixin:
         if not sender:
             event_content = event_dict.get("content", {})
             if isinstance(event_content, dict):
-                sender = event_content.get(  # pyright: ignore
+                sender = event_content.get(
                     "sender",
-                    event_content.get("speaker", ""),  # pyright: ignore
+                    event_content.get("speaker", ""),
                 )
         if not isinstance(sender, str):
             sender = ""
@@ -388,7 +395,7 @@ class BreakpointsMixin:
         if not recipient:
             event_content = event_dict.get("content", {})
             if isinstance(event_content, dict):
-                recipient = event_content.get("recipient")  # pyright: ignore
+                recipient = event_content.get("recipient")
         if not isinstance(recipient, str):
             recipient = ""
         return event_type, sender, recipient

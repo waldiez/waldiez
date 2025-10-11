@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Message Model."""
 
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -82,7 +82,7 @@ class WaldiezChatMessage(WaldiezBase):
         ),
     ]
     content: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             title="Content",
@@ -98,7 +98,7 @@ class WaldiezChatMessage(WaldiezBase):
         ),
     ]
 
-    _content_body: Optional[str] = None
+    _content_body: str | None = None
 
     def is_method(self) -> bool:
         """Check if the message is a method.
@@ -111,7 +111,7 @@ class WaldiezChatMessage(WaldiezBase):
         return self.type in ("method", "rag_message_generator")
 
     @property
-    def content_body(self) -> Optional[str]:
+    def content_body(self) -> str | None:
         """Get the content body."""
         return self._content_body
 
@@ -141,7 +141,7 @@ class WaldiezChatMessage(WaldiezBase):
         ValueError
             If the content is invalid.
         """
-        content: Optional[str] = None
+        content: str | None = None
         if self.type == "none":
             content = "None"
         if self.type == "method":

@@ -1,8 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportArgumentType=false
+
 """Common data structures for agents."""
 
-from typing import Any, Optional, Union
+from typing import Any
 
 from pydantic import ConfigDict, Field, model_validator
 from pydantic.alias_generators import to_camel
@@ -67,7 +70,7 @@ class WaldiezAgentData(WaldiezBase):
     )
 
     system_message: Annotated[
-        Optional[str],
+        str | None,
         Field(
             None,
             title="System message",
@@ -85,7 +88,7 @@ class WaldiezAgentData(WaldiezBase):
         ),
     ]
     code_execution_config: Annotated[
-        Union[WaldiezAgentCodeExecutionConfig, Literal[False]],
+        WaldiezAgentCodeExecutionConfig | Literal[False],
         Field(
             False,
             title="Code execution config",
@@ -97,7 +100,7 @@ class WaldiezAgentData(WaldiezBase):
         ),
     ]
     agent_default_auto_reply: Annotated[
-        Optional[str],
+        str | None,
         Field(
             None,
             title="Agent's default auto reply",
@@ -108,7 +111,7 @@ class WaldiezAgentData(WaldiezBase):
         ),
     ]
     max_consecutive_auto_reply: Annotated[
-        Optional[int],
+        int | None,
         Field(
             None,
             title="Max consecutive auto reply",
@@ -126,7 +129,7 @@ class WaldiezAgentData(WaldiezBase):
             description=(
                 "The message termination check to use (keyword, method, none)"
             ),
-            default_factory=WaldiezAgentTerminationMessage,  # pyright: ignore
+            default_factory=WaldiezAgentTerminationMessage,
         ),
     ]
     model_ids: Annotated[
@@ -162,7 +165,7 @@ class WaldiezAgentData(WaldiezBase):
     context_variables: Annotated[
         dict[str, Any],
         Field(
-            default_factory=dict,  # pyright: ignore
+            default_factory=dict,
             title="Context variables",
             description=(
                 "Context variables that provide a persistent context "
@@ -175,7 +178,7 @@ class WaldiezAgentData(WaldiezBase):
     ]
 
     update_agent_state_before_reply: Annotated[
-        list[Union[str, WaldiezAgentUpdateSystemMessage]],
+        list[str | WaldiezAgentUpdateSystemMessage],
         Field(
             title="Update Agent State Before Reply",
             alias="updateAgentStateBeforeReply",
@@ -198,7 +201,7 @@ class WaldiezAgentData(WaldiezBase):
         ),
     ]
     after_work: Annotated[
-        Optional[WaldiezTransitionTarget],
+        WaldiezTransitionTarget | None,
         Field(
             None,
             title="After work",
@@ -211,7 +214,7 @@ class WaldiezAgentData(WaldiezBase):
     ]
 
     parent_id: Annotated[
-        Optional[str],
+        str | None,
         Field(
             None,
             title="Parent ID",

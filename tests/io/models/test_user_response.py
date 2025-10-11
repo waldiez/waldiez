@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pyright: reportPrivateUsage=false
+# pyright: reportAttributeAccessIssue=false,reportUnknownMemberType=false
 # pylint: disable=missing-param-doc,missing-type-doc,missing-return-doc
 # pylint: disable=no-self-use,protected-access,too-many-public-methods
 """Tests for waldiez.io.models.user_response.*."""
@@ -52,7 +53,7 @@ class TestUserResponse:
 
         assert isinstance(response.data, list)
         assert len(response.data) == 2
-        assert response.data[0] is input1  # pyright: ignore
+        assert response.data[0] is input1
         assert response.data[1] is input2
 
     def test_nested_list_gets_processed(self) -> None:
@@ -185,9 +186,7 @@ class TestUserResponse:
         # String that looks like JSON but isn't
         response1 = UserResponse(request_id="req18", data="{not valid json")
         assert isinstance(response1.data, UserInputData)
-        assert (
-            response1.data.to_string() == "{not valid json"  # pyright: ignore
-        )
+        assert response1.data.to_string() == "{not valid json"
 
         # Empty string
         response2 = UserResponse(request_id="req19", data="")

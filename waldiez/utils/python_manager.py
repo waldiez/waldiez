@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=too-many-try-statements,broad-exception-caught
+# pylint: disable=import-error
 """Python manager class."""
 
 import asyncio
@@ -175,10 +176,11 @@ class PythonManager:
                 # Wait for process to complete and check return code
                 return_code = proc.wait()
                 if return_code != 0:  # pragma: no cover
-                    printer(
+                    msg = (
                         "Package installation failed "
                         f"with exit code {return_code}"
                     )
+                    printer(msg)
 
         except Exception as e:  # pragma: no cover
             printer(f"Failed to install requirements: {e}")
@@ -230,10 +232,11 @@ class PythonManager:
             ]
             await asyncio.gather(*tasks, return_exceptions=True)
             if proc.returncode != 0:  # pragma: no cover
-                printer(
+                msg = (
                     "Package installation failed "
                     f"with exit code {proc.returncode}"
                 )
+                printer(msg)
 
         except Exception as e:
             printer(f"Failed to install requirements: {e}")
@@ -246,7 +249,7 @@ class PythonManager:
         """Make sure `python -m pip` works (bootstrap if needed)."""
         # pylint: disable=import-outside-toplevel,unused-import
         try:
-            import pip  # noqa: F401  # pyright: ignore
+            import pip  # noqa: F401  # pyright: ignore[reportUnusedImport]
 
             return
         except Exception:

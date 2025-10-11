@@ -3,6 +3,8 @@
 # pylint: skip-file
 # isort: skip_file
 # flake8: noqa: E501,E402
+# pyright: reportMissingImports=false,reportUnusedImport=false
+# pyright: reportUnknownVariableType=false
 """Waldiez-runner extra typer commands for CLI."""
 
 from typing import Any, Callable
@@ -18,7 +20,7 @@ runner_app: Callable[..., Any] | None = None
 try:
     from waldiez_runner.cli import run  # type: ignore[unused-ignore, import-not-found, import-untyped]
 
-    runner_app = run  # pyright: ignore
+    runner_app = run
 
     _have_runner = True
 except BaseException:

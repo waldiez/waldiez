@@ -5,6 +5,7 @@
 # It must be in the `lcov` format. (file `coverage/lcov.info`)
 
 # pyright: reportConstantRedefinition=false
+# pyright: reportImplicitRelativeImport=false
 """Run the tests."""
 
 import os

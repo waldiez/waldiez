@@ -1,11 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportUnknownVariableType=false
 """Dictionary related utilities."""
 
 import ast
 import json
 import re
-from typing import Any, Union
+from typing import Any
 
 BOOL_VALUES = {"true", "false"}
 NULL_VALUES = {"none", "null", "nil", "undefined"}
@@ -21,7 +23,7 @@ def _strip_outer_quotes(value: str) -> str:
     return value_stripped
 
 
-def _detect_null_or_boolean(value: str) -> Union[None, bool, str]:
+def _detect_null_or_boolean(value: str) -> bool | str | None:
     """
     Detect null values or booleans.
 
@@ -45,7 +47,7 @@ def _detect_null_or_boolean(value: str) -> Union[None, bool, str]:
     return value
 
 
-def _detect_numeric_type(value: str) -> Union[int, float, str]:
+def _detect_numeric_type(value: str) -> int | float | str:
     """
     Detect if string represents an integer or float.
 
@@ -72,7 +74,7 @@ def _detect_numeric_type(value: str) -> Union[int, float, str]:
 
 def _detect_container_type(
     value: str,
-) -> Union[dict[str, Any], list[Any], tuple[Any], set[Any], str]:
+) -> dict[str, Any] | list[Any] | tuple[Any] | set[Any] | str:
     """
     Detect if string represents a container type (dict, list, tuple, set).
 
@@ -97,7 +99,7 @@ def _detect_container_type(
     try:
         parsed = json.loads(value)
         if isinstance(parsed, (dict, list)):
-            return parsed  # pyright: ignore
+            return parsed
     except (json.JSONDecodeError, TypeError):
         pass
 
@@ -105,7 +107,7 @@ def _detect_container_type(
     try:
         parsed = ast.literal_eval(value)
         if isinstance(parsed, (dict, list, tuple, set)):
-            return parsed  # pyright: ignore
+            return parsed
     except (ValueError, SyntaxError):
         pass
 

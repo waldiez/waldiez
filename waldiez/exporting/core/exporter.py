@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=too-few-public-methods
+# pyright: reportUnusedParameter=false
+
 """Base exporter classes."""
 
 import abc
-from typing import Any, Generic, Optional
+from typing import Any, Generic
 
 from .constants import DEFAULT_IMPORT_POSITION
 from .content import PositionedContent
@@ -30,7 +32,7 @@ class Exporter(abc.ABC, Generic[Extras]):
 
     def __init__(
         self,
-        context: Optional[ExporterContext] = None,
+        context: ExporterContext | None = None,
         **kwargs: Any,
     ):
         """Initialize the exporter.
@@ -312,7 +314,7 @@ class Exporter(abc.ABC, Generic[Extras]):
         self._ensure_initialized()
         return self._result.get_content_by_position(position)
 
-    def get_main_content(self) -> Optional[str]:
+    def get_main_content(self) -> str | None:
         """Get the main content.
 
         Returns

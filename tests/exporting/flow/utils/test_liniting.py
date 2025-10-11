@@ -80,9 +80,8 @@ def test_get_pyright_ignore_comment_custom() -> None:
     rules = ["reportUnknownType", "reportSomethingElse"]
     result = get_pyright_ignore_comment(rules)
     assert (
-        "# pyright: reportUnknownType=false"
-        "# pyright: reportSomethingElse=false" in result.replace("\n", "")
-    )
+        "# pyright: reportUnknownType=false# pyright: reportSomethingElse=false"
+    ) in result.replace("\n", "")
 
 
 def test_flake8_default() -> None:

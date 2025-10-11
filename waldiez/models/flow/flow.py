@@ -85,7 +85,7 @@ class WaldiezFlow(WaldiezBase):
     ]
     tags: Annotated[
         list[str],
-        Field(  # pyright: ignore
+        Field(
             description="The tags of the flow",
             title="Tags",
             default_factory=list,
@@ -93,7 +93,7 @@ class WaldiezFlow(WaldiezBase):
     ]
     requirements: Annotated[
         list[str],
-        Field(  # pyright: ignore
+        Field(
             description="The requirements of the flow",
             title="Requirements",
             default_factory=list,
@@ -462,10 +462,11 @@ class WaldiezFlow(WaldiezBase):
                 agent.id in (chat.source, chat.target)
                 for chat in self.data.chats
             ):
-                raise ValueError(
+                msg = (
                     f"Agent {agent.id} ({agent.name}) "
                     "does not connect to any other node."
                 )
+                raise ValueError(msg)
 
     @model_validator(mode="after")
     def validate_flow(self) -> Self:
@@ -593,21 +594,24 @@ class WaldiezFlow(WaldiezBase):
             If there are no group manager agents.
         """
         if not group_manager.data.initial_agent_id:
-            raise ValueError(
+            msg = (
                 "The flow is a group chat but the group manager agent "
                 f"{group_manager.id} has no initial agent ID."
             )
+            raise ValueError(msg)
         if group_manager.data.initial_agent_id not in all_member_ids:
-            raise ValueError(
+            msg = (
                 "The flow is a group chat but the initial agent ID "
                 f"{group_manager.data.initial_agent_id} is not in the flow."
             )
+            raise ValueError(msg)
         group_members = self.get_group_members(group_manager.id)
         if not group_members:
-            raise ValueError(
+            msg = (
                 "The flow is a group chat but the group manager agent "
                 f"{group_manager.id} has no members in the group."
             )
+            raise ValueError(msg)
         group_manager.set_speakers_order(
             [member.id for member in group_members]
         )
@@ -639,10 +643,11 @@ class WaldiezFlow(WaldiezBase):
             group_manager_id in all_member_ids
             for group_manager_id in group_manager_ids
         ):
-            raise ValueError(
+            msg = (
                 "The flow is a group chat but not all group manager agents are "
                 "in the flow."
             )
+            raise ValueError(msg)
         # check the initial_agent_id for each group
         for group_manager in self.data.agents.groupManagerAgents:
             self._validate_group_manager(group_manager, all_member_ids)

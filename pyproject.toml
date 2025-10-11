@@ -152,6 +152,7 @@ dev = [
   "ag2[redis]==0.9.10",
   "autoflake==2.3.1",
   "bandit==1.8.6",
+  "basedpyright==1.31.7",
   "black[jupyter]==25.9.0",
   "build==1.3.0",
   "fakeredis==2.32.0",
@@ -170,10 +171,9 @@ dev = [
   "paho-mqtt>=2.1.0,<3.0",
   "pandas-stubs==2.3.2.250926",
   "nodeenv>=1.9.1",
-  "pre-commit==4.3.0",
+  "prek==0.2.4",
   "pydocstyle==6.3.0",
   "pylint==3.3.9",
-  "pyright==1.1.406",
   "python-dotenv>=1.1.1",
   "ruff==0.14.0",
   "types-aiofiles==25.1.0.20251011",
@@ -269,6 +269,10 @@ post-install-commands = [
 ]
 
 [tool.hatch.envs.default.scripts]
+pre-dev = [
+  "python -m pip install -qq --upgrade pip",
+  "pip install -qq -r requirements/dev.txt"
+]
 pre-test = [
   "python -m pip install -qq --upgrade pip",
   "pip install -qq -r requirements/test.txt"
@@ -309,13 +313,14 @@ format = [
 
 lint-black = "black --config pyproject.toml --check --diff waldiez tests scripts"
 lint-mypy = "mypy --config pyproject.toml waldiez tests scripts"
-lint-pyright = "pyright -p pyproject.toml waldiez tests scripts"
+lint-pyright = "basedpyright -p pyproject.toml waldiez tests scripts"
 lint-flake8 = "flake8 --config .flake8 waldiez tests scripts"
 lint-bandit = "bandit -r -c pyproject.toml waldiez scripts"
 lint-yamllint = "yamllint ."
 lint-ruff = "ruff check --config pyproject.toml waldiez tests scripts"
 lint-pylint = "pylint --rcfile=pyproject.toml waldiez tests scripts"
 lint = [
+  "hatch run pre-dev",
   "hatch run lint-black",
   "hatch run lint-mypy",
   "hatch run lint-pyright",
@@ -354,12 +359,15 @@ check = [
   "hatch run smoke"
 ]
 
-matrix-test = "hatch run test:test"
+matrix-test = "hatch run dev:test"
+matrix-lint = "hatch run dev:lint"
 # alias
-test-matrix = "hatch run test:test"
+test-matrix = "hatch run dev:test"
+lint-matrix = "hatch run dev:lint"
 
 release = [
   "hatch run check",
+  "hatch run matrix-lint",
   "hatch run matrix-test",
   "hatch run docs",
   "hatch run build"
@@ -370,10 +378,10 @@ all = [
   "hatch run image"
 ]
 
-[tool.hatch.envs.test]
+[tool.hatch.envs.dev]
 inherit = true
 
-[[tool.hatch.envs.test.matrix]]
+[[tool.hatch.envs.dev.matrix]]
 python = ["3.10", "3.11", "3.12", "3.13"]
 
 # pip-tools
@@ -451,12 +459,18 @@ init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
 
-
-[tool.pyright]
+[tool.basedpyright]
 include = ["waldiez", "tests", "scripts"]
-
 reportCallIssue = false
+reportUnusedCallResult = false
+reportExplicitAny = false
+reportUnannotatedClassAttribute = false
+reportAny = false
+reportImplicitOverride = false
 
+executionEnvironments = [
+    {root = "tests",  reportPrivateUsage=false, reportUninitializedInstanceVariable=false, reportArgumentType=false, reportUnusedParameter=false, reportAssignmentType=false }
+]
 # pylint
 [tool.pylint.master]
 extension-pkg-whitelist = []

@@ -5,7 +5,6 @@
 """Common utilities for exporting chats."""
 
 import json
-from typing import Optional
 
 from waldiez.models import WaldiezAgent, WaldiezChat
 
@@ -14,7 +13,7 @@ def get_chat_message_string(
     sender: WaldiezAgent,
     chat: WaldiezChat,
     chat_names: dict[str, str],
-) -> tuple[str, Optional[str]]:
+) -> tuple[str, str | None]:
     """Get the agent's message as a string.
 
     Parameters

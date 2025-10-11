@@ -2,9 +2,11 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Singleton context for exporters."""
 
+from __future__ import annotations
+
 import threading
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 from waldiez.logger import WaldiezLogger, get_logger
 
@@ -137,10 +139,10 @@ class DefaultExporterContext(ExporterContext):
     Direct instantiation may not behave as expected.
     """
 
-    _instance: Optional["DefaultExporterContext"] = None
+    _instance: DefaultExporterContext | None = None
     _lock = threading.Lock()
 
-    def __new__(cls, *args: Any, **kwargs: Any) -> "DefaultExporterContext":
+    def __new__(cls, *args: Any, **kwargs: Any) -> DefaultExporterContext:
         """Create a new instance of DefaultExporterContext.
 
         Parameters

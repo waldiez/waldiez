@@ -4,8 +4,6 @@
 # pylint: disable=too-many-locals,too-many-statements,line-too-long
 """Common functions for testing waldiez.exporting.agents.*."""
 
-from typing import Type
-
 from waldiez.models import (
     WaldiezAgent,
     WaldiezAgentType,
@@ -74,7 +72,7 @@ def create_agent(
         description=f"model{counter}_2 description",
         data={"apiType": "nim"},  # type: ignore
     )
-    agent_cls: Type[WaldiezAgent] = WaldiezAgent
+    agent_cls: type[WaldiezAgent] = WaldiezAgent
     if agent_type == "user_proxy":
         agent_cls = WaldiezUserProxy
     if agent_type == "assistant":

@@ -1,8 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright:  reportArgumentType=false
+
 """Waldiez flow data."""
 
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Self
@@ -64,7 +67,7 @@ class WaldiezFlowData(WaldiezBase):
     # (they for graph connections, positions, etc.)
     nodes: Annotated[
         list[dict[str, Any]],
-        Field(  # pyright: ignore
+        Field(
             default_factory=list,
             title="Nodes",
             description="The nodes of the flow",
@@ -72,7 +75,7 @@ class WaldiezFlowData(WaldiezBase):
     ]
     edges: Annotated[
         list[dict[str, Any]],
-        Field(  # pyright: ignore
+        Field(
             default_factory=list,
             title="Edges",
             description="The edges of the flow",
@@ -80,7 +83,7 @@ class WaldiezFlowData(WaldiezBase):
     ]
     viewport: Annotated[
         dict[str, Any],
-        Field(  # pyright: ignore
+        Field(
             default_factory=dict,
             title="Viewport",
             description="The viewport of the flow",
@@ -89,15 +92,15 @@ class WaldiezFlowData(WaldiezBase):
     # these are the ones we use.
     agents: Annotated[
         WaldiezAgents,
-        Field(  # pyright: ignore
+        Field(
             description="The agents of the flow",
             title="Agents",
-            default_factory=WaldiezAgents,  # pyright: ignore
+            default_factory=WaldiezAgents,
         ),
     ]
     models: Annotated[
         list[WaldiezModel],
-        Field(  # pyright: ignore
+        Field(
             description="The models of the flow",
             title="Models",
             default_factory=list,
@@ -105,7 +108,7 @@ class WaldiezFlowData(WaldiezBase):
     ]
     tools: Annotated[
         list[WaldiezTool],
-        Field(  # pyright: ignore
+        Field(
             description="The tools of the flow",
             title="Tools",
             default_factory=list,
@@ -128,7 +131,7 @@ class WaldiezFlowData(WaldiezBase):
         ),
     ]
     cache_seed: Annotated[
-        Optional[int],
+        int | None,
         Field(
             42,
             alias="cacheSeed",
@@ -200,7 +203,7 @@ class WaldiezFlowData(WaldiezBase):
         WaldiezFlowData
             The default flow data.
         """
-        termination = WaldiezAgentTerminationMessage()  # pyright: ignore
+        termination = WaldiezAgentTerminationMessage()
         return cls(
             nodes=[],
             edges=[],
@@ -213,7 +216,7 @@ class WaldiezFlowData(WaldiezBase):
                         name="Assistant 1",
                         created_at=now(),
                         updated_at=now(),
-                        data=WaldiezAssistantData(  # pyright: ignore
+                        data=WaldiezAssistantData(
                             termination=termination,
                         ),
                     ),
@@ -222,7 +225,7 @@ class WaldiezFlowData(WaldiezBase):
                         name="Assistant 2",
                         created_at=now(),
                         updated_at=now(),
-                        data=WaldiezAssistantData(  # pyright: ignore
+                        data=WaldiezAssistantData(
                             # is_multimodal=True,  # we need an api key for this
                             termination=termination,
                         ),
@@ -242,20 +245,20 @@ class WaldiezFlowData(WaldiezBase):
                     type="chat",
                     source="assistant1",
                     target="assistant2",
-                    data=WaldiezChatData(  # pyright: ignore
+                    data=WaldiezChatData(
                         name="Chat 1",
                         order=0,
                         position=0,
                         source_type="assistant",
                         target_type="assistant",
-                        summary=WaldiezChatSummary(),  # pyright: ignore
-                        message=WaldiezChatMessage(  # pyright: ignore
+                        summary=WaldiezChatSummary(),
+                        message=WaldiezChatMessage(
                             type="string",
                             content="Hello, how can I help you?",
                         ),
                         condition=WaldiezDefaultCondition.create(),
                         available=WaldiezTransitionAvailability(),
-                        nested_chat=WaldiezChatNested(),  # pyright: ignore
+                        nested_chat=WaldiezChatNested(),
                     ),
                 ),
                 WaldiezChat(
@@ -263,20 +266,20 @@ class WaldiezFlowData(WaldiezBase):
                     type="chat",
                     source="assistant2",
                     target="assistant1",
-                    data=WaldiezChatData(  # pyright: ignore
+                    data=WaldiezChatData(
                         name="Chat 2",
                         order=1,
                         position=1,
                         source_type="assistant",
                         target_type="assistant",
-                        summary=WaldiezChatSummary(),  # pyright: ignore
-                        message=WaldiezChatMessage(  # pyright: ignore
+                        summary=WaldiezChatSummary(),
+                        message=WaldiezChatMessage(
                             type="string",
                             content="Hello, I need some help.",
                         ),
                         condition=WaldiezDefaultCondition.create(),
                         available=WaldiezTransitionAvailability(),
-                        nested_chat=WaldiezChatNested(),  # pyright: ignore
+                        nested_chat=WaldiezChatNested(),
                         prerequisites=["chat1"],
                     ),
                 ),
@@ -288,11 +291,11 @@ class WaldiezFlowData(WaldiezBase):
 
 def get_flow_data(
     data: dict[str, Any],
-    flow_id: Optional[str] = None,
-    name: Optional[str] = None,
-    description: Optional[str] = None,
-    tags: Optional[list[str]] = None,
-    requirements: Optional[list[str]] = None,
+    flow_id: str | None = None,
+    name: str | None = None,
+    description: str | None = None,
+    tags: list[str] | None = None,
+    requirements: list[str] | None = None,
 ) -> dict[str, Any]:
     """Get the flow from the passed data dict.
 

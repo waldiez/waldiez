@@ -4,7 +4,7 @@
 """Tools exporter."""
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from waldiez.models import WaldiezAgent, WaldiezTool
 
@@ -148,7 +148,7 @@ class ToolsExporter(Exporter[ToolExtras]):
                     )
         return extras
 
-    def generate_main_content(self) -> Optional[str]:
+    def generate_main_content(self) -> str | None:
         """Generate the main tools content."""
         # handled as positioned content
         return None

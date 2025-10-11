@@ -18,11 +18,11 @@ class ToolProcessingResult:
     """Result from processing tools."""
 
     content: str = ""
-    builtin_imports: list[str] = field(default_factory=list)  # pyright: ignore
-    third_party_imports: list[str] = field(  # pyright: ignore
+    builtin_imports: list[str] = field(default_factory=list)
+    third_party_imports: list[str] = field(
         default_factory=list,
     )
-    environment_variables: list[EnvironmentVariable] = field(  # pyright: ignore
+    environment_variables: list[EnvironmentVariable] = field(
         default_factory=list,
     )
 
@@ -200,10 +200,11 @@ ag2_{tool_name} = ag2_{tool_name}_interop.convert_tool(
                 for key, value in tool.secrets.items():
                     # f.write(f'os.environ["{key}"] = "{value}"\n')
                     # check first if the key already exists in os.environ
-                    f.write(
+                    to_write = (
                         f'os.environ["{key}"] = '
                         f'os.environ.get("{key}", "{value}")\n'
                     )
+                    f.write(to_write)
         except Exception as exc:  # pragma: no cover
             raise ExporterContentError(
                 f"Failed to write secrets file for tool '{tool_name}': {exc}"

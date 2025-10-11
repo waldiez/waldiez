@@ -4,7 +4,7 @@
 """Export result containers and related classes."""
 
 from dataclasses import dataclass, field
-from typing import Any, Optional, Union
+from typing import Any
 
 from .constants import (
     DEFAULT_EXPORT_POSITION,
@@ -31,21 +31,21 @@ from .validation import ValidationResult
 class ExportResult:
     """Complete export result with all components."""
 
-    main_content: Optional[str] = None
-    imports: set[ImportStatement] = field(  # pyright: ignore
+    main_content: str | None = None
+    imports: set[ImportStatement] = field(
         default_factory=set,
     )
-    positioned_content: list[PositionedContent] = field(  # pyright: ignore
+    positioned_content: list[PositionedContent] = field(
         default_factory=list,
     )
-    instance_arguments: list[InstanceArgument] = field(  # pyright: ignore
+    instance_arguments: list[InstanceArgument] = field(
         default_factory=list,
     )
-    environment_variables: list[EnvironmentVariable] = field(  # pyright: ignore
+    environment_variables: list[EnvironmentVariable] = field(
         default_factory=list
     )
-    validation_result: Optional[ValidationResult] = None
-    metadata: dict[str, Any] = field(default_factory=dict)  # pyright: ignore
+    validation_result: ValidationResult | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def add_import(
         self, statement: str, position: ImportPosition = DEFAULT_IMPORT_POSITION
@@ -69,12 +69,9 @@ class ExportResult:
 
     def add_imports(
         self,
-        statements: Union[
-            set[str],
-            list[str],
-            set[ImportStatement],
-            list[ImportStatement],
-        ],
+        statements: (
+            set[str] | list[str] | set[ImportStatement] | list[ImportStatement]
+        ),
         position: ImportPosition = DEFAULT_IMPORT_POSITION,
     ) -> None:
         """Add multiple import statements.
@@ -106,7 +103,7 @@ class ExportResult:
         value: Any,
         instance_id: str,
         tabs: int = 0,
-        comment: Optional[str] = None,
+        comment: str | None = None,
     ) -> None:
         """Add an instance argument.
 
@@ -120,7 +117,7 @@ class ExportResult:
             The ID of the instance this argument belongs to.
         tabs : int, optional
             Number of tabs for indentation, by default 0
-        comment : Optional[str], optional
+        comment : str | None, optional
             Optional comment for the argument, by default None
         """
         if name and value is not None:  # pragma: no branch
@@ -142,7 +139,7 @@ class ExportResult:
 
     def add_instance_arguments(
         self,
-        arguments: Union[list[InstanceArgument], set[InstanceArgument]],
+        arguments: list[InstanceArgument] | set[InstanceArgument],
     ) -> None:
         """Add multiple instance arguments.
 
@@ -217,9 +214,9 @@ class ExportResult:
         position: ExportPosition = DEFAULT_EXPORT_POSITION,
         order: ContentOrder | int = ContentOrder.MAIN_CONTENT,
         skip_strip: bool = False,
-        agent_id: Optional[str] = None,
-        agent_position: Optional[AgentPosition] = None,
-        metadata: Optional[dict[str, Any]] = None,
+        agent_id: str | None = None,
+        agent_position: AgentPosition | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         """Add positioned content.
 
@@ -257,7 +254,7 @@ class ExportResult:
         self,
         name: str,
         value: str,
-        description: Optional[str] = None,
+        description: str | None = None,
         required: bool = True,
     ) -> None:
         """Add environment variable.
@@ -268,7 +265,7 @@ class ExportResult:
             The name of the environment variable.
         value : str
             The value of the environment variable.
-        description : Optional[str], optional
+        description : str | None, optional
             Description of the variable, by default None
         required : bool, optional
             Whether the variable is required, by default True
@@ -353,7 +350,7 @@ class ExportResult:
         return sorted(content)
 
     def get_agent_content(
-        self, agent_id: str, agent_position: Optional[AgentPosition] = None
+        self, agent_id: str, agent_position: AgentPosition | None = None
     ) -> list[PositionedContent]:
         """Get content positioned relative to a specific agent.
 
@@ -561,8 +558,8 @@ class ExportResultBuilder:
         content: str,
         position: ExportPosition = DEFAULT_EXPORT_POSITION,
         order: ContentOrder = ContentOrder.MAIN_CONTENT,
-        agent_id: Optional[str] = None,
-        agent_position: Optional[AgentPosition] = None,
+        agent_id: str | None = None,
+        agent_position: AgentPosition | None = None,
     ) -> "ExportResultBuilder":
         """Add positioned content.
 
@@ -574,7 +571,7 @@ class ExportResultBuilder:
             The content position, by default AGENTS
         order : int, optional
             The order within position, by default 0
-        agent_id : Optional[str], optional
+        agent_id : str | None, optional
             Agent ID for agent-relative positioning, by default None
         agent_position : Optional[AgentPosition], optional
             Position relative to agent, by default None
@@ -594,7 +591,7 @@ class ExportResultBuilder:
         return self
 
     def with_env_var(
-        self, name: str, value: str, description: Optional[str] = None
+        self, name: str, value: str, description: str | None = None
     ) -> "ExportResultBuilder":
         """Add environment variable.
 
@@ -604,7 +601,7 @@ class ExportResultBuilder:
             Variable name.
         value : str
             Variable value.
-        description : Optional[str], optional
+        description : str | None, optional
             Variable description, by default None
 
         Returns

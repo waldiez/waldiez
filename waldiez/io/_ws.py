@@ -4,6 +4,8 @@
 # pylint: disable=line-too-long
 # pyright: reportUnknownMemberType=false,reportUnknownParameterType=false
 # pyright: reportUnknownVariableType=false,reportUnknownArgumentType=false
+# pyright: reportConstantRedefinition=false,reportUnnecessaryIsInstance=false
+
 """WebSocket IOStream implementation for AsyncIO."""
 
 import asyncio
@@ -15,14 +17,14 @@ HAS_WS_LIB = False
 try:
     from starlette.websockets import WebSocket  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
 
-    HAS_WS_LIB = True  # pyright: ignore
+    HAS_WS_LIB = True
 except ImportError:  # pragma: no cover
     pass
 
 try:
     import websockets  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped]  # noqa
 
-    HAS_WS_LIB = True  # pyright: ignore
+    HAS_WS_LIB = True
 except ImportError:  # pragma: no cover
     pass
 
@@ -42,7 +44,7 @@ class WebSocketConnection(Protocol):
     async def receive_message(
         self,
         timeout: float = 120,
-    ) -> str:  # pyright: ignore
+    ) -> str:  # pyright: ignore[reportReturnType]
         """Receive a message from the WebSocket connection.
 
         Parameters
@@ -192,12 +194,13 @@ def create_websocket_adapter(websocket: Any) -> WebSocketConnection:
     if hasattr(websocket, "send") and hasattr(websocket, "recv"):
         return WebSocketsAdapter(websocket)
 
-    raise ValueError(
+    msg = (
         "Unsupported WebSocket type. "
         "Must be either websockets.ServerConnection "
         "or starlette.websockets.WebSocket. "
         f"Received: {type(websocket)}"
     )
+    raise ValueError(msg)
 
 
 def is_websocket_available() -> bool:

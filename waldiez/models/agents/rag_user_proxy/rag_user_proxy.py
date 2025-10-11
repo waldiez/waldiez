@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportArgumentType=false,reportIncompatibleVariableOverride=false
+
 """RAG user agent.
 
 It extends a user agent and has RAG related parameters (`retrieve_config`).
@@ -27,7 +30,7 @@ class WaldiezRagUserProxy(WaldiezAgent):
         See `WaldiezRagUserProxyData` for more info.
     """
 
-    agent_type: Annotated[  # pyright: ignore
+    agent_type: Annotated[
         Literal["rag_user", "rag_user_proxy"],
         Field(
             "rag_user_proxy",
@@ -41,12 +44,12 @@ class WaldiezRagUserProxy(WaldiezAgent):
         ),
     ]
 
-    data: Annotated[  # pyright: ignore
+    data: Annotated[
         WaldiezRagUserProxyData,
         Field(
             title="Data",
             description="The RAG user agent's data",
-            default_factory=WaldiezRagUserProxyData,  # pyright: ignore
+            default_factory=WaldiezRagUserProxyData,
         ),
     ]
 

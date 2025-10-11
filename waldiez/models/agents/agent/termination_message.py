@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Agent Termination Message Check."""
 
-from typing import Optional
-
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
 
@@ -58,7 +56,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
         ),
     ]
     criterion: Annotated[
-        Optional[Literal["found", "ending", "starting", "exact"]],
+        Literal["found", "ending", "starting", "exact"] | None,
         Field(
             "exact",
             title="Criterion",
@@ -69,7 +67,7 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
         ),
     ]
     method_content: Annotated[
-        Optional[str],
+        str | None,
         Field(
             None,
             title="Method content",
@@ -86,16 +84,16 @@ class WaldiezAgentTerminationMessage(WaldiezBase):
 
     def get_termination_function(
         self,
-        name_prefix: Optional[str] = None,
-        name_suffix: Optional[str] = None,
+        name_prefix: str | None = None,
+        name_suffix: str | None = None,
     ) -> tuple[str, str]:
         """Get the termination function.
 
         Parameters
         ----------
-        name_prefix : str
+        name_prefix : str | None
             The function name prefix.
-        name_suffix : str
+        name_suffix : str | None
             The function name suffix.
 
         Returns

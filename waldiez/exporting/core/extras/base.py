@@ -1,11 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+# pyright: reportUnnecessaryIsInstance=false, reportUnusedParameter=false
+
 """Base extras system for all exporters."""
 
 import abc
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Sequence
 
 from ..enums import AgentPosition, ContentOrder, ExportPosition, ImportPosition
 from ..protocols import ExportContributor
@@ -14,17 +16,17 @@ from ..types import ImportStatement, InstanceArgument
 
 
 @dataclass
-class BaseExtras(ExportContributor):
+class BaseExtras(ExportContributor, metaclass=abc.ABCMeta):
     """Base class for all exporter extras with export contribution."""
 
     instance_id: str
-    extra_imports: list[ImportStatement] = field(  # pyright: ignore
+    extra_imports: list[ImportStatement] = field(
         default_factory=list,
     )
     before_agent: str = ""
     after_agent: str = ""
     after_all_agents: str = ""
-    extra_args: list[InstanceArgument] = field(  # pyright: ignore
+    extra_args: list[InstanceArgument] = field(
         default_factory=list,
     )
 
@@ -51,7 +53,7 @@ class BaseExtras(ExportContributor):
         if isinstance(arg, InstanceArgument):
             if arg not in self.extra_args:
                 self.extra_args.append(arg)
-        elif isinstance(arg, str) and arg.strip():  # pyright: ignore
+        elif isinstance(arg, str) and arg.strip():
             # If it's a string, create an InstanceArgument
             # split by '=' (it's an argument line)
             parts = arg.split("=", 1)

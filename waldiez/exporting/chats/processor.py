@@ -3,7 +3,6 @@
 """Chats processor."""
 
 from dataclasses import dataclass
-from typing import Optional
 
 from waldiez.models import (
     WaldiezAgent,
@@ -53,7 +52,7 @@ class ChatsProcessor:
         root_group_manager: WaldiezGroupManager | None,
         for_notebook: bool,
         is_async: bool,
-        cache_seed: Optional[int],
+        cache_seed: int | None,
         serializer: Serializer,
         extras: ChatExtras,
     ) -> None:

@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Update the agent's system message before they reply."""
 
-from typing import Optional
-
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
 
@@ -78,8 +76,8 @@ class WaldiezAgentUpdateSystemMessage(WaldiezBase):
 
     def get_content(
         self,
-        name_prefix: Optional[str] = None,
-        name_suffix: Optional[str] = None,
+        name_prefix: str | None = None,
+        name_suffix: str | None = None,
     ) -> tuple[str, str]:
         """Get the update function content.
 

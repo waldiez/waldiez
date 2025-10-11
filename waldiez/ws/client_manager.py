@@ -5,6 +5,7 @@
 # pyright: reportUnknownMemberType=false,reportAttributeAccessIssue=false
 # pyright: reportUnknownVariableType=false,reportUnknownArgumentType=false
 # pyright: reportAssignmentType=false,reportUnknownParameterType=false
+# pyright: reportArgumentType=false
 # flake8: noqa: C901
 """WebSocket client manager: bridges WS <-> subprocess runner."""
 
@@ -71,7 +72,7 @@ class ClientManager:
 
     def __init__(
         self,
-        websocket: websockets.ServerConnection,  # pyright: ignore
+        websocket: websockets.ServerConnection,
         client_id: str,
         session_manager: SessionManager,
         workspace_dir: Path = CWD,
@@ -148,7 +149,7 @@ class ClientManager:
         except (
             websockets.ConnectionClosed,
             ConnectionResetError,
-        ) as e:  # pyright: ignore
+        ) as e:
             self.logger.info("Client %s disconnected: %s", self.client_id, e)
             await self.cleanup()
             return False

@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=broad-exception-caught,no-member
-# pyright: reportUnknownVariableType=false
+# pyright: reportUnknownVariableType=false,reportAny=false
+# pyright: reportDeprecated=false, reportUnannotatedClassAttribute=false
 """Session management models for WebSocket workflow execution."""
 
 import json

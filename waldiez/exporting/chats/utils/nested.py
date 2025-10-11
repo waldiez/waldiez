@@ -3,7 +3,7 @@
 # pylint: disable=too-many-locals
 """Nested chats exporting."""
 
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 from waldiez.models import (
     WaldiezAgent,
@@ -125,7 +125,7 @@ def get_nested_chat_message_string(
     agent_names: dict[str, str],
     chat_names: dict[str, str],
     serializer: Callable[..., str],
-) -> tuple[str, Optional[str]]:
+) -> tuple[str, str | None]:
     """Get the nested chat message string.
 
     Parameters
@@ -145,10 +145,10 @@ def get_nested_chat_message_string(
 
     Returns
     -------
-    tuple[str, Optional[str]]
+    tuple[str, str | None]
         The message string and the method name if the message is a method.
     """
-    sender_name: Optional[str] = None
+    sender_name: str | None = None
     sender_id = waldiez_chat.target if message.is_reply else waldiez_chat.source
     recipient_id = (
         waldiez_chat.source if message.is_reply else waldiez_chat.target
@@ -240,7 +240,7 @@ def get_chat_nested_string(
     chat: WaldiezChat,
     is_reply: bool,
     chat_names: dict[str, str],
-) -> tuple[str, Optional[str]]:
+) -> tuple[str, str | None]:
     """Get the nested chat message.
 
     Parameters
@@ -254,7 +254,7 @@ def get_chat_nested_string(
 
     Returns
     -------
-    tuple[str, Optional[str]]
+    tuple[str, str | None]
         If the message is a string, the message content and None.
         If the message is a method, the method name and the method content.
         If the message is None, 'None' and None.

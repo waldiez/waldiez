@@ -2,6 +2,9 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: skip-file
 # isort: skip_file
+# pyright: reportMissingImports=false,reportUnusedImport=false
+# pyright: reportCallInDefaultInitializer=false,reportPrivateImportUsage=false
+# pyright: reportUnknownVariableType=false
 # flake8: noqa: E501
 """Waldiez-jupyter extra typer commands for CLI."""
 

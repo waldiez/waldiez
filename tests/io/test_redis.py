@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
-# pyright: reportPrivateUsage=false
+# pyright: reportMissingTypeStubs=false
+# pyright: reportPrivateUsage=false,reportUnknownMemberType=false
+# pyright: reportUnknownVariableType=false,reportUnknownArgumentType=false
 # pylint: disable=missing-param-doc,missing-type-doc,missing-return-doc
 # pylint: disable=missing-yield-doc, protected-access
 
@@ -49,9 +51,9 @@ def test_print(fake_redis: fakeredis.FakeRedis) -> None:
 
     stream.print("Hello", "World")
 
-    entries = fake_redis.xrange(f"task:{task_id}:output")  # pyright: ignore
-    assert len(entries) == 1  # pyright: ignore
-    call_data = entries[0][1]  # pyright: ignore
+    entries = fake_redis.xrange(f"task:{task_id}:output")
+    assert len(entries) == 1
+    call_data = entries[0][1]
     assert call_data["type"] == "print"
     assert call_data["data"] == "Hello World\n"
 
@@ -64,9 +66,9 @@ def test_print_with_file_invalid(fake_redis: fakeredis.FakeRedis) -> None:
 
     stream.print("Hello", "World", file="output.txt")
 
-    entries = fake_redis.xrange(f"task:{task_id}:output")  # pyright: ignore
-    assert len(entries) == 1  # pyright: ignore
-    call_data = entries[0][1]  # pyright: ignore
+    entries = fake_redis.xrange(f"task:{task_id}:output")
+    assert len(entries) == 1
+    call_data = entries[0][1]
     assert call_data["type"] == "print"
     assert call_data["data"] == "Hello World\n"
 
@@ -82,11 +84,11 @@ def test_print_with_file_string_io(fake_redis: fakeredis.FakeRedis) -> None:
     output.write(" Hello, World!")
     stream.print("Hello", "World", file=output)
     # also check this is published to Redis
-    entries = fake_redis.xrange(  # pyright: ignore
+    entries = fake_redis.xrange(
         f"task:{task_id}:output",
     )
-    assert len(entries) == 1  # pyright: ignore
-    call_data = entries[0][1]  # pyright: ignore
+    assert len(entries) == 1
+    call_data = entries[0][1]
     assert call_data["type"] == "print"
     assert call_data["data"] == "Hello World Hello, World!\n"
 
@@ -102,11 +104,11 @@ def test_print_with_file_bytes_io(fake_redis: fakeredis.FakeRedis) -> None:
     output.write(b" Hello, World!")
     stream.print("Hello", "World", file=output)
     # also check this is published to Redis
-    entries = fake_redis.xrange(  # pyright: ignore
+    entries = fake_redis.xrange(
         f"task:{task_id}:output",
     )
-    assert len(entries) == 1  # pyright: ignore
-    call_data = entries[0][1]  # pyright: ignore
+    assert len(entries) == 1
+    call_data = entries[0][1]
     assert call_data["type"] == "print"
     assert call_data["data"] == "Hello World Hello, World!\n"
 
@@ -130,13 +132,13 @@ def test_send(fake_redis: fakeredis.FakeRedis) -> None:
     )
     stream.send(message)
 
-    entries = fake_redis.xrange(  # pyright: ignore
+    entries = fake_redis.xrange(
         f"task:{task_id}:output",
     )
-    assert len(entries) == 1  # pyright: ignore
-    call_data = entries[0][1]  # pyright: ignore
+    assert len(entries) == 1
+    call_data = entries[0][1]
     assert call_data["type"] == "text"
-    message_data = json.loads(call_data["data"])  # pyright: ignore
+    message_data = json.loads(call_data["data"])
     assert message_data["text"] == "Hello, World!"
 
 
@@ -193,10 +195,10 @@ def test_locking_mechanism(fake_redis: fakeredis.FakeRedis) -> None:
     stream = RedisIOStream("redis://localhost", task_id, input_timeout=1)
     stream.redis = fake_redis
     # pylint: disable=protected-access
-    assert stream._acquire_lock(lock_key) is True  # pyright: ignore
-    assert stream._acquire_lock(lock_key) is False  # pyright: ignore
-    stream._release_lock(lock_key)  # pyright: ignore
-    assert stream._acquire_lock(lock_key) is True  # pyright: ignore
+    assert stream._acquire_lock(lock_key) is True
+    assert stream._acquire_lock(lock_key) is False
+    stream._release_lock(lock_key)
+    assert stream._acquire_lock(lock_key) is True
 
 
 def test_context_manager(fake_redis: fakeredis.FakeRedis) -> None:
@@ -208,9 +210,9 @@ def test_context_manager(fake_redis: fakeredis.FakeRedis) -> None:
     stream.redis = fake_redis
 
     with stream as io_stream:
-        assert io_stream._acquire_lock(lock_key) is True  # pyright: ignore
+        assert io_stream._acquire_lock(lock_key) is True
 
-    assert io_stream._acquire_lock(lock_key) is False  # pyright: ignore
+    assert io_stream._acquire_lock(lock_key) is False
 
 
 def test_cleanup_processed_task_requests(
@@ -279,7 +281,7 @@ def test_trim_task_output_streams(fake_redis: fakeredis.FakeRedis) -> None:
     stream_key = f"task:{task_id}:output"
 
     for i in range(20):
-        fake_redis.xadd(stream_key, {"data": f"msg-{i}"})  # pyright: ignore
+        fake_redis.xadd(stream_key, {"data": f"msg-{i}"})
 
     assert fake_redis.xlen(stream_key) == 20
 
@@ -363,7 +365,7 @@ async def test_a_trim_task_output_streams(
     stream_key = f"task:{task_id}:output"
 
     for i in range(20):
-        await a_fake_redis.xadd(  # pyright: ignore
+        await a_fake_redis.xadd(
             stream_key,
             {"data": f"msg-{i}"},
         )
@@ -413,9 +415,9 @@ def test_send_message_without_type(fake_redis: fakeredis.FakeRedis) -> None:
         mock_dump.return_value = {"content": "test content"}
         stream.send(message)
 
-    entries = fake_redis.xrange(f"task:{task_id}:output")  # pyright: ignore
-    assert len(entries) == 1  # pyright: ignore
-    call_data = entries[0][1]  # pyright: ignore
+    entries = fake_redis.xrange(f"task:{task_id}:output")
+    assert len(entries) == 1
+    call_data = entries[0][1]
     # Should use class name as type
     assert call_data["type"] == "MessageWithoutType"
 
@@ -593,9 +595,9 @@ def test_print_with_bytes_file_encoding_issues(
     mock_file = MockFileWithBytes()
     stream.print("Test", file=mock_file)
 
-    entries = fake_redis.xrange(f"task:{task_id}:output")  # pyright: ignore
-    assert len(entries) == 1  # pyright: ignore
-    call_data = entries[0][1]  # pyright: ignore
+    entries = fake_redis.xrange(f"task:{task_id}:output")
+    assert len(entries) == 1
+    call_data = entries[0][1]
     assert "Test" in call_data["data"]
 
 

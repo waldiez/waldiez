@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Get the standard imports for the flow exporter."""
 
-from typing import Optional
-
 from waldiez.exporting.core import ImportPosition
 
 BUILTIN_IMPORTS = [
@@ -270,10 +268,10 @@ def ensure_np_import(third_party_imports: list[str]) -> list[str]:
 
 
 def gather_imports(
-    model_imports: Optional[list[tuple[str, ImportPosition]]] = None,
-    tool_imports: Optional[list[tuple[str, ImportPosition]]] = None,
-    chat_imports: Optional[list[tuple[str, ImportPosition]]] = None,
-    agent_imports: Optional[list[tuple[str, ImportPosition]]] = None,
+    model_imports: list[tuple[str, ImportPosition]] | None = None,
+    tool_imports: list[tuple[str, ImportPosition]] | None = None,
+    chat_imports: list[tuple[str, ImportPosition]] | None = None,
+    agent_imports: list[tuple[str, ImportPosition]] | None = None,
 ) -> list[tuple[str, ImportPosition]]:
     """Gather all the imports.
 

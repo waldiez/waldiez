@@ -3,7 +3,6 @@
 """Validation types and results for Waldiez exporting core."""
 
 from dataclasses import dataclass, field
-from typing import Optional
 
 
 # Validation Types
@@ -13,8 +12,8 @@ class ValidationError:
 
     message: str
     severity: str = "error"  # error, warning, info
-    location: Optional[str] = None
-    suggestion: Optional[str] = None
+    location: str | None = None
+    suggestion: str | None = None
 
 
 @dataclass
@@ -22,18 +21,18 @@ class ValidationResult:
     """Result of validation operations."""
 
     is_valid: bool
-    errors: list[ValidationError] = field(  # pyright: ignore
+    errors: list[ValidationError] = field(
         default_factory=list,
     )
-    warnings: list[ValidationError] = field(  # pyright: ignore
+    warnings: list[ValidationError] = field(
         default_factory=list,
     )
 
     def add_error(
         self,
         message: str,
-        location: Optional[str] = None,
-        suggestion: Optional[str] = None,
+        location: str | None = None,
+        suggestion: str | None = None,
     ) -> None:
         """Add a validation error.
 
@@ -41,9 +40,9 @@ class ValidationResult:
         ----------
         message : str
             The error message to add.
-        location : Optional[str], optional
+        location : str | None, optional
             The location in the code where the error occurred, by default None
-        suggestion : Optional[str], optional
+        suggestion : str | None, optional
             A suggestion for fixing the error, by default None
         """
         self.errors.append(
@@ -51,14 +50,14 @@ class ValidationResult:
         )
         self.is_valid = False
 
-    def add_warning(self, message: str, location: Optional[str] = None) -> None:
+    def add_warning(self, message: str, location: str | None = None) -> None:
         """Add a validation warning.
 
         Parameters
         ----------
         message : str
             The warning message to add.
-        location : Optional[str], optional
+        location : str | None, optional
             The location in the code where the warning occurred, by default None
         """
         self.warnings.append(ValidationError(message, "warning", location))

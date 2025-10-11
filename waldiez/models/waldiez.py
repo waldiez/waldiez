@@ -11,9 +11,10 @@ definitions and their optional additional tools to be used.
 import asyncio
 import json
 import tempfile
+from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 import aiofiles
 
@@ -96,7 +97,7 @@ class Waldiez:
             requirements=requirements,
         )
         validated = WaldiezFlow.model_validate(flow)
-        return cls(flow=validated)  # pyright: ignore
+        return cls(flow=validated)
 
     @classmethod
     def load(

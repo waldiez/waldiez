@@ -20,7 +20,7 @@ during the flow execution.
 from pathlib import Path
 from typing import Any
 
-from typing_extensions import Literal
+from typing_extensions import Literal, override
 
 from .models.waldiez import Waldiez
 from .running import (
@@ -113,7 +113,7 @@ class WaldiezRunner(WaldiezBaseRunner):
 
     # pylint: disable=super-init-not-called
     # noinspection PyMissingConstructor
-    def __init__(
+    def __init__(  # pyright: ignore[reportMissingSuperCall]
         self,
         waldiez: Waldiez,
         mode: Literal["standard", "debug"] = "standard",
@@ -152,6 +152,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             **kwargs,
         )
 
+    @override
     def __repr__(self) -> str:  # pragma: no cover
         """Get the string representation of the runner.
 
@@ -181,6 +182,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             f"{type(self).__name__} has no attribute '{name}'"
         )  # pragma: no cover
 
+    @override
     def _run(
         self,
         temp_dir: Path,
@@ -199,6 +201,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             **kwargs,
         )
 
+    @override
     async def _a_run(
         self,
         temp_dir: Path,
@@ -219,6 +222,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             **kwargs,
         )
 
+    @override
     @classmethod
     def load(
         cls,

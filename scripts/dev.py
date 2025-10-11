@@ -2,6 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pylint: disable=consider-using-with,too-many-try-statements
+# pyright: reportUnusedParameter=false
 """Development server runner - starts both backend and frontend."""
 
 import signal

@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+# pyright: reportMissingTypeStubs=false, reportUnknownMemberType=false
+# pyright: reportUnknownVariableType=false
 """Test waldiez.exporting.flow.flow_exporter."""
 
 import shutil
@@ -87,12 +89,12 @@ def _export_flow(
             cell_metadata_filter="-all",
         )
         with open(destination_path, "r", encoding="utf-8") as py_out:
-            jp_content = jupytext.read(  # pyright: ignore
+            jp_content = jupytext.read(
                 py_out,
                 fmt="py:percent",
                 config=config,
             )
-        jupytext.write(  # pyright: ignore
+        jupytext.write(
             jp_content,
             destination_ipynb,
             fmt="ipynb",

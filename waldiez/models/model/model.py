@@ -3,7 +3,7 @@
 """Waldiez model model."""
 
 import os
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import Field
 from typing_extensions import Annotated, Literal
@@ -181,7 +181,7 @@ class WaldiezModel(WaldiezBase):
         return api_key or "REPLACE_ME"
 
     @property
-    def price(self) -> Optional[list[float]]:
+    def price(self) -> list[float] | None:
         """Get the model's price."""
         if self.data.price is None:
             return None

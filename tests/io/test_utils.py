@@ -422,7 +422,7 @@ class TestGetMessageDump:
     def test_get_message_dump_normal(self) -> None:
         """Test get_message_dump with a normal message."""
         msg = DummyMessage(dump={"key": "value"})
-        result = get_message_dump(msg)  # pyright: ignore
+        result = get_message_dump(msg)
         assert result == {"key": "value"}
 
     def test_get_message_dump_no_model_dump(self) -> None:
@@ -432,7 +432,7 @@ class TestGetMessageDump:
             """No model_dump method."""
 
         msg = NoDump()
-        result = get_message_dump(msg)  # pyright: ignore
+        result = get_message_dump(msg)
         assert "error" in result
         assert result["type"] == "NoDump"
 
@@ -440,13 +440,13 @@ class TestGetMessageDump:
         """Test get_message_dump with a msg that raises on the first call."""
         # Raise on first call, succeed on second
         msg = DummyMessage(dump={"ok": True}, raise_first=True)
-        result = get_message_dump(msg)  # pyright: ignore
+        result = get_message_dump(msg)
         assert result == {"ok": True}
 
     def test_get_message_dump_both_exceptions(self) -> None:
         """Test get_message_dump with a message that raises on both calls."""
         msg = DummyMessage(raise_first=True, raise_second=True)
-        result = get_message_dump(msg)  # pyright: ignore
+        result = get_message_dump(msg)
         assert "error" in result
         assert (
             "RuntimeError" not in result["error"]

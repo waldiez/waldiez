@@ -1,6 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
 # pylint: disable=unused-argument
+# pyright: reportImportCycles=false, reportUnusedParameter=false
+
 """Command handler for step-by-step execution."""
 
 from typing import TYPE_CHECKING, Callable

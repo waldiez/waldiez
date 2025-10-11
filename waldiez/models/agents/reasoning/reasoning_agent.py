@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportArgumentType=false,reportIncompatibleVariableOverride=false
+
 """Reasoning agent model."""
 
 from typing import Any
@@ -14,7 +17,7 @@ from .reasoning_agent_data import WaldiezReasoningAgentData
 class WaldiezReasoningAgent(WaldiezAgent):
     """Reasoning agent model."""
 
-    agent_type: Annotated[  # pyright: ignore
+    agent_type: Annotated[
         Literal["reasoning"],
         Field(
             "reasoning",
@@ -23,12 +26,12 @@ class WaldiezReasoningAgent(WaldiezAgent):
             alias="agentType",
         ),
     ]
-    data: Annotated[  # pyright: ignore
+    data: Annotated[
         WaldiezReasoningAgentData,
         Field(
             title="Data",
             description="The reasoning agent's data",
-            default_factory=WaldiezReasoningAgentData,  # pyright: ignore
+            default_factory=WaldiezReasoningAgentData,
         ),
     ]
 

@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportArgumentType=false,reportIncompatibleVariableOverride=false
+
 """Document agent model."""
 
 from typing import Literal
@@ -23,7 +26,7 @@ class WaldiezDocAgent(WaldiezAgent):
     Extends `WaldiezAgent`.
     """
 
-    agent_type: Annotated[  # pyright: ignore
+    agent_type: Annotated[
         Literal["doc_agent"],
         Field(
             default="doc_agent",
@@ -32,12 +35,12 @@ class WaldiezDocAgent(WaldiezAgent):
             alias="agentType",
         ),
     ]
-    data: Annotated[  # pyright: ignore
+    data: Annotated[
         WaldiezDocAgentData,
         Field(
             title="Data",
             description="The document agent's data",
-            default_factory=WaldiezDocAgentData,  # pyright: ignore
+            default_factory=WaldiezDocAgentData,
         ),
     ]
 

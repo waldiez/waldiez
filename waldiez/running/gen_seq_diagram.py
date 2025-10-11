@@ -1,11 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportUnknownArgumentType=false,reportUnknownVariableType=false
+# pyright: reportUnknownMemberType=false
 """Generate a Mermaid sequence diagram from a file containing event data."""
 
 import json
 import re
 from pathlib import Path
-from typing import Any, Set, Union
+from typing import Any
 
 import pandas as pd
 
@@ -52,7 +55,7 @@ def get_json_state(json_state: Any) -> dict[str, Any]:
         The JSON state of the event.
     """
     if isinstance(json_state, dict):
-        return json_state  # pyright: ignore
+        return json_state
     if isinstance(json_state, str):
         try:
             return json.loads(json_state)
@@ -76,14 +79,14 @@ def process_events(df_events: pd.DataFrame) -> str:
         The Mermaid sequence diagram text.
     """
     # Set to store participants (senders and recipients)
-    participants: Set[str] = set()
+    participants: set[str] = set()
     recipient: str
 
     # Initialize the sequence diagram text
     seq_text = SEQ_TXT
 
     # Loop through each event in the DataFrame
-    for i in range(len(df_events["json_state"])):  # pyright: ignore
+    for i in range(len(df_events["json_state"])):
         # Parse the JSON state of the event
         df_j = get_json_state(df_events["json_state"][i])
         # Skip events that are not relevant (e.g., replies or missing messages)
@@ -92,24 +95,24 @@ def process_events(df_events: pd.DataFrame) -> str:
         ):
             sender = df_j["sender"]
             # noinspection PyTypeChecker
-            recipient = df_events["source_name"][i]  # pyright: ignore
+            recipient = df_events["source_name"][i]
 
             # Extract message content if available
             if (
                 isinstance(df_j["message"], dict)
                 and "content" in df_j["message"]
             ):
-                content = str(df_j["message"]["content"])  # pyright: ignore
+                content = str(df_j["message"]["content"])
                 message = "Content: " + content
             else:
-                message = str(df_j["message"])  # pyright: ignore
+                message = str(df_j["message"])
 
             # Escape the message for Mermaid compatibility and
             # truncate long messages
             message = escape_mermaid_text(message)
 
             # Add sender and recipient to participants set
-            participants.add(recipient)  # pyright: ignore
+            participants.add(recipient)
             participants.add(sender)
 
             # Split into the main message and the context
@@ -135,14 +138,14 @@ def process_events(df_events: pd.DataFrame) -> str:
     return mermaid_text
 
 
-def save_diagram(mermaid_text: str, output_path: Union[str, Path]) -> None:
+def save_diagram(mermaid_text: str, output_path: str | Path) -> None:
     """Save the Mermaid diagram to a .mmd file.
 
     Parameters
     ----------
     mermaid_text : str
         The Mermaid sequence diagram text.
-    output_path : Union[str, Path]
+    output_path : str | Path
         The path to save the Mermaid diagram.
     """
     with open(output_path, "w", encoding="utf-8", newline="\n") as file:
@@ -150,15 +153,15 @@ def save_diagram(mermaid_text: str, output_path: Union[str, Path]) -> None:
 
 
 def generate_sequence_diagram(
-    file_path: Union[str, Path], output_path: Union[str, Path]
+    file_path: str | Path, output_path: str | Path
 ) -> None:
     """Generate the Mermaid diagram.
 
     Parameters
     ----------
-    file_path : Union[str, Path]
+    file_path : str | Path
         The path to the JSON or CSV file containing the events' data.
-    output_path : Union[str, Path]
+    output_path : str | Path
         The path to save the Mermaid diagram.
 
     Raises
@@ -178,9 +181,9 @@ def generate_sequence_diagram(
     is_csv = file_path.suffix == ".csv"
     try:
         if is_csv:
-            df_events = pd.read_csv(file_path)  # pyright: ignore
+            df_events = pd.read_csv(file_path)
         else:
-            df_events = pd.read_json(file_path)  # pyright: ignore
+            df_events = pd.read_json(file_path)
     except pd.errors.EmptyDataError:  # pragma: no cover
         return
 

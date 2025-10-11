@@ -48,6 +48,6 @@ def test_waldiez_model_price() -> None:
     with pytest.raises(ValueError):
         # noinspection PyTypeChecker
         WaldiezModelPrice(
-            prompt_price_per_1k=prompt_price_per_1k,  # pyright: ignore
+            prompt_price_per_1k=prompt_price_per_1k,
             completion_token_price_per_1k=completion_token_price_per_1k,
         )

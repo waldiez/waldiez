@@ -1,8 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+
 """Base content models for media types."""
 
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -10,36 +12,36 @@ from pydantic import BaseModel
 class ImageContent(BaseModel):
     """Image content model."""
 
-    url: Optional[str] = None
-    file: Optional[Any] = None  # File type not directly mappable in Python
-    alt: Optional[str] = None
+    url: str | None = None
+    file: Any | None = None  # File type not directly mappable in Python
+    alt: str | None = None
 
 
 class VideoContent(BaseModel):
     """Video content model."""
 
-    url: Optional[str] = None
-    file: Optional[Any] = None
-    duration: Optional[int] = None
-    thumbnailUrl: Optional[str] = None
-    mimeType: Optional[str] = None
+    url: str | None = None
+    file: Any | None = None
+    duration: int | None = None
+    thumbnailUrl: str | None = None
+    mimeType: str | None = None
 
 
 class AudioContent(BaseModel):
     """Audio content model."""
 
-    url: Optional[str] = None
-    file: Optional[Any] = None
-    duration: Optional[int] = None
-    transcript: Optional[str] = None
+    url: str | None = None
+    file: Any | None = None
+    duration: int | None = None
+    transcript: str | None = None
 
 
 class FileContent(BaseModel):
     """File content model."""
 
-    url: Optional[str] = None
-    file: Optional[Any] = None
+    url: str | None = None
+    file: Any | None = None
     name: str
-    size: Optional[int] = None
-    type: Optional[str] = None
-    previewUrl: Optional[str] = None
+    size: int | None = None
+    type: str | None = None
+    previewUrl: str | None = None

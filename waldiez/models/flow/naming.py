@@ -2,7 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Ensure unique names for agents, models, tools, and chats."""
 
-from typing import Iterable, TypedDict
+from collections.abc import Iterable
+from typing import TypedDict
 
 from ..agents import WaldiezAgent
 from ..chat import WaldiezChat

@@ -3,7 +3,7 @@
 
 """Constants and type mappings for content models."""
 
-from typing import Type, TypedDict, Union
+from typing import TypedDict
 
 from typing_extensions import Literal
 
@@ -13,14 +13,14 @@ from .content.image import ImageMediaContent, ImageUrlMediaContent
 from .content.text import TextMediaContent
 from .content.video import VideoMediaContent
 
-MediaContent = Union[
-    TextMediaContent,
-    ImageMediaContent,
-    ImageUrlMediaContent,
-    VideoMediaContent,
-    AudioMediaContent,
-    FileMediaContent,
-]
+MediaContent = (
+    TextMediaContent
+    | ImageMediaContent
+    | ImageUrlMediaContent
+    | VideoMediaContent
+    | AudioMediaContent
+    | FileMediaContent
+)
 
 ContentTypeKey = Literal["text", "image", "image_url", "video", "audio", "file"]
 """Possible content types for the mapping."""
@@ -40,7 +40,7 @@ class ContentMappingEntry(TypedDict):
     """
 
     fields: list[str]
-    cls: Type[MediaContent]
+    cls: type[MediaContent]
     required_field: str
 
 

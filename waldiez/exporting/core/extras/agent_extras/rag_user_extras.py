@@ -15,7 +15,7 @@ class RAGUserExtras(StandardExtras):
     """RAG configuration."""
 
     before_content: str = ""
-    imports: set[str] = field(default_factory=set)  # pyright: ignore
+    imports: set[str] = field(default_factory=set)
 
     def _contribute_specific_content(self, result: ExportResult) -> None:
         """Contribute RAG specific content to the export result."""

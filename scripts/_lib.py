@@ -122,7 +122,7 @@ def _run_command(args: list[str], cwd: Path = ROOT_DIR) -> None:
     args_str = " ".join(args).replace(str(ROOT_DIR), ".")
     print(f"Running command: {args_str}")
     try:
-        subprocess.run(  # nosemgrep # nosec
+        _ = subprocess.run(  # nosemgrep # nosec
             args,
             cwd=cwd,
             stdout=sys.stdout,
@@ -146,7 +146,7 @@ def ensure_package_exists(package_name: str) -> None:
     # pylint: disable=broad-exception-caught
     # noinspection PyBroadException
     try:
-        package_version(package_name)
+        _ = package_version(package_name)
     except BaseException:
         # let's check in venv
         if os.path.exists(ROOT_DIR / ".venv"):
@@ -232,9 +232,9 @@ def run_pyright(in_dir: Path = ROOT_DIR) -> None:
     in_dir : Path
         Directory to run pyright in.
     """
-    ensure_package_exists("pyright")
+    ensure_package_exists("basedpyright")
     run_command(
-        ["pyright", "-p", "pyproject.toml", "."],
+        ["basedpyright", "--project", "pyproject.toml", "."],
         cwd=in_dir,
     )
 

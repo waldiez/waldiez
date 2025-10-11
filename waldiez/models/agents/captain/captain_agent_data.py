@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez captain agent data."""
 
-from typing import Optional
-
 from pydantic import Field
 from typing_extensions import Annotated, Literal
 
@@ -34,7 +32,7 @@ class WaldiezCaptainAgentData(WaldiezAgentData):
         ),
     ]
     tool_lib: Annotated[
-        Optional[Literal["default"]],
+        Literal["default"] | None,
         Field(
             default=None,
             title="Tool lib",

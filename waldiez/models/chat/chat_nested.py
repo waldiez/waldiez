@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Nested chat model."""
 
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 from typing_extensions import Annotated, Self
@@ -36,7 +36,7 @@ class WaldiezChatNested(WaldiezBase):
     """
 
     message: Annotated[
-        Optional[WaldiezChatMessage],
+        WaldiezChatMessage | None,
         Field(
             default=None,
             title="Message",
@@ -44,7 +44,7 @@ class WaldiezChatNested(WaldiezBase):
         ),
     ]
     reply: Annotated[
-        Optional[WaldiezChatMessage],
+        WaldiezChatMessage | None,
         Field(
             default=None,
             title="Reply",
@@ -52,16 +52,16 @@ class WaldiezChatNested(WaldiezBase):
         ),
     ]
 
-    _message_content: Optional[str] = None
-    _reply_content: Optional[str] = None
+    _message_content: str | None = None
+    _reply_content: str | None = None
 
     @property
-    def message_content(self) -> Optional[str]:
+    def message_content(self) -> str | None:
         """Get the message content."""
         return self._message_content
 
     @property
-    def reply_content(self) -> Optional[str]:
+    def reply_content(self) -> str | None:
         """Get the reply content."""
         return self._reply_content
 

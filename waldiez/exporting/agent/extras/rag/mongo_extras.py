@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Get mongodb related content and imports."""
 
-from typing import Set
-
 from waldiez.models import WaldiezRagUserProxy
 
 
@@ -45,7 +43,7 @@ def _get_mongodb_embedding_function_string(
 
 def get_mongodb_db_args(
     agent: WaldiezRagUserProxy, agent_name: str
-) -> tuple[str, Set[str], str]:
+) -> tuple[str, set[str], str]:
     """Get the kwargs to use for MongoDBAtlasVectorDB.
 
     Parameters
@@ -63,14 +61,16 @@ def get_mongodb_db_args(
     embedding_function_arg, to_import_embedding, embedding_function_body = (
         _get_mongodb_embedding_function_string(agent, agent_name)
     )
-    to_import: Set[str] = (
+    to_import: set[str] = (
         set() if not to_import_embedding else {to_import_embedding}
     )
-    tab = " " * 12
+    tab: str = " " * 12
     db_config = agent.retrieve_config.db_config
-    kwarg_string = (
-        f'{tab}connection_string="{db_config.connection_url}",' + "\n"
-        f"{tab}embedding_function={embedding_function_arg}," + "\n"
+    kwarg_string: str = (
+        f'{tab}connection_string="{db_config.connection_url}",'
+        "\n"
+        f"{tab}embedding_function={embedding_function_arg},"
+        "\n"
     )
     wait_until_document_ready = db_config.wait_until_document_ready
     wait_until_index_ready = db_config.wait_until_index_ready

@@ -71,7 +71,7 @@ def test_get_waldiez_version_cache_and_fallback(
 ) -> None:
     """Test getting the Waldiez version with cache and fallback."""
     # Clear cache explicitly
-    version_mod.get_waldiez_version.cache_clear()  # pyright: ignore
+    version_mod.get_waldiez_version.cache_clear()
 
     # Case 1: importlib returns version
     monkeypatch.setattr(

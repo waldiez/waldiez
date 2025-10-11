@@ -2,6 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pyright: reportConstantRedefinition=false
+# pyright: reportImplicitRelativeImport=false
 """Format the Python code."""
 
 import sys

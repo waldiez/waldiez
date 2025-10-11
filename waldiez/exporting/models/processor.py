@@ -5,7 +5,6 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 from waldiez.models import WaldiezModel
 
@@ -20,7 +19,7 @@ class ModelProcessingResult:
     """Result from processing models."""
 
     llm_configs_content: str = ""
-    api_keys_file: Optional[Path] = None
+    api_keys_file: Path | None = None
     needs_api_key_loader: bool = False
 
 
@@ -32,8 +31,8 @@ class ModelProcessor:
         flow_name: str,
         models: list[WaldiezModel],
         model_names: dict[str, str],
-        serializer: Optional[Serializer] = None,
-        output_dir: Optional[Path] = None,
+        serializer: Serializer | None = None,
+        output_dir: Path | None = None,
     ):
         self.flow_name = flow_name
         self.models = models
@@ -93,8 +92,9 @@ __{flow_name_upper}_MODEL_API_KEYS__ = {{'''
         for model in self.models:
             model_name = self.model_names[model.id]
             key_env = model.api_key_env_key
+            api_keys_content += "\n"
             api_keys_content += (
-                "\n" + f'    "{model_name}": '
+                f'    "{model_name}": '
                 f'{{"key": "{model.api_key}", "env_key": "{key_env}"}},'
             )
 

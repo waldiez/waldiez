@@ -15,16 +15,16 @@ __waldiez_checked_conflicts = False
 def _check_autogen_agentchat() -> None:  # pragma: no cover
     try:
         version("autogen-agentchat")
-        print(
+        msg = (
             "Conflict detected: 'autogen-agentchat' is installed "
             "in the current environment, \n"
             "which conflicts with 'ag2'.\n"
             "Please uninstall 'autogen-agentchat': \n"
-            f"{sys.executable} -m pip uninstall -y autogen-agentchat" + "\n"
+            f"{sys.executable} -m pip uninstall -y autogen-agentchat\n"
             "And install 'ag2' (and/or 'waldiez') again: \n"
-            f"{sys.executable} -m pip install --force ag2 waldiez",
-            file=sys.stderr,
+            f"{sys.executable} -m pip install --force ag2 waldiez"
         )
+        print(msg, file=sys.stderr)
         sys.exit(1)
     except PackageNotFoundError:
         pass

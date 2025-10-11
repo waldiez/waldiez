@@ -202,7 +202,7 @@ def test_waldiez_api_key() -> None:
 def test_waldiez_invalid_model() -> None:
     """Test invalid WaldiezModel."""
     with pytest.raises(ValueError):
-        WaldiezModel(  # pyright: ignore
+        WaldiezModel(
             id="wm-1",
             name="model",
             description="description",

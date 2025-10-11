@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportAttributeAccessIssue=false,reportUnknownArgumentType=false
 # flake8: noqa: G004
 """Waldiez subprocess runner that inherits from BaseRunner."""
 
@@ -7,6 +9,8 @@ import asyncio
 import re
 from pathlib import Path
 from typing import Any, Callable, Literal
+
+from typing_extensions import override
 
 from waldiez.models import Waldiez
 
@@ -114,7 +118,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         initial_breakpoints = kwargs.get("breakpoints")
         if isinstance(initial_breakpoints, (list, set, tuple)):
             breakpoints = BreakpointsMixin.get_initial_breakpoints(
-                initial_breakpoints  # pyright: ignore
+                initial_breakpoints
             )
             return [str(item) for item in breakpoints]
         return []
@@ -167,6 +171,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         )
         return self.sync_runner
 
+    @override
     def run(
         self,
         output_path: str | Path | None = None,
@@ -231,6 +236,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
                 return _output_path / f"{filename}.py"
         return self._waldiez_file.with_suffix(".py")
 
+    @override
     def _run(
         self,
         temp_dir: Path,
@@ -266,6 +272,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
                 }
             ]
 
+    @override
     async def a_run(
         self,
         output_path: str | Path | None = None,
@@ -316,6 +323,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             **kwargs,
         )
 
+    @override
     async def _a_run(
         self,
         temp_dir: Path,
@@ -407,6 +415,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
                 self.sync_runner.provide_user_input, user_input
             )
 
+    @override
     def stop(self) -> None:
         """Stop the workflow execution."""
         super().stop()  # Set the base runner stop flag
@@ -460,6 +469,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             self.sync_runner.stop()
         self.sync_runner = None
 
+    @override
     def _after_run(
         self,
         results: list[dict[str, Any]],
@@ -495,6 +505,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         # Cleanup subprocess runners
         self._cleanup_subprocess_runners()
 
+    @override
     async def _a_after_run(
         self,
         results: list[dict[str, Any]],

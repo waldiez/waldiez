@@ -45,35 +45,62 @@ def test_export_rag_user_agent(tmp_path: Path) -> None:
     tab = "    "
     expected = (
         f"{agent.name} = RetrieveUserProxyAgent(\n"
-        f'{tab}name="{agent.name}",' + "\n"
-        f'{tab}description="{agent.description}",' + "\n"
-        f'{tab}system_message="system message of agent 1",' + "\n"
-        f'{tab}human_input_mode="ALWAYS",' + "\n"
-        f"{tab}max_consecutive_auto_reply=None," + "\n"
-        f'{tab}default_auto_reply="",' + "\n"
-        f"{tab}code_execution_config=False," + "\n"
-        f"{tab}is_termination_msg=None,  # pyright: ignore" + "\n"
-        f"{tab}retrieve_config={{" + "\n"
-        f'{tab}{tab}"task": "default",' + "\n"
-        f'{tab}{tab}"model": "all-MiniLM-L6-v2",' + "\n"
-        f'{tab}{tab}"customized_answer_prefix": "",' + "\n"
-        f'{tab}{tab}"new_docs": True,' + "\n"
-        f'{tab}{tab}"update_context": True,' + "\n"
-        f'{tab}{tab}"get_or_create": False,' + "\n"
-        f'{tab}{tab}"overwrite": False,' + "\n"
-        f'{tab}{tab}"recursive": True,' + "\n"
-        f'{tab}{tab}"chunk_mode": "multi_lines",' + "\n"
-        f'{tab}{tab}"must_break_at_empty_line": True,' + "\n"
-        f'{tab}{tab}"collection_name": "autogen-docs",' + "\n"
-        f'{tab}{tab}"distance_threshold": -1,' + "\n"
-        f'{tab}{tab}"vector_db": ChromaVectorDB(' + "\n"
-        f"{tab}{tab}{tab}client={agent.name}_client," + "\n"
-        f"{tab}{tab}{tab}embedding_function=agent1_embedding_function," + "\n"
-        f"{tab}{tab})," + "\n"
-        f'{tab}{tab}"client": {agent.name}_client,' + "\n"
-        f"{tab}}}," + "\n"
-        f"{tab}llm_config='model-config'" + "\n"
-        ")"
+        f'{tab}name="{agent.name}",'
+        "\n"
+        f'{tab}description="{agent.description}",'
+        "\n"
+        f'{tab}system_message="system message of agent 1",'
+        "\n"
+        f'{tab}human_input_mode="ALWAYS",'
+        "\n"
+        f"{tab}max_consecutive_auto_reply=None,"
+        "\n"
+        f'{tab}default_auto_reply="",'
+        "\n"
+        f"{tab}code_execution_config=False,"
+        "\n"
+        f"{tab}is_termination_msg=None,  # pyright: ignore"
+        "\n"
+        f"{tab}retrieve_config={{"
+        "\n"
+        f'{tab}{tab}"task": "default",'
+        "\n"
+        f'{tab}{tab}"model": "all-MiniLM-L6-v2",'
+        "\n"
+        f'{tab}{tab}"customized_answer_prefix": "",'
+        "\n"
+        f'{tab}{tab}"new_docs": True,'
+        "\n"
+        f'{tab}{tab}"update_context": True,'
+        "\n"
+        f'{tab}{tab}"get_or_create": False,'
+        "\n"
+        f'{tab}{tab}"overwrite": False,'
+        "\n"
+        f'{tab}{tab}"recursive": True,'
+        "\n"
+        f'{tab}{tab}"chunk_mode": "multi_lines",'
+        "\n"
+        f'{tab}{tab}"must_break_at_empty_line": True,'
+        "\n"
+        f'{tab}{tab}"collection_name": "autogen-docs",'
+        "\n"
+        f'{tab}{tab}"distance_threshold": -1,'
+        "\n"
+        f'{tab}{tab}"vector_db": ChromaVectorDB('
+        "\n"
+        f"{tab}{tab}{tab}client={agent.name}_client,"
+        "\n"
+        f"{tab}{tab}{tab}embedding_function=agent1_embedding_function,"
+        "\n"
+        f"{tab}{tab}),"
+        "\n"
+        f'{tab}{tab}"client": {agent.name}_client,'
+        "\n"
+        f"{tab}}},"
+        "\n"
+        f"{tab}llm_config='model-config'"
+        "\n)"
     )
     assert result.main_content == expected
     shutil.rmtree(output_dir)
@@ -90,8 +117,8 @@ def test_export_rag_user_agent(tmp_path: Path) -> None:
     assert set(import_statements) == set(expected_imports)
     expected_before = (
         "\n"
-        + f"{agent.name}_client = chromadb.Client(Settings(anonymized_telemetry=False))"
-        + "\n"
+        f"{agent.name}_client = chromadb.Client(Settings(anonymized_telemetry=False))"
+        "\n"
         f"{agent.name}_embedding_function = SentenceTransformerEmbeddingFunction(\n"
         f'    model_name="all-MiniLM-L6-v2",\n'
         ")\n"

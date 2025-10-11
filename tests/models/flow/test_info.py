@@ -29,7 +29,7 @@ def test_waldiez_agent_info_validation_error() -> None:
     """Test WaldiezAgentInfo validation error."""
     # Missing required fields should raise ValidationError
     with pytest.raises(ValidationError):
-        WaldiezAgentInfo()  # pyright: ignore
+        WaldiezAgentInfo()
 
 
 def test_waldiez_flow_info_create(monkeypatch: pytest.MonkeyPatch) -> None:

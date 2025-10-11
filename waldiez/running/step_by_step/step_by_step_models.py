@@ -1,6 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
 # pylint: disable=unused-argument,disable=line-too-long
+# pyright: reportUnusedParameter=false, reportUnnecessaryIsInstance=false
+# pyright: reportDeprecated=false
 # flake8: noqa: E501
 """Step-by-step execution models for Waldiez."""
 
@@ -9,6 +12,7 @@ from enum import Enum
 from typing import Annotated, Any, Literal, Union
 
 from pydantic import BaseModel, Field, ValidationInfo, field_validator
+from typing_extensions import override
 
 
 class WaldiezBreakpointType(Enum):
@@ -93,10 +97,11 @@ class WaldiezBreakpoint(BaseModel):
 
         # Basic validation - event types should be alphanumeric with underscores
         if not re.match(r"^[a-zA-Z][a-zA-Z0-9_]*$", v):
-            raise ValueError(
+            msg = (
                 "Invalid breakpoint format. Event type must start with a letter and contain only "
                 "letters, numbers, and underscores"
             )
+            raise ValueError(msg)
         return v
 
     # noinspection PyNestedDecorators,PyUnusedLocal
@@ -135,6 +140,7 @@ class WaldiezBreakpoint(BaseModel):
 
         return v.strip()
 
+    @override
     def model_post_init(self, __context: Any, /) -> None:
         """Validate breakpoint consistency after initialization.
 
@@ -151,15 +157,18 @@ class WaldiezBreakpoint(BaseModel):
 
         if self.type == WaldiezBreakpointType.AGENT_EVENT:
             if not self.event_type or not self.agent:
-                raise ValueError(
+                msg = (
                     "AGENT_EVENT breakpoints require both"
                     " event_type and agent_name"
                 )
+                raise ValueError(msg)
 
+    @override
     def __hash__(self) -> int:
         """Get the hash value for the breakpoint."""
         return hash((self.type, self.event_type, self.agent))
 
+    @override
     def __str__(self) -> str:
         """Get the string representation for display."""
         if self.type == WaldiezBreakpointType.EVENT:
@@ -194,7 +203,7 @@ class WaldiezBreakpoint(BaseModel):
         ValueError
             If the breakpoint string format is invalid.
         """
-        if not breakpoint_str or not isinstance(  # pyright: ignore
+        if not breakpoint_str or not isinstance(
             breakpoint_str,
             str,
         ):
@@ -249,10 +258,11 @@ class WaldiezBreakpoint(BaseModel):
                 event_type=event_type,
             )
         if ":" in breakpoint_str:
-            raise ValueError(
+            msg = (
                 "Invalid breakpoint format. Use 'event:type', 'agent:name', "
                 "'agent:event', or 'all'"
             )
+            raise ValueError(msg)
 
         return cls(
             type=WaldiezBreakpointType.EVENT,
@@ -365,7 +375,7 @@ class WaldiezDebugBreakpointAdded(BaseModel):
     """Debug breakpoint added message."""
 
     type: Literal["debug_breakpoint_added"] = "debug_breakpoint_added"
-    breakpoint: Union[str, WaldiezBreakpoint]
+    breakpoint: str | WaldiezBreakpoint
 
     @property
     def breakpoint_object(self) -> WaldiezBreakpoint:
@@ -379,7 +389,7 @@ class WaldiezDebugBreakpointRemoved(BaseModel):
     """Debug breakpoint removed message."""
 
     type: Literal["debug_breakpoint_removed"] = "debug_breakpoint_removed"
-    breakpoint: Union[str, WaldiezBreakpoint]
+    breakpoint: str | WaldiezBreakpoint
 
     @property
     def breakpoint_object(self) -> WaldiezBreakpoint:

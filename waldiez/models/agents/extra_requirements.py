@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Extra requirements for agents."""
+
 # pylint: disable=line-too-long
 
-from typing import Set
+"""Extra requirements for agents."""
 
 from .agent import WaldiezAgent
 from .rag_user_proxy import WaldiezRagUserProxy
@@ -26,7 +26,7 @@ def get_retrievechat_extra_requirements(
     """
     # https://github.com/ag2ai/ag2/blob/main/pyproject.toml
     # with chromadb and sentence_transdormers relaxed
-    rag_requirements: Set[str] = {
+    rag_requirements: set[str] = {
         "protobuf==5.29.3",
         "chromadb>=0.5.23",
         "sentence_transformers",

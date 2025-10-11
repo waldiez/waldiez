@@ -324,22 +324,25 @@ class WaldiezTool(WaldiezBase):
             config = get_predefined_tool_config(self.name)
             if not config:
                 available_tools = list_predefined_tools()
-                raise ValueError(
+                msg = (
                     f"Unknown predefined tool: {self.name}. "
                     f"Available tools: {available_tools}"
                 )
+                raise ValueError(msg)
             missing_secrets = config.validate_secrets(self.data.secrets)
             if missing_secrets:
-                raise ValueError(
+                msg = (
                     f"Missing required secrets for {self.name}: "
                     f"{missing_secrets}"
                 )
+                raise ValueError(msg)
             invalid_kwargs = config.validate_kwargs(self.data.kwargs)
             if invalid_kwargs:
-                raise ValueError(
+                msg = (
                     f"Invalid keyword arguments for {self.name}: "
                     f"{invalid_kwargs}"
                 )
+                raise ValueError(msg)
             # Update tool metadata from predefined config
             if not self.description:
                 self.description = config.description

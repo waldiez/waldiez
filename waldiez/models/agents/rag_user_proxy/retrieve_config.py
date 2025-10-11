@@ -5,7 +5,6 @@
 
 import os
 from pathlib import Path
-from typing import Optional, Union
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
@@ -90,7 +89,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         updates existing documents and adds new ones. Default is True.
         Document id is used to determine if a document is new or existing.
         By default, the id is the hash value of the content.
-    model : Optional[str]
+    model : str | None
         The model to use for the retrieve chat. If key not provided, a default
         model gpt-4 will be used.
     chunk_token_size : Optional[int]
@@ -99,7 +98,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
     context_max_tokens : Optional[int]
         The context max token size for the retrieve chat. If key not provided,
         a default size max_tokens * 0.8 will be used.
-    chunk_mode : Optional[str]
+    chunk_mode : str | None
         The chunk mode for the retrieve chat. Possible values are 'multi_lines'
         and 'one_line'. If key not provided, a default mode multi_lines will be
         used.
@@ -109,22 +108,22 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
     use_custom_embedding: bool
         Whether to use custom embedding for the retrieve chat. Default is False.
         If True, the embedding_function should be provided.
-    embedding_function : Optional[str]
+    embedding_function : str | None
         The embedding function for creating the vector db. Default is None,
         SentenceTransformer with the given embedding_model will be used. If
         you want to use OpenAI, Cohere, HuggingFace or other embedding
         functions, you can pass it here, follow the examples in
         https://docs.trychroma.com/guides/embeddings.
-    customized_prompt : Optional[str]
+    customized_prompt : str | None
         The customized prompt for the retrieve chat. Default is None.
-    customized_answer_prefix : Optional[str]
+    customized_answer_prefix : str | None
         The customized answer prefix for the retrieve chat. Default is ''. If
         not '' and the customized_answer_prefix is not in the answer, Update
         Context will be triggered.
     update_context : bool
         If False, will not apply Update Context for interactive retrieval.
         Default is True.
-    collection_name : Optional[str]
+    collection_name : str | None
         The name of the collection. If key not provided, a default name
         autogen-docs will be used.
     get_or_create : bool
@@ -140,7 +139,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         Whether to use custom token count function for the retrieve chat.
         Default is False. If True, the custom_token_count_function should be
         provided.
-    custom_token_count_function : Optional[str]
+    custom_token_count_function : str | None
         A custom function to count the number of tokens in a string. The
         function should take (text:str, model:str) as input and return the
         token_count(int). the retrieve_config['model'] will be passed in the
@@ -149,7 +148,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
     use_custom_text_split: bool
         Whether to use custom text split function for the retrieve chat. Default
         is False. If True, the custom_text_split_function should be provided.
-    custom_text_split_function : Optional[str]
+    custom_text_split_function : str | None
         A custom function to split a string into a list of strings. Default is
         None, will use the default function in autogen.retrieve_utils.
         split_text_to_chunks.
@@ -200,7 +199,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     docs_path: Annotated[
-        Optional[Union[str, list[str]]],
+        str | list[str] | None,
         Field(
             default=None,
             title="Docs Path",
@@ -227,7 +226,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     model: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             title="Model",
@@ -238,7 +237,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     chunk_token_size: Annotated[
-        Optional[int],
+        int | None,
         Field(
             default=None,
             title="Chunk Token Size",
@@ -250,7 +249,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     context_max_tokens: Annotated[
-        Optional[int],
+        int | None,
         Field(
             default=None,
             title="Context Max Tokens",
@@ -297,7 +296,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     embedding_function: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             title="Embedding Function",
@@ -312,7 +311,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     customized_prompt: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             title="Customized Prompt",
@@ -322,7 +321,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     customized_answer_prefix: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default="",
             title="Customized Answer Prefix",
@@ -396,7 +395,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     custom_token_count_function: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             title="Custom Token Count Function",
@@ -423,7 +422,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     custom_text_split_function: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             title="Custom Text Split Function",
@@ -435,7 +434,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     custom_text_types: Annotated[
-        Optional[list[str]],
+        list[str] | None,
         Field(
             default=None,
             title="Custom Text Types",
@@ -472,7 +471,7 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         ),
     ]
     n_results: Annotated[
-        Optional[int],
+        int | None,
         Field(
             default=None,
             title="Number of Results",
@@ -483,49 +482,49 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
             ),
         ),
     ]
-    _embedding_function_string: Optional[str] = None
+    _embedding_function_string: str | None = None
 
-    _token_count_function_string: Optional[str] = None
+    _token_count_function_string: str | None = None
 
-    _text_split_function_string: Optional[str] = None
+    _text_split_function_string: str | None = None
 
     @property
-    def embedding_function_string(self) -> Optional[str]:
+    def embedding_function_string(self) -> str | None:
         """Get the embedding function string.
 
         Returns
         -------
-        Optional[str]
+        str | None
             The embedding function string.
         """
         return self._embedding_function_string
 
     @property
-    def token_count_function_string(self) -> Optional[str]:
+    def token_count_function_string(self) -> str | None:
         """Get the token count function string.
 
         Returns
         -------
-        Optional[str]
+        str | None
             The token count function string.
         """
         return self._token_count_function_string
 
     @property
-    def text_split_function_string(self) -> Optional[str]:
+    def text_split_function_string(self) -> str | None:
         """Get the text split function string.
 
         Returns
         -------
-        Optional[str]
+        str | None
             The text split function string.
         """
         return self._text_split_function_string
 
     def get_custom_embedding_function(
         self,
-        name_prefix: Optional[str] = None,
-        name_suffix: Optional[str] = None,
+        name_prefix: str | None = None,
+        name_suffix: str | None = None,
     ) -> tuple[str, str]:
         """Generate the custom embedding function.
 
@@ -558,8 +557,8 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
 
     def get_custom_token_count_function(
         self,
-        name_prefix: Optional[str] = None,
-        name_suffix: Optional[str] = None,
+        name_prefix: str | None = None,
+        name_suffix: str | None = None,
     ) -> tuple[str, str]:
         """Generate the custom token count function.
 
@@ -592,8 +591,8 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
 
     def get_custom_text_split_function(
         self,
-        name_prefix: Optional[str] = None,
-        name_suffix: Optional[str] = None,
+        name_prefix: str | None = None,
+        name_suffix: str | None = None,
     ) -> tuple[str, str]:
         """Generate the custom text split function.
 
@@ -634,10 +633,11 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         """
         if self.use_custom_embedding:
             if not self.embedding_function:
-                raise ValueError(
+                msg = (
                     "The embedding_function is required "
                     "if use_custom_embedding is True."
                 )
+                raise ValueError(msg)
             valid, error_or_content = check_function(
                 code_string=self.embedding_function,
                 function_name=CUSTOM_EMBEDDING_FUNCTION,
@@ -657,10 +657,11 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         """
         if self.use_custom_token_count:
             if not self.custom_token_count_function:
-                raise ValueError(
+                msg = (
                     "The custom_token_count_function is required "
                     "if use_custom_token_count is True."
                 )
+                raise ValueError(msg)
             valid, error_or_content = check_function(
                 code_string=self.custom_token_count_function,
                 function_name=CUSTOM_TOKEN_COUNT_FUNCTION,
@@ -680,10 +681,11 @@ class WaldiezRagUserProxyRetrieveConfig(WaldiezBase):
         """
         if self.use_custom_text_split:
             if not self.custom_text_split_function:
-                raise ValueError(
+                msg = (
                     "The custom_text_split_function is required "
                     "if use_custom_text_split is True."
                 )
+                raise ValueError(msg)
             valid, error_or_content = check_function(
                 code_string=self.custom_text_split_function,
                 function_name=CUSTOM_TEXT_SPLIT_FUNCTION,

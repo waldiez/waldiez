@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez chat info model."""
 
-from typing import Iterable
+from collections.abc import Iterable
 
 from pydantic import Field
 from typing_extensions import Annotated
@@ -52,7 +52,7 @@ class WaldiezFlowInfo(WaldiezBase):
 
     participants: Annotated[
         list[WaldiezAgentInfo],
-        Field(  # pyright: ignore
+        Field(
             description="List of chat participants with their info",
             default_factory=list,
         ),

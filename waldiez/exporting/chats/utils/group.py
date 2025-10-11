@@ -41,7 +41,7 @@ def export_group_chats(
         The group chat string and the import string.
     """
     space = "    " * tabs
-    run_group_chat = "run_group_chat"
+    run_group_chat: str = "run_group_chat"
     if is_async:
         run_group_chat = "await a_run_group_chat"
     manager_name = agent_names[manager.id]

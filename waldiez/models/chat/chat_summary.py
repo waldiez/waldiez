@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez chat summary options."""
 
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import (
     Field,
@@ -37,7 +37,7 @@ class WaldiezChatSummary(WaldiezBase):
     """
 
     method: Annotated[
-        Optional[WaldiezChatSummaryMethod],
+        WaldiezChatSummaryMethod | None,
         Field(
             default="last_msg",
             title="Method",
@@ -65,7 +65,7 @@ class WaldiezChatSummary(WaldiezBase):
     @field_validator("method", mode="before")
     @classmethod
     def validate_summary_method(
-        cls, value: Optional[WaldiezChatSummaryMethod]
+        cls, value: WaldiezChatSummaryMethod | None
     ) -> WaldiezChatSummaryMethod | None:
         """Validate the summary method.
 

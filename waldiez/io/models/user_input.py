@@ -1,12 +1,16 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+# pyright: reportUnnecessaryIsInstance=false,reportUnknownVariableType=false
+# pyright: reportUnknownArgumentType=false,reportArgumentType=false
+# pyright: reportReturnType=false
+
 """User input data models and validation."""
 
 import json
 import os
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, field_validator
@@ -31,7 +35,7 @@ class UserInputData(BaseModel):
     """User's input data model."""
 
     content: Annotated[
-        Union[MediaContent, list[MediaContent]],
+        MediaContent | list[MediaContent],
         Field(
             description="The content of the input data.",
             title="Content",
@@ -68,7 +72,7 @@ class UserInputData(BaseModel):
         if isinstance(self.content, list):
             return " ".join(
                 [
-                    item.to_string(uploads_root, base_name)  # pyright: ignore
+                    item.to_string(uploads_root, base_name)
                     for item in self.content
                 ]
             )
@@ -161,10 +165,11 @@ class UserInputData(BaseModel):
                     **{mapping["required_field"]: converted}  # type: ignore
                 )
 
-        raise ValueError(
+        msg = (
             "Missing required field for content type "
             f"'{content_type}' in: {value}"
         )
+        raise ValueError(msg)
 
     @staticmethod
     def _convert_simple_content(
@@ -226,7 +231,7 @@ class UserInputData(BaseModel):
 
         # If it's a dictionary, check if it has a 'type' field
         if isinstance(v, dict):
-            return cls.content_from_dict(v)  # pyright: ignore
+            return cls.content_from_dict(v)
 
         # If it's a list
         if isinstance(v, list):

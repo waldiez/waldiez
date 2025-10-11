@@ -1,6 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
 # pylint: disable=unused-argument,no-self-use
+# pyright: reportMissingTypeStubs=false, reportImportCycles=false
+# pyright: reportDeprecated=false, reportUnknownMemberType=false
+# pyright: reportUnknownVariableType=false
+
 """Command handler for step-by-step execution."""
 
 import inspect
@@ -120,7 +125,7 @@ class EventProcessor:
             and "chat_info" in content
             and isinstance(content["chat_info"], dict)
         ):
-            content = content.get("chat_info", {})  # pyright: ignore
+            content = content.get("chat_info", {})
 
         if not event_info["sender"] and "sender" in content:
             event_info["sender"] = content["sender"]

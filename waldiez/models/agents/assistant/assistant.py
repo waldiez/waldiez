@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportArgumentType=false,reportIncompatibleVariableOverride=false
+
 """Assistant agent model."""
 
 from pydantic import Field
@@ -24,7 +27,7 @@ class WaldiezAssistant(WaldiezAgent):
         The assistant agent's data
     """
 
-    agent_type: Annotated[  # pyright: ignore
+    agent_type: Annotated[
         Literal["assistant"],
         Field(
             "assistant",
@@ -33,11 +36,11 @@ class WaldiezAssistant(WaldiezAgent):
             alias="agentType",
         ),
     ] = "assistant"
-    data: Annotated[  # pyright: ignore
+    data: Annotated[
         WaldiezAssistantData,
         Field(
             title="Data",
             description="The assistant agent's data",
-            default_factory=WaldiezAssistantData,  # pyright: ignore
+            default_factory=WaldiezAssistantData,
         ),
     ]

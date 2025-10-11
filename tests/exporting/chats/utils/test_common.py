@@ -6,7 +6,6 @@
 """Test waldiez.exporting.chats.utils.common."""
 
 import json
-from typing import Optional
 
 from waldiez.exporting.chats.utils.common import get_chat_message_string
 from waldiez.models import (
@@ -46,7 +45,7 @@ def create_test_agent(
 def create_test_chat(
     chat_id: str,
     message_type: WaldiezChatMessageType = "string",
-    message_content: Optional[str] = None,
+    message_content: str | None = None,
     use_carryover: bool = False,
 ) -> WaldiezChat:
     """Create a test chat with the specified parameters."""

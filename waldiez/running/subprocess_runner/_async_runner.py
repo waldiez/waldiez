@@ -10,8 +10,9 @@ import logging
 
 # noinspection PyProtectedMember
 from asyncio.subprocess import Process as AsyncProcess
+from collections.abc import Coroutine
 from pathlib import Path
-from typing import Any, Callable, Coroutine, Literal, Optional
+from typing import Any, Callable, Literal
 
 from .__base__ import BaseSubprocessRunner
 
@@ -57,7 +58,7 @@ class AsyncSubprocessRunner(BaseSubprocessRunner):
         )
         self.on_output = on_output
         self.on_input_request = on_input_request
-        self.process: Optional[AsyncProcess] = None
+        self.process: AsyncProcess | None = None
         self.input_queue: asyncio.Queue[str] = asyncio.Queue()
         self.output_queue: asyncio.Queue[dict[str, Any]] = asyncio.Queue()
         self._monitor_tasks: list[asyncio.Task[Any]] = []

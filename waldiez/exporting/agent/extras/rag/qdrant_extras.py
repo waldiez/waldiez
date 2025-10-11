@@ -3,7 +3,6 @@
 """Get qdrant db related imports and content."""
 
 from pathlib import Path
-from typing import Set
 
 from waldiez.models import WaldiezRagUserProxy
 
@@ -81,7 +80,7 @@ def _get_qdrant_embedding_function_string(
 
 def get_qdrant_db_args(
     agent: WaldiezRagUserProxy, agent_name: str
-) -> tuple[str, Set[str], str]:
+) -> tuple[str, set[str], str]:
     """Get the kwargs to use for QdrantVectorDB.
 
     Parameters
@@ -106,7 +105,9 @@ def get_qdrant_db_args(
         else {to_import_client}
     )
     kwarg_string = (
-        f"            client={client_str}," + "\n"
-        f"            embedding_function={embedding_function_arg}," + "\n"
+        f"            client={client_str},"
+        "\n"
+        f"            embedding_function={embedding_function_arg},"
+        "\n"
     )
     return kwarg_string, to_import, embedding_function_body

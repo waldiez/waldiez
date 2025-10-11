@@ -3,8 +3,9 @@
 # pylint: disable=line-too-long,missing-param-doc,missing-return-doc,missing-raises-doc
 # pylint: disable=protected-access,too-few-public-methods,unused-argument
 # flake8: noqa: E501
-# pyright: reportUnknownMemberType=false,reportAttributeAccessIssue=false
+# pyright: reportUnknownMemberType=false,reportAttributeAccessIssue=false,reportUnknownArgumentType=false
 # pyright: reportUnknownVariableType=false, reportPrivateUsage=false, reportArgumentType=false
+# pyright: reportMissingTypeStubs=false, reportUnknownLambdaType=false
 
 """Test waldiez.running.step_by_step_runner.*."""
 
@@ -283,7 +284,7 @@ def test_get_event_history_returns_copy(
 
     # Add some events to internal history
     sample_event = {"type": "test_event", "count": 1}
-    runner._event_history.append(sample_event)  # pyright: ignore
+    runner._event_history.append(sample_event)
 
     # Call get_event_history and check contents
     history = runner.event_history
@@ -452,7 +453,7 @@ def test_run_handles_stop_running_exception(
     monkeypatch.setattr(
         runner,
         "_load_module",
-        lambda *a, **k: MagicMock(main=raise_stop),  # pyright: ignore
+        lambda *a, **k: MagicMock(main=raise_stop),
     )
     with pytest.raises(StopRunningException):
         runner._run(tmp_path, tmp_path / "out.py", None, False, False)
@@ -474,7 +475,7 @@ def test_run_handles_generic_exception(
     monkeypatch.setattr(
         runner,
         "_load_module",
-        lambda *a, **k: MagicMock(main=raise_exc),  # pyright: ignore
+        lambda *a, **k: MagicMock(main=raise_exc),
     )
     results = runner._run(tmp_path, tmp_path / "out.py", None, False, False)
     captured = capsys.readouterr()
@@ -498,7 +499,7 @@ async def test_async_run_handles_stop_running_exception(
     monkeypatch.setattr(
         runner,
         "_load_module",
-        lambda *a, **k: MagicMock(main=raise_stop),  # pyright: ignore
+        lambda *a, **k: MagicMock(main=raise_stop),
     )
     with pytest.raises(StopRunningException):
         await runner._a_run(tmp_path, tmp_path / "out.py", None)
@@ -521,7 +522,7 @@ async def test_async_run_handles_generic_exception(
     monkeypatch.setattr(
         runner,
         "_load_module",
-        lambda *a, **k: MagicMock(main=raise_exc),  # pyright: ignore
+        lambda *a, **k: MagicMock(main=raise_exc),
     )
     results = await runner._a_run(
         tmp_path, tmp_path / "out.py", None

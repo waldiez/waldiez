@@ -23,6 +23,6 @@ def test_model_extras_content_contribution(tmp_path: Path) -> None:
     )
     result = ExportResult()
     # pylint: disable=protected-access
-    extras._contribute_specific_content(result)  # pyright: ignore
+    extras._contribute_specific_content(result)
     found = [c.content for c in result.positioned_content]
     assert any("a" in item for item in found)

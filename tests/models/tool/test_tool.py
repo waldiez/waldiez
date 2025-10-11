@@ -44,7 +44,7 @@ def test_waldiez_tool() -> None:
 def test_invalid_tool() -> None:
     """Test invalid WaldiezTool."""
     with pytest.raises(ValueError):
-        WaldiezTool()  # pyright: ignore
+        WaldiezTool()
 
     # Given
     tool_id = "wt-1"

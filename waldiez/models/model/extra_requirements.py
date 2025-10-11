@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez model extra requirements."""
 
-from typing import Set
-
 from .model import WaldiezModel
 
 
@@ -24,7 +22,7 @@ def get_models_extra_requirements(
     list[str]
         The models extra requirements.
     """
-    model_requirements: Set[str] = set()
+    model_requirements: set[str] = set()
     # ref: https://github.com/ag2ai/ag2/blob/main/pyproject.toml
     models_with_additional_requirements = [
         "together",

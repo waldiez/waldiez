@@ -17,9 +17,10 @@ import signal
 import sys
 import time
 from collections import deque
+from collections.abc import AsyncIterator, Iterable
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any, AsyncIterator, Iterable
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -710,7 +711,7 @@ class TestServerIntegration:
             try:
                 async with websockets.connect(
                     uri,
-                ) as websocket:  # pyright: ignore
+                ) as websocket:  # pyright: ignore[reportGeneralTypeIssues]
                     # Send ping message
                     ping_msg = json.dumps(
                         {"type": "ping", "echo_data": {"test": "integration"}}
@@ -796,7 +797,7 @@ class TestServerIntegration:
             uri = f"ws://localhost:{port}"
             async with websockets.connect(
                 uri,
-            ) as websocket:  # pyright: ignore
+            ) as websocket:  # pyright: ignore[reportGeneralTypeIssues]
                 # Send invalid message
                 await websocket.send("invalid json")
 

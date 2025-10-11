@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pyright: reportPrivateUsage=false
+# pyright: reportAttributeAccessIssue=false,reportUnknownMemberType=false
 # pylint: disable=missing-param-doc,missing-type-doc,missing-return-doc
 # pylint: disable=no-self-use,protected-access,too-many-public-methods
 """Tests for waldiez.io.models.user_input.*."""

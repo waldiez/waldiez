@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
 # pylint: disable=too-many-public-methods
+# pyright:  reportArgumentType=false
 """Base agent class to be inherited by all agents."""
 
 import warnings
@@ -131,7 +133,7 @@ class WaldiezAgent(WaldiezBase):
         Field(
             title="Data",
             description="The data (properties) of the agent",
-            default_factory=WaldiezAgentData,  # pyright: ignore
+            default_factory=WaldiezAgentData,
         ),
     ]
 
@@ -139,7 +141,7 @@ class WaldiezAgent(WaldiezBase):
         list[WaldiezHandoff],
         Field(
             init=False,  # this is not a field in the constructor
-            default_factory=list,  # pyright: ignore
+            default_factory=list,
             title="Handoffs",
             description=(
                 "A list of handoffs (target ids) to register. "
@@ -190,10 +192,11 @@ class WaldiezAgent(WaldiezBase):
             If handoffs have not been gathered yet.
         """
         if not self._checked_handoffs:
-            raise RuntimeError(
+            msg = (
                 "Handoffs have not been gathered yet. "
                 "Call gather_handoffs() first."
             )
+            raise RuntimeError(msg)
         return self._handoffs
 
     @field_validator("agent_type")
@@ -413,25 +416,28 @@ class WaldiezAgent(WaldiezBase):
             case "UserProxyAgent":
                 imports.add("from autogen import UserProxyAgent")
             case "RetrieveUserProxyAgent":
-                imports.add(
+                _imp = (
                     "from autogen.agentchat.contrib.retrieve_user_proxy_agent "
                     "import RetrieveUserProxyAgent"
                 )
+                imports.add(_imp)
             case "MultimodalConversableAgent":
-                imports.add(
+                _imp = (
                     "from "
                     "autogen.agentchat.contrib.multimodal_conversable_agent "
                     "import MultimodalConversableAgent"
                 )
+                imports.add(_imp)
             case "ReasoningAgent":
                 imports.add(
                     "from autogen.agents.experimental import ReasoningAgent"
                 )
             case "CaptainAgent":
-                imports.add(
+                _imp = (
                     "from autogen.agentchat.contrib.captainagent "
                     "import CaptainAgent"
                 )
+                imports.add(_imp)
             case "GroupChatManager":  # pragma: no branch
                 imports.add("from autogen import GroupChat")
                 imports.add("from autogen.agentchat import GroupChatManager")
@@ -443,10 +449,11 @@ class WaldiezAgent(WaldiezBase):
             case "ConversableAgent":
                 imports.add("from autogen import ConversableAgent")
             case _:  # pragma: no cover
-                raise ValueError(
+                msg = (
                     f"Unknown agent class: {agent_class}. "
                     "Please implement the imports for this class."
                 )
+                raise ValueError(msg)
         return imports
 
     def validate_linked_tools(
@@ -678,8 +685,8 @@ class WaldiezAgent(WaldiezBase):
             nested_chat = WaldiezAgentNestedChat(
                 triggered_by=triggered_by,
                 messages=messages,
-                condition=chat_with_condition.condition,  # pyright: ignore
-                available=chat_with_condition.available,  # pyright: ignore
+                condition=chat_with_condition.condition,
+                available=chat_with_condition.available,
             )
             self.data.nested_chats.append(nested_chat)
 

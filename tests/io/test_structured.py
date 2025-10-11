@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# pyright: reportPrivateUsage=false
+# pyright: reportPrivateUsage=false,reportMissingTypeStubs=false
 # pylint: disable=missing-module-docstring,missing-class-docstring,no-self-use
 # pylint: disable=missing-function-docstring,missing-param-doc,protected-access
 # pylint: disable=missing-return-doc,unused-argument,unused-variable
@@ -157,7 +157,7 @@ class TestStructuredIOStream:
             with patch.object(self.stream, "_send_input_request"):
                 # Use a very short timeout to speed up the test
                 self.stream.timeout = 0.1
-                result = self.stream._read_user_input(  # pyright: ignore
+                result = self.stream._read_user_input(
                     "Prompt: ", False, "test_id"
                 )
 
@@ -216,7 +216,7 @@ class TestStructuredIOStream:
     def test_handle_user_input_plain_text(self) -> None:
         """Test parsing plain text input."""
         # Test with plain text (non-JSON)
-        result = self.stream._handle_user_input(  # pyright: ignore
+        result = self.stream._handle_user_input(
             "Hello world",
             "test_id",
         )
@@ -228,7 +228,7 @@ class TestStructuredIOStream:
         json_input = json.dumps(
             {"request_id": "test_id", "data": "JSON response"}
         )
-        result = self.stream._handle_user_input(  # pyright: ignore
+        result = self.stream._handle_user_input(
             json_input,
             "test_id",
         )
@@ -241,7 +241,7 @@ class TestStructuredIOStream:
                 "data": {"text": "Hello", "image": "src='test.jpg'"},
             }
         )
-        result = self.stream._handle_user_input(  # pyright: ignore
+        result = self.stream._handle_user_input(
             json_input,
             "test_id",
         )
@@ -255,7 +255,7 @@ class TestStructuredIOStream:
                 "image": "src='outside.jpg'",
             }
         )
-        result = self.stream._handle_user_input(  # pyright: ignore
+        result = self.stream._handle_user_input(
             json_input,
             "test_id",
         )
@@ -263,7 +263,7 @@ class TestStructuredIOStream:
 
         # Test with JSON that has no data
         json_input = json.dumps({"request_id": "test_id"})
-        result = self.stream._handle_user_input(  # pyright: ignore
+        result = self.stream._handle_user_input(
             json_input,
             "test_id",
         )
@@ -271,7 +271,7 @@ class TestStructuredIOStream:
 
         # Test with JSON that has empty data
         json_input = json.dumps({"request_id": "test_id", "data": {}})
-        result = self.stream._handle_user_input(  # pyright: ignore
+        result = self.stream._handle_user_input(
             json_input,
             "test_id",
         )
@@ -281,7 +281,7 @@ class TestStructuredIOStream:
         json_input = json.dumps(
             {"request_id": "test_id", "data": json.dumps("Hello, world!")}
         )
-        result = self.stream._handle_user_input(  # pyright: ignore
+        result = self.stream._handle_user_input(
             json_input,
             "test_id",
         )
@@ -295,7 +295,7 @@ class TestStructuredIOStream:
                 ),
             }
         )
-        result = self.stream._handle_user_input(  # pyright: ignore
+        result = self.stream._handle_user_input(
             json_input,
             "test_id",
         )
@@ -309,7 +309,7 @@ class TestStructuredIOStream:
         json_input = json.dumps(
             {"request_id": "wrong_id", "data": "This should be ignored"}
         )
-        result = self.stream._handle_user_input(  # pyright: ignore
+        result = self.stream._handle_user_input(
             json_input,
             "test_id",
         )
@@ -353,7 +353,7 @@ class TestStructuredIOStream:
         """Test parsing input with invalid JSON."""
         # Test with invalid JSON
         invalid_json = "{invalid: json"
-        result = self.stream._handle_user_input(  # pyright: ignore
+        result = self.stream._handle_user_input(
             invalid_json,
             "test_id",
         )
@@ -364,28 +364,28 @@ class TestStructuredIOStream:
         data: dict[str, Any] = {}
         # Test with both image and text
         data = {"image": "src='test.jpg'", "text": "Hello, world!"}
-        result = self.stream._format_multimedia_response(  # pyright: ignore
+        result = self.stream._format_multimedia_response(
             data,
         )
         assert result == "<img src='test.jpg'> Hello, world!"
 
         # Test with only image
         data = {"image": "src='test.jpg'"}
-        result = self.stream._format_multimedia_response(  # pyright: ignore
+        result = self.stream._format_multimedia_response(
             data,
         )
         assert result == "<img src='test.jpg'>"
 
         # Test with only text
         data = {"text": "Hello, world!"}
-        result = self.stream._format_multimedia_response(  # pyright: ignore
+        result = self.stream._format_multimedia_response(
             data,
         )
         assert result == "Hello, world!"
 
         # Test with empty data
         data = {}
-        result = self.stream._format_multimedia_response(  # pyright: ignore
+        result = self.stream._format_multimedia_response(
             data,
         )
         assert result == ""
@@ -393,7 +393,7 @@ class TestStructuredIOStream:
     @patch("builtins.print")
     def test_send_timeout_message(self, mock_print: MagicMock) -> None:
         """Test sending timeout message."""
-        self.stream._send_timeout_message("timeout_id")  # pyright: ignore
+        self.stream._send_timeout_message("timeout_id")
 
         args, kwargs = mock_print.call_args
         payload = json.loads(args[0])
@@ -536,7 +536,7 @@ class TestStructuredIOStream:
             recipient="test_recipient",
         )
         stream = StructuredIOStream()
-        stream.send(event)  # pyright: ignore
+        stream.send(event)
         captured = capsys.readouterr()
         assert "Hello, world!" in captured.out
 
@@ -551,6 +551,6 @@ class TestStructuredIOStream:
             recipient="test_recipient",
         )
         stream = StructuredIOStream()
-        stream.send(event)  # pyright: ignore
+        stream.send(event)
         captured = capsys.readouterr()
         assert "Hello, world!" in captured.out

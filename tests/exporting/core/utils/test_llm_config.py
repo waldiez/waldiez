@@ -6,7 +6,7 @@
 # pylint: disable=no-self-use
 """Test waldiez.exporting.core.utils.llm_config.*."""
 
-from typing import Any, Optional
+from typing import Any
 
 import pytest
 
@@ -38,7 +38,7 @@ def create_test_agent(
         requirements=["test-requirement"],
         created_at="2023-10-01T00:00:00Z",
         updated_at="2023-10-01T00:00:00Z",
-        data=WaldiezAssistantData(  # pyright: ignore
+        data=WaldiezAssistantData(
             model_ids=model_ids,
             termination=WaldiezAgentTerminationMessage(
                 type="none",
@@ -50,7 +50,7 @@ def create_test_agent(
 def create_test_model(
     model_id: str,
     name: str,
-    temperature: Optional[float] = 0.7,
+    temperature: float | None = 0.7,
     api_type: WaldiezModelAPIType = "openai",
 ) -> WaldiezModel:
     """Create a test model with given parameters."""

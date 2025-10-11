@@ -1,9 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
 # pyright: reportMissingImports=false,reportUnknownVariableType=false
 # pyright: reportPossiblyUnboundVariable=false,reportUnknownMemberType=false
 # pyright: reportUnknownParameterType=false,reportUnknownArgumentType=false
-# pyright: reportAttributeAccessIssue=false
+# pyright: reportAttributeAccessIssue=false,reportAny=false
+# pyright: reportConstantRedefinition=false,reportAssignmentType=false
+# pyright: reportImportCycles=false,reportGeneralTypeIssues=false
 # pylint: disable=import-error,line-too-long
 # flake8: noqa: E501
 """WebSocket server implementation for Waldiez."""
@@ -15,8 +18,9 @@ import signal
 import time
 import traceback
 import uuid
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, final
 
 from .client_manager import ClientManager
 from .errors import ErrorHandler, MessageParsingError, ServerOverloadError
@@ -26,9 +30,9 @@ from .utils import get_available_port, is_port_available
 
 HAS_WATCHDOG = False
 try:
-    from .reloader import FileWatcher, create_file_watcher  # pyright: ignore
+    from .reloader import FileWatcher, create_file_watcher
 
-    HAS_WATCHDOG = True  # pyright: ignore
+    HAS_WATCHDOG = True
 except ImportError:
 
     class FileWatcher:  # type: ignore[no-redef]
@@ -54,7 +58,7 @@ try:
         WebSocketException,
     )
 
-    HAS_WEBSOCKETS = True  # pyright: ignore
+    HAS_WEBSOCKETS = True
 except ImportError:
     from ._mock import (  # type: ignore[no-redef, unused-ignore, unused-import, import-not-found, import-untyped]
         websockets,
@@ -70,6 +74,7 @@ CWD = Path.cwd()
 
 
 # pylint: disable=too-many-instance-attributes
+@final
 class WaldiezWsServer:
     """WebSocket server for Waldiez."""
 
@@ -195,7 +200,7 @@ class WaldiezWsServer:
 
             # Message handling loop
             # noinspection PyTypeChecker
-            async for raw_message in websocket:  # pyright: ignore
+            async for raw_message in websocket:
                 try:
                     # Parse message
                     if isinstance(raw_message, bytes):

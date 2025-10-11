@@ -4,7 +4,6 @@
 """Standard agent extras module."""
 
 from dataclasses import dataclass
-from typing import Optional
 
 from ...enums import AgentPosition, ExportPosition
 from ...result import ExportResult
@@ -76,9 +75,9 @@ class SystemMessageConfig:
 class StandardExtras(BaseExtras):
     """Extras for standard agents (UserProxy, Assistant, etc.)."""
 
-    code_execution_config: Optional[CodeExecutionConfig] = None
-    termination_config: Optional[TerminationConfig] = None
-    system_message_config: Optional[SystemMessageConfig] = None
+    code_execution_config: CodeExecutionConfig | None = None
+    termination_config: TerminationConfig | None = None
+    system_message_config: SystemMessageConfig | None = None
 
     def set_code_execution(self, config: CodeExecutionConfig) -> None:
         """Set code execution configuration.

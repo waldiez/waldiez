@@ -2,6 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pyright: reportPrivateUsage=false,reportUnusedVariable=false
+# pyright: reportMissingTypeStubs=false
 # pylint: disable=missing-param-doc,missing-type-doc,missing-return-doc
 # pylint: disable=missing-yield-doc, protected-access,unused-variable
 # pylint: disable=unused-argument,too-few-public-methods,missing-raises-doc
@@ -13,9 +14,10 @@ import json
 import threading
 import time
 import uuid
+from collections.abc import Generator
 from pathlib import Path
 from threading import Event
-from typing import Any, Generator
+from typing import Any
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest

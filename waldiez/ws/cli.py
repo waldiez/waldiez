@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
 # pylint: disable=too-many-locals,unused-import
+# pyright: reportUnusedImport=false,reportConstantRedefinition=false
+# pyright: reportUnusedParameter=false, reportCallInDefaultInitializer=false
+
 """CLI interface for Waldiez WebSocket server."""
 
 import asyncio
@@ -10,15 +14,15 @@ import re
 import sys
 import traceback
 from pathlib import Path
-from typing import Annotated, Any, Optional, Set
+from typing import Annotated, Any
 
 import typer
 
 HAS_WATCHDOG = False
 try:
-    from .reloader import FileWatcher  # pyright: ignore # noqa: F401
+    from .reloader import FileWatcher  # noqa: F401
 
-    HAS_WATCHDOG = True  # pyright: ignore
+    HAS_WATCHDOG = True
 except ImportError:
     pass
 
@@ -26,7 +30,7 @@ HAS_WEBSOCKETS = False
 try:
     from .server import run_server
 
-    HAS_WEBSOCKETS = True  # pyright: ignore
+    HAS_WEBSOCKETS = True
 except ImportError:
     # pylint: disable=missing-param-doc,missing-raises-doc
     # noinspection PyUnusedLocal
@@ -100,7 +104,7 @@ def serve(
         ),
     ] = 1,
     allowed_origins: Annotated[
-        Optional[list[str]],
+        list[str] | None,
         typer.Option(
             "--allowed-origin",
             help=(
@@ -121,7 +125,7 @@ def serve(
         ),
     ] = False,
     watch_dir: Annotated[
-        Optional[list[Path]],
+        list[Path] | None,
         typer.Option(
             "--watch-dir",
             help=(
@@ -191,7 +195,7 @@ def serve(
     logger = logging.getLogger(__name__)
 
     # Convert watch directories to set
-    watch_dirs: Optional[Set[Path]] = None
+    watch_dirs: set[Path] | None = None
     if watch_dir:
         watch_dirs = set(watch_dir)
 
@@ -214,10 +218,11 @@ def serve(
         "max_size": max_size,
     }
     if not HAS_WATCHDOG and auto_reload:
-        typer.echo(
+        msg = (
             "Auto-reload requires the 'watchdog' package. "
             "Please install it with: pip install watchdog"
         )
+        typer.echo(msg)
         auto_reload = False
     logger.info("Starting Waldiez WebSocket server...")
     logger.info("Configuration:")

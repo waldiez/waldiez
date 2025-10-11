@@ -3,7 +3,6 @@
 """Default path resolver for Waldiez items."""
 
 from pathlib import Path
-from typing import Union
 
 from ..protocols import PathResolver
 
@@ -70,7 +69,7 @@ class DefaultPathResolver(PathResolver):
         return None
 
 
-def _get_raw_path_string(path: Union[str, Path]) -> str:
+def _get_raw_path_string(path: str | Path) -> str:
     """Get the raw path string.
 
     Parameters

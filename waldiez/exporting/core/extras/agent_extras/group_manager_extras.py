@@ -26,7 +26,7 @@ class GroupManagerExtras(StandardExtras):
     # Pattern-based content
     pattern_definition: str = ""
     pattern_class_name: str = "AutoPattern"
-    pattern_imports: set[str] = field(default_factory=set)  # pyright: ignore
+    pattern_imports: set[str] = field(default_factory=set)
 
     # Traditional GroupChat content
     group_chat_definition: str = ""

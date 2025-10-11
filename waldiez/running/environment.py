@@ -2,14 +2,14 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=import-outside-toplevel,reimported,line-too-long
 # flake8: noqa: E501, F401
-# pyright: reportUnusedImport=false
+# pyright: reportUnusedImport=false, reportMissingTypeStubs=false
 """Environment related utilities."""
 
 import importlib
 import os
 import site
 import sys
-from typing import Generator
+from collections.abc import Generator
 
 
 def refresh_environment() -> None:
@@ -78,7 +78,7 @@ def reload_autogen() -> None:  # noqa: C901  # pragma: no cover
         site.main()  # Rebuild the site module cache
         # Re-import autogen
         # pylint: disable=unused-import
-        import autogen  # pyright: ignore
+        import autogen
 
         for mod_name in sorted(autogen_modules, key=len, reverse=False):
             # Re-import each module
@@ -91,7 +91,7 @@ def reload_autogen() -> None:  # noqa: C901  # pragma: no cover
         # Restore IOStream state if we had it
         if default_io_stream is not None:
             try:
-                from autogen.io import IOStream  # pyright: ignore
+                from autogen.io import IOStream
 
                 IOStream.set_default(default_io_stream)
             except (ImportError, AttributeError, TypeError):

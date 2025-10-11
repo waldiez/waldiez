@@ -69,7 +69,7 @@ def test_waldiez_chat() -> None:
         source="wa-1",
         target="wa-2",
         type="nested",
-        data=WaldiezChatData(  # pyright: ignore
+        data=WaldiezChatData(
             name="chat_data",
             description="Chat data",
             source_type="user_proxy",
@@ -89,7 +89,7 @@ def test_waldiez_chat() -> None:
         source="wa-1",
         target="wa-2",
         type="chat",
-        data=WaldiezChatData(  # pyright: ignore
+        data=WaldiezChatData(
             name="chat_data",
             description="Chat data",
             source_type="user_proxy",

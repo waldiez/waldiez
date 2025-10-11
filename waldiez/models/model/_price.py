@@ -3,8 +3,6 @@
 # flake8: noqa: E501
 """Waldiez Model Price."""
 
-from typing import Optional
-
 from pydantic import Field
 from typing_extensions import Annotated
 
@@ -23,8 +21,8 @@ class WaldiezModelPrice(WaldiezBase):
     """
 
     prompt_price_per_1k: Annotated[
-        Optional[float], Field(None, alias="promptPricePer1k")
+        float | None, Field(None, alias="promptPricePer1k")
     ]
     completion_token_price_per_1k: Annotated[
-        Optional[float], Field(None, alias="completionTokenPricePer1k")
+        float | None, Field(None, alias="completionTokenPricePer1k")
     ]

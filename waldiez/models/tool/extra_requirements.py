@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez tool extra requirements."""
 
-from typing import Set
-
 from .predefined import get_predefined_tool_requirements
 from .tool import WaldiezTool
 
@@ -11,7 +9,7 @@ from .tool import WaldiezTool
 def get_tools_extra_requirements(
     tools: list[WaldiezTool],
     autogen_version: str,
-) -> Set[str]:
+) -> set[str]:
     """Get the tools extra requirements.
 
     Parameters
@@ -26,7 +24,7 @@ def get_tools_extra_requirements(
     list[str]
         The tools extra requirements.
     """
-    tool_requirements: Set[str] = set()
+    tool_requirements: set[str] = set()
     for tool in tools:
         if tool.tool_type == "langchain":
             tool_requirements.add(f"ag2[interop-langchain]=={autogen_version}")

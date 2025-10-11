@@ -2,7 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # flake8: noqa: F401
-# pylint: disable=unused-import,too-few-public-methods
+# pylint: disable=unused-import,unused-argument,too-few-public-methods
+# pyright: reportAssignmentType=false
 
 """IOSTream extensions.
 
@@ -49,10 +50,11 @@ except ImportError:  # pragma: no cover
             kwargs : dict
                 Keyword arguments.
             """
-            raise ImportError(
+            msg = (
                 "RedisIOStream is not available. "
                 "Please install the required package."
             )
+            raise ImportError(msg)
 
 
 try:
@@ -74,10 +76,11 @@ except ImportError:  # pragma: no cover
             kwargs : dict
                 Keyword arguments.
             """
-            raise ImportError(
+            msg = (
                 "AsyncWebsocketsIOStream is not available. "
                 "Please install the required package."
             )
+            raise ImportError(msg)
 
 
 try:
@@ -97,10 +100,11 @@ except ImportError:  # pragma: no cover
             kwargs : dict
                 Keyword arguments.
             """
-            raise ImportError(
+            msg = (
                 "MqttIOStream is not available. "
                 "Please install the required package."
             )
+            raise ImportError(msg)
 
 
 __all__ = [

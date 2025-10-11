@@ -2,8 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pylint: disable=broad-exception-caught,too-many-try-statements,unused-argument
-# pyright: reportUnknownVariableType=false,reportUnknownMemberType=false
-# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownVariableType=false, reportUnknownMemberType=false
+# pyright: reportUnknownArgumentType=false, reportUnusedParameter=false
 
 """Waldiez run results module."""
 
@@ -631,7 +631,7 @@ def _extract_last_speaker(events: list[dict[str, Any]]) -> str | None:
                 if history and len(history) > 0:
                     last_msg = history[-1]
                     if isinstance(last_msg, dict) and "name" in last_msg:
-                        return str(last_msg["name"])  # pyright: ignore
+                        return str(last_msg["name"])
 
     # Fallback: get last text event sender
     for event in reversed(events):

@@ -20,11 +20,11 @@ def create_test_manager(
     manager_id: str = "manager1", max_round: int = 10
 ) -> WaldiezGroupManager:
     """Create a test manager for testing."""
-    return WaldiezGroupManager(  # pyright: ignore
+    return WaldiezGroupManager(
         id=manager_id,
         name=f"{manager_id}_name",
         description=f"{manager_id} description",
-        data=WaldiezGroupManagerData(  # pyright: ignore
+        data=WaldiezGroupManagerData(
             max_round=max_round,
             initial_agent_id="assistant1",
         ),

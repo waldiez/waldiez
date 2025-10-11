@@ -43,8 +43,8 @@ def test_export_reasoning_agent(tmp_path: Path) -> None:
     expected = (
         f"{agent.name} = ReasoningAgent(\n"
         f'    name="{agent.name}",\n'
-        f'    description="{agent.description}",' + "\n"
-        '    system_message="system message of agent 1",\n'
+        f'    description="{agent.description}",'
+        '\n    system_message="system message of agent 1",\n'
         '    human_input_mode="NEVER",\n'
         "    max_consecutive_auto_reply=None,\n"
         '    default_auto_reply="",\n'

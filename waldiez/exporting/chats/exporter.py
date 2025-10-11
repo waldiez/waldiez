@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Chats exporter."""
 
-from typing import Any, Optional
+from typing import Any
 
 from waldiez.models import (
     WaldiezAgent,
@@ -25,8 +25,8 @@ class ChatsExporter(Exporter[ChatExtras]):
         all_chats: list[WaldiezChat],
         chat_names: dict[str, str],
         main_chats: list[WaldiezAgentConnection],
-        root_group_manager: Optional[WaldiezGroupManager],
-        context: Optional[ExporterContext] = None,
+        root_group_manager: WaldiezGroupManager | None,
+        context: ExporterContext | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize the chats exporter.
@@ -92,6 +92,6 @@ class ChatsExporter(Exporter[ChatExtras]):
             extras.append_after_all_agents(extras.chat_registration)
         return extras
 
-    def generate_main_content(self) -> Optional[str]:
+    def generate_main_content(self) -> str | None:
         """Generate the main content of the export."""
         return None

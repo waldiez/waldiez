@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Agent Handoff class."""
 
-from typing import Any, Union
+from typing import Any
 
 from pydantic import Field
 from typing_extensions import Annotated, Literal
@@ -118,7 +118,7 @@ class WaldiezSimpleTarget(WaldiezBase):
     ]
     value: Annotated[
         list[str],
-        Field(  # pyright: ignore
+        Field(
             default_factory=list,
         ),
     ]  # not actually used (just for consistency with other targets)
@@ -157,12 +157,10 @@ class WaldiezGroupOrNestedTarget(WaldiezBase):
 
 
 WaldiezTransitionTarget = Annotated[
-    Union[
-        WaldiezAgentTarget,
-        WaldiezRandomAgentTarget,
-        WaldiezGroupOrNestedTarget,
-        WaldiezSimpleTarget,
-    ],
+    WaldiezAgentTarget
+    | WaldiezRandomAgentTarget
+    | WaldiezGroupOrNestedTarget
+    | WaldiezSimpleTarget,
     Field(discriminator="target_type"),
 ]
 
@@ -172,7 +170,7 @@ class WaldiezStringLLMCondition(WaldiezBase):
 
     condition_type: Literal["string_llm"]
     prompt: str
-    data: dict[str, Any] = Field(default_factory=dict)  # pyright: ignore
+    data: dict[str, Any] = Field(default_factory=dict)
 
     def is_not_empty(self) -> bool:
         """Check if the condition is not empty.
@@ -202,7 +200,7 @@ class WaldiezContextStrLLMCondition(WaldiezBase):
 
     condition_type: Literal["context_str_llm"]
     context_str: str
-    data: dict[str, Any] = Field(default_factory=dict)  # pyright: ignore
+    data: dict[str, Any] = Field(default_factory=dict)
 
     def is_not_empty(self) -> bool:
         """Check if the condition is not empty.
@@ -228,7 +226,7 @@ class WaldiezContextStrLLMCondition(WaldiezBase):
 
 
 WaldiezLLMBasedCondition = Annotated[
-    Union[WaldiezStringLLMCondition, WaldiezContextStrLLMCondition],
+    WaldiezStringLLMCondition | WaldiezContextStrLLMCondition,
     Field(discriminator="condition_type"),
 ]
 
@@ -267,7 +265,7 @@ class WaldiezExpressionContextCondition(WaldiezBase):
 
     condition_type: Literal["expression_context"]
     expression: str
-    data: dict[str, Any] = Field(default_factory=dict)  # pyright: ignore
+    data: dict[str, Any] = Field(default_factory=dict)
 
     def is_not_empty(self) -> bool:
         """Check if the condition is not empty.
@@ -293,15 +291,15 @@ class WaldiezExpressionContextCondition(WaldiezBase):
 
 
 WaldiezContextBasedCondition = Annotated[
-    Union[WaldiezStringContextCondition, WaldiezExpressionContextCondition],
+    WaldiezStringContextCondition | WaldiezExpressionContextCondition,
     Field(discriminator="condition_type"),
 ]
 
 
 # Union type for just the condition types (without targets)
-WaldiezHandoffCondition = Union[
-    WaldiezLLMBasedCondition, WaldiezContextBasedCondition
-]
+WaldiezHandoffCondition = (
+    WaldiezLLMBasedCondition | WaldiezContextBasedCondition
+)
 
 
 # pylint: disable=too-few-public-methods
@@ -362,9 +360,9 @@ class WaldiezContextBasedTransition(WaldiezBase):
 
 
 # Union type for complete transitions (condition + target)
-WaldiezHandoffTransition = Union[
-    WaldiezLLMBasedTransition, WaldiezContextBasedTransition
-]
+WaldiezHandoffTransition = (
+    WaldiezLLMBasedTransition | WaldiezContextBasedTransition
+)
 
 
 class WaldiezHandoff(WaldiezBase):

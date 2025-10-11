@@ -3,9 +3,9 @@
 """Dir related utilities for the waldiez runner."""
 
 import os
+from collections.abc import AsyncIterator, Iterator
 from contextlib import asynccontextmanager, contextmanager
 from pathlib import Path
-from typing import AsyncIterator, Iterator
 
 
 @contextmanager

@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
-# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownArgumentType=false, reportUnusedParameter=false
 """Base runner for Waldiez workflows."""
 
 import importlib.util
@@ -13,11 +13,11 @@ import tempfile
 import threading
 from pathlib import Path
 from types import ModuleType, TracebackType
-from typing import Any, Type
+from typing import Any
 
 from aiofiles.os import wrap
 from anyio.from_thread import start_blocking_portal
-from typing_extensions import Self
+from typing_extensions import Self, override
 
 from waldiez.exporter import WaldiezExporter
 from waldiez.logger import WaldiezLogger, get_logger
@@ -87,6 +87,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             raise ValueError("Could not resolve a waldiez file path")
         WaldiezBaseRunner._waldiez_file = waldiez_file_path
 
+    @override
     @staticmethod
     def print(*args: Any, **kwargs: Any) -> None:
         """Print a message to the output stream.
@@ -104,6 +105,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         else:
             EventsMixin.do_print(*args, **kwargs)
 
+    @override
     def is_running(self) -> bool:
         """Check if the workflow is currently running.
 
@@ -293,6 +295,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         output_file: Path = Path(WaldiezBaseRunner._output_path)
         return output_file, uploads_root_path
 
+    @override
     def before_run(
         self,
         output_file: Path,
@@ -317,6 +320,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             uploads_root=uploads_root,
         )
 
+    @override
     async def a_before_run(
         self,
         output_file: Path,
@@ -376,6 +380,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
 
     # noinspection PyProtocol
     # pylint: disable=too-many-locals,unused-argument
+    @override
     def run(
         self,
         output_path: str | Path | None = None,
@@ -512,6 +517,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
 
     # noinspection DuplicatedCode
     # noinspection PyProtocol
+    @override
     async def a_run(
         self,
         output_path: str | Path | None = None,
@@ -606,6 +612,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             sys.path.pop(0)
         return await self.a_get_results(results, output_dir)
 
+    @override
     def after_run(
         self,
         results: list[dict[str, Any]],
@@ -651,6 +658,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             skip_timeline=skip_timeline,
         )
 
+    @override
     async def a_after_run(
         self,
         results: list[dict[str, Any]],
@@ -825,7 +833,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
 
     def __exit__(
         self,
-        exc_type: Type[BaseException],
+        exc_type: type[BaseException],
         exc_value: BaseException,
         traceback: TracebackType,
     ) -> None:
@@ -835,7 +843,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
 
     async def __aexit__(
         self,
-        exc_type: Type[BaseException],
+        exc_type: type[BaseException],
         exc_value: BaseException,
         traceback: TracebackType,
     ) -> None:

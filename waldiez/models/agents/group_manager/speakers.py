@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Group chat speakers."""
 
-from typing import Optional, Union
-
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
 
@@ -61,7 +59,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
     ----------
     selection_method : WaldiezGroupManagerSpeakersSelectionMethod
         The next speaker selection method.
-    selection_custom_method : Optional[str]
+    selection_custom_method : str | None
         Method for custom selection.
     max_retries_for_selecting : Optional[int]
         Max retries for selecting a speaker.
@@ -87,7 +85,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
         ),
     ]
     selection_custom_method: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             title="Method for custom selection.",
@@ -104,7 +102,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
         ),
     ]
     max_retries_for_selecting: Annotated[
-        Optional[int],
+        int | None,
         Field(
             default=None,
             title="Max retries for a selecting",
@@ -129,7 +127,7 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
         ),
     ]
     allow_repeat: Annotated[
-        Union[bool, list[str]],
+        bool | list[str] | None,
         Field(
             default=True,
             title="Allow repeat",
@@ -177,11 +175,11 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
             ),
         ),
     ]
-    _custom_method_string: Optional[str] = None
-    _order: Optional[list[str]] = None
+    _custom_method_string: str | None = None
+    _order: list[str] | None = None
 
     @property
-    def custom_method_string(self) -> Optional[str]:
+    def custom_method_string(self) -> str | None:
         """Get the custom method string.
 
         Returns
@@ -193,8 +191,8 @@ class WaldiezGroupManagerSpeakers(WaldiezBase):
 
     def get_custom_method_function(
         self,
-        name_prefix: Optional[str] = None,
-        name_suffix: Optional[str] = None,
+        name_prefix: str | None = None,
+        name_suffix: str | None = None,
     ) -> tuple[str, str]:
         """Get the custom method function.
 

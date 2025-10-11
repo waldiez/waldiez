@@ -2,6 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Test WaldiezRunner."""
 # pylint: disable=protected-access,no-self-use,unused-argument
+# pyright: reportMissingTypeStubs=false
 
 import shutil
 from pathlib import Path

@@ -3,13 +3,15 @@
 # flake8: noqa: E501
 # pylint: disable=missing-function-docstring, missing-param-doc, missing-raises-doc
 # pylint: disable=line-too-long, import-outside-toplevel
+# pyright: reportUnknownArgumentType=false,reportCallInDefaultInitializer=false
+# pyright:  reportUnusedCallResult=false,reportAny=false
 """Command line interface to convert or run a waldiez file."""
 
 import json
 import os
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, Optional
+from typing import TYPE_CHECKING, Literal
 
 import anyio
 import typer
@@ -81,7 +83,7 @@ def run(
             resolve_path=True,
         ),
     ],
-    output: Optional[Path] = typer.Option(  # noqa: B008
+    output: Path | None = typer.Option(  # noqa: B008
         None,
         help=(
             "Path to the output (.py) file. "
@@ -91,7 +93,7 @@ def run(
         dir_okay=False,
         resolve_path=True,
     ),
-    uploads_root: Optional[Path] = typer.Option(  # noqa: B008
+    uploads_root: Path | None = typer.Option(  # noqa: B008
         None,
         help=(
             "Path to the uploads root directory. "
@@ -112,7 +114,7 @@ def run(
         False,
         help="Override the output file if it already exists.",
     ),
-    env_file: Optional[Path] = typer.Option(  # noqa: B008
+    env_file: Path | None = typer.Option(  # noqa: B008
         None,
         "--env-file",
         "-e",
@@ -280,7 +282,7 @@ def check(
     LOG.success("Waldiez flow seems valid.")
 
 
-def _get_output_path(output: Optional[Path], force: bool) -> Optional[Path]:
+def _get_output_path(output: Path | None, force: bool) -> Path | None:
     if output is not None:
         output = Path(output).resolve()
     if output is not None and not output.parent.exists():

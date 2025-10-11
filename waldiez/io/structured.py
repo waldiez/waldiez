@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+# pyright: reportMissingTypeStubs=false,reportUnknownVariableType=false
+# pyright: reportUnknownArgumentType=false,reportArgumentType=false
+# pyright: reportUnknownMemberType=false
+
 """Structured I/O stream for JSON-based communication over stdin/stdout."""
 
 import json
@@ -69,8 +73,8 @@ class StructuredIOStream(IOStream):
         payload_type = kwargs.get("type", "print")
         message = sep.join(map(str, args))
         if len(args) == 1 and isinstance(args[0], dict):
-            message = args[0]  # pyright: ignore
-            payload_type = message.get("type", payload_type)  # pyright: ignore
+            message = args[0]
+            payload_type = message.get("type", payload_type)
             is_dumped = True
         else:
             is_dumped, message = is_json_dumped(message)
@@ -83,13 +87,13 @@ class StructuredIOStream(IOStream):
                 # "data": message,
             }
             if isinstance(message, dict):
-                payload.update(message)  # pyright: ignore
+                payload.update(message)
             else:
                 payload["data"] = message
             if "type" not in payload:
                 payload["type"] = payload_type
         else:
-            print_message = PrintMessage(data=message)  # pyright: ignore
+            print_message = PrintMessage(data=message)
             payload = print_message.model_dump(mode="json", fallback=str)
             payload["type"] = payload_type
         dumped = json.dumps(payload, default=str, ensure_ascii=False) + end
@@ -345,7 +349,7 @@ class StructuredIOStream(IOStream):
                     )
             if isinstance(data, list):
                 return self._handle_list_response(
-                    data,  # pyright: ignore
+                    data,
                     request_id=request_id,
                     response_type=response_type,
                 )
@@ -365,7 +369,7 @@ class StructuredIOStream(IOStream):
                     type=response_type,
                     data=self._format_multimedia_response(
                         request_id=request_id,
-                        data=data,  # pyright: ignore
+                        data=data,
                     ),
                     request_id=request_id,
                 )
@@ -391,7 +395,7 @@ class StructuredIOStream(IOStream):
         request_id: str,
         response_type: MessageType,
     ) -> UserResponse:
-        if len(data) == 0:  # pyright: ignore
+        if len(data) == 0:
             # Empty list, return empty response
             return UserResponse(
                 type=response_type,
@@ -400,7 +404,7 @@ class StructuredIOStream(IOStream):
             )
 
         input_data: list[UserInputData] = []
-        for entry in data:  # pyright: ignore
+        for entry in data:
             # pylint: disable=broad-exception-caught
             try:
                 content = UserInputData.model_validate(entry)
@@ -435,8 +439,8 @@ class StructuredIOStream(IOStream):
         # Create a log message
         got_id: str | None = None
         if isinstance(response, dict):
-            got_id = response.get("request_id")  # pyright: ignore
-        response_str = str(response)  # pyright: ignore
+            got_id = response.get("request_id")
+        response_str = str(response)
         message = response_str[:100] + (
             "..." if len(response_str) > 100 else ""
         )
@@ -481,7 +485,7 @@ class StructuredIOStream(IOStream):
         result: list[str] = []
         if "content" in data and isinstance(data["content"], dict):
             return self._format_multimedia_response(
-                data=data["content"],  # pyright: ignore
+                data=data["content"],
                 request_id=request_id,
             )
 

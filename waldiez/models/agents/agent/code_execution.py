@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez Agent Code Execution Configuration."""
 
-from typing import Optional
-
 from pydantic import Field
 from typing_extensions import Annotated
 
@@ -28,7 +26,7 @@ class WaldiezAgentCodeExecutionConfig(WaldiezBase):
     """
 
     work_dir: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             title="Working directory",
@@ -37,7 +35,7 @@ class WaldiezAgentCodeExecutionConfig(WaldiezBase):
         ),
     ]
     use_docker: Annotated[
-        Optional[bool],
+        bool | None,
         Field(
             default=None,
             title="Use docker",
@@ -46,7 +44,7 @@ class WaldiezAgentCodeExecutionConfig(WaldiezBase):
         ),
     ]
     timeout: Annotated[
-        Optional[float],
+        float | None,
         Field(
             default=None,
             title="Timeout",
@@ -56,7 +54,7 @@ class WaldiezAgentCodeExecutionConfig(WaldiezBase):
         ),
     ]
     last_n_messages: Annotated[
-        Optional[int],
+        int | None,
         Field(
             default=None,
             title="Last N Messages",

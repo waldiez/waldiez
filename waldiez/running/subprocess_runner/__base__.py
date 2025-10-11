@@ -146,7 +146,7 @@ class BaseSubprocessRunner:
         try:
             data = json.loads(line)
             if isinstance(data, dict):
-                return data  # pyright: ignore
+                return data  # pyright: ignore[reportUnknownVariableType]
         except json.JSONDecodeError:
             return self.create_output_message(stream=stream, content=line)
         return self.create_output_message(

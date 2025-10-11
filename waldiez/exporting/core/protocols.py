@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=too-few-public-methods
+# pyright: reportReturnType=false
 """Core exporting protocols."""
 
 from typing import Any, Protocol, runtime_checkable
@@ -28,7 +29,7 @@ class ExportContributor(Protocol):
 class Validator(Protocol):
     """Protocol for validation components."""
 
-    def validate(self, content: Any) -> ValidationResult:  # pyright: ignore
+    def validate(self, content: Any) -> ValidationResult:
         """Validate content and return result.
 
         Parameters
@@ -47,7 +48,7 @@ class Validator(Protocol):
 class Serializer(Protocol):
     """Protocol for serialization components."""
 
-    def serialize(self, obj: Any, **kwargs: Any) -> str:  # pyright: ignore
+    def serialize(self, obj: Any, **kwargs: Any) -> str:
         """Serialize an object to string representation.
 
         Parameters
@@ -68,7 +69,7 @@ class Serializer(Protocol):
 class PathResolver(Protocol):
     """Protocol for resolving a path."""
 
-    def resolve(self, path: str) -> str:  # pyright: ignore
+    def resolve(self, path: str) -> str:
         """Resolve a path.
 
         Parameters
@@ -87,7 +88,7 @@ class PathResolver(Protocol):
             If the path cannot be resolved.
         """
 
-    def is_local(self, path: str) -> bool:  # pyright: ignore
+    def is_local(self, path: str) -> bool:
         """Check if the given path is a local path.
 
         Parameters
@@ -112,7 +113,7 @@ class ContentGenerator(Protocol):
         after_run: str,
         skip_logging: bool,
         **kwargs: Any,
-    ) -> str:  # pyright: ignore
+    ) -> str:
         """Generate content based on provided parameters.
 
         Parameters

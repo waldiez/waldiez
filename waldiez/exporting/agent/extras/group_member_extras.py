@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=no-self-use,too-few-public-methods
+# pyright: reportUninitializedInstanceVariable=false
 """Group member agent configuration processor."""
 
 from dataclasses import dataclass, field
@@ -25,10 +26,10 @@ class GroupMemberProcessorResult:
 
     before_agent: str = ""
     after_agent: str = ""
-    extra_arguments: list[InstanceArgument] = field(  # pyright: ignore
+    extra_arguments: list[InstanceArgument] = field(
         default_factory=list,
     )
-    extra_imports: set[ImportStatement] = field(  # pyright: ignore
+    extra_imports: set[ImportStatement] = field(
         default_factory=set,
     )
 

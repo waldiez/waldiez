@@ -1,13 +1,16 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportDeprecated=false,reportUnknownMemberType=false
+# pyright: reportAttributeAccessIssue=false,reportUnknownVariableType=false
+
 """Waldiez chat model."""
 
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
 
-from ..agents import WaldiezAgent, WaldiezRagUserProxy
 from ..common import (
     WaldiezAgentTarget,
     WaldiezBase,
@@ -33,6 +36,9 @@ from .chat_nested import (
     NESTED_CHAT_TYPES,
     WaldiezChatNested,
 )
+
+if TYPE_CHECKING:
+    from ..agents import WaldiezAgent
 
 WaldiezChatType = Literal["chat", "nested", "group", "hidden"]
 """Possible chat types: "chat", "nested", "group", "hidden"."""
@@ -61,7 +67,7 @@ class WaldiezChat(WaldiezBase):
         The nested chat message/reply if any.
     message : WaldiezChatMessage
         The chat message.
-    message_content : Optional[str]
+    message_content : str | None
         The chat message content if any. If method, the method's body.
 
     Functions
@@ -146,12 +152,12 @@ class WaldiezChat(WaldiezBase):
         return self.data.message
 
     @property
-    def message_content(self) -> Optional[str]:
+    def message_content(self) -> str | None:
         """Get the message content."""
         return self.data.message_content
 
     @property
-    def max_turns(self) -> Optional[int]:
+    def max_turns(self) -> int | None:
         """Get the max rounds for the chat."""
         return self.data.max_turns
 
@@ -227,8 +233,8 @@ class WaldiezChat(WaldiezBase):
 
     def get_message_function(
         self,
-        name_prefix: Optional[str] = None,
-        name_suffix: Optional[str] = None,
+        name_prefix: str | None = None,
+        name_suffix: str | None = None,
         is_rag: bool = False,
     ) -> tuple[str, str]:
         """Get the message function.
@@ -281,10 +287,10 @@ class WaldiezChat(WaldiezBase):
 
     @staticmethod
     def _get_nested_chat_function(
-        content: Optional[str],
+        content: str | None,
         function_name_base: str,
-        name_prefix: Optional[str] = None,
-        name_suffix: Optional[str] = None,
+        name_prefix: str | None = None,
+        name_suffix: str | None = None,
     ) -> tuple[str, str]:
         """Get the nested chat function.
 
@@ -323,16 +329,16 @@ class WaldiezChat(WaldiezBase):
 
     def get_nested_chat_message_function(
         self,
-        name_prefix: Optional[str] = None,
-        name_suffix: Optional[str] = None,
+        name_prefix: str | None = None,
+        name_suffix: str | None = None,
     ) -> tuple[str, str]:
         """Get the nested chat message function.
 
         Parameters
         ----------
-        name_prefix : str
+        name_prefix : str | None
             The function name prefix.
-        name_suffix : str
+        name_suffix : str | None
             The function name suffix.
 
         Returns
@@ -358,16 +364,16 @@ class WaldiezChat(WaldiezBase):
 
     def get_nested_chat_reply_function(
         self,
-        name_prefix: Optional[str] = None,
-        name_suffix: Optional[str] = None,
+        name_prefix: str | None = None,
+        name_suffix: str | None = None,
     ) -> tuple[str, str]:
         """Get the nested chat reply function.
 
         Parameters
         ----------
-        name_prefix : str
+        name_prefix : str | None
             The function name prefix.
-        name_suffix : str
+        name_suffix : str | None
             The function name suffix.
 
         Returns
@@ -394,7 +400,7 @@ class WaldiezChat(WaldiezBase):
     def get_chat_args(
         self,
         for_queue: bool,
-        sender: Optional[WaldiezAgent] = None,
+        sender: Optional["WaldiezAgent"] = None,
     ) -> dict[str, Any]:
         """Get the chat arguments to use in autogen.
 
@@ -412,9 +418,10 @@ class WaldiezChat(WaldiezBase):
         """
         args_dict = self.data.get_chat_args(for_queue)
         if (
-            isinstance(sender, WaldiezRagUserProxy)
+            sender
             and sender.is_rag_user
             and self.message.type == "rag_message_generator"
+            and hasattr(sender.data, "retrieve_config")
         ):
             # check for n_results in agent data, to add in context
             n_results = sender.data.retrieve_config.n_results

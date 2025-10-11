@@ -8,8 +8,8 @@
 
 import os
 import sys
+from collections.abc import AsyncGenerator
 from pathlib import Path
-from typing import AsyncGenerator
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
@@ -219,7 +219,7 @@ class TestPythonManager:
                 # Verify output was captured
                 assert any(
                     "Installing requirements: requests" in line
-                    for line in output_lines  # pyright: ignore
+                    for line in output_lines
                 )
 
     def test_get_debug_info(self) -> None:

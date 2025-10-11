@@ -7,6 +7,9 @@
 # pylint: disable=too-many-arguments,too-many-positional-arguments
 # pylint: disable=too-many-locals,too-many-instance-attributes
 
+# pyright: reportMissingTypeStubs=false,reportUnknownMemberType=false
+# pyright: reportUnusedParameter=false
+
 """An MQTT I/O stream for handling print and input messages."""
 
 import json
@@ -17,12 +20,7 @@ import uuid
 from pathlib import Path
 from threading import Event, Lock
 from types import TracebackType
-from typing import (
-    Any,
-    Callable,
-    Optional,
-    Type,
-)
+from typing import Any, Callable
 
 try:
     from paho.mqtt import client as mqtt
@@ -62,8 +60,8 @@ class MqttIOStream(IOStream):
     client: mqtt.Client
     task_id: str
     input_timeout: int
-    on_input_request: Optional[Callable[[str, str, str], None]]
-    on_input_received: Optional[Callable[[str, str], None]]
+    on_input_request: Callable[[str, str, str], None] | None
+    on_input_response: Callable[[str, str], None] | None
     max_retain_messages: int
     output_topic: str
     input_request_topic: str
@@ -87,8 +85,8 @@ class MqttIOStream(IOStream):
         input_timeout: int = 120,
         connect_timeout: int = 10,
         max_retain_messages: int = 1000,
-        on_input_request: Optional[Callable[[str, str, str], None]] = None,
-        on_input_response: Optional[Callable[[str, str], None]] = None,
+        on_input_request: Callable[[str, str, str], None] | None = None,
+        on_input_response: Callable[[str, str], None] | None = None,
         mqtt_client_kwargs: dict[str, Any] | None = None,
         uploads_root: Path | str | None = None,
         username: str | None = None,
@@ -173,9 +171,9 @@ class MqttIOStream(IOStream):
         # Set up TLS
         if use_tls:
             if ca_cert_path:
-                self.client.tls_set(ca_cert_path)  # pyright: ignore
+                self.client.tls_set(ca_cert_path)
             else:  # pragma: no cover
-                self.client.tls_set()  # pyright: ignore
+                self.client.tls_set()
 
         # Set up callbacks
         self.client.on_connect = self._on_connect
@@ -398,7 +396,7 @@ class MqttIOStream(IOStream):
 
     def __exit__(
         self,
-        exc_type: Type[Exception] | None,
+        exc_type: type[Exception] | None,
         exc_value: Exception | None,
         traceback: TracebackType | None,
     ) -> None:
@@ -641,7 +639,7 @@ class MqttIOStream(IOStream):
     @staticmethod
     def _create_user_response(
         message_data: dict[str, Any],
-    ) -> Optional["UserResponse"]:
+    ) -> UserResponse | None:
         """Create UserResponse object from validated data."""
         try:
             # Handle nested JSON in 'data' field

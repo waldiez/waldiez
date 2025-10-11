@@ -309,7 +309,8 @@ def test_generate_function() -> None:
     )
     # Then
     assert function_string == (
-        f"def {function_name[:MAX_VAR_NAME_LENGTH]}" + "(\n"
+        f"def {function_name[:MAX_VAR_NAME_LENGTH]}"
+        "(\n"
         "    arg1: str,\n"
         "    arg2: int,\n"
         "    arg3: float,\n"

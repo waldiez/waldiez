@@ -3,7 +3,7 @@
 """Captain agent extras module."""
 
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 from waldiez.exporting.core.result import ExportResult
 
@@ -14,7 +14,7 @@ from .standard_extras import StandardExtras
 class CaptainExtras(StandardExtras):
     """Extras for captain agents."""
 
-    nested_config: Optional[dict[str, Any]] = None
+    nested_config: dict[str, Any] | None = None
 
     def _contribute_specific_content(self, result: ExportResult) -> None:
         """Contribute captain specific content to the export result.

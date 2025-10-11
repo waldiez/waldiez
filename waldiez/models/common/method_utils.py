@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pyright: reportUnknownMemberType=false,reportUnknownVariableType=false
-# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownArgumentType=false, reportUnusedImport=false
 """Function related utilities."""
 
 import ast
@@ -9,13 +9,13 @@ import importlib.util
 import sys
 import sysconfig
 from pathlib import Path
-from typing import NamedTuple, Optional
+from typing import NamedTuple
 
 # parso for extracting function bodies
 # (keeps comments, docstrings and formatting as-is)
 import parso
-import parso.python  # pyright: ignore
-import parso.tree  # pyright: ignore
+import parso.python
+import parso.tree
 
 # let's limit the variable name length
 MAX_VAR_NAME_LENGTH = 64
@@ -24,8 +24,8 @@ MAX_VAR_NAME_LENGTH = 64
 class ParseResult(NamedTuple):
     """Result of parsing a code string."""
 
-    error: Optional[str]
-    tree: Optional[ast.Module]
+    error: str | None
+    tree: ast.Module | None
 
 
 def is_standard_library(module_name: str) -> bool:
@@ -87,7 +87,7 @@ def parse_code_string(
     return ParseResult(None, tree)
 
 
-def _extract_module_name(node: ast.AST) -> Optional[str]:
+def _extract_module_name(node: ast.AST) -> str | None:
     """Extract the root module name from an import node."""
     if isinstance(node, ast.Import):
         return node.names[0].name.split(".")[0]

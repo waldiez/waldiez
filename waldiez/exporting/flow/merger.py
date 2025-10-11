@@ -27,7 +27,7 @@ class MergeStatistics:
     total_content_items: int = 0
     total_env_vars: int = 0
     deduplicated_env_vars: int = 0
-    conflicts_found: list[str] = field(default_factory=list)  # pyright: ignore
+    conflicts_found: list[str] = field(default_factory=list)
 
 
 class ContentMerger:
@@ -156,10 +156,11 @@ class ContentMerger:
                 elif imp.position.value == existing.position.value:
                     # Same position - check for conflicts
                     if imp.metadata != existing.metadata:
-                        conflicts.append(
+                        conflict = (
                             f"Import '{key}' has conflicting metadata: "
                             f"{existing.metadata} vs {imp.metadata}"
                         )
+                        conflicts.append(conflict)
                     # Keep existing (first wins for same priority)
 
         if conflicts:
@@ -292,10 +293,11 @@ class ContentMerger:
 
                     # Check for value conflicts
                     if existing.value != env_var.value:
-                        conflicts.append(
+                        conflict = (
                             f"Environment variable '{key}' has conflicting "
                             f"values: '{existing.value}' vs '{env_var.value}'"
                         )
+                        conflicts.append(conflict)
                     # Keep first occurrence
                     # (tools/models take precedence over agents)
 

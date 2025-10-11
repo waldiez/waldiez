@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportArgumentType=false,reportIncompatibleVariableOverride=false
+
 """Group chat manager agent."""
 
 import warnings
@@ -29,7 +32,7 @@ class WaldiezGroupManager(WaldiezAgent):
         The group manager agent's data.
     """
 
-    agent_type: Annotated[  # pyright: ignore
+    agent_type: Annotated[
         Literal["group_manager", "manager"],
         Field(
             "group_manager",
@@ -40,12 +43,12 @@ class WaldiezGroupManager(WaldiezAgent):
             alias="agentType",
         ),
     ]
-    data: Annotated[  # pyright: ignore
+    data: Annotated[
         WaldiezGroupManagerData,
         Field(
             title="Data",
             description="The group manager agent's data",
-            default_factory=WaldiezGroupManagerData,  # pyright: ignore
+            default_factory=WaldiezGroupManagerData,
         ),
     ]
 
@@ -83,10 +86,11 @@ class WaldiezGroupManager(WaldiezAgent):
                 stacklevel=2,
             )
         if v != "group_manager":  # pragma: no cover
-            raise ValueError(
+            msg = (
                 "The agent type must be 'group_manager'. "
                 "Use 'group_manager' instead."
             )
+            raise ValueError(msg)
         return "group_manager"
 
     def validate_initial_agent_id(self, all_agent_ids: list[str]) -> None:
@@ -106,10 +110,11 @@ class WaldiezGroupManager(WaldiezAgent):
         """
         initial_agent_id = self.data.initial_agent_id
         if initial_agent_id not in all_agent_ids:
-            raise ValueError(
+            msg = (
                 f"Initial agent ID '{initial_agent_id}' "
                 f"is not in the list of agent IDs: {all_agent_ids}"
             )
+            raise ValueError(msg)
 
     def get_speakers_order(self) -> list[str]:
         """Get the order of the speakers.

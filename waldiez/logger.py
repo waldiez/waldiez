@@ -3,6 +3,8 @@
 # pylint: disable=broad-exception-caught,too-many-try-statements
 """Waldiez logger."""
 
+from __future__ import annotations
+
 import inspect
 import logging
 import os
@@ -10,13 +12,15 @@ import re
 import string
 import threading
 import traceback
+from collections.abc import Mapping
 from datetime import datetime
 from enum import IntEnum
 from pathlib import Path
 from types import TracebackType
-from typing import Any, Callable, Mapping, Optional
+from typing import Any, Callable
 
 import click
+from typing_extensions import override
 
 HERE = Path(__file__).parent
 
@@ -41,7 +45,7 @@ class WaldiezLogger(logging.Logger):
        - logger.info("User {user} has {count} items", user="john", count=5)
     """
 
-    _instance: Optional["WaldiezLogger"] = None
+    _instance: WaldiezLogger | None = None
     _lock: threading.Lock = threading.Lock()
 
     _INTERNAL_METHODS = {
@@ -179,6 +183,7 @@ class WaldiezLogger(logging.Logger):
         return self._level_map.get(level.upper(), LogLevel.INFO)
 
     # pylint: disable=unused-argument
+    @override
     def log(
         self,
         level: int,
@@ -249,6 +254,7 @@ class WaldiezLogger(logging.Logger):
         level_int = self._get_level_number(level)
         self.log(level_int, msg, *args, **kwargs)
 
+    @override
     def debug(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log a debug message.
 
@@ -263,6 +269,7 @@ class WaldiezLogger(logging.Logger):
         """
         self.do_log(msg, *args, level="debug", **kwargs)
 
+    @override
     def info(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log an informational message.
 
@@ -291,6 +298,7 @@ class WaldiezLogger(logging.Logger):
         """
         self.do_log(msg, *args, level="success", **kwargs)
 
+    @override
     def warning(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log a warning message.
 
@@ -305,6 +313,7 @@ class WaldiezLogger(logging.Logger):
         """
         self.do_log(msg, *args, level="warning", **kwargs)
 
+    @override
     def error(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log an error message.
 
@@ -319,6 +328,7 @@ class WaldiezLogger(logging.Logger):
         """
         self.do_log(msg, *args, level="error", **kwargs)
 
+    @override
     def critical(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log a critical error message.
 
@@ -333,6 +343,7 @@ class WaldiezLogger(logging.Logger):
         """
         self.do_log(msg, *args, level="critical", **kwargs)
 
+    @override
     def exception(self, msg: Any, *args: Any, **kwargs: Any) -> None:
         """Log an exception message.
 
@@ -354,6 +365,7 @@ class WaldiezLogger(logging.Logger):
         if tb and "NoneType: None" not in tb:  # pragma: no branch
             click.echo(click.style(tb, fg="red", dim=True))
 
+    @override
     def setLevel(self, level: int | str) -> None:
         """
         Set the logging level.
@@ -388,10 +400,11 @@ class WaldiezLogger(logging.Logger):
             self._level = level_upper
             super().setLevel(self._level_map[level_upper].value)
         else:
-            raise ValueError(
+            msg = (
                 f"Invalid log level: {level}. "
                 f"Valid levels are: {list(self._level_map.keys())}"
             )
+            raise ValueError(msg)
 
     def get_level(self) -> str:
         """Get the current logging level.

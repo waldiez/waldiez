@@ -46,7 +46,7 @@ class TestWaldiezAgentTarget:
     def test_agent_target_missing_required_field(self) -> None:
         """Test missing required field."""
         with pytest.raises(ValidationError):  # Missing target
-            WaldiezAgentTarget(target_type="AgentTarget")  # pyright: ignore
+            WaldiezAgentTarget(target_type="AgentTarget")
 
 
 class TestWaldiezRandomAgentTarget:
@@ -161,7 +161,7 @@ class TestWaldiezGroupOrNestedTarget:
         """Test validation error when target is missing."""
         with pytest.raises(ValidationError):  # Missing target
             WaldiezGroupOrNestedTarget(
-                target_type="GroupChatTarget",  # pyright: ignore
+                target_type="GroupChatTarget",
             )
 
     def test_group_or_nested_target_invalid_type(self) -> None:
@@ -201,7 +201,7 @@ class TestWaldiezStringLLMCondition:
         """Test validation error when prompt is missing."""
         with pytest.raises(ValidationError):  # Missing prompt
             WaldiezStringLLMCondition(
-                condition_type="string_llm",  # pyright: ignore
+                condition_type="string_llm",
             )
 
 
@@ -247,7 +247,7 @@ class TestWaldiezStringContextCondition:
         """Test validation error when variable_name is missing."""
         with pytest.raises(ValidationError):  # Missing variable_name
             WaldiezStringContextCondition(
-                condition_type="string_context",  # pyright: ignore
+                condition_type="string_context",
             )
 
 

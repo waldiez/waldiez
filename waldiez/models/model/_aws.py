@@ -3,8 +3,6 @@
 # flake8: noqa: E501
 """Waldiez Model AWS model."""
 
-from typing import Optional
-
 from pydantic import Field
 from typing_extensions import Annotated
 
@@ -29,7 +27,7 @@ class WaldiezModelAWS(WaldiezBase):
     """
 
     region: Annotated[
-        Optional[str],
+        str | None,
         Field(
             None,
             alias="region",
@@ -38,7 +36,7 @@ class WaldiezModelAWS(WaldiezBase):
         ),
     ]
     access_key: Annotated[
-        Optional[str],
+        str | None,
         Field(
             None,
             alias="accessKey",
@@ -47,7 +45,7 @@ class WaldiezModelAWS(WaldiezBase):
         ),
     ]
     secret_key: Annotated[
-        Optional[str],
+        str | None,
         Field(
             None,
             alias="secretKey",
@@ -56,7 +54,7 @@ class WaldiezModelAWS(WaldiezBase):
         ),
     ]
     session_token: Annotated[
-        Optional[str],
+        str | None,
         Field(
             None,
             alias="sessionToken",
@@ -65,7 +63,7 @@ class WaldiezModelAWS(WaldiezBase):
         ),
     ]
     profile_name: Annotated[
-        Optional[str],
+        str | None,
         Field(
             None,
             alias="profileName",

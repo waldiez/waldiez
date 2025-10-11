@@ -3,7 +3,7 @@
 """Flow exporter."""
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from waldiez.models import Waldiez
 
@@ -21,7 +21,7 @@ class FlowExporter(Exporter[FlowExtras]):
         waldiez: Waldiez,
         output_dir: Path | None,
         for_notebook: bool,
-        context: Optional[ExporterContext] = None,
+        context: ExporterContext | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize the chats exporter.

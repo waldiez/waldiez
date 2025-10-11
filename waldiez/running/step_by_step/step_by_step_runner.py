@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
-# pylint: disable=line-too-long
+# pylint: disable=duplicate-code,line-too-long
 # pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
 # pyright: reportUnknownArgumentType=false, reportOptionalMemberAccess=false
-# pylint: disable=duplicate-code
+# pyright: reportDeprecated=false, reportMissingTypeStubs=false
+# pyright: reportUnsafeMultipleInheritance=false
 # flake8: noqa: E501
 
 """Step-by-step Waldiez runner with user interaction capabilities."""
@@ -13,10 +14,12 @@ import asyncio
 import threading
 import traceback
 from collections import deque
+from collections.abc import Iterable
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Iterable, Union
+from typing import TYPE_CHECKING, Any, Union
 
 from pydantic import ValidationError
+from typing_extensions import override
 
 from waldiez.io.utils import DEBUG_INPUT_PROMPT, gen_id
 from waldiez.models.waldiez import Waldiez
@@ -251,6 +254,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         self.emit(WaldiezDebugEventInfo(event=event_info))
 
     # noinspection PyTypeHints
+    @override
     def emit(self, message: WaldiezDebugMessage) -> None:
         """Emit a debug message.
 
@@ -561,6 +565,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 return False
             # For other actions (info, help, etc.), continue the loop
 
+    @override
     def _run(
         self,
         temp_dir: Path,
@@ -670,6 +675,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         return not self._stop_requested.is_set()
 
     # pylint: disable=too-complex
+    @override
     async def _a_run(
         self,
         temp_dir: Path,
@@ -683,7 +689,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
 
         async def _execute_workflow() -> list[dict[str, Any]]:
             # pylint: disable=import-outside-toplevel
-            from autogen.io import IOStream  # pyright: ignore
+            from autogen.io import IOStream
 
             from waldiez.io import StructuredIOStream
 

@@ -4,7 +4,7 @@
 """Agent specific extras module."""
 
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 from waldiez.exporting.core.result import ExportResult
 
@@ -16,7 +16,7 @@ from .base import BaseExtras
 class ModelExtras(BaseExtras):
     """Extras for model exporters."""
 
-    llm_config: Optional[dict[str, Any]] = None
+    llm_config: dict[str, Any] | None = None
     config_file_path: str = ""
 
     def set_llm_config(self, config: dict[str, Any]) -> None:

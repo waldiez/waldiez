@@ -38,7 +38,7 @@ def test_waldiez_agent() -> None:
         requirements=["req-1", "req-2"],
         created_at="2021-01-01T00:00:00.000Z",
         updated_at="2021-01-01T00:00:00.000Z",
-        data=WaldiezAgentData(  # pyright: ignore
+        data=WaldiezAgentData(
             system_message="system_message",
             human_input_mode="NEVER",
             agent_default_auto_reply="auto_reply",
@@ -96,45 +96,45 @@ def test_waldiez_agent() -> None:
 # noinspection DuplicatedCode,PyArgumentList
 def test_agent_ag2_class() -> None:
     """Test WaldiezAgent.ag2_class."""
-    user_proxy = WaldiezUserProxy(  # pyright: ignore
+    user_proxy = WaldiezUserProxy(
         id="wa-1",
         name="user_proxy",
     )
-    assistant = WaldiezAssistant(  # pyright: ignore
+    assistant = WaldiezAssistant(
         id="wa-2",
         name="assistant",
     )
-    rag_user = WaldiezRagUserProxy(  # pyright: ignore
+    rag_user = WaldiezRagUserProxy(
         id="wa-4",
         name="rag_user",
     )
-    multimodal_agent = WaldiezAssistant(  # pyright: ignore
+    multimodal_agent = WaldiezAssistant(
         id="wa-5",
         name="multimodal_agent",
-        data=WaldiezAssistantData(  # pyright: ignore
+        data=WaldiezAssistantData(
             is_multimodal=True,
         ),
     )
-    reasoning_agent = WaldiezReasoningAgent(  # pyright: ignore
+    reasoning_agent = WaldiezReasoningAgent(
         id="wa-7",
         name="reasoning_agent",
     )
-    multimodal_group_member = WaldiezAssistant(  # pyright: ignore
+    multimodal_group_member = WaldiezAssistant(
         id="wa-6",
         name="multimodal_group_member",
-        data=WaldiezAssistantData(  # pyright: ignore
+        data=WaldiezAssistantData(
             is_multimodal=True,
             parent_id="wa-5",
         ),
     )
-    captain = WaldiezCaptainAgent(  # pyright: ignore
+    captain = WaldiezCaptainAgent(
         id="wa-3",
         name="captain",
     )
-    group_manager = WaldiezGroupManager(  # pyright: ignore
+    group_manager = WaldiezGroupManager(
         id="wa-8",
         name="group_manager",
-        data=WaldiezGroupManagerData(  # pyright: ignore
+        data=WaldiezGroupManagerData(
             initial_agent_id="wa-2",
         ),
     )
@@ -151,37 +151,37 @@ def test_agent_ag2_class() -> None:
 # noinspection DuplicatedCode,PyArgumentList
 def test_agent_ag2_imports() -> None:
     """Test WaldiezAgent.ag2_imports."""
-    user_proxy = WaldiezUserProxy(  # pyright: ignore
+    user_proxy = WaldiezUserProxy(
         id="wa-1",
         name="user_proxy",
     )
-    assistant = WaldiezAssistant(  # pyright: ignore
+    assistant = WaldiezAssistant(
         id="wa-2",
         name="assistant",
     )
-    rag_user = WaldiezRagUserProxy(  # pyright: ignore
+    rag_user = WaldiezRagUserProxy(
         id="wa-4",
         name="rag_user",
     )
-    multimodal_agent = WaldiezAssistant(  # pyright: ignore
+    multimodal_agent = WaldiezAssistant(
         id="wa-5",
         name="multimodal_agent",
-        data=WaldiezAssistantData(  # pyright: ignore
+        data=WaldiezAssistantData(
             is_multimodal=True,
         ),
     )
-    reasoning_agent = WaldiezReasoningAgent(  # pyright: ignore
+    reasoning_agent = WaldiezReasoningAgent(
         id="wa-7",
         name="reasoning_agent",
     )
-    captain_agent = WaldiezCaptainAgent(  # pyright: ignore
+    captain_agent = WaldiezCaptainAgent(
         id="wa-3",
         name="captain",
     )
-    group_manager = WaldiezGroupManager(  # pyright: ignore
+    group_manager = WaldiezGroupManager(
         id="wa-8",
         name="group_manager",
-        data=WaldiezGroupManagerData(  # pyright: ignore
+        data=WaldiezGroupManagerData(
             initial_agent_id="wa-2",
         ),
     )

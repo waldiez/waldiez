@@ -3,7 +3,7 @@
 # pylint: disable=no-self-use,too-few-public-methods
 """Group manager agent configuration processor."""
 
-from typing import Callable, Optional
+from typing import Callable
 
 from waldiez.models import (
     WaldiezAgent,
@@ -35,8 +35,8 @@ class GroupManagerProcessor:
         model_names: dict[str, str],
         all_models: list[WaldiezModel],
         serializer: Callable[..., str],
-        cache_seed: Optional[int] = None,
-        strategy: Optional[GroupManagerStrategy] = None,
+        cache_seed: int | None = None,
+        strategy: GroupManagerStrategy | None = None,
     ):
         """Initialize the group manager processor.
 
@@ -73,9 +73,9 @@ class GroupManagerProcessor:
 
     def process(
         self,
-        code_execution_config: Optional[CodeExecutionConfig] = None,
-        termination_config: Optional[TerminationConfig] = None,
-        system_message_config: Optional[SystemMessageConfig] = None,
+        code_execution_config: CodeExecutionConfig | None = None,
+        termination_config: TerminationConfig | None = None,
+        system_message_config: SystemMessageConfig | None = None,
     ) -> GroupManagerExtras:
         """Process group manager and return extras.
 
@@ -151,10 +151,11 @@ class GroupManagerProcessor:
         extras.pattern_class_name = self._get_pattern_class_name()
 
         # Add required imports
-        extras.pattern_imports.add(
+        pattern_import = (
             "from autogen.agentchat.group.patterns import "
             f"{extras.pattern_class_name}"
         )
+        extras.pattern_imports.add(pattern_import)
 
         # Get user agent if applicable
         user_agent = None
@@ -228,7 +229,7 @@ class GroupManagerProcessor:
         return pattern_map.get(selection_method, "AutoPattern")
 
     def _generate_pattern_definition(
-        self, pattern_class: str, user_agent: Optional[WaldiezAgent]
+        self, pattern_class: str, user_agent: WaldiezAgent | None
     ) -> str:
         """Generate the pattern definition string."""
         if not isinstance(self.agent, WaldiezGroupManager):
@@ -259,12 +260,13 @@ class GroupManagerProcessor:
             as_dict=True,
         )
         manager_name = self.agent_names[self.agent.id]
-        pattern_lines.append(
+        pattern_line = (
             "    group_manager_args={\n"
             f"{llm_config_arg}"
             f'       "name": "{manager_name}",\n'
             "    },"
         )
+        pattern_lines.append(pattern_line)
 
         # Add context variables if present
         if self.agent.data.context_variables:
@@ -345,7 +347,7 @@ class GroupManagerProcessor:
 
     def _generate_speakers_configuration(
         self,
-    ) -> tuple[list[str], Optional[str]]:
+    ) -> tuple[list[str], str | None]:
         """Generate speakers configuration for traditional group chat."""
         if not isinstance(self.agent, WaldiezGroupManager):
             return [], None
@@ -356,10 +358,11 @@ class GroupManagerProcessor:
 
         # Max retries
         if speakers.max_retries_for_selecting is not None:
-            config_lines.append(
+            config_line = (
                 "    max_retries_for_selecting_speaker="
                 f"{speakers.max_retries_for_selecting},"
             )
+            config_lines.append(config_line)
 
         # Selection method
         if speakers.selection_method != "custom":
@@ -400,7 +403,7 @@ class GroupManagerProcessor:
 
         if isinstance(allow_repeat, bool):
             lines.append(f"    allow_repeat_speaker={allow_repeat},")
-        else:
+        elif allow_repeat is not None:
             # List of agent names
             agent_names = ", ".join(
                 self.agent_names[agent_id] for agent_id in allow_repeat
@@ -431,15 +434,14 @@ class GroupManagerProcessor:
         # Serialize transitions
         transitions_str = self.serializer(transitions_dict, tabs=1)
         transitions_str = transitions_str.replace('"', "").replace("'", "")
-
-        lines.extend(
-            [
-                "    allowed_or_disallowed_speaker_transitions="
-                f"{transitions_str},",
-                '    speaker_transitions_type="'
-                f'"{self.agent.data.speakers.transitions_type}",',
-            ]
+        allowed_or_disallowed_line = (
+            f"    allowed_or_disallowed_speaker_transitions={transitions_str},"
         )
+        transition_type_line = (
+            '    speaker_transitions_type="'
+            f'"{self.agent.data.speakers.transitions_type}",'
+        )
+        lines.extend([allowed_or_disallowed_line, transition_type_line])
 
         return lines
 
@@ -481,8 +483,8 @@ class GroupManagerProcessor:
             ),
             "GroupManagerTarget": (
                 "GroupManagerTarget()",
-                f"{import_prefix}.targets.group_manager_target "
-                "import GroupManagerTarget",
+                # pylint: disable=line-too-long
+                f"{import_prefix}.targets.group_manager_target import GroupManagerTarget",  # noqa: E501
             ),
         }
 
@@ -507,10 +509,13 @@ class GroupManagerProcessor:
                     for agent in self.group_chat_members
                 ]
             target_names_str = ", ".join(target_names)
+            import_line = (
+                f"{import_prefix}.targets.transition_target "
+                "import RandomAgentTarget"
+            )
             return (
                 f"RandomAgentTarget(agents=[{target_names_str}])",
-                f"{import_prefix}.targets.transition_target "
-                "import RandomAgentTarget",
+                import_line,
             )
 
         return "", ""

@@ -1,5 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportMissingTypeStubs=false,reportUnknownMemberType=false
+# pyright: reportUnknownVariableType=false,reportAny=false
+# pyright: reportUnusedCallResult=false
 """
 Waldiez exporter class.
 
@@ -29,7 +33,8 @@ class WaldiezExporter:
         waldiez (Waldiez): The Waldiez instance.
     """
 
-    flow_extras: FlowExtras
+    flow_extras: FlowExtras | None
+    waldiez: Waldiez
 
     def __init__(self, waldiez: Waldiez) -> None:
         """Initialize the Waldiez exporter.
@@ -40,6 +45,7 @@ class WaldiezExporter:
             The Waldiez instance.
         """
         self.waldiez = waldiez
+        self.flow_extras = None
 
     @classmethod
     def load(cls, file_path: Path) -> "WaldiezExporter":
@@ -173,13 +179,13 @@ class WaldiezExporter:
             cell_metadata_filter="-all",
         )
         with open(py_path, "r", encoding="utf-8") as py_out:
-            jp_content = jupytext.read(  # pyright: ignore
+            jp_content = jupytext.read(
                 py_out,
                 fmt="py:percent",
                 config=config,
             )
         ipynb_path = str(py_path).replace(".tmp.py", ".tmp.ipynb")
-        jupytext.write(  # pyright: ignore
+        jupytext.write(
             jp_content,
             ipynb_path,
             fmt="ipynb",

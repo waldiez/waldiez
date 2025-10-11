@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Waldiez agents model."""
 
-from typing import Iterator
+from collections.abc import Iterator
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Self

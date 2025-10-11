@@ -21,7 +21,7 @@ class VectorDBExtras:
 
     before_arg: str
     vector_db_arg: str
-    imports: set[str] = field(default_factory=set)  # pyright: ignore
+    imports: set[str] = field(default_factory=set)
 
 
 def get_vector_db_extras(

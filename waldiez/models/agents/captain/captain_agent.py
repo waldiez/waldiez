@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportArgumentType=false,reportIncompatibleVariableOverride=false
+
 """Waldiez captain agent model."""
 
 from typing import Literal
@@ -26,7 +29,7 @@ class WaldiezCaptainAgent(WaldiezAgent):
         The captain agent's data.
     """
 
-    agent_type: Annotated[  # pyright: ignore
+    agent_type: Annotated[
         Literal["captain"],
         Field(
             default="captain",
@@ -35,11 +38,11 @@ class WaldiezCaptainAgent(WaldiezAgent):
             alias="agentType",
         ),
     ]
-    data: Annotated[  # pyright: ignore
+    data: Annotated[
         WaldiezCaptainAgentData,
         Field(
             title="Data",
             description="The captain agent's data",
-            default_factory=WaldiezCaptainAgentData,  # pyright: ignore
+            default_factory=WaldiezCaptainAgentData,
         ),
     ]

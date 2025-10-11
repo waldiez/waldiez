@@ -5,7 +5,7 @@
 """The vector db config for the RAG user agent."""
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import ConfigDict, Field, model_validator
 from pydantic.alias_generators import to_camel
@@ -26,14 +26,14 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
         Whether to use memory for the vector db (if `qdrant` is used).
     use_local_storage : bool
         Whether to use local storage for the db (if `qdrant` or `chroma` is used).
-    local_storage_path : Optional[str]
+    local_storage_path : str | None
         The path to the local storage for the vector db (if `qdrant` or `chroma` is used).
-    connection_url : Optional[str]
+    connection_url : str | None
         The connection url for the vector db.
-    wait_until_index_ready : Optional[float]
+    wait_until_index_ready : float | None
         Blocking call to wait until the database indexes are ready (if `mongodb` is used).
         None, the default, means no wait.
-    wait_until_document_ready : Optional[float]
+    wait_until_document_ready : float | None
         Blocking call to wait until the database documents are ready (if `mongodb` is used).
         None, the default, means no wait.
     metadata : Optional[dict[str, Any]]
@@ -50,7 +50,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
     )
 
     model: Annotated[
-        Optional[str],
+        str | None,
         Field(
             None,
             title="Model",
@@ -79,7 +79,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
         ),
     ]
     local_storage_path: Annotated[
-        Optional[str],
+        str | None,
         Field(
             None,
             title="Local Storage Path",
@@ -90,7 +90,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
         ),
     ]
     connection_url: Annotated[
-        Optional[str],
+        str | None,
         Field(
             None,
             title="Connection URL",
@@ -98,7 +98,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
         ),
     ]
     wait_until_index_ready: Annotated[
-        Optional[float],
+        float | None,
         Field(
             None,
             title="Wait Until Index Ready",
@@ -109,7 +109,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
         ),
     ]
     wait_until_document_ready: Annotated[
-        Optional[float],
+        float | None,
         Field(
             None,
             title="Wait Until Document Ready",
@@ -120,7 +120,7 @@ class WaldiezRagUserProxyVectorDbConfig(WaldiezBase):
         ),
     ]
     metadata: Annotated[
-        Optional[dict[str, Any]],
+        dict[str, Any] | None,
         Field(
             None,
             title="Metadata",

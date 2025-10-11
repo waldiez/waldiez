@@ -23,6 +23,9 @@
 # https://docs.llamaindex.ai/en/stable/examples/llm/together/
 # https://docs.llamaindex.ai/en/stable/api_reference/llms/openai_like/
 #
+#
+# pyright: reportImportCycles=false,reportUnusedParameter=false
+# pyright: reportUnnecessaryComparison=false,reportUnreachable=false
 
 import os
 from typing import TYPE_CHECKING

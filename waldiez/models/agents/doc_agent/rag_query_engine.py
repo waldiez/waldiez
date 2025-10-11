@@ -3,7 +3,6 @@
 """Document agent data model."""
 
 from pathlib import Path
-from typing import Optional, Union
 
 from platformdirs import user_data_dir
 from pydantic import Field, model_validator
@@ -19,17 +18,16 @@ class WaldiezDocAgentQueryEngine(WaldiezBase):
     """
 
     type: Annotated[
-        Optional[
-            Literal[
-                "VectorChromaQueryEngine",
-                "VectorChromaCitationQueryEngine",
-                "InMemoryQueryEngine",
-            ]
-        ],
+        Literal[
+            "VectorChromaQueryEngine",
+            "VectorChromaCitationQueryEngine",
+            "InMemoryQueryEngine",
+        ]
+        | None,
         "RAG Query Engine type",
     ] = "VectorChromaQueryEngine"
     db_path: Annotated[
-        Optional[Union[str, Path]],
+        str | Path | None,
         Field(
             title="Database Path",
             description="The path to the database for the query engine.",

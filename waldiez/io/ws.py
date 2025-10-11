@@ -1,6 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
 # pylint: disable=too-many-try-statements
+# pyright: reportMissingTypeStubs=false,reportReturnType=false
+
 """WebSocket IOStream implementation for AsyncIO."""
 
 import asyncio
@@ -30,12 +33,13 @@ from .utils import (
 LOG = logging.getLogger(__name__)
 
 if not is_websocket_available():  # pragma: no cover
-    raise ImportError(
+    _msg = (  # pylint: disable=invalid-name
         "WebSocket support requires "
         "either the 'websockets' or 'starlette' package. "
         "Please install one of them with "
         "`pip install websockets` or `pip install starlette`."
     )
+    raise ImportError(_msg)
 
 
 class AsyncWebsocketsIOStream(IOStream):

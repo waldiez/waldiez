@@ -3,10 +3,10 @@
 # flake8: noqa: E501
 """Waldiez Model Data."""
 
-from typing import Any, Optional
+from typing import Annotated, Any, Literal
 
 from pydantic import Field, model_validator
-from typing_extensions import Annotated, Literal, Self
+from typing_extensions import Self
 
 from ..common import WaldiezBase, update_dict
 from ._aws import WaldiezModelAWS
@@ -59,7 +59,7 @@ class WaldiezModelData(WaldiezBase):
     """
 
     base_url: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             title="Base URL",
@@ -68,7 +68,7 @@ class WaldiezModelData(WaldiezBase):
         ),
     ]
     api_key: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             alias="apiKey",
@@ -86,7 +86,7 @@ class WaldiezModelData(WaldiezBase):
         ),
     ]
     api_version: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             alias="apiVersion",
@@ -95,7 +95,7 @@ class WaldiezModelData(WaldiezBase):
         ),
     ]
     temperature: Annotated[
-        Optional[float],
+        float | None,
         Field(
             default=None,
             alias="temperature",
@@ -104,7 +104,7 @@ class WaldiezModelData(WaldiezBase):
         ),
     ]
     top_p: Annotated[
-        Optional[float],
+        float | None,
         Field(
             default=None,
             alias="topP",
@@ -113,7 +113,7 @@ class WaldiezModelData(WaldiezBase):
         ),
     ]
     max_tokens: Annotated[
-        Optional[int],
+        int | None,
         Field(
             default=None,
             alias="maxTokens",
@@ -122,7 +122,7 @@ class WaldiezModelData(WaldiezBase):
         ),
     ]
     aws: Annotated[
-        Optional[WaldiezModelAWS],
+        WaldiezModelAWS | None,
         Field(
             default=None,
             alias="aws",
@@ -149,7 +149,7 @@ class WaldiezModelData(WaldiezBase):
         ),
     ]
     price: Annotated[
-        Optional[WaldiezModelPrice],
+        WaldiezModelPrice | None,
         Field(
             default=None, title="Price", description="The price of the model"
         ),

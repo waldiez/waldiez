@@ -35,9 +35,7 @@ def custom_update_system_message(agent, messages):
     expected_content_string = '    return "custom message"'
     assert update_system_message.type == "callable"
     # pylint: disable=protected-access
-    assert update_system_message._content == (  # pyright: ignore
-        expected_content_string
-    )
+    assert update_system_message._content == (expected_content_string)
 
 
 def test_waldiez_swarm_update_system_message_callable_string() -> None:

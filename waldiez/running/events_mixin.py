@@ -2,11 +2,15 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
-# pyright: reportUnknownArgumentType=false
+# pyright: reportUnknownArgumentType=false, reportMissingTypeStubs=false
+# pyright: reportDeprecated=false, reportUninitializedInstanceVariable=false
+# pyright: reportGeneralTypeIssues=false, reportUnknownVariableType=false
+# pyright: reportUnusedParameter=false
 """Workflow events mixin."""
 
 import inspect
-from typing import TYPE_CHECKING, Any, Callable, Coroutine, Union
+from collections.abc import Coroutine
+from typing import TYPE_CHECKING, Any, Callable, Union
 
 from .async_utils import is_async_callable, syncify
 from .io_utils import input_async, input_sync
@@ -141,7 +145,7 @@ class EventsMixin:
                 result = input_function(prompt, password=password, **kwargs)
             except TypeError:
                 result = input_function(prompt)
-        return result  # pyright: ignore
+        return result  # pyright: ignore[reportReturnType]
 
     @staticmethod
     def get_user_input(
@@ -211,7 +215,7 @@ class EventsMixin:
                 )
                 await event.content.respond(user_input)
             elif not skip_send:
-                EventsMixin._send(event)  # pyright: ignore
+                EventsMixin._send(event)  # pyright: ignore[reportArgumentType]
 
     @staticmethod
     def process_event(
@@ -245,4 +249,4 @@ class EventsMixin:
                 )
                 event.content.respond(user_input)
             elif not skip_send:
-                EventsMixin._send(event)  # pyright: ignore
+                EventsMixin._send(event)  # pyright: ignore[reportArgumentType]

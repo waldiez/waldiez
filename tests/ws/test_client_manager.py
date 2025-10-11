@@ -6,6 +6,7 @@
 # pylint: disable=broad-exception-caught,protected-access,line-too-long
 # pylint: disable=attribute-defined-outside-init,too-many-public-methods
 # pyright: reportPrivateUsage=false,reportUnknownMemberType=false
+# pyright: reportAttributeAccessIssue=false
 # flake8: noqa: E501
 """Tests for ClientManager functionality."""
 

@@ -15,7 +15,7 @@ class WaldiezRunnerProtocol(Protocol):
         self,
         output_file: Path,
         uploads_root: Path | None,
-    ) -> Path:  # pyright: ignore
+    ) -> Path:
         """Actions to perform before running the flow.
 
         Parameters
@@ -35,7 +35,7 @@ class WaldiezRunnerProtocol(Protocol):
         self,
         output_file: Path,
         uploads_root: Path | None,
-    ) -> Path:  # pyright: ignore
+    ) -> Path:
         """Asynchronously perform actions before running the flow.
 
         Parameters
@@ -193,7 +193,7 @@ class WaldiezRunnerProtocol(Protocol):
             Whether to skip generating the timeline JSON.
         """
 
-    def is_running(self) -> bool:  # pyright: ignore
+    def is_running(self) -> bool:
         """Check if the runner is currently running.
 
         Returns

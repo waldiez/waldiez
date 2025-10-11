@@ -9,11 +9,11 @@ import logging
 import threading
 
 # noinspection PyProtectedMember
+from collections.abc import Coroutine
 from dataclasses import dataclass
 from typing import (
     Any,
     Callable,
-    Coroutine,
     Generic,
     TypeVar,
     cast,

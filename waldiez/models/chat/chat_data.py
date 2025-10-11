@@ -1,8 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportArgumentType=false
+
 """Chat data model."""
 
-from typing import Any, Optional, Union
+from typing import Any
 
 from pydantic import Field, field_validator, model_validator
 from typing_extensions import Annotated, Self
@@ -98,11 +101,11 @@ class WaldiezChatData(WaldiezBase):
         ),
     ]
     message: Annotated[
-        Union[str, WaldiezChatMessage],
+        str | WaldiezChatMessage,
         Field(
             title="Message",
             description="The message of the chat.",
-            default_factory=WaldiezChatMessage,  # pyright: ignore
+            default_factory=WaldiezChatMessage,
         ),
     ]
     nested_chat: Annotated[
@@ -111,19 +114,19 @@ class WaldiezChatData(WaldiezBase):
             title="Nested Chat",
             description="The nested chat.",
             alias="nestedChat",
-            default_factory=WaldiezChatNested,  # pyright: ignore
+            default_factory=WaldiezChatNested,
         ),
     ]
     summary: Annotated[
         WaldiezChatSummary,
         Field(
-            default_factory=WaldiezChatSummary,  # pyright: ignore
+            default_factory=WaldiezChatSummary,
             title="Summary",
             description="The summary method options for the chat.",
         ),
     ]
     max_turns: Annotated[
-        Optional[int],
+        int | None,
         Field(
             default=None,
             alias="maxTurns",
@@ -148,7 +151,7 @@ class WaldiezChatData(WaldiezBase):
         ),
     ]
     real_source: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             alias="realSource",
@@ -157,7 +160,7 @@ class WaldiezChatData(WaldiezBase):
         ),
     ]
     real_target: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             alias="realTarget",
@@ -201,7 +204,7 @@ class WaldiezChatData(WaldiezBase):
         ),
     ]
     after_work: Annotated[
-        Optional[WaldiezHandoffTransition],
+        WaldiezHandoffTransition | None,
         Field(
             None,
             title="After Work",
@@ -212,12 +215,12 @@ class WaldiezChatData(WaldiezBase):
             alias="afterWork",
         ),
     ]
-    _message_content: Optional[str] = None
+    _message_content: str | None = None
     _chat_id: int = 0
     _prerequisites: list[int] = []
 
     @property
-    def message_content(self) -> Optional[str]:
+    def message_content(self) -> str | None:
         """Get the message content."""
         return self._message_content
 
@@ -334,7 +337,7 @@ class WaldiezChatData(WaldiezBase):
         return value
 
     @property
-    def summary_args(self) -> Optional[dict[str, Any]]:
+    def summary_args(self) -> dict[str, Any] | None:
         """Get the summary args."""
         if self.summary.method not in (
             "reflection_with_llm",

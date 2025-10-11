@@ -222,7 +222,7 @@ def test_waldiez_chat_data_message() -> None:
         },
     }
     # Then
-    chat_data = WaldiezChatData(**chat_data_dict)  # pyright: ignore
+    chat_data = WaldiezChatData(**chat_data_dict)
     assert isinstance(chat_data.message, WaldiezChatMessage)
     assert chat_data.message.type == "string"
     assert chat_data.message.content == "text message"

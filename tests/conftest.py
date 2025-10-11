@@ -4,8 +4,8 @@
 
 import os
 import shutil
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator
 
 import pytest
 
@@ -237,7 +237,7 @@ def waldiez_flow_with_captain_agent() -> WaldiezFlow:
             requirements=[],
             created_at="2021-01-01T00:00:00.000Z",
             updated_at="2021-01-01T00:00:00.000Z",
-            data=WaldiezCaptainAgentData(  # pyright: ignore
+            data=WaldiezCaptainAgentData(
                 model_ids=["wm-1"],
                 termination=WaldiezAgentTerminationMessage(
                     type="keyword",
@@ -271,10 +271,11 @@ def _cleanup_files() -> None:
             try:
                 file_path.unlink()
             except (OSError, PermissionError):
-                print(
+                msg = (
                     f"Failed to remove {file_path}."
                     "It might be in use or read-only."
                 )
+                print(msg)
 
 
 def _reset_env_vars() -> None:

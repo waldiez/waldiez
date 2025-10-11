@@ -3,7 +3,6 @@
 """Document agent data model."""
 
 from pathlib import Path
-from typing import Optional, Union
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Self
@@ -25,7 +24,7 @@ class WaldiezDocAgentData(WaldiezAgentData):
     """
 
     collection_name: Annotated[
-        Optional[str],
+        str | None,
         Field(
             title="Collection Name",
             description="The name of the collection for the document agent.",
@@ -45,7 +44,7 @@ class WaldiezDocAgentData(WaldiezAgentData):
         ),
     ]
     parsed_docs_path: Annotated[
-        Optional[Union[str, Path]],
+        str | Path | None,
         Field(
             title="Parsed Documents Path",
             description=(
@@ -56,7 +55,7 @@ class WaldiezDocAgentData(WaldiezAgentData):
         ),
     ]
     query_engine: Annotated[
-        Optional[WaldiezDocAgentQueryEngine],
+        WaldiezDocAgentQueryEngine | None,
         Field(
             title="Query Engine",
             description="The query engine to use for the document agent.",
@@ -92,7 +91,7 @@ class WaldiezDocAgentData(WaldiezAgentData):
             The query engine for the document agent.
         """
         if not self.query_engine:
-            self.query_engine = WaldiezDocAgentQueryEngine()  # pyright: ignore
+            self.query_engine = WaldiezDocAgentQueryEngine()
         return self.query_engine
 
     def get_db_path(self) -> str:
@@ -129,13 +128,13 @@ class WaldiezDocAgentData(WaldiezAgentData):
 
 
 def get_parsed_docs_path(
-    parsed_docs_path: Optional[Union[str, Path]] = None,
+    parsed_docs_path: str | Path | None = None,
 ) -> str:
     """Get the parsed documents path for the document agent.
 
     Parameters
     ----------
-    parsed_docs_path : Optional[Union[str, Path]]
+    parsed_docs_path : str | Path | None
         The path to the parsed documents.
 
     Returns

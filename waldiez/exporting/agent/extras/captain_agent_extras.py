@@ -10,7 +10,7 @@ import os
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from waldiez.models import (
     WaldiezAgent,
@@ -37,8 +37,8 @@ class CaptainAgentProcessor:
         agent: WaldiezAgent,
         agent_names: dict[str, str],
         all_models: list[WaldiezModel],
-        serializer: Optional[Serializer] = None,
-        output_dir: Optional[Path] = None,
+        serializer: Serializer | None = None,
+        output_dir: Path | None = None,
     ):
         self.agent = agent
         self.agent_names = agent_names
@@ -48,9 +48,9 @@ class CaptainAgentProcessor:
 
     def process(
         self,
-        code_execution_config: Optional[CodeExecutionConfig] = None,
-        termination_config: Optional[TerminationConfig] = None,
-        system_message_config: Optional[SystemMessageConfig] = None,
+        code_execution_config: CodeExecutionConfig | None = None,
+        termination_config: TerminationConfig | None = None,
+        system_message_config: SystemMessageConfig | None = None,
     ) -> CaptainExtras:
         """Process group manager and return extras.
 

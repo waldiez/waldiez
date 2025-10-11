@@ -14,7 +14,9 @@ import threading
 import time
 from pathlib import Path
 from types import TracebackType
-from typing import Any, Callable
+from typing import Any, Callable, final
+
+from typing_extensions import override
 
 HAS_WATCHDOG = False
 try:
@@ -28,16 +30,18 @@ try:
 
     HAS_WATCHDOG = True
 except ImportError as exc:
-    raise ImportError(
+    _msg = (  # pylint: disable=invalid-name
         "The 'watchdog' package is required for auto-reload functionality. "
         "Please install it using 'pip install watchdog'."
-    ) from exc
+    )
+    raise ImportError(_msg) from exc
 
 logger = logging.getLogger(__name__)
 fsevents_logger = logging.getLogger("fsevents")
 fsevents_logger.setLevel(logging.WARNING)  # Reduce noise from fsevents
 
 
+@final
 class ReloadHandler(FileSystemEventHandler):
     """Handler for file system events that triggers server reload."""
 
@@ -134,6 +138,7 @@ class ReloadHandler(FileSystemEventHandler):
             else str(event.src_path)
         )
 
+    @override
     def on_modified(self, event: FileSystemEvent) -> None:
         """Handle file modification events.
 
@@ -150,6 +155,7 @@ class ReloadHandler(FileSystemEventHandler):
         logger.info("File changed: %s", src_path)
         self._schedule_restart()
 
+    @override
     def on_created(self, event: FileSystemEvent) -> None:
         """Handle file creation events.
 
@@ -163,6 +169,7 @@ class ReloadHandler(FileSystemEventHandler):
             logger.info("File created: %s", src_path)
             self._schedule_restart()
 
+    @override
     def on_deleted(self, event: FileSystemEvent) -> None:
         """Handle file deletion events.
 
@@ -235,6 +242,7 @@ class ReloadHandler(FileSystemEventHandler):
             os._exit(1)  # nosec
 
 
+@final
 class FileWatcher:
     """File watcher with auto-reload functionality."""
 

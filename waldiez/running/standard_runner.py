@@ -2,6 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
+# pyright: reportMissingTypeStubs=false, reportDeprecated=false
 # pylint: disable=duplicate-code,too-few-public-methods
 """Run a waldiez flow.
 
@@ -15,6 +16,8 @@ import asyncio
 import traceback
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Union
+
+from typing_extensions import override
 
 from waldiez.models.waldiez import Waldiez
 
@@ -62,6 +65,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         self._processed_events = 0
 
     # pylint: disable=unused-argument
+    @override
     def _run(
         self,
         temp_dir: Path,
@@ -174,6 +178,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         return not self._stop_requested.is_set()
 
     # pylint: disable=too-complex
+    @override
     async def _a_run(
         self,
         temp_dir: Path,
@@ -190,7 +195,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             # fmt: on
             """Execute the workflow in an async context."""
             # pylint: disable=import-outside-toplevel
-            from autogen.io import IOStream  # pyright: ignore
+            from autogen.io import IOStream
 
             from waldiez.io import StructuredIOStream
 
@@ -199,10 +204,11 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             try:
                 loaded_module = self._load_module(output_file, temp_dir)
                 if self._stop_requested.is_set():  # pragma: no cover
-                    self.log.debug(
+                    msg = (
                         "Execution stopped before AG2 "
                         "workflow event processing (async)"
                     )
+                    self.log.debug(msg)
                     return []
                 # noinspection DuplicatedCode
                 if self.structured_io:
@@ -216,7 +222,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 EventsMixin.set_send_function(stream.send)
                 self.print(MESSAGES["workflow_starting"])
                 self.print(self.waldiez.info.model_dump_json())
-                results = await loaded_module.main(  # pyright: ignore
+                results = await loaded_module.main(
                     on_event=self._a_on_event
                 )
                 self.print(MESSAGES["workflow_finished"])

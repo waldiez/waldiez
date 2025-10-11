@@ -7,13 +7,14 @@ import logging
 import time
 from collections import defaultdict
 from pathlib import Path
-from typing import Any
+from typing import Any, final
 
 from .models import ExecutionMode, SessionState, WorkflowSession, WorkflowStatus
 from .session_stats import SessionStats
 
 
 # noinspection TryExceptPass,PyBroadException
+@final
 class SessionManager:
     """Manage workflow sessions across WebSocket clients."""
 

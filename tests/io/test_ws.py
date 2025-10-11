@@ -151,7 +151,7 @@ class TestAsyncWebsocketsIOStream:
         """Test basic send functionality."""
         mock_event = MockEvent("test_type", "test content")
         with patch("asyncio.run") as mock_asyncio_run:
-            self.sync_stream.send(mock_event)  # pyright: ignore
+            self.sync_stream.send(mock_event)
 
         mock_asyncio_run.assert_called_once()
 
@@ -167,7 +167,7 @@ class TestAsyncWebsocketsIOStream:
 
         # Call the send method
         with patch("asyncio.run") as mock_asyncio_run:
-            verbose_stream.send(mock_event)  # pyright: ignore
+            verbose_stream.send(mock_event)
 
         # Verify logging was called
         mock_log.info.assert_called_once()
@@ -187,7 +187,7 @@ class TestAsyncWebsocketsIOStream:
             mock_event = MockEvent("test_type", "test content")
 
             # Should not raise exception, but should log error
-            self.sync_stream.send(mock_event)  # pyright: ignore
+            self.sync_stream.send(mock_event)
 
             mock_log.error.assert_called_once_with(
                 "Error sending message: %s", mock_asyncio_run.side_effect
@@ -340,7 +340,7 @@ class TestAsyncWebsocketsIOStream:
         """Test parsing valid response."""
         response = {"request_id": "test_id", "data": "valid response"}
 
-        result = self.sync_stream._parse_response(  # pyright: ignore
+        result = self.sync_stream._parse_response(
             response,
             "test_id",
         )
@@ -353,7 +353,7 @@ class TestAsyncWebsocketsIOStream:
             "request_id": "test_id",
             "data": json.dumps("valid response"),
         }
-        result = self.sync_stream._parse_response(  # pyright: ignore
+        result = self.sync_stream._parse_response(
             response,
             "test_id",
         )
@@ -364,7 +364,7 @@ class TestAsyncWebsocketsIOStream:
         """Test parsing response with validation error."""
         response = {"invalid": "response"}
 
-        result = self.sync_stream._parse_response(  # pyright: ignore
+        result = self.sync_stream._parse_response(
             response,
             "test_id",
         )
@@ -384,7 +384,7 @@ class TestAsyncWebsocketsIOStream:
         """Test parsing response with mismatched request_id."""
         response = {"request_id": "wrong_id", "data": "response data"}
 
-        result = self.sync_stream._parse_response(  # pyright: ignore
+        result = self.sync_stream._parse_response(
             response,
             "test_id",
         )

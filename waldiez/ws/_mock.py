@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
-"""Mock websockets for linters."""
 # pylint: disable=invalid-name,line-too-long,unused-argument,too-few-public-methods,no-self-use
 # pylint: disable=missing-class-docstring,missing-function-docstring,missing-return-doc
 # flake8: noqa: E501, D101, D102, D106
+# pyright:  reportUnusedParameter=false, reportUninitializedInstanceVariable=false
+"""Mock websockets for linters."""
 
 from typing import Any  # pragma: no cover
 

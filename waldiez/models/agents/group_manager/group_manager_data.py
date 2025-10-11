@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Group chat manager data."""
 
-from typing import Optional
+# pyright: reportArgumentType=false
+
+"""Group chat manager data."""
 
 from pydantic import Field
 from typing_extensions import Annotated, Literal
@@ -58,7 +59,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
         ),
     ]
     admin_name: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             title="Group Admin name",
@@ -74,11 +75,11 @@ class WaldiezGroupManagerData(WaldiezAgentData):
         Field(
             title="Speakers",
             description="The rules for the speaker selection and repetition",
-            default_factory=WaldiezGroupManagerSpeakers,  # pyright: ignore
+            default_factory=WaldiezGroupManagerSpeakers,
         ),
     ]
     enable_clear_history: Annotated[
-        Optional[bool],
+        bool | None,
         Field(
             default=None,
             title="Enable clear history",
@@ -96,7 +97,7 @@ class WaldiezGroupManagerData(WaldiezAgentData):
         ),
     ]
     group_name: Annotated[
-        Optional[str],
+        str | None,
         Field(
             default=None,
             title="Group name",

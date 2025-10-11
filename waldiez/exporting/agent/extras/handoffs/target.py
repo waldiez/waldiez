@@ -4,7 +4,7 @@
 """Transition target processor for Waldiez agents."""
 
 from dataclasses import dataclass, field
-from typing import Callable, Set
+from typing import Callable
 
 from waldiez.exporting.chats.utils.nested import get_nested_chat_queue
 from waldiez.models import (
@@ -33,7 +33,7 @@ class TargetResult:
 
     content: str = ""
     before_content: str = ""
-    extra_imports: Set[str] = field(default_factory=set)  # pyright: ignore
+    extra_imports: set[str] = field(default_factory=set)
 
 
 # noinspection PyTypeHints
@@ -128,10 +128,11 @@ class TransitionTargetProcessor:
     ) -> str:
         """Process random agent target."""
         if not isinstance(target, WaldiezRandomAgentTarget):
-            raise ValueError(
+            msg = (
                 "Expected WaldiezRandomAgentTarget"
                 " for random agent target processing."
             )
+            raise ValueError(msg)
         agent_vars = [self.agent_names[agent_id] for agent_id in target.value]
         agents_str = ", ".join(agent_vars)
         return f"RandomAgentTarget([{agents_str}])"
@@ -141,10 +142,11 @@ class TransitionTargetProcessor:
     ) -> str:
         """Process group chat target."""
         if not isinstance(target, WaldiezGroupOrNestedTarget):
-            raise ValueError(
+            msg = (
                 "Expected WaldiezGroupOrNestedTarget for group chat target "
                 "processing."
             )
+            raise ValueError(msg)
         chat_name = self.chat_names[target.value[0]]
         return f"GroupChatTarget({chat_name})"
 

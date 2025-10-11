@@ -3,7 +3,7 @@
 # pylint: disable=import-error,line-too-long
 # pyright: reportUnknownMemberType=false,reportUnknownVariableType=false
 # pyright: reportUnknownArgumentType=false,reportAttributeAccessIssue=false
-# pyright: reportGeneralTypeIssues=false
+# pyright: reportGeneralTypeIssues=false,reportAny=false
 # flake8: noqa: E501
 """Utilities for WebSocket server management."""
 
@@ -14,7 +14,7 @@ import socket
 import time
 from contextlib import closing
 from dataclasses import asdict, dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, final
 
 try:
     import websockets  # type: ignore[unused-ignore, unused-import, import-not-found, import-untyped] # noqa
@@ -83,6 +83,7 @@ class ServerHealth:
         return my_dict
 
 
+@final
 class HealthChecker:
     """Health checker for WebSocket server."""
 
@@ -193,6 +194,7 @@ class HealthChecker:
 
 
 # noinspection PyBroadException
+@final
 class ConnectionManager:
     """Manages WebSocket connections and provides utilities."""
 

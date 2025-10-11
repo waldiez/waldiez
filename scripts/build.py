@@ -2,6 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pyright: reportConstantRedefinition=false
+# pyright: reportImplicitRelativeImport=false
+
 """Build the waldiez package."""
 
 import shutil

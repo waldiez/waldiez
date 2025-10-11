@@ -3,7 +3,7 @@
 """Models exporter module."""
 
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any
 
 from waldiez.models import WaldiezAgent, WaldiezModel
 
@@ -31,9 +31,9 @@ class ModelsExporter(Exporter[ModelExtras]):
         models: list[WaldiezModel],
         model_names: dict[str, str],
         for_notebook: bool = False,
-        cache_seed: Optional[int] = None,
-        output_dir: Optional[Union[str, Path]] = None,
-        context: Optional[ExporterContext] = None,
+        cache_seed: int | None = None,
+        output_dir: str | Path | None = None,
+        context: ExporterContext | None = None,
         **kwargs: Any,
     ):
         """Initialize the models exporter."""
@@ -94,7 +94,7 @@ class ModelsExporter(Exporter[ModelExtras]):
 
         return extras
 
-    def generate_main_content(self) -> Optional[str]:
+    def generate_main_content(self) -> str | None:
         """Generate the main models content (LLM configs).
 
         Returns
@@ -154,7 +154,7 @@ class ModelsExporter(Exporter[ModelExtras]):
             model_name = self.model_names.get(model_id)
             if model_name:
                 model_configs.append(f"{model_name}_llm_config")
-        tab = " " * 4
+        tab: str = " " * 4
         if not model_configs:
             return f"{tab}llm_config=False, # pyright: ignore\n"
 

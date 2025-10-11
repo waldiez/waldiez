@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright:  reportUninitializedInstanceVariable=false
 """Actions to perform before running the flow."""
 
 import sys

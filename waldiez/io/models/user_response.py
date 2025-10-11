@@ -1,10 +1,14 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportUnnecessaryIsInstance=false,reportUnknownVariableType=false
+# pyright: reportUnknownArgumentType=false,reportArgumentType=false
+
 """User response model and validation."""
 
 import json
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable
 
 from pydantic import ValidationError, field_validator
 
@@ -26,7 +30,7 @@ class UserResponse(StructuredBase):
     @classmethod
     def validate_data(
         cls, value: Any
-    ) -> Optional[Union[str, UserInputData, list[UserInputData]]]:
+    ) -> str | UserInputData | list[UserInputData] | None:
         """Validate the data field in UserResponse.
 
         Parameters
@@ -51,16 +55,16 @@ class UserResponse(StructuredBase):
 
         handlers: dict[
             type,
-            Callable[[Any], Union[str, UserInputData, list[UserInputData]]],
+            Callable[[Any], str | UserInputData | list[UserInputData]],
         ] = {
             str: cls._handle_string,
             dict: cls._handle_dict,
             list: cls._handle_list,
         }
 
-        value_type = type(value)  # pyright: ignore
+        value_type = type(value)
         handler = handlers.get(
-            value_type,  # pyright: ignore
+            value_type,
             cls._handle_default,
         )
         result = handler(value)
@@ -71,16 +75,13 @@ class UserResponse(StructuredBase):
         """Check if value is already a valid type."""
         return isinstance(value, UserInputData) or (
             isinstance(value, list)
-            and all(
-                isinstance(item, UserInputData)
-                for item in value  # pyright: ignore
-            )
+            and all(isinstance(item, UserInputData) for item in value)
         )
 
     @classmethod
     def _handle_string(
         cls, value: str
-    ) -> Union[str, UserInputData, list[UserInputData]]:
+    ) -> str | UserInputData | list[UserInputData]:
         """Handle string input.
 
         Parameters
@@ -97,9 +98,9 @@ class UserResponse(StructuredBase):
         try:
             parsed_value = json.loads(value)
             if isinstance(parsed_value, dict):
-                return cls._handle_dict(parsed_value)  # pyright: ignore
+                return cls._handle_dict(parsed_value)
             if isinstance(parsed_value, list):
-                return cls._handle_list(parsed_value)  # pyright: ignore
+                return cls._handle_list(parsed_value)
             return cls._create_text_input(str(parsed_value))
         except json.JSONDecodeError:
             return cls._create_text_input(value)
@@ -127,18 +128,18 @@ class UserResponse(StructuredBase):
     @classmethod
     def _handle_list(
         cls, value: list[Any]
-    ) -> Union[UserInputData, list[UserInputData]]:
+    ) -> UserInputData | list[UserInputData]:
         result: list[UserInputData] = []
 
         for item in value:
             if isinstance(item, UserInputData):
                 result.append(item)
             elif isinstance(item, dict):
-                result.append(cls._handle_dict(item))  # pyright: ignore
+                result.append(cls._handle_dict(item))
             elif isinstance(item, str):
                 result.append(cls._create_text_input(item))
             elif isinstance(item, list):
-                nested_result = cls._handle_list(item)  # pyright: ignore
+                nested_result = cls._handle_list(item)
                 if isinstance(nested_result, list):
                     result.extend(nested_result)
                 else:
@@ -207,7 +208,7 @@ class UserResponse(StructuredBase):
                 uploads_root=uploads_root, base_name=base_name
             ).strip()
         # we have probably returned sth till here
-        if isinstance(self.data, str):  # pyright: ignore # pragma: no cover
+        if isinstance(self.data, str):  # pragma: no cover
             return self.data
         # noinspection PyUnreachableCode
         return (  # pragma: no cover

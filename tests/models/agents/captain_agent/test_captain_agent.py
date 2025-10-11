@@ -8,7 +8,7 @@ from waldiez.models.agents.captain import WaldiezCaptainAgent
 # noinspection PyArgumentList
 def test_waldiez_captain_agent() -> None:
     """Test `WaldiezCaptainAgent`."""
-    agent = WaldiezCaptainAgent(  # pyright: ignore
+    agent = WaldiezCaptainAgent(
         id="wa-1",
         name="captain_agent",
     )

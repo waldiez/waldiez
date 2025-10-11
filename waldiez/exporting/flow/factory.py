@@ -3,7 +3,7 @@
 """Factory function for creating a FlowExporter instance."""
 
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from waldiez.logger import WaldiezLogger
 from waldiez.models import Waldiez
@@ -22,7 +22,7 @@ def create_flow_exporter(
     output_dir: Path | None,
     uploads_root: Path | None,
     for_notebook: bool,
-    context: Optional[ExporterContext] = None,
+    context: ExporterContext | None = None,
     **kwargs: Any,
 ) -> FlowExporter:
     """Create a flow exporter.

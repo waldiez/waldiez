@@ -5,7 +5,6 @@
 """Flow specific extras module."""
 
 from dataclasses import dataclass, field
-from typing import Optional
 
 from waldiez.utils import get_waldiez_version
 
@@ -25,10 +24,10 @@ class FlowExtras(BaseExtras):
     version: str = field(default_factory=get_waldiez_version)
 
     # Sub-exporter results
-    tools_result: Optional[ExportResult] = None
-    models_result: Optional[ExportResult] = None
-    agents_result: Optional[ExportResult] = None
-    chats_result: Optional[ExportResult] = None
+    tools_result: ExportResult | None = None
+    models_result: ExportResult | None = None
+    agents_result: ExportResult | None = None
+    chats_result: ExportResult | None = None
 
     # Generated script parts
     header_content: str = ""

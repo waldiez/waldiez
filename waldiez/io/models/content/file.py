@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=unused-argument
+# pyright: reportUnusedParameter=false
 """File media content models."""
 
 from pathlib import Path

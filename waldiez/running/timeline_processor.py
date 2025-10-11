@@ -93,7 +93,7 @@ class TimelineProcessor:
         bool
             True if the value is missing, NaN, or empty; False otherwise.
         """
-        if pd.isna(value):  # pyright: ignore
+        if pd.isna(value):
             return True
         if isinstance(value, str) and (
             value.strip() == "" or value.lower() == "nan"

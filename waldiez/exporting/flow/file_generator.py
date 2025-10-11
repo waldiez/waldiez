@@ -43,7 +43,7 @@ class FileGenerator(ContentGenerator):
         after_run: str,
         skip_logging: bool,
         **kwargs: Any,
-    ) -> str:  # pyright: ignore
+    ) -> str:
         """Generate content based on provided parameters.
 
         Parameters

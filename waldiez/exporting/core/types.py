@@ -5,7 +5,7 @@
 
 from dataclasses import dataclass, field, fields
 from pathlib import Path
-from typing import Any, Optional, TypeVar
+from typing import Any, TypeVar
 
 from .enums import (
     ImportPosition,
@@ -35,7 +35,7 @@ class ImportStatement:
 
     statement: str
     position: ImportPosition = ImportPosition.THIRD_PARTY
-    metadata: Optional[dict[str, Any]] = None
+    metadata: dict[str, Any] | None = None
 
     def __hash__(self) -> int:
         """Hash based on the import statement.
@@ -89,7 +89,7 @@ class EnvironmentVariable:
 
     name: str
     value: str
-    description: Optional[str] = None
+    description: str | None = None
     required: bool = True
 
     def __post_init__(self) -> None:
@@ -151,7 +151,7 @@ class InstanceArgument:
     with_new_line_if_empty: bool = False
     skip_if_empty_string: bool = True
     skip_trailing_comma: bool = False
-    comment: Optional[str] = None
+    comment: str | None = None
 
     def has_content(self) -> bool:
         """Check if the instance argument has content.
@@ -266,13 +266,13 @@ class ExportConfig:
     description: str = (
         "Make AG2 Agents Collaborate: Drag, Drop, and Orchestrate with Waldiez"
     )
-    requirements: list[str] = field(default_factory=list)  # pyright: ignore
-    tags: list[str] = field(default_factory=list)  # pyright: ignore
+    requirements: list[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
     output_extension: str = "py"
     is_async: bool = False
-    output_directory: Optional[str | Path] = None
-    uploads_root: Optional[Path] = None
-    cache_seed: Optional[int] = None
+    output_directory: str | Path | None = None
+    uploads_root: Path | None = None
+    cache_seed: int | None = None
 
     @property
     def for_notebook(self) -> bool:

@@ -818,12 +818,13 @@ def test_make_mermaid_diagram(tmp_path: Path) -> None:
     logs_dir = temp_dir / "logs"
     logs_dir.mkdir()
     events_csv = logs_dir / "events.csv"
+    to_write = (
+        "event_name,source_id,source_name,agent_module,"
+        "agent_class_name,id,json_state,timestamp\n"
+        "start,1,agent1,module,class,1,{},2025-01-01 00:00:00\n"
+    )
     with open(events_csv, "w", encoding="utf-8", newline="\n") as f:
-        f.write(
-            "event_name,source_id,source_name,agent_module,"
-            "agent_class_name,id,json_state,timestamp\n"
-            "start,1,agent1,module,class,1,{},2025-01-01 00:00:00\n"
-        )
+        f.write(to_write)
     output_file = tmp_path / "output.py"
     flow_name = "test_flow"
     mmd_dir = tmp_path

@@ -3,8 +3,6 @@
 # pylint: disable=too-few-public-methods,no-self-use
 """Reasoning agent configuration processor."""
 
-from typing import Optional
-
 from waldiez.models import WaldiezAgent, WaldiezReasoningAgent
 
 from ...core import (
@@ -37,9 +35,9 @@ class ReasoningAgentProcessor:
 
     def process(
         self,
-        code_execution_config: Optional[CodeExecutionConfig] = None,
-        termination_config: Optional[TerminationConfig] = None,
-        system_message_config: Optional[SystemMessageConfig] = None,
+        code_execution_config: CodeExecutionConfig | None = None,
+        termination_config: TerminationConfig | None = None,
+        system_message_config: SystemMessageConfig | None = None,
     ) -> ReasoningExtras:
         """Process reasoning agent configuration.
 

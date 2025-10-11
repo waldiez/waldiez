@@ -3,7 +3,7 @@
 
 """Exporters for Waldiez."""
 
-from typing import Any, Optional
+from typing import Any
 
 from .exporter import Exporter
 from .types import Extras
@@ -50,7 +50,7 @@ class ConfigurableExporter(Exporter[Extras]):
         """
         raise NotImplementedError("Subclasses must implement this method.")
 
-    def __init__(self, config: Optional[dict[str, Any]] = None, **kwargs: Any):
+    def __init__(self, config: dict[str, Any] | None = None, **kwargs: Any):
         """Initialize with configuration.
 
         Parameters

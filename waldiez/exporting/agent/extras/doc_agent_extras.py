@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=too-few-public-methods,no-self-use
+# pyright: reportUninitializedInstanceVariable=false
 
 # before agent: query engine initialization
 # agent extra args:
@@ -13,7 +14,6 @@
 # import shutil
 import shutil
 from pathlib import Path
-from typing import Optional
 
 from waldiez.exporting.core.extras.path_resolver import DefaultPathResolver
 from waldiez.exporting.core.protocols import PathResolver
@@ -49,10 +49,10 @@ class DocAgentProcessor:
         agent_names: dict[str, str],
         model_names: dict[str, str],
         all_models: list[WaldiezModel],
-        cache_seed: Optional[int] = None,
+        cache_seed: int | None = None,
         serializer: Serializer | None = None,
         path_resolver: PathResolver | None = None,
-        output_dir: Optional[Path] = None,
+        output_dir: Path | None = None,
     ):
         self.agent = agent
         self.agent_name = agent_names.get(agent.id, agent.name)
@@ -65,9 +65,9 @@ class DocAgentProcessor:
 
     def process(
         self,
-        code_execution_config: Optional[CodeExecutionConfig] = None,
-        termination_config: Optional[TerminationConfig] = None,
-        system_message_config: Optional[SystemMessageConfig] = None,
+        code_execution_config: CodeExecutionConfig | None = None,
+        termination_config: TerminationConfig | None = None,
+        system_message_config: SystemMessageConfig | None = None,
     ) -> StandardExtras:
         """Process the document agent configuration.
 

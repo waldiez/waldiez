@@ -5,7 +5,7 @@
 """serializer for converting items to formatted strings."""
 
 import json
-from typing import Any, Optional
+from typing import Any
 
 from ..protocols import Serializer
 
@@ -37,7 +37,7 @@ class DefaultSerializer(Serializer):
 def serialize_item(
     item: Any,
     tabs: int = 1,
-    visited: Optional[set[int]] = None,
+    visited: set[int] | None = None,
 ) -> str:
     """Convert an item to a formatted string with given indentation.
 

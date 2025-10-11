@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=too-few-public-methods
+# pyright: reportUnnecessaryIsInstance=false,reportUnreachable=false
 """Handoff condition processing for Waldiez agents."""
 
 from dataclasses import dataclass, field
@@ -30,7 +31,7 @@ class ConditionResult:
     """
 
     content: str = ""
-    extra_imports: set[str] = field(default_factory=set)  # pyright: ignore
+    extra_imports: set[str] = field(default_factory=set)
 
 
 class ConditionProcessor:
@@ -82,7 +83,7 @@ class ConditionProcessor:
         elif isinstance(
             condition,
             WaldiezExpressionContextCondition,
-        ):  # pyright: ignore
+        ):
             self._process_expression_context_condition(condition)
         else:
             raise ValueError(f"Unsupported condition type: {type(condition)}")

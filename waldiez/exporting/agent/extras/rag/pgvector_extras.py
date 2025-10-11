@@ -2,8 +2,6 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Get pgvector related content and imports."""
 
-from typing import Set
-
 from waldiez.models import WaldiezRagUserProxy
 
 
@@ -64,7 +62,7 @@ def _get_pgvector_embedding_function_string(
 
 def get_pgvector_db_args(
     agent: WaldiezRagUserProxy, agent_name: str
-) -> tuple[str, Set[str], str]:
+) -> tuple[str, set[str], str]:
     """Get the kwargs to use for PGVectorDB.
 
     Parameters
@@ -89,7 +87,9 @@ def get_pgvector_db_args(
         else {to_import_client}
     )
     kwarg_str = (
-        f"            client={client_str}," + "\n"
-        f"            embedding_function={embedding_function_arg}," + "\n"
+        f"            client={client_str},"
+        "\n"
+        f"            embedding_function={embedding_function_arg},"
+        "\n"
     )
     return kwarg_str, to_import, embedding_function_body

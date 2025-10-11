@@ -1,5 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
+
+# pyright: reportArgumentType=false
+
 """Waldiez RAG user agent data."""
 
 from pydantic import Field
@@ -27,7 +30,7 @@ class WaldiezRagUserProxyData(WaldiezUserProxyData):
         Field(
             title="Retrieve Config",
             description="The RAG user agent's retrieve config",
-            default_factory=WaldiezRagUserProxyRetrieveConfig,  # pyright: ignore  # noqa: E501
+            default_factory=WaldiezRagUserProxyRetrieveConfig,
             alias="retrieveConfig",
         ),
     ]
