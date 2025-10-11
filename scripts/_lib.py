@@ -48,13 +48,13 @@ def ensure_venv() -> None:
         return
     if prefer_uv():
         print("Creating virtual environment with uv...")
-        run_command(["uv", "venv", str(ROOT_DIR / ".venv")])
-        run_command(["uv", "sync"])
-        run_command(["uv", "pip", "install", "-U", "pip"])
+        _run_command(["uv", "venv", str(ROOT_DIR / ".venv")])
+        _run_command(["uv", "sync"])
+        _run_command(["uv", "pip", "install", "-U", "pip"])
     else:
         print("Creating virtual environment...")
-        run_command([sys.executable, "-m", "venv", str(ROOT_DIR / ".venv")])
-        run_command(
+        _run_command([sys.executable, "-m", "venv", str(ROOT_DIR / ".venv")])
+        _run_command(
             [
                 str(ROOT_DIR / ".venv" / "bin" / "python"),
                 "-m",
@@ -115,6 +115,10 @@ def run_command(args: list[str], cwd: Path = ROOT_DIR) -> None:
             raise ValueError("pip command requires an argument.")
     else:
         args = [get_executable(), "-m"] + args
+    _run_command(args=args, cwd=cwd)
+
+
+def _run_command(args: list[str], cwd: Path = ROOT_DIR) -> None:
     args_str = " ".join(args).replace(str(ROOT_DIR), ".")
     print(f"Running command: {args_str}")
     try:
@@ -158,53 +162,33 @@ def ensure_package_exists(package_name: str) -> None:
         run_command(["pip", "install", package_name])
 
 
-def ensure_dev_requirements() -> None:
-    """Ensure the development requirements are installed."""
+def _ensure_requirements(requirements_file: Path) -> None:
     if "--no-deps" in sys.argv or os.getenv("CI") == "true":
         return
+    for cmd_group in [
+        ["ensurepip"],
+        ["pip", "install", "--upgrade", "pip"],
+        ["pip", "install", "-r", str(requirements_file)],
+    ]:
+        run_command(cmd_group, ROOT_DIR)
+
+
+def ensure_dev_requirements() -> None:
+    """Ensure the development requirements are installed."""
     requirements_file = ROOT_DIR / "requirements" / "dev.txt"
-    run_command(["ensurepip"])
-    run_command(
-        [
-            "pip",
-            "install",
-            "-r",
-            str(requirements_file),
-        ]
-    )
+    _ensure_requirements(requirements_file)
 
 
 def ensure_test_requirements() -> None:
     """Ensure the test requirements are installed."""
-    if "--no-deps" in sys.argv or os.getenv("CI") == "true":
-        return
     requirements_file = ROOT_DIR / "requirements" / "test.txt"
-    run_command(["ensurepip"])
-    run_command(["pip", "install", "--upgrade", "pip"])
-    run_command(
-        [
-            "pip",
-            "install",
-            "-r",
-            str(requirements_file),
-        ]
-    )
+    _ensure_requirements(requirements_file)
 
 
 def ensure_docs_requirements() -> None:
     """Ensure the documentation requirements are installed."""
-    if "--no-deps" in sys.argv:
-        return
     requirements_file = ROOT_DIR / "requirements" / "docs.txt"
-    run_command(["ensurepip"])
-    run_command(
-        [
-            "pip",
-            "install",
-            "-r",
-            str(requirements_file),
-        ]
-    )
+    _ensure_requirements(requirements_file)
 
 
 def run_black(fix: bool, in_dir: Path = ROOT_DIR) -> None:
