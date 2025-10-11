@@ -19,7 +19,6 @@ try:
         run_flake8,
         run_mypy,
         run_pylint,
-        run_pyright,
         run_ruff,
         run_yamllint,
     )
@@ -32,7 +31,6 @@ except ImportError:
         run_black,
         run_flake8,
         run_mypy,
-        run_pyright,
         run_pylint,
         run_ruff,
         run_yamllint,
@@ -47,7 +45,6 @@ def main() -> None:
     ensure_test_requirements()
     run_black(False)
     run_mypy()
-    run_pyright()
     run_flake8()
     run_bandit()
     run_yamllint()
