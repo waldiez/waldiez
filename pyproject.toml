@@ -461,6 +461,15 @@ warn_required_dynamic_aliases = true
 
 [tool.basedpyright]
 include = ["waldiez", "tests", "scripts"]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+    ".venv",
+    ".local",
+    "examples",
+    "docs",
+    "waldiez_out",
+]
 reportCallIssue = false
 reportUnusedCallResult = false
 reportExplicitAny = false
