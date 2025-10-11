@@ -41,6 +41,11 @@ repos:
       # Run the formatter.
       - id: ruff-format
 
+  - repo: https://github.com/DetachHead/basedpyright-prek-mirror
+    rev: 1.31.7
+    hooks:
+      - id: basedpyright
+
   - repo: local
     hooks:
       - id: pylint

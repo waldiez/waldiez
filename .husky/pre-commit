@@ -34,14 +34,14 @@ if command -v npx >/dev/null 2>&1 && [ -f "package.json" ]; then
 fi
 
 # --- Python side ---
-if command -v pre-commit >/dev/null 2>&1 && [ -f ".pre-commit-config.yaml" ]; then
+if command -v prek >/dev/null 2>&1 && [ -f ".pre-commit-config.yaml" ]; then
     if [ "$FORCE_MODE" -eq 1 ]; then
         echo "Running pre-commit on all files (forced)..."
-        pre-commit run --all-files
+        prek run --all-files
     else
         if [ -n "${PY_FILES}" ]; then
-            echo "Running pre-commit on staged Python files..."
-            pre-commit hook-impl --config=.pre-commit-config.yaml --hook-dir "${HERE}" --hook-type=pre-commit
+            echo "Running prek on staged Python files..."
+            prek hook-impl --config=.pre-commit-config.yaml --hook-dir "${HERE}" --hook-type=pre-commit
         else
             echo "No PY/YAML/MD/TOML files to lint."
         fi
