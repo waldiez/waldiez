@@ -79,6 +79,7 @@
         "eclint",
         "embedchain",
         "ename",
+        "envpython",
         "epytext",
         "evalue",
         "execv",
@@ -211,6 +212,7 @@
         "popen",
         "popleft",
         "posttest",
+        "prek",
         "psutil",
         "psycopg",
         "pwsh",
@@ -321,6 +323,8 @@
         "vscode-extension",
         ".git",
         ".vscode",
+        ".tox",
+        ".hatch",
         ".venv/**"
     ],
     "files": [
