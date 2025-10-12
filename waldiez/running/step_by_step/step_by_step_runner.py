@@ -13,6 +13,7 @@
 import asyncio
 import threading
 import traceback
+import uuid
 from collections import deque
 from collections.abc import Iterable
 from pathlib import Path
@@ -21,7 +22,6 @@ from typing import TYPE_CHECKING, Any, Union
 from pydantic import ValidationError
 from typing_extensions import override
 
-from waldiez.io.utils import DEBUG_INPUT_PROMPT, gen_id
 from waldiez.models.waldiez import Waldiez
 from waldiez.running.step_by_step.command_handler import CommandHandler
 from waldiez.running.step_by_step.events_processor import EventProcessor
@@ -48,7 +48,10 @@ if TYPE_CHECKING:
     from autogen.events import BaseEvent  # type: ignore
     from autogen.messages import BaseMessage  # type: ignore
 
-
+DEBUG_INPUT_PROMPT = (
+    # cspell: disable-next-line
+    "[Step] (c)ontinue, (r)un, (q)uit, (i)nfo, (h)elp, (st)ats: "
+)
 MESSAGES = {
     "workflow_starting": "<Waldiez step-by-step> - Starting workflow...",
     "workflow_finished": "<Waldiez step-by-step> - Workflow finished",
@@ -475,7 +478,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 return WaldiezDebugStepAction.CONTINUE
 
         while True:
-            request_id = gen_id()
+            request_id = str(uuid.uuid4())
             try:
                 if not self.structured_io:
                     self.emit(
@@ -507,7 +510,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 return WaldiezDebugStepAction.CONTINUE
 
         while True:
-            request_id = gen_id()
+            request_id = str(uuid.uuid4())
             # pylint: disable=too-many-try-statements
             try:
                 self.emit(

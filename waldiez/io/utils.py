@@ -17,6 +17,7 @@ from autogen.events import BaseEvent  # type: ignore
 from autogen.messages import BaseMessage  # type: ignore
 
 DEBUG_INPUT_PROMPT = (
+    # cspell: disable-next-line
     "[Step] (c)ontinue, (r)un, (q)uit, (i)nfo, (h)elp, (st)ats: "
 )
 START_CHAT_PROMPT = "Enter your message to start the conversation: "
