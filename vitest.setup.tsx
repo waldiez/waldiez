@@ -84,34 +84,22 @@ export const mockReactFlow = () => {
 };
 vi.setConfig({ testTimeout: 30_000 });
 vi.mock("zustand"); // __mocks__/zustand.ts
-vi.mock("@monaco-editor/react", async () => {
+vi.mock("@monaco-editor/react", () => {
+    const Textarea = (props: any) => (
+        // @ts-ignore
+        <textarea
+            placeholder="mocked-monaco-editor"
+            data-testid={props["data-testid"] ?? "mocked-monaco-editor"}
+            value={props.value}
+            onChange={e => props.onChange?.(e.target.value)}
+            className={props.className ?? ""}
+        />
+    );
+
     return {
         __esModule: true,
-        ...(await vi.importActual("@monaco-editor/react")),
-        default: (props: any) => {
-            return (
-                // @ts-ignore
-                <textarea
-                    placeholder="mocked-monaco-editor"
-                    data-testid={props["data-testid"] ?? "mocked-monaco-editor"}
-                    value={props.value}
-                    onChange={event => props.onChange(event.target.value)}
-                    className={props.className ?? ""}
-                ></textarea>
-            );
-        },
-        Editor: (props: any) => {
-            return (
-                // @ts-ignore
-                <textarea
-                    placeholder="mocked-monaco-editor"
-                    data-testid={props["data-testid"] ?? "mocked-monaco-editor"}
-                    value={props.value}
-                    onChange={event => props.onChange(event.target.value)}
-                    className={props.className ?? ""}
-                ></textarea>
-            );
-        },
+        default: Textarea,
+        Editor: Textarea,
         loader: {
             init: vi.fn(),
             config: vi.fn(),
@@ -131,7 +119,13 @@ vi.mock("@monaco-editor/react", async () => {
         },
     };
 });
-
+vi.mock("@monaco-editor/loader", () => ({
+    __esModule: true,
+    default: {
+        init: vi.fn(),
+        config: vi.fn(),
+    },
+}));
 const mockWebCrypto = async () => {
     // Mock Web Crypto API for Vitest on Windows
     if (!globalThis.crypto || !globalThis.crypto.subtle) {

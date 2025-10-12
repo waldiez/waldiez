@@ -24,7 +24,7 @@ const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 const FORCE = process.argv.includes("--force");
 // 0.53.0 does not seem to play well with @monaco-editor/react
 // let's check periodically and make it undefined when we are good.
-const PINNED_VERSION: string | undefined = "0.52.2";
+const PINNED_VERSION: string | undefined = "0.54.0";
 
 interface IPackageDetails {
     version: string;
@@ -155,34 +155,6 @@ const extractTarFile = async (file: string, dest: string): Promise<void> => {
     });
 };
 
-const removeUnneededFiles = async (): Promise<void> => {
-    const rootDir = path.join(PUBLIC_PATH, "vs");
-    const basicLanguagesDir = path.join(rootDir, "basic-languages");
-    const languages = await fs.readdir(basicLanguagesDir);
-    await Promise.all(
-        languages.map(lang => {
-            if (lang !== "python") {
-                return fs.rm(path.join(basicLanguagesDir, lang), {
-                    recursive: true,
-                    force: true,
-                });
-            }
-        }),
-    );
-
-    const entries = await fs.readdir(rootDir);
-    for (const entry of entries) {
-        const entryPath = path.join(rootDir, entry);
-        const stat = await fs.stat(entryPath);
-        if (stat.isFile() && entry !== "loader.js") {
-            await fs.rm(entryPath);
-        }
-        if (stat.isDirectory() && entry === "language") {
-            await fs.rm(entryPath, { recursive: true, force: true });
-        }
-    }
-};
-
 const ensureMonacoFiles = async (): Promise<void> => {
     await fs.ensureDir(PUBLIC_PATH);
 
@@ -221,8 +193,6 @@ const ensureMonacoFiles = async (): Promise<void> => {
             await fs.rm(minMapsDst, { recursive: true, force: true });
             await fs.rename(minMapsSrc, minMapsDst);
         }
-
-        await removeUnneededFiles();
         await fs.rm(monacoRoot, { recursive: true, force: true });
 
         console.info("Monaco Editor files updated.");
