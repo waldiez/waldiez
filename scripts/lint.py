@@ -13,6 +13,7 @@ HAD_TO_MODIFY_SYS_PATH = False
 try:
     from _lib import (
         ensure_dev_requirements,
+        ensure_test_requirements,
         run_bandit,
         run_black,
         run_flake8,
@@ -25,6 +26,7 @@ try:
 except ImportError:
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from _lib import ensure_dev_requirements  # type: ignore # noqa: I001
+    from _lib import ensure_test_requirements
     from _lib import (
         run_bandit,
         run_black,
@@ -54,6 +56,7 @@ def run_all() -> None:
 def main() -> None:
     """Run linters."""
     ensure_dev_requirements()
+    ensure_test_requirements()  # mypy might complain about pytest
     single_action = False
     if "black" in sys.argv or "--black" in sys.argv:
         single_action = True
