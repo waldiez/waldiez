@@ -10,9 +10,9 @@ repos:
           - --unsafe
       - id: check-toml
       - id: end-of-file-fixer
-        exclude: '(\.md$|\.snap$|\.waldiez$|\.waldiezTool$|\.waldiezModel$|\.waldiezAgent$)'
+        exclude: '(\.svg$|\.md$|\.snap$|\.waldiez$|\.waldiezTool$|\.waldiezModel$|\.waldiezAgent$)'
       - id: trailing-whitespace
-        exclude: '(\.md$|\.snap$|\.waldiez$|\.waldiezTool$|\.waldiezModel$|\.waldiezAgent$)'
+        exclude: '(\.svg$|\.md$|\.snap$|\.waldiez$|\.waldiezTool$|\.waldiezModel$|\.waldiezAgent$)'
 
   - repo: https://github.com/psf/black-pre-commit-mirror
     rev: 25.1.0
@@ -52,6 +52,7 @@ repos:
           - "-rn"
           - "-sn"
           - "--rcfile=pyproject.toml"
+
       - id: mypy
         name: mypy
         entry: mypy
@@ -63,14 +64,18 @@ repos:
 
       - id: basedpyright
         name: basedpyright
-        entry: basedpyright
+        entry: python scripts/lint.py
         language: system
+        pass_filenames: false
+        require_serial: true
         types: [python]
         args:
-          - "-p"
-          - "pyproject.toml"
+          - "--pyright"
+
       - id: header
         name: header
         language: system
+        pass_filenames: false
+        require_serial: true
         types: [python]
         entry: python scripts/header.py
