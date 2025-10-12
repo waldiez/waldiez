@@ -171,7 +171,7 @@ dev = [
   "paho-mqtt>=2.1.0,<3.0",
   "pandas-stubs==2.3.2.250926",
   "nodeenv>=1.9.1",
-  "prek==0.2.4",
+  "prek==0.2.5",
   "pydocstyle==6.3.0",
   "pylint==3.3.9",
   "python-dotenv>=1.1.1",
@@ -184,6 +184,7 @@ dev = [
   "types-toml==0.10.8.20240310",
   "types-requests==2.32.4.20250913",
   "toml==0.10.2; python_version <= '3.10'",
+  "tox==4.31.0",
   "watchdog>=5.0.0",
   "websockets>=14.0,<16",
   "yamllint==1.37.1",
@@ -224,6 +225,7 @@ test = [
   "pytest-sugar==1.1.1",
   "pytest-timeout==2.4.0",
   "pytest-xdist==3.8.0",
+  "tox==4.31.0",
   "watchdog>=5.0.0",
   "websockets>=14.0,<16",
 ]
@@ -313,7 +315,7 @@ format = [
 
 lint-black = "black --config pyproject.toml --check --diff waldiez tests scripts"
 lint-mypy = "mypy --config pyproject.toml waldiez tests scripts"
-lint-pyright = "basedpyright -p pyproject.toml waldiez tests scripts"
+lint-pyright = "python scripts/lint.py --pyright"
 lint-flake8 = "flake8 --config .flake8 waldiez tests scripts"
 lint-bandit = "bandit -r -c pyproject.toml waldiez scripts"
 lint-yamllint = "yamllint ."
@@ -365,6 +367,11 @@ matrix-lint = "hatch run dev:lint"
 test-matrix = "hatch run dev:test"
 lint-matrix = "hatch run dev:lint"
 
+tox-test = "tox -e py310,py311,py312,py313"
+tox-lint = "tox -e lint-py310,lint-py311,lint-py312,lint-py313"
+tox-all = "tox"
+tox-p = "tox -p"
+
 release = [
   "hatch run check",
   "hatch run matrix-lint",
@@ -384,6 +391,17 @@ inherit = true
 [[tool.hatch.envs.dev.matrix]]
 python = ["3.10", "3.11", "3.12", "3.13"]
 
+[tool.uv]
+managed = true
+# handle conflicts with
+# published extras not yet bumped
+override-dependencies = [
+  "psutil==7.1.0",
+  "aiocsv==1.4.0",
+  "aiofiles==25.1.0",
+  "fakeredis==2.32.0",
+]
+
 # pip-tools
 [tool.pip-tools]
 generate-hashes = false
@@ -392,15 +410,18 @@ annotate = false
 strip-extras = false
 newline = "LF"
 
-
 # black
 [tool.black]
 exclude = '''
 /(
     \.git
   | \.hg
+  | \.cache
   | \.mypy_cache
+  | \.pytest_cache
+  | \.ruff_cache
   | \.tox
+  | \.hatch
   | \.venv
   | .local
   | _build
@@ -419,7 +440,7 @@ skip-string-normalization = true
 
 # mypy
 [tool.mypy]
-files = "."
+files = "waldiez,tests,scripts"
 show_error_codes = true
 # xcode/dmypy: follow-imports=silent not supported
 # follow_imports = "skip"
@@ -433,6 +454,8 @@ disallow_untyped_defs = true
 exclude = [
   ".venv",
   ".local",
+  ".tox",
+  ".hatch",
   "node_modules",
   "examples",
   "waldiez_out",
@@ -464,12 +487,16 @@ include = ["waldiez", "tests", "scripts"]
 exclude = [
     "**/node_modules",
     "**/__pycache__",
+    "src",
+    ".tox",
+    ".hatch",
     ".venv",
     ".local",
     "examples",
     "docs",
     "waldiez_out",
 ]
+extraPaths = ["."]
 reportCallIssue = false
 reportUnusedCallResult = false
 reportExplicitAny = false
@@ -492,15 +519,18 @@ load-plugins = [
 ]
 # reports=true
 fail-under = 8.0
+# jobs = 0
 ignore = ["CVS"]
 ignore-paths = [
   ".venv",
+  ".tox",
+  ".hatch",
   ".local*",
   "node_modules",
   "examples",
   "waldiez_out",
 ]
-recursive = true
+recursive = false
 
 unsafe-load-any-extension = "no"
 
@@ -534,6 +564,8 @@ default-docstring-type = "numpy"
 [tool.bandit]
 exclude_dirs = [
   ".venv",
+  ".tox",
+  ".hatch",
   ".local",
   "node_modules",
   "examples",
@@ -552,6 +584,8 @@ skips = ["*_test.py", "*/test_*.py", "./tests/**/*.py"]
 extend-exclude = [
   ".venv",
   ".local",
+  ".tox",
+  ".hatch",
   "node_modules",
   "examples",
   "waldiez_out",

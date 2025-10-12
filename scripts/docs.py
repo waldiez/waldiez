@@ -65,4 +65,10 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:
+        if HAD_TO_MODIFY_SYS_PATH or sys.path[0] == str(
+            Path(__file__).resolve().parent
+        ):
+            sys.path.pop(0)

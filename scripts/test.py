@@ -79,5 +79,7 @@ if __name__ == "__main__":
         print(f"An error occurred while running pytest: {error}")
         sys.exit(1)
     finally:
-        if HAD_TO_MODIFY_SYS_PATH:
+        if HAD_TO_MODIFY_SYS_PATH or sys.path[0] == str(
+            Path(__file__).resolve().parent
+        ):
             sys.path.pop(0)

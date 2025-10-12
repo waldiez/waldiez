@@ -88,7 +88,9 @@ def get_executable() -> str:
     return sys.executable
 
 
-def run_command(args: list[str], cwd: Path = ROOT_DIR) -> None:
+def run_command(
+    args: list[str], cwd: Path = ROOT_DIR, quiet: bool = False
+) -> None:
     """Run a command.
 
     Parameters
@@ -97,6 +99,8 @@ def run_command(args: list[str], cwd: Path = ROOT_DIR) -> None:
         List of arguments to pass to the command.
     cwd : Path
         Directory to run the command in. Defaults to the root directory.
+    quiet : bool
+        Don't print what to run.
 
     Raises
     ------
@@ -115,12 +119,15 @@ def run_command(args: list[str], cwd: Path = ROOT_DIR) -> None:
             raise ValueError("pip command requires an argument.")
     else:
         args = [get_executable(), "-m"] + args
-    _run_command(args=args, cwd=cwd)
+    _run_command(args=args, cwd=cwd, quiet=quiet)
 
 
-def _run_command(args: list[str], cwd: Path = ROOT_DIR) -> None:
+def _run_command(
+    args: list[str], cwd: Path = ROOT_DIR, quiet: bool = False
+) -> None:
     args_str = " ".join(args).replace(str(ROOT_DIR), ".")
-    print(f"Running command: {args_str}")
+    if not quiet:
+        print(f"Running command: {args_str}")
     try:
         _ = subprocess.run(  # nosemgrep # nosec
             args,
@@ -168,7 +175,7 @@ def _ensure_requirements(requirements_file: Path) -> None:
         ["pip", "install", "--upgrade", "-qq", "pip"],
         ["pip", "install", "-qq", "-r", str(requirements_file)],
     ]:
-        run_command(cmd_group, ROOT_DIR)
+        run_command(cmd_group, ROOT_DIR, quiet=True)
 
 
 def ensure_dev_requirements() -> None:
@@ -232,7 +239,16 @@ def run_pyright(in_dir: Path = ROOT_DIR) -> None:
     """
     ensure_package_exists("basedpyright")
     run_command(
-        ["basedpyright", "--project", "pyproject.toml", "."],
+        [
+            "basedpyright",
+            "--pythonpath",
+            get_executable(),
+            "--project",
+            "pyproject.toml",
+            "waldiez",
+            "tests",
+            "scripts",
+        ],
         cwd=in_dir,
     )
 
