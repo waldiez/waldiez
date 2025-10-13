@@ -172,7 +172,7 @@ export default defineConfig(({ command }) => ({
                     "react/jsx-runtime": "JsxRuntime",
                     "@xyflow/react": "ReactFlow",
                     "@floating-ui/dom": "FloatingUiDom",
-                    "@monaco-editor/react": "react$1",
+                    "@monaco-editor/react": "MonacoEditorReact",
                     recharts: "Recharts",
                     "framer-motion": "FramerMotion",
                     zundo: "Zundo",

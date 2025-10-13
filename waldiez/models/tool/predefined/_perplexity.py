@@ -156,6 +156,7 @@ def {self.name}(
         return content
 
 
+# pylint: disable=invalid-name
 PerplexitySearchTool = PerplexitySearchToolImpl()
 PerplexitySearchConfig = PredefinedToolConfig(
     name=PerplexitySearchTool.name,

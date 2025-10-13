@@ -105,6 +105,7 @@ def get_llm_requirements(
     return requirements
 
 
+# pylint: disable=too-many-branches
 def get_llm_imports(model: "WaldiezModel") -> set[str]:
     """Get the LLM import statements for the model.
 
@@ -162,6 +163,7 @@ def get_llm_imports(model: "WaldiezModel") -> set[str]:
             raise ValueError(f"Unsupported API type: {model.data.api_type}")
 
 
+# pylint: disable=too-many-branches
 def get_llm_arg(model: "WaldiezModel") -> tuple[str, str]:
     """Get the LLM argument for the model.
 

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # flake8: noqa: E501
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,invalid-name
 # pyright: reportUnknownMemberType=false,reportUnknownParameterType=false
 # pyright: reportUnknownVariableType=false,reportUnknownArgumentType=false
 # pyright: reportConstantRedefinition=false,reportUnnecessaryIsInstance=false

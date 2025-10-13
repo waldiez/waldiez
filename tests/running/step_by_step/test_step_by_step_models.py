@@ -293,35 +293,36 @@ class TestWaldiezBreakpoint:
 
         # ALL type always matches
         bp_all = WaldiezBreakpoint(type=WaldiezBreakpointType.ALL)
-        assert bp_all.matches(event, {}) is True
-        assert bp_all.matches({}, {}) is True  # Even empty event
+        assert bp_all.matches(event, {}, True) is True
+        assert bp_all.matches({}, {}, True) is True  # Even empty event
 
         # EVENT type matches on event type
         bp_event = WaldiezBreakpoint(
             type=WaldiezBreakpointType.EVENT, event_type="message"
         )
-        assert bp_event.matches(event, {}) is True
+        assert bp_event.matches(event, {}, True) is True
 
         bp_event_no_match = WaldiezBreakpoint(
             type=WaldiezBreakpointType.EVENT, event_type="tool_call"
         )
-        assert bp_event_no_match.matches(event, {}) is False
+        assert bp_event_no_match.matches(event, {}, True) is False
 
         # AGENT type matches on sender OR recipient
         bp_agent_sender = WaldiezBreakpoint(
             type=WaldiezBreakpointType.AGENT, agent="user"
         )
-        assert bp_agent_sender.matches(event, {}) is True
+        assert bp_agent_sender.matches(event, {}, True) is True
 
         bp_agent_recipient = WaldiezBreakpoint(
             type=WaldiezBreakpointType.AGENT, agent="assistant"
         )
-        assert bp_agent_recipient.matches(event, {}) is True
+        assert bp_agent_recipient.matches(event, {}, True) is False
+        assert bp_agent_recipient.matches(event, {}, False) is True
 
         bp_agent_no_match = WaldiezBreakpoint(
             type=WaldiezBreakpointType.AGENT, agent="other"
         )
-        assert bp_agent_no_match.matches(event, {}) is False
+        assert bp_agent_no_match.matches(event, {}, True) is False
 
         # AGENT_EVENT type matches on both event type AND (sender OR recipient)
         bp_agent_event = WaldiezBreakpoint(
@@ -329,7 +330,7 @@ class TestWaldiezBreakpoint:
             agent="user",
             event_type="message",
         )
-        assert bp_agent_event.matches(event, {}) is True
+        assert bp_agent_event.matches(event, {}, True) is True
 
         # Wrong event type
         bp_agent_event_wrong_type = WaldiezBreakpoint(
@@ -337,7 +338,7 @@ class TestWaldiezBreakpoint:
             agent="user",
             event_type="tool_call",
         )
-        assert bp_agent_event_wrong_type.matches(event, {}) is False
+        assert bp_agent_event_wrong_type.matches(event, {}, True) is False
 
         # Wrong agent
         bp_agent_event_wrong_agent = WaldiezBreakpoint(
@@ -345,7 +346,7 @@ class TestWaldiezBreakpoint:
             agent="other",
             event_type="message",
         )
-        assert bp_agent_event_wrong_agent.matches(event, {}) is False
+        assert bp_agent_event_wrong_agent.matches(event, {}, True) is False
 
     def test_breakpoint_string_representation(self) -> None:
         """Test __str__ method for all breakpoint types."""
@@ -515,11 +516,11 @@ def test_breakpoint_edge_cases_matches() -> None:
     bp_event = WaldiezBreakpoint(
         type=WaldiezBreakpointType.EVENT, event_type="message"
     )
-    assert bp_event.matches(incomplete_event, {}) is True
+    assert bp_event.matches(incomplete_event, {}, True) is True
 
     # AGENT type should not match (no sender/recipient)
     bp_agent = WaldiezBreakpoint(type=WaldiezBreakpointType.AGENT, agent="user")
-    assert bp_agent.matches(incomplete_event, {}) is False
+    assert bp_agent.matches(incomplete_event, {}, True) is False
 
     # Test with None values in event
     event_with_nones: dict[str, Any] = {
@@ -529,4 +530,4 @@ def test_breakpoint_edge_cases_matches() -> None:
     }
 
     bp_agent = WaldiezBreakpoint(type=WaldiezBreakpointType.AGENT, agent="user")
-    assert bp_agent.matches(event_with_nones, {}) is False
+    assert bp_agent.matches(event_with_nones, {}, True) is False

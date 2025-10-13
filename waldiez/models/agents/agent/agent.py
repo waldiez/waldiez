@@ -395,7 +395,7 @@ class WaldiezAgent(WaldiezBase):
         return class_name  # pragma: no cover
 
     @property
-    def ag2_imports(self) -> set[str]:
+    def ag2_imports(self) -> set[str]:  # pylint: disable=too-complex
         """Return the AG2 imports of the agent.
 
         Returns

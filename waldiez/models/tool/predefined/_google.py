@@ -173,6 +173,7 @@ def {self.name}(
         return content
 
 
+# pylint: disable=invalid-name
 GoogleSearchTool = GoogleSearchToolImpl()
 GoogleSearchConfig = PredefinedToolConfig(
     name=GoogleSearchTool.name,

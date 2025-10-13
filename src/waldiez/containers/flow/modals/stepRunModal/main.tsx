@@ -141,7 +141,7 @@ export const StepRunModal = memo((props: StepRunModalProps) => {
                                     Break on Agents
                                 </h4>
                                 <p className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`}>
-                                    Stop execution for any event from/to specific agents
+                                    Stop execution for any event from specific agents
                                 </p>
                                 <Select
                                     className={"w-full rounded-md focus:ring-2"}
@@ -162,7 +162,7 @@ export const StepRunModal = memo((props: StepRunModalProps) => {
                                     Break on Agent + Event
                                 </h4>
                                 <p className={`text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`}>
-                                    Stop execution for a specific event from/to a specific agent
+                                    Stop execution for a specific event from a specific agent
                                 </p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <Select

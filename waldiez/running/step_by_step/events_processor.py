@@ -56,9 +56,11 @@ class EventProcessor:
         self._update_participant_info(event_info)
         self._manage_event_history(event_info)
         self._check_for_input_request(event_info)
-        self._add_agent_info(event_info, agents)
+        self._add_agents_info(event_info, agents)
 
-        should_break = self.runner.should_break_on_event(event)
+        should_break = self.runner.should_break_on_event(
+            event, sender_only=True
+        )
 
         return {
             "action": "break" if should_break else "continue",
@@ -223,16 +225,33 @@ class EventProcessor:
         }
         return dump
 
-    def _add_agent_info(
+    def _add_agents_info(
         self, event_info: dict[str, Any], agents: list["ConversableAgent"]
     ) -> None:
-        """Add agent info if sender or recipient is in agents."""
+        """Add agents info."""
         sender = event_info.get("sender", self.runner.last_sender)
         recipient = event_info.get("recipient", self.runner.last_recipient)
 
         agent_map = {agent.name: agent for agent in agents}
 
+        sender_agent = agent_map.get(sender)
+        recipient_agent = agent_map.get(recipient)
+
+        ordered_agents: list["ConversableAgent"] = []
+        seen: set[str] = set()
+
+        for a in (sender_agent, recipient_agent):
+            if a and a.name not in seen:
+                ordered_agents.append(a)
+                seen.add(a.name)
+
+        for a in agents:
+            if a.name not in seen:
+                ordered_agents.append(a)
+                seen.add(a.name)
+
         event_info["agents"] = {
-            "sender": self._get_agent_dump(agent_map.get(sender, None)),
-            "recipient": self._get_agent_dump(agent_map.get(recipient, None)),
+            "sender": self._get_agent_dump(sender_agent),
+            "recipient": self._get_agent_dump(recipient_agent),
+            "all": [self._get_agent_dump(a) for a in ordered_agents if a],
         }

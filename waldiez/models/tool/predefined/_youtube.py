@@ -138,6 +138,7 @@ def {self.name}(
         return content
 
 
+# pylint: disable=invalid-name
 YouTubeSearchTool = YouTubeSearchToolImpl()
 YouTubeSearchConfig = PredefinedToolConfig(
     name=YouTubeSearchTool.name,

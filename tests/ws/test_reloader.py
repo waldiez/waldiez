@@ -14,6 +14,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+# pylint: disable=invalid-name
 SKIP_TEST = False
 try:
     # noinspection PyUnusedImports

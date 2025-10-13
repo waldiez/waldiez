@@ -145,6 +145,7 @@ def {self.name}(query: str, language: str = "en", top_k: int = 3, verbose: bool 
         return content
 
 
+# pylint: disable=invalid-name
 WikipediaSearchTool = WikipediaSearchToolImpl()
 WikipediaSearchConfig = PredefinedToolConfig(
     name=WikipediaSearchTool.name,

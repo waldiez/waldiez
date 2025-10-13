@@ -146,6 +146,7 @@ def {self.name}(
         return content
 
 
+# pylint: disable=invalid-name
 TavilySearchTool = TavilySearchToolImpl()
 TavilySearchConfig = PredefinedToolConfig(
     name=TavilySearchTool.name,

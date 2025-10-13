@@ -143,19 +143,19 @@ def test_should_break_on_event_basic(
     """Test basic event breaking behavior."""
     runner.auto_continue = False
     runner.clear_breakpoints()
-    assert runner.should_break_on_event(text_event) is True
+    assert runner.should_break_on_event(text_event, True) is True
 
     runner.clear_breakpoints()
     runner.add_breakpoint("text")
-    assert runner.should_break_on_event(text_event) is True
+    assert runner.should_break_on_event(text_event, True) is True
 
     # step mode: always break on any event
     runner.set_breakpoints(["other_event"])
-    assert runner.should_break_on_event(text_event) is True
+    assert runner.should_break_on_event(text_event, True) is True
 
     runner.auto_continue = True
     runner.set_breakpoints(["other_event"])
-    assert runner.should_break_on_event(text_event) is False
+    assert runner.should_break_on_event(text_event, True) is False
 
 
 def test_on_event_breaks_and_continues(
@@ -753,7 +753,7 @@ def test_should_break_on_event_input_request(
     """Test should_break_on_event method."""
     event = MagicMock()
     event.type = "input_request"
-    result = runner.should_break_on_event(event)
+    result = runner.should_break_on_event(event, True)
     assert result is False
 
 

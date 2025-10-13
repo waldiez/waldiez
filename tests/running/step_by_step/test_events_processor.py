@@ -177,7 +177,9 @@ def test_process_event_should_break_called(
 
     result = processor.process_event(mock_event, [])
 
-    runner.should_break_on_event.assert_called_once_with(mock_event)
+    runner.should_break_on_event.assert_called_once_with(
+        mock_event, sender_only=True
+    )
     assert result["action"] == "break"
 
 

@@ -465,6 +465,7 @@ def {self.name}(
         return base + exported
 
 
+# pylint: disable=invalid-name
 SendEmailTool = SendEmailToolImpl()
 SendEmailConfig = PredefinedToolConfig(
     name=SendEmailTool.name,

@@ -250,7 +250,7 @@ def test_should_break_on_event_input_request(
     event.type = "input_request"
     event.model_dump.return_value = {"type": "input_request"}
 
-    assert not mixin.should_break_on_event(event)
+    assert not mixin.should_break_on_event(event, True)
 
 
 def test_should_break_on_event_step_mode_no_breakpoints(
@@ -261,7 +261,7 @@ def test_should_break_on_event_step_mode_no_breakpoints(
     event.type = "message"
     event.model_dump.return_value = {"type": "message"}
 
-    assert mixin.should_break_on_event(event)
+    assert mixin.should_break_on_event(event, True)
 
 
 def test_should_break_on_event_matching_breakpoint(
@@ -274,7 +274,7 @@ def test_should_break_on_event_matching_breakpoint(
     event.type = "message"
     event.model_dump.return_value = {"type": "message", "sender": "user"}
 
-    assert mixin.should_break_on_event(event)
+    assert mixin.should_break_on_event(event, True)
 
 
 def test_should_break_on_event_caching(mixin: DummyBreakpointsMixin) -> None:
@@ -283,13 +283,14 @@ def test_should_break_on_event_caching(mixin: DummyBreakpointsMixin) -> None:
 
     event = MagicMock()
     event.type = "message"
+    event.sender = "user"
     event.model_dump.return_value = {"type": "message", "sender": "user"}
 
     # First call - cache miss
-    result1 = mixin.should_break_on_event(event)
+    result1 = mixin.should_break_on_event(event, True)
 
     # Second call with same event - cache hit
-    result2 = mixin.should_break_on_event(event)
+    result2 = mixin.should_break_on_event(event, True)
     cache_hits_after_second = mixin._breakpoint_stats["cache_hits"]
 
     assert result1 == result2
@@ -304,7 +305,7 @@ def test_should_break_on_event_exception_handling(
     event.type = "message"
     event.model_dump.side_effect = Exception("Test exception")
 
-    result = mixin.should_break_on_event(event)
+    result = mixin.should_break_on_event(event, True)
     assert result is True  # Falls back to step_mode
 
 
@@ -317,7 +318,7 @@ def test_get_breakpoint_stats(mixin: DummyBreakpointsMixin) -> None:
     event = MagicMock()
     event.type = "message"
     event.model_dump.return_value = {"type": "message"}
-    mixin.should_break_on_event(event)
+    mixin.should_break_on_event(event, True)
 
     stats = mixin.get_breakpoint_stats()
 
@@ -388,7 +389,7 @@ def test_agent_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
         "recipient": "assistant",
     }
 
-    assert mixin.should_break_on_event(event1)
+    assert mixin.should_break_on_event(event1, True)
 
     # Test event where user is recipient
     event2 = MagicMock()
@@ -399,7 +400,7 @@ def test_agent_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
         "recipient": "user",
     }
 
-    assert mixin.should_break_on_event(event2)
+    assert mixin.should_break_on_event(event2, True)
 
 
 def test_agent_event_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
@@ -417,7 +418,7 @@ def test_agent_event_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
         "recipient": "assistant",
     }
 
-    assert mixin.should_break_on_event(event1)
+    assert mixin.should_break_on_event(event1, True)
 
     # Test non-matching event type
     event2 = MagicMock()
@@ -428,7 +429,7 @@ def test_agent_event_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
         "recipient": "assistant",
     }
 
-    assert not mixin.should_break_on_event(event2)
+    assert not mixin.should_break_on_event(event2, True)
 
     # Test non-matching agent
     event3 = MagicMock()
@@ -439,5 +440,5 @@ def test_agent_event_breakpoint_matching(mixin: DummyBreakpointsMixin) -> None:
         "recipient": "other",
     }
 
-    assert not mixin.should_break_on_event(event3)
+    assert not mixin.should_break_on_event(event3, True)
     mixin._config.auto_continue = auto_continue

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,invalid-name
 # pyright: reportUnknownVariableType=false,reportConstantRedefinition=false
 # pyright: reportUntypedBaseClass=false,reportUnknownMemberType=false
 # pyright: reportUnknownParameterType=false,reportUnknownArgumentType=false

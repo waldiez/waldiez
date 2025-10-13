@@ -167,10 +167,8 @@ export const StepByStepView: FC<{
     // if the state is "error", enable close (if there is such handler)
     const mayClose = canClose || (!!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error");
     const currentEvent = stepByStep?.currentEvent;
-    const eventAgents = currentEvent?.agents;
-    const currentSender = (eventAgents as any)?.sender;
-    const currentRecipient = (eventAgents as any)?.recipient;
-    const haveAgent = Boolean(currentSender || currentRecipient);
+    const agents = (currentEvent?.agents as any)?.all;
+    const haveAgents = Array.isArray(agents) && agents.length > 0;
     const headerLeft = (
         <div className="header">
             <FaBug className="icon-bug" size={18} />
@@ -242,7 +240,7 @@ export const StepByStepView: FC<{
                             >
                                 <FaStop /> <span>Quit</span>
                             </button>
-                            {currentSender ? (
+                            {haveAgents ? (
                                 detailsViewActive ? (
                                     <button
                                         className="btn"
@@ -288,14 +286,11 @@ export const StepByStepView: FC<{
                             </div>
                         </div>
                     )}
-                    {haveAgent && detailsViewActive ? (
+                    {haveAgents && detailsViewActive ? (
                         <div className="event-sender-details">
-                            {currentSender && (
-                                <AgentEventInfo agentData={currentSender} darkMode={isDarkMode} />
-                            )}
-                            {currentRecipient && (
-                                <AgentEventInfo agentData={currentRecipient} darkMode={isDarkMode} />
-                            )}
+                            {agents.map(agent => (
+                                <AgentEventInfo key={agent.id} agentData={agent} darkMode={isDarkMode} />
+                            ))}
                         </div>
                     ) : reducedHistory.length > 0 ? (
                         <div className="event-history">

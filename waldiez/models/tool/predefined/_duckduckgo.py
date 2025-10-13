@@ -115,6 +115,7 @@ def {self.name}(query: str, num_results: int = 5) -> list[dict[str, Any]]:
         return content
 
 
+# pylint: disable=invalid-name
 DuckDuckGoSearchTool = DuckDuckGoSearchToolImpl()
 DuckDuckGoSearchConfig = PredefinedToolConfig(
     name=DuckDuckGoSearchTool.name,

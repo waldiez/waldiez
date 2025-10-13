@@ -2,6 +2,8 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pyright: reportConstantRedefinition=false
+# pylint: disable=invalid-name
+
 """Build the container image."""
 
 import argparse

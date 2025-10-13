@@ -146,6 +146,7 @@ def {self.name}(
         return content
 
 
+# pylint: disable=invalid-name
 SearxNGSearchTool = SearxNGSearchToolImpl()
 SearxNGSearchConfig = PredefinedToolConfig(
     name=SearxNGSearchTool.name,

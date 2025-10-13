@@ -149,6 +149,7 @@ class BreakpointsMixin:
         event_type: str,
         sender: str,
         recipient: str,
+        sender_only: bool,
         breakpoints_sig: frozenset[str],
     ) -> bool:
         """Check if the event matches any breakpoints.
@@ -161,6 +162,8 @@ class BreakpointsMixin:
             The event sender.
         recipient : str
             The event recipient.
+        sender_only : bool
+            Only check for event's sender agent.
         breakpoints_sig : frozenset[str]
             Signature of current breakpoints for cache invalidation.
 
@@ -183,13 +186,21 @@ class BreakpointsMixin:
                 for bp_str in breakpoints_sig
             }
             return any(
-                bp.matches(event_dict, self._agent_id_to_name)
+                bp.matches(
+                    event_dict,
+                    self._agent_id_to_name,
+                    sender_only=sender_only,
+                )
                 for bp in breakpoints
             )
         except Exception:  # pylint: disable=broad-exception-caught
             # Fallback to current breakpoints if signature is malformed
             return any(
-                bp.matches(event_dict, self._agent_id_to_name)
+                bp.matches(
+                    event_dict,
+                    self._agent_id_to_name,
+                    sender_only=sender_only,
+                )
                 for bp in self._breakpoints
             )
 
@@ -400,7 +411,9 @@ class BreakpointsMixin:
             recipient = ""
         return event_type, sender, recipient
 
-    def _got_breakpoint_match(self, event_dump: dict[str, Any]) -> bool:
+    def _got_breakpoint_match(
+        self, event_dump: dict[str, Any], sender_only: bool
+    ) -> bool:
         event_type, sender, recipient = BreakpointsMixin._get_event_core(
             event_dump
         )
@@ -417,7 +430,11 @@ class BreakpointsMixin:
             # Don't use cache for agent-based breakpoints
             # (we might have a mix of agent ids and names)
             matches_breakpoint = any(
-                bp.matches(event_dict, self._agent_id_to_name)
+                bp.matches(
+                    event_dict,
+                    self._agent_id_to_name,
+                    sender_only=sender_only,
+                )
                 for bp in self._breakpoints
             )
         else:
@@ -428,13 +445,17 @@ class BreakpointsMixin:
             # noinspection PyBroadException
             try:
                 matches_breakpoint = self._check_breakpoint_match_cached(
-                    event_type, sender, recipient, breakpoints_sig
+                    event_type, sender, recipient, sender_only, breakpoints_sig
                 )
                 self._breakpoint_stats["cache_hits"] += 1
             except Exception:  # pylint: disable=broad-exception-caught
                 # Fallback to non-cached check
                 matches_breakpoint = any(
-                    bp.matches(event_dict, self._agent_id_to_name)
+                    bp.matches(
+                        event_dict,
+                        self._agent_id_to_name,
+                        sender_only=sender_only,
+                    )
                     for bp in self._breakpoints
                 )
                 self._breakpoint_stats["cache_misses"] += 1
@@ -444,6 +465,7 @@ class BreakpointsMixin:
     def should_break_on_event(
         self,
         event: Union["BaseEvent", "BaseMessage"],
+        sender_only: bool,
     ) -> bool:
         """Determine if we should break on this event.
 
@@ -451,6 +473,8 @@ class BreakpointsMixin:
         ----------
         event : Union[BaseEvent, BaseMessage]
             The event to check.
+        sender_only : bool
+            Only check for event's sender agent.
 
         Returns
         -------
@@ -475,7 +499,9 @@ class BreakpointsMixin:
             event_dump = event.model_dump(
                 mode="python", exclude_none=True, fallback=str
             )
-            matches_breakpoint = self._got_breakpoint_match(event_dump)
+            matches_breakpoint = self._got_breakpoint_match(
+                event_dump, sender_only=sender_only
+            )
             # If any breakpoint matches: break regardless of step_mode
             if matches_breakpoint:
                 self._breakpoint_stats["total_matches"] += 1

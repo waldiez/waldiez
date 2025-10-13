@@ -699,7 +699,7 @@ class WaldiezChatParticipantsHandler {
           try {
             const innerDumped = JSON.parse(parsedData);
             return this.extractParticipants(innerDumped);
-          } catch (_) {
+          } catch (_2) {
             return void 0;
           }
         }
@@ -1676,7 +1676,7 @@ const useWaldiezWsChat = ({ ws, chat }) => {
       try {
         const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
         chatHook.process(data);
-      } catch (_) {
+      } catch (_2) {
         chatHook.process(event.data);
       }
     },
@@ -1719,7 +1719,7 @@ const sha256 = async (message) => {
     const crypto2 = getCrypto();
     const msgBuffer = new TextEncoder().encode(message);
     const hashBuffer = await crypto2.subtle.digest("SHA-256", msgBuffer);
-    return Array.from(new Uint8Array(hashBuffer)).map((b2) => b2.toString(16).padStart(2, "0")).join("");
+    return Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, "0")).join("");
   } catch (error) {
     console.error("Error computing SHA-256 hash:", error);
     throw new Error("Failed to compute SHA-256 hash. Ensure you are using a supported environment.");
@@ -1757,7 +1757,7 @@ const hmacSha256 = async (key, message, outputFormat = "") => {
     );
     const signature = await crypto2.subtle.sign("HMAC", cryptoKey, messageBuffer);
     if (outputFormat === "hex") {
-      return Array.from(new Uint8Array(signature)).map((b2) => b2.toString(16).padStart(2, "0")).join("");
+      return Array.from(new Uint8Array(signature)).map((b) => b.toString(16).padStart(2, "0")).join("");
     }
     return new Uint8Array(signature);
   } catch (error) {
@@ -2308,7 +2308,7 @@ class WaldiezStepByStepProcessor {
           if (chatResult) {
             return WaldiezStepByStepProcessor._chatResultToStepResult(chatResult);
           }
-        } catch (_) {
+        } catch (_2) {
           return {
             error: {
               message: `Handler error: ${error instanceof Error ? error.message : String(error)}`,
@@ -3121,7 +3121,7 @@ const useWaldiezWsMessaging = ({ flowId, onSave, onConvert, onRun, chat, stepByS
       try {
         const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
         process2(data);
-      } catch (_) {
+      } catch (_2) {
         process2(event.data);
       }
     },
@@ -3253,7 +3253,7 @@ const useWaldiezWsStepByStep = ({ ws, stepByStep }) => {
       try {
         const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
         stepByStepHook.process(data);
-      } catch (_) {
+      } catch (_2) {
         stepByStepHook.process(event.data);
       }
     },
@@ -4732,7 +4732,7 @@ const getGroupChatMaxRound = (json) => {
   if ("maxRound" in json && typeof json.maxRound === "number") {
     try {
       maxRound = parseInt(json.maxRound.toString(), 10);
-    } catch (_) {
+    } catch (_2) {
     }
   }
   return maxRound;
@@ -7387,7 +7387,7 @@ const toolMapper = {
     if (toolNode.data.toolType === "predefined") {
       const requiredKwargs = PREDEFINED_TOOL_REQUIRED_KWARGS[toolNode.data.label] || {};
       kwargs = Object.entries(requiredKwargs).reduce(
-        (acc, [key, _]) => {
+        (acc, [key, _2]) => {
           acc[key] = kwargs[key] || secrets[key] || "REPLACE_ME";
           return acc;
         },
@@ -7648,7 +7648,7 @@ const getCacheSeed = (json) => {
         if (!isNaN(parsed)) {
           cacheSeed = parsed;
         }
-      } catch (_) {
+      } catch (_2) {
       }
     }
   }
@@ -8235,7 +8235,7 @@ const getFlowJson = (item) => {
   if (typeof item === "string") {
     try {
       flowJson = JSON.parse(item);
-    } catch (_) {
+    } catch (_2) {
       return {};
     }
   } else if (typeof item === "object") {
@@ -8356,10 +8356,10 @@ class ErrorBoundary extends Component {
 }
 function hasArrayChanged() {
   let a = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : [];
-  let b2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : [];
-  return a.length !== b2.length || a.some((item, index2) => !Object.is(item, b2[index2]));
+  let b = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : [];
+  return a.length !== b.length || a.some((item, index2) => !Object.is(item, b[index2]));
 }
-const G = ["shift", "alt", "meta", "mod", "ctrl", "control"], O = {
+const j$1 = ["shift", "alt", "meta", "mod", "ctrl", "control"], Q = {
   esc: "escape",
   return: "enter",
   left: "arrowleft",
@@ -8377,106 +8377,108 @@ const G = ["shift", "alt", "meta", "mod", "ctrl", "control"], O = {
   ControlLeft: "ctrl",
   ControlRight: "ctrl"
 };
-function S(t) {
-  return (O[t.trim()] || t.trim()).toLowerCase().replace(/key|digit|numpad/, "");
+function K(e) {
+  return (Q[e.trim()] || e.trim()).toLowerCase().replace(/key|digit|numpad/, "");
 }
-function J(t) {
-  return G.includes(t);
+function D(e) {
+  return j$1.includes(e);
 }
-function b(t, r = ",") {
-  return t.toLowerCase().split(r);
+function H(e, r = ",") {
+  return e.toLowerCase().split(r);
 }
-function R(t, r = "+", n = ">", f = false, l) {
-  let u = [], c = false;
-  t.includes(n) ? (c = true, u = t.toLocaleLowerCase().split(n).map((i) => S(i))) : u = t.toLocaleLowerCase().split(r).map((i) => S(i));
-  const d = {
-    alt: u.includes("alt"),
-    ctrl: u.includes("ctrl") || u.includes("control"),
-    shift: u.includes("shift"),
-    meta: u.includes("meta"),
-    mod: u.includes("mod"),
-    useKey: f
-  }, a = u.filter((i) => !G.includes(i));
+function P(e, r = "+", o = ">", i = false, u) {
+  let n = [], c = false;
+  e = e.trim(), e.includes(o) ? (c = true, n = e.toLocaleLowerCase().split(o).map((f) => K(f))) : n = e.toLocaleLowerCase().split(r).map((f) => K(f));
+  const y = {
+    alt: n.includes("alt"),
+    ctrl: n.includes("ctrl") || n.includes("control"),
+    shift: n.includes("shift"),
+    meta: n.includes("meta"),
+    mod: n.includes("mod"),
+    useKey: i
+  }, d = n.filter((f) => !j$1.includes(f));
   return {
-    ...d,
-    keys: a,
-    description: l,
-    isSequence: c
+    ...y,
+    keys: d,
+    description: u,
+    isSequence: c,
+    hotkey: e
   };
 }
-typeof document < "u" && (document.addEventListener("keydown", (t) => {
-  t.code !== void 0 && Q([S(t.code)]);
-}), document.addEventListener("keyup", (t) => {
-  t.code !== void 0 && U([S(t.code)]);
+typeof document < "u" && (document.addEventListener("keydown", (e) => {
+  e.code !== void 0 && I([K(e.code)]);
+}), document.addEventListener("keyup", (e) => {
+  e.code !== void 0 && _([K(e.code)]);
 })), typeof window < "u" && (window.addEventListener("blur", () => {
-  E.clear();
+  L.clear();
 }), window.addEventListener("contextmenu", () => {
   setTimeout(() => {
-    E.clear();
+    L.clear();
   }, 0);
 }));
-const E = /* @__PURE__ */ new Set();
-function B(t) {
-  return Array.isArray(t);
+const L = /* @__PURE__ */ new Set();
+function R(e) {
+  return Array.isArray(e);
 }
-function ee(t, r = ",") {
-  return (B(t) ? t : t.split(r)).every((f) => E.has(f.trim().toLowerCase()));
+function U(e, r = ",") {
+  return (R(e) ? e : e.split(r)).every((i) => L.has(i.trim().toLowerCase()));
 }
-function Q(t) {
-  const r = Array.isArray(t) ? t : [t];
-  E.has("meta") && E.forEach((n) => !J(n) && E.delete(n.toLowerCase())), r.forEach((n) => E.add(n.toLowerCase()));
+function I(e) {
+  const r = Array.isArray(e) ? e : [e];
+  L.has("meta") && L.forEach((o) => !D(o) && L.delete(o.toLowerCase())), r.forEach((o) => L.add(o.toLowerCase()));
 }
-function U(t) {
-  const r = Array.isArray(t) ? t : [t];
-  t === "meta" ? E.clear() : r.forEach((n) => E.delete(n.toLowerCase()));
+function _(e) {
+  const r = Array.isArray(e) ? e : [e];
+  e === "meta" ? L.clear() : r.forEach((o) => L.delete(o.toLowerCase()));
 }
-function te(t, r, n) {
-  (typeof n == "function" && n(t, r) || n === true) && t.preventDefault();
+function V(e, r, o) {
+  (typeof o == "function" && o(e, r) || o === true) && e.preventDefault();
 }
-function re(t, r, n) {
-  return typeof n == "function" ? n(t, r) : n === true || n === void 0;
+function X$1(e, r, o) {
+  return typeof o == "function" ? o(e, r) : o === true || o === void 0;
 }
-function ne(t) {
-  return V(t, ["input", "textarea", "select"]);
+const Y = ["input", "textarea", "select", "searchbox", "slider", "spinbutton", "menuitem", "menuitemcheckbox", "menuitemradio", "option", "radio", "textbox"];
+function Z(e) {
+  return F(e, Y);
 }
-function V(t, r = false) {
-  const { target: n, composed: f } = t;
-  let l;
-  return ce(n) && f ? l = t.composedPath()[0] && t.composedPath()[0].tagName : l = n && n.tagName, B(r) ? !!(l && r && r.some((u) => u.toLowerCase() === l.toLowerCase())) : !!(l && r && r);
+function F(e, r = false) {
+  const { target: o, composed: i } = e;
+  let u, n;
+  return ee(o) && i ? (u = e.composedPath()[0] && e.composedPath()[0].tagName, n = e.composedPath()[0] && e.composedPath()[0].role) : (u = o && o.tagName, n = o && o.role), R(r) ? !!(u && r && r.some((c) => c.toLowerCase() === u.toLowerCase() || c === n)) : !!(u && r && r);
 }
-function ce(t) {
-  return !!t.tagName && !t.tagName.startsWith("-") && t.tagName.includes("-");
+function ee(e) {
+  return !!e.tagName && !e.tagName.startsWith("-") && e.tagName.includes("-");
 }
-function ue(t, r) {
-  return t.length === 0 && r ? (console.warn(
+function te(e, r) {
+  return e.length === 0 && r ? (console.warn(
     'A hotkey has the "scopes" option set, however no active scopes were found. If you want to use the global scopes feature, you need to wrap your app in a <HotkeysProvider>'
-  ), true) : r ? t.some((n) => r.includes(n)) || t.includes("*") : true;
+  ), true) : r ? e.some((o) => r.includes(o)) || e.includes("*") : true;
 }
-const oe = (t, r, n = false) => {
-  const { alt: f, meta: l, mod: u, shift: c, ctrl: d, keys: a, useKey: i } = r, { code: w2, key: e, ctrlKey: s, metaKey: y, shiftKey: k, altKey: K } = t, h = S(w2);
-  if (i && (a == null ? void 0 : a.length) === 1 && a.includes(e))
+const re = (e, r, o = false) => {
+  const { alt: i, meta: u, mod: n, shift: c, ctrl: y, keys: d, useKey: f } = r, { code: p, key: t, ctrlKey: a, metaKey: l, shiftKey: g, altKey: k } = e, m = K(p);
+  if (f && d?.length === 1 && d.includes(t))
     return true;
-  if (!(a != null && a.includes(h)) && !["ctrl", "control", "unknown", "meta", "alt", "shift", "os"].includes(h))
+  if (!d?.includes(m) && !["ctrl", "control", "unknown", "meta", "alt", "shift", "os"].includes(m))
     return false;
-  if (!n) {
-    if (f !== K && h !== "alt" || c !== k && h !== "shift")
+  if (!o) {
+    if (i !== k && m !== "alt" || c !== g && m !== "shift")
       return false;
-    if (u) {
-      if (!y && !s)
+    if (n) {
+      if (!l && !a)
         return false;
-    } else if (l !== y && h !== "meta" && h !== "os" || d !== s && h !== "ctrl" && h !== "control")
+    } else if (u !== l && m !== "meta" && m !== "os" || y !== a && m !== "ctrl" && m !== "control")
       return false;
   }
-  return a && a.length === 1 && a.includes(h) ? true : a ? ee(a) : !a;
-}, X$1 = createContext(void 0), ae = () => useContext(X$1);
-function fe({ addHotkey: t, removeHotkey: r, children: n }) {
-  return /* @__PURE__ */ jsx$1(X$1.Provider, { value: { addHotkey: t, removeHotkey: r }, children: n });
+  return d && d.length === 1 && d.includes(m) ? true : d ? U(d) : !d;
+}, $ = createContext(void 0), oe = () => useContext($);
+function ne({ addHotkey: e, removeHotkey: r, children: o }) {
+  return /* @__PURE__ */ jsx$1($.Provider, { value: { addHotkey: e, removeHotkey: r }, children: o });
 }
-function N(t, r) {
-  return t && r && typeof t == "object" && typeof r == "object" ? Object.keys(t).length === Object.keys(r).length && // @ts-expect-error TS7053
-  Object.keys(t).reduce((n, f) => n && N(t[f], r[f]), true) : t === r;
+function x(e, r) {
+  return e && r && typeof e == "object" && typeof r == "object" ? Object.keys(e).length === Object.keys(r).length && // @ts-expect-error TS7053
+  Object.keys(e).reduce((o, i) => o && x(e[i], r[i]), true) : e === r;
 }
-const Y = createContext({
+const W = createContext({
   hotkeys: [],
   activeScopes: [],
   // This array has to be empty instead of containing '*' as default, to check if the provider is set or not
@@ -8486,100 +8488,118 @@ const Y = createContext({
   },
   disableScope: () => {
   }
-}), le = () => useContext(Y), he = ({ initiallyActiveScopes: t = ["*"], children: r }) => {
-  const [n, f] = useState(t), [l, u] = useState([]), c = useCallback((e) => {
-    f((s) => s.includes("*") ? [e] : Array.from(/* @__PURE__ */ new Set([...s, e])));
-  }, []), d = useCallback((e) => {
-    f((s) => s.filter((y) => y !== e));
-  }, []), a = useCallback((e) => {
-    f((s) => s.includes(e) ? s.filter((y) => y !== e) : s.includes("*") ? [e] : Array.from(/* @__PURE__ */ new Set([...s, e])));
-  }, []), i = useCallback((e) => {
-    u((s) => [...s, e]);
-  }, []), w2 = useCallback((e) => {
-    u((s) => s.filter((y) => !N(y, e)));
+}), se = () => useContext(W), de = ({ initiallyActiveScopes: e = ["*"], children: r }) => {
+  const [o, i] = useState(e), [u, n] = useState([]), c = useCallback((t) => {
+    i((a) => a.includes("*") ? [t] : Array.from(/* @__PURE__ */ new Set([...a, t])));
+  }, []), y = useCallback((t) => {
+    i((a) => a.filter((l) => l !== t));
+  }, []), d = useCallback((t) => {
+    i((a) => a.includes(t) ? a.filter((l) => l !== t) : a.includes("*") ? [t] : Array.from(/* @__PURE__ */ new Set([...a, t])));
+  }, []), f = useCallback((t) => {
+    n((a) => [...a, t]);
+  }, []), p = useCallback((t) => {
+    n((a) => a.filter((l) => !x(l, t)));
   }, []);
   return /* @__PURE__ */ jsx$1(
-    Y.Provider,
+    W.Provider,
     {
-      value: { activeScopes: n, hotkeys: l, enableScope: c, disableScope: d, toggleScope: a },
-      children: /* @__PURE__ */ jsx$1(fe, { addHotkey: i, removeHotkey: w2, children: r })
+      value: { activeScopes: o, hotkeys: u, enableScope: c, disableScope: y, toggleScope: d },
+      children: /* @__PURE__ */ jsx$1(ne, { addHotkey: f, removeHotkey: p, children: r })
     }
   );
 };
-function se(t) {
+function ie(e) {
   const r = useRef(void 0);
-  return N(r.current, t) || (r.current = t), r.current;
+  return x(r.current, e) || (r.current = e), r.current;
 }
-const F = (t) => {
-  t.stopPropagation(), t.preventDefault(), t.stopImmediatePropagation();
-}, ie = typeof window < "u" ? useLayoutEffect : useEffect;
-function we(t, r, n, f) {
-  const l = useRef(null), u = useRef(false), c = n instanceof Array ? f instanceof Array ? void 0 : f : n, d = B(t) ? t.join(c == null ? void 0 : c.delimiter) : t, a = n instanceof Array ? n : f instanceof Array ? f : void 0, i = useCallback(r, a ?? []), w2 = useRef(i);
-  a ? w2.current = i : w2.current = r;
-  const e = se(c), { activeScopes: s } = le(), y = ae();
-  return ie(() => {
-    if ((e == null ? void 0 : e.enabled) === false || !ue(s, e == null ? void 0 : e.scopes))
+const N = (e) => {
+  e.stopPropagation(), e.preventDefault(), e.stopImmediatePropagation();
+}, ue = typeof window < "u" ? useLayoutEffect : useEffect;
+function fe(e, r, o, i) {
+  const u = useRef(null), n = useRef(false), c = Array.isArray(o) ? Array.isArray(i) ? void 0 : i : o, y = R(e) ? e.join(c?.delimiter) : e, d = Array.isArray(o) ? o : Array.isArray(i) ? i : void 0, f = useCallback(r, d ?? []), p = useRef(f);
+  d ? p.current = f : p.current = r;
+  const t = ie(c), { activeScopes: a } = se(), l = oe();
+  return ue(() => {
+    if (t?.enabled === false || !te(a, t?.scopes))
       return;
-    let k = [], K;
-    const h = (o, M = false) => {
-      var j;
-      if (!(ne(o) && !V(o, e == null ? void 0 : e.enableOnFormTags))) {
-        if (l.current !== null) {
-          const L = l.current.getRootNode();
-          if ((L instanceof Document || L instanceof ShadowRoot) && L.activeElement !== l.current && !l.current.contains(L.activeElement)) {
-            F(o);
+    let g = [], k;
+    const m = (s, B = false) => {
+      if (!(Z(s) && !F(s, t?.enableOnFormTags))) {
+        if (u.current !== null) {
+          const v = u.current.getRootNode();
+          if ((v instanceof Document || v instanceof ShadowRoot) && v.activeElement !== u.current && !u.current.contains(v.activeElement)) {
+            N(s);
             return;
           }
         }
-        (j = o.target) != null && j.isContentEditable && !(e != null && e.enableOnContentEditable) || b(d, e == null ? void 0 : e.delimiter).forEach((L) => {
-          var D, I, p, $;
-          if (L.includes((e == null ? void 0 : e.splitKey) ?? "+") && L.includes((e == null ? void 0 : e.sequenceSplitKey) ?? ">")) {
-            console.warn(`Hotkey ${L} contains both ${(e == null ? void 0 : e.splitKey) ?? "+"} and ${(e == null ? void 0 : e.sequenceSplitKey) ?? ">"} which is not supported.`);
+        s.target?.isContentEditable && !t?.enableOnContentEditable || H(y, t?.delimiter).forEach((v) => {
+          if (v.includes(t?.splitKey ?? "+") && v.includes(t?.sequenceSplitKey ?? ">")) {
+            console.warn(
+              `Hotkey ${v} contains both ${t?.splitKey ?? "+"} and ${t?.sequenceSplitKey ?? ">"} which is not supported.`
+            );
             return;
           }
-          const g = R(L, e == null ? void 0 : e.splitKey, e == null ? void 0 : e.sequenceSplitKey, e == null ? void 0 : e.useKey, e == null ? void 0 : e.description);
-          if (g.isSequence) {
-            K = setTimeout(() => {
-              k = [];
-            }, (e == null ? void 0 : e.sequenceTimeoutMs) ?? 1e3);
-            const P = g.useKey ? o.key : S(o.code);
-            if (J(P.toLowerCase()))
+          const h = P(
+            v,
+            t?.splitKey,
+            t?.sequenceSplitKey,
+            t?.useKey,
+            t?.description
+          );
+          if (h.isSequence) {
+            k = setTimeout(() => {
+              g = [];
+            }, t?.sequenceTimeoutMs ?? 1e3);
+            const C = h.useKey ? s.key : K(s.code);
+            if (D(C.toLowerCase()))
               return;
-            k.push(P);
-            const Z = (D = g.keys) == null ? void 0 : D[k.length - 1];
-            if (P !== Z) {
-              k = [], K && clearTimeout(K);
-              return;
-            }
-            k.length === ((I = g.keys) == null ? void 0 : I.length) && (w2.current(o, g), K && clearTimeout(K), k = []);
-          } else if (oe(o, g, e == null ? void 0 : e.ignoreModifiers) || (p = g.keys) != null && p.includes("*")) {
-            if (($ = e == null ? void 0 : e.ignoreEventWhen) != null && $.call(e, o) || M && u.current)
-              return;
-            if (te(o, g, e == null ? void 0 : e.preventDefault), !re(o, g, e == null ? void 0 : e.enabled)) {
-              F(o);
+            g.push(C);
+            const G = h.keys?.[g.length - 1];
+            if (C !== G) {
+              g = [], k && clearTimeout(k);
               return;
             }
-            w2.current(o, g), M || (u.current = true);
+            g.length === h.keys?.length && (p.current(s, h), k && clearTimeout(k), g = []);
+          } else if (re(s, h, t?.ignoreModifiers) || h.keys?.includes("*")) {
+            if (t?.ignoreEventWhen?.(s) || B && n.current)
+              return;
+            if (V(s, h, t?.preventDefault), !X$1(s, h, t?.enabled)) {
+              N(s);
+              return;
+            }
+            p.current(s, h), B || (n.current = true);
           }
         });
       }
-    }, T = (o) => {
-      o.code !== void 0 && (Q(S(o.code)), ((e == null ? void 0 : e.keydown) === void 0 && (e == null ? void 0 : e.keyup) !== true || e != null && e.keydown) && h(o));
-    }, x = (o) => {
-      o.code !== void 0 && (U(S(o.code)), u.current = false, e != null && e.keyup && h(o, true));
-    }, C = l.current || (c == null ? void 0 : c.document) || document;
-    return C.addEventListener("keyup", x, c == null ? void 0 : c.eventListenerOptions), C.addEventListener("keydown", T, c == null ? void 0 : c.eventListenerOptions), y && b(d, e == null ? void 0 : e.delimiter).forEach(
-      (o) => y.addHotkey(
-        R(o, e == null ? void 0 : e.splitKey, e == null ? void 0 : e.sequenceSplitKey, e == null ? void 0 : e.useKey, e == null ? void 0 : e.description)
+    }, O = (s) => {
+      s.code !== void 0 && (I(K(s.code)), (t?.keydown === void 0 && t?.keyup !== true || t?.keydown) && m(s));
+    }, q = (s) => {
+      s.code !== void 0 && (_(K(s.code)), n.current = false, t?.keyup && m(s, true));
+    }, E = u.current || c?.document || document;
+    return E.addEventListener("keyup", q, c?.eventListenerOptions), E.addEventListener("keydown", O, c?.eventListenerOptions), l && H(y, t?.delimiter).forEach(
+      (s) => l.addHotkey(
+        P(
+          s,
+          t?.splitKey,
+          t?.sequenceSplitKey,
+          t?.useKey,
+          t?.description
+        )
       )
     ), () => {
-      C.removeEventListener("keyup", x, c == null ? void 0 : c.eventListenerOptions), C.removeEventListener("keydown", T, c == null ? void 0 : c.eventListenerOptions), y && b(d, e == null ? void 0 : e.delimiter).forEach(
-        (o) => y.removeHotkey(
-          R(o, e == null ? void 0 : e.splitKey, e == null ? void 0 : e.sequenceSplitKey, e == null ? void 0 : e.useKey, e == null ? void 0 : e.description)
+      E.removeEventListener("keyup", q, c?.eventListenerOptions), E.removeEventListener("keydown", O, c?.eventListenerOptions), l && H(y, t?.delimiter).forEach(
+        (s) => l.removeHotkey(
+          P(
+            s,
+            t?.splitKey,
+            t?.sequenceSplitKey,
+            t?.useKey,
+            t?.description
+          )
         )
-      ), k = [], K && clearTimeout(K);
+      ), g = [], k && clearTimeout(k);
     };
-  }, [d, e, s]), l;
+  }, [y, t, a]), u;
 }
 const botVariants = [
   {
@@ -9318,25 +9338,25 @@ var isClient = typeof document !== "undefined";
 var noop$1 = function noop() {
 };
 var index$1 = isClient ? useLayoutEffect : noop$1;
-function deepEqual(a, b2) {
-  if (a === b2) {
+function deepEqual(a, b) {
+  if (a === b) {
     return true;
   }
-  if (typeof a !== typeof b2) {
+  if (typeof a !== typeof b) {
     return false;
   }
-  if (typeof a === "function" && a.toString() === b2.toString()) {
+  if (typeof a === "function" && a.toString() === b.toString()) {
     return true;
   }
   let length2;
   let i;
   let keys;
-  if (a && b2 && typeof a === "object") {
+  if (a && b && typeof a === "object") {
     if (Array.isArray(a)) {
       length2 = a.length;
-      if (length2 !== b2.length) return false;
+      if (length2 !== b.length) return false;
       for (i = length2; i-- !== 0; ) {
-        if (!deepEqual(a[i], b2[i])) {
+        if (!deepEqual(a[i], b[i])) {
           return false;
         }
       }
@@ -9344,11 +9364,11 @@ function deepEqual(a, b2) {
     }
     keys = Object.keys(a);
     length2 = keys.length;
-    if (length2 !== Object.keys(b2).length) {
+    if (length2 !== Object.keys(b).length) {
       return false;
     }
     for (i = length2; i-- !== 0; ) {
-      if (!{}.hasOwnProperty.call(b2, keys[i])) {
+      if (!{}.hasOwnProperty.call(b, keys[i])) {
         return false;
       }
     }
@@ -9357,13 +9377,13 @@ function deepEqual(a, b2) {
       if (key === "_owner" && a.$$typeof) {
         continue;
       }
-      if (!deepEqual(a[key], b2[key])) {
+      if (!deepEqual(a[key], b[key])) {
         return false;
       }
     }
     return true;
   }
-  return a !== a && b2 !== b2;
+  return a !== a && b !== b;
 }
 function getDPR(element) {
   if (typeof window === "undefined") {
@@ -9509,12 +9529,12 @@ function useFloating(options2) {
     if (!elements.floating) {
       return initialStyles;
     }
-    const x = roundByDPR(elements.floating, data.x);
+    const x2 = roundByDPR(elements.floating, data.x);
     const y = roundByDPR(elements.floating, data.y);
     if (transform) {
       return {
         ...initialStyles,
-        transform: "translate(" + x + "px, " + y + "px)",
+        transform: "translate(" + x2 + "px, " + y + "px)",
         ...getDPR(elements.floating) >= 1.5 && {
           willChange: "transform"
         }
@@ -9522,7 +9542,7 @@ function useFloating(options2) {
     }
     return {
       position: strategy,
-      left: x,
+      left: x2,
       top: y
     };
   }, [strategy, transform, elements.floating, data.x, data.y]);
@@ -9888,22 +9908,22 @@ var transformOrigin = (options2) => ({
     const noArrowAlign = { start: "0%", center: "50%", end: "100%" }[placedAlign];
     const arrowXCenter = (middlewareData.arrow?.x ?? 0) + arrowWidth / 2;
     const arrowYCenter = (middlewareData.arrow?.y ?? 0) + arrowHeight / 2;
-    let x = "";
+    let x2 = "";
     let y = "";
     if (placedSide === "bottom") {
-      x = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
+      x2 = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
       y = `${-arrowHeight}px`;
     } else if (placedSide === "top") {
-      x = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
+      x2 = isArrowHidden ? noArrowAlign : `${arrowXCenter}px`;
       y = `${rects.floating.height + arrowHeight}px`;
     } else if (placedSide === "right") {
-      x = `${-arrowHeight}px`;
+      x2 = `${-arrowHeight}px`;
       y = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`;
     } else if (placedSide === "left") {
-      x = `${rects.floating.width + arrowHeight}px`;
+      x2 = `${rects.floating.width + arrowHeight}px`;
       y = isArrowHidden ? noArrowAlign : `${arrowYCenter}px`;
     }
-    return { data: { x, y } };
+    return { data: { x: x2, y } };
   }
 });
 function getSideAndAlignFromPlacement(placement) {
@@ -10548,7 +10568,7 @@ function getPointsFromRect(rect) {
   ];
 }
 function isPointInPolygon(point, polygon) {
-  const { x, y } = point;
+  const { x: x2, y } = point;
   let inside = false;
   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
     const ii = polygon[i];
@@ -10557,18 +10577,18 @@ function isPointInPolygon(point, polygon) {
     const yi = ii.y;
     const xj = jj.x;
     const yj = jj.y;
-    const intersect = yi > y !== yj > y && x < (xj - xi) * (y - yi) / (yj - yi) + xi;
+    const intersect = yi > y !== yj > y && x2 < (xj - xi) * (y - yi) / (yj - yi) + xi;
     if (intersect) inside = !inside;
   }
   return inside;
 }
 function getHull(points) {
   const newPoints = points.slice();
-  newPoints.sort((a, b2) => {
-    if (a.x < b2.x) return -1;
-    else if (a.x > b2.x) return 1;
-    else if (a.y < b2.y) return -1;
-    else if (a.y > b2.y) return 1;
+  newPoints.sort((a, b) => {
+    if (a.x < b.x) return -1;
+    else if (a.x > b.x) return 1;
+    else if (a.y < b.y) return -1;
+    else if (a.y > b.y) return 1;
     else return 0;
   });
   return getHullPresorted(newPoints);
@@ -11582,8 +11602,8 @@ function ruleset(value, root, parent, index2, offset2, rules, points, type, prop
   var rule = offset2 === 0 ? rules : [""];
   var size2 = sizeof(rule);
   for (var i = 0, j = 0, k = 0; i < index2; ++i)
-    for (var x = 0, y = substr(value, post + 1, post = abs(j = points[i])), z = value; x < size2; ++x)
-      if (z = trim(j > 0 ? rule[x] + " " + y : replace(y, /&\f/g, rule[x])))
+    for (var x2 = 0, y = substr(value, post + 1, post = abs(j = points[i])), z = value; x2 < size2; ++x2)
+      if (z = trim(j > 0 ? rule[x2] + " " + y : replace(y, /&\f/g, rule[x2])))
         props[k++] = z;
   return node(value, root, parent, offset2 === 0 ? RULESET : type, props, children, length2);
 }
@@ -11975,8 +11995,8 @@ var createCache = function createCache2(options2) {
   cache.sheet.hydrate(nodesToHydrate);
   return cache;
 };
-function getDefaultExportFromCjs(x) {
-  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
+function getDefaultExportFromCjs(x2) {
+  return x2 && x2.__esModule && Object.prototype.hasOwnProperty.call(x2, "default") ? x2["default"] : x2;
 }
 var reactIs = { exports: {} };
 var reactIs_production_min = {};
@@ -11992,7 +12012,7 @@ var hasRequiredReactIs_production_min;
 function requireReactIs_production_min() {
   if (hasRequiredReactIs_production_min) return reactIs_production_min;
   hasRequiredReactIs_production_min = 1;
-  var b2 = "function" === typeof Symbol && Symbol.for, c = b2 ? Symbol.for("react.element") : 60103, d = b2 ? Symbol.for("react.portal") : 60106, e = b2 ? Symbol.for("react.fragment") : 60107, f = b2 ? Symbol.for("react.strict_mode") : 60108, g = b2 ? Symbol.for("react.profiler") : 60114, h = b2 ? Symbol.for("react.provider") : 60109, k = b2 ? Symbol.for("react.context") : 60110, l = b2 ? Symbol.for("react.async_mode") : 60111, m = b2 ? Symbol.for("react.concurrent_mode") : 60111, n = b2 ? Symbol.for("react.forward_ref") : 60112, p = b2 ? Symbol.for("react.suspense") : 60113, q = b2 ? Symbol.for("react.suspense_list") : 60120, r = b2 ? Symbol.for("react.memo") : 60115, t = b2 ? Symbol.for("react.lazy") : 60116, v = b2 ? Symbol.for("react.block") : 60121, w2 = b2 ? Symbol.for("react.fundamental") : 60117, x = b2 ? Symbol.for("react.responder") : 60118, y = b2 ? Symbol.for("react.scope") : 60119;
+  var b = "function" === typeof Symbol && Symbol.for, c = b ? Symbol.for("react.element") : 60103, d = b ? Symbol.for("react.portal") : 60106, e = b ? Symbol.for("react.fragment") : 60107, f = b ? Symbol.for("react.strict_mode") : 60108, g = b ? Symbol.for("react.profiler") : 60114, h = b ? Symbol.for("react.provider") : 60109, k = b ? Symbol.for("react.context") : 60110, l = b ? Symbol.for("react.async_mode") : 60111, m = b ? Symbol.for("react.concurrent_mode") : 60111, n = b ? Symbol.for("react.forward_ref") : 60112, p = b ? Symbol.for("react.suspense") : 60113, q = b ? Symbol.for("react.suspense_list") : 60120, r = b ? Symbol.for("react.memo") : 60115, t = b ? Symbol.for("react.lazy") : 60116, v = b ? Symbol.for("react.block") : 60121, w2 = b ? Symbol.for("react.fundamental") : 60117, x2 = b ? Symbol.for("react.responder") : 60118, y = b ? Symbol.for("react.scope") : 60119;
   function z(a) {
     if ("object" === typeof a && null !== a) {
       var u = a.$$typeof;
@@ -12077,7 +12097,7 @@ function requireReactIs_production_min() {
     return z(a) === p;
   };
   reactIs_production_min.isValidElementType = function(a) {
-    return "string" === typeof a || "function" === typeof a || a === e || a === m || a === g || a === f || a === p || a === q || "object" === typeof a && null !== a && (a.$$typeof === t || a.$$typeof === r || a.$$typeof === h || a.$$typeof === k || a.$$typeof === n || a.$$typeof === w2 || a.$$typeof === x || a.$$typeof === y || a.$$typeof === v);
+    return "string" === typeof a || "function" === typeof a || a === e || a === m || a === g || a === f || a === p || a === q || "object" === typeof a && null !== a && (a.$$typeof === t || a.$$typeof === r || a.$$typeof === h || a.$$typeof === k || a.$$typeof === n || a.$$typeof === w2 || a.$$typeof === x2 || a.$$typeof === y || a.$$typeof === v);
   };
   reactIs_production_min.typeOf = z;
   return reactIs_production_min;
@@ -12844,8 +12864,8 @@ function getScrollParent(element) {
   }
   return document.documentElement;
 }
-function easeOutCubic(t, b2, c, d) {
-  return c * ((t = t / d - 1) * t * t + 1) + b2;
+function easeOutCubic(t, b, c, d) {
+  return c * ((t = t / d - 1) * t * t + 1) + b;
 }
 function animatedScrollTo(element, to) {
   var duration = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 200;
@@ -16548,9 +16568,11 @@ const htmlUnescapes = {
   "&lt;": "<",
   "&gt;": ">",
   "&quot;": '"',
-  "&#39;": "'"
+  "&#39;": "'",
+  "&nbsp;": " ",
+  "&#160;": " "
 };
-const reEscapedHtml = /&(?:amp|lt|gt|quot|#(?:0+)?39);/g;
+const reEscapedHtml = /&(?:amp|lt|gt|quot|nbsp|#(?:0+)?(?:39|160));/g;
 const reHasEscapedHtml = RegExp(reEscapedHtml.source);
 const unescape = (str = "") => {
   return reHasEscapedHtml.test(str) ? str.replace(reEscapedHtml, (entity) => htmlUnescapes[entity] || "'") : str;
@@ -16564,7 +16586,6 @@ const joinBase = (path, base) => {
   }
 };
 var ReactParser = class {
-  renderer;
   constructor(options2) {
     this.renderer = options2.renderer;
   }
@@ -16635,10 +16656,9 @@ var ReactParser = class {
         }
         case "hr":
           return this.renderer.hr();
-        default: {
+        default:
           console.warn(`Token with "${token2.type}" type was not found`);
           return null;
-        }
       }
     });
     this.renderer.elIdList.pop();
@@ -16668,10 +16688,9 @@ var ReactParser = class {
           return this.renderer.br();
         case "escape":
           return this.renderer.text(token2.text);
-        default: {
+        default:
           console.warn(`Token with "${token2.type}" type was not found`);
           return null;
-        }
       }
     });
     this.renderer.elIdList.pop();
@@ -16680,9 +16699,9 @@ var ReactParser = class {
 };
 var ReactParser_default = ReactParser;
 var ReactRenderer = class {
-  elIdList = [];
   #options;
   constructor(options2 = {}) {
+    this.elIdList = [];
     const { renderer } = options2;
     this.#options = options2;
     if (renderer && typeof renderer === "object") Object.entries(renderer).forEach(([key, value]) => {
@@ -16829,15 +16848,13 @@ const Markdown$1 = (props) => {
   };
   const markdownString = options2.value ?? options2.children ?? "";
   const tokens = options2.isInline ? marked.Lexer.lexInline(markdownString, lexerOptions) : marked.lexer(markdownString, lexerOptions);
-  const parserOptions = { renderer: new ReactRenderer_default({
+  const parser = new ReactParser_default({ renderer: new ReactRenderer_default({
     renderer: options2.renderer,
     baseURL: options2.baseURL,
     openLinksInNewTab: options2.openLinksInNewTab,
     langPrefix: options2.langPrefix
-  }) };
-  const parser = new ReactParser_default(parserOptions);
-  const children = options2.isInline ? parser.parseInline(tokens) : parser.parse(tokens);
-  return createElement(Fragment$1, null, children);
+  }) });
+  return createElement(Fragment$1, null, options2.isInline ? parser.parseInline(tokens) : parser.parse(tokens));
 };
 var Markdown_default = Markdown$1;
 var src_default = Markdown_default;
@@ -18372,7 +18389,7 @@ const useHandoffs = (id, data, agents, edges, onDataChange) => {
         order: orderedTargets.length
       });
     }
-    return orderedTargets.sort((a, b2) => a.order - b2.order);
+    return orderedTargets.sort((a, b) => a.order - b.order);
   }, [data.handoffs, groupEdges, nestedChats, getTransitionTargetName]);
   const onMoveTransitionTargetUp = useCallback(
     (index2) => {
@@ -19268,7 +19285,7 @@ function createCollection(name) {
       const orderedNodes = Array.from(collectionNode.querySelectorAll(`[${ITEM_DATA_ATTR}]`));
       const items = Array.from(context.itemMap.values());
       const orderedItems = items.sort(
-        (a, b2) => orderedNodes.indexOf(a.ref.current) - orderedNodes.indexOf(b2.ref.current)
+        (a, b) => orderedNodes.indexOf(a.ref.current) - orderedNodes.indexOf(b.ref.current)
       );
       return orderedItems;
     }, [context.collectionRef, context.itemMap]);
@@ -19761,7 +19778,7 @@ SliderBubbleInput.displayName = BUBBLE_INPUT_NAME;
 function getNextSortedValues(prevValues = [], nextValue, atIndex) {
   const nextValues = [...prevValues];
   nextValues[atIndex] = nextValue;
-  return nextValues.sort((a, b2) => a - b2);
+  return nextValues.sort((a, b) => a - b);
 }
 function convertValueToPercentage(value, min, max) {
   const maxSteps = max - min;
@@ -19866,7 +19883,7 @@ const NumberInput = memo((props) => {
         if (!isNaN(newValue)) {
           handleSliderChange([newValue]);
         }
-      } catch (_) {
+      } catch (_2) {
       }
     },
     [forceInt, handleSliderChange]
@@ -20966,8 +20983,8 @@ function requireUseSyncExternalStoreShim_production() {
   if (hasRequiredUseSyncExternalStoreShim_production) return useSyncExternalStoreShim_production;
   hasRequiredUseSyncExternalStoreShim_production = 1;
   var React2 = React__default;
-  function is(x, y) {
-    return x === y && (0 !== x || 1 / x === 1 / y) || x !== x && y !== y;
+  function is(x2, y) {
+    return x2 === y && (0 !== x2 || 1 / x2 === 1 / y) || x2 !== x2 && y !== y;
   }
   var objectIs = "function" === typeof Object.is ? Object.is : is, useState2 = React2.useState, useEffect2 = React2.useEffect, useLayoutEffect3 = React2.useLayoutEffect, useDebugValue = React2.useDebugValue;
   function useSyncExternalStore$2(subscribe, getSnapshot) {
@@ -21024,8 +21041,8 @@ function requireUseSyncExternalStoreShim_development() {
   if (hasRequiredUseSyncExternalStoreShim_development) return useSyncExternalStoreShim_development;
   hasRequiredUseSyncExternalStoreShim_development = 1;
   "production" !== process.env.NODE_ENV && (function() {
-    function is(x, y) {
-      return x === y && (0 !== x || 1 / x === 1 / y) || x !== x && y !== y;
+    function is(x2, y) {
+      return x2 === y && (0 !== x2 || 1 / x2 === 1 / y) || x2 !== x2 && y !== y;
     }
     function useSyncExternalStore$2(subscribe, getSnapshot) {
       didWarnOld18Alpha || void 0 === React2.startTransition || (didWarnOld18Alpha = true, console.error(
@@ -21107,8 +21124,8 @@ function requireWithSelector_production() {
   if (hasRequiredWithSelector_production) return withSelector_production;
   hasRequiredWithSelector_production = 1;
   var React2 = React__default, shim2 = requireShim();
-  function is(x, y) {
-    return x === y && (0 !== x || 1 / x === 1 / y) || x !== x && y !== y;
+  function is(x2, y) {
+    return x2 === y && (0 !== x2 || 1 / x2 === 1 / y) || x2 !== x2 && y !== y;
   }
   var objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore = shim2.useSyncExternalStore, useRef2 = React2.useRef, useEffect2 = React2.useEffect, useMemo2 = React2.useMemo, useDebugValue = React2.useDebugValue;
   withSelector_production.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual2) {
@@ -21179,8 +21196,8 @@ function requireWithSelector_development() {
   if (hasRequiredWithSelector_development) return withSelector_development;
   hasRequiredWithSelector_development = 1;
   "production" !== process.env.NODE_ENV && (function() {
-    function is(x, y) {
-      return x === y && (0 !== x || 1 / x === 1 / y) || x !== x && y !== y;
+    function is(x2, y) {
+      return x2 === y && (0 !== x2 || 1 / x2 === 1 / y) || x2 !== x2 && y !== y;
     }
     "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
     var React2 = React__default, shim2 = requireShim(), objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore = shim2.useSyncExternalStore, useRef2 = React2.useRef, useEffect2 = React2.useEffect, useMemo2 = React2.useMemo, useDebugValue = React2.useDebugValue;
@@ -21399,14 +21416,14 @@ const calculateNewNodePosition = (rfInstance, flowWrapper, currentNodesCount, en
   const flowWrapperRect = flowWrapper.getBoundingClientRect();
   const canvasWidth = flowWrapperRect.width / zoom;
   const maxNodesPerRow = Math.floor(canvasWidth / (entriesDistance.x * 1.1));
-  const x = currentNodesCount % maxNodesPerRow * entriesDistance.x;
+  const x2 = currentNodesCount % maxNodesPerRow * entriesDistance.x;
   let y = Math.floor(currentNodesCount / maxNodesPerRow) * entriesDistance.y;
   if (y === 0) {
     y += 10;
   } else {
     y -= 5;
   }
-  return { x, y };
+  return { x: x2, y };
 };
 const getNewNodePosition = (currentNodesCount, flowId, rfInstance, entriesDistance = { x: 200, y: 140 }) => {
   const flowRoot = getFlowRoot(flowId);
@@ -21686,9 +21703,9 @@ const updateNestedEdges = (get, set) => {
 };
 const resetSyncEdgeOrders = (get, set) => {
   const edges = get().edges;
-  const sorted = edges.slice().sort((a, b2) => {
+  const sorted = edges.slice().sort((a, b) => {
     const aOrder = a.data?.order ?? -1;
-    const bOrder = b2.data?.order ?? -1;
+    const bOrder = b.data?.order ?? -1;
     return aOrder - bOrder;
   });
   const usedOrders = /* @__PURE__ */ new Set();
@@ -22711,7 +22728,7 @@ class WaldiezFlowStore {
         remainingEdges.push(edge);
       }
     });
-    const sortedEdgesUsed = usedEdges.sort((a, b2) => (a.data?.order ?? 0) - (b2.data?.order ?? 0));
+    const sortedEdgesUsed = usedEdges.sort((a, b) => (a.data?.order ?? 0) - (b.data?.order ?? 0));
     return { used: sortedEdgesUsed, remaining: remainingEdges };
   };
   /**
@@ -24018,9 +24035,9 @@ const TimelineChart = ({
   const xScale = (value) => value / maxTime * chartWidth;
   const yScale = (value) => chartHeight - value / maxCost * chartHeight;
   const costLinePath = data.cost_timeline.map((d, i) => {
-    const x = xScale(d.time);
+    const x2 = xScale(d.time);
     const y = yScale(d.cumulative_cost);
-    return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+    return `${i === 0 ? "M" : "L"} ${x2} ${y}`;
   }).join(" ");
   const handleMouseMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -24496,8 +24513,8 @@ const StepByStepView = ({ flowId, stepByStep, isDarkMode }) => {
     const max = 500;
     const start = Math.max(0, raw.length - max);
     return raw.slice(start).filter((e) => e && !["debug", "print", "raw", "timeline"].includes(String(e?.type))).map((e) => {
-      const x = e;
-      const data = x.event ?? x.data ?? x.message ?? x;
+      const x2 = e;
+      const data = x2.event ?? x2.data ?? x2.message ?? x2;
       return Array.isArray(data) && data.length === 1 ? data[0] : data;
     }).reverse();
   }, [stepByStep?.eventHistory]);
@@ -24539,10 +24556,8 @@ const StepByStepView = ({ flowId, stepByStep, isDarkMode }) => {
   }
   const mayClose = canClose || !!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error";
   const currentEvent = stepByStep?.currentEvent;
-  const eventAgents = currentEvent?.agents;
-  const currentSender = eventAgents?.sender;
-  const currentRecipient = eventAgents?.recipient;
-  const haveAgent = Boolean(currentSender || currentRecipient);
+  const agents = currentEvent?.agents?.all;
+  const haveAgents = Array.isArray(agents) && agents.length > 0;
   const headerLeft = /* @__PURE__ */ jsxs("div", { className: "header", children: [
     /* @__PURE__ */ jsx$1(FaBug, { className: "icon-bug", size: 18 }),
     stepByStep.timeline && /* @__PURE__ */ jsx$1(
@@ -24628,7 +24643,7 @@ const StepByStepView = ({ flowId, stepByStep, isDarkMode }) => {
                 ]
               }
             ),
-            currentSender ? detailsViewActive ? /* @__PURE__ */ jsxs(
+            haveAgents ? detailsViewActive ? /* @__PURE__ */ jsxs(
               "button",
               {
                 className: "btn",
@@ -24677,10 +24692,7 @@ const StepByStepView = ({ flowId, stepByStep, isDarkMode }) => {
               /* @__PURE__ */ jsx$1("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
             ] })
           ] }),
-          haveAgent && detailsViewActive ? /* @__PURE__ */ jsxs("div", { className: "event-sender-details", children: [
-            currentSender && /* @__PURE__ */ jsx$1(AgentEventInfo, { agentData: currentSender, darkMode: isDarkMode }),
-            currentRecipient && /* @__PURE__ */ jsx$1(AgentEventInfo, { agentData: currentRecipient, darkMode: isDarkMode })
-          ] }) : reducedHistory.length > 0 ? /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
+          haveAgents && detailsViewActive ? /* @__PURE__ */ jsx$1("div", { className: "event-sender-details", children: agents.map((agent) => /* @__PURE__ */ jsx$1(AgentEventInfo, { agentData: agent, darkMode: isDarkMode }, agent.id)) }) : reducedHistory.length > 0 ? /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
         ] })
       }
     ),
@@ -25203,14 +25215,14 @@ const useDnD = (onNewAgent) => {
   }, []);
   const getDroppedAgentParent = useCallback(
     (position2) => {
-      const { x, y } = position2;
-      const nodeRect = { x, y, width: 100, height: 100 };
+      const { x: x2, y } = position2;
+      const nodeRect = { x: x2, y, width: 100, height: 100 };
       try {
         const intersectingNodes = getIntersectingNodes(nodeRect);
         if (intersectingNodes.length > 0) {
           return getIntersectingParent(intersectingNodes);
         }
-      } catch (_) {
+      } catch (_2) {
       }
       return void 0;
     },
@@ -25299,7 +25311,7 @@ const useDnD = (onNewAgent) => {
         if (intersections.length === 1) {
           return intersections[0];
         }
-      } catch (_) {
+      } catch (_2) {
       }
       return void 0;
     },
@@ -25362,7 +25374,7 @@ const useKeys = (flowId, onSave) => {
     return clientRect.width > 0 && clientRect.height > 0;
   };
   {
-    we(
+    fe(
       "mod+z",
       () => {
         if (pastStates.length > 0) {
@@ -25373,7 +25385,7 @@ const useKeys = (flowId, onSave) => {
       },
       { scopes: flowId }
     );
-    we(
+    fe(
       ["shift+mod+z", "mod+y"],
       () => {
         if (futureStates.length > 0) {
@@ -25386,7 +25398,7 @@ const useKeys = (flowId, onSave) => {
     );
   }
   if (listenForSave) {
-    we(
+    fe(
       "mod+s",
       (event) => {
         if (isFlowVisible()) {
@@ -27261,7 +27273,7 @@ const useStepRunModal = (_props) => {
     [agents]
   );
   const eventOptions = useMemo(
-    () => Object.entries(eventDescriptions).filter(([v]) => v !== "input_request").map(([value, _]) => ({
+    () => Object.entries(eventDescriptions).filter(([v]) => v !== "input_request").map(([value, _2]) => ({
       label: value,
       value
     })),
@@ -27367,7 +27379,7 @@ const useStepRunModal = (_props) => {
   const removeBreakpoint = useCallback((index2) => {
     setBreakpointSource("custom");
     setBreakpoints((prev2) => {
-      const updated = prev2.filter((_, i) => i !== index2);
+      const updated = prev2.filter((_2, i) => i !== index2);
       if (updated.length === 0) {
         return [{ type: "all", description: "Break on all events (default)" }];
       }
@@ -27646,7 +27658,7 @@ const StepRunModal = memo((props) => {
                 className: `${isDark ? "bg-[#222] border-[#444]" : "bg-gray-50"} p-4 border rounded-lg`,
                 children: [
                   /* @__PURE__ */ jsx$1("h4", { className: `font-medium ${isDark ? "text-white" : "text-gray-900"} mb-3`, children: "Break on Agents" }),
-                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`, children: "Stop execution for any event from/to specific agents" }),
+                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`, children: "Stop execution for any event from specific agents" }),
                   /* @__PURE__ */ jsx$1(
                     Select,
                     {
@@ -27668,7 +27680,7 @@ const StepRunModal = memo((props) => {
                 className: `${isDark ? "bg-[#222] border-[#444]" : "bg-gray-50"} p-4 border rounded-lg`,
                 children: [
                   /* @__PURE__ */ jsx$1("h4", { className: `font-medium ${isDark ? "text-white" : "text-gray-900"} mb-3`, children: "Break on Agent + Event" }),
-                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`, children: "Stop execution for a specific event from/to a specific agent" }),
+                  /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-gray-300" : "text-gray-600"} mb-3`, children: "Stop execution for a specific event from a specific agent" }),
                   /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-3", children: [
                     /* @__PURE__ */ jsx$1(
                       Select,
@@ -28390,65 +28402,65 @@ function requireReactFastCompare() {
   var hasMap = typeof Map === "function";
   var hasSet = typeof Set === "function";
   var hasArrayBuffer = typeof ArrayBuffer === "function" && !!ArrayBuffer.isView;
-  function equal(a, b2) {
-    if (a === b2) return true;
-    if (a && b2 && typeof a == "object" && typeof b2 == "object") {
-      if (a.constructor !== b2.constructor) return false;
+  function equal(a, b) {
+    if (a === b) return true;
+    if (a && b && typeof a == "object" && typeof b == "object") {
+      if (a.constructor !== b.constructor) return false;
       var length2, i, keys;
       if (Array.isArray(a)) {
         length2 = a.length;
-        if (length2 != b2.length) return false;
+        if (length2 != b.length) return false;
         for (i = length2; i-- !== 0; )
-          if (!equal(a[i], b2[i])) return false;
+          if (!equal(a[i], b[i])) return false;
         return true;
       }
       var it;
-      if (hasMap && a instanceof Map && b2 instanceof Map) {
-        if (a.size !== b2.size) return false;
+      if (hasMap && a instanceof Map && b instanceof Map) {
+        if (a.size !== b.size) return false;
         it = a.entries();
         while (!(i = it.next()).done)
-          if (!b2.has(i.value[0])) return false;
+          if (!b.has(i.value[0])) return false;
         it = a.entries();
         while (!(i = it.next()).done)
-          if (!equal(i.value[1], b2.get(i.value[0]))) return false;
+          if (!equal(i.value[1], b.get(i.value[0]))) return false;
         return true;
       }
-      if (hasSet && a instanceof Set && b2 instanceof Set) {
-        if (a.size !== b2.size) return false;
+      if (hasSet && a instanceof Set && b instanceof Set) {
+        if (a.size !== b.size) return false;
         it = a.entries();
         while (!(i = it.next()).done)
-          if (!b2.has(i.value[0])) return false;
+          if (!b.has(i.value[0])) return false;
         return true;
       }
-      if (hasArrayBuffer && ArrayBuffer.isView(a) && ArrayBuffer.isView(b2)) {
+      if (hasArrayBuffer && ArrayBuffer.isView(a) && ArrayBuffer.isView(b)) {
         length2 = a.length;
-        if (length2 != b2.length) return false;
+        if (length2 != b.length) return false;
         for (i = length2; i-- !== 0; )
-          if (a[i] !== b2[i]) return false;
+          if (a[i] !== b[i]) return false;
         return true;
       }
-      if (a.constructor === RegExp) return a.source === b2.source && a.flags === b2.flags;
-      if (a.valueOf !== Object.prototype.valueOf && typeof a.valueOf === "function" && typeof b2.valueOf === "function") return a.valueOf() === b2.valueOf();
-      if (a.toString !== Object.prototype.toString && typeof a.toString === "function" && typeof b2.toString === "function") return a.toString() === b2.toString();
+      if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
+      if (a.valueOf !== Object.prototype.valueOf && typeof a.valueOf === "function" && typeof b.valueOf === "function") return a.valueOf() === b.valueOf();
+      if (a.toString !== Object.prototype.toString && typeof a.toString === "function" && typeof b.toString === "function") return a.toString() === b.toString();
       keys = Object.keys(a);
       length2 = keys.length;
-      if (length2 !== Object.keys(b2).length) return false;
+      if (length2 !== Object.keys(b).length) return false;
       for (i = length2; i-- !== 0; )
-        if (!Object.prototype.hasOwnProperty.call(b2, keys[i])) return false;
+        if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
       if (hasElementType && a instanceof Element) return false;
       for (i = length2; i-- !== 0; ) {
         if ((keys[i] === "_owner" || keys[i] === "__v" || keys[i] === "__o") && a.$$typeof) {
           continue;
         }
-        if (!equal(a[keys[i]], b2[keys[i]])) return false;
+        if (!equal(a[keys[i]], b[keys[i]])) return false;
       }
       return true;
     }
-    return a !== a && b2 !== b2;
+    return a !== a && b !== b;
   }
-  reactFastCompare = function isEqual2(a, b2) {
+  reactFastCompare = function isEqual2(a, b) {
     try {
-      return equal(a, b2);
+      return equal(a, b);
     } catch (error) {
       if ((error.message || "").match(/stack|recursion/i)) {
         console.warn("react-fast-compare cannot handle circular refs");
@@ -30113,7 +30125,7 @@ const useWaldiezNodeAgent = (id) => {
     e.stopPropagation();
     setIsDragging(false);
   }, []);
-  const onDrop = useCallback((_) => {
+  const onDrop = useCallback((_2) => {
     setIsDragging(false);
   }, []);
   return {
@@ -32263,7 +32275,7 @@ const useWaldiezAgentNestedChats = (props) => {
     (index2) => {
       const newChat = {
         ...chat,
-        messages: chat.messages.filter((_, i) => i !== index2)
+        messages: chat.messages.filter((_2, i) => i !== index2)
       };
       onDataChange({
         nestedChats: [newChat]
@@ -32997,7 +33009,7 @@ const useWaldiezAgentRagUserRetrieveConfig = (props) => {
         setRetrieveConfigConfigData({
           nResults: isNaN(value) || value < 1 ? null : value
         });
-      } catch (_) {
+      } catch (_2) {
         setRetrieveConfigConfigData({ nResults: null });
       }
     },
@@ -33014,7 +33026,7 @@ const useWaldiezAgentRagUserRetrieveConfig = (props) => {
         setRetrieveConfigConfigData({
           distanceThreshold: isNaN(value) || value < 0 ? null : value
         });
-      } catch (_) {
+      } catch (_2) {
         setRetrieveConfigConfigData({ distanceThreshold: null });
       }
     },
@@ -33219,7 +33231,7 @@ const useWaldiezAgentRagUserTextSplit = (props) => {
           return;
         }
         setRetrieveConfigConfigData({ chunkTokenSize: value });
-      } catch (_) {
+      } catch (_2) {
       }
     },
     [setRetrieveConfigConfigData]
@@ -33236,7 +33248,7 @@ const useWaldiezAgentRagUserTextSplit = (props) => {
           return;
         }
         setRetrieveConfigConfigData({ contextMaxTokens: value });
-      } catch (_) {
+      } catch (_2) {
       }
     },
     [setRetrieveConfigConfigData]
@@ -33952,7 +33964,7 @@ const useWaldiezAgentTools = (props) => {
   }, [selectedTool, selectedExecutor, data.tools, onDataChange]);
   const onRemoveTool = useCallback(
     (index2) => {
-      const newTools = data.tools.filter((_, i) => i !== index2);
+      const newTools = data.tools.filter((_2, i) => i !== index2);
       onDataChange({ tools: newTools });
     },
     [data.tools, onDataChange]
@@ -35798,7 +35810,7 @@ const awsSignatureUtils = {
         host: parsed.host,
         path: parsed.pathname
       };
-    } catch (_) {
+    } catch (_2) {
       throw new Error(`Invalid URL: ${url}`);
     }
   },
@@ -36142,7 +36154,7 @@ const parseBedrockResponse = async (response, modelName, region) => {
       message: "API error",
       details: `Error (${response.status}): ${errorData}`
     };
-  } catch (_) {
+  } catch (_2) {
     return {
       success: false,
       message: "API error",
@@ -36654,7 +36666,7 @@ const useModelModalBasicTab = (props) => {
 const ModelSelector = memo((props) => {
   const { ref, onChange: onChange2 } = props;
   const groupedOptions = useMemo(
-    () => Object.entries(predefinedModels).filter(([_, models]) => models.length > 0).map(([apiType, models]) => ({
+    () => Object.entries(predefinedModels).filter(([_2, models]) => models.length > 0).map(([apiType, models]) => ({
       label: apiType,
       options: models.map((model) => ({
         label: model.label,
@@ -36737,7 +36749,7 @@ const WaldiezNodeModelModalBasicTab = memo(
       [onDataChange]
     );
     const usefulLinks = useMemo(
-      () => /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: Object.entries(modelLinks).filter(([_, link]) => link.length > 0).map(([key, link]) => /* @__PURE__ */ jsxs("div", { className: "flex-row margin-bottom-5", children: [
+      () => /* @__PURE__ */ jsx$1("div", { className: "flex flex-col", children: Object.entries(modelLinks).filter(([_2, link]) => link.length > 0).map(([key, link]) => /* @__PURE__ */ jsxs("div", { className: "flex-row margin-bottom-5", children: [
         /* @__PURE__ */ jsxs("span", { className: "flex-shrink-0", children: [
           capitalize(key),
           " models:  "
@@ -38491,7 +38503,7 @@ const EditFlowModalModalTabOther = (props) => {
     try {
       const cacheSeed2 = parseInt(e.target.value);
       onDataChange({ cacheSeed: cacheSeed2 });
-    } catch (_) {
+    } catch (_2) {
     }
   };
   const viewLabelInfo = () => /* @__PURE__ */ jsxs("div", { children: [
@@ -39151,7 +39163,7 @@ const Waldiez = (props) => {
       loader.config({ paths: { vs: monacoVsPath } });
     }
   }, [monacoVsPath]);
-  return /* @__PURE__ */ jsx$1(SnackbarProvider, { children: /* @__PURE__ */ jsx$1(WaldiezThemeProvider, { children: /* @__PURE__ */ jsx$1(ErrorBoundary, { fallbackRender, children: /* @__PURE__ */ jsx$1(he, { initiallyActiveScopes: [flowId], children: /* @__PURE__ */ jsx$1(ReactFlowProvider, { children: /* @__PURE__ */ jsx$1(SidebarProvider, { children: /* @__PURE__ */ jsx$1(
+  return /* @__PURE__ */ jsx$1(SnackbarProvider, { children: /* @__PURE__ */ jsx$1(WaldiezThemeProvider, { children: /* @__PURE__ */ jsx$1(ErrorBoundary, { fallbackRender, children: /* @__PURE__ */ jsx$1(de, { initiallyActiveScopes: [flowId], children: /* @__PURE__ */ jsx$1(ReactFlowProvider, { children: /* @__PURE__ */ jsx$1(SidebarProvider, { children: /* @__PURE__ */ jsx$1(
     WaldiezProvider,
     {
       ...props,

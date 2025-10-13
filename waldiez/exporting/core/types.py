@@ -25,7 +25,7 @@ class _NoExtrasType:
         return "<NoExtras>"
 
 
-NoExtras = _NoExtrasType()
+NoExtras = _NoExtrasType()  # pylint: disable=invalid-name
 
 
 # Core Data Structures

@@ -15,6 +15,7 @@ exclude =
     .git,
     .venv,
     .tox,
+    .hatch,
     .local,
     node_modules,
     __pycache__,

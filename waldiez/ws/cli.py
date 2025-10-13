@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
-# pylint: disable=too-many-locals,unused-import
+# pylint: disable=too-many-locals,unused-import,invalid-name
 # pyright: reportUnusedImport=false,reportConstantRedefinition=false
 # pyright: reportUnusedParameter=false, reportCallInDefaultInitializer=false
 
