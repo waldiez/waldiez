@@ -13,6 +13,7 @@
 import asyncio
 import threading
 import traceback
+import uuid
 from collections import deque
 from collections.abc import Iterable
 from pathlib import Path
@@ -21,7 +22,6 @@ from typing import TYPE_CHECKING, Any, Union
 from pydantic import ValidationError
 from typing_extensions import override
 
-from waldiez.io.utils import DEBUG_INPUT_PROMPT, gen_id
 from waldiez.models.waldiez import Waldiez
 from waldiez.running.step_by_step.command_handler import CommandHandler
 from waldiez.running.step_by_step.events_processor import EventProcessor
@@ -56,6 +56,21 @@ MESSAGES = {
         "<Waldiez step-by-step> - Workflow execution failed: {error}"
     ),
 }
+DEBUG_INPUT_PROMPT = (
+    # cspell: disable-next-line
+    "[Step] (c)ontinue, (r)un, (q)uit, (i)nfo, (h)elp, (st)ats: "
+)
+
+
+def gen_id() -> str:
+    """Generate a new id.
+
+    Returns
+    -------
+    str
+        The new id.
+    """
+    return str(uuid.uuid4())
 
 
 # pylint: disable=too-many-instance-attributes
