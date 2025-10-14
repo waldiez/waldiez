@@ -248,32 +248,64 @@ class ExportOrchestrator:
 
     def _get_the_known_agents_string(self) -> str:
         """Get the _get_known_agents method."""
-        content = """
+        content: str = """
+
+def _check_for_extra_agents(agent: ConversableAgent) -> list[ConversableAgent]:
+    _extra_agents: list[ConversableAgent] = []
+    _agent_cls_name = agent.__class__.__name__
+    if _agent_cls_name == "CaptainAgent":
+        _assistant_agent = getattr(agent, "assistant", None)
+        if _assistant_agent and _assistant_agent not in _extra_agents:
+            _extra_agents.append(_assistant_agent)
+        _executor_agent = getattr(agent, "executor", None)
+        if _executor_agent and _executor_agent not in _extra_agents:
+            _extra_agents.append(_executor_agent)
+    return _extra_agents
+
+
+def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
+    _extra_agents: list[ConversableAgent] = []
+    _group_chat = getattr(agent, "_groupchat", None)
+    if _group_chat:
+        _chat_agents = getattr(_group_chat, "agents", [])
+        if isinstance(_chat_agents, list):
+            for _group_member in _chat_agents:
+                if _group_member not in _extra_agents:
+                    _extra_agents.append(_group_member)
+    _manager = getattr(agent, "_group_manager", None)
+    if _manager:
+        if _manager not in _extra_agents:
+            _extra_agents.append(_manager)
+        for _group_member in _check_for_group_members(_manager):
+            if _group_member not in _extra_agents:
+                _extra_agents.append(_group_member)
+    return _extra_agents
+
+
 def _get_known_agents() -> list[ConversableAgent]:
-    _known_agents: list[ConversableAgent] = ["""
-        group_manager: WaldiezGroupManager | None = None
+    _known_agents: list[ConversableAgent] = []"""
+        # group_manager: WaldiezGroupManager | None = None
         for agent in self.waldiez.agents:
             if (
                 isinstance(agent, WaldiezGroupManager)
                 and self.waldiez.is_group_pattern_based
             ):
-                group_manager = agent
-            else:
-                agent_name = self.agent_names.get(agent.id)
-                if agent_name:
-                    content += "    " + agent_name + ",\n"
-        content += "]\n"
-        if group_manager:
-            manager_name = self.agent_names.get(group_manager.id)
-            if manager_name:
-                pattern_name = f"{manager_name}_pattern"
+                # not defined in agents
+                # we'll get it from "._group_manager"
+                # if found in the rest of the agents.
+                continue
+            agent_name = self.agent_names.get(agent.id)
+            if agent_name:
                 content += f"""
-    for _group_member in {pattern_name}.agents:
+    if {agent_name} not in _known_agents:
+        _known_agents.append({agent_name})
+    _known_agents.append({agent_name})
+    for _group_member in _check_for_group_members({agent_name}):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-        _manager = getattr(_group_member, "_group_manager", None)
-        if _manager and _manager not in _known_agents:
-            _known_agents.append(_manager)
+    for _extra_agent in _check_for_extra_agents({agent_name}):
+        if _extra_agent not in _known_agents:
+            _known_agents.append(_extra_agent)
 """
         content += "    return _known_agents\n\n"
         return content

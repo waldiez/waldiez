@@ -51,7 +51,7 @@ def generate_header(
             requirements=requirements,
             tags=tags,
         )
-    return _get_ipynb_heeader(
+    return _get_ipynb_header(
         name=name,
         description=description,
         requirements=requirements,
@@ -59,7 +59,7 @@ def generate_header(
     )
 
 
-def _get_ipynb_heeader(
+def _get_ipynb_header(
     name: str,
     description: str,
     requirements: list[str],
