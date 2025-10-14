@@ -17,6 +17,9 @@ jobs:
   publish_waldiez_to_npm:
     name: Publish React 🌐 distribution 📦 to NPM
     runs-on: ubuntu-latest
+    environment:
+      name: npmi
+      url: https://www.npmjs.com/package/@waldiez/react
     steps:
       - uses: actions/checkout@v5.0.0
         with:
@@ -30,6 +33,7 @@ jobs:
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           bun install
           bun clean
@@ -45,6 +49,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           bun install
           bun clean
