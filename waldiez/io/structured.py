@@ -3,7 +3,8 @@
 
 # pyright: reportMissingTypeStubs=false,reportUnknownVariableType=false
 # pyright: reportUnknownArgumentType=false,reportArgumentType=false
-# pyright: reportUnknownMemberType=false
+# pyright: reportUnknownMemberType=false,reportAttributeAccessIssue=false
+# pyright: reportPrivateImportUsage=false
 
 """Structured I/O stream for JSON-based communication over stdin/stdout."""
 
@@ -195,12 +196,69 @@ class StructuredIOStream(IOStream):
         ).model_dump(mode="json")
         print(json.dumps(payload, default=str), flush=True)
 
+    @staticmethod
+    def in_ipykernel() -> bool:
+        """Check if we are in an ipykernel.
+
+        Returns
+        -------
+        bool
+            True if inside ipykernel, false otherwise.
+        """
+        try:
+            # pylint: disable=import-outside-toplevel
+            from IPython import get_ipython  # type: ignore
+
+            ip = get_ipython()  # type: ignore
+            # Check if we're in IPython AND have a kernel
+            # (not just terminal IPython)
+            return bool(ip) and getattr(ip, "kernel", None) is not None
+        except (ImportError, AttributeError):
+            return False
+
+    @staticmethod
+    def in_ipykernel_main_thread() -> bool:
+        """Check if we are in ipykernel's main thread.
+
+        Returns
+        -------
+        bool
+            True if we are in ipykernel's main thread.
+        """
+        return (
+            StructuredIOStream.in_ipykernel()
+            and threading.current_thread() is threading.main_thread()
+        )
+
+    def _read_direct_input(
+        self,
+        prompt: str,
+        password: bool,
+        request_id: str,
+    ) -> str:
+        try:
+            return (
+                getpass(prompt).strip() if password else input(prompt).strip()
+            )
+        except EOFError:
+            return ""
+        except BaseException as e:
+            self._send_error_message(request_id, str(e))
+            return ""
+
     def _read_user_input(
         self,
         prompt: str,
         password: bool,
         request_id: str,
     ) -> str:
+        if self.in_ipykernel_main_thread():
+            # direct input/getpass if inside jupyter/ipykernel
+            # no timeout though :(
+            return self._read_direct_input(
+                prompt, password=password, request_id=request_id
+            )
+        #
         input_queue: queue.Queue[str] = queue.Queue()
 
         def read_input() -> None:
