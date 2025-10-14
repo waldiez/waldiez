@@ -160,7 +160,6 @@ dev = [
   "flake8==7.3.0",
   "jsonschema==4.25.1",
   "jupyterlab==4.4.9",
-  "ipykernel<7",
   "notebook-shim>=0.2.4",
   "fastjsonschema>=2.21.2",
   "jupyter_server==2.17.0",
