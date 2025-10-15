@@ -11,8 +11,8 @@ import { MdTimeline } from "react-icons/md";
 import { nanoid } from "nanoid";
 
 import { FloatingPanel } from "@waldiez/components/floatingPanel";
-import { AgentEventInfo } from "@waldiez/components/stepByStep/agentInfo";
 import { EventConsole } from "@waldiez/components/stepByStep/console";
+import { EventAgentsList } from "@waldiez/components/stepByStep/eventAgentsList";
 import { useAgentClassUpdates } from "@waldiez/components/stepByStep/hooks";
 import { type WaldiezStepByStep, controlToResponse } from "@waldiez/components/stepByStep/types";
 import { TimelineModal } from "@waldiez/components/timeline/timelineModal";
@@ -287,15 +287,7 @@ export const StepByStepView: FC<{
                         </div>
                     )}
                     {haveAgents && detailsViewActive ? (
-                        <div className="event-sender-details">
-                            {agents.map((agent, index) => (
-                                <AgentEventInfo
-                                    key={`agent-${index}`}
-                                    agentData={agent}
-                                    darkMode={isDarkMode}
-                                />
-                            ))}
-                        </div>
+                        <EventAgentsList agents={agents} darkMode={isDarkMode} />
                     ) : reducedHistory.length > 0 ? (
                         <div className="event-history">
                             <EventConsole events={reducedHistory} autoScroll />

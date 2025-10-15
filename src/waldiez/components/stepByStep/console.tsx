@@ -4,6 +4,8 @@
  */
 import { type FC, useEffect, useLayoutEffect, useRef, useState } from "react";
 
+import { getContentString } from "@waldiez/components/stepByStep/utils";
+
 /**
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
@@ -113,27 +115,6 @@ const ResumeSpinner = () => {
     ) : (
         <div>✅ Resume complete!</div>
     );
-};
-
-const getContentString: (data: any) => string = (data: any) => {
-    if (typeof data === "string") {
-        return data;
-    }
-    if (Array.isArray(data)) {
-        return data.map((entry: any) => getContentString(entry)).join(", ");
-    }
-    if (typeof data === "object") {
-        if ("type" in data) {
-            if (data.type === "text" && "text" in data) {
-                return getContentString(data.text);
-            }
-        }
-        if ("content" in data) {
-            return getContentString(data.content);
-        }
-        return JSON.stringify(data);
-    }
-    return String(data);
 };
 
 const getParticipants = (ev: WaldiezEvent) => {

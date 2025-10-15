@@ -31,44 +31,59 @@ describe("AgentEventInfo", () => {
         },
     };
 
+    const mockStats = {
+        count: 1,
+        lastActivity: "Hello",
+    };
+
     describe("rendering", () => {
         it("should render agent name", () => {
-            render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
+            render(<AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={false} />);
             expect(screen.getByText("TestAgent")).toBeInTheDocument();
         });
 
-        it("should render message count", () => {
-            render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
+        it("should render message count from stats", () => {
+            render(<AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={false} />);
             expect(screen.getByText("1")).toBeInTheDocument();
         });
 
+        it("should render different activity count", () => {
+            const stats = { count: 5, lastActivity: "Test" };
+            render(<AgentEventInfo agentData={mockAgentData} stats={stats} darkMode={false} />);
+            expect(screen.getByText("5")).toBeInTheDocument();
+        });
+
         it("should render cost when present", () => {
-            render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
+            render(<AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={false} />);
             expect(screen.getByText("$0.0012")).toBeInTheDocument();
         });
 
         it("should not render cost when zero", () => {
             const noCostData = { ...mockAgentData, cost: { total: { total_cost: 0 } } };
-            render(<AgentEventInfo agentData={noCostData} darkMode={false} />);
+            render(<AgentEventInfo agentData={noCostData} stats={mockStats} darkMode={false} />);
             expect(screen.queryByText("$0.0000")).not.toBeInTheDocument();
         });
 
         it("should render with Unknown Agent when name is missing", () => {
             const noNameData = { ...mockAgentData, name: undefined };
-            render(<AgentEventInfo agentData={noNameData} darkMode={false} />);
+            render(<AgentEventInfo agentData={noNameData} stats={mockStats} darkMode={false} />);
             expect(screen.getByText("Unknown Agent")).toBeInTheDocument();
         });
     });
 
     describe("dark mode", () => {
         it("should apply dark mode styles", () => {
-            const { container } = render(<AgentEventInfo agentData={mockAgentData} darkMode={true} />);
+            const { container } = render(
+                <AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={true} />,
+            );
             const card = container.querySelector(".border");
             expect(card).toHaveClass("border-gray-800");
         });
 
         it("should apply light mode styles", () => {
-            const { container } = render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
+            const { container } = render(
+                <AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={false} />,
+            );
             const card = container.querySelector(".border");
             expect(card).toHaveClass("border-gray-200");
         });
@@ -76,14 +91,14 @@ describe("AgentEventInfo", () => {
 
     describe("expansion", () => {
         it("should start collapsed", () => {
-            render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
+            render(<AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={false} />);
             expect(screen.queryByText("Role")).not.toBeInTheDocument();
             expect(screen.queryByText("Last Activity")).not.toBeInTheDocument();
         });
 
         it("should expand when clicked", async () => {
             const user = userEvent.setup();
-            render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
+            render(<AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
 
@@ -93,7 +108,7 @@ describe("AgentEventInfo", () => {
 
         it("should collapse when clicked again", async () => {
             const user = userEvent.setup();
-            render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
+            render(<AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             expect(screen.getByText("Role")).toBeInTheDocument();
@@ -106,7 +121,7 @@ describe("AgentEventInfo", () => {
     describe("system message", () => {
         it("should display system message when expanded", async () => {
             const user = userEvent.setup();
-            render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
+            render(<AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             expect(screen.getByText("You are a test agent")).toBeInTheDocument();
@@ -116,7 +131,7 @@ describe("AgentEventInfo", () => {
             const user = userEvent.setup();
             const longMessage = "a".repeat(200);
             const longMessageData = { ...mockAgentData, system_message: longMessage };
-            render(<AgentEventInfo agentData={longMessageData} darkMode={false} />);
+            render(<AgentEventInfo agentData={longMessageData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             const truncated = screen.getByText(/^a+\.\.\./);
@@ -126,7 +141,7 @@ describe("AgentEventInfo", () => {
         it("should use description as fallback", async () => {
             const user = userEvent.setup();
             const descData = { ...mockAgentData, system_message: undefined, description: "Test description" };
-            render(<AgentEventInfo agentData={descData} darkMode={false} />);
+            render(<AgentEventInfo agentData={descData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             expect(screen.getByText("Test description")).toBeInTheDocument();
@@ -135,75 +150,55 @@ describe("AgentEventInfo", () => {
         it("should not render role section when no message or description", async () => {
             const user = userEvent.setup();
             const noMsgData = { ...mockAgentData, system_message: undefined, description: undefined };
-            render(<AgentEventInfo agentData={noMsgData} darkMode={false} />);
+            render(<AgentEventInfo agentData={noMsgData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             expect(screen.queryByText("Role")).not.toBeInTheDocument();
         });
     });
 
-    describe("last activity", () => {
-        it("should display last message", async () => {
+    describe("last activity from stats", () => {
+        it("should display last activity from stats prop", async () => {
             const user = userEvent.setup();
-            render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
+            render(<AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             expect(screen.getByText("Hello")).toBeInTheDocument();
         });
 
-        it("should truncate long messages", async () => {
+        it("should display tool call activity", async () => {
             const user = userEvent.setup();
-            const longContent = "x".repeat(100);
-            const longMsgData = {
-                ...mockAgentData,
-                chat_messages: {
-                    user: [{ content: longContent, role: "assistant", name: "TestAgent" }],
-                },
-            };
-            render(<AgentEventInfo agentData={longMsgData} darkMode={false} />);
+            const toolStats = { count: 1, lastActivity: "Called initiate_research" };
+            render(<AgentEventInfo agentData={mockAgentData} stats={toolStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
-            const message = screen.getByText(/^x+\.\.\./);
-            expect(message.textContent?.length).toBeLessThan(60);
+            expect(screen.getByText("Called initiate_research")).toBeInTheDocument();
         });
 
-        it('should display "No messages" when chat_messages is empty', async () => {
+        it("should display no activity message", async () => {
             const user = userEvent.setup();
-            const noMsgData = { ...mockAgentData, chat_messages: {} };
-            render(<AgentEventInfo agentData={noMsgData} darkMode={false} />);
+            const noStats = { count: 0, lastActivity: "No activity" };
+            render(<AgentEventInfo agentData={mockAgentData} stats={noStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
-            expect(screen.getByText("No messages")).toBeInTheDocument();
+            expect(screen.getByText("No activity")).toBeInTheDocument();
         });
 
-        it('should display "No messages" when chat_messages is missing', async () => {
+        it("should handle long activity messages", async () => {
             const user = userEvent.setup();
-            const noMsgData = { ...mockAgentData, chat_messages: undefined };
-            render(<AgentEventInfo agentData={noMsgData} darkMode={false} />);
+            const longActivity = "x".repeat(100);
+            const longStats = { count: 1, lastActivity: longActivity };
+            render(<AgentEventInfo agentData={mockAgentData} stats={longStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
-            expect(screen.getByText("No messages")).toBeInTheDocument();
-        });
-
-        it("should handle messages without content", async () => {
-            const user = userEvent.setup();
-            const noContentData = {
-                ...mockAgentData,
-                chat_messages: {
-                    user: [{ role: "assistant", name: "TestAgent" }],
-                },
-            };
-            render(<AgentEventInfo agentData={noContentData} darkMode={false} />);
-
-            await user.click(screen.getByText("TestAgent"));
-            expect(screen.getByText("Unknown")).toBeInTheDocument();
+            expect(screen.getByText(longActivity)).toBeInTheDocument();
         });
     });
 
     describe("context variables", () => {
         it("should display context variables when present", async () => {
             const user = userEvent.setup();
-            render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
+            render(<AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             expect(screen.getByText("Context Variables")).toBeInTheDocument();
@@ -213,7 +208,7 @@ describe("AgentEventInfo", () => {
 
         it("should format boolean values correctly", async () => {
             const user = userEvent.setup();
-            render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
+            render(<AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             const values = screen.getAllByText(/[✓✗]/);
@@ -230,7 +225,7 @@ describe("AgentEventInfo", () => {
                     },
                 },
             };
-            render(<AgentEventInfo agentData={stringVarsData} darkMode={false} />);
+            render(<AgentEventInfo agentData={stringVarsData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             expect(screen.getByText("running")).toBeInTheDocument();
@@ -247,7 +242,7 @@ describe("AgentEventInfo", () => {
                     },
                 },
             };
-            render(<AgentEventInfo agentData={longVarsData} darkMode={false} />);
+            render(<AgentEventInfo agentData={longVarsData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             const truncated = screen.getByText(/^a+\.\.\./);
@@ -264,7 +259,7 @@ describe("AgentEventInfo", () => {
                     },
                 },
             };
-            render(<AgentEventInfo agentData={objVarsData} darkMode={false} />);
+            render(<AgentEventInfo agentData={objVarsData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             expect(screen.getByText(/"key":"value"/)).toBeInTheDocument();
@@ -273,7 +268,7 @@ describe("AgentEventInfo", () => {
         it("should not display context variables section when empty", async () => {
             const user = userEvent.setup();
             const noVarsData = { ...mockAgentData, context_variables: { data: {} } };
-            render(<AgentEventInfo agentData={noVarsData} darkMode={false} />);
+            render(<AgentEventInfo agentData={noVarsData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             expect(screen.queryByText("Context Variables")).not.toBeInTheDocument();
@@ -287,7 +282,7 @@ describe("AgentEventInfo", () => {
                     task_started: true,
                 },
             };
-            render(<AgentEventInfo agentData={directVarsData} darkMode={false} />);
+            render(<AgentEventInfo agentData={directVarsData} stats={mockStats} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
             expect(screen.getByText("Context Variables")).toBeInTheDocument();
@@ -305,50 +300,47 @@ describe("AgentEventInfo", () => {
                     },
                 },
             };
-            render(<AgentEventInfo agentData={actualCostData} darkMode={false} />);
+            render(<AgentEventInfo agentData={actualCostData} stats={mockStats} darkMode={false} />);
             expect(screen.getByText("$0.0056")).toBeInTheDocument();
         });
 
         it("should handle missing cost object", () => {
             const noCostData = { ...mockAgentData, cost: undefined };
-            render(<AgentEventInfo agentData={noCostData} darkMode={false} />);
+            render(<AgentEventInfo agentData={noCostData} stats={mockStats} darkMode={false} />);
             expect(screen.queryByText(/\$/)).not.toBeInTheDocument();
         });
     });
 
-    describe("message counting", () => {
-        it("should count messages across multiple conversations", () => {
-            const multiConversationData = {
-                ...mockAgentData,
-                name: "user2",
-                chat_messages: {
-                    user1: [{ content: "msg1", role: "user", name: "user2" }],
-                    user2: [
-                        { content: "msg2", role: "user", name: "user1" },
-                        { content: "msg3", role: "assistant", name: "user2" },
-                    ],
-                },
-            };
-            render(<AgentEventInfo agentData={multiConversationData} darkMode={false} />);
-            expect(screen.getByText("2")).toBeInTheDocument();
+    describe("stats prop variations", () => {
+        it("should handle zero activity count", () => {
+            const zeroStats = { count: 0, lastActivity: "No activity" };
+            render(<AgentEventInfo agentData={mockAgentData} stats={zeroStats} darkMode={false} />);
+            expect(screen.getByText("0")).toBeInTheDocument();
         });
 
-        it("should show 0 messages when chat_messages is empty", () => {
-            const emptyMsgData = { ...mockAgentData, chat_messages: {} };
-            render(<AgentEventInfo agentData={emptyMsgData} darkMode={false} />);
-            expect(screen.getByText("0")).toBeInTheDocument();
+        it("should handle high activity count", () => {
+            const highStats = { count: 99, lastActivity: "Many activities" };
+            render(<AgentEventInfo agentData={mockAgentData} stats={highStats} darkMode={false} />);
+            expect(screen.getByText("99")).toBeInTheDocument();
+        });
+
+        it("should handle empty last activity", () => {
+            const emptyStats = { count: 1, lastActivity: "" };
+            render(<AgentEventInfo agentData={mockAgentData} stats={emptyStats} darkMode={false} />);
+            // Empty string should still render, just be blank
+            expect(screen.getByText("1")).toBeInTheDocument();
         });
     });
 
     describe("string parsing", () => {
         it("should parse stringified JSON", () => {
             const stringData = JSON.stringify(mockAgentData);
-            render(<AgentEventInfo agentData={stringData} darkMode={false} />);
+            render(<AgentEventInfo agentData={stringData} stats={mockStats} darkMode={false} />);
             expect(screen.getByText("TestAgent")).toBeInTheDocument();
         });
 
         it("should handle already parsed objects", () => {
-            render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
+            render(<AgentEventInfo agentData={mockAgentData} stats={mockStats} darkMode={false} />);
             expect(screen.getByText("TestAgent")).toBeInTheDocument();
         });
     });

@@ -31,35 +31,19 @@ const getContentString: (data: any) => string = (data: any) => {
     return String(data);
 };
 
-export const AgentEventInfo: FC<{ agentData: any; darkMode: boolean }> = ({ agentData, darkMode }) => {
+export const AgentEventInfo: FC<{
+    agentData: any;
+    darkMode: boolean;
+    stats: { count: number; lastActivity: string };
+}> = ({ agentData, stats, darkMode }) => {
     const [expanded, setExpanded] = useState(false);
 
-    // Parse agent data if it's a string
     const data = typeof agentData === "string" ? JSON.parse(agentData) : agentData;
-
-    // Extract key information
     const agentName = data.name || "Unknown Agent";
     const systemMessage = getContentString(data.system_message || data.description || "");
     const totalCost = data.cost?.total?.total_cost || data.cost?.actual?.total_cost || 0;
-    const flatMessages = data.chat_messages ? Object.values(data.chat_messages).flat() : [];
-    const messagesFromParticipant = flatMessages.filter((msg: any) => msg.name === data.name);
-    const messageCount = messagesFromParticipant.length;
-
-    const getLastMessage = () => {
-        if (messagesFromParticipant.length === 0) {
-            return "No messages";
-        }
-
-        const lastMsg = messagesFromParticipant[messagesFromParticipant.length - 1];
-        const content = (lastMsg as any)?.content;
-        const contentStr = getContentString(content);
-        if (contentStr === "") {
-            return "No input";
-        }
-        return contentStr.length > 50 ? contentStr.substring(0, 50) + "..." : contentStr;
-    };
-
-    // Get context variables if they exist
+    const activityCount = stats.count;
+    const getLastActivity = () => stats.lastActivity;
     const contextVars = data.context_variables?.data || data.context_variables || null;
     const hasContextVars = contextVars && Object.keys(contextVars).length > 0;
 
@@ -104,7 +88,7 @@ export const AgentEventInfo: FC<{ agentData: any; darkMode: boolean }> = ({ agen
                         }`}
                     >
                         <MessageSquare className="w-3 h-3" />
-                        <span>{messageCount}</span>
+                        <span>{activityCount}</span>
                     </div>
 
                     {totalCost > 0 && (
@@ -167,7 +151,7 @@ export const AgentEventInfo: FC<{ agentData: any; darkMode: boolean }> = ({ agen
                                 darkMode ? "text-gray-300 bg-gray-900" : "text-gray-700 bg-gray-50"
                             }`}
                         >
-                            {getLastMessage()}
+                            {getLastActivity()}
                         </div>
                     </div>
 

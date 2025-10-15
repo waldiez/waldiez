@@ -1897,6 +1897,29 @@ const WaldiezBreakpointToString = (bp) => {
   } else if (bp.type === "agent_event") ;
   return bp_string;
 };
+const getContentString$1 = (data) => {
+  if (typeof data === "string") {
+    return data;
+  }
+  if (data === void 0 || data === null) {
+    return "Unknown";
+  }
+  if (Array.isArray(data)) {
+    return data.map((entry) => getContentString$1(entry)).join(", ");
+  }
+  if (typeof data === "object") {
+    if ("type" in data) {
+      if (data.type === "text" && "text" in data) {
+        return getContentString$1(data.text);
+      }
+    }
+    if ("content" in data) {
+      return getContentString$1(data.content);
+    }
+    return JSON.stringify(data);
+  }
+  return String(data);
+};
 const isDebugInputRequest = (m) => Boolean(
   m && (m.type === "debug_input_request" || m.type === "input_request") && typeof m.request_id === "string" && typeof m.prompt === "string"
 );
@@ -20245,6 +20268,287 @@ const FloatingPanel = ({
     }
   );
 };
+const formatArgs = (args) => {
+  try {
+    if (args === null) {
+      return "none";
+    }
+    if (typeof args === "string") {
+      return args;
+    }
+    return JSON.stringify(args);
+  } catch {
+    return String(args);
+  }
+};
+const ResumeSpinner = () => {
+  const [phase, setPhase] = useState("spin");
+  useEffect(() => {
+    const t = setTimeout(() => setPhase("done"), 2e3);
+    return () => clearTimeout(t);
+  }, []);
+  return phase === "spin" ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+    /* @__PURE__ */ jsx$1("span", { className: "animate-spin inline-block", children: "⏳" }),
+    /* @__PURE__ */ jsx$1("span", { children: "Resuming a previously stored state…" })
+  ] }) : /* @__PURE__ */ jsx$1("div", { children: "✅ Resume complete!" });
+};
+const getParticipants = (ev) => {
+  const sender = ev.sender || ev.content.sender;
+  const recipient = ev.recipient || ev.content.recipient;
+  return { sender, recipient };
+};
+const renderEvent = (ev) => {
+  if (!ev.type) {
+    const nested = ev;
+    if (nested.event && nested.event.type) {
+      return renderEvent(nested.event);
+    }
+  }
+  switch (ev.type) {
+    case "empty": {
+      const c = ev;
+      const content = getContentString$1(c);
+      return /* @__PURE__ */ jsx$1("div", { className: "text-gray-700 font-large", children: content });
+    }
+    case "text": {
+      const c = ev.content;
+      const { sender, recipient } = getParticipants(ev);
+      if (!sender || !recipient || sender === recipient) {
+        return null;
+      }
+      const content = getContentString$1(c);
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "text-amber-500 font-semibold", children: [
+          sender,
+          " ",
+          /* @__PURE__ */ jsx$1("span", { className: "text-gray-400", children: "→" }),
+          " ",
+          recipient
+        ] }),
+        /* @__PURE__ */ jsx$1("pre", { className: "whitespace-pre-wrap break-words mt-1", children: content })
+      ] });
+    }
+    case "post_carryover_processing": {
+      const c = ev.content;
+      const { sender, recipient } = getParticipants(ev);
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "text-pink-500 font-semibold", children: [
+          sender,
+          " ",
+          /* @__PURE__ */ jsx$1("span", { className: "text-gray-400", children: "→" }),
+          " ",
+          recipient
+        ] }),
+        /* @__PURE__ */ jsx$1("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.message })
+      ] });
+    }
+    case "group_chat_run_chat": {
+      const c = ev.content;
+      return /* @__PURE__ */ jsxs("div", { className: "text-green-600 font-semibold", children: [
+        "Next speaker: ",
+        ev.speaker || c.speaker
+      ] });
+    }
+    case "using_auto_reply": {
+      const { sender, recipient } = getParticipants(ev);
+      return /* @__PURE__ */ jsxs("div", { className: "text-gray-700", children: [
+        "sender=",
+        sender,
+        ", recipient=",
+        recipient
+      ] });
+    }
+    case "tool_call": {
+      const c = ev.content;
+      const { sender, recipient } = getParticipants(ev);
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "text-gray-700 mb-1", children: [
+          /* @__PURE__ */ jsx$1("span", { className: "font-medium", children: sender }),
+          " ",
+          /* @__PURE__ */ jsx$1("span", { className: "text-gray-400", children: "→" }),
+          " ",
+          /* @__PURE__ */ jsx$1("span", { className: "font-medium", children: recipient })
+        ] }),
+        /* @__PURE__ */ jsx$1("div", { className: "space-y-1", children: c.tool_calls?.map((tc, i) => {
+          const args = tc.function.arguments && tc.function.arguments !== "{}" ? tc.function.arguments : "none";
+          return /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-2", children: [
+            /* @__PURE__ */ jsx$1("span", { children: "🔧" }),
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
+                "Calling: ",
+                tc.function.name
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
+                "args: ",
+                args
+              ] })
+            ] })
+          ] }, i);
+        }) })
+      ] });
+    }
+    case "execute_function": {
+      const c = ev.content;
+      const { recipient } = getParticipants(ev);
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
+          "⚡ Executing: ",
+          c.func_name
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "text-sm text-gray-700", children: [
+          "→ Target: ",
+          recipient
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
+          "→ Args: ",
+          formatArgs(ev.arguments || c.arguments)
+        ] })
+      ] });
+    }
+    case "executed_function": {
+      const c = ev.content ? ev.content : ev;
+      const ok = "is_exec_success" in c ? !!c.is_exec_success : true;
+      const transferred = typeof c.content === "object" && c.content && "agent_name" in c.content ? c.content.agent_name : void 0;
+      const recipient = typeof c.recipient === "string" ? c.recipient : void 0;
+      const details = c.func_name || getContentString$1(c);
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: ok ? "text-green-600 font-semibold" : "text-red-600 font-semibold", children: [
+          ok ? "✅ Success" : "❌ Failed",
+          ": ",
+          details
+        ] }),
+        transferred && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
+          "→ Transferred to: ",
+          transferred
+        ] }),
+        !transferred && recipient && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
+          "→ Transferring to: ",
+          recipient,
+          " "
+        ] })
+      ] });
+    }
+    case "input_request":
+    case "debug_input_request": {
+      const c = ev.content ? ev.content : ev;
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx$1("div", { className: "font-semibold", children: "👤 Provide your input:" }),
+        c.prompt && /* @__PURE__ */ jsx$1("div", { className: "text-sm", children: c.prompt })
+      ] });
+    }
+    case "tool_response": {
+      const c = ev.content ? ev.content : ev;
+      const { sender, recipient } = getParticipants(ev);
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx$1("div", { children: "🔄 Tool Response:" }),
+        /* @__PURE__ */ jsx$1("pre", { className: "whitespace-pre-wrap break-words", children: c.content }),
+        /* @__PURE__ */ jsxs("div", { className: "text-xs", children: [
+          "→ From: ",
+          sender,
+          " to ",
+          recipient
+        ] })
+      ] });
+    }
+    case "termination": {
+      const c = ev.content ? ev.content : ev;
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx$1("div", { className: "font-semibold", children: "Termination met" }),
+        c.termination_reason && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
+          "→ Termination_reason: ",
+          c.termination_reason
+        ] })
+      ] });
+    }
+    case "termination_and_human_reply_no_input": {
+      const c = ev.content ? ev.content : ev;
+      return /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx$1("div", { className: "font-semibold", children: "No human input" }),
+        c.no_human_input_msg && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
+          "→ Message: ",
+          c.no_human_input_msg
+        ] })
+      ] });
+    }
+    case "run_completion":
+      return /* @__PURE__ */ jsx$1("div", { className: "font-semibold", children: "🏁 Run completed" });
+    case "generate_code_execution_reply":
+      return /* @__PURE__ */ jsx$1("div", { className: "font-semibold", children: "💻 Code executed" });
+    case "group_chat_resume":
+      return /* @__PURE__ */ jsx$1(ResumeSpinner, {});
+    case "info":
+      return /* @__PURE__ */ jsx$1("div", { className: "info", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
+    case "error":
+      if (!ev.content && ev.error) {
+        return /* @__PURE__ */ jsx$1("div", { className: "error", children: ev.error });
+      }
+      return /* @__PURE__ */ jsx$1("div", { className: "error", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
+    default:
+      return /* @__PURE__ */ jsxs("div", { className: "text-amber-700", children: [
+        "⚠️ Unknown event type: ",
+        /* @__PURE__ */ jsx$1("span", { className: "font-mono", children: ev.type }),
+        /* @__PURE__ */ jsxs("pre", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
+          "Raw event: ",
+          JSON.stringify(ev, null, 2)
+        ] })
+      ] });
+  }
+};
+const EventConsole = ({ events, printRaw, autoScroll, className }) => {
+  const listRef = useRef(null);
+  const endRef = useRef(null);
+  const userScrolledUpRef = useRef(false);
+  useEffect(() => {
+    const el = listRef.current;
+    if (!el) {
+      return;
+    }
+    const onScroll = () => {
+      const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+      userScrolledUpRef.current = !nearBottom;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+  const scrollToBottom = (smooth) => {
+    const el = listRef.current;
+    const end = endRef.current;
+    if (!el || !end) {
+      return;
+    }
+    if (typeof end.scrollIntoView === "function") {
+      end.scrollIntoView({ behavior: "smooth", block: "end" });
+      return;
+    }
+    el.scrollTop = el.scrollHeight - el.clientHeight;
+  };
+  useLayoutEffect(() => {
+    if (!autoScroll || userScrolledUpRef.current) {
+      return;
+    }
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => scrollToBottom());
+    });
+  }, [events, autoScroll]);
+  return /* @__PURE__ */ jsx$1(
+    "div",
+    {
+      className: ["flex items-center flex-col h-full json", className].filter(Boolean).join(" "),
+      "data-testid": "events-console",
+      children: /* @__PURE__ */ jsxs("div", { ref: listRef, className: "flex-1 w-full overflow-auto text-sm font-mono leading-5", children: [
+        /* @__PURE__ */ jsx$1("div", { className: "p-3 space-y-3", children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: ev.type === "empty" ? "center" : "entry", children: [
+          printRaw && /* @__PURE__ */ jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
+            "Raw event: ",
+            JSON.stringify(ev, null, 2)
+          ] }),
+          renderEvent(ev)
+        ] }, ev.id ?? idx)) }),
+        /* @__PURE__ */ jsx$1("div", { ref: endRef, className: "scroll-anchor p-3" })
+      ] })
+    }
+  );
+};
 /**
  * @license lucide-react v0.545.0 - ISC
  *
@@ -20466,7 +20770,7 @@ const __iconNode = [
   ]
 ];
 const Zap = createLucideIcon("zap", __iconNode);
-const getContentString$1 = (data) => {
+const getContentString = (data) => {
   if (typeof data === "string") {
     return data;
   }
@@ -20474,42 +20778,29 @@ const getContentString$1 = (data) => {
     return "Unknown";
   }
   if (Array.isArray(data)) {
-    return data.map((entry) => getContentString$1(entry)).join(", ");
+    return data.map((entry) => getContentString(entry)).join(", ");
   }
   if (typeof data === "object") {
     if ("type" in data) {
       if (data.type === "text" && "text" in data) {
-        return getContentString$1(data.text);
+        return getContentString(data.text);
       }
     }
     if ("content" in data) {
-      return getContentString$1(data.content);
+      return getContentString(data.content);
     }
     return JSON.stringify(data);
   }
   return String(data);
 };
-const AgentEventInfo = ({ agentData, darkMode }) => {
+const AgentEventInfo = ({ agentData, stats, darkMode }) => {
   const [expanded, setExpanded] = useState(false);
   const data = typeof agentData === "string" ? JSON.parse(agentData) : agentData;
   const agentName = data.name || "Unknown Agent";
-  const systemMessage = getContentString$1(data.system_message || data.description || "");
+  const systemMessage = getContentString(data.system_message || data.description || "");
   const totalCost = data.cost?.total?.total_cost || data.cost?.actual?.total_cost || 0;
-  const flatMessages = data.chat_messages ? Object.values(data.chat_messages).flat() : [];
-  const messagesFromParticipant = flatMessages.filter((msg) => msg.name === data.name);
-  const messageCount = messagesFromParticipant.length;
-  const getLastMessage = () => {
-    if (messagesFromParticipant.length === 0) {
-      return "No messages";
-    }
-    const lastMsg = messagesFromParticipant[messagesFromParticipant.length - 1];
-    const content = lastMsg?.content;
-    const contentStr = getContentString$1(content);
-    if (contentStr === "") {
-      return "No input";
-    }
-    return contentStr.length > 50 ? contentStr.substring(0, 50) + "..." : contentStr;
-  };
+  const activityCount = stats.count;
+  const getLastActivity = () => stats.lastActivity;
   const contextVars = data.context_variables?.data || data.context_variables || null;
   const hasContextVars = contextVars && Object.keys(contextVars).length > 0;
   const formatValue = (value) => {
@@ -20549,7 +20840,7 @@ const AgentEventInfo = ({ agentData, darkMode }) => {
                     className: `flex items-center gap-1 text-xs ${darkMode ? "text-gray-400" : "text-gray-600"}`,
                     children: [
                       /* @__PURE__ */ jsx$1(MessageSquare, { className: "w-3 h-3" }),
-                      /* @__PURE__ */ jsx$1("span", { children: messageCount })
+                      /* @__PURE__ */ jsx$1("span", { children: activityCount })
                     ]
                   }
                 ),
@@ -20604,7 +20895,7 @@ const AgentEventInfo = ({ agentData, darkMode }) => {
                   "div",
                   {
                     className: `text-xs p-2 rounded ${darkMode ? "text-gray-300 bg-gray-900" : "text-gray-700 bg-gray-50"}`,
-                    children: getLastMessage()
+                    children: getLastActivity()
                   }
                 )
               ] }),
@@ -20649,306 +20940,72 @@ const AgentEventInfo = ({ agentData, darkMode }) => {
     }
   );
 };
-const formatArgs = (args) => {
-  try {
-    if (args === null) {
-      return "none";
+const EventAgentsList = ({ agents, darkMode }) => {
+  const getAgentStats = (agentName) => {
+    if (!Array.isArray(agents) || agents.length === 0) {
+      return { count: 0, lastActivity: "No activity" };
     }
-    if (typeof args === "string") {
-      return args;
+    const globalMessages = agents.flatMap(
+      (a) => a?.chat_messages ? Object.values(a.chat_messages).flat() : []
+    );
+    const authored = globalMessages.filter((m) => m && m.name === agentName);
+    if (authored.length === 0) {
+      return { count: 0, lastActivity: "No activity" };
     }
-    return JSON.stringify(args);
-  } catch {
-    return String(args);
-  }
-};
-const ResumeSpinner = () => {
-  const [phase, setPhase] = useState("spin");
-  useEffect(() => {
-    const t = setTimeout(() => setPhase("done"), 2e3);
-    return () => clearTimeout(t);
-  }, []);
-  return phase === "spin" ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
-    /* @__PURE__ */ jsx$1("span", { className: "animate-spin inline-block", children: "⏳" }),
-    /* @__PURE__ */ jsx$1("span", { children: "Resuming a previously stored state…" })
-  ] }) : /* @__PURE__ */ jsx$1("div", { children: "✅ Resume complete!" });
-};
-const getContentString = (data) => {
-  if (typeof data === "string") {
-    return data;
-  }
-  if (Array.isArray(data)) {
-    return data.map((entry) => getContentString(entry)).join(", ");
-  }
-  if (typeof data === "object") {
-    if ("type" in data) {
-      if (data.type === "text" && "text" in data) {
-        return getContentString(data.text);
+    const norm = (s) => typeof s === "string" ? s.trim().replace(/\s+/g, " ") : s;
+    const isMeaningful = (c) => {
+      if (typeof c !== "string") {
+        return false;
       }
-    }
-    if ("content" in data) {
-      return getContentString(data.content);
-    }
-    return JSON.stringify(data);
-  }
-  return String(data);
-};
-const getParticipants = (ev) => {
-  const sender = ev.sender || ev.content.sender;
-  const recipient = ev.recipient || ev.content.recipient;
-  return { sender, recipient };
-};
-const renderEvent = (ev) => {
-  if (!ev.type) {
-    const nested = ev;
-    if (nested.event && nested.event.type) {
-      return renderEvent(nested.event);
-    }
-  }
-  switch (ev.type) {
-    case "empty": {
-      const c = ev;
-      const content = getContentString(c);
-      return /* @__PURE__ */ jsx$1("div", { className: "text-gray-700 font-large", children: content });
-    }
-    case "text": {
-      const c = ev.content;
-      const { sender, recipient } = getParticipants(ev);
-      if (!sender || !recipient || sender === recipient) {
-        return null;
-      }
-      const content = getContentString(c);
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("div", { className: "text-amber-500 font-semibold", children: [
-          sender,
-          " ",
-          /* @__PURE__ */ jsx$1("span", { className: "text-gray-400", children: "→" }),
-          " ",
-          recipient
-        ] }),
-        /* @__PURE__ */ jsx$1("pre", { className: "whitespace-pre-wrap break-words mt-1", children: content })
-      ] });
-    }
-    case "post_carryover_processing": {
-      const c = ev.content;
-      const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("div", { className: "text-pink-500 font-semibold", children: [
-          sender,
-          " ",
-          /* @__PURE__ */ jsx$1("span", { className: "text-gray-400", children: "→" }),
-          " ",
-          recipient
-        ] }),
-        /* @__PURE__ */ jsx$1("pre", { className: "whitespace-pre-wrap break-words mt-1", children: c.message })
-      ] });
-    }
-    case "group_chat_run_chat": {
-      const c = ev.content;
-      return /* @__PURE__ */ jsxs("div", { className: "text-green-600 font-semibold", children: [
-        "Next speaker: ",
-        ev.speaker || c.speaker
-      ] });
-    }
-    case "using_auto_reply": {
-      const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxs("div", { className: "text-gray-700", children: [
-        "sender=",
-        sender,
-        ", recipient=",
-        recipient
-      ] });
-    }
-    case "tool_call": {
-      const c = ev.content;
-      const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("div", { className: "text-gray-700 mb-1", children: [
-          /* @__PURE__ */ jsx$1("span", { className: "font-medium", children: sender }),
-          " ",
-          /* @__PURE__ */ jsx$1("span", { className: "text-gray-400", children: "→" }),
-          " ",
-          /* @__PURE__ */ jsx$1("span", { className: "font-medium", children: recipient })
-        ] }),
-        /* @__PURE__ */ jsx$1("div", { className: "space-y-1", children: c.tool_calls?.map((tc, i) => {
-          const args = tc.function.arguments && tc.function.arguments !== "{}" ? tc.function.arguments : "none";
-          return /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-2", children: [
-            /* @__PURE__ */ jsx$1("span", { children: "🔧" }),
-            /* @__PURE__ */ jsxs("div", { children: [
-              /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
-                "Calling: ",
-                tc.function.name
-              ] }),
-              /* @__PURE__ */ jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
-                "args: ",
-                args
-              ] })
-            ] })
-          ] }, i);
-        }) })
-      ] });
-    }
-    case "execute_function": {
-      const c = ev.content;
-      const { recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("div", { className: "font-semibold", children: [
-          "⚡ Executing: ",
-          c.func_name
-        ] }),
-        /* @__PURE__ */ jsxs("div", { className: "text-sm text-gray-700", children: [
-          "→ Target: ",
-          recipient
-        ] }),
-        /* @__PURE__ */ jsxs("div", { className: "text-xs text-gray-600 break-words", children: [
-          "→ Args: ",
-          formatArgs(ev.arguments || c.arguments)
-        ] })
-      ] });
-    }
-    case "executed_function": {
-      const c = ev.content ? ev.content : ev;
-      const ok = "is_exec_success" in c ? !!c.is_exec_success : true;
-      const transferred = typeof c.content === "object" && c.content && "agent_name" in c.content ? c.content.agent_name : void 0;
-      const recipient = typeof c.recipient === "string" ? c.recipient : void 0;
-      const details = c.func_name || getContentString(c);
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsxs("div", { className: ok ? "text-green-600 font-semibold" : "text-red-600 font-semibold", children: [
-          ok ? "✅ Success" : "❌ Failed",
-          ": ",
-          details
-        ] }),
-        transferred && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
-          "→ Transferred to: ",
-          transferred
-        ] }),
-        !transferred && recipient && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
-          "→ Transferring to: ",
-          recipient,
-          " "
-        ] })
-      ] });
-    }
-    case "input_request":
-    case "debug_input_request": {
-      const c = ev.content ? ev.content : ev;
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx$1("div", { className: "font-semibold", children: "👤 Provide your input:" }),
-        c.prompt && /* @__PURE__ */ jsx$1("div", { className: "text-sm", children: c.prompt })
-      ] });
-    }
-    case "tool_response": {
-      const c = ev.content ? ev.content : ev;
-      const { sender, recipient } = getParticipants(ev);
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx$1("div", { children: "🔄 Tool Response:" }),
-        /* @__PURE__ */ jsx$1("pre", { className: "whitespace-pre-wrap break-words", children: c.content }),
-        /* @__PURE__ */ jsxs("div", { className: "text-xs", children: [
-          "→ From: ",
-          sender,
-          " to ",
-          recipient
-        ] })
-      ] });
-    }
-    case "termination": {
-      const c = ev.content ? ev.content : ev;
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx$1("div", { className: "font-semibold", children: "Termination met" }),
-        c.termination_reason && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
-          "→ Termination_reason: ",
-          c.termination_reason
-        ] })
-      ] });
-    }
-    case "termination_and_human_reply_no_input": {
-      const c = ev.content ? ev.content : ev;
-      return /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx$1("div", { className: "font-semibold", children: "No human input" }),
-        c.no_human_input_msg && /* @__PURE__ */ jsxs("div", { className: "text-sm", children: [
-          "→ Message: ",
-          c.no_human_input_msg
-        ] })
-      ] });
-    }
-    case "run_completion":
-      return /* @__PURE__ */ jsx$1("div", { className: "font-semibold", children: "🏁 Run completed" });
-    case "generate_code_execution_reply":
-      return /* @__PURE__ */ jsx$1("div", { className: "font-semibold", children: "💻 Code executed" });
-    case "group_chat_resume":
-      return /* @__PURE__ */ jsx$1(ResumeSpinner, {});
-    case "info":
-      return /* @__PURE__ */ jsx$1("div", { className: "info", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
-    case "error":
-      if (!ev.content && ev.error) {
-        return /* @__PURE__ */ jsx$1("div", { className: "error", children: ev.error });
-      }
-      return /* @__PURE__ */ jsx$1("div", { className: "error", children: typeof ev.content === "string" ? ev.content : JSON.stringify(ev.content) });
-    default:
-      return /* @__PURE__ */ jsxs("div", { className: "text-amber-700", children: [
-        "⚠️ Unknown event type: ",
-        /* @__PURE__ */ jsx$1("span", { className: "font-mono", children: ev.type }),
-        /* @__PURE__ */ jsxs("pre", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
-          "Raw event: ",
-          JSON.stringify(ev, null, 2)
-        ] })
-      ] });
-  }
-};
-const EventConsole = ({ events, printRaw, autoScroll, className }) => {
-  const listRef = useRef(null);
-  const endRef = useRef(null);
-  const userScrolledUpRef = useRef(false);
-  useEffect(() => {
-    const el = listRef.current;
-    if (!el) {
-      return;
-    }
-    const onScroll = () => {
-      const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
-      userScrolledUpRef.current = !nearBottom;
+      const t = c.trim().toLowerCase();
+      return t !== "" && t !== "none";
     };
-    el.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => el.removeEventListener("scroll", onScroll);
-  }, []);
-  const scrollToBottom = (smooth) => {
-    const el = listRef.current;
-    const end = endRef.current;
-    if (!el || !end) {
-      return;
-    }
-    if (typeof end.scrollIntoView === "function") {
-      end.scrollIntoView({ behavior: "smooth", block: "end" });
-      return;
-    }
-    el.scrollTop = el.scrollHeight - el.clientHeight;
-  };
-  useLayoutEffect(() => {
-    if (!autoScroll || userScrolledUpRef.current) {
-      return;
-    }
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => scrollToBottom());
+    const clip = (s, n = 80) => s.length > n ? s.slice(0, n) + "..." : s;
+    const seen = /* @__PURE__ */ new Set();
+    const uniqueAuthored = authored.filter((m) => {
+      const fp = JSON.stringify({
+        name: m.name ?? null,
+        content: norm(m.content) ?? null,
+        tool_calls: Array.isArray(m.tool_calls) ? m.tool_calls.map((c) => c?.id ?? null).sort() : []
+      });
+      if (seen.has(fp)) {
+        return false;
+      }
+      seen.add(fp);
+      return true;
     });
-  }, [events, autoScroll]);
-  return /* @__PURE__ */ jsx$1(
-    "div",
-    {
-      className: ["flex items-center flex-col h-full json", className].filter(Boolean).join(" "),
-      "data-testid": "events-console",
-      children: /* @__PURE__ */ jsxs("div", { ref: listRef, className: "flex-1 w-full overflow-auto text-sm font-mono leading-5", children: [
-        /* @__PURE__ */ jsx$1("div", { className: "p-3 space-y-3", children: events.map((ev, idx) => /* @__PURE__ */ jsxs("div", { className: ev.type === "empty" ? "center" : "entry", children: [
-          printRaw && /* @__PURE__ */ jsxs("div", { className: "text-xs text-blue-600/80 mb-2 break-words", children: [
-            "Raw event: ",
-            JSON.stringify(ev, null, 2)
-          ] }),
-          renderEvent(ev)
-        ] }, ev.id ?? idx)) }),
-        /* @__PURE__ */ jsx$1("div", { ref: endRef, className: "scroll-anchor p-3" })
-      ] })
+    let count2 = 0;
+    let lastActivity = "No activity";
+    for (const msg of uniqueAuthored) {
+      const toolCalls = Array.isArray(msg.tool_calls) ? msg.tool_calls : [];
+      const hasContent = isMeaningful(msg.content);
+      count2 += toolCalls.length;
+      if (hasContent) {
+        count2 += 1;
+      }
+      if (toolCalls.length > 0) {
+        const last = toolCalls[toolCalls.length - 1];
+        const fname = last?.function?.name || "tool";
+        lastActivity = `Called ${fname}`;
+      } else if (hasContent) {
+        const text = typeof getContentString$1 === "function" ? getContentString$1(msg.content) : String(norm(msg.content));
+        lastActivity = clip(text);
+      }
     }
-  );
+    return { count: count2, lastActivity };
+  };
+  return /* @__PURE__ */ jsx$1("div", { className: "event-agents-details overflow-auto", children: agents.map((agent, index2) => {
+    const stats = getAgentStats(agent.name);
+    return /* @__PURE__ */ jsx$1(
+      AgentEventInfo,
+      {
+        agentData: agent,
+        stats,
+        darkMode
+      },
+      `agent-${index2}`
+    );
+  }) });
 };
 const isIterable = (obj) => Symbol.iterator in obj;
 const hasIterableEntries = (value) => (
@@ -24730,14 +24787,7 @@ const StepByStepView = ({ flowId, stepByStep, isDarkMode }) => {
               /* @__PURE__ */ jsx$1("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
             ] })
           ] }),
-          haveAgents && detailsViewActive ? /* @__PURE__ */ jsx$1("div", { className: "event-sender-details", children: agents.map((agent, index2) => /* @__PURE__ */ jsx$1(
-            AgentEventInfo,
-            {
-              agentData: agent,
-              darkMode: isDarkMode
-            },
-            `agent-${index2}`
-          )) }) : reducedHistory.length > 0 ? /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
+          haveAgents && detailsViewActive ? /* @__PURE__ */ jsx$1(EventAgentsList, { agents, darkMode: isDarkMode }) : reducedHistory.length > 0 ? /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
         ] })
       }
     ),

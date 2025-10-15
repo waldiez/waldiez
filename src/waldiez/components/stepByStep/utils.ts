@@ -45,3 +45,27 @@ export const WaldiezBreakpointToString: (breakpoint: WaldiezBreakpoint) => strin
     }
     return bp_string;
 };
+
+export const getContentString: (data: any) => string = (data: any) => {
+    if (typeof data === "string") {
+        return data;
+    }
+    if (data === undefined || data === null) {
+        return "Unknown";
+    }
+    if (Array.isArray(data)) {
+        return data.map((entry: any) => getContentString(entry)).join(", ");
+    }
+    if (typeof data === "object") {
+        if ("type" in data) {
+            if (data.type === "text" && "text" in data) {
+                return getContentString(data.text);
+            }
+        }
+        if ("content" in data) {
+            return getContentString(data.content);
+        }
+        return JSON.stringify(data);
+    }
+    return String(data);
+};
