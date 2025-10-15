@@ -162,6 +162,7 @@
         "markdownify",
         "mccabe",
         "mcts",
+        "mediatype",
         "MEIPASS",
         "metaclass",
         "microdiff",
