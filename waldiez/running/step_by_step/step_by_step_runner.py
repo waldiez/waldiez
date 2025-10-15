@@ -487,11 +487,11 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 self._config.auto_continue = False
             else:
                 return WaldiezDebugStepAction.CONTINUE
-
         while True:
             request_id = gen_id()
             try:
                 if not self.structured_io:
+                    # if structured, we already do this (print the prompt)
                     self.emit(
                         WaldiezDebugInputRequest(
                             prompt=DEBUG_INPUT_PROMPT, request_id=request_id
@@ -501,7 +501,8 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 self.log.warning("Failed to emit input request: %s", e)
             try:
                 user_input = EventsMixin.get_user_input(
-                    DEBUG_INPUT_PROMPT
+                    DEBUG_INPUT_PROMPT,
+                    request_id=request_id,
                 ).strip()
                 return self._parse_user_action(
                     user_input, request_id=request_id

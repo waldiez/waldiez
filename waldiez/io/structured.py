@@ -108,7 +108,13 @@ class StructuredIOStream(IOStream):
         else:
             print(dumped, flush=flush)
 
-    def input(self, prompt: str = "", *, password: bool = False) -> str:
+    def input(
+        self,
+        prompt: str = "",
+        *,
+        password: bool = False,
+        request_id: str | None = None,
+    ) -> str:
         """Structured input from stdin.
 
         Parameters
@@ -117,13 +123,15 @@ class StructuredIOStream(IOStream):
             The prompt to display. Defaults to "".
         password : bool, optional
             Whether to read a password. Defaults to False.
+        request_id : str, optional
+            The request id. If not provided, a new will be generated.
 
         Returns
         -------
         str
             The line read from the input stream.
         """
-        request_id = gen_id()
+        input_request_id = request_id or gen_id()
         prompt = prompt or ">"
         if not prompt or prompt in [">", "> "]:  # pragma: no cover
             # if the prompt is just ">" or "> ",
@@ -134,15 +142,17 @@ class StructuredIOStream(IOStream):
             input_type = "debug"
         self._send_input_request(
             prompt,
-            request_id,
+            input_request_id,
             password,
             input_type=input_type,
         )
-        user_input_raw = self._read_user_input(prompt, password, request_id)
-        response = self._handle_user_input(user_input_raw, request_id)
+        user_input_raw = self._read_user_input(
+            prompt, password, input_request_id
+        )
+        response = self._handle_user_input(user_input_raw, input_request_id)
         user_response = response.to_string(
             uploads_root=self.uploads_root,
-            base_name=request_id,
+            base_name=input_request_id,
         )
         return user_response
 
@@ -168,6 +178,7 @@ class StructuredIOStream(IOStream):
                 content_block["content"] = try_parse_maybe_serialized(
                     inner_content
                 )
+        message_dump["timestamp"] = now()
         print(
             json.dumps(message_dump, default=str),
             flush=True,

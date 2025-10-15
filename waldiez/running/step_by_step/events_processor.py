@@ -213,11 +213,12 @@ class EventProcessor:
         if not agent:
             return None
         dump = {
-            name: value
+            name: _trim_value(value)
             for name, value in inspect.getmembers(agent)
             if not name.startswith("_")
             and not inspect.ismethod(value)
             and not inspect.isfunction(value)
+            and name.upper() != name
         }
         dump["cost"] = {
             "actual": agent.get_actual_usage(),
@@ -255,3 +256,38 @@ class EventProcessor:
             "recipient": self._get_agent_dump(recipient_agent),
             "all": [self._get_agent_dump(a) for a in ordered_agents if a],
         }
+
+
+# pylint: disable=too-complex,too-many-return-statements
+def _trim_value(value: Any, max_len: int = 200) -> Any:
+    """Recursively trim values for serialization."""
+    if isinstance(value, str):
+        return value[:max_len] + "..." if len(value) > max_len else value
+    if isinstance(value, dict):
+        return {k: _trim_value(v, max_len) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        trimmed = [_trim_value(item, max_len) for item in value]
+        return trimmed if isinstance(value, list) else tuple(trimmed)
+    if isinstance(value, set):
+        return {_trim_value(item, max_len) for item in value}
+    if hasattr(value, "__dict__"):
+        # Handle objects with attributes by converting to dict
+        try:
+            return {
+                k: _trim_value(v, max_len)
+                for k, v in value.__dict__.items()
+                if not k.startswith("_")
+            }
+        except Exception:  # pylint: disable=broad-exception-caught
+            return (
+                str(value)[:max_len] + "..."
+                if len(str(value)) > max_len
+                else str(value)
+            )
+    try:
+        str_val = str(value)
+        if len(str_val) > max_len:
+            return str_val[:max_len] + "..."
+    except Exception:  # pylint: disable=broad-exception-caught
+        pass
+    return value
