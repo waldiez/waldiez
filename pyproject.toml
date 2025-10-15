@@ -31,7 +31,7 @@ dependencies = [
   "aiocsv==1.4.0",
   "aiofiles==25.1.0",
   "aiosqlite==0.21.0",
-  "numpy<=2.3.3",
+  "numpy",
   "nest_asyncio==1.6.0",
   "graphviz<=0.21",
   "pandas>=2",
@@ -84,7 +84,6 @@ mqtt = [
 jupyter = [
   "waldiez_jupyter==0.6.0",
   "jupyterlab==4.4.9",
-  "ipykernel<7",
   "ipywidgets==8.1.7",
   "jupyter_server==2.17.0",
 ]
@@ -174,7 +173,7 @@ dev = [
   "nodeenv>=1.9.1",
   "prek==0.2.8",
   "pydocstyle==6.3.0",
-  "pylint==4.0.0",
+  "pylint==4.0.1",
   "python-dotenv>=1.1.1",
   "ruff==0.14.0",
   "types-aiofiles==25.1.0.20251011",
