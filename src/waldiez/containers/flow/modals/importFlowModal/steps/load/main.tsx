@@ -43,7 +43,7 @@ export const LoadFlowStep = (props: LoadFlowStepProps) => {
                         <button
                             type="button"
                             title="Search"
-                            className="modal-action-submit"
+                            className="modal-action-submit p-[7px] rounded"
                             onClick={onSearchSubmit}
                             data-testid={`import-flow-modal-search-submit-${flowId}`}
                             disabled={loading}
@@ -104,7 +104,7 @@ export const LoadFlowStep = (props: LoadFlowStepProps) => {
                         <button
                             type="button"
                             title="Load flow from URL"
-                            className="modal-action-submit"
+                            className="modal-action-submit p-[7px] rounded"
                             onClick={onRemoteUrlSubmit}
                             data-testid={`import-flow-modal-url-submit-${flowId}`}
                             disabled={!remoteUrl.startsWith("https://") || loading}

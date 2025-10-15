@@ -1171,7 +1171,7 @@ class WaldiezChatMessageProcessor {
     return handler;
   }
 }
-const getContentString$1 = (content, onPreview) => {
+const getContentString$2 = (content, onPreview) => {
   if (typeof content === "string") {
     return content;
   }
@@ -1216,18 +1216,18 @@ const getMessageString = (message, onPreview) => {
     return message.content;
   }
   if (Array.isArray(message.content)) {
-    return message.content.map((entry) => getContentString$1(entry, onPreview)).join(" ");
+    return message.content.map((entry) => getContentString$2(entry, onPreview)).join(" ");
   }
   if ("content" in message.content) {
     if (typeof message.content.content === "string") {
       return message.content.content;
     }
     if (Array.isArray(message.content.content)) {
-      return message.content.content.map((entry) => getContentString$1(entry, onPreview)).join(" ");
+      return message.content.content.map((entry) => getContentString$2(entry, onPreview)).join(" ");
     }
-    return getContentString$1(message.content.content);
+    return getContentString$2(message.content.content);
   }
-  return getContentString$1(message.content);
+  return getContentString$2(message.content);
 };
 const waldiezChatReducer = (state, action) => {
   switch (action.type) {
@@ -20466,24 +20466,49 @@ const __iconNode = [
   ]
 ];
 const Zap = createLucideIcon("zap", __iconNode);
+const getContentString$1 = (data) => {
+  if (typeof data === "string") {
+    return data;
+  }
+  if (data === void 0 || data === null) {
+    return "Unknown";
+  }
+  if (Array.isArray(data)) {
+    return data.map((entry) => getContentString$1(entry)).join(", ");
+  }
+  if (typeof data === "object") {
+    if ("type" in data) {
+      if (data.type === "text" && "text" in data) {
+        return getContentString$1(data.text);
+      }
+    }
+    if ("content" in data) {
+      return getContentString$1(data.content);
+    }
+    return JSON.stringify(data);
+  }
+  return String(data);
+};
 const AgentEventInfo = ({ agentData, darkMode }) => {
   const [expanded, setExpanded] = useState(false);
   const data = typeof agentData === "string" ? JSON.parse(agentData) : agentData;
   const agentName = data.name || "Unknown Agent";
-  const systemMessage = data.system_message || data.description || "";
+  const systemMessage = getContentString$1(data.system_message || data.description || "");
   const totalCost = data.cost?.total?.total_cost || data.cost?.actual?.total_cost || 0;
-  const messageCount = data.chat_messages ? Object.values(data.chat_messages).flat().length : 0;
+  const flatMessages = data.chat_messages ? Object.values(data.chat_messages).flat() : [];
+  const messagesFromParticipant = flatMessages.filter((msg) => msg.name === data.name);
+  const messageCount = messagesFromParticipant.length;
   const getLastMessage = () => {
-    if (!data.chat_messages) {
+    if (messagesFromParticipant.length === 0) {
       return "No messages";
     }
-    const allMessages = Object.values(data.chat_messages).flat();
-    if (allMessages.length === 0) {
-      return "No messages";
+    const lastMsg = messagesFromParticipant[messagesFromParticipant.length - 1];
+    const content = lastMsg?.content;
+    const contentStr = getContentString$1(content);
+    if (contentStr === "") {
+      return "No input";
     }
-    const lastMsg = allMessages[allMessages.length - 1];
-    const content = lastMsg?.content || "Unknown";
-    return content.length > 50 ? content.substring(0, 50) + "..." : content;
+    return contentStr.length > 50 ? contentStr.substring(0, 50) + "..." : contentStr;
   };
   const contextVars = data.context_variables?.data || data.context_variables || null;
   const hasContextVars = contextVars && Object.keys(contextVars).length > 0;
@@ -20595,7 +20620,7 @@ const AgentEventInfo = ({ agentData, darkMode }) => {
                   "div",
                   {
                     className: `text-xs p-2 rounded space-y-1 ${darkMode ? "bg-gray-900" : "bg-gray-50"}`,
-                    children: Object.entries(contextVars).map(([key, value]) => /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-2", children: [
+                    children: Object.entries(contextVars).map(([key, value], index2) => /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-2", children: [
                       /* @__PURE__ */ jsxs(
                         "span",
                         {
@@ -20613,7 +20638,7 @@ const AgentEventInfo = ({ agentData, darkMode }) => {
                           children: formatValue(value)
                         }
                       )
-                    ] }, key))
+                    ] }, `${key}-${index2}`))
                   }
                 )
               ] })
@@ -20689,7 +20714,7 @@ const renderEvent = (ev) => {
     case "text": {
       const c = ev.content;
       const { sender, recipient } = getParticipants(ev);
-      if (!sender || !recipient) {
+      if (!sender || !recipient || sender === recipient) {
         return null;
       }
       const content = getContentString(c);
@@ -24705,7 +24730,14 @@ const StepByStepView = ({ flowId, stepByStep, isDarkMode }) => {
               /* @__PURE__ */ jsx$1("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
             ] })
           ] }),
-          haveAgents && detailsViewActive ? /* @__PURE__ */ jsx$1("div", { className: "event-sender-details", children: agents.map((agent) => /* @__PURE__ */ jsx$1(AgentEventInfo, { agentData: agent, darkMode: isDarkMode }, agent.id)) }) : reducedHistory.length > 0 ? /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
+          haveAgents && detailsViewActive ? /* @__PURE__ */ jsx$1("div", { className: "event-sender-details", children: agents.map((agent, index2) => /* @__PURE__ */ jsx$1(
+            AgentEventInfo,
+            {
+              agentData: agent,
+              darkMode: isDarkMode
+            },
+            `agent-${index2}`
+          )) }) : reducedHistory.length > 0 ? /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
         ] })
       }
     ),
@@ -26558,7 +26590,7 @@ const LoadFlowStep = (props) => {
               {
                 type: "button",
                 title: "Search",
-                className: "modal-action-submit",
+                className: "modal-action-submit p-[7px] rounded",
                 onClick: onSearchSubmit,
                 "data-testid": `import-flow-modal-search-submit-${flowId}`,
                 disabled: loading,
@@ -26610,7 +26642,7 @@ const LoadFlowStep = (props) => {
           {
             type: "button",
             title: "Load flow from URL",
-            className: "modal-action-submit",
+            className: "modal-action-submit p-[7px] rounded",
             onClick: onRemoteUrlSubmit,
             "data-testid": `import-flow-modal-url-submit-${flowId}`,
             disabled: !remoteUrl.startsWith("https://") || loading,

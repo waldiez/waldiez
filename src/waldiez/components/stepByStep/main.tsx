@@ -288,8 +288,12 @@ export const StepByStepView: FC<{
                     )}
                     {haveAgents && detailsViewActive ? (
                         <div className="event-sender-details">
-                            {agents.map(agent => (
-                                <AgentEventInfo key={agent.id} agentData={agent} darkMode={isDarkMode} />
+                            {agents.map((agent, index) => (
+                                <AgentEventInfo
+                                    key={`agent-${index}`}
+                                    agentData={agent}
+                                    darkMode={isDarkMode}
+                                />
                             ))}
                         </div>
                     ) : reducedHistory.length > 0 ? (

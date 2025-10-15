@@ -159,7 +159,7 @@ const renderEvent = (ev: WaldiezEvent) => {
         case "text": {
             const c = ev.content as TextContent;
             const { sender, recipient } = getParticipants(ev);
-            if (!sender || !recipient) {
+            if (!sender || !recipient || sender === recipient) {
                 return null;
             }
             const content = getContentString(c);

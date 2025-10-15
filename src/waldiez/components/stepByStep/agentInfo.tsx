@@ -7,6 +7,30 @@ import { ChevronDown, ChevronRight, MessageSquare, User, Zap } from "lucide-reac
 
 import { type FC, useState } from "react";
 
+const getContentString: (data: any) => string = (data: any) => {
+    if (typeof data === "string") {
+        return data;
+    }
+    if (data === undefined || data === null) {
+        return "Unknown";
+    }
+    if (Array.isArray(data)) {
+        return data.map((entry: any) => getContentString(entry)).join(", ");
+    }
+    if (typeof data === "object") {
+        if ("type" in data) {
+            if (data.type === "text" && "text" in data) {
+                return getContentString(data.text);
+            }
+        }
+        if ("content" in data) {
+            return getContentString(data.content);
+        }
+        return JSON.stringify(data);
+    }
+    return String(data);
+};
+
 export const AgentEventInfo: FC<{ agentData: any; darkMode: boolean }> = ({ agentData, darkMode }) => {
     const [expanded, setExpanded] = useState(false);
 
@@ -15,24 +39,24 @@ export const AgentEventInfo: FC<{ agentData: any; darkMode: boolean }> = ({ agen
 
     // Extract key information
     const agentName = data.name || "Unknown Agent";
-    const systemMessage = data.system_message || data.description || "";
+    const systemMessage = getContentString(data.system_message || data.description || "");
     const totalCost = data.cost?.total?.total_cost || data.cost?.actual?.total_cost || 0;
-    const messageCount = data.chat_messages ? Object.values(data.chat_messages).flat().length : 0;
+    const flatMessages = data.chat_messages ? Object.values(data.chat_messages).flat() : [];
+    const messagesFromParticipant = flatMessages.filter((msg: any) => msg.name === data.name);
+    const messageCount = messagesFromParticipant.length;
 
-    // Get last message
     const getLastMessage = () => {
-        if (!data.chat_messages) {
+        if (messagesFromParticipant.length === 0) {
             return "No messages";
         }
 
-        const allMessages = Object.values(data.chat_messages).flat();
-        if (allMessages.length === 0) {
-            return "No messages";
+        const lastMsg = messagesFromParticipant[messagesFromParticipant.length - 1];
+        const content = (lastMsg as any)?.content;
+        const contentStr = getContentString(content);
+        if (contentStr === "") {
+            return "No input";
         }
-
-        const lastMsg = allMessages[allMessages.length - 1];
-        const content = (lastMsg as any)?.content || "Unknown";
-        return content.length > 50 ? content.substring(0, 50) + "..." : content;
+        return contentStr.length > 50 ? contentStr.substring(0, 50) + "..." : contentStr;
     };
 
     // Get context variables if they exist
@@ -161,8 +185,8 @@ export const AgentEventInfo: FC<{ agentData: any; darkMode: boolean }> = ({ agen
                                     darkMode ? "bg-gray-900" : "bg-gray-50"
                                 }`}
                             >
-                                {Object.entries(contextVars).map(([key, value]) => (
-                                    <div key={key} className="flex items-start gap-2">
+                                {Object.entries(contextVars).map(([key, value], index) => (
+                                    <div key={`${key}-${index}`} className="flex items-start gap-2">
                                         <span
                                             className={`font-mono ${
                                                 darkMode ? "text-blue-400" : "text-blue-600"

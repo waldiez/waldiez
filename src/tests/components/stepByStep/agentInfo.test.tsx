@@ -19,8 +19,8 @@ describe("AgentEventInfo", () => {
         },
         chat_messages: {
             user: [
-                { content: "Hello", role: "user" },
-                { content: "Hi there", role: "assistant" },
+                { content: "Hello", role: "user", name: "TestAgent" },
+                { content: "Hi there", role: "assistant", name: "AssistantAgent" },
             ],
         },
         context_variables: {
@@ -39,7 +39,7 @@ describe("AgentEventInfo", () => {
 
         it("should render message count", () => {
             render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
-            expect(screen.getByText("2")).toBeInTheDocument();
+            expect(screen.getByText("1")).toBeInTheDocument();
         });
 
         it("should render cost when present", () => {
@@ -148,7 +148,7 @@ describe("AgentEventInfo", () => {
             render(<AgentEventInfo agentData={mockAgentData} darkMode={false} />);
 
             await user.click(screen.getByText("TestAgent"));
-            expect(screen.getByText("Hi there")).toBeInTheDocument();
+            expect(screen.getByText("Hello")).toBeInTheDocument();
         });
 
         it("should truncate long messages", async () => {
@@ -157,7 +157,7 @@ describe("AgentEventInfo", () => {
             const longMsgData = {
                 ...mockAgentData,
                 chat_messages: {
-                    user: [{ content: longContent, role: "assistant" }],
+                    user: [{ content: longContent, role: "assistant", name: "TestAgent" }],
                 },
             };
             render(<AgentEventInfo agentData={longMsgData} darkMode={false} />);
@@ -190,7 +190,7 @@ describe("AgentEventInfo", () => {
             const noContentData = {
                 ...mockAgentData,
                 chat_messages: {
-                    user: [{ role: "assistant" }],
+                    user: [{ role: "assistant", name: "TestAgent" }],
                 },
             };
             render(<AgentEventInfo agentData={noContentData} darkMode={false} />);
@@ -320,16 +320,17 @@ describe("AgentEventInfo", () => {
         it("should count messages across multiple conversations", () => {
             const multiConversationData = {
                 ...mockAgentData,
+                name: "user2",
                 chat_messages: {
-                    user1: [{ content: "msg1", role: "user" }],
+                    user1: [{ content: "msg1", role: "user", name: "user2" }],
                     user2: [
-                        { content: "msg2", role: "user" },
-                        { content: "msg3", role: "assistant" },
+                        { content: "msg2", role: "user", name: "user1" },
+                        { content: "msg3", role: "assistant", name: "user2" },
                     ],
                 },
             };
             render(<AgentEventInfo agentData={multiConversationData} darkMode={false} />);
-            expect(screen.getByText("3")).toBeInTheDocument();
+            expect(screen.getByText("2")).toBeInTheDocument();
         });
 
         it("should show 0 messages when chat_messages is empty", () => {
