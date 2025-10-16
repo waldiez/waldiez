@@ -322,7 +322,10 @@ class StructuredIOStream(IOStream):
             response_type = "input_response"
         else:
             response_type = _response_type
-        if user_input.get("request_id") == request_id:
+        if (
+            user_input.get("request_id") == request_id
+            or response_type == "debug_input_response"
+        ):
             # We have a valid response to our request
             data = user_input.get("data")
             if not data:
