@@ -106,7 +106,7 @@ class StructuredIOStream(IOStream):
         ]:
             print(dumped, file=kwargs["file"], flush=flush)
         else:
-            print(dumped, flush=flush)
+            print(dumped, flush=flush, file=sys.stdout)
 
     def input(
         self,
@@ -205,7 +205,7 @@ class StructuredIOStream(IOStream):
             prompt=prompt,
             password=password,
         ).model_dump(mode="json")
-        print(json.dumps(payload, default=str), flush=True)
+        print(json.dumps(payload, default=str), flush=True, file=sys.stdout)
 
     @staticmethod
     def in_ipykernel() -> bool:
@@ -248,9 +248,11 @@ class StructuredIOStream(IOStream):
         request_id: str,
     ) -> str:
         try:
-            return (
-                getpass(prompt).strip() if password else input(prompt).strip()
-            )
+            print(prompt, end="", flush=True)
+            if password:
+                return getpass("").strip()
+            else:
+                return sys.stdin.readline().strip()
         except EOFError:
             return ""
         except BaseException as e:
@@ -274,12 +276,13 @@ class StructuredIOStream(IOStream):
 
         def read_input() -> None:
             """Read user input from stdin."""
+            # pylint: disable=too-many-try-statements
             try:
-                user_input = (
-                    getpass(prompt).strip()
-                    if password
-                    else input(prompt).strip()
-                )
+                print(prompt, end="", flush=True)
+                if password:
+                    user_input = getpass("").strip()
+                else:
+                    user_input = sys.stdin.readline().strip()
                 input_queue.put_nowait(user_input)
             except EOFError as error:
                 self._send_error_message(request_id, str(error))
