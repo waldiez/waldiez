@@ -216,12 +216,24 @@ class EventProcessor:
             return None
         dump = {
             name: _trimmed(value)
-            for name, value in inspect.getmembers(agent)
+            for name, value in vars(agent).items()
             if not name.startswith("_")
             and not inspect.ismethod(value)
             and not inspect.isfunction(value)
             and name.upper() != name
+            and name != "chat_messages"
         }
+        for attr_key in ["name", "description", "system_message"]:
+            attr_val = getattr(agent, attr_key)
+            if attr_val:
+                dump[attr_key] = _trimmed(attr_val)
+        try:
+            dump["chat_messages"] = {
+                _to_json_key(agent): [_trimmed(message) for message in messages]
+                for _agent, messages in agent.chat_messages.items()
+            }
+        except BaseException:  # pylint: disable=broad-exception-caught
+            pass
         dump["cost"] = {
             "actual": agent.get_actual_usage(),
             "total": agent.get_total_usage(),
@@ -328,7 +340,7 @@ def _trimmed(  # noqa: C901
                 {
                     k: v
                     for k, v in vars(value).items()
-                    if not str(k).startswith("__")
+                    if not str(k).startswith("_") and str(k) != "key"
                 },
                 max_len,
                 _depth + 1,
@@ -350,14 +362,17 @@ def _is_dataclass_instance(obj: Any) -> bool:
     return is_dataclass(obj) and not isinstance(obj, type)
 
 
-def _to_json_key(key: Any, max_len: int) -> str:
+def _to_json_key(key: Any, max_len: int = 200) -> str:
     """Convert dict key to a JSON-legal key."""
     if key is None or isinstance(key, (bool, int, float)):
-        # JSON allows these directly; turn into str to be safe and consistent.
         return str(key)
 
     if isinstance(key, str):
         return key[:max_len] + "..." if len(key) > max_len else key
+
+    for _key in ["name", "_name", "__name__"]:
+        if hasattr(key, _key):
+            return str(getattr(key, _key))
 
     # Non-primitive key: include type to avoid collisions like 1 vs "1"
     s = f"<{type(key).__name__}> {repr(key)}"
