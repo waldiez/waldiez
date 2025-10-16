@@ -55,9 +55,12 @@ export const WaldiezEdgeHidden = memo((props: EdgeProps<WaldiezEdge>) => {
  * Determine the type of group chat based on source and target agents
  */
 const getGroupChatType = (
-    sourceAgent: WaldiezNodeAgent,
-    targetAgent: WaldiezNodeAgent,
+    sourceAgent: WaldiezNodeAgent | null,
+    targetAgent: WaldiezNodeAgent | null,
 ): WaldiezGroupChatType => {
+    if (!sourceAgent || !targetAgent) {
+        return "toManager";
+    }
     if (targetAgent.data.agentType === "group_manager") {
         return "toManager";
     }
@@ -144,12 +147,6 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
     // Track focus state for interaction UI
     const [focussed, setFocussed] = useState(false);
 
-    // Return empty fragment if edge is hidden or agents are missing
-    /* eslint-disable react-hooks/rules-of-hooks */
-    if (type === "hidden" || !sourceAgent || !targetAgent || !data) {
-        return null;
-    }
-
     // Determine group chat type if applicable
     const groupChatType = useMemo(
         () => (type === "group" ? getGroupChatType(sourceAgent, targetAgent) : "toManager"),
@@ -208,14 +205,6 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
             edgeStart: sourceTransform,
             edgeEnd: targetTransform,
         };
-
-        // // Mix and match to find what works best:
-        // const sourceTransform = sourceApproaches.approach1;  // Port-based
-        // const targetTransform = targetApproaches.approach2;  // Reverse geometry
-
-        // // Or try the bezier path approach for both:
-        // const sourceTransform = sourceApproaches.approach3;  // Actual bezier math
-        // const targetTransform = targetApproaches.approach3;  // Actual bezier math
     }, [sourceX, sourceY, targetX, targetY, labelX, labelY, sourcePosition, targetPosition]);
 
     // Event handlers
@@ -279,6 +268,11 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
         return <div className="agent-edge-view clickable">{edgeIcon}</div>;
     }, [edgeNumber, type, edgeIcon, edge, positionTranslation, groupChatType]);
 
+    // Return empty fragment if edge is hidden or parts are missing
+    if (type === "hidden" || !sourceAgent || !targetAgent || !data) {
+        return null;
+    }
+
     return (
         <>
             <BaseEdge path={edgePath} markerEnd={markerEnd} style={{ ...style, color: edgeColor }} />
@@ -327,7 +321,6 @@ const WaldiezEdgeCommon = memo((props: WaldiezEdgeProps) => {
     );
 });
 
-// Add display names for better debugging
 WaldiezEdgeChat.displayName = "WaldiezEdgeChat";
 WaldiezEdgeNested.displayName = "WaldiezEdgeNested";
 WaldiezEdgeGroup.displayName = "WaldiezEdgeGroup";

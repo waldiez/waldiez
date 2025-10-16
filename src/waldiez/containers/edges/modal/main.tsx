@@ -63,12 +63,6 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
         }
     }, [isOpen]);
 
-    // If missing required data, return empty fragment
-    /* eslint-disable react-hooks/rules-of-hooks */
-    if (!edgeData || !edge || edgeType === "hidden" || !sourceAgent || !targetAgent) {
-        return null;
-    }
-
     /**
      * Save changes and close modal
      */
@@ -112,7 +106,7 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
 
     // Determine group chat type based on edge properties
     const groupChatType = useMemo<WaldiezGroupChatType>(() => {
-        if (edgeType !== "group") {
+        if (edgeType !== "group" || !edgeData?.targetType || !edgeData?.sourceType) {
             return "none";
         }
 
@@ -122,7 +116,7 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
         if (edgeData.sourceType === "group_manager") {
             return "fromManager";
         }
-        if (!targetAgent.parentId) {
+        if (!targetAgent?.parentId) {
             return "nested";
         }
 
@@ -154,6 +148,13 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
 
     // Set current nested message input based on group chat type
     const currentNestedMessageInput = useMemo(() => {
+        if (!edgeData?.nestedChat) {
+            return {
+                type: "string" as WaldiezMessageType,
+                content: "",
+                context: {},
+            };
+        }
         return (
             edgeData.nestedChat.message || {
                 type: "string" as WaldiezMessageType,
@@ -161,13 +162,16 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                 context: {},
             }
         );
-    }, [edgeData.nestedChat.message]);
+    }, [edgeData?.nestedChat]);
 
     const noOp = useCallback(() => {}, []);
 
     // Handle nested message type change
     const onNestedMessageTypeChange = useCallback(
         (type: WaldiezMessageType) => {
+            if (!edgeData?.nestedChat) {
+                return;
+            }
             const updatedMessage = {
                 ...edgeData.nestedChat.message,
                 content: edgeData.nestedChat.message?.content || "",
@@ -181,12 +185,15 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                 },
             });
         },
-        [onDataChange, edgeData.nestedChat],
+        [onDataChange, edgeData?.nestedChat],
     );
 
     // Handle nested message change
     const onNestedMessageChange = useCallback(
         (message: WaldiezMessage) => {
+            if (!edgeData?.nestedChat) {
+                return;
+            }
             onDataChange({
                 nestedChat: {
                     ...edgeData.nestedChat,
@@ -194,9 +201,12 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                 },
             });
         },
-        [onDataChange, edgeData.nestedChat],
+        [onDataChange, edgeData?.nestedChat],
     );
-
+    // If missing required data, return empty fragment
+    if (!edgeData || !edge || edgeType === "hidden" || !sourceAgent || !targetAgent) {
+        return null;
+    }
     return (
         <Modal
             flowId={flowId}

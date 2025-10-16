@@ -28264,6 +28264,9 @@ const WaldiezEdgeHidden = memo((props) => {
   return /* @__PURE__ */ jsx$1(WaldiezEdgeCommon, { ...props, type: "hidden" });
 });
 const getGroupChatType = (sourceAgent, targetAgent) => {
+  if (!sourceAgent || !targetAgent) {
+    return "toManager";
+  }
   if (targetAgent.data.agentType === "group_manager") {
     return "toManager";
   }
@@ -28327,9 +28330,6 @@ const WaldiezEdgeCommon = memo((props) => {
     getEdgeNumber
   } = useWaldiezEdge(props);
   const [focussed, setFocussed] = useState(false);
-  if (type === "hidden" || !sourceAgent || !targetAgent || !data) {
-    return null;
-  }
   const groupChatType = useMemo(
     () => type === "group" ? getGroupChatType(sourceAgent, targetAgent) : "toManager",
     [type, sourceAgent, targetAgent]
@@ -28428,6 +28428,9 @@ const WaldiezEdgeCommon = memo((props) => {
     }
     return /* @__PURE__ */ jsx$1("div", { className: "agent-edge-view clickable", children: edgeIcon });
   }, [edgeNumber, type, edgeIcon, edge, positionTranslation, groupChatType]);
+  if (type === "hidden" || !sourceAgent || !targetAgent || !data) {
+    return null;
+  }
   return /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx$1(BaseEdge, { path: edgePath, markerEnd, style: { ...style, color: edgeColor } }),
     /* @__PURE__ */ jsx$1(EdgeLabelRenderer, { children: /* @__PURE__ */ jsxs(
@@ -29250,9 +29253,6 @@ const WaldiezEdgeModal = memo((props) => {
       setActiveTabIndex(0);
     }
   }, [isOpen]);
-  if (!edgeData || !edge || edgeType === "hidden" || !sourceAgent || !targetAgent) {
-    return null;
-  }
   const onSaveAndClose = useCallback(() => {
     onSubmit();
     onClose();
@@ -29282,7 +29282,7 @@ const WaldiezEdgeModal = memo((props) => {
     [onDelete]
   );
   const groupChatType = useMemo(() => {
-    if (edgeType !== "group") {
+    if (edgeType !== "group" || !edgeData?.targetType || !edgeData?.sourceType) {
       return "none";
     }
     if (edgeData.targetType === "group_manager") {
@@ -29291,7 +29291,7 @@ const WaldiezEdgeModal = memo((props) => {
     if (edgeData.sourceType === "group_manager") {
       return "fromManager";
     }
-    if (!targetAgent.parentId) {
+    if (!targetAgent?.parentId) {
       return "nested";
     }
     return "handoff";
@@ -29316,16 +29316,26 @@ const WaldiezEdgeModal = memo((props) => {
     [edgeId]
   );
   const currentNestedMessageInput = useMemo(() => {
+    if (!edgeData?.nestedChat) {
+      return {
+        type: "string",
+        content: "",
+        context: {}
+      };
+    }
     return edgeData.nestedChat.message || {
       type: "string",
       content: "",
       context: {}
     };
-  }, [edgeData.nestedChat.message]);
+  }, [edgeData?.nestedChat]);
   const noOp2 = useCallback(() => {
   }, []);
   const onNestedMessageTypeChange = useCallback(
     (type) => {
+      if (!edgeData?.nestedChat) {
+        return;
+      }
       const updatedMessage = {
         ...edgeData.nestedChat.message,
         content: edgeData.nestedChat.message?.content || "",
@@ -29339,10 +29349,13 @@ const WaldiezEdgeModal = memo((props) => {
         }
       });
     },
-    [onDataChange, edgeData.nestedChat]
+    [onDataChange, edgeData?.nestedChat]
   );
   const onNestedMessageChange = useCallback(
     (message) => {
+      if (!edgeData?.nestedChat) {
+        return;
+      }
       onDataChange({
         nestedChat: {
           ...edgeData.nestedChat,
@@ -29350,8 +29363,11 @@ const WaldiezEdgeModal = memo((props) => {
         }
       });
     },
-    [onDataChange, edgeData.nestedChat]
+    [onDataChange, edgeData?.nestedChat]
   );
+  if (!edgeData || !edge || edgeType === "hidden" || !sourceAgent || !targetAgent) {
+    return null;
+  }
   return /* @__PURE__ */ jsx$1(
     Modal,
     {
