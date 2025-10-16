@@ -38,5 +38,3 @@ fs.writeFile(outputPath, schemaString, err => {
     }
     console.info(`Schema written to ${outputPath}`);
 });
-
-// fs.writeFileSync("waldiez-flow.json", JSON.stringify(WaldiezJsonSchema, null, 2));
