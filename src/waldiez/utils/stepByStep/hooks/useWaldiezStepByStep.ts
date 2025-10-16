@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-/* eslint-disable max-statements */
+/* eslint-disable max-statements,complexity */
 import { type Dispatch, useCallback, useMemo, useReducer, useRef } from "react";
 
 import type { WaldiezActiveRequest, WaldiezChatParticipant } from "@waldiez/components/chatUI/types";
@@ -93,19 +93,22 @@ export const useWaldiezStepByStep: (props: {
     deduplicationOptions?: WaldiezStepByStepMessageDeduplicationOptions;
 }) => {
     const { initialConfig, handlers, preprocess, deduplicationOptions } = props;
+    const initialHandlers = useMemo<WaldiezStepHandlers>(
+        () => ({
+            onStart: handlers?.onStart || initialConfig?.handlers?.onStart || noOp,
+            close: handlers?.close || initialConfig?.handlers?.close || noOp,
+            sendControl: handlers?.sendControl || initialConfig?.handlers?.close || noOp,
+            respond: handlers?.respond || initialConfig?.handlers?.respond || noOp,
+        }),
+        [initialConfig, handlers],
+    );
     const initial = useMemo<WaldiezStepByStep>(
-        // eslint-disable-next-line complexity
         () => ({
             ...defaultStepByStep,
             ...initialConfig,
-            handlers: {
-                onStart: handlers?.onStart || initialConfig?.handlers?.onStart || noOp,
-                close: handlers?.close || initialConfig?.handlers?.close || noOp,
-                sendControl: handlers?.sendControl || initialConfig?.handlers?.close || noOp,
-                respond: handlers?.respond || initialConfig?.handlers?.respond || noOp,
-            },
+            handlers: initialHandlers,
         }),
-        [initialConfig, handlers],
+        [initialConfig, initialHandlers],
     );
     const [config, dispatch] = useReducer(waldiezStepByStepReducer, initial);
     const initialConfigRef = useRef<WaldiezStepByStep>(initial);
@@ -230,9 +233,9 @@ export const useWaldiezStepByStep: (props: {
     }, [clearEventsCache]);
 
     const reset = useCallback(() => {
-        dispatch({ type: "RESET", config: initialConfigRef.current });
+        dispatch({ type: "RESET", config: { ...initialConfigRef.current, handlers: initialHandlers } });
         clearEventsCache();
-    }, [clearEventsCache]);
+    }, [clearEventsCache, initialHandlers]);
 
     const handleProcessorResult = useCallback(
         (result: WaldiezStepByStepProcessingResult) => {

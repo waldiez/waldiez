@@ -129,11 +129,15 @@ export const useWaldiezWrapper = ({
         [getPendingInputId, clearPendingInput, getSessionId],
     );
     const onCloseChat = useCallback(() => {
-        chatDispatchRef.current?.({ type: "RESET" });
-    }, []);
-    const onCloseStepView = useCallback(() => {
+        const sid = getSessionId() ?? "<unknown>";
+        messageSender.current?.({ type: "stop", session_id: sid, force: true });
         stepDispatchRef.current?.({ type: "RESET" });
-    }, []);
+    }, [getSessionId]);
+    const onCloseStepView = useCallback(() => {
+        const sid = getSessionId() ?? "<unknown>";
+        messageSender.current?.({ type: "stop", session_id: sid, force: true });
+        stepDispatchRef.current?.({ type: "RESET" });
+    }, [getSessionId]);
     const {
         send: sendMessage,
         chat,

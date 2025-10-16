@@ -164,8 +164,6 @@ export const StepByStepView: FC<{
     if (!stepByStep?.active && !canClose) {
         return null;
     }
-    // if the state is "error", enable close (if there is such handler)
-    const mayClose = canClose || (!!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error");
     const currentEvent = stepByStep?.currentEvent;
     const agents = (currentEvent?.agents as any)?.all;
     const haveAgents = Array.isArray(agents) && agents.length > 0;
@@ -189,11 +187,11 @@ export const StepByStepView: FC<{
             {!badgeText && stepByStep?.active && <div className="badge">Running</div>}
         </div>
     );
-    const headerRight = mayClose ? (
+    const headerRight = stepByStep?.handlers?.close ? (
         <button
             title="Close"
             type="button"
-            onClick={stepByStep?.handlers?.close}
+            onClick={stepByStep.handlers.close}
             className="header-toggle"
             aria-label="Close panel"
         >

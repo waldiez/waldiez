@@ -46,7 +46,7 @@ export const waldiezChatReducer = (
                 error: undefined,
                 timeline: undefined,
                 mediaConfig: undefined,
-                handlers: undefined,
+                handlers: state.handlers,
             };
         case "SET_ACTIVE":
             return { ...state, active: action.active };

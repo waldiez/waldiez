@@ -60,7 +60,7 @@ export const waldiezStepByStepReducer = (
                 lastError: undefined,
                 stats: undefined,
                 help: undefined,
-                handlers: undefined,
+                handlers: state.handlers,
             };
         case "SET_ACTIVE":
             return { ...state, active: action.active };

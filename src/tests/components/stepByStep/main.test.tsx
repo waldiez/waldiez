@@ -145,37 +145,6 @@ describe("StepByStepView", () => {
             expect(screen.getByTestId("icon-chevron-down")).toBeInTheDocument();
         });
 
-        it("should show close button when inactive and can close", () => {
-            const inactiveStepByStep = {
-                ...defaultStepByStep,
-                active: false,
-                eventHistory: [{ data: "some event" }],
-            };
-
-            _renderView(inactiveStepByStep);
-
-            expect(screen.getByTitle("Close")).toBeInTheDocument();
-            expect(screen.getByTestId("icon-x")).toBeInTheDocument();
-        });
-
-        it("should not show close button when active", () => {
-            _renderView(defaultStepByStep);
-
-            expect(screen.queryByTitle("Close")).not.toBeInTheDocument();
-        });
-
-        it("should not show close button when no event history", () => {
-            const inactiveStepByStep = {
-                ...defaultStepByStep,
-                active: false,
-                eventHistory: [],
-            };
-
-            const { container } = _renderView(inactiveStepByStep);
-
-            expect(container.firstChild).toBeNull();
-        });
-
         it("should call close handler when close button is clicked", () => {
             const inactiveStepByStep = {
                 ...defaultStepByStep,

@@ -9,7 +9,6 @@ import {
     memo,
     useCallback,
     useEffect,
-    useMemo,
     useRef,
     useState,
 } from "react";
@@ -25,7 +24,7 @@ import { type ChatModalProps } from "@waldiez/containers/flow/modals/chatModal/t
  * Modal component for collecting user input with optional image upload
  */
 
-// eslint-disable-next-line complexity, max-lines-per-function
+// eslint-disable-next-line complexity
 export const ChatModal = memo((props: ChatModalProps) => {
     const { flowId, chat } = props;
 
@@ -131,6 +130,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
         setImagePreview(null);
         if (chat?.handlers?.onClose) {
             chat.handlers.onClose();
+            setIsLocallyOpen(false);
         } else {
             // Fallback: close the modal locally
             setIsLocallyOpen(false);
@@ -189,15 +189,6 @@ export const ChatModal = memo((props: ChatModalProps) => {
             <FaStop size={18} />
         </div>
     ) : undefined;
-    const hasCloseBtn = useMemo(() => {
-        if (!chat || !chat?.active) {
-            return true;
-        }
-        if (chat.messages.length < 1) {
-            return false;
-        }
-        return Boolean(chat.messages[chat.messages.length - 1]?.type === "error");
-    }, [chat]);
     const allowImage = !chat || !chat?.mediaConfig ? true : chat?.mediaConfig?.allowedTypes.includes("image");
     if (timelineOpen && chat?.timeline) {
         return (
@@ -221,7 +212,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
             beforeTitle={leftIcon}
             className="chat-modal"
             hasMaximizeBtn={true}
-            hasCloseBtn={hasCloseBtn}
+            hasCloseBtn={true}
             dataTestId={modalTestId}
             hasUnsavedChanges={false}
             preventCloseIfUnsavedChanges={false}

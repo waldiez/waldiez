@@ -1244,7 +1244,7 @@ const waldiezChatReducer = (state, action) => {
         error: void 0,
         timeline: void 0,
         mediaConfig: void 0,
-        handlers: void 0
+        handlers: state.handlers
       };
     case "SET_ACTIVE":
       return { ...state, active: action.active };
@@ -2624,7 +2624,7 @@ const waldiezStepByStepReducer = (state, action) => {
         lastError: void 0,
         stats: void 0,
         help: void 0,
-        handlers: void 0
+        handlers: state.handlers
       };
     case "SET_ACTIVE":
       return { ...state, active: action.active };
@@ -2734,19 +2734,22 @@ const noOp = () => {
 };
 const useWaldiezStepByStep = (props) => {
   const { initialConfig, handlers, preprocess, deduplicationOptions } = props;
+  const initialHandlers = useMemo(
+    () => ({
+      onStart: handlers?.onStart || initialConfig?.handlers?.onStart || noOp,
+      close: handlers?.close || initialConfig?.handlers?.close || noOp,
+      sendControl: handlers?.sendControl || initialConfig?.handlers?.close || noOp,
+      respond: handlers?.respond || initialConfig?.handlers?.respond || noOp
+    }),
+    [initialConfig, handlers]
+  );
   const initial = useMemo(
-    // eslint-disable-next-line complexity
     () => ({
       ...defaultStepByStep,
       ...initialConfig,
-      handlers: {
-        onStart: handlers?.onStart || initialConfig?.handlers?.onStart || noOp,
-        close: handlers?.close || initialConfig?.handlers?.close || noOp,
-        sendControl: handlers?.sendControl || initialConfig?.handlers?.close || noOp,
-        respond: handlers?.respond || initialConfig?.handlers?.respond || noOp
-      }
+      handlers: initialHandlers
     }),
-    [initialConfig, handlers]
+    [initialConfig, initialHandlers]
   );
   const [config, dispatch] = useReducer(waldiezStepByStepReducer, initial);
   const initialConfigRef = useRef(initial);
@@ -2851,9 +2854,9 @@ const useWaldiezStepByStep = (props) => {
     clearEventsCache();
   }, [clearEventsCache]);
   const reset = useCallback(() => {
-    dispatch({ type: "RESET", config: initialConfigRef.current });
+    dispatch({ type: "RESET", config: { ...initialConfigRef.current, handlers: initialHandlers } });
     clearEventsCache();
-  }, [clearEventsCache]);
+  }, [clearEventsCache, initialHandlers]);
   const handleProcessorResult = useCallback(
     (result) => {
       if (result.stateUpdate?.participants) {
@@ -24649,7 +24652,6 @@ const StepByStepView = ({ flowId, stepByStep, isDarkMode }) => {
   if (!stepByStep?.active && !canClose) {
     return null;
   }
-  const mayClose = canClose || !!stepByStep?.handlers?.close && badgeText?.toLowerCase() === "error";
   const currentEvent = stepByStep?.currentEvent;
   const agents = currentEvent?.agents?.all;
   const haveAgents = Array.isArray(agents) && agents.length > 0;
@@ -24671,12 +24673,12 @@ const StepByStepView = ({ flowId, stepByStep, isDarkMode }) => {
     !badgeText && !stepByStep?.active && /* @__PURE__ */ jsx$1("div", { className: "badge", children: "Finished" }),
     !badgeText && stepByStep?.active && /* @__PURE__ */ jsx$1("div", { className: "badge", children: "Running" })
   ] });
-  const headerRight = mayClose ? /* @__PURE__ */ jsx$1(
+  const headerRight = stepByStep?.handlers?.close ? /* @__PURE__ */ jsx$1(
     "button",
     {
       title: "Close",
       type: "button",
-      onClick: stepByStep?.handlers?.close,
+      onClick: stepByStep.handlers.close,
       className: "header-toggle",
       "aria-label": "Close panel",
       children: /* @__PURE__ */ jsx$1(FaX, { size: 14 })
@@ -25870,6 +25872,7 @@ const ChatModal = memo((props) => {
     setImagePreview(null);
     if (chat?.handlers?.onClose) {
       chat.handlers.onClose();
+      setIsLocallyOpen(false);
     } else {
       setIsLocallyOpen(false);
     }
@@ -25919,15 +25922,6 @@ const ChatModal = memo((props) => {
       children: /* @__PURE__ */ jsx$1(MdTimeline, { size: 18 })
     }
   ) : chat?.handlers?.onInterrupt && !chat.active ? /* @__PURE__ */ jsx$1("div", { role: "button", className: "chat-modal-action clickable", onClick: onInterrupt, title: "Interrupt", children: /* @__PURE__ */ jsx$1(FaStop$1, { size: 18 }) }) : void 0;
-  const hasCloseBtn = useMemo(() => {
-    if (!chat || !chat?.active) {
-      return true;
-    }
-    if (chat.messages.length < 1) {
-      return false;
-    }
-    return Boolean(chat.messages[chat.messages.length - 1]?.type === "error");
-  }, [chat]);
   const allowImage = !chat || !chat?.mediaConfig ? true : chat?.mediaConfig?.allowedTypes.includes("image");
   if (timelineOpen && chat?.timeline) {
     return /* @__PURE__ */ jsx$1(
@@ -25952,7 +25946,7 @@ const ChatModal = memo((props) => {
       beforeTitle: leftIcon,
       className: "chat-modal",
       hasMaximizeBtn: true,
-      hasCloseBtn,
+      hasCloseBtn: true,
       dataTestId: modalTestId,
       hasUnsavedChanges: false,
       preventCloseIfUnsavedChanges: false,
