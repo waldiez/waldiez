@@ -6,7 +6,7 @@ mkdocs-autorefs==1.4.3
 mkdocs-awesome-nav==3.2.0
 mkdocs-jupyter==0.25.1
 mkdocs-macros-plugin==1.4.0
-mkdocs-material==9.6.21
+mkdocs-material==9.6.22
 mkdocs-minify-html-plugin;python_version >= '3.13' and sys_platform == 'win32' and platform_machine == 'AARCH64'
 mkdocs-minify-html-plugin;python_version >= '3.13' and sys_platform == 'win32' and platform_machine == 'ARM64'
 mkdocs-minify-html-plugin;python_version >= '3.13' and sys_platform == 'win32' and platform_machine == 'aarch64'
