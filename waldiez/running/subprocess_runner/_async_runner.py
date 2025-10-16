@@ -159,7 +159,8 @@ class AsyncSubprocessRunner(BaseSubprocessRunner):
                     await self.process.wait()
 
             except Exception as e:
-                self.logger.error(f"Error stopping subprocess: {e}")
+                if not isinstance(e, AttributeError):
+                    self.logger.error(f"Error stopping subprocess: {e}")
         self.process = None
 
     async def _start_monitoring(self) -> None:

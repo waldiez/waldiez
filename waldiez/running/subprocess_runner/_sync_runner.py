@@ -352,8 +352,9 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
                         f"Thread {thread.name} did not stop gracefully"
                     )
 
+    # pylint: disable=too-complex
     # noinspection TryExceptPass,PyBroadException
-    def _cleanup_process(self) -> None:
+    def _cleanup_process(self) -> None:  # noqa: C901
         """Cleanup process resources."""
         if self.process:
             if self.process.stdin:
@@ -382,7 +383,9 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
                 self.process.kill()
                 self.process.wait()
             except BaseException as e:
-                self.logger.error(f"Error stopping subprocess: {e}")
+                if not isinstance(e, AttributeError):
+                    # already "None"
+                    self.logger.error(f"Error stopping subprocess: {e}")
             finally:
                 self.process = None
 
