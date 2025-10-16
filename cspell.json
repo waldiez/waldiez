@@ -79,6 +79,7 @@
         "eclint",
         "embedchain",
         "ename",
+        "endswith",
         "envpython",
         "epytext",
         "evalue",
