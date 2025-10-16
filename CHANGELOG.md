@@ -5,6 +5,17 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## Unreleased
+
+- Updated ag2 dependency to 0.9.10
+- Updated jupyter dependencies to 4.4.9
+- Added breakpoints support in the step-by-step runner
+- Added multiple tabs support in studio
+- Added dnd support for uploading files in studio
+- Bug fixes and enhancements
+- UI related enhancements
+- Dependency updates
+
 ## v0.6.0
 
 - New mode for step-by-step running a waldiez flow
@@ -101,7 +112,7 @@ The contents of each release will be used in
 ## v0.5.0
 
 - Updated ag2 dependency to 0.9.3.
-- Swarm depraction and migration to group chats as in ag2.
+- Swarm deprecation and migration to group chats as in ag2.
 - New json schema to ensure ts and py compatibility.
 - Several ui changes.
 - Added structured IO Stream.
