@@ -4,11 +4,13 @@
 # pylint: disable=unused-argument,no-self-use
 # pyright: reportMissingTypeStubs=false, reportImportCycles=false
 # pyright: reportDeprecated=false, reportUnknownMemberType=false
-# pyright: reportUnknownVariableType=false
+# pyright: reportUnknownVariableType=false, reportUnknownArgumentType=false
 
 """Command handler for step-by-step execution."""
 
 import inspect
+from collections.abc import Mapping, Sequence
+from dataclasses import asdict, is_dataclass
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 if TYPE_CHECKING:
@@ -213,7 +215,7 @@ class EventProcessor:
         if not agent:
             return None
         dump = {
-            name: _trim_value(value)
+            name: _trimmed(value)
             for name, value in inspect.getmembers(agent)
             if not name.startswith("_")
             and not inspect.ismethod(value)
@@ -258,36 +260,105 @@ class EventProcessor:
         }
 
 
-# pylint: disable=too-complex,too-many-return-statements
-def _trim_value(value: Any, max_len: int = 200) -> Any:
+# pylint: disable=too-complex,too-many-return-statements,
+# pylint: disable=broad-exception-caught,too-complex,too-many-branches
+def _trimmed(  # noqa: C901
+    value: Any, max_len: int = 200, _depth: int = 0, _max_depth: int = 10
+) -> Any:
     """Recursively trim values for serialization."""
+    if _depth >= _max_depth:
+        # Hard stop
+        s = str(value)
+        return (s[:max_len] + "...") if len(s) > max_len else s
+
     if isinstance(value, str):
         return value[:max_len] + "..." if len(value) > max_len else value
-    if isinstance(value, dict):
-        return {k: _trim_value(v, max_len) for k, v in value.items()}
-    if isinstance(value, (list, tuple)):
-        trimmed = [_trim_value(item, max_len) for item in value]
-        return trimmed if isinstance(value, list) else tuple(trimmed)
-    if isinstance(value, set):
-        return {_trim_value(item, max_len) for item in value}
-    if hasattr(value, "__dict__"):
-        # Handle objects with attributes by converting to dict
+
+    if value is None or isinstance(value, (int, float, bool)):
+        return value
+
+    if isinstance(value, (bytes, bytearray)):
         try:
-            return {
-                k: _trim_value(v, max_len)
-                for k, v in value.__dict__.items()
-                if not k.startswith("_")
-            }
-        except Exception:  # pylint: disable=broad-exception-caught
-            return (
-                str(value)[:max_len] + "..."
-                if len(str(value)) > max_len
-                else str(value)
+            s = value.decode("utf-8", errors="replace")
+            return s[:max_len] + "..." if len(s) > max_len else s
+        except Exception:
+            return f"<{type(value).__name__}> {len(value)} bytes"
+
+    if callable(value):
+        # pylint: disable=too-many-try-statements
+        try:
+            name = getattr(value, "__name__", repr(value))
+            module = getattr(value, "__module__", "")
+            if module:
+                s = f"<callable> {module}.{name}"
+            else:
+                s = f"<callable> {name}"
+            return s[:max_len] + "..." if len(s) > max_len else s
+        except Exception:
+            return "<callable>"
+
+    if _is_dataclass_instance(value):
+        try:
+            value = asdict(value)
+        except Exception:
+            s = str(value)
+            return (s[:max_len] + "...") if len(s) > max_len else s
+
+    if isinstance(value, Mapping):
+        out: dict[str, Any] = {}
+        for k, v in value.items():
+            jk = _to_json_key(k, max_len)
+            out[jk] = _trimmed(v, max_len, _depth + 1, _max_depth)
+        return out
+    if isinstance(value, (set, frozenset)):
+        items = [_trimmed(it, max_len, _depth + 1, _max_depth) for it in value]
+        try:
+            items.sort(key=repr)
+        except Exception:
+            pass
+        return items
+
+    if isinstance(value, Sequence) and not isinstance(
+        value, (str, bytes, bytearray)
+    ):
+        return [_trimmed(it, max_len, _depth + 1, _max_depth) for it in value]
+    if hasattr(value, "__dict__"):
+        try:
+            return _trimmed(
+                {
+                    k: v
+                    for k, v in vars(value).items()
+                    if not str(k).startswith("__")
+                },
+                max_len,
+                _depth + 1,
+                _max_depth,
             )
+        except Exception:
+            pass
+
+    # Fallback: stringify and trim
     try:
-        str_val = str(value)
-        if len(str_val) > max_len:
-            return str_val[:max_len] + "..."
-    except Exception:  # pylint: disable=broad-exception-caught
-        pass
-    return value
+        s = str(value)
+        return s[:max_len] + "..." if len(s) > max_len else s
+    except Exception:
+        return None
+
+
+def _is_dataclass_instance(obj: Any) -> bool:
+    """Check if an object is an instance of a dataclass."""
+    return is_dataclass(obj) and not isinstance(obj, type)
+
+
+def _to_json_key(key: Any, max_len: int) -> str:
+    """Convert dict key to a JSON-legal key."""
+    if key is None or isinstance(key, (bool, int, float)):
+        # JSON allows these directly; turn into str to be safe and consistent.
+        return str(key)
+
+    if isinstance(key, str):
+        return key[:max_len] + "..." if len(key) > max_len else key
+
+    # Non-primitive key: include type to avoid collisions like 1 vs "1"
+    s = f"<{type(key).__name__}> {repr(key)}"
+    return s[:max_len] + "..." if len(s) > max_len else s
