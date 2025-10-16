@@ -9,9 +9,7 @@
 """Structured I/O stream for JSON-based communication over stdin/stdout."""
 
 import json
-import queue
 import sys
-import threading
 from getpass import getpass
 from pathlib import Path
 from typing import Any
@@ -106,7 +104,7 @@ class StructuredIOStream(IOStream):
         ]:
             print(dumped, file=kwargs["file"], flush=flush)
         else:
-            print(dumped, flush=flush, file=sys.stdout)
+            print(dumped, flush=flush)
 
     def input(
         self,
@@ -179,11 +177,7 @@ class StructuredIOStream(IOStream):
                     inner_content
                 )
         message_dump["timestamp"] = now()
-        print(
-            json.dumps(message_dump, default=str),
-            flush=True,
-            file=sys.stdout,
-        )
+        print(json.dumps(message_dump, default=str), flush=True)
 
     # noinspection PyMethodMayBeStatic
     # pylint: disable=no-self-use
@@ -205,59 +199,7 @@ class StructuredIOStream(IOStream):
             prompt=prompt,
             password=password,
         ).model_dump(mode="json")
-        print(json.dumps(payload, default=str), flush=True, file=sys.stdout)
-
-    @staticmethod
-    def in_ipykernel() -> bool:
-        """Check if we are in an ipykernel.
-
-        Returns
-        -------
-        bool
-            True if inside ipykernel, false otherwise.
-        """
-        try:
-            # pylint: disable=import-outside-toplevel
-            from IPython import get_ipython  # type: ignore
-
-            ip = get_ipython()  # type: ignore
-            # Check if we're in IPython AND have a kernel
-            # (not just terminal IPython)
-            return bool(ip) and getattr(ip, "kernel", None) is not None
-        except (ImportError, AttributeError):
-            return False
-
-    @staticmethod
-    def in_ipykernel_main_thread() -> bool:
-        """Check if we are in ipykernel's main thread.
-
-        Returns
-        -------
-        bool
-            True if we are in ipykernel's main thread.
-        """
-        return (
-            StructuredIOStream.in_ipykernel()
-            and threading.current_thread() is threading.main_thread()
-        )
-
-    def _read_direct_input(
-        self,
-        prompt: str,
-        password: bool,
-        request_id: str,
-    ) -> str:
-        try:
-            print(prompt, end="", flush=True)
-            if password:
-                return getpass("").strip()
-            else:
-                return sys.stdin.readline().strip()
-        except EOFError:
-            return ""
-        except BaseException as e:
-            self._send_error_message(request_id, str(e))
-            return ""
+        print(json.dumps(payload, default=str), flush=True)
 
     def _read_user_input(
         self,
@@ -265,42 +207,15 @@ class StructuredIOStream(IOStream):
         password: bool,
         request_id: str,
     ) -> str:
-        if self.in_ipykernel_main_thread():
-            # direct input/getpass if inside jupyter/ipykernel
-            # no timeout though :(
-            return self._read_direct_input(
-                prompt, password=password, request_id=request_id
-            )
-        #
-        input_queue: queue.Queue[str] = queue.Queue()
-
-        def read_input() -> None:
-            """Read user input from stdin."""
-            # pylint: disable=too-many-try-statements
-            try:
-                print(prompt, end="", flush=True)
-                if password:
-                    user_input = getpass("").strip()
-                else:
-                    user_input = sys.stdin.readline().strip()
-                input_queue.put_nowait(user_input)
-            except EOFError as error:
-                self._send_error_message(request_id, str(error))
-                input_queue.put("")
-
-        input_thread = threading.Thread(target=read_input, daemon=True)
-        input_thread.start()
-
         try:
-            return input_queue.get(timeout=self.timeout)
-        except queue.Empty:
-            self._send_timeout_message(request_id)
+            return (
+                getpass(prompt).strip() if password else input(prompt).strip()
+            )
+        except EOFError:
             return ""
         except BaseException as e:
             self._send_error_message(request_id, str(e))
             return ""
-        finally:
-            input_thread.join(timeout=1)
 
     def _send_timeout_message(self, request_id: str) -> None:
         timeout_payload = {

@@ -8,7 +8,6 @@
 """Tests for waldiez.io.stream.*."""
 
 import json
-import queue
 import sys
 from pathlib import Path
 from typing import Any, Callable
@@ -146,32 +145,6 @@ class TestStructuredIOStream:
         # Verify the input was returned
         assert result == "user input"
         mock_input.assert_called_once_with("Enter text: ")
-
-    @patch("builtins.input")
-    @patch("builtins.print")
-    def test_input_timeout(self, mock_print: MagicMock, _: MagicMock) -> None:
-        """Test input timeout."""
-        # Create a queue that will never return to simulate timeout
-
-        with patch.object(queue.Queue, "get", side_effect=queue.Empty):
-            with patch.object(self.stream, "_send_input_request"):
-                # Use a very short timeout to speed up the test
-                self.stream.timeout = 0.1
-                result = self.stream._read_user_input(
-                    "Prompt: ", False, "test_id"
-                )
-
-        # Verify timeout message was sent
-        timeout_call = mock_print.call_args_list[-1]
-        args, _ = timeout_call
-        payload = json.loads(args[0])
-
-        assert payload["type"] == "timeout"
-        assert payload["request_id"] == "test_id"
-        assert "No input received after" in payload["data"]
-
-        # Verify empty result
-        assert result == ""
 
     @patch("builtins.print")
     @patch("builtins.input")
