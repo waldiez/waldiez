@@ -280,8 +280,9 @@ class StructuredIOStream(IOStream):
                     if password
                     else input(prompt).strip()
                 )
-                input_queue.put(user_input)
-            except EOFError:
+                input_queue.put_nowait(user_input)
+            except EOFError as error:
+                self._send_error_message(request_id, str(error))
                 input_queue.put("")
 
         input_thread = threading.Thread(target=read_input, daemon=True)
