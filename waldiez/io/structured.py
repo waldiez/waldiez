@@ -69,7 +69,7 @@ class StructuredIOStream(IOStream):
         sep = kwargs.get("sep", " ")
         end = kwargs.get("end", "\n")
         flush = kwargs.get("flush", True)
-        payload_type = kwargs.get("type", "print")
+        payload_type = str(kwargs.get("type", "print"))
         message = sep.join(map(str, args))
         if len(args) == 1 and isinstance(args[0], dict):
             message = args[0]
@@ -91,6 +91,7 @@ class StructuredIOStream(IOStream):
                 payload["data"] = message
             if "type" not in payload:
                 payload["type"] = payload_type
+            end = ""
         else:
             print_message = PrintMessage(data=message)
             payload = print_message.model_dump(mode="json", fallback=str)
