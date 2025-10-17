@@ -73,7 +73,9 @@ class StructuredIOStream(IOStream):
         message = sep.join(map(str, args))
         if len(args) == 1 and isinstance(args[0], dict):
             message = args[0]
-            payload_type = message.get("type", payload_type)
+            payload_type_ = message.get("type", payload_type)
+            if isinstance(payload_type_, str):
+                payload_type = payload_type_
             is_dumped = True
         else:
             is_dumped, message = is_json_dumped(message)
@@ -87,23 +89,24 @@ class StructuredIOStream(IOStream):
             }
             if isinstance(message, dict):
                 payload.update(message)
+                end = ""
             else:
                 payload["data"] = message
             if "type" not in payload:
                 payload["type"] = payload_type
-            end = ""
         else:
             print_message = PrintMessage(data=message)
             payload = print_message.model_dump(mode="json", fallback=str)
             payload["type"] = payload_type
         dumped = json.dumps(payload, default=str, ensure_ascii=False) + end
-        if kwargs.get("file") and kwargs["file"] in [
+        file = kwargs.get("file", None)
+        if file and file in [
             sys.stderr,
             sys.__stderr__,
             sys.stdout,
             sys.__stdout__,
         ]:
-            print(dumped, file=kwargs["file"], flush=flush)
+            print(dumped, file=file, flush=flush)
         else:
             print(dumped, flush=flush)
 
