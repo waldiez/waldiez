@@ -146,7 +146,7 @@ class ModelsExporter(Exporter[ModelExtras]):
             or "llm_config=False" if no models are configured.
         """
         if not agent.data.model_ids:
-            return "    llm_config=False,  # pyright: ignore\n"
+            return "    llm_config=False,\n"
 
         # Get model configs for this agent
         model_configs: list[str] = []
@@ -156,7 +156,7 @@ class ModelsExporter(Exporter[ModelExtras]):
                 model_configs.append(f"{model_name}_llm_config")
         tab: str = " " * 4
         if not model_configs:
-            return f"{tab}llm_config=False, # pyright: ignore\n"
+            return f"{tab}llm_config=False,\n"
 
         config_list = f",\n{tab}{tab}{tab}".join(model_configs)
         llm_config = f"""{tab}llm_config=autogen.LLMConfig(

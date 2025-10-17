@@ -57,12 +57,15 @@ PYLINT_RULES = [
     "broad-exception-caught",
 ]
 PYRIGHT_RULES = [
-    "reportUnusedImport",
+    "reportDeprecated",
     "reportMissingTypeStubs",
+    "reportUnreachable",
+    "reportUnusedImport",
     "reportUnknownArgumentType",
     "reportUnknownMemberType",
     "reportUnknownLambdaType",
     "reportUnnecessaryIsInstance",
+    "reportUnusedParameter",
     "reportUnknownVariableType",
 ]
 

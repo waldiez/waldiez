@@ -158,4 +158,4 @@ def test_models_exporter(tmp_path: Path) -> None:
     )
     models_exporter.get_imports()
     agent_llm = models_exporter.get_agent_llm_config_arg(agent)
-    assert agent_llm == "    llm_config=False,  # pyright: ignore\n"
+    assert agent_llm == "    llm_config=False,\n"

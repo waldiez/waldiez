@@ -73,7 +73,7 @@ def export_nested_chat_registration(
         )
         content += f"{var_name}: list[dict[str, Any]] = {chat_queue}" + "\n"
         content += f"""
-{agent_name}.register_nested_chats(  # pyright: ignore
+{agent_name}.register_nested_chats(
     trigger={trigger_names},
     chat_queue={var_name},
     use_async={is_async},

@@ -185,7 +185,7 @@ class TestArgFormat:
             agent, models, model_names, 42, as_dict=False
         )
 
-        expected = "    llm_config=False,  # pyright: ignore\n"
+        expected = "    llm_config=False,\n"
         assert result == expected
 
     def test_single_model_with_temperature(self) -> None:
@@ -270,7 +270,7 @@ class TestArgFormat:
             agent, models, model_names, 42, as_dict=False
         )
 
-        expected = "    llm_config=False,  # pyright: ignore\n"
+        expected = "    llm_config=False,\n"
         assert result == expected
 
     def test_none_cache_seed(self) -> None:

@@ -238,7 +238,7 @@ def get_the_imports_string(
         final_string += (
             "# pylint: disable=broad-exception-caught\n"
             "try:\n"
-            "    nest_asyncio.apply()  # pyright: ignore\n"
+            "    nest_asyncio.apply()\n"
             "except BaseException:\n"
             "    pass  # maybe on uvloop?\n"
         )

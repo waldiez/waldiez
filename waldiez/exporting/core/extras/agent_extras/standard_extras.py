@@ -154,14 +154,10 @@ class StandardExtras(BaseExtras):
             argument = self.termination_config.termination_arg
         else:
             argument = "None"
-        comment: str | None = None
-        if argument == "None":
-            comment = "pyright: ignore"
         return InstanceArgument(
             instance_id=self.instance_id,
             name="is_termination_msg",
             value=argument,
-            comment=comment,
             tabs=1,
         )
 

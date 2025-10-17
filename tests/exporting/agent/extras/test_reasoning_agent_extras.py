@@ -49,7 +49,7 @@ def test_export_reasoning_agent(tmp_path: Path) -> None:
         "    max_consecutive_auto_reply=None,\n"
         '    default_auto_reply="",\n'
         "    code_execution_config=False,\n"
-        "    is_termination_msg=None,  # pyright: ignore\n"
+        "    is_termination_msg=None,\n"
         "    reason_config={\n"
         '        "method": "beam_search",\n'
         '        "max_depth": 3,\n'

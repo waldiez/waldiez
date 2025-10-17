@@ -59,7 +59,7 @@ def test_export_rag_user_agent(tmp_path: Path) -> None:
         "\n"
         f"{tab}code_execution_config=False,"
         "\n"
-        f"{tab}is_termination_msg=None,  # pyright: ignore"
+        f"{tab}is_termination_msg=None,"
         "\n"
         f"{tab}retrieve_config={{"
         "\n"

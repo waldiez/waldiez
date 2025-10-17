@@ -81,7 +81,7 @@ class ExecutionGenerator:
         str
             The part that generates the code to store the results.
         """
-        content = "async " if is_async else ""
+        content: str = "async " if is_async else ""
         tab = "    "
         content += (
             "def store_results(result_dicts: list[dict[str, Any]]) -> None:\n"
@@ -181,12 +181,12 @@ class ExecutionGenerator:
         flow_content += f"{comment}\n"
         if is_async:
             flow_content += "async "
-        on_event_arg = "on_event: Optional[Callable[[BaseEvent, Optional[list[ConversableAgent]]], bool]] = None"
+        on_event_arg = "on_event: Callable[[BaseEvent, list[ConversableAgent]], bool] | None = None"
         if is_async:
             on_event_arg = (
-                "on_event: Optional["
-                "Callable[[BaseEvent, Optional[list[ConversableAgent]]], Coroutine[None, None, bool]]"
-                "] = None"
+                "on_event: "
+                "Callable[[BaseEvent, list[ConversableAgent]], Coroutine[None, None, bool]]"
+                " | None = None"
             )
         return_type_hint = "list[dict[str, Any]]"
         flow_content += f"def main({on_event_arg}) -> {return_type_hint}:\n"
@@ -200,8 +200,7 @@ class ExecutionGenerator:
         if cache_seed is not None:
             # noinspection SqlDialectInspection
             flow_content += (
-                f"    with Cache.disk(cache_seed={cache_seed}"
-                ") as cache:  # pyright: ignore\n"
+                f"    with Cache.disk(cache_seed={cache_seed}) as cache:\n"
             )
             space = f"{space}    "
         flow_content += f"{content}" + "\n"

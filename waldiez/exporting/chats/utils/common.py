@@ -82,10 +82,12 @@ def get_event_handler_string(
         f"{space}{tab}results = [results]  # pylint: disable=redefined-variable-type\n"
         f"{space}got_agents = False\n"
         f"{space}known_agents: list[ConversableAgent] = []\n"
+        f"{space}result_events: list[dict[str, Any]] = []\n"
         f"{space}if on_event:\n"
         f"{space}{tab}for index, result in enumerate(results):\n"
-        f"{space}{tab}{tab}result_events: list[dict[str, Any]] = []\n"
+        f"{space}{tab}{tab}result_events = []\n"
     )
+    await_str = "await " if is_async else ""
     if is_async:
         content += (
             f"{space}{tab}{tab}async for event in result.events:\n{_add_event_dump(space, tab)}"
@@ -95,7 +97,7 @@ def get_event_handler_string(
             f"{space}{tab}{tab}{tab}try:\n"
             f"{space}{tab}{tab}{tab}{tab}should_continue = await on_event(event, known_agents)\n"
             f"{space}{tab}{tab}{tab}except BaseException as e:\n{_stop_logging(space, is_async)}"
-            f"{space}{tab}{tab}{tab}{tab}store_error(e)\n"
+            f"{space}{tab}{tab}{tab}{tab}await store_error(e)\n"
             f"{space}{tab}{tab}{tab}{tab}raise SystemExit(\n"
             f'{space}{tab}{tab}{tab}{tab}{tab}"Error in event handler: " + str(e)\n'
             f"{space}{tab}{tab}{tab}{tab}) from e\n"
@@ -115,16 +117,16 @@ def get_event_handler_string(
             f"{space}{tab}{tab}{tab}{tab}) from e\n"
         )
     content += (
-        f'{space}{tab}{tab}{tab}if event.type == "run_completion":\n'
+        f'{space}{tab}{tab}{tab}if getattr(event, "type") == "run_completion":\n'
         f"{space}{tab}{tab}{tab}{tab}break\n"
         f"{space}{tab}{tab}{tab}if not should_continue:\n{_stop_logging(space, is_async)}"
-        f"{space}{tab}{tab}{tab}{tab}store_error()\n"
+        f"{space}{tab}{tab}{tab}{tab}{await_str}store_error()\n"
         f'{space}{tab}{tab}{tab}{tab}raise SystemExit("Event handler stopped processing")\n'
     )
     content += get_result_dicts_string(space, is_async)
     content += (
         f"{space}else:\n{space}{tab}for index, result in enumerate(results):\n"
-        f"{space}{tab}{tab}result_events: list[dict[str, Any]] = []\n"
+        f"{space}{tab}{tab}result_events = []\n"
     )
     if is_async:
         content += (
@@ -167,21 +169,29 @@ def get_result_dicts_string(tab: str, is_async: bool) -> str:
     """
     # fmt: off
     space = f"{tab}        "
-    flow_content = f"{space}result_dict = {{\n"
+    flow_content = f"{space}result_cost = "
+    if is_async:
+        flow_content += "await "
+    flow_content += "result.cost\n"
+    flow_content += f"{space}result_context_variables = "
+    if is_async:
+        flow_content += "await "
+    flow_content += "result.context_variables\n"
+    flow_content += f"{space}result_dict = {{\n"
     flow_content += f'{space}    "index": index,\n'
     flow_content += f'{space}    "uuid": str(result.uuid),\n'
     flow_content += f'{space}    "events": result_events,\n'
     if is_async:
         flow_content += f'{space}    "messages": await result.messages,\n'
         flow_content += f'{space}    "summary": await result.summary,\n'
-        flow_content += f'{space}    "cost": (await result.cost).model_dump(mode="json", fallback=str) if await result.cost else None,\n'
-        flow_content += f'{space}    "context_variables": (await result.context_variables).model_dump(mode="json", fallback=str) if await result.context_variables else None,\n'
+        flow_content += f'{space}    "cost": result_cost.model_dump(mode="json", fallback=str) if result_cost else None,\n'
+        flow_content += f'{space}    "context_variables": result_context_variables.model_dump(mode="json", fallback=str) if result_context_variables else None,\n'
         flow_content += f'{space}    "last_speaker": await result.last_speaker,\n'
     else:
         flow_content += f'{space}    "messages": result.messages,\n'
         flow_content += f'{space}    "summary": result.summary,\n'
-        flow_content += f'{space}    "cost": result.cost.model_dump(mode="json", fallback=str) if result.cost else None,\n'
-        flow_content += f'{space}    "context_variables": result.context_variables.model_dump(mode="json", fallback=str) if result.context_variables else None,\n'
+        flow_content += f'{space}    "cost": result_cost.model_dump(mode="json", fallback=str) if result_cost else None,\n'
+        flow_content += f'{space}    "context_variables": result_context_variables.model_dump(mode="json", fallback=str) if result_context_variables else None,\n'
         flow_content += f'{space}    "last_speaker": result.last_speaker,\n'
     flow_content += f"{space}}}\n"
     flow_content += f"{space}result_dicts.append(result_dict)\n"

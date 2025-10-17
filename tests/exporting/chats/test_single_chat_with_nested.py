@@ -230,7 +230,7 @@ agent3_chat_queue: list[dict[str, Any]] = [
     },
 ]
 
-agent3.register_nested_chats(  # pyright: ignore
+agent3.register_nested_chats(
     trigger=["agent1"],
     chat_queue=agent3_chat_queue,
     use_async=False,
@@ -248,7 +248,7 @@ agent4_chat_queue: list[dict[str, Any]] = [
     },
 ]
 
-agent4.register_nested_chats(  # pyright: ignore
+agent4.register_nested_chats(
     trigger=["agent2"],
     chat_queue=agent4_chat_queue,
     use_async=False,

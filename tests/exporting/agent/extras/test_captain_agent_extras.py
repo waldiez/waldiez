@@ -51,7 +51,7 @@ def test_export_captain_agent(tmp_path: Path) -> None:
         "    max_consecutive_auto_reply=None,\n"
         '    default_auto_reply="",\n'
         "    code_execution_config=False,\n"
-        "    is_termination_msg=None,  # pyright: ignore\n"
+        "    is_termination_msg=None,\n"
         "    agent_config_save_path=os.getcwd(),\n"
         "    nested_config={\n"
         '        "autobuild_init_config": {\n'
@@ -126,7 +126,7 @@ def test_export_captain_agent(tmp_path: Path) -> None:
         "    max_consecutive_auto_reply=None,\n"
         '    default_auto_reply="",\n'
         "    code_execution_config=False,\n"
-        "    is_termination_msg=None,  # pyright: ignore\n"
+        "    is_termination_msg=None,\n"
         "    agent_config_save_path=os.getcwd(),\n"
         f'    agent_lib="{agent1.name}_agent_lib.json",\n'
         # '    tool_lib="default",\n'
