@@ -66,14 +66,14 @@ class StructuredIOStream(IOStream):
             The data to print.
         kwargs : Any
         """
-        sep = kwargs.get("sep", " ")
-        end = kwargs.get("end", "\n")
-        flush = kwargs.get("flush", True)
+        sep = str(kwargs.get("sep", " "))
+        end = str(kwargs.get("end", "\n"))
+        flush = bool(kwargs.get("flush", True))
         payload_type = str(kwargs.get("type", "print"))
         message = sep.join(map(str, args))
         if len(args) == 1 and isinstance(args[0], dict):
-            message = args[0]
-            payload_type_ = message.get("type", payload_type)
+            message = args[0]  # type: ignore
+            payload_type_ = message.get("type", payload_type)  # type: ignore
             if isinstance(payload_type_, str):
                 payload_type = payload_type_
             is_dumped = True
