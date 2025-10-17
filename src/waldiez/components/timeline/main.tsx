@@ -13,8 +13,8 @@ import { useWaldiezTheme } from "@waldiez/theme";
 
 export const Timeline: FC<{
     data: WaldiezTimelineData;
-    width?: number | string;
-    height?: number | string;
+    width?: number | `${number}%` | undefined;
+    height?: number | `${number}%` | undefined;
 }> = ({ data, height = 400 }) => {
     const { isDark } = useWaldiezTheme();
     const chartRef = useRef<HTMLDivElement>(null);
