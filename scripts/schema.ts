@@ -14,8 +14,10 @@ import packageJson from "../package.json";
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const repositoryUrl = packageJson.repository.url.replace(".git", "");
-const schemaId = `${repositoryUrl}/tree/v${packageJson.version}/schema.json`;
+const repositoryUrl = packageJson.repository.url
+    .replace(".git", "")
+    .replace("github.com", "raw.githubusercontent.com");
+const schemaId = `${repositoryUrl}/tree/tags/v${packageJson.version}/schema.json`;
 const config: tsj.Config = {
     tsconfig: "tsconfig.docs.json",
     type: "WaldiezFlowSchema",

@@ -356,6 +356,14 @@ def diff_has_path_changes(file_path: str) -> bool:
     if str(Path.home()) in diff_output:
         return True
     if "path=" in diff_output:
+        idx = diff_output.index("path=")
+        remaining = diff_output[idx + 5 :].lstrip()
+        if remaining.startswith("os.getcwd()") or remaining.startswith(
+            "Path.cwd()"
+        ):
+            return False
+        if remaining.startswith('"."') or remaining.startswith("'."):
+            return False  # relative
         return True
     return False
 
