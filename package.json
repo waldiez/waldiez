@@ -52,6 +52,7 @@
     ],
     "scripts": {
         "prepare": "node -e \"(async () => { await import('./.husky/install.mjs').catch(() => {}) })()\"",
+        "postinstall": "node -e \"(async () => { await import('./scripts/postinstall.mjs').catch(() => {}) })()\"",
         "check:tailwind": "node --import=tsx scripts/tailwind_windows_arm64.ts",
         "dev": "bun monaco && vite --host",
         "typecheck": "tsc -b --noEmit",
@@ -169,6 +170,7 @@
         "@vitest/coverage-v8": "^3.2.4",
         "@vitest/ui": "^3.2.4",
         "ajv": "^8.17.1",
+        "ajv-draft-04": "npm:ajv@^6.12.4",
         "all-contributors-cli": "^6.26.1",
         "canvas": "^3.2.0",
         "cross-spawn": "^7.0.6",
@@ -269,7 +271,6 @@
         "cross-spawn": "^7.0.6",
         "ws": "^8.18.3",
         "got": "^14.6.0",
-        "ajv": "^8.17.1",
         "marked": "16.4.1",
         "tmp": "0.2.5"
     },
