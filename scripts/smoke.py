@@ -318,6 +318,7 @@ def git_restore(*files: str) -> None:
         )
 
 
+# pylint: disable=too-many-return-statements
 def diff_has_path_changes(file_path: str) -> bool:
     """Check if the diff of a file contains path changes.
 
