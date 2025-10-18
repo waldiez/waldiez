@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/* eslint-disable complexity */
 import type { WaldiezActiveRequest, WaldiezChatParticipant } from "@waldiez/components/chatUI/types";
 import type {
     WaldiezBreakpoint,
@@ -35,7 +36,6 @@ export type WaldiezStepByStepAction =
     | { type: "SET_STATE"; state: Partial<WaldiezStepByStep> }
     | { type: "DONE" };
 
-// eslint-disable-next-line complexity
 export const waldiezStepByStepReducer = (
     state: WaldiezStepByStep,
     action: WaldiezStepByStepAction,

@@ -4,7 +4,7 @@
  */
 import type { WaldiezChatMessage, WaldiezMediaContent } from "@waldiez/components/chatUI/types";
 
-// eslint-disable-next-line complexity
+/* eslint-disable complexity */
 export const getContentString = (
     content: WaldiezMediaContent,
     onPreview?: (type: "image" | "video" | "audio" | "file", url: string) => string,
