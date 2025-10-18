@@ -5,10 +5,11 @@ The contents of each release will be used in
 "gh release create"
  -->
 
-## Unreleased
+## v0.6.1
 
 - Updated ag2 dependency to 0.9.10
 - Updated jupyter dependencies to 4.4.9
+- Added Claude Sonnet 4.5 option for predefined models
 - Added breakpoints support in the step-by-step runner
 - Added multiple tabs support in studio
 - Added dnd support for uploading files in studio

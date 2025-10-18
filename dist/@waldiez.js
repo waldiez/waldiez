@@ -6836,7 +6836,7 @@ class WaldiezFlowData {
 }
 class WaldiezFlow {
   type = "flow";
-  version = "0.6.0";
+  version = "0.6.1";
   id;
   name;
   description;
@@ -6866,7 +6866,7 @@ const getFlowId = () => {
 const aFlowId = getFlowId();
 const emptyFlow = {
   type: "flow",
-  version: "0.6.0",
+  version: "0.6.1",
   id: aFlowId,
   storageId: aFlowId,
   name: "Waldiez Flow",
@@ -8091,7 +8091,7 @@ const flowMapper = {
     const waldiezFlow = {
       id: flow.flowId,
       type: "flow",
-      version: "0.6.0",
+      version: "0.6.1",
       storageId: flow.storageId,
       name: flow.name,
       description: flow.description,
