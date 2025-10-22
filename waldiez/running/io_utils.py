@@ -7,15 +7,10 @@
 import asyncio
 import sys
 import traceback
-
-# noinspection PyProtectedMember
 from dataclasses import dataclass
 from getpass import getpass
 from pathlib import Path
-from typing import (
-    Any,
-    Callable,
-)
+from typing import Any, Callable
 
 
 @dataclass

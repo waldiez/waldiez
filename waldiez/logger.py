@@ -13,7 +13,7 @@ import string
 import threading
 import traceback
 from collections.abc import Mapping
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import IntEnum
 from pathlib import Path
 from types import TracebackType
@@ -503,7 +503,7 @@ class WaldiezLogger(logging.Logger):
 
     def _get_timestamp(self) -> str:
         """Get the current timestamp in a human-readable format."""
-        return datetime.now().strftime(self._timestamp_format)
+        return datetime.now(timezone.utc).strftime(self._timestamp_format)
 
     @staticmethod
     def _has_format_braces(msg_str: str) -> bool:

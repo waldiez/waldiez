@@ -2,6 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pylint: disable=too-many-locals,unused-import,invalid-name
+# pylint: disable=missing-function-docstring, missing-param-doc
 # pyright: reportUnusedImport=false,reportConstantRedefinition=false
 # pyright: reportUnusedParameter=false, reportCallInDefaultInitializer=false
 
@@ -163,33 +164,7 @@ def serve(
         bool, typer.Option("--verbose", "-v", help="Enable verbose logging")
     ] = False,
 ) -> None:
-    """Start Waldiez WebSocket server.
-
-    Parameters
-    ----------
-    host : str
-        Server host address
-    port : int
-        Server port
-    max_clients : int
-        Maximum number of concurrent clients
-    allowed_origins : list[str] | None
-        List of allowed origins for CORS (default: None)
-    auto_reload : bool
-        Enable auto-reload on file changes
-    watch_dir : tuple[Path, ...]
-        Additional directories to watch for auto-reload
-    workspace_dir : Path
-        Path to the workspace directory
-    ping_interval : float
-        WebSocket ping interval in seconds
-    ping_timeout : float
-        WebSocket ping timeout in seconds
-    max_size : int
-        Maximum message size in bytes
-    verbose : bool
-        Enable verbose logging
-    """
+    """Start Waldiez WebSocket server."""
     setup_logging(verbose)
 
     logger = logging.getLogger(__name__)

@@ -8,7 +8,7 @@
 import ast
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal, Union
 
@@ -62,7 +62,7 @@ def now() -> str:
     str
         The current time as an ISO string.
     """
-    return datetime.now().isoformat()
+    return datetime.now(timezone.utc).isoformat()
 
 
 def detect_media_type(value: dict[str, Any]) -> MediaType:
