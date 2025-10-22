@@ -17,7 +17,9 @@ from collections.abc import Generator, Iterable, Mapping
 from contextlib import contextmanager, suppress
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Self
+from typing import Any
+
+from typing_extensions import Self
 
 from .checkpoint import Checkpoint, CheckpointInfo
 from .utils import symlink

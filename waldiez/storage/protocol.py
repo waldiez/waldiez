@@ -8,7 +8,9 @@ from collections.abc import Generator, Iterable, Mapping
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Protocol, Self, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
+
+from typing_extensions import Self
 
 from .checkpoint import CheckpointInfo
 
