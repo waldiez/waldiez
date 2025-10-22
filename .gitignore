@@ -7,6 +7,7 @@ build/
 lib/
 site/
 out/
+workspace/
 .idea/
 /*.waldiez
 public/**/*

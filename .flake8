@@ -24,3 +24,4 @@ exclude =
     dist,
     lib,
     examples,
+    workspace,

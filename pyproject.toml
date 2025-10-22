@@ -303,6 +303,10 @@ test-ws = [
   "hatch run pre-test",
   "pytest -c pyproject.toml --cov=waldiez/ws --cov-branch --cov-report=term-missing:skip-covered -vv tests/ws"
 ]
+test-storage = [
+  "hatch run pre-test",
+  "pytest -c pyproject.toml --cov=waldiez/storage --cov-branch --cov-report=term-missing:skip-covered -vv tests/storage"
+]
 
 format-black = "black --config pyproject.toml waldiez tests scripts"
 format-autoflake = "autoflake --in-place --remove-all-unused-imports --remove-unused-variables --recursive waldiez tests scripts"
@@ -430,6 +434,7 @@ exclude = '''
   | examples
   | node_modules
   | waldiez_out
+  | workspace
 )/
 '''
 include = '''
@@ -459,6 +464,7 @@ exclude = [
   "node_modules",
   "examples",
   "waldiez_out",
+  "workspace",
 ]
 ignore_missing_imports = false
 no_implicit_reexport = true
@@ -495,6 +501,7 @@ exclude = [
     "examples",
     "docs",
     "waldiez_out",
+    "workspace",
 ]
 extraPaths = ["."]
 reportCallIssue = false
@@ -530,6 +537,7 @@ ignore-paths = [
   "node_modules",
   "examples",
   "waldiez_out",
+  "workspace",
 ]
 recursive = false
 
@@ -571,6 +579,7 @@ exclude_dirs = [
   "node_modules",
   "examples",
   "waldiez_out",
+  "workspace",
 ]
 # B104: bind to all interfaces (0.0.0.0)
 # B110: allow pass on try/except
@@ -589,6 +598,7 @@ extend-exclude = [
   ".hatch",
   "node_modules",
   "examples",
+  "workspace",
   "waldiez_out",
   "docs",
 ]
