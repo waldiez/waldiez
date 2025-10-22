@@ -25,19 +25,20 @@ help:
 	@echo " lint             Run the linters for the python package"
 	@echo " forlint          Alias for 'format' and 'lint'"
 	@echo " clean            Cleanup unneeded files"
-	@echo " test             Run the tests for the python package"
-	@echo " test-models      Run the tests for the models"
-	@echo " test-exporting   Run the tests for exporting"
-	@echo " test-running     Run the tests for running"
-	@echo " test-io          Run the tests for the IO stream"
-	@echo " test-schema      Run the tests for the schema"
+	@echo " test             Run the tests on the python package"
+	@echo " test-models      Run the tests on the models"
+	@echo " test-exporting   Run the tests on exporting module"
+	@echo " test-running     Run the tests on running module"
+	@echo " test-io          Run the tests on IO module"
+	@echo " test-storage     Run the tests on the storage module"
+	@echo " test-schema      Run the tests on the schema"
 	@echo " build            Build the python package"
 	@echo " docs             Generate the python documentation"
 	@echo " docs-live        Generate the documentation in 'live' mode"
 	@echo " images           Build the podman/docker images"
-	@echo " smoke            Run smoke tests for the python package"
-	@echo " smoke-local      Run smoke tests for the python package using local examples"
-	@echo " smoke-remote     Run smoke tests for the python package using remote examples"
+	@echo " smoke            Run smoke tests on the python package"
+	@echo " smoke-local      Run smoke tests on the python package using local examples"
+	@echo " smoke-remote     Run smoke tests on the python package using remote examples"
 	@echo " dev              Start both python and react dev servers"
 	@echo " some             Run some (not all) of the above"
 
@@ -109,6 +110,18 @@ test_io:
 
 .PHONY: test-io
 test-io: test_io
+
+.PHONY: test_storage
+test_storage:
+	pytest \
+		-c pyproject.toml -vv \
+		--cov-report=term-missing:skip-covered \
+		--cov=${.PACKAGE_NAME}/storage \
+		--cov-branch \
+		${.TESTS_DIR}/storage
+
+.PHONY: test-storage
+test-storage: test_storage
 
 .PHONY: test_schema
 test_schema:
