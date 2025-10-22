@@ -10,7 +10,8 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
 import reactHooks from "eslint-plugin-react-hooks";
 import eslintPluginReactRefresh from "eslint-plugin-react-refresh";
 import eslintPluginTsDoc from "eslint-plugin-tsdoc";
-import eslintTs from "typescript-eslint";
+import { defineConfig } from "eslint/config";
+import tseslint from "typescript-eslint";
 
 const owner = "Waldiez";
 const startYear = 2024;
@@ -21,10 +22,10 @@ const ownerAndContributors = `${owner} & contributors`;
 const project = "./tsconfig.app.json";
 
 // noinspection JSCheckFunctionSignatures
-const defaultConfig = eslintTs.config({
+const defaultConfig = defineConfig({
     files: ["src/**/*.{ts,tsx}"],
     extends: [
-        ...eslintTs.configs.recommended,
+        ...tseslint.configs.recommended,
         eslintPluginPrettierRecommended,
         cspellESLintPluginRecommended,
         importPlugin.flatConfigs.typescript,
