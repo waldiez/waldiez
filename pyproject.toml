@@ -39,26 +39,14 @@ dependencies = [
   "pip>=25.1",
   "jupytext",
   "parso==0.8.5",
-  "psutil==7.1.0",
+  "psutil==7.1.1",
   "rpds-py==0.27.1",
   "platformdirs==4.5.0",
   "pydantic>=2.10.2,<3",
   # ag2[together]==0.9.10 depends on together>=1.2
   # together>=1.2 depends on typer>=0.9,<0.16
-  "typer>=0.9.0,<1",
-  "click<8.2",
-  # ../site-packages/click/types.py, line 54, in init
-  #     self.name = func.name
-  #                 ^^^^^^^^^^^^^
-  # AttributeError: 'tuple' object has no attribute 'name'
-  # ../site-packages/httpx/_main.py, line 379, in <module>
-  #   @click.option(
-  #    ~~~~~~~~~~~~^
-  #       "--auth",
-  #       ^^^^^^^^^
-  #   ...<9 lines>...
-  #       ),
-  #       ^^
+  "typer>=0.18.0,<1",
+  "click==8.3.0",
   "httpx<1",
 ]
 dynamic = ["version", "description", "authors", "urls", "keywords"]
@@ -171,9 +159,9 @@ dev = [
   "paho-mqtt>=2.1.0,<3.0",
   "pandas-stubs==2.3.2.250926",
   "nodeenv>=1.9.1",
-  "prek==0.2.9",
+  "prek==0.2.10",
   "pydocstyle==6.3.0",
-  "pylint==4.0.1",
+  "pylint==4.0.2",
   "python-dotenv>=1.1.1",
   "ruff==0.14.1",
   "types-aiofiles==25.1.0.20251011",
@@ -198,13 +186,13 @@ docs = [
   "mkdocs-jupyter==0.25.1",
   "mkdocs-macros-plugin==1.4.0",
   "mkdocs-material==9.6.22",
-  "mkdocs-minify-html-plugin==0.3.5;python_version <'3.13'",
-  "mkdocs-minify-html-plugin==0.3.5;python_version >= '3.13' and sys_platform != 'win32'",
+  "mkdocs-minify-html-plugin==0.3.6;python_version <'3.13'",
+  "mkdocs-minify-html-plugin==0.3.6;python_version >= '3.13' and sys_platform != 'win32'",
   "mkdocs-minify-html-plugin;python_version >='3.13' and sys_platform == 'win32' and platform_machine == 'arm64'",
   "mkdocs-minify-html-plugin;python_version >= '3.13' and sys_platform == 'win32' and platform_machine == 'aarch64'",
   "mkdocs-minify-html-plugin;python_version >= '3.13' and sys_platform == 'win32' and platform_machine == 'ARM64'",
   "mkdocs-minify-html-plugin;python_version >= '3.13' and sys_platform == 'win32' and platform_machine == 'AARCH64'",
-  "mkdocs-minify-html-plugin==0.3.5;python_version >= '3.13' and sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
+  "mkdocs-minify-html-plugin==0.3.6;python_version >= '3.13' and sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
   "mkdocstrings[crystal,python]==0.30.1",
   "mkdocstrings-crystal==0.3.7",
   "mkdocstrings-python==1.18.2",
@@ -400,10 +388,8 @@ managed = true
 # handle conflicts with
 # published extras not yet bumped
 override-dependencies = [
-  "psutil==7.1.0",
-  "aiocsv==1.4.0",
-  "aiofiles==25.1.0",
-  "fakeredis==2.32.0",
+  "psutil==7.1.1",
+  "click==8.3.0",
 ]
 
 # pip-tools
