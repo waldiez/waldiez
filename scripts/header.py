@@ -7,7 +7,7 @@
 
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
@@ -103,7 +103,7 @@ def process_copyright_line(
     str
         The updated second line.
     """
-    current_year = datetime.now().year
+    current_year = datetime.now(timezone.utc).year
     copyright_regex = re.compile(
         rf"# Copyright \(c\) {start_year}(?: - (\d{{4}}))? (.+)"
     )
