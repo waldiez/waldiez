@@ -11,7 +11,9 @@ from collections.abc import Generator, Iterable
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Self
+from typing import Any
+
+from typing_extensions import Self
 
 from .checkpoint import CheckpointInfo
 from .filesystem_storage import FilesystemStorage
