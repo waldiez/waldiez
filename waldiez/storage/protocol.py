@@ -12,7 +12,7 @@ from typing import Any, Protocol, runtime_checkable
 
 from typing_extensions import Self
 
-from .checkpoint import CheckpointInfo
+from .checkpoint import Checkpoint, CheckpointInfo
 
 
 @runtime_checkable
@@ -64,9 +64,9 @@ class Storage(Protocol):  # pragma: no cover
         """
         ...
 
-    def load_checkpoint(
+    def get_checkpoint(
         self, session_name: str, timestamp: datetime | None = None
-    ) -> dict[str, Any]:
+    ) -> CheckpointInfo | None:
         """Load a checkpoint for a session.
 
         Parameters
@@ -80,6 +80,16 @@ class Storage(Protocol):  # pragma: no cover
         ------
         FileNotFoundError
             If no checkpoint found
+        """
+        ...
+
+    def load_checkpoint(self, info: CheckpointInfo) -> Checkpoint:
+        """Load a checkpoint.
+
+        Parameters
+        ----------
+        info: CheckpointInfo
+            The checkpoint info to get the path.
         """
         ...
 

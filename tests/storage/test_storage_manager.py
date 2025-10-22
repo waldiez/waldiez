@@ -73,7 +73,9 @@ class TestStorageManager:
         state = {"data": "test"}
         manager.save("test_session", state)
 
-        loaded_state = manager.load("test_session")
+        loaded_info = manager.get("test_session")
+        assert loaded_info
+        loaded_state = loaded_info.checkpoint.state
         assert loaded_state == state
 
     def test_load_with_timestamp(self, manager: StorageManager) -> None:
@@ -85,7 +87,9 @@ class TestStorageManager:
             "test_session", state, timestamp=timestamp
         )
 
-        loaded_state = manager.load("test_session", timestamp)
+        loaded_info = manager.get("test_session", timestamp)
+        assert loaded_info
+        loaded_state = loaded_info.checkpoint.state
         assert loaded_state == state
 
     def test_link(self, manager: StorageManager, tmp_path: Path) -> None:

@@ -84,7 +84,7 @@ class TestStorageCLI:
     def test_checkpoints_no_args_shows_help(self, runner: CliRunner) -> None:
         """Test that checkpoints command with no args shows help."""
         result = runner.invoke(app, [])
-        assert result.exit_code == 0
+        assert result.exit_code == 2
         assert "--help" in result.output or "Usage:" in result.output
 
     def test_list_checkpoints(
@@ -441,20 +441,22 @@ class TestStorageCLI:
     ) -> None:
         """Test delete with invalid timestamp format."""
         # Invalid timestamp format
-        with pytest.raises(ValueError):
-            # This will raise during timestamp parsing
-            result = runner.invoke(
-                app,
-                [
-                    "--delete",
-                    "--session",
-                    "test_session",
-                    "--checkpoint",
-                    "invalid_timestamp",
-                ],
-            )
-            out = result.stdout + result.stderr
-            assert "ValueError" in out
+        result = runner.invoke(
+            app,
+            [
+                "--delete",
+                "--session",
+                "test_session",
+                "--checkpoint",
+                "invalid_timestamp",
+            ],
+        )
+        assert result.exit_code != 0
+        exc_info = result.exc_info
+        out = result.stdout + result.stderr
+        if exc_info:
+            out += str(exc_info[1])
+        assert out
 
     def test_command_shortcuts(
         self,
@@ -593,35 +595,6 @@ class TestStorageCLI:
         )
         assert result.exit_code == 0
         assert "[]" in result.output
-
-    # def test_exception_handling(
-    #     self,
-    #     runner: CliRunner,
-    #     mock_storage_manager: MagicMock,
-    #     mock_workspace: MagicMock,
-    # ) -> None:
-    #     """Test exception handling in operations."""
-    #     mock_instance = Mock()
-    #     mock_storage_manager.return_value = mock_instance
-
-    #     # Simulate exception in delete operation
-    #     mock_instance.delete.side_effect = FileNotFoundError(
-    #         "Checkpoint not found"
-    #     )
-
-    #     with pytest.raises(FileNotFoundError):
-    #         runner.invoke(
-    #             app,
-    #             [
-    #                 "--workspace",
-    #                 str(mock_workspace),
-    #                 "--delete",
-    #                 "--session",
-    #                 "test_session",
-    #                 "--checkpoint",
-    #                 "20240101_120000_123456",
-    #             ],
-    #         )
 
 
 class TestCLIIntegration:

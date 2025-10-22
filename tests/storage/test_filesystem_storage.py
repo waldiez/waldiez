@@ -82,7 +82,7 @@ class TestFilesystemStorage:
         assert (checkpoint_path / "state.json").exists()
         assert not (checkpoint_path / "metadata.json").exists()
 
-    def test_load_checkpoint_latest(self, storage: FilesystemStorage) -> None:
+    def test_get_checkpoint_latest(self, storage: FilesystemStorage) -> None:
         """Test loading the latest checkpoint."""
         # Save multiple checkpoints
         states: list[dict[str, Any]] = []
@@ -93,10 +93,12 @@ class TestFilesystemStorage:
             time.sleep(0.01)  # Ensure different timestamps
 
         # Load latest
-        loaded_state = storage.load_checkpoint("test_session")
+        loaded_info = storage.get_checkpoint("test_session")
+        assert loaded_info
+        loaded_state = loaded_info.checkpoint.state
         assert loaded_state == states[-1]
 
-    def test_load_checkpoint_specific_timestamp(
+    def test_get_checkpoint_specific_timestamp(
         self, storage: FilesystemStorage
     ) -> None:
         """Test loading a checkpoint with specific timestamp."""
@@ -105,15 +107,15 @@ class TestFilesystemStorage:
 
         storage.save_checkpoint("test_session", state, timestamp=timestamp)
 
-        loaded_state = storage.load_checkpoint("test_session", timestamp)
+        loaded_info = storage.get_checkpoint("test_session", timestamp)
+        assert loaded_info
+        loaded_state = loaded_info.checkpoint.state
         assert loaded_state == state
 
-    def test_load_checkpoint_not_found(
-        self, storage: FilesystemStorage
-    ) -> None:
+    def test_get_checkpoint_not_found(self, storage: FilesystemStorage) -> None:
         """Test loading a non-existent checkpoint."""
         with pytest.raises(FileNotFoundError):
-            storage.load_checkpoint("non_existent_session")
+            storage.get_checkpoint("non_existent_session")
 
     def test_link_checkpoint(
         self, storage: FilesystemStorage, tmp_path: Path

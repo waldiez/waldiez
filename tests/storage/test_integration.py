@@ -67,11 +67,13 @@ class TestStorageIntegration:
         assert len(storage.checkpoints()) == 8
 
         # Load latest from each session
-        alpha_latest = storage.load(session1)
-        assert alpha_latest["iteration"] == 4
+        alpha_latest = storage.get(session1)
+        assert alpha_latest
+        assert alpha_latest.checkpoint.state["iteration"] == 4
 
-        beta_latest = storage.load(session2)
-        assert beta_latest["config"]["model"] == "model_v2"
+        beta_latest = storage.get(session2)
+        assert beta_latest
+        assert beta_latest.checkpoint.state["config"]["model"] == "model_v2"
 
         # Clean up old checkpoints
         deleted = storage.cleanup(session1, keep_count=2)
@@ -156,8 +158,11 @@ class TestStorageIntegration:
                     results.append(("list", len(checkpoints)))
 
                     # Load latest
-                    loaded = storage.load(session)
-                    results.append(("load", loaded["operation"]))
+                    loaded = storage.get(session)
+                    assert loaded
+                    results.append(
+                        ("load", loaded.checkpoint.state["operation"])
+                    )
 
                     # Occasionally cleanup
                     if i % 5 == 0 and i > 0:
@@ -244,7 +249,9 @@ class TestStorageIntegration:
                 storage.save("test_session", {"counter": i})
 
         # Verify last save persisted
-        assert storage.load("test_session")["counter"] == 3
+        info = storage.get("test_session")
+        assert info
+        assert info.checkpoint.state["counter"] == 3
 
         # Failed transaction with registry changes
         external_dir = tmp_path / "transaction_links"
@@ -281,7 +288,7 @@ class TestStorageIntegration:
 
         # Load from non-existent session
         with pytest.raises(FileNotFoundError):
-            storage.load("non_existent")
+            storage.get("non_existent")
 
         # Delete non-existent checkpoint
         with pytest.raises(FileNotFoundError):
@@ -303,8 +310,9 @@ class TestStorageIntegration:
         assert future_path.exists()
 
         # Load specific timestamp
-        loaded = storage.load("future_session", future_time)
-        assert loaded["future"] is True
+        loaded = storage.get("future_session", future_time)
+        assert loaded
+        assert loaded.checkpoint.state["future"] is True
 
     def test_large_state_handling(self, tmp_path: Path) -> None:
         """Test handling of large state objects."""
@@ -321,7 +329,9 @@ class TestStorageIntegration:
 
         # Save and load
         checkpoint_path = storage.save("large_session", large_state)
-        loaded_state = storage.load("large_session")
+        loaded_info = storage.get("large_session")
+        assert loaded_info
+        loaded_state = loaded_info.checkpoint.state
 
         # Verify integrity
         assert loaded_state == large_state
@@ -348,8 +358,9 @@ class TestStorageIntegration:
 
         for session in unicode_sessions:
             storage.save(session, {"name": session})
-            loaded = storage.load(session)
-            assert loaded["name"] == session
+            loaded = storage.get(session)
+            assert loaded
+            assert loaded.checkpoint.state["name"] == session
             assert storage.session_exists(session)
 
     def test_checkpoint_metadata_persistence(self, tmp_path: Path) -> None:

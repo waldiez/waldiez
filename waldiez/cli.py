@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # flake8: noqa: E501
 # pylint: disable=missing-function-docstring, missing-param-doc, missing-raises-doc
-# pylint: disable=line-too-long, import-outside-toplevel
+# pylint: disable=line-too-long, import-outside-toplevel,too-many-locals
 # pyright: reportUnknownArgumentType=false,reportCallInDefaultInitializer=false
 # pyright:  reportUnusedCallResult=false,reportAny=false
 """Command line interface to convert or run a waldiez file."""
@@ -147,6 +147,19 @@ def run(
         help="Optional list with initial breakpoints (if using step mode).",
         rich_help_panel="Debug",
     ),
+    checkpoint: Annotated[
+        str | None,
+        typer.Option(
+            "--checkpoint",
+            "-c",
+            help=(
+                "The checkpoint (by its timestamp) to delete. "
+                "NOTE: use 'latest' to load the latest checkpoint, or "
+                "format: '%Y%m%d_%H%M%S_%f', e.g.: '20251022_075906_254779'"
+                " (as named in the checkpoint path)."
+            ),
+        ),
+    ] = None,
     subprocess: bool = typer.Option(
         False,
         "--subprocess",
@@ -183,6 +196,7 @@ def run(
             subprocess_mode=subprocess_mode,
             waldiez_file=file,
             breakpoints=breakpoints,
+            checkpoint=checkpoint,
         )
     except FileNotFoundError as error:
         typer.echo(f"File not found: {file}")

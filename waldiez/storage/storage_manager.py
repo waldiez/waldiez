@@ -15,7 +15,7 @@ from typing import Any
 
 from typing_extensions import Self
 
-from .checkpoint import CheckpointInfo
+from .checkpoint import Checkpoint, CheckpointInfo
 from .filesystem_storage import FilesystemStorage
 from .protocol import Storage
 from .utils import copy_results, get_root_dir, symlink
@@ -200,11 +200,11 @@ class StorageManager:
             session_name=session_name, state=state, metadata=metadata
         )
 
-    def load(
+    def get(
         self, session_name: str, timestamp: datetime | None = None
-    ) -> dict[str, Any]:
+    ) -> CheckpointInfo | None:
         """
-        Load a checkpoint (latest by default).
+        Get a checkpoint (latest by default).
 
         Parameters
         ----------
@@ -215,12 +215,30 @@ class StorageManager:
 
         Returns
         -------
-        dict[str, Any]
+        CheckpointInfo | None
             The loaded state data
         """
-        return self._storage.load_checkpoint(
+        return self._storage.get_checkpoint(
             session_name=session_name, timestamp=timestamp
         )
+
+    def load(
+        self,
+        info: CheckpointInfo,
+    ) -> Checkpoint:
+        """Load a checkpoint.
+
+        Parameters
+        ----------
+        info: CheckpointInfo
+            The checkpoint info to load.
+
+        Returns
+        -------
+        dict[str, Any]
+            The loaded checkpoint data.
+        """
+        return self._storage.load_checkpoint(info)
 
     def link(
         self,

@@ -11,6 +11,7 @@ import shutil
 import sys
 import tempfile
 import threading
+from datetime import datetime, timezone
 from pathlib import Path
 from types import ModuleType, TracebackType
 from typing import Any
@@ -22,6 +23,7 @@ from typing_extensions import Self, override
 from waldiez.exporter import WaldiezExporter
 from waldiez.logger import WaldiezLogger, get_logger
 from waldiez.models import Waldiez
+from waldiez.storage import Checkpoint, StorageManager
 
 from .dir_utils import a_chdir, chdir
 from .environment import reset_env_vars, set_env_vars
@@ -42,6 +44,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     _dot_env_path: str | Path | None
     _running: bool
     _waldiez_file: Path
+    _storage_manger: StorageManager
+    _checkpoint: Checkpoint | None
 
     def __init__(
         self,
@@ -58,6 +62,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         WaldiezBaseRunner._output_path = output_path
         WaldiezBaseRunner._uploads_root = uploads_root
         WaldiezBaseRunner._dot_env_path = dot_env
+        WaldiezBaseRunner._storage_manger = StorageManager()
         EventsMixin.set_input_function(input)
         EventsMixin.set_print_function(print)
         EventsMixin.set_send_function(print)
@@ -86,6 +91,42 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         if not waldiez_file_path or not waldiez_file_path.is_file():
             raise ValueError("Could not resolve a waldiez file path")
         WaldiezBaseRunner._waldiez_file = waldiez_file_path
+        checkpoint_arg = kwargs.get("checkpoint", "")
+        if checkpoint_arg and isinstance(checkpoint_arg, str):
+            WaldiezBaseRunner._checkpoint = WaldiezBaseRunner._init_checkpoint(
+                checkpoint_arg,
+                session_name=waldiez.name,
+            )
+
+    @staticmethod
+    def _init_checkpoint(
+        checkpoint_arg: str,
+        session_name: str,
+    ) -> Checkpoint | None:
+        checkpoint: Checkpoint | None = None
+        # pylint: disable=broad-exception-caught,too-many-try-statements
+        if checkpoint_arg == "latest":
+            try:
+                info = WaldiezBaseRunner._storage_manger.get_latest_checkpoint(
+                    session_name
+                )
+                if info:
+                    checkpoint = WaldiezBaseRunner._storage_manger.load(info)
+            except BaseException:
+                pass
+        else:
+            try:
+                checkpoint_ts = datetime.strptime(
+                    checkpoint_arg, "%Y%m%d_%H%M%S_%f"
+                ).replace(tzinfo=timezone.utc)
+                info = WaldiezBaseRunner._storage_manger.get(
+                    session_name, checkpoint_ts
+                )
+                if info:
+                    checkpoint = WaldiezBaseRunner._storage_manger.load(info)
+            except BaseException:
+                pass
+        return checkpoint
 
     @override
     @staticmethod
@@ -238,6 +279,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 uploads_root=uploads_root,
                 skip_mmd=skip_mmd,
                 skip_timeline=skip_timeline,
+                storage_manager=WaldiezBaseRunner._storage_manger,
             )
         except BaseException as exc:  # pragma: no cover
             self.log.warning("Error occurred during after_run: %s", exc)

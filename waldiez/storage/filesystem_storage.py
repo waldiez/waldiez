@@ -90,9 +90,9 @@ class FilesystemStorage:
 
         return checkpoint_path
 
-    def load_checkpoint(
+    def get_checkpoint(
         self, session_name: str, timestamp: datetime | None = None
-    ) -> dict[str, Any]:
+    ) -> CheckpointInfo | None:
         """Load a checkpoint for a session.
 
         Parameters
@@ -109,7 +109,7 @@ class FilesystemStorage:
 
         Returns
         -------
-        dict[str, Any]
+        CheckpointInfo | None
             The loaded checkpoint info.
         """
         if timestamp is None:
@@ -133,9 +133,28 @@ class FilesystemStorage:
                 path=checkpoint_path,
                 metadata={},
             )
+        return CheckpointInfo.from_checkpoint(checkpoint)
 
-        with open(checkpoint.state_file, "r", encoding="utf-8") as f:
-            return json.load(f)
+    def load_checkpoint(self, info: CheckpointInfo) -> Checkpoint:
+        """Load a checkpoint.
+
+        Parameters
+        ----------
+        info: CheckpointInfo
+            The checkpoint info to get the path.
+
+        Returns
+        -------
+        dict[str, Any]
+            The loaded checkpoint data.
+        """
+        checkpoint = Checkpoint(
+            session_name=info.session_name,
+            timestamp=info.timestamp,
+            path=info.path,
+            metadata=info.metadata,
+        )
+        return checkpoint
 
     def link_checkpoint(
         self,
