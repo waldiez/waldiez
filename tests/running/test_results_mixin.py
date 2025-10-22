@@ -1,878 +1,599 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
-# pylint: disable=missing-param-doc
-# pyright: reportPrivateUsage=false
+# pylint: disable=missing-param-doc,missing-return-doc,no-self-use
+# pylint: disable=too-few-public-methods,too-many-public-methods
+# pylint: disable=protected-access
 
-"""Test waldiez.running.run_results.*."""
+"""Tests for results_mixin module."""
 
 import json
 import sqlite3
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from waldiez.running.results_mixin import (
-    ResultsMixin,
-    _calculate_total_cost,
-    _copy_results,
-    _ensure_error_json,
-    _extract_last_context_variables,
-    _extract_last_speaker,
-    _extract_messages_from_events,
-    _extract_summary_from_events,
-    _fill_results_from_logs,
-    _get_results_from_json,
-    _get_sqlite_out,
-    _make_mermaid_diagram,
-    _make_timeline_json,
-    _remove_results_json,
-    _results_are_empty,
-    _store_full_results,
-)
+from waldiez.running.results_mixin import ResultsMixin, WaldiezRunResults
 
 
-# Test _results_are_empty
-def test_results_are_empty_with_empty_list() -> None:
-    """Test that empty list is detected as empty."""
-    assert _results_are_empty([])
+class TestResultsMixin:
+    """Tests for ResultsMixin class."""
 
-
-def test_results_are_empty_with_empty_dict() -> None:
-    """Test that dict without events/messages is empty."""
-    assert _results_are_empty({"index": 0})
-
-
-def test_results_are_empty_with_events() -> None:
-    """Test that dict with events is not empty."""
-    assert not _results_are_empty(
-        {"events": [{"type": "text", "content": {"content": "test"}}]}
-    )
-
-
-def test_results_are_empty_with_messages() -> None:
-    """Test that dict with messages is not empty."""
-    assert not _results_are_empty(
-        {"messages": [{"content": "test", "role": "user", "name": "user"}]}
-    )
-
-
-# Test _extract_messages_from_events
-def test_extract_messages_from_text_events() -> None:
-    """Test extracting messages from text type events."""
-    events: list[dict[str, Any]] = [
-        {
-            "type": "text",
-            "content": {
-                "content": "Hello",
-                "sender": "user",
-                "recipient": "assistant",
-            },
-        },
-        {
-            "type": "text",
-            "content": {
-                "content": "Hi there",
-                "sender": "assistant",
-                "recipient": "user",
-            },
-        },
-    ]
-    messages = _extract_messages_from_events(events)
-    assert len(messages) == 2
-    assert messages[0]["content"] == "Hello"
-    assert messages[0]["role"] == "user"
-    assert messages[0]["name"] == "user"
-    assert messages[1]["content"] == "Hi there"
-    assert messages[1]["role"] == "assistant"
-    assert messages[1]["name"] == "assistant"
-
-
-def test_extract_messages_filters_handoffs() -> None:
-    """Test that handoff messages are filtered out."""
-    events: list[dict[str, Any]] = [
-        {
-            "type": "text",
-            "content": {
-                "content": "[Handing off to agent]",
-                "sender": "manager",
-            },
-        },
-        {
-            "type": "text",
-            "content": {"content": "Actual message", "sender": "user"},
-        },
-    ]
-    messages = _extract_messages_from_events(events)
-    assert len(messages) == 1
-    assert messages[0]["content"] == "Actual message"
-
-
-def test_extract_messages_filters_none_content() -> None:
-    """Test that None content is filtered out."""
-    events: list[dict[str, Any]] = [
-        {"type": "text", "content": {"content": "None", "sender": "user"}},
-        {"type": "text", "content": {"content": "", "sender": "user"}},
-        {
-            "type": "text",
-            "content": {"content": "Valid message", "sender": "user"},
-        },
-    ]
-    messages = _extract_messages_from_events(events)
-    assert len(messages) == 1
-    assert messages[0]["content"] == "Valid message"
-
-
-def test_extract_messages_avoids_duplicates() -> None:
-    """Test that duplicate messages are avoided."""
-    events: list[dict[str, Any]] = [
-        {
-            "type": "text",
-            "content": {"content": "Same message", "sender": "user"},
-        },
-        {
-            "type": "text",
-            "content": {"content": "Same message", "sender": "user"},
-        },
-    ]
-    messages = _extract_messages_from_events(events)
-    assert len(messages) == 1
-
-
-# Test _extract_summary_from_events
-def test_extract_summary_from_run_completion() -> None:
-    """Test extracting summary from run_completion event."""
-    events: list[dict[str, Any]] = [
-        {
-            "type": "run_completion",
-            "content": {"summary": "This is the summary"},
+    def test_waldiez_run_results_type(self) -> None:
+        """Test WaldiezRunResults TypedDict structure."""
+        results: WaldiezRunResults = {
+            "results": [{"test": "data"}],
+            "exception": None,
+            "completed": True,
         }
-    ]
-    summary = _extract_summary_from_events(events)
-    assert summary == "This is the summary"
 
+        assert "results" in results
+        assert "exception" in results
+        assert "completed" in results
 
-def test_extract_summary_from_history() -> None:
-    """Test extracting summary from history in run_completion."""
-    events: list[dict[str, Any]] = [
-        {
-            "type": "run_completion",
-            "content": {"history": [{"content": "Last message in history"}]},
-        }
-    ]
-    summary = _extract_summary_from_events(events)
-    assert summary == "Last message in history"
+    def test_safe_name(self) -> None:
+        """Test _safe_name method."""
+        # Basic test
+        assert ResultsMixin._safe_name("test_flow") == "test_flow"
 
+        # Special characters
+        assert ResultsMixin._safe_name("test/flow@123!") == "test_flow_123"
 
-def test_extract_summary_fallback_to_text() -> None:
-    """Test fallback to last text message for summary."""
-    events: list[dict[str, Any]] = [
-        {"type": "text", "content": {"content": "Regular message"}},
-        {"type": "text", "content": {"content": "Last message"}},
-    ]
-    summary = _extract_summary_from_events(events)
-    assert summary == "Last message"
+        # Multiple underscores
+        assert ResultsMixin._safe_name("test___flow") == "test_flow"
 
+        # Leading/trailing underscores
+        assert ResultsMixin._safe_name("_test_flow_") == "test_flow"
 
-def test_extract_summary_skips_handoffs() -> None:
-    """Test that summary extraction skips handoff messages."""
-    events: list[dict[str, Any]] = [
-        {"type": "text", "content": {"content": "Valid summary"}},
-        {"type": "text", "content": {"content": "[Handing off to agent]"}},
-    ]
-    summary = _extract_summary_from_events(events)
-    assert summary == "Valid summary"
+        # Empty string
+        assert ResultsMixin._safe_name("") == "invalid_name"
 
+        # Only special characters
+        assert ResultsMixin._safe_name("@#$%^&*") == "invalid_name"
 
-# Test _calculate_total_cost
-def test_calculate_total_cost() -> None:
-    """Test calculating total cost from completions."""
-    completions = [{"cost": 0.001}, {"cost": 0.002}, {"cost": 0.003}]
-    cost = _calculate_total_cost(completions)
-    assert cost == 0.006
+        # Max length
+        long_name = "a" * 300
+        assert len(ResultsMixin._safe_name(long_name)) == 255
 
+        # Custom max length
+        assert len(ResultsMixin._safe_name("test_flow", max_length=5)) == 5
 
-def test_calculate_total_cost_with_none_values() -> None:
-    """Test cost calculation handles None values."""
-    completions: list[dict[str, Any]] = [
-        {"cost": 0.001},
-        {"cost": None},
-        {"cost": 0.002},
-    ]
-    cost = _calculate_total_cost(completions)
-    assert cost == 0.003
+        # Custom fallback
+        assert ResultsMixin._safe_name("", fallback="custom") == "custom"
 
+    def test_ensure_db_outputs(self, tmp_path: Path) -> None:
+        """Test ensure_db_outputs method."""
+        # Create test database
+        flow_db = tmp_path / "flow.db"
+        conn = sqlite3.connect(flow_db)
 
-def test_calculate_total_cost_returns_none_for_zero() -> None:
-    """Test that zero cost returns None."""
-    completions: list[dict[str, Any]] = [{"cost": 0.0}, {"cost": None}]
-    cost = _calculate_total_cost(completions)
-    assert cost is None
+        # Create test tables
+        tables = ["chat_completions", "agents", "events", "function_calls"]
+        for table in tables:
+            q = (
+                f"CREATE TABLE {table}"  # nosemgrep # nosec
+                "(id INTEGER, data TEXT)"
+            )
+            conn.execute(q)
+            q = f"INSERT INTO {table} VALUES (1, 'test')"  # nosemgrep # nosec
+            conn.execute(q)
+        conn.commit()
+        conn.close()
 
+        # Run ensure_db_outputs
+        ResultsMixin.ensure_db_outputs(tmp_path)
 
-# Test _extract_last_context_variables
-def test_extract_context_from_executed_function() -> None:
-    """Test extracting context variables from executed_function."""
-    events: list[dict[str, Any]] = [
-        {
-            "type": "executed_function",
-            "content": {
-                "content": {"context_variables": {"data": {"key": "value"}}}
-            },
-        }
-    ]
-    context = _extract_last_context_variables(events)
-    assert context == {"key": "value"}
+        # Check files were created
+        logs_dir = tmp_path / "logs"
+        assert logs_dir.exists()
 
+        for table in tables:
+            csv_file = logs_dir / f"{table}.csv"
+            json_file = logs_dir / f"{table}.json"
+            assert csv_file.exists()
+            assert json_file.exists()
 
-def test_extract_context_from_run_completion() -> None:
-    """Test extracting context from run_completion event."""
-    events: list[dict[str, Any]] = [
-        {
-            "type": "run_completion",
-            "content": {"context_variables": {"key": "value"}},
-        }
-    ]
-    context = _extract_last_context_variables(events)
-    assert context == {"key": "value"}
+    def test_ensure_db_outputs_no_db(self, tmp_path: Path) -> None:
+        """Test ensure_db_outputs when no database exists."""
+        ResultsMixin.ensure_db_outputs(tmp_path)
 
+        # Should not create logs directory
+        assert not (tmp_path / "logs").exists()
 
-def test_extract_last_context_variables_returns_last() -> None:
-    """Test that the last context variables are returned."""
-    events: list[dict[str, Any]] = [
-        {
-            "type": "executed_function",
-            "content": {
-                "content": {"context_variables": {"data": {"first": 1}}}
-            },
-        },
-        {
-            "type": "executed_function",
-            "content": {
-                "content": {"context_variables": {"data": {"last": 2}}}
-            },
-        },
-    ]
-    context = _extract_last_context_variables(events)
-    assert context == {"last": 2}
+    def test_ensure_results_json(self, tmp_path: Path) -> None:
+        """Test ensure_results_json method."""
+        results: list[dict[str, Any]] = [{"test": "data", "value": 123}]
 
+        ResultsMixin.ensure_results_json(tmp_path, results)
 
-# Test _extract_last_speaker
-def test_extract_last_speaker_from_run_completion() -> None:
-    """Test extracting last speaker from run_completion."""
-    events: list[dict[str, Any]] = [
-        {
-            "type": "run_completion",
-            "content": {"last_speaker": "agent_name"},
-        }
-    ]
-    speaker = _extract_last_speaker(events)
-    assert speaker == "agent_name"
+        results_file = tmp_path / "results.json"
+        assert results_file.exists()
 
+        with open(results_file, encoding="utf-8") as f:
+            data = json.load(f)
 
-def test_extract_last_speaker_from_history() -> None:
-    """Test extracting last speaker from history."""
-    events: list[dict[str, Any]] = [
-        {
-            "type": "run_completion",
-            "content": {"history": [{"name": "agent_from_history"}]},
-        }
-    ]
-    speaker = _extract_last_speaker(events)
-    assert speaker == "agent_from_history"
+        assert "results" in data
+        assert data["results"][0]["test"] == results[0]["test"]
 
+    @patch("waldiez.running.results_mixin.get_results_from_json")
+    @patch("waldiez.running.results_mixin.store_full_results")
+    def test_ensure_results_json_existing(
+        self, mock_store: MagicMock, mock_get: MagicMock, tmp_path: Path
+    ) -> None:
+        """Test ensure_results_json with existing results."""
+        mock_get.return_value = [{"existing": "data"}]
 
-def test_extract_last_speaker_fallback_to_text() -> None:
-    """Test fallback to last text event sender."""
-    events: list[dict[str, Any]] = [
-        {"type": "text", "content": {"sender": "first_agent"}},
-        {"type": "text", "content": {"sender": "last_agent"}},
-    ]
-    speaker = _extract_last_speaker(events)
-    assert speaker == "last_agent"
+        ResultsMixin.ensure_results_json(tmp_path, [])
 
+        mock_get.assert_called_once_with(tmp_path)
+        mock_store.assert_called_once_with(tmp_path)
 
-def test_extract_last_speaker_skips_manager() -> None:
-    """Test that manager sender is skipped."""
-    events: list[dict[str, Any]] = [
-        {"type": "text", "content": {"sender": "real_agent"}},
-        {"type": "text", "content": {"sender": "manager"}},
-    ]
-    speaker = _extract_last_speaker(events)
-    assert speaker == "real_agent"
+    def test_ensure_error_json(self, tmp_path: Path) -> None:
+        """Test ensure_error_json method."""
+        error = ValueError("Test error")
 
+        ResultsMixin.ensure_error_json(tmp_path, error)
 
-# Test file operations
-def test_get_results_from_json_with_valid_file(tmp_path: Path) -> None:
-    """Test reading results from valid results.json."""
-    results_file = tmp_path / "results.json"
-    results_data: dict[str, Any] = {
-        "results": [
-            {
-                "index": 0,
-                "messages": [{"content": "test", "role": "user"}],
+        error_file = tmp_path / "error.json"
+        assert error_file.exists()
+
+        with open(error_file, encoding="utf-8") as f:
+            data = json.load(f)
+
+        assert data["error"] == "Test error"
+
+    def test_read_results_error(self, tmp_path: Path) -> None:
+        """Test read_results_error method."""
+        # Test with dict error
+        error_file = tmp_path / "error.json"
+        error_file.write_text('{"error": "Test error"}')
+
+        results = ResultsMixin.read_results_error(error_file)
+        assert results == [{"error": "Test error"}]
+
+        # Test with list error
+        error_file.write_text('[{"error": "Error 1"}, {"error": "Error 2"}]')
+
+        results = ResultsMixin.read_results_error(error_file)
+        assert len(results) == 2
+        assert results[0]["error"] == "Error 1"
+
+        # Test with invalid JSON
+        error_file.write_text("invalid json")
+
+        results = ResultsMixin.read_results_error(error_file)
+        assert len(results) == 1
+        assert "error" in results[0]
+
+    def test_read_results_error_no_file(self, tmp_path: Path) -> None:
+        """Test read_results_error when file doesn't exist."""
+        error_file = tmp_path / "missing.json"
+
+        results = ResultsMixin.read_results_error(error_file)
+        assert results == [{"error": "No results generated"}]
+
+    def test_read_from_output_results(self, tmp_path: Path) -> None:
+        """Test read_from_output with results.json."""
+        results_file = tmp_path / "results.json"
+        results_file.write_text('{"results": [{"data": "test"}]}')
+
+        results = ResultsMixin.read_from_output(tmp_path)
+        assert results == [{"data": "test"}]
+
+    def test_read_from_output_error(self, tmp_path: Path) -> None:
+        """Test read_from_output with error.json."""
+        error_file = tmp_path / "error.json"
+        error_file.write_text('{"error": "Flow failed"}')
+
+        results = ResultsMixin.read_from_output(tmp_path)
+        assert results == [{"error": "Flow failed"}]
+
+    def test_read_from_output_no_files(self, tmp_path: Path) -> None:
+        """Test read_from_output with no files."""
+        results = ResultsMixin.read_from_output(tmp_path)
+        assert results == [{"error": "Could not gather result details."}]
+
+    def test_read_from_output_exception(self, tmp_path: Path) -> None:
+        """Test read_from_output with exception."""
+        results_file = tmp_path / "results.json"
+        results_file.write_text("invalid json")
+
+        results = ResultsMixin.read_from_output(tmp_path)
+        assert len(results) == 1
+        assert "error" in results[0]
+
+    def test_get_results_with_results_json(self, tmp_path: Path) -> None:
+        """Test get_results when results.json exists."""
+        results_file = tmp_path / "results.json"
+        results_file.write_text('{"results": [{"from": "file"}]}')
+
+        results = ResultsMixin.get_results([{"from": "parameter"}], tmp_path)
+
+        assert results == [{"from": "file"}]
+
+    def test_get_results_with_error_json(self, tmp_path: Path) -> None:
+        """Test get_results when error.json exists."""
+        error_file = tmp_path / "error.json"
+        error_file.write_text('{"error": "Failed"}')
+
+        results = ResultsMixin.get_results([{"from": "parameter"}], tmp_path)
+
+        assert results == [{"error": "Failed"}]
+
+    def test_get_results_no_files(self, tmp_path: Path) -> None:
+        """Test get_results with no files."""
+        input_results = [{"from": "parameter"}]
+
+        results = ResultsMixin.get_results(input_results, tmp_path)
+
+        assert results == input_results
+
+    def test_make_timeline_json(self, tmp_path: Path) -> None:
+        """Test make_timeline_json method."""
+        # Create test CSV
+        logs_dir = tmp_path / "logs"
+        logs_dir.mkdir()
+        events_csv = logs_dir / "events.csv"
+        events_csv.write_text("timestamp,event\n2024-01-01,test")
+
+        with patch(
+            "waldiez.running.results_mixin.TimelineProcessor"
+        ) as mock_processor:
+            mock_instance = Mock()
+            mock_processor.return_value = mock_instance
+            mock_processor.get_files.return_value = {
+                "agents": Path("agents.csv"),
+                "chat": Path("chat.csv"),
+                "events": events_csv,
+                "functions": Path("functions.csv"),
             }
-        ]
-    }
-    with open(results_file, "w", encoding="utf-8") as f:
-        json.dump(results_data, f)
-    results = _get_results_from_json(tmp_path)
-    assert len(results) == 1
-    assert results[0]["index"] == 0
+            mock_instance.process_timeline.return_value = {"timeline": "data"}
+            mock_processor.get_short_results.return_value = {"short": "data"}
 
+            ResultsMixin.make_timeline_json(tmp_path)
 
-def test_get_results_from_json_with_empty_results(tmp_path: Path) -> None:
-    """Test reading empty results returns empty list."""
-    results_file = tmp_path / "results.json"
-    results_data: dict[str, Any] = {"results": []}
-    with open(results_file, "w", encoding="utf-8") as f:
-        json.dump(results_data, f)
-    results = _get_results_from_json(tmp_path)
-    assert not results
+            # Verify timeline.json was created
+            assert (tmp_path / "timeline.json").exists()
+            mock_instance.load_csv_files.assert_called_once()
+            mock_instance.process_timeline.assert_called_once()
 
+    def test_make_timeline_json_no_events(self, tmp_path: Path) -> None:
+        """Test make_timeline_json when no events.csv exists."""
+        ResultsMixin.make_timeline_json(tmp_path)
 
-def test_get_results_from_json_nonexistent_file(tmp_path: Path) -> None:
-    """Test reading from nonexistent file returns empty list."""
-    results = _get_results_from_json(tmp_path)
-    assert not results
+        # Should not create timeline.json
+        assert not (tmp_path / "timeline.json").exists()
 
+    @patch("waldiez.running.results_mixin.generate_sequence_diagram")
+    def test_make_mermaid_diagram(
+        self, mock_generate: MagicMock, tmp_path: Path
+    ) -> None:
+        """Test make_mermaid_diagram method."""
+        # Create test events.csv
+        logs_dir = tmp_path / "logs"
+        logs_dir.mkdir()
+        events_csv = logs_dir / "events.csv"
+        events_csv.write_text("test,data")
 
-def test_remove_results_json(tmp_path: Path) -> None:
-    """Test removing results.json file."""
-    results_file = tmp_path / "results.json"
-    results_file.write_text("{}")
-    _remove_results_json(tmp_path)
-    assert not results_file.exists()
+        output_file = tmp_path / "output.py"
 
-
-def test_remove_results_json_nonexistent(tmp_path: Path) -> None:
-    """Test removing nonexistent file doesn't raise error."""
-    _remove_results_json(tmp_path)  # Should not raise
-
-
-# Test _fill_results_from_logs
-def test_fill_results_from_logs(tmp_path: Path) -> None:
-    """Test filling results from log files."""
-    # Setup directory structure
-    logs_dir = tmp_path / "logs"
-    logs_dir.mkdir()
-    # Create results.json with empty fields
-    results_data: dict[str, Any] = {
-        "results": [
-            {
-                "index": 0,
-                "uuid": "test-uuid",
-                "events": [
-                    {
-                        "type": "text",
-                        "content": {"content": "Hello", "sender": "user"},
-                    }
-                ],
-                "messages": [],
-                "summary": None,
-                "cost": None,
-                "context_variables": None,
-                "last_speaker": None,
-            }
-        ]
-    }
-    results_file = tmp_path / "results.json"
-    with open(results_file, "w", encoding="utf-8") as f:
-        json.dump(results_data, f)
-
-    completions = [{"cost": 0.001}]
-    completions_file = logs_dir / "chat_completions.json"
-    with open(completions_file, "w", encoding="utf-8") as f:
-        json.dump(completions, f)
-
-    filled = _fill_results_from_logs(tmp_path)
-    result = filled["results"][0]
-    assert len(result["messages"]) == 1
-    assert result["messages"][0]["content"] == "Hello"
-    assert result["summary"] == "Hello"
-    assert result["cost"] == 0.001
-
-
-def test_ensure_results_json_creates_file(tmp_path: Path) -> None:
-    """Test ensure_results_json creates file if not exists."""
-    results: list[dict[str, Any]] = [{"index": 0, "messages": []}]
-    ResultsMixin.ensure_results_json(tmp_path, results)
-    results_file = tmp_path / "results.json"
-    assert results_file.exists()
-
-
-def test_get_results_returns_from_file(tmp_path: Path) -> None:
-    """Test get_results returns from file if exists."""
-    results_file = tmp_path / "results.json"
-    file_results: dict[str, Any] = {
-        "results": [{"index": 0, "messages": [{"content": "from file"}]}]
-    }
-    with open(results_file, "w", encoding="utf-8") as f:
-        json.dump(file_results, f)
-    results = ResultsMixin.get_results([], tmp_path)
-    assert len(results) == 1
-    assert results[0]["messages"][0]["content"] == "from file"
-
-
-def test_get_results_returns_passed_results(tmp_path: Path) -> None:
-    """Test get_results returns passed results if no file."""
-    passed_results: list[dict[str, Any]] = [{"index": 0, "messages": []}]
-    results = ResultsMixin.get_results(passed_results, tmp_path)
-    assert results == passed_results
-
-
-@pytest.mark.asyncio
-async def test_a_get_results_returns_from_file(tmp_path: Path) -> None:
-    """Test async get_results returns from file if exists."""
-    results_file = tmp_path / "results.json"
-    file_results: dict[str, Any] = {
-        "results": [{"index": 0, "messages": [{"content": "from file"}]}]
-    }
-    with open(results_file, "w", encoding="utf-8") as f:
-        json.dump(file_results, f)
-    results = await ResultsMixin.a_get_results([], tmp_path)
-    assert len(results) == 1
-    assert results[0]["messages"][0]["content"] == "from file"
-
-
-def test_read_from_output_with_results(tmp_path: Path) -> None:
-    """Test reading from output with results.json."""
-    results_file = tmp_path / "results.json"
-    results_data = {"results": [{"index": 0}]}
-    with open(results_file, "w", encoding="utf-8") as f:
-        json.dump(results_data, f)
-    results = ResultsMixin.read_from_output(tmp_path)
-    assert len(results) == 1
-    assert results[0]["index"] == 0
-
-
-def test_read_from_output_with_error(tmp_path: Path) -> None:
-    """Test reading from output with error.json."""
-    error_file = tmp_path / "error.json"
-    error_data = {"error": "Something went wrong"}
-    with open(error_file, "w", encoding="utf-8") as f:
-        json.dump(error_data, f)
-    results = ResultsMixin.read_from_output(tmp_path)
-    assert len(results) == 1
-    assert results[0]["error"] == "Something went wrong"
-
-
-def test_read_from_output_no_files(tmp_path: Path) -> None:
-    """Test reading from output with no files."""
-    results = ResultsMixin.read_from_output(tmp_path)
-    assert len(results) == 1
-    assert "error" in results[0]
-
-
-@pytest.mark.asyncio
-async def test_a_read_from_output_with_results(tmp_path: Path) -> None:
-    """Test async reading from output with results.json."""
-    results_file = tmp_path / "results.json"
-    results_data = {"results": [{"index": 0}]}
-    with open(results_file, "w", encoding="utf-8") as f:
-        json.dump(results_data, f)
-    results = await ResultsMixin.a_read_from_output(tmp_path)
-    assert len(results) == 1
-    assert results[0]["index"] == 0
-
-
-@pytest.mark.asyncio
-async def test_a_read_from_output_with_error(tmp_path: Path) -> None:
-    """Test async reading from output with error.json."""
-    error_file = tmp_path / "error.json"
-    error_data = {"error": "Something went wrong"}
-    with open(error_file, "w", encoding="utf-8") as f:
-        json.dump(error_data, f)
-    results = await ResultsMixin.a_read_from_output(tmp_path)
-    assert len(results) == 1
-    assert results[0]["error"] == "Something went wrong"
-
-
-# Test _store_full_results
-def test_store_full_results(tmp_path: Path) -> None:
-    """Test storing full results with filled data."""
-    # Setup
-    logs_dir = tmp_path / "logs"
-    logs_dir.mkdir()
-    results_data: dict[str, Any] = {
-        "results": [
-            {
-                "index": 0,
-                "events": [
-                    {
-                        "type": "text",
-                        "content": {"content": "Test", "sender": "user"},
-                    }
-                ],
-                "messages": [],
-                "summary": None,
-                "cost": None,
-                "context_variables": None,
-                "last_speaker": None,
-            }
-        ]
-    }
-    results_file = tmp_path / "results.json"
-    with open(results_file, "w", encoding="utf-8") as f:
-        json.dump(results_data, f)
-    completions_file = logs_dir / "chat_completions.json"
-    with open(completions_file, "w", encoding="utf-8") as f:
-        json.dump([{"cost": 0.5}], f)
-    _store_full_results(tmp_path)
-    with open(results_file, "r", encoding="utf-8") as f:
-        stored = json.load(f)
-    result = stored["results"][0]
-    assert len(result["messages"]) == 1
-    assert result["summary"] == "Test"
-    assert result["cost"] == 0.5
-
-
-def test_ensure_error_json(tmp_path: Path) -> None:
-    """Test _ensure_error_json function."""
-    output_dir = tmp_path
-    error = ValueError("Test error message")
-    _ensure_error_json(output_dir, error)
-    error_file = output_dir / "error.json"
-    assert error_file.exists()
-    with open(error_file, "r", encoding="utf-8") as f:
-        error_data = json.load(f)
-    assert error_data["error"] == "Test error message"
-
-
-def test_ensure_error_json_not_overwrite(tmp_path: Path) -> None:
-    """Test _ensure_error_json doesn't overwrite existing file."""
-    output_dir = tmp_path
-    error_file = output_dir / "error.json"
-    with open(error_file, "w", encoding="utf-8") as f:
-        json.dump({"error": "Original error"}, f)
-    error = ValueError("New error")
-    _ensure_error_json(output_dir, error)
-    with open(error_file, "r", encoding="utf-8") as f:
-        error_data = json.load(f)
-    assert error_data["error"] == "Original error"
-
-
-def test_get_sqlite_out(tmp_path: Path) -> None:
-    """Test get_sqlite_out function."""
-    db_path = tmp_path / "test.db"
-    csv_path = tmp_path / "output.csv"
-    # Create a test database and table
-    conn = sqlite3.connect(db_path)
-    conn.execute("CREATE TABLE test_table (id INTEGER, name TEXT)")
-    conn.execute("INSERT INTO test_table VALUES (1, 'Alice')")
-    conn.execute("INSERT INTO test_table VALUES (2, 'Bob')")
-    conn.commit()
-    conn.close()
-    _get_sqlite_out(str(db_path), "test_table", str(csv_path))
-    assert csv_path.exists()
-    with open(csv_path, "r", encoding="utf-8") as f:
-        content = f.read()
-        assert "id,name" in content
-        assert "1,Alice" in content
-        assert "2,Bob" in content
-    json_path = tmp_path / "output.json"
-    assert json_path.exists()
-    with open(json_path, "r", encoding="utf-8") as f:
-        data = json.load(f)
-        assert len(data) == 2
-        assert data[0]["id"] == 1
-        assert data[0]["name"] == "Alice"
-
-
-def test_get_sqlite_out_with_invalid_table(tmp_path: Path) -> None:
-    """Test get_sqlite_out with invalid table name."""
-    db_path = tmp_path / "test.db"
-    csv_path = tmp_path / "output.csv"
-    conn = sqlite3.connect(db_path)
-    conn.close()
-    _get_sqlite_out(str(db_path), "nonexistent_table", str(csv_path))
-    assert not csv_path.exists()
-
-
-def test_ensure_db_outputs(tmp_path: Path) -> None:
-    """Test _ensure_db_outputs function."""
-    output_dir = tmp_path
-    db_path = output_dir / "flow.db"
-    conn = sqlite3.connect(db_path)
-    tables = [
-        "chat_completions",
-        "agents",
-        "oai_wrappers",
-        "oai_clients",
-        "version",
-        "events",
-        "function_calls",
-    ]
-    for table in tables:
-        conn.execute(
-            f"CREATE TABLE {table} (id INTEGER, data TEXT)"  # nosemgrep # nosec
+        ResultsMixin.make_mermaid_diagram(
+            tmp_path, output_file, "test_flow", tmp_path
         )
-        conn.execute(
-            f"INSERT INTO {table} VALUES (1, 'test')"  # nosemgrep # nosec
+
+        mock_generate.assert_called_once()
+        args = mock_generate.call_args[0]
+        assert args[0] == events_csv
+        assert args[1] == tmp_path / "test_flow.mmd"
+
+    def test_make_mermaid_diagram_no_output(self, tmp_path: Path) -> None:
+        """Test make_mermaid_diagram without output file."""
+        logs_dir = tmp_path / "logs"
+        logs_dir.mkdir()
+        events_csv = logs_dir / "events.csv"
+        events_csv.write_text("test")
+
+        mmd_dir = tmp_path / "mermaid"
+        mmd_dir.mkdir()
+
+        with patch("waldiez.running.results_mixin.generate_sequence_diagram"):
+            # Create the mmd file that would be generated
+            mmd_file = tmp_path / "test_flow.mmd"
+            mmd_file.write_text("graph TD")
+
+            ResultsMixin.make_mermaid_diagram(
+                tmp_path, None, "test_flow", mmd_dir
+            )
+
+            # Should copy to mmd_dir
+            assert (mmd_dir / "test_flow.mmd").exists()
+
+    @patch("waldiez.running.results_mixin.StorageManager")
+    def test_post_run_success(
+        self, mock_storage_class: MagicMock, tmp_path: Path
+    ) -> None:
+        """Test post_run with successful results."""
+        # Setup mock storage
+        mock_storage = Mock()
+        mock_storage_class.return_value = mock_storage
+        mock_storage.finalize.return_value = (
+            tmp_path / "checkpoint",
+            tmp_path / "link",
         )
-    conn.commit()
-    conn.close()
-    ResultsMixin.ensure_db_outputs(output_dir)
-    logs_dir = output_dir / "logs"
-    assert logs_dir.exists()
 
-    for table in tables:
-        csv_file = logs_dir / f"{table}.csv"
-        json_file = logs_dir / f"{table}.json"
-        assert csv_file.exists()
-        assert json_file.exists()
+        # Create test data
+        results = [{"test": "result"}]
+        waldiez_file = tmp_path / "test.waldiez"
+        waldiez_file.write_text("content")
+        output_file = tmp_path / "output.py"
 
+        # Run post_run
+        dest = ResultsMixin.post_run(
+            results=results,
+            error=None,
+            temp_dir=tmp_path,
+            output_file=output_file,
+            flow_name="test_flow",
+            waldiez_file=waldiez_file,
+            skip_mmd=True,
+            skip_timeline=True,
+        )
 
-def test_ensure_db_outputs_no_database(tmp_path: Path) -> None:
-    """Test _ensure_db_outputs when no database exists."""
-    output_dir = tmp_path
-    ResultsMixin.ensure_db_outputs(output_dir)
-    logs_dir = output_dir / "logs"
-    assert not logs_dir.exists()
+        assert dest == tmp_path / "link"
+        mock_storage.finalize.assert_called_once()
 
+    @patch("waldiez.running.results_mixin.StorageManager")
+    def test_post_run_with_error(
+        self, mock_storage_class: MagicMock, tmp_path: Path
+    ) -> None:
+        """Test post_run with error."""
+        mock_storage = Mock()
+        mock_storage_class.return_value = mock_storage
+        mock_storage.finalize.return_value = (
+            tmp_path / "checkpoint",
+            tmp_path / "link",
+        )
 
-def test_ensure_db_outputs_existing_files(tmp_path: Path) -> None:
-    """Test _ensure_db_outputs with existing CSV/JSON files."""
-    output_dir = tmp_path
-    db_path = output_dir / "flow.db"
-    logs_dir = output_dir / "logs"
-    logs_dir.mkdir()
-    conn = sqlite3.connect(db_path)
-    conn.execute("CREATE TABLE agents (id INTEGER)")
-    conn.execute("INSERT INTO agents VALUES (1)")
-    conn.commit()
-    conn.close()
-    (logs_dir / "agents.csv").write_text("existing csv")
-    (logs_dir / "agents.json").write_text("existing json")
-    ResultsMixin.ensure_db_outputs(output_dir)
-    assert (logs_dir / "agents.csv").read_text() == "existing csv"
-    assert (logs_dir / "agents.json").read_text() == "existing json"
+        error = RuntimeError("Test error")
+        waldiez_file = tmp_path / "test.waldiez"
+        waldiez_file.write_text("content")
 
+        ResultsMixin.post_run(
+            results=[],
+            error=error,
+            temp_dir=tmp_path,
+            output_file=None,
+            flow_name="test_flow",
+            waldiez_file=waldiez_file,
+            skip_mmd=True,
+            skip_timeline=True,
+        )
 
-def test_post_run_with_output_file(tmp_path: Path) -> None:
-    """Test post_run with output file specified."""
-    flow_name = "test_flow"
-    tmp_dir = tmp_path / "temp"
-    tmp_dir.mkdir(parents=True, exist_ok=True)
-    output_file = tmp_path / "output" / "flow.py"
-    output_file.parent.mkdir(parents=True, exist_ok=True)
-    output_file.touch()
-    waldiez_file = tmp_path / "flow.waldiez"
-    waldiez_file.touch()
-    result = ResultsMixin.post_run(
-        results=[{"index": 0, "messages": []}],
-        error=None,
-        temp_dir=tmp_dir,
-        output_file=output_file,
-        flow_name=flow_name,
-        waldiez_file=waldiez_file,
-        uploads_root=None,
-        skip_mmd=True,
-        skip_timeline=True,
-    )
-    assert result is not None
-    assert result.exists()
-    assert result.name.startswith("2025")  # timestamp directory
+        # Should create error.json
+        assert (tmp_path / "error.json").exists()
 
+    def test_post_run_copy_waldiez_file(self, tmp_path: Path) -> None:
+        """Test post_run copies waldiez file."""
+        with patch(
+            "waldiez.running.results_mixin.StorageManager"
+        ) as mock_storage_class:
+            mock_storage = Mock()
+            mock_storage_class.return_value = mock_storage
 
-def test_post_run_without_output_file(tmp_path: Path) -> None:
-    """Test post_run without output file."""
-    flow_name = "test_flow"
-    tmp_dir = tmp_path / "temp"
-    tmp_dir.mkdir(parents=True, exist_ok=True)
-    waldiez_file = tmp_path / "flow.waldiez"
-    waldiez_file.touch()
-    result = ResultsMixin.post_run(
-        results=[{"index": 0, "messages": []}],
-        error=None,
-        temp_dir=tmp_dir,
-        output_file=None,
-        flow_name=flow_name,
-        waldiez_file=waldiez_file,
-        skip_mmd=True,
-        skip_timeline=True,
-    )
-    assert result is None
-    assert not tmp_dir.exists()  # temp dir should be removed
+            link_path = tmp_path / "link"
+            link_path.mkdir()
+            mock_storage.finalize.return_value = (
+                tmp_path / "checkpoint",
+                link_path,
+            )
 
+            waldiez_file = tmp_path / "test.waldiez"
+            waldiez_file.write_text("waldiez content")
 
-def test_post_run_with_error(tmp_path: Path) -> None:
-    """Test post_run with an error."""
-    flow_name = "test_flow"
-    tmp_dir = tmp_path / "temp"
-    output_file = tmp_path / "output" / "output.py"
-    tmp_dir.mkdir(parents=True, exist_ok=True)
-    waldiez_file = tmp_path / "flow.waldiez"
-    waldiez_file.touch()
-    error = RuntimeError("Test error")
-    output_dir = ResultsMixin.post_run(
-        results=[],
-        error=error,
-        temp_dir=tmp_dir,
-        output_file=output_file,
-        flow_name=flow_name,
-        waldiez_file=waldiez_file,
-        skip_mmd=True,
-        skip_timeline=True,
-    )
-    assert output_dir
-    error_file = output_dir / "error.json"
-    assert error_file.exists()
-    with open(error_file, "r", encoding="utf-8") as f:
-        error_data = json.load(f)
-    assert error_data["error"] == "Test error"
+            ResultsMixin.post_run(
+                results=[],
+                error=None,
+                temp_dir=tmp_path,
+                output_file=tmp_path / "out.py",
+                flow_name="test",
+                waldiez_file=waldiez_file,
+                skip_mmd=True,
+                skip_timeline=True,
+            )
+
+            # Should copy waldiez file to link directory
+            assert (link_path / "test.waldiez").exists()
+            assert (link_path / "test.waldiez").read_text() == "waldiez content"
 
 
-@pytest.mark.asyncio
-async def test_a_post_run(tmp_path: Path) -> None:
-    """Test async post_run."""
-    flow_name = "test_flow"
-    tmp_dir = tmp_path / "temp"
-    tmp_dir.mkdir(parents=True, exist_ok=True)
-    waldiez_file = tmp_path / "flow.waldiez"
-    waldiez_file.touch()
-    result = await ResultsMixin.a_post_run(
-        results=[{"index": 0, "messages": []}],
-        error=None,
-        temp_dir=tmp_dir,
-        output_file=None,
-        flow_name=flow_name,
-        waldiez_file=waldiez_file,
-        skip_mmd=True,
-        skip_timeline=True,
-    )
-    assert result is None
+class TestAsyncMethods:
+    """Tests for async methods in ResultsMixin."""
+
+    async def test_a_ensure_db_outputs(self, tmp_path: Path) -> None:
+        """Test async ensure_db_outputs."""
+        # Create test database
+        flow_db = tmp_path / "flow.db"
+        conn = sqlite3.connect(flow_db)
+        conn.execute("CREATE TABLE agents (id INTEGER, name TEXT)")
+        conn.execute("INSERT INTO agents VALUES (1, 'agent1')")
+        conn.commit()
+        conn.close()
+
+        await ResultsMixin.a_ensure_db_outputs(tmp_path)
+
+        # Check files were created
+        logs_dir = tmp_path / "logs"
+        assert logs_dir.exists()
+        assert (logs_dir / "agents.csv").exists()
+        assert (logs_dir / "agents.json").exists()
+
+    async def test_a_ensure_results_json(self, tmp_path: Path) -> None:
+        """Test async ensure_results_json."""
+        results = [{"async": "test"}]
+
+        await ResultsMixin.a_ensure_results_json(tmp_path, results)
+
+        results_file = tmp_path / "results.json"
+        assert results_file.exists()
+
+        with open(results_file, encoding="utf-8") as f:
+            data = json.load(f)
+
+        assert data["results"][0]["async"] == "test"
+
+    async def test_a_read_results_error(self, tmp_path: Path) -> None:
+        """Test async read_results_error."""
+        error_file = tmp_path / "error.json"
+        error_file.write_text('{"error": "Async error"}')
+
+        results = await ResultsMixin.a_read_results_error(error_file)
+        assert results == [{"error": "Async error"}]
+
+    async def test_a_read_from_output(self, tmp_path: Path) -> None:
+        """Test async read_from_output."""
+        results_file = tmp_path / "results.json"
+        results_file.write_text('{"results": [{"async": "data"}]}')
+
+        results = await ResultsMixin.a_read_from_output(tmp_path)
+        assert results == [{"async": "data"}]
+
+    async def test_a_get_results(self, tmp_path: Path) -> None:
+        """Test async get_results."""
+        input_results = [{"input": "data"}]
+
+        # Test with no files
+        results = await ResultsMixin.a_get_results(input_results, tmp_path)
+        assert results == input_results
+
+        # Test with results.json
+        results_file = tmp_path / "results.json"
+        results_file.write_text('{"results": [{"file": "data"}]}')
+
+        results = await ResultsMixin.a_get_results(input_results, tmp_path)
+        assert results == [{"file": "data"}]
+
+    async def test_a_post_run(self, tmp_path: Path) -> None:
+        """Test async post_run."""
+        with patch(
+            "waldiez.running.results_mixin.anyio.to_thread.run_sync"
+        ) as mock_run_sync:
+            mock_run_sync.return_value = tmp_path / "result"
+
+            waldiez_file = tmp_path / "test.waldiez"
+            waldiez_file.touch()
+
+            result = await ResultsMixin.a_post_run(
+                results=[],
+                error=None,
+                temp_dir=tmp_path,
+                output_file=None,
+                flow_name="test",
+                waldiez_file=waldiez_file,
+            )
+
+            assert result == tmp_path / "result"
+            mock_run_sync.assert_called_once()
 
 
-def test_copy_results(tmp_path: Path) -> None:
-    """Test copy_results function."""
-    temp_dir = tmp_path / "temp"
-    temp_dir.mkdir(parents=True, exist_ok=True)
-    test_file = temp_dir / "test.txt"
-    test_file.write_text("test content")
-    test_dir = temp_dir / "subdir"
-    test_dir.mkdir()
-    (test_dir / "nested.txt").write_text("nested content")
-    # should be skipped
-    pycache_dir = temp_dir / "__pycache__"
-    pycache_dir.mkdir()
-    (pycache_dir / "test.pyc").touch()
-    (temp_dir / ".cache").touch()
-    (temp_dir / ".env").touch()
-    (temp_dir / "test.pyc").touch()
-    output_file = tmp_path / "output.py"
-    output_file.touch()
-    destination_dir = tmp_path / "destination"
-    destination_dir.mkdir(parents=True, exist_ok=True)
-    _copy_results(temp_dir, output_file, destination_dir)
-    assert (destination_dir / "test.txt").exists()
-    assert (destination_dir / "subdir" / "nested.txt").exists()
-    assert not (destination_dir / "__pycache__").exists()
-    assert not (destination_dir / ".cache").exists()
-    assert not (destination_dir / ".env").exists()
-    assert not (destination_dir / "test.pyc").exists()
+class TestEdgeCases:
+    """Test edge cases and error conditions."""
 
+    def test_post_run_exception_handling(self, tmp_path: Path) -> None:
+        """Test exception handling in post_run."""
+        with patch(
+            "waldiez.running.results_mixin.StorageManager"
+        ) as mock_storage_class:
+            mock_storage = Mock()
+            mock_storage_class.return_value = mock_storage
+            mock_storage.finalize.side_effect = Exception("Storage error")
 
-def test_copy_results_with_special_files(tmp_path: Path) -> None:
-    """Test copy_results with tree of thoughts and reasoning tree files."""
-    temp_dir = tmp_path / "temp"
-    temp_dir.mkdir(parents=True, exist_ok=True)
-    # Create special files
-    tot_file = temp_dir / "tree_of_thoughts.png"
-    tot_file.write_bytes(b"fake image data")
-    reasoning_file = temp_dir / "reasoning_tree.json"
-    reasoning_file.write_text('{"tree": "data"}')
-    output_file = tmp_path / "output" / "output.py"
-    output_file.parent.mkdir(parents=True, exist_ok=True)
-    output_file.touch()
-    destination_dir = tmp_path / "destination"
-    destination_dir.mkdir(parents=True, exist_ok=True)
-    _copy_results(temp_dir, output_file, destination_dir)
-    assert (output_file.parent / "tree_of_thoughts.png").exists()
-    assert (output_file.parent / "reasoning_tree.json").exists()
-    assert (destination_dir / "tree_of_thoughts.png").exists()
-    assert (destination_dir / "reasoning_tree.json").exists()
+            waldiez_file = tmp_path / "test.waldiez"
 
+            # Should not raise
+            with pytest.raises(Exception) as exc_info:
+                ResultsMixin.post_run(
+                    results=[],
+                    error=None,
+                    temp_dir=tmp_path,
+                    output_file=None,
+                    flow_name="test",
+                    waldiez_file=waldiez_file,
+                )
 
-def test_copy_results_with_waldiez_file(tmp_path: Path) -> None:
-    """Test copy_results with .waldiez output file."""
-    temp_dir = tmp_path / "temp"
-    temp_dir.mkdir(parents=True, exist_ok=True)
-    py_file = temp_dir / "flow.py"
-    py_file.write_text("print('hello')")
-    output_file = tmp_path / "output" / "flow.waldiez"
-    output_file.parent.mkdir(parents=True, exist_ok=True)
-    output_file.touch()
-    destination_dir = tmp_path / "destination"
-    destination_dir.mkdir(parents=True, exist_ok=True)
-    _copy_results(temp_dir, output_file, destination_dir)
-    expected = output_file.parent / "flow.py"
-    assert expected.exists()
+            assert "Storage error" in str(exc_info.value)
 
+    def test_make_timeline_json_exception(self, tmp_path: Path) -> None:
+        """Test exception handling in make_timeline_json."""
+        logs_dir = tmp_path / "logs"
+        logs_dir.mkdir()
+        events_csv = logs_dir / "events.csv"
+        events_csv.write_text("test")
 
-def test_make_mermaid_diagram(tmp_path: Path) -> None:
-    """Test _make_mermaid_diagram function."""
-    temp_dir = tmp_path / "temp"
-    temp_dir.mkdir()
-    logs_dir = temp_dir / "logs"
-    logs_dir.mkdir()
-    events_csv = logs_dir / "events.csv"
-    to_write = (
-        "event_name,source_id,source_name,agent_module,"
-        "agent_class_name,id,json_state,timestamp\n"
-        "start,1,agent1,module,class,1,{},2025-01-01 00:00:00\n"
-    )
-    with open(events_csv, "w", encoding="utf-8", newline="\n") as f:
-        f.write(to_write)
-    output_file = tmp_path / "output.py"
-    flow_name = "test_flow"
-    mmd_dir = tmp_path
-    _make_mermaid_diagram(temp_dir, output_file, flow_name, mmd_dir)
-    mmd_file = temp_dir / f"{flow_name}.mmd"
-    assert mmd_file.exists()
+        with patch(
+            "waldiez.running.results_mixin.TimelineProcessor"
+        ) as mock_processor:
+            mock_processor.side_effect = Exception("Timeline error")
 
+            # Should not raise
+            ResultsMixin.make_timeline_json(tmp_path)
 
-def test_make_mermaid_diagram_no_events(tmp_path: Path) -> None:
-    """Test _make_mermaid_diagram when events.csv doesn't exist."""
-    temp_dir = tmp_path / "temp"
-    temp_dir.mkdir()
-    output_file = tmp_path / "output.py"
-    flow_name = "test_flow"
-    mmd_dir = tmp_path
-    _make_mermaid_diagram(temp_dir, output_file, flow_name, mmd_dir)
-    mmd_file = temp_dir / f"{flow_name}.mmd"
-    assert not mmd_file.exists()
+    def test_ensure_results_json_write_error(self, tmp_path: Path) -> None:
+        """Test ensure_results_json with write error."""
+        # Make directory read-only
+        tmp_path.chmod(0o555)
 
+        try:
+            ResultsMixin.ensure_results_json(tmp_path, [{"test": "data"}])
+        finally:
+            # Restore permissions
+            tmp_path.chmod(0o755)
 
-def test_make_timeline_json_no_events(tmp_path: Path) -> None:
-    """Test _make_timeline_json when events.csv doesn't exist."""
-    temp_dir = tmp_path / "temp"
-    temp_dir.mkdir()
-    _make_timeline_json(temp_dir)
-    timeline_file = temp_dir / "timeline.json"
-    assert not timeline_file.exists()
+    def test_read_from_output_malformed_json(self, tmp_path: Path) -> None:
+        """Test read_from_output with malformed JSON."""
+        results_file = tmp_path / "results.json"
+        results_file.write_text('{"results": }')  # Invalid JSON
 
+        results = ResultsMixin.read_from_output(tmp_path)
+        assert len(results) == 1
+        assert "error" in results[0]
 
-def test_post_run_string_output_file(tmp_path: Path) -> None:
-    """Test after_run with string output file path."""
-    flow_name = "test_flow"
-    tmp_dir = tmp_path / "temp"
-    tmp_dir.mkdir(parents=True, exist_ok=True)
-    output_file = str(tmp_path / "output" / "flow.py")
-    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
-    Path(output_file).touch()
-    waldiez_file = tmp_path / "flow.waldiez"
-    waldiez_file.touch()
-    result = ResultsMixin.post_run(
-        results=[{"index": 0, "messages": []}],
-        error=None,
-        temp_dir=tmp_dir,
-        output_file=output_file,  # Pass as string
-        flow_name=flow_name,
-        waldiez_file=waldiez_file,
-        skip_mmd=True,
-        skip_timeline=True,
-    )
-    assert result is not None
-    assert result.exists()
+    def test_special_metadata_handling(self, tmp_path: Path) -> None:
+        """Test post_run with special metadata."""
+        with patch(
+            "waldiez.running.results_mixin.StorageManager"
+        ) as mock_storage_class:
+            mock_storage = Mock()
+            mock_storage_class.return_value = mock_storage
+            mock_storage.finalize.return_value = (
+                tmp_path / "checkpoint",
+                tmp_path / "link",
+            )
+
+            waldiez_file = tmp_path / "test.waldiez"
+            waldiez_file.touch()
+
+            # Test with complex metadata
+            metadata = {
+                "timestamp": datetime.now(timezone.utc),
+                "nested": {"data": [1, 2, 3], "more": {"deep": "value"}},
+                "unicode": "你好世界🌍",
+            }
+
+            ResultsMixin.post_run(
+                results=[],
+                error=None,
+                temp_dir=tmp_path,
+                output_file=None,
+                flow_name="test",
+                waldiez_file=waldiez_file,
+                metadata=metadata,
+                skip_mmd=True,
+                skip_timeline=True,
+            )
+
+            # Verify metadata was passed to storage
+            call_args = mock_storage.finalize.call_args
+            assert call_args[1]["metadata"] == metadata

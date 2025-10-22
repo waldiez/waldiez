@@ -188,9 +188,20 @@ class ExecutionGenerator:
                 "Callable[[BaseEvent, list[ConversableAgent]], Coroutine[None, None, bool]]"
                 " | None = None"
             )
+        resume_arg = "state_json : str | Path | None = None"
         return_type_hint = "list[dict[str, Any]]"
-        flow_content += f"def main({on_event_arg}) -> {return_type_hint}:\n"
+        flow_content += (
+            "def main(\n"
+            f"    {on_event_arg},"
+            "\n"
+            f"    {resume_arg}"
+            "\n"
+            f") -> {return_type_hint}:"
+            "\n"
+        )
         flow_content += f"    {main_doc_string()}\n"
+        flow_content += "    if state_json:\n"
+        flow_content += '        print("prepare resuming from state")\n'
         if not is_async:
             flow_content += "    results: list[RunResponseProtocol] | RunResponseProtocol = []\n"
         else:
@@ -261,13 +272,20 @@ class ExecutionGenerator:
         else:
             content += "def call_main() -> None:\n"
         content += f'{tab}"""Run the main function and print the results."""\n'
+        content += f"{tab}state_json: str | Path | None = None\n"
+        content += f'{tab}if "--state" in sys.argv:\n'
+        content += f'{tab}{tab}entry_index = sys.argv.index("--state")\n'
+        content += f"{tab}{tab}if entry_index + 1 < len(sys.argv):\n"
+        content += (
+            f"{tab}{tab}{tab}state_location = Path(sys.argv[entry_index + 1])\n"
+        )
+        content += f"{tab}{tab}{tab}if state_location.resolve().exists():\n"
+        content += f"{tab}{tab}{tab}{tab}state_json = state_location\n"
         content += f"{tab}results: {return_type_hint} = "
         if is_async:
             content += "await "
-        content += "main()\n"
-        content += (
-            f"{tab}print(json.dumps(results, indent=2, ensure_ascii=False))\n"
-        )
+        content += "main(None, state_json=state_json)\n"
+        content += f"{tab}print(json.dumps(results, default=str, indent=2, ensure_ascii=False))\n"
         return content
 
     @staticmethod

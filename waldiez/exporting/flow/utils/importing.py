@@ -14,6 +14,7 @@ BUILTIN_IMPORTS = [
     "import sys",
     "import traceback",
     "from dataclasses import asdict",
+    "from pathlib import Path",
     "from pprint import pprint",
     "from types import ModuleType",
 ]
