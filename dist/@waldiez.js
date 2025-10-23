@@ -1175,6 +1175,9 @@ const getContentString$2 = (content, onPreview) => {
   if (typeof content === "string") {
     return content;
   }
+  if (!content.type) {
+    return typeof content === "object" ? JSON.stringify(content) : String(content);
+  }
   switch (content.type) {
     case "text":
       return content.text;
@@ -1814,6 +1817,7 @@ const downloadZip = async (filename, contents, onError) => {
     zip.file(internalName, contents);
     const blob = await zip.generateAsync({ type: "blob" });
     downloadFile(blob, filename);
+    console.error("Downloaded????");
   } catch {
     onError();
   }
