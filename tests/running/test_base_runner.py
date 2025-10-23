@@ -46,6 +46,11 @@ class DummyRunner(WaldiezBaseRunner):
         ) as mock_exporter_class:
             mock_exporter_instance = MagicMock()
             mock_exporter_class.return_value = mock_exporter_instance
+            waldiez = kwargs.pop("waldiez", None)
+            if not waldiez:
+                waldiez = MagicMock()
+            waldiez.name = "dummy_flow"
+            kwargs["waldiez"] = waldiez
             # Call parent init within patch context so self._exporter is mocked
             super().__init__(*args, **kwargs)
             # Optionally, store the mock if you want to assert calls later
@@ -83,7 +88,7 @@ def test_load_module(tmp_path: Path, waldiez_file: Path) -> None:
     """Test loading a module."""
     file_path = create_dummy_module(tmp_path)
     runner = DummyRunner(
-        waldiez=MagicMock(is_async=False),
+        waldiez=MagicMock(is_async=False, name="test-flow"),
         output_path=str(file_path),
         waldiez_file=waldiez_file,
         uploads_root=None,
@@ -445,7 +450,7 @@ async def test_async_get_user_input(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_stop_method_sets_flags(waldiez_file: Path) -> None:
     """Test if stop() method sets the correct flags."""
     runner = DummyRunner(
-        waldiez=MagicMock(is_async=False),
+        waldiez=MagicMock(is_async=False, name="test_flow"),
         waldiez_file=waldiez_file,
         output_path=None,
         uploads_root=None,

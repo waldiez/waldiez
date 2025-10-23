@@ -44,6 +44,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     _dot_env_path: str | Path | None
     _running: bool
     _waldiez_file: Path
+    _flow_name: str
     _storage_manger: StorageManager
     _checkpoint: Checkpoint | None
 
@@ -57,12 +58,16 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         **kwargs: Any,
     ) -> None:
         """Initialize the Waldiez manager."""
+        workspace_arg: str | None = kwargs.pop("workspace", None)
+        if not isinstance(workspace_arg, str):
+            workspace_arg = None
         WaldiezBaseRunner._running = False
         WaldiezBaseRunner._structured_io = structured_io
         WaldiezBaseRunner._output_path = output_path
         WaldiezBaseRunner._uploads_root = uploads_root
         WaldiezBaseRunner._dot_env_path = dot_env
-        WaldiezBaseRunner._storage_manger = StorageManager()
+        WaldiezBaseRunner._flow_name = ResultsMixin.safe_name(waldiez.name)
+        WaldiezBaseRunner._storage_manger = StorageManager(None, workspace_arg)
         EventsMixin.set_input_function(input)
         EventsMixin.set_print_function(print)
         EventsMixin.set_send_function(print)
@@ -95,7 +100,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         if checkpoint_arg and isinstance(checkpoint_arg, str):
             WaldiezBaseRunner._checkpoint = WaldiezBaseRunner._init_checkpoint(
                 checkpoint_arg,
-                session_name=waldiez.name,
+                session_name=WaldiezBaseRunner._flow_name,
             )
 
     @staticmethod
@@ -274,7 +279,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 error=error,
                 temp_dir=temp_dir,
                 output_file=output_file,
-                flow_name=self._waldiez.name,
+                flow_name=WaldiezBaseRunner._flow_name,
                 waldiez_file=waldiez_file,
                 uploads_root=uploads_root,
                 skip_mmd=skip_mmd,
@@ -307,7 +312,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 error=error,
                 temp_dir=temp_dir,
                 output_file=output_file,
-                flow_name=self._waldiez.name,
+                flow_name=WaldiezBaseRunner._flow_name,
                 waldiez_file=waldiez_file,
                 uploads_root=uploads_root,
                 skip_mmd=skip_mmd,

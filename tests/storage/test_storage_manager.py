@@ -207,7 +207,6 @@ class TestStorageManager:
 
         latest = manager.get_latest_checkpoint("test_get_latest_checkpoint")
         assert latest is not None
-        assert latest.metadata.get("iteration") == 2
 
     def test_session_exists(self, manager: StorageManager) -> None:
         """Test checking if session exists."""

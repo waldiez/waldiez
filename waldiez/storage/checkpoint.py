@@ -6,8 +6,9 @@
 """Checkpoint data structures."""
 
 import json
+from contextlib import suppress
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -19,38 +20,42 @@ class Checkpoint:
     session_name: str
     timestamp: datetime
     path: Path
-    metadata: dict[str, Any]
-    state: dict[str, Any] = field(init=False, default_factory=dict)
+    _state: dict[str, Any] | None = field(init=False, default=None)
+    _metadata: dict[str, Any] | None = field(init=False, default=None)
 
-    def __post_init__(self) -> None:
-        """Load the state after init."""
-        state_dict: dict[str, Any] = {}
-        if self.exists:
-            with open(self.state_file, "r", encoding="utf-8") as state_file:
-                state_data = json.load(state_file)
-                if isinstance(state_data, list) and isinstance(
-                    state_data[0], dict
+    @property
+    def state(self) -> dict[str, Any]:
+        """Get the checkpoint's state."""
+        if self._state is None:
+            self._state = self._load_json(self.state_file) or {}
+        return self._state
+
+    @property
+    def metadata(self) -> dict[str, Any]:
+        """Get the checkpoint's metadata."""
+        if self._metadata is None:
+            self._metadata = self._load_json(self.metadata_file) or {}
+        return self._metadata
+
+    @staticmethod
+    def _load_json(path: Path) -> dict[str, Any] | None:
+        with suppress(Exception):
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    return data
+                if (
+                    isinstance(data, list)
+                    and data
+                    and isinstance(data[0], dict)
                 ):
-                    state_dict = state_data[0]
-                elif isinstance(state_data, dict):
-                    state_dict = state_data
-        self.state = state_dict
+                    return data[0]
+        return None
 
-        if self.metadata_file.is_file():
-            # pylint: disable=broad-exception-caught,too-many-try-statements
-            try:
-                with open(
-                    self.metadata_file, "r", encoding="utf-8"
-                ) as meta_file:
-                    meta_data = json.load(meta_file)
-                    if isinstance(meta_data, list) and isinstance(
-                        meta_data[0], dict
-                    ):
-                        self.metadata = meta_data[0]
-                    elif isinstance(meta_data, dict):
-                        self.metadata = meta_data
-            except BaseException:
-                pass
+    def refresh(self) -> None:
+        """Reset the state and metadata."""
+        self._state = None
+        self._metadata = None
 
     @property
     def state_file(self) -> Path:
@@ -65,7 +70,7 @@ class Checkpoint:
     @property
     def exists(self) -> bool:
         """Check if the checkpoint exists on disk."""
-        return self.path.exists() and self.state_file.exists()
+        return self.path.is_dir() and self.state_file.is_file()
 
 
 @dataclass
@@ -75,19 +80,18 @@ class CheckpointInfo:
     session_name: str
     timestamp: datetime
     path: Path
-    metadata: dict[str, Any]
+    _checkpoint: Checkpoint | None = field(init=False, default=None)
 
-    checkpoint: Checkpoint = field(init=False)
-
-    def __post_init__(self) -> None:
-        """Load the checkpoint after init."""
-        self.checkpoint = Checkpoint(
-            session_name=self.session_name,
-            timestamp=self.timestamp,
-            path=self.path,
-            metadata=self.metadata,
-        )
-        self.metadata = self.checkpoint.metadata
+    @property
+    def checkpoint(self) -> Checkpoint:
+        """Get the checkpoint."""
+        if self._checkpoint is None:
+            self._checkpoint = Checkpoint(
+                session_name=self.session_name,
+                timestamp=self.timestamp,
+                path=self.path,
+            )
+        return self._checkpoint
 
     def to_dict(self) -> dict[str, Any]:
         """Get the dict representation of the checkpoint's info.
@@ -97,12 +101,16 @@ class CheckpointInfo:
         dict[str, Any]
             The dict representation of the checkpoint's info.
         """
+        ts = self.timestamp
+        if ts.tzinfo is None:
+            ts = ts.astimezone(timezone.utc)
+        elif ts.tzinfo != timezone.utc:
+            ts = ts.replace(tzinfo=timezone.utc)
         return {
             "session": self.session_name,
             "timestamp": self.timestamp.strftime("%Y%m%d_%H%M%S_%f"),
             "path": str(self.path),
             "name": str(self.path.name),
-            "metadata": self.metadata,
         }
 
     @classmethod
@@ -123,5 +131,4 @@ class CheckpointInfo:
             session_name=checkpoint.session_name,
             timestamp=checkpoint.timestamp,
             path=checkpoint.path,
-            metadata=checkpoint.metadata,
         )

@@ -111,6 +111,8 @@ class TestGetSqliteOut:
         # Should return without creating files
         assert not csv_path.exists()
         assert not (tmp_path / "output.json").exists()
+        if Path("non_existent.db").exists():
+            Path("non_existent.db").unlink()
 
     def test_invalid_table_name(self, tmp_path: Path) -> None:
         """Test handling of invalid table name."""
@@ -287,6 +289,8 @@ class TestAsyncGetSqliteOut:
         # Should return without creating files
         assert not csv_path.exists()
         assert not (tmp_path / "output.json").exists()
+        if Path("non_existent_async.db").exists():
+            Path("non_existent_async.db").unlink()
 
     async def test_async_query_error(self, tmp_path: Path) -> None:
         """Test async handling of query error."""

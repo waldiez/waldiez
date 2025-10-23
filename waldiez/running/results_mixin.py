@@ -139,7 +139,7 @@ class ResultsMixin:
             else (waldiez_file.parent / "waldiez_out")
         )
         output_hint = output_file or Path.cwd() / waldiez_file.name
-        session_name = ResultsMixin._safe_name(flow_name)
+        session_name = ResultsMixin.safe_name(flow_name)
         _checkpoint_path, public_link_path = storage_manager.finalize(
             session_name=session_name,
             output_file=output_hint,
@@ -632,10 +632,32 @@ class ResultsMixin:
                 await a_get_sqlite_out(str(flow_db), table, str(table_csv))
 
     @staticmethod
-    def _safe_name(
+    def safe_name(
         name: str, max_length: int = 255, fallback: str = "invalid_name"
     ) -> str:
-        """Return a filesystem-safe version of a name."""
-        safe = re.sub(r"[^a-zA-Z0-9_.-]+", "_", name.strip())
-        safe = re.sub(r"_+", "_", safe).strip("_")
-        return safe[:max_length] or fallback
+        """Return a filesystem-safe version of a name.
+
+        Parameters
+        ----------
+        name : str
+            The original name.
+        max_length : int
+            The new name's max length.
+        fallback : str
+            A fallback name to use.
+
+        Returns
+        -------
+        str
+            The safe version of the name
+        """
+        safe = name.strip()
+
+        if not safe:
+            return fallback
+        safe = re.sub(r"[^a-zA-Z0-9_.-]+", "_", safe)
+        safe = re.sub(r"_+", "_", safe)
+        safe = re.sub(r"\.{2,}", "_", safe)
+        safe = safe.strip("._")
+        safe = safe[:max_length].rstrip("._")
+        return safe or fallback

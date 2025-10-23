@@ -67,9 +67,11 @@ def symlink(
         winerror = getattr(e, "winerror", None)
 
         if not is_windows:
-            raise OSError(
-                f"Failed to create a symlink from {link_path} to {abs_target}"
-            ) from e
+            msg = (
+                "Failed to create a symlink from"
+                f" {link_path} to {abs_target}: {e}"
+            )
+            raise OSError(msg) from e
 
         # On Windows, optionally fall back to a junction for directories
         if windows_junction_fallback and abs_target.is_dir():

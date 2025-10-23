@@ -21,13 +21,11 @@ class TestCheckpoint:
             session_name="test_session",
             timestamp=datetime.now(timezone.utc),
             path=tmp_path / "checkpoint",
-            metadata={"version": "1.0"},
         )
 
         assert checkpoint.session_name == "test_session"
         assert isinstance(checkpoint.timestamp, datetime)
         assert checkpoint.path == tmp_path / "checkpoint"
-        assert checkpoint.metadata == {"version": "1.0"}
 
     def test_state_file_property(self, tmp_path: Path) -> None:
         """Test state_file property."""
@@ -35,7 +33,6 @@ class TestCheckpoint:
             session_name="test_session",
             timestamp=datetime.now(timezone.utc),
             path=tmp_path / "checkpoint",
-            metadata={},
         )
 
         assert checkpoint.state_file == tmp_path / "checkpoint" / "state.json"
@@ -47,7 +44,6 @@ class TestCheckpoint:
             session_name="test_session",
             timestamp=datetime.now(timezone.utc),
             path=checkpoint_path,
-            metadata={},
         )
 
         # Initially doesn't exist
@@ -74,13 +70,11 @@ class TestCheckpointInfo:
             session_name="test_session",
             timestamp=datetime.now(timezone.utc),
             path=tmp_path / "checkpoint",
-            metadata={"version": "1.0"},
         )
 
         assert info.session_name == "test_session"
         assert isinstance(info.timestamp, datetime)
         assert info.path == tmp_path / "checkpoint"
-        assert info.metadata == {"version": "1.0"}
 
     def test_from_checkpoint(self, tmp_path: Path) -> None:
         """Test creating CheckpointInfo from Checkpoint."""
@@ -88,7 +82,6 @@ class TestCheckpointInfo:
             session_name="test_session",
             timestamp=datetime.now(timezone.utc),
             path=tmp_path / "checkpoint",
-            metadata={"version": "1.0"},
         )
 
         info = CheckpointInfo.from_checkpoint(checkpoint)
@@ -96,4 +89,3 @@ class TestCheckpointInfo:
         assert info.session_name == checkpoint.session_name
         assert info.timestamp == checkpoint.timestamp
         assert info.path == checkpoint.path
-        assert info.metadata == checkpoint.metadata

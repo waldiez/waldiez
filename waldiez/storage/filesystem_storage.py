@@ -11,6 +11,7 @@
 
 import json
 import os
+import re
 import shutil
 import threading
 from collections.abc import Generator, Iterable, Mapping
@@ -23,6 +24,10 @@ from typing_extensions import Self
 
 from .checkpoint import Checkpoint, CheckpointInfo
 from .utils import symlink
+
+_PATTERNS = r"^(?!.*\.\.)(?!\.)(?!.*\.$)[\w\-.]{1,128}$"
+
+_SAFE = re.compile(_PATTERNS, re.UNICODE)
 
 
 class FilesystemStorage:
@@ -131,7 +136,6 @@ class FilesystemStorage:
                 session_name=session_name,
                 timestamp=timestamp,
                 path=checkpoint_path,
-                metadata={},
             )
         return CheckpointInfo.from_checkpoint(checkpoint)
 
@@ -148,19 +152,18 @@ class FilesystemStorage:
         dict[str, Any]
             The loaded checkpoint data.
         """
-        checkpoint = Checkpoint(
+        return Checkpoint(
             session_name=info.session_name,
             timestamp=info.timestamp,
             path=info.path,
-            metadata=info.metadata,
         )
-        return checkpoint
 
     def link_checkpoint(
         self,
         to: Path,
         session_name: str,
         timestamp: datetime | None = None,
+        overwrite: bool = False,
     ) -> None:
         """Create a symlink to a checkpoint.
 
@@ -172,6 +175,8 @@ class FilesystemStorage:
             The name of the session
         timestamp : datetime | None
             Optional specific timestamp
+        overwrite : bool
+            Overwrite existing link if needed.
 
         Raises
         ------
@@ -199,11 +204,10 @@ class FilesystemStorage:
                 session_name=session_name,
                 timestamp=timestamp,
                 path=checkpoint_path,
-                metadata={},
             )
             link_path = to / checkpoint_path.name
 
-        symlink(link_path, checkpoint.path)
+        symlink(link_path, checkpoint.path, overwrite=overwrite)
         if not link_path.is_relative_to(self._workspace_dir):
             self._register_link(checkpoint.path, link_path)
 
@@ -215,12 +219,10 @@ class FilesystemStorage:
         list[str]
             The workspace sessions.
         """
+        if not self._workspace_dir.exists():
+            return []
         return sorted(
-            [
-                item
-                for item in os.listdir(self._workspace_dir)
-                if (self._workspace_dir / item).is_dir()
-            ],
+            [p.name for p in self._workspace_dir.iterdir() if p.is_dir()],
             reverse=True,
         )
 
@@ -416,7 +418,9 @@ class FilesystemStorage:
 
             for checkpoint_str, links in self._links_registry.items():
                 if Path(checkpoint_str).exists():
-                    valid_links = [lnk for lnk in links if Path(lnk).exists()]
+                    valid_links = [
+                        lnk for lnk in links if Path(lnk).is_symlink()
+                    ]
                     if valid_links:
                         valid_registry[checkpoint_str] = valid_links
 
@@ -462,6 +466,11 @@ class FilesystemStorage:
                 if not link_path.exists():
                     issues.setdefault(checkpoint_str, []).append(
                         f"Missing: {link_str}"
+                    )
+                    continue
+                if not link_path.is_symlink():
+                    issues.setdefault(checkpoint_str, []).append(
+                        f"Not a symlink: {link_str}"
                     )
                     continue
                 try:
@@ -513,7 +522,6 @@ class FilesystemStorage:
                     link_path.unlink(missing_ok=True)
                 except Exception:
                     pass
-
         for session_name, _, checkpoint_path in checkpoints_to_delete:
             try:
                 shutil.rmtree(checkpoint_path)
@@ -619,25 +627,12 @@ class FilesystemStorage:
 
     def _register_link(self, checkpoint_path: Path, link_path: Path) -> None:
         """Register an external link in the registry."""
-        checkpoint_key = str(checkpoint_path)
-        link_str = str(link_path)
-
-        needs_save = False
-        with self._registry_lock:
-            if checkpoint_key not in self._links_registry:
-                self._links_registry[checkpoint_key] = []
-                needs_save = True
-
-            if link_str not in self._links_registry[checkpoint_key]:
-                self._links_registry[checkpoint_key].append(link_str)
-                needs_save = True
-
-        if needs_save:
-            with self._registry_transaction():
-                if checkpoint_key not in self._links_registry:
-                    self._links_registry[checkpoint_key] = []
-                if link_str not in self._links_registry[checkpoint_key]:
-                    self._links_registry[checkpoint_key].append(link_str)
+        key = str(checkpoint_path)
+        val = str(link_path)
+        with self._registry_transaction():
+            self._links_registry.setdefault(key, [])
+            if val not in self._links_registry[key]:
+                self._links_registry[key].append(val)
 
     def _unregister_checkpoint_links(self, checkpoint_path: Path) -> list[Path]:
         """Get and remove all registered links for a checkpoint."""
@@ -648,6 +643,8 @@ class FilesystemStorage:
 
     def _get_session_dir(self, session_name: str) -> Path:
         """Get the directory for a session."""
+        if not _SAFE.match(session_name):
+            raise ValueError("Invalid session_name")
         return self._workspace_dir / session_name
 
     def _format_timestamp(self, timestamp: datetime) -> str:
@@ -680,17 +677,10 @@ class FilesystemStorage:
                 timestamp = self._parse_timestamp(path.name)
                 state_file = path / "state.json"
                 if state_file.exists():
-                    metadata_file = path / "metadata.json"
-                    metadata: dict[str, Any] = {}
-                    if metadata_file.exists():
-                        with open(metadata_file, "r", encoding="utf-8") as f:
-                            metadata = json.load(f)
-
                     checkpoint = Checkpoint(
                         session_name=session_name,
                         timestamp=timestamp,
                         path=path,
-                        metadata=metadata,
                     )
                     checkpoints.append(checkpoint)
             except ValueError:

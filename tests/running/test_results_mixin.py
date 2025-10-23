@@ -37,32 +37,33 @@ class TestResultsMixin:
     def test_safe_name(self) -> None:
         """Test _safe_name method."""
         # Basic test
-        assert ResultsMixin._safe_name("test_flow") == "test_flow"
+        assert ResultsMixin.safe_name("test_flow") == "test_flow"
 
         # Special characters
-        assert ResultsMixin._safe_name("test/flow@123!") == "test_flow_123"
+        assert ResultsMixin.safe_name("test/flow@123!") == "test_flow_123"
 
         # Multiple underscores
-        assert ResultsMixin._safe_name("test___flow") == "test_flow"
+        assert ResultsMixin.safe_name("test___flow") == "test_flow"
 
         # Leading/trailing underscores
-        assert ResultsMixin._safe_name("_test_flow_") == "test_flow"
+        assert ResultsMixin.safe_name("_test_flow_") == "test_flow"
 
         # Empty string
-        assert ResultsMixin._safe_name("") == "invalid_name"
+        assert ResultsMixin.safe_name("") == "invalid_name"
 
         # Only special characters
-        assert ResultsMixin._safe_name("@#$%^&*") == "invalid_name"
+        assert ResultsMixin.safe_name("@#$%^&*") == "invalid_name"
 
         # Max length
         long_name = "a" * 300
-        assert len(ResultsMixin._safe_name(long_name)) == 255
+        assert len(ResultsMixin.safe_name(long_name)) == 255
 
         # Custom max length
-        assert len(ResultsMixin._safe_name("test_flow", max_length=5)) == 5
+        assert len(ResultsMixin.safe_name("test_flow", max_length=5)) == 4
+        assert len(ResultsMixin.safe_name("testing_flow", max_length=5)) == 5
 
         # Custom fallback
-        assert ResultsMixin._safe_name("", fallback="custom") == "custom"
+        assert ResultsMixin.safe_name("", fallback="custom") == "custom"
 
     def test_ensure_db_outputs(self, tmp_path: Path) -> None:
         """Test ensure_db_outputs method."""

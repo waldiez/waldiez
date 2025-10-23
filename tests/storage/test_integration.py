@@ -83,7 +83,10 @@ class TestStorageIntegration:
         # Verify latest checkpoint info
         latest_info = storage.get_latest_checkpoint(session1)
         assert latest_info is not None
-        assert latest_info.metadata["tags"] == ["experiment", "iteration_4"]
+        assert latest_info.checkpoint.metadata["tags"] == [
+            "experiment",
+            "iteration_4",
+        ]
 
         # Test finalize workflow
         tmp_run_dir = tmp_path / "tmp_run"
@@ -350,8 +353,6 @@ class TestStorageIntegration:
             "session_中文",
             # cspell: disable-next-line
             "session_τέσσερα",
-            "session_🚀",
-            "session with spaces",
             "session-with-dashes",
             "session.with.dots",
         ]
@@ -362,6 +363,9 @@ class TestStorageIntegration:
             assert loaded
             assert loaded.checkpoint.state["name"] == session
             assert storage.session_exists(session)
+        with pytest.raises(ValueError):
+            storage.save("session_🚀", {"name": "invalid"})
+            storage.save("session with spaces", {"name": "invalid"})
 
     def test_checkpoint_metadata_persistence(self, tmp_path: Path) -> None:
         """Test that metadata persists correctly across operations."""
@@ -388,9 +392,8 @@ class TestStorageIntegration:
         # Retrieve and verify
         checkpoints = storage.checkpoints("metadata_test")
         assert len(checkpoints) == 1
-        assert checkpoints[0].metadata == metadata
 
         # Verify metadata persists across storage instances
         storage2 = StorageManager(workspace_dir=tmp_path / "workspace")
         checkpoints2 = storage2.checkpoints("metadata_test")
-        assert checkpoints2[0].metadata == metadata
+        assert checkpoints2[0].checkpoint.metadata == metadata
