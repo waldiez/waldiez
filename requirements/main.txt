@@ -1,4 +1,4 @@
-ag2[openai]==0.9.10
+ag2[openai]==0.10.0
 aiocsv==1.4.0
 aiofiles==25.1.0
 aiosqlite==0.21.0
@@ -15,5 +15,5 @@ pip>=25.1
 platformdirs==4.5.0
 psutil==7.1.1
 pydantic>=2.10.2,<3
-rpds-py==0.27.1
+rpds-py==0.28.0
 typer>=0.18.0,<1

@@ -1,5 +1,5 @@
 -r main.txt
-ag2[redis]==0.9.10
+ag2[redis]==0.10.0
 autoflake==2.3.1
 bandit==1.8.6
 basedpyright==1.31.7
