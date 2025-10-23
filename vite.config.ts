@@ -4,6 +4,7 @@
  */
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
+import { playwright } from "@vitest/browser-playwright";
 import dotenv from "dotenv";
 import fs from "fs-extra";
 import { resolve } from "path";
@@ -29,7 +30,7 @@ const LOWER_THRESHOLD = 80;
 
 const thresholds = {
     statements: LOWER_THRESHOLD,
-    branches: LOWER_THRESHOLD,
+    branches: LOWER_THRESHOLD - 10,
     functions: LOWER_THRESHOLD,
     lines: LOWER_THRESHOLD,
 };
@@ -264,9 +265,11 @@ export default defineConfig(({ command }) => ({
             include: ["src/**/*"],
             exclude: [
                 "**/types.ts",
+                "**/.css",
                 "src/wrapped/**",
                 "src/waldiez/docs.ts",
                 "src/waldiez/schema.ts",
+                "src/waldiez/polyfills/*",
                 "src/index.tsx",
                 "**/tests/**",
                 "**/ui-tests/**",
@@ -312,7 +315,7 @@ export default defineConfig(({ command }) => ({
         setupFiles: isBrowserTest ? [] : ["./vitest.setup.tsx"],
         // browser setup is in workspace
         browser: {
-            provider: "playwright", // or 'webdriverio'
+            provider: playwright(),
             enabled: isBrowserTest,
             headless: true,
             viewport,

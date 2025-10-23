@@ -30,7 +30,7 @@ describe("All", () => {
     };
 
     it("should render Waldiez components", async () => {
-        const screen = render(<Waldiez flowId="test-flow" storageId="test-flow-storage" />);
+        const screen = await render(<Waldiez flowId="test-flow" storageId="test-flow-storage" />);
         removeTapHighlight();
         const agents = page.getByText(/Agents/i);
         const models = page.getByText(/Models/i);

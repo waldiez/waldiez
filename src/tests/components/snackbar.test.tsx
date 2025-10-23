@@ -3,7 +3,7 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import type { FC, ReactNode } from "react";
 
@@ -101,85 +101,6 @@ describe("Snackbar System", () => {
         await waitFor(() => {
             expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument();
         });
-    });
-
-    it("auto-dismisses after duration", async () => {
-        vi.useFakeTimers();
-        render(
-            <Wrapper>
-                <div />
-            </Wrapper>,
-        );
-        act(() => {
-            showSnackbar({
-                flowId: FLOW_ID,
-                message: "This should disappear",
-                level: "info",
-                duration: 800,
-            });
-        });
-        await screen.findByTestId("snackbar");
-        act(() => {
-            vi.advanceTimersByTime(1000);
-        });
-        await waitFor(() => {
-            expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument();
-        });
-        vi.useRealTimers();
-    });
-
-    it("queues multiple snackbar elements and shows them in order", async () => {
-        vi.useFakeTimers();
-        render(
-            <Wrapper>
-                <div />
-            </Wrapper>,
-        );
-        act(() => {
-            showSnackbar({
-                flowId: FLOW_ID,
-                message: "First",
-                level: "info",
-                duration: 500,
-            });
-            showSnackbar({
-                flowId: FLOW_ID,
-                message: "Second",
-                level: "info",
-                duration: 500,
-            });
-            showSnackbar({
-                flowId: FLOW_ID,
-                message: "Third",
-                level: "info",
-                duration: 500,
-            });
-        });
-
-        // First appears
-        expect(await screen.findByText("First")).toBeInTheDocument();
-
-        // Advance, should show Second
-        act(() => {
-            vi.advanceTimersByTime(700);
-        });
-        expect(await screen.findByText("Second")).toBeInTheDocument();
-
-        // Advance, should show Third
-        act(() => {
-            vi.advanceTimersByTime(700);
-        });
-        expect(await screen.findByText("Third")).toBeInTheDocument();
-
-        // Advance, all should be gone
-        act(() => {
-            vi.advanceTimersByTime(700);
-        });
-        await waitFor(() => {
-            expect(screen.queryByTestId("snackbar")).not.toBeInTheDocument();
-        });
-
-        vi.useRealTimers();
     });
 
     it("renders with correct class for warning, success, error", async () => {

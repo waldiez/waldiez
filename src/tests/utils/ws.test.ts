@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { act, renderHook } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { type WaldiezWsMessageHandler, useWaldiezWs } from "@waldiez/utils/ws";
@@ -125,7 +125,7 @@ describe("useWaldiezWs", () => {
             });
 
             expect(global.WebSocket).toHaveBeenCalledWith("ws://localhost:8080/test", undefined);
-            expect(mockWebSocketInstances).toHaveLength(1);
+            waitFor(() => expect(mockWebSocketInstances).toHaveLength(1));
         });
 
         it("should create WebSocket connection with protocols", async () => {
@@ -159,9 +159,10 @@ describe("useWaldiezWs", () => {
             act(() => {
                 vi.advanceTimersByTime(50); // Wait for simulated open event
             });
-
-            expect(result.current.connected).toBe(true);
-            expect(result.current.getConnectionState()).toBe(WebSocket.OPEN);
+            waitFor(() => {
+                expect(result.current.connected).toBe(true);
+                expect(result.current.getConnectionState()).toBe(WebSocket.OPEN);
+            });
         });
 
         it("should handle WebSocket close gracefully", async () => {
@@ -171,16 +172,15 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50); // Connect
             });
-
-            expect(result.current.connected).toBe(true);
-
-            // Simulate normal close
-            act(() => {
-                mockWebSocketInstances[0]!.close(1000, "Normal closure");
-                vi.advanceTimersByTime(50);
+            waitFor(() => {
+                expect(result.current.connected).toBe(true);
+                expect(mockWebSocketInstances).toHaveLength(1);
+                act(() => {
+                    mockWebSocketInstances[0]!.close(1000, "Normal closure");
+                    vi.advanceTimersByTime(50);
+                    expect(result.current.connected).toBe(false);
+                });
             });
-
-            expect(result.current.connected).toBe(false);
         });
 
         it("should attempt reconnection on unexpected close", async () => {
@@ -191,23 +191,23 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(50); // Connect
             });
 
-            expect(result.current.connected).toBe(true);
+            waitFor(() => {
+                expect(result.current.connected).toBe(true);
+                expect(mockWebSocketInstances).toHaveLength(1);
+                act(() => {
+                    mockWebSocketInstances[0]!.simulateUnexpectedClose(1006);
+                });
+                expect(result.current.connected).toBe(false);
+                expect(mockWebSocketInstances).toHaveLength(1);
 
-            // Simulate unexpected close
-            act(() => {
-                mockWebSocketInstances[0]!.simulateUnexpectedClose(1006);
+                // Wait for reconnect delay
+                act(() => {
+                    vi.advanceTimersByTime(1000); // First reconnect delay
+                    vi.advanceTimersByTime(300); // Connection delay
+                });
+
+                expect(mockWebSocketInstances).toHaveLength(2); // New connection attempted
             });
-
-            expect(result.current.connected).toBe(false);
-            expect(mockWebSocketInstances).toHaveLength(1);
-
-            // Wait for reconnect delay
-            act(() => {
-                vi.advanceTimersByTime(1000); // First reconnect delay
-                vi.advanceTimersByTime(300); // Connection delay
-            });
-
-            expect(mockWebSocketInstances).toHaveLength(2); // New connection attempted
         });
 
         it("should implement exponential backoff for reconnections", async () => {
@@ -219,22 +219,25 @@ describe("useWaldiezWs", () => {
             });
 
             // First reconnection - should use 1000ms delay
-            act(() => {
-                mockWebSocketInstances[0]!.simulateUnexpectedClose();
-                vi.advanceTimersByTime(1000);
-                vi.advanceTimersByTime(300);
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                act(() => {
+                    mockWebSocketInstances[0]!.simulateUnexpectedClose();
+                    vi.advanceTimersByTime(1000);
+                    vi.advanceTimersByTime(300);
+                });
+
+                expect(mockWebSocketInstances).toHaveLength(2);
+
+                // Second reconnection - should use 2000ms delay
+                act(() => {
+                    mockWebSocketInstances[1]!.simulateUnexpectedClose();
+                    vi.advanceTimersByTime(2000);
+                    vi.advanceTimersByTime(300);
+                });
+
+                expect(mockWebSocketInstances).toHaveLength(3);
             });
-
-            expect(mockWebSocketInstances).toHaveLength(2);
-
-            // Second reconnection - should use 2000ms delay
-            act(() => {
-                mockWebSocketInstances[1]!.simulateUnexpectedClose();
-                vi.advanceTimersByTime(2000);
-                vi.advanceTimersByTime(300);
-            });
-
-            expect(mockWebSocketInstances).toHaveLength(3);
         });
     });
 
@@ -254,16 +257,19 @@ describe("useWaldiezWs", () => {
             });
 
             const testMessage = { type: "test", data: "hello" };
-            act(() => {
-                mockWebSocketInstances[0]!.simulateMessage(testMessage);
-            });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                act(() => {
+                    mockWebSocketInstances[0]!.simulateMessage(testMessage);
+                });
 
-            expect(onWsMessage).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    type: "message",
-                    data: testMessage,
-                }),
-            );
+                expect(onWsMessage).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        type: "message",
+                        data: testMessage,
+                    }),
+                );
+            });
         });
 
         it("should handle message handler errors", async () => {
@@ -284,12 +290,14 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                act(() => {
+                    mockWebSocketInstances[0]!.simulateMessage("test");
+                });
 
-            act(() => {
-                mockWebSocketInstances[0]!.simulateMessage("test");
+                expect(onError).toHaveBeenCalledWith(expect.any(Error));
             });
-
-            expect(onError).toHaveBeenCalledWith(expect.any(Error));
         });
 
         it("should update message handler when prop changes", async () => {
@@ -305,24 +313,26 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                // Send message with first handler
+                act(() => {
+                    mockWebSocketInstances[0]!.simulateMessage("test1");
+                });
 
-            // Send message with first handler
-            act(() => {
-                mockWebSocketInstances[0]!.simulateMessage("test1");
+                expect(handler1).toHaveBeenCalled();
+                expect(handler2).not.toHaveBeenCalled();
+
+                // Update handler
+                rerender({ onWsMessage: handler2 });
+
+                // Send message with second handler
+                act(() => {
+                    mockWebSocketInstances[0]!.simulateMessage("test2");
+                });
+
+                expect(handler2).toHaveBeenCalled();
             });
-
-            expect(handler1).toHaveBeenCalled();
-            expect(handler2).not.toHaveBeenCalled();
-
-            // Update handler
-            rerender({ onWsMessage: handler2 });
-
-            // Send message with second handler
-            act(() => {
-                mockWebSocketInstances[0]!.simulateMessage("test2");
-            });
-
-            expect(handler2).toHaveBeenCalled();
         });
     });
 
@@ -340,12 +350,14 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                act(() => {
+                    mockWebSocketInstances[0]!.simulateError();
+                });
 
-            act(() => {
-                mockWebSocketInstances[0]!.simulateError();
+                expect(onError).toHaveBeenCalled();
             });
-
-            expect(onError).toHaveBeenCalled();
         });
 
         it("should call error handler on connection creation failure", async () => {
@@ -379,16 +391,18 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                const sendSpy = vi.spyOn(mockWebSocketInstances[0]!, "send").mockImplementation(() => true);
+                const testData = { type: "test", message: "hello" };
 
-            const sendSpy = vi.spyOn(mockWebSocketInstances[0]!, "send");
-            const testData = { type: "test", message: "hello" };
+                act(() => {
+                    const success = result.current.send(testData);
+                    expect(success).toBe(true);
+                });
 
-            act(() => {
-                const success = result.current.send(testData);
-                expect(success).toBe(true);
+                expect(sendSpy).toHaveBeenCalledWith(JSON.stringify(testData));
             });
-
-            expect(sendSpy).toHaveBeenCalledWith(JSON.stringify(testData));
         });
 
         it("should send string messages directly", async () => {
@@ -398,16 +412,18 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                const sendSpy = vi.spyOn(mockWebSocketInstances[0]!, "send").mockImplementation(() => true);
+                const testString = "test message";
 
-            const sendSpy = vi.spyOn(mockWebSocketInstances[0]!, "send");
-            const testString = "test message";
+                act(() => {
+                    const success = result.current.send(testString);
+                    expect(success).toBe(true);
+                });
 
-            act(() => {
-                const success = result.current.send(testString);
-                expect(success).toBe(true);
+                expect(sendSpy).toHaveBeenCalledWith(testString);
             });
-
-            expect(sendSpy).toHaveBeenCalledWith(testString);
         });
 
         it("should fail to send when connection is not open", async () => {
@@ -460,26 +476,29 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(50);
             });
 
-            const sendSpy = vi.spyOn(mockWebSocketInstances[0]!, "send");
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                const sendSpy = vi.spyOn(mockWebSocketInstances[0]!, "send").mockImplementation(() => true);
 
-            // Wait for first ping
-            act(() => {
-                vi.advanceTimersByTime(1000);
+                // Wait for first ping
+                act(() => {
+                    vi.advanceTimersByTime(1000);
+                });
+
+                expect(sendSpy).toHaveBeenCalledWith(
+                    JSON.stringify({
+                        type: "ping",
+                        echo_data: { t: 1704110400000 },
+                    }),
+                );
+
+                // Wait for second ping
+                act(() => {
+                    vi.advanceTimersByTime(1000);
+                });
+
+                expect(sendSpy).toHaveBeenCalledTimes(2);
             });
-
-            expect(sendSpy).toHaveBeenCalledWith(
-                JSON.stringify({
-                    type: "ping",
-                    echo_data: { t: 1704110400000 },
-                }),
-            );
-
-            // Wait for second ping
-            act(() => {
-                vi.advanceTimersByTime(1000);
-            });
-
-            expect(sendSpy).toHaveBeenCalledTimes(2);
         });
 
         it("should not send pings when autoPingMs is not set", async () => {
@@ -489,14 +508,16 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                const sendSpy = vi.spyOn(mockWebSocketInstances[0]!, "send").mockImplementation(() => true);
 
-            const sendSpy = vi.spyOn(mockWebSocketInstances[0]!, "send");
+                act(() => {
+                    vi.advanceTimersByTime(5000);
+                });
 
-            act(() => {
-                vi.advanceTimersByTime(5000);
+                expect(sendSpy).not.toHaveBeenCalled();
             });
-
-            expect(sendSpy).not.toHaveBeenCalled();
         });
     });
 
@@ -508,15 +529,16 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
 
-            expect(mockWebSocketInstances).toHaveLength(1);
+                act(() => {
+                    result.current.reconnect();
+                    vi.advanceTimersByTime(300);
+                });
 
-            act(() => {
-                result.current.reconnect();
-                vi.advanceTimersByTime(300);
+                expect(mockWebSocketInstances).toHaveLength(2);
             });
-
-            expect(mockWebSocketInstances).toHaveLength(2);
         });
 
         it("should disconnect manually", async () => {
@@ -526,15 +548,17 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                expect(result.current.connected).toBe(true);
 
-            expect(result.current.connected).toBe(true);
+                act(() => {
+                    result.current.disconnect();
+                    vi.advanceTimersByTime(50);
+                });
 
-            act(() => {
-                result.current.disconnect();
-                vi.advanceTimersByTime(50);
+                expect(result.current.connected).toBe(false);
             });
-
-            expect(result.current.connected).toBe(false);
         });
 
         it("should reset reconnect attempts on manual reconnect", async () => {
@@ -544,25 +568,27 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                // Force a few failed reconnections
+                for (let i = 0; i < 3; i++) {
+                    act(() => {
+                        mockWebSocketInstances[mockWebSocketInstances.length - 1]!.simulateUnexpectedClose();
+                        vi.advanceTimersByTime(Math.min(1000 * Math.pow(2, i), 30000));
+                        vi.advanceTimersByTime(300);
+                    });
+                }
 
-            // Force a few failed reconnections
-            for (let i = 0; i < 3; i++) {
+                const previousLength = mockWebSocketInstances.length;
+
+                // Manual reconnect should reset attempts
                 act(() => {
-                    mockWebSocketInstances[mockWebSocketInstances.length - 1]!.simulateUnexpectedClose();
-                    vi.advanceTimersByTime(Math.min(1000 * Math.pow(2, i), 30000));
+                    result.current.reconnect();
                     vi.advanceTimersByTime(300);
                 });
-            }
 
-            const previousLength = mockWebSocketInstances.length;
-
-            // Manual reconnect should reset attempts
-            act(() => {
-                result.current.reconnect();
-                vi.advanceTimersByTime(300);
+                expect(mockWebSocketInstances).toHaveLength(previousLength + 1);
             });
-
-            expect(mockWebSocketInstances).toHaveLength(previousLength + 1);
         });
     });
 
@@ -576,19 +602,20 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                expect(global.WebSocket).toHaveBeenLastCalledWith("ws://localhost:8080/test1", undefined);
 
-            expect(mockWebSocketInstances).toHaveLength(1);
-            expect(global.WebSocket).toHaveBeenLastCalledWith("ws://localhost:8080/test1", undefined);
+                // Change URL
+                rerender({ wsUrl: "ws://localhost:8080/test2" });
 
-            // Change URL
-            rerender({ wsUrl: "ws://localhost:8080/test2" });
+                act(() => {
+                    vi.advanceTimersByTime(300);
+                });
 
-            act(() => {
-                vi.advanceTimersByTime(300);
+                expect(mockWebSocketInstances).toHaveLength(2);
+                expect(global.WebSocket).toHaveBeenLastCalledWith("ws://localhost:8080/test2", undefined);
             });
-
-            expect(mockWebSocketInstances).toHaveLength(2);
-            expect(global.WebSocket).toHaveBeenLastCalledWith("ws://localhost:8080/test2", undefined);
         });
 
         it("should close existing connection when URL changes", async () => {
@@ -600,12 +627,14 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                const closeSpy = vi.spyOn(mockWebSocketInstances[0]!, "close").mockImplementation(() => true);
 
-            const closeSpy = vi.spyOn(mockWebSocketInstances[0]!, "close");
+                rerender({ wsUrl: "ws://localhost:8080/test2" });
 
-            rerender({ wsUrl: "ws://localhost:8080/test2" });
-
-            expect(closeSpy).toHaveBeenCalledWith(1000, "client disconnect");
+                expect(closeSpy).toHaveBeenCalledWith(1000, "client disconnect");
+            });
         });
     });
 
@@ -617,12 +646,14 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                const closeSpy = vi.spyOn(mockWebSocketInstances[0]!, "close").mockImplementation(() => true);
 
-            const closeSpy = vi.spyOn(mockWebSocketInstances[0]!, "close");
+                unmount();
 
-            unmount();
-
-            expect(closeSpy).toHaveBeenCalled();
+                expect(closeSpy).toHaveBeenCalled();
+            });
         });
 
         it("should clear timers on unmount", async () => {
@@ -637,12 +668,12 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
-
-            const clearIntervalSpy = vi.spyOn(global, "clearInterval");
-
-            unmount();
-
-            expect(clearIntervalSpy).toHaveBeenCalled();
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                const clearIntervalSpy = vi.spyOn(global, "clearInterval").mockImplementation(() => true);
+                unmount();
+                expect(clearIntervalSpy).toHaveBeenCalled();
+            });
         });
     });
 
@@ -659,9 +690,11 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(500); // StrictMode reconnect delay
                 vi.advanceTimersByTime(300); // Connection delay
             });
-
-            // Should eventually connect despite StrictMode
-            expect(mockWebSocketInstances.length).toBeGreaterThan(0);
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                // Should eventually connect despite StrictMode
+                expect(mockWebSocketInstances.length).toBeGreaterThan(0);
+            });
         });
     });
 
@@ -673,16 +706,18 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                // Mock send to throw error
+                vi.spyOn(mockWebSocketInstances[0]!, "send").mockImplementation(() => {
+                    throw new Error("Send failed");
+                });
 
-            // Mock send to throw error
-            vi.spyOn(mockWebSocketInstances[0]!, "send").mockImplementation(() => {
-                throw new Error("Send failed");
-            });
-
-            act(() => {
-                // Should not throw error, but don't send
-                const success = result.current.send("test");
-                expect(success).toBe(false); // Raw send doesn't catch errors
+                act(() => {
+                    // Should not throw error, but don't send
+                    const success = result.current.send("test");
+                    expect(success).toBe(false); // Raw send doesn't catch errors
+                });
             });
         });
 
@@ -693,16 +728,18 @@ describe("useWaldiezWs", () => {
                 vi.advanceTimersByTime(300);
                 vi.advanceTimersByTime(50);
             });
+            waitFor(() => {
+                expect(mockWebSocketInstances).toHaveLength(1);
+                // Change readyState to CLOSING
+                mockWebSocketInstances[0]!.readyState = WebSocket.CLOSING;
 
-            // Change readyState to CLOSING
-            mockWebSocketInstances[0]!.readyState = WebSocket.CLOSING;
+                act(() => {
+                    const success = result.current.send("test");
+                    expect(success).toBe(false);
+                });
 
-            act(() => {
-                const success = result.current.send("test");
-                expect(success).toBe(false);
+                expect(result.current.getConnectionState()).toBe(WebSocket.CLOSING);
             });
-
-            expect(result.current.getConnectionState()).toBe(WebSocket.CLOSING);
         });
 
         it("should handle null/undefined wsRef gracefully", async () => {

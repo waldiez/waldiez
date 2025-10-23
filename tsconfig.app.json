@@ -22,7 +22,7 @@
             "@waldiez": ["./src/waldiez/index.ts"],
             "@waldiez/*": ["./src/waldiez/*"]
         },
-        "types": ["vitest/globals", "@vitest/browser/providers/playwright", "@testing-library/jest-dom"]
+        "types": ["vitest/globals", "@testing-library/jest-dom"]
     },
     "include": ["src", "ui-tests", "__mocks__"]
 }

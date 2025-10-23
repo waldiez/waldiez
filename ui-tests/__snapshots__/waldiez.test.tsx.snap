@@ -317,7 +317,7 @@ exports[`All > should render Waldiez components 1`] = `
                 >
                   <div
                     class="react-flow__viewport xyflow__viewport react-flow__container"
-                    style="transform: translate(50px, 50px) scale(1);"
+                    style="transform: translate(0px, 0px) scale(1);"
                   >
                     <div
                       class="react-flow__edges"
@@ -514,8 +514,8 @@ exports[`All > should render Waldiez components 1`] = `
                   patternTransform="translate(-11,-11)"
                   patternUnits="userSpaceOnUse"
                   width="20"
-                  x="10"
-                  y="10"
+                  x="0"
+                  y="0"
                 >
                   <circle
                     class="react-flow__background-pattern dots"
@@ -876,7 +876,7 @@ exports[`All > should render Waldiez components 1`] = `
               >
                 <div
                   class="react-flow__viewport xyflow__viewport react-flow__container"
-                  style="transform: translate(50px, 50px) scale(1);"
+                  style="transform: translate(0px, 0px) scale(1);"
                 >
                   <div
                     class="react-flow__edges"
@@ -1073,8 +1073,8 @@ exports[`All > should render Waldiez components 1`] = `
                 patternTransform="translate(-11,-11)"
                 patternUnits="userSpaceOnUse"
                 width="20"
-                x="10"
-                y="10"
+                x="0"
+                y="0"
               >
                 <circle
                   class="react-flow__background-pattern dots"
@@ -1135,6 +1135,7 @@ exports[`All > should render Waldiez components 1`] = `
   "getByTestId": [Function],
   "getByText": [Function],
   "getByTitle": [Function],
+  "locator": "div >> internal:has-text="WaldiezClose sidebarEdit"i >> nth=0",
   "rerender": [Function],
   "unmount": [Function],
 }

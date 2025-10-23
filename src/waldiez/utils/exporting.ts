@@ -99,6 +99,7 @@ const downloadZip = async (filename: string, contents: string, onError: () => vo
         zip.file(internalName, contents);
         const blob = await zip.generateAsync({ type: "blob" });
         downloadFile(blob, filename);
+        console.error("Downloaded????");
     } catch {
         onError();
     }

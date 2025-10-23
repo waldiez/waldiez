@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { act, fireEvent, screen } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import selectEvent from "react-select-event";
@@ -79,6 +79,35 @@ describe("Sidebar Edit flow modal config tab", () => {
         fireEvent.click(moveEdgeUpButton);
         const moveEdgeDownButton = screen.getByTestId("move-edge-down-button-1");
         fireEvent.click(moveEdgeDownButton);
-        // add checks for the reordered edges
+    });
+    it("Should toggle async mode", async () => {
+        await act(async () => {
+            await renderFlow([-1, 0, 1, 2]);
+        });
+        fireEvent.click(screen.getByTestId(`edit-flow-${flowId}-sidebar-button`));
+        waitFor(() => {
+            expect(screen.queryByTestId("move-edge-up-button-1")).toBeTruthy();
+        });
+        fireEvent.click(screen.getByTestId(`edit-flow-${flowId}-modal-async-mode`));
+        waitFor(() => {
+            expect(screen.queryByTestId("move-edge-up-button-1")).toBeFalsy();
+        });
+        fireEvent.click(screen.getByTestId(`edit-flow-${flowId}-sidebar-button`));
+        waitFor(() => {
+            expect(screen.queryByTestId("move-edge-up-button-1")).toBeTruthy();
+        });
+    });
+    it("Should change prerequisites in async mode", async () => {
+        await act(async () => {
+            await renderFlow([-1, 0, 1, 2]);
+        });
+        fireEvent.click(screen.getByTestId(`edit-flow-${flowId}-sidebar-button`));
+        waitFor(() => {
+            expect(screen.queryByTestId("move-edge-up-button-1")).toBeTruthy();
+        });
+        fireEvent.click(screen.getByTestId(`edit-flow-${flowId}-modal-async-mode`));
+        const targetSelect = screen.getByLabelText("Prerequisites:");
+        selectEvent.openMenu(targetSelect);
+        await selectEvent.select(targetSelect, "Edge 3");
     });
 });

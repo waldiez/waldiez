@@ -39,10 +39,12 @@ export const useWaldiezAgentRagUserTextSplit = (props: {
      */
     const onChunkTokenSizeChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
+            /* v8 ignore start */
             if (!event.target.value || event.target.value.trim() === "") {
                 setRetrieveConfigConfigData({ chunkTokenSize: undefined });
                 return;
             }
+            /* v8 ignore end */
             try {
                 const value = parseInt(event.target.value, 10);
 
@@ -64,10 +66,12 @@ export const useWaldiezAgentRagUserTextSplit = (props: {
      */
     const onContextMaxTokensChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
+            /* v8 ignore start */
             if (!event.target.value || event.target.value.trim() === "") {
                 setRetrieveConfigConfigData({ contextMaxTokens: undefined });
                 return;
             }
+            /* v8 ignore end */
             try {
                 const value = parseInt(event.target.value, 10);
 

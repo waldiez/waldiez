@@ -12,6 +12,9 @@ export const getContentString = (
     if (typeof content === "string") {
         return content;
     }
+    if (!content.type) {
+        return typeof content === "object" ? JSON.stringify(content) : String(content);
+    }
     switch (content.type) {
         case "text":
             return content.text;

@@ -6,6 +6,8 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import selectEvent from "react-select-event";
+
 import { WaldiezNodeToolView } from "@waldiez/containers/nodes";
 import { WaldiezProvider } from "@waldiez/store";
 import { WaldiezThemeProvider } from "@waldiez/theme";
@@ -160,6 +162,14 @@ describe("WaldiezNodeTool basic tab", () => {
         const contentInput = screen.getByTestId("mocked-monaco-editor");
         fireEvent.change(contentInput, { target: { value: "new content" } });
         expect(contentInput).toHaveValue("new content");
+    });
+    it("should change tool type", async () => {
+        renderToolNode();
+        const openButton = screen.getByTestId(`open-tool-node-modal-${toolId}`);
+        fireEvent.click(openButton);
+        const targetSelect = screen.getByLabelText("Type:");
+        selectEvent.openMenu(targetSelect);
+        await selectEvent.select(targetSelect, "YouTube Search");
     });
 });
 describe("WaldiezNodeTool advanced tab", () => {

@@ -109,6 +109,15 @@ export const getAgentNode = (
                 }),
             );
             break;
+        case "group_manager":
+            node = agentMapper.asNode(
+                agentMapper.importAgent({
+                    ...agentData,
+                    agentType,
+                    ...dataOverrides,
+                }),
+            );
+            break;
         default:
             throw new Error("Invalid agent type");
     }

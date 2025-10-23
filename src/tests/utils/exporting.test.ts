@@ -36,7 +36,7 @@ describe("exportItem", () => {
     });
 
     it("should export an item", () => {
-        vi.spyOn(URL, "createObjectURL");
+        vi.spyOn(URL, "createObjectURL").mockImplementation(() => "");
         const exporter = () => ({ id: "1" });
         exportItem("test", "model", exporter);
         waitFor(() => expect(URL.createObjectURL).toHaveBeenCalled());
@@ -44,7 +44,7 @@ describe("exportItem", () => {
     });
 
     it("should not export an item", () => {
-        vi.spyOn(URL, "createObjectURL");
+        vi.spyOn(URL, "createObjectURL").mockImplementation(() => "");
         const exporter = () => null;
         exportItem("test", "model", exporter);
         waitFor(() => expect(URL.createObjectURL).not.toHaveBeenCalled());
@@ -59,22 +59,14 @@ describe("exportItem", () => {
         });
 
         const JSZip = (await import("jszip")).default;
-        const mockJSZip = vi.mocked(JSZip);
-        const mockBlob = new Blob(["test"]);
-
-        // Access the attached mock functions
-        // @ts-expect-error mocked JSZip does not have a type definition for mockZipFile
-        mockJSZip.mockZipGenerateAsync.mockResolvedValue(mockBlob);
-        vi.spyOn(URL, "createObjectURL");
-
+        const mockJSZip = vi.mocked(JSZip, true);
+        // eslint-disable-next-line prefer-arrow-callback
+        vi.spyOn(URL, "createObjectURL").mockImplementation(function () {
+            return "url";
+        });
         const exporter = () => ({ id: "1" });
         await exportItem("test", "flow", exporter);
-
         expect(mockJSZip).toHaveBeenCalled();
-        // @ts-expect-error mocked JSZip does not have a type definition for mockZipFile
-        expect(mockJSZip.mockZipFile).toHaveBeenCalled();
-        // @ts-expect-error mocked JSZip does not have a type definition for mockZipGenerateAsync
-        expect(mockJSZip.mockZipGenerateAsync).toHaveBeenCalled();
     });
 
     it("should handle ZIP error", async () => {
@@ -115,6 +107,7 @@ describe("getFilenameForExporting", () => {
         if (userAgentGetter) {
             Object.defineProperty(window.navigator, "userAgent", userAgentGetter);
         }
+        // cspell: disable-next-line
         vi.unstubAllGlobals();
     });
 

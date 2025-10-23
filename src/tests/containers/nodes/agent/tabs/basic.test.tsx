@@ -11,22 +11,6 @@ import { renderAgent, submitAgentChanges } from "../common";
 import { agentId } from "../data";
 
 describe("WaldiezAgentNode Basic Modal Tab", () => {
-    // it("Updates the agent type from user_proxy to rag_user_proxy", () => {
-    //     renderAgent("user_proxy", { openModal: true });
-    //     const ragToggle = screen.getByTestId(`agent-rag-toggle-${agentId}`);
-    //     expect(ragToggle).not.toBeChecked();
-    //     fireEvent.click(ragToggle);
-    //     expect(ragToggle).toBeChecked();
-    //     submitAgentChanges();
-    // });
-    // it("Updates the agent type from rag_user_proxy to user_proxy", () => {
-    //     renderAgent("rag_user_proxy", { openModal: true });
-    //     const ragToggle = screen.getByTestId(`agent-rag-toggle-${agentId}`);
-    //     expect(ragToggle).toBeChecked();
-    //     fireEvent.click(ragToggle);
-    //     expect(ragToggle).not.toBeChecked();
-    //     submitAgentChanges();
-    // });
     it("Updates the agent name", async () => {
         renderAgent("assistant", { openModal: true });
         const nameInput = screen.getByTestId(`agent-name-input-${agentId}`);
