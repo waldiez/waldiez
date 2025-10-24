@@ -70,6 +70,7 @@ class GroupManagerProcessor:
         self.serializer = serializer
         self.cache_seed = cache_seed
         self.strategy = strategy
+        self.pattern_name = ""
 
     def process(
         self,
@@ -105,9 +106,9 @@ class GroupManagerProcessor:
 
         if extras.strategy == GroupManagerStrategy.PATTERN:
             self._process_pattern_strategy(extras)
+            self.agent_names[self.agent.id] = ""
         else:
             self._process_traditional_strategy(extras)
-
         return extras
 
     @staticmethod
@@ -166,6 +167,7 @@ class GroupManagerProcessor:
         extras.pattern_definition = self._generate_pattern_definition(
             extras.pattern_class_name, user_agent
         )
+        extras.pattern_name = self.pattern_name
 
         # Add context variables if present
         if self.agent.data.context_variables:
@@ -198,6 +200,13 @@ class GroupManagerProcessor:
         if user_agent not in group_members:
             group_members.append(user_agent)
         admin_name = self.agent_names[user_agent.id]
+        if isinstance(self.agent, WaldiezGroupManager):
+            admin_data_name = self.agent.data.admin_name
+            if admin_data_name:
+                for name in self.agent_names.values():
+                    if name == admin_data_name:
+                        admin_name = name
+                        break
 
         # Generate group chat definition
         group_chat_content = self._generate_group_chat_definition(
@@ -239,7 +248,7 @@ class GroupManagerProcessor:
         agents_string = ", ".join(
             self.agent_names[agent.id] for agent in self.group_chat_members
         )
-
+        self.pattern_name = f"{manager_name}_pattern"
         pattern_lines = [
             f"{manager_name}_pattern = {pattern_class}(",
             f"    initial_agent={initial_agent_name},",

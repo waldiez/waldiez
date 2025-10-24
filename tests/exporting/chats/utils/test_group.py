@@ -41,7 +41,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=False,
         )
@@ -49,7 +49,7 @@ class TestExportGroupChats:
         expected_lines = [
             "    results = run_group_chat(",
             "        pattern=chat_manager_pattern,",
-            "        messages=_INITIAL,",
+            "        messages=__INITIAL_MSG__,",
             "        max_rounds=10,",
             "    )",
         ]
@@ -69,7 +69,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=True,
         )
@@ -77,7 +77,7 @@ class TestExportGroupChats:
         expected_lines = [
             "    results = await a_run_group_chat(",
             "        pattern=chat_manager_pattern,",
-            "        messages=_INITIAL,",
+            "        messages=__INITIAL_MSG__,",
             "        max_rounds=5,",
             "    )",
         ]
@@ -96,7 +96,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=False,
         )
@@ -104,7 +104,7 @@ class TestExportGroupChats:
         expected_lines = [
             "    results = run_group_chat(",
             "        pattern=group_manager_pattern,",
-            "        messages=_INITIAL",
+            "        messages=__INITIAL_MSG__",
             "        max_rounds=15,",
             "    )",
         ]
@@ -120,7 +120,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=True,
         )
@@ -128,7 +128,7 @@ class TestExportGroupChats:
         expected_lines = [
             "    results = await a_run_group_chat(",
             "        pattern=async_manager_pattern,",
-            "        messages=_INITIAL,",
+            "        messages=__INITIAL_MSG__,",
             "        max_rounds=20,",
             "    )",
         ]
@@ -145,7 +145,7 @@ class TestExportGroupChats:
         result_0_tabs = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=0,
             is_async=False,
         )
@@ -157,7 +157,7 @@ class TestExportGroupChats:
         result_2_tabs = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=2,
             is_async=False,
         )
@@ -169,7 +169,7 @@ class TestExportGroupChats:
         result_3_tabs = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=3,
             is_async=False,
         )
@@ -186,7 +186,7 @@ class TestExportGroupChats:
         result_1 = export_group_chats(
             agent_names=agent_names,
             manager=manager_1,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=False,
         )
@@ -197,7 +197,7 @@ class TestExportGroupChats:
         result_100 = export_group_chats(
             agent_names=agent_names,
             manager=manager_100,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=False,
         )
@@ -208,7 +208,7 @@ class TestExportGroupChats:
         result_0 = export_group_chats(
             agent_names=agent_names,
             manager=manager_0,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=False,
         )
@@ -223,7 +223,7 @@ class TestExportGroupChats:
         result_simple = export_group_chats(
             agent_names=agent_names_simple,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=False,
         )
@@ -234,7 +234,7 @@ class TestExportGroupChats:
         result_complex = export_group_chats(
             agent_names=agent_names_complex,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=False,
         )
@@ -248,7 +248,7 @@ class TestExportGroupChats:
         result_numeric = export_group_chats(
             agent_names=agent_names_numeric,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=False,
         )
@@ -262,11 +262,11 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=False,
         )
-        assert "messages=_INITIAL," in result
+        assert "messages=__INITIAL_MSG__," in result
 
     def test_return_type_is_string(self) -> None:
         """Test that function returns a string."""
@@ -276,7 +276,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=False,
         )
@@ -292,7 +292,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=False,
         )
@@ -323,7 +323,7 @@ class TestEdgeCases:
             export_group_chats(
                 agent_names=agent_names,
                 manager=manager,
-                message=("messages", "_INITIAL"),
+                message=("messages", "__INITIAL_MSG__"),
                 tabs=1,
                 is_async=False,
             )
@@ -341,7 +341,7 @@ class TestEdgeCases:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=False,
         )
@@ -357,7 +357,7 @@ class TestEdgeCases:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=-1,
             is_async=False,
         )
@@ -377,7 +377,7 @@ class TestOutputFormat:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=2,
             is_async=False,
         )
@@ -385,7 +385,7 @@ class TestOutputFormat:
         expected = (
             "        results = run_group_chat(\n"
             "            pattern=test_mgr_pattern,\n"
-            "            messages=_INITIAL,\n"
+            "            messages=__INITIAL_MSG__,\n"
             "            max_rounds=5,\n"
             "        )\n"
         ) + get_event_handler_string(space=space, is_async=False)
@@ -400,7 +400,7 @@ class TestOutputFormat:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=1,
             is_async=True,
         )
@@ -408,7 +408,7 @@ class TestOutputFormat:
         expected = (
             "    results = await a_run_group_chat(\n"
             "        pattern=async_mgr_pattern,\n"
-            "        messages=_INITIAL,\n"
+            "        messages=__INITIAL_MSG__,\n"
             "        max_rounds=3,\n"
             "    )\n"
         ) + get_event_handler_string(space=space, is_async=True)
@@ -423,7 +423,7 @@ class TestOutputFormat:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            message=("messages", "_INITIAL"),
+            message=("messages", "__INITIAL_MSG__"),
             tabs=0,
             is_async=False,
         )
@@ -431,7 +431,7 @@ class TestOutputFormat:
         expected = (
             "results = run_group_chat(\n"
             "    pattern=no_tab_mgr_pattern,\n"
-            "    messages=_INITIAL,\n"
+            "    messages=__INITIAL_MSG__,\n"
             "    max_rounds=1,\n"
             ")\n"
         ) + get_event_handler_string(space=space, is_async=False)

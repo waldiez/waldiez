@@ -24,6 +24,7 @@ class GroupManagerExtras(StandardExtras):
     strategy: GroupManagerStrategy = GroupManagerStrategy.PATTERN
 
     # Pattern-based content
+    pattern_name: str = ""
     pattern_definition: str = ""
     pattern_class_name: str = "AutoPattern"
     pattern_imports: set[str] = field(default_factory=set)
@@ -76,8 +77,19 @@ class GroupManagerExtras(StandardExtras):
                 self.pattern_definition,
                 ExportPosition.AGENTS,
                 agent_position=AgentPosition.AFTER_ALL,
-                order=ContentOrder.LATE_CLEANUP,
+                order=ContentOrder.LATE_CLEANUP.value,
             )
+            if self.pattern_name:
+                group_addition = (
+                    f'__GROUP__["patterns"]["{self.pattern_name}"] '
+                    f"= {self.pattern_name}"
+                )
+                result.add_content(
+                    group_addition,
+                    ExportPosition.AGENTS,
+                    agent_position=AgentPosition.AFTER_ALL,
+                    order=ContentOrder.LATE_CLEANUP.value + 1,
+                )
         elif self.strategy == GroupManagerStrategy.TRADITIONAL:
             # Add custom speaker selection function first
             if self.custom_speaker_selection:
@@ -85,7 +97,18 @@ class GroupManagerExtras(StandardExtras):
                     self.custom_speaker_selection,
                     ExportPosition.AGENTS,
                     agent_position=AgentPosition.AFTER_ALL,
-                    order=ContentOrder.LATE_CLEANUP,
+                    order=ContentOrder.LATE_CLEANUP.value + 1,
+                )
+            if self.group_chat_name:
+                group_addition = (
+                    f'__GROUP__["chats"]["{self.group_chat_name}"] '
+                    f"= {self.group_chat_name}"
+                )
+                result.add_content(
+                    group_addition,
+                    ExportPosition.AGENTS,
+                    agent_position=AgentPosition.AFTER_ALL,
+                    order=ContentOrder.LATE_CLEANUP.value + 1,
                 )
 
             # Add group chat argument if specified

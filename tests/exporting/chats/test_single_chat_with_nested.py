@@ -207,7 +207,7 @@ def nested_chat_message(recipient, messages, sender, config):
             summary_method="last_msg",
             clear_history=True,
             variable1="value1",
-            message=_INITIAL,
+            message=__INITIAL_MSG__,
         )
 """
     space = "        "

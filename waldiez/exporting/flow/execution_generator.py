@@ -141,6 +141,171 @@ class ExecutionGenerator:
         return content
 
     @staticmethod
+    def _generate_sync_prepare_resume() -> str:
+        """Generate the function to prepare resuming a chat.
+
+        Parameters
+        ----------
+        is_async : bool
+            Whether to generate async content
+
+        Returns
+        -------
+        str
+            The complete function content.
+        """
+        content = '''
+def _prepare_resume(state_json: str | Path | None = None) -> None:
+    """Prepare resuming a chat from state.json.
+
+    state.json format:
+        {
+            "messages": [{"content": "..", "role": "...", "name": "..."}],
+            "context_variables": {"key1": "value1", "key2": 4, "key3": [], "key4": {"other": "key"}}
+        }
+    metadata.json format:
+        {
+            "type": "group",
+            "group": {  # one of:
+                "pattern" : "<pattern_name>",
+                "manager" : "<manager_name>",
+            }
+        }
+
+    Parameters
+    ----------
+    state_json : str | Path | None
+        The path to state.json to load previous state.
+    """
+    global __INITIAL_MSG__
+    # pylint: disable=broad-exception-caught,too-many-try-statements
+    if not state_json or not Path(state_json).is_file():
+        return
+    metadata_json = state_json.replace("state.json", "metadata.json")
+    if not metadata_json or not Path(metadata_json).is_file():
+        return
+    try:
+        with open(metadata_json, "r", encoding="utf-8") as f:
+            _metadata_dict = json.load(f)
+    except BaseException:  # pylint: disable=broad-exception-caught
+        return
+    if not _metadata_dict or not isinstance(_metadata_dict, dict):
+        return
+    _state_chat_type = _metadata_dict.get("type", "")
+    if _state_chat_type != "group":
+        # only resume group chats
+        return
+    _state_group_details = _metadata_dict.get("group", {})
+    if not _state_group_details or not isinstance(_state_group_details, dict):
+        return
+    # either pattern or manager
+    _state_group_pattern = _state_group_details.get("pattern", "")
+    _state_group_manager = _state_group_details.get("manager", "")
+    if not _state_group_pattern and not _state_group_manager:
+        return
+    try:
+        with open(metadata_json, "r", encoding="utf-8") as f:
+            _state_dict = json.load(f)
+    except BaseException:
+        return
+    if not _state_dict or not isinstance(_state_dict, dict):
+        return
+    _state_messages = _state_dict.get("messages", [])
+    if _state_group_pattern and isinstance(_state_group_pattern, str):
+        _known_pattern = __GROUP__["patterns"].get(_state_group_pattern, None)
+        if _known_pattern:
+            _state_context_variables = _state_dict.get("context_variables", {})
+            if _state_context_variables and isinstance(_state_context_variables, dict):
+                _known_pattern.context_variables = ContextVariables(data=_state_context_variables)
+        if _state_messages and isinstance(_state_messages, list):
+            __INITIAL_MSG__ = _state_messages
+    elif _state_group_manager and isinstance(_state_group_manager, str):
+        _known_group_manager = __AGENTS__.get(_state_group_manager, None)
+        if _known_group_manager and hasattr(_known_group_manager, "groupchat"):
+            if _state_messages and isinstance(_state_messages, list):
+                _known_group_manager.groupchat.messages = _state_messages
+'''
+        return content
+
+    @staticmethod
+    def _generate_async_prepare_resume() -> str:
+        """Generate the function to prepare resuming a chat (async)."""
+        content = '''
+async def _prepare_resume(state_json: str | Path | None = None) -> None:
+    """Prepare resuming a chat from state.json.
+
+    state.json format:
+        {
+            "messages": [{"content": "..", "role": "...", "name": "..."}],
+            "context_variables": {"key1": "value1", "key2": 4, "key3": [], "key4": {"other": "key"}}
+        }
+    metadata.json format:
+        {
+            "type": "group",
+            "group": {  # one of:
+                "pattern" : "<pattern_name>",
+                "manager" : "<manager_name>",
+            }
+        }
+
+    Parameters
+    ----------
+    state_json : str | Path | None
+        The path to state.json to load previous state.
+    """
+    global __INITIAL_MSG__
+    # pylint: disable=broad-exception-caught,too-many-try-statements
+    if not state_json or not Path(state_json).is_file():
+        return
+    metadata_json = state_json.replace("state.json", "metadata.json")
+    if not metadata_json or not Path(metadata_json).is_file():
+        return
+    try:
+        async with aiofiles.open(metadata_json, "r", encoding="utf-8") as f:
+            f_data = await f.read()
+            _metadata_dict = json.loads(f_data)
+    except BaseException:
+        return
+    if not _metadata_dict or not isinstance(_metadata_dict, dict):
+        return
+    _state_chat_type = _metadata_dict.get("type", "")
+    if _state_chat_type != "group":
+        # only resume group chats
+        return
+    _state_group_details = _metadata_dict.get("group", {})
+    if not _state_group_details or not isinstance(_state_group_details, dict):
+        return
+    # either pattern or manager
+    _state_group_pattern = _state_group_details.get("pattern", "")
+    _state_group_manager = _state_group_details.get("manager", "")
+    if not _state_group_pattern and not _state_group_manager:
+        return
+    try:
+        async with aiofiles.open(metadata_json, "r", encoding="utf-8") as f:
+            f_data = await f.read()
+            _state_dict = json.loads(f_data)
+    except BaseException:
+        return
+    if not _state_dict or not isinstance(_state_dict, dict):
+        return
+    _state_messages = _state_dict.get("context_variables", [])
+    if _state_group_pattern and isinstance(_state_group_pattern, str):
+        _known_pattern = __GROUP__["patterns"].get(_state_group_pattern, None)
+        if _known_pattern:
+            _state_context_variables = _state_dict.get("context_variables", {})
+            if _state_context_variables and isinstance(_state_context_variables, dict):
+                _known_pattern.context_variables = ContextVariables(data=_state_context_variables)
+        if _state_messages and isinstance(_state_messages, list):
+            __INITIAL_MSG__ = _state_messages
+    elif _state_group_manager and isinstance(_state_group_manager, str):
+        _known_group_manager = __AGENTS__.get(_state_group_manager, None)
+        if _known_group_manager and hasattr(_known_group_manager, "groupchat"):
+            if _state_messages and isinstance(_state_messages, list):
+                _known_group_manager.groupchat.messages = _state_messages
+'''
+        return content
+
+    @staticmethod
     def generate_prepare_resume(is_async: bool) -> str:
         """Generate the function to prepare resuming a chat.
 
@@ -154,19 +319,9 @@ class ExecutionGenerator:
         str
             The complete function content.
         """
-        content = "\nasync " if is_async else "\n"
-        content += '''def _prepare_resume(state_json: str | Path | None = None) -> None:
-    """Prepare resuming a chat from state.json.
-
-    Parameters
-    ----------
-    state_json : str | Path | None
-        The path to state.json to load previous state.
-    """
-    if not state_json or not Path(state_json).is_file():
-        return
-'''
-        return content
+        if is_async:
+            return ExecutionGenerator._generate_async_prepare_resume()
+        return ExecutionGenerator._generate_sync_prepare_resume()
 
     @staticmethod
     def generate_main_function(

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-"""Generate the whole folw content."""
+"""Generate the whole flow content."""
 
 from typing import Any
 
@@ -119,6 +119,8 @@ class FileGenerator(ContentGenerator):
             everything.append(
                 "\n".join([entry.content for entry in imports_section])
             )
+        everything.append('__GROUP__ = {"chats": {}, "patterns": {}}\n')
+        everything.append("__AGENTS__ = {}\n")
         if tools_section:
             comment = get_comment(
                 "Tools",
@@ -142,8 +144,6 @@ class FileGenerator(ContentGenerator):
                 "Agents",
                 for_notebook=self.config.for_notebook,
             )
-            if self.config.for_notebook:
-                comment += "# pyright: reportUnnecessaryIsInstance=false\n"
             everything.append(comment)
             everything.append(
                 "\n\n".join([entry.content for entry in agents_section]) + "\n"

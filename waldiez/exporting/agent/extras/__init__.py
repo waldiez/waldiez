@@ -4,7 +4,7 @@
 
 from .captain_agent_extras import CaptainAgentProcessor
 from .doc_agent_extras import DocAgentProcessor
-from .group_manager_agent_extas import GroupManagerProcessor
+from .group_manager_agent_extras import GroupManagerProcessor
 from .group_member_extras import GroupMemberAgentProcessor
 from .reasoning_agent_extras import ReasoningAgentProcessor
 

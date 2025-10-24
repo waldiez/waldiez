@@ -60,7 +60,9 @@ def test_export_reasoning_agent(tmp_path: Path) -> None:
         "    },\n"
         "    verbose=True,\n"
         '    llm_config="model-config"\n'
-        ")"
+        ")\n\n"
+        f'__AGENTS__["{agent.name}"] = {agent.name}'
+        "\n\n"
     )
     assert result.main_content == expected
     shutil.rmtree(output_dir)

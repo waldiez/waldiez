@@ -136,7 +136,7 @@ class ChatsProcessor:
             The chat definition string.
         """
         message_arg = "messages"
-        message_var = "_INITIAL"
+        message_var = "__INITIAL_MSG__"
         if len(self._chats.main) == 0:
             if not self._root_group_manager:
                 return ""

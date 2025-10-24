@@ -65,6 +65,7 @@ PYRIGHT_RULES = [
     "reportArgumentType",
     "reportAttributeAccessIssue",
     "reportCallInDefaultInitializer",
+    "reportConstantRedefinition",
     "reportDeprecated",
     "reportDuplicateImport",
     "reportMissingTypeStubs",

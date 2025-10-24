@@ -119,7 +119,7 @@ def test_sequential_chat() -> None:
         is_async=False,
     )
     exporter.export()
-    expected_queue = """_INITIAL = [
+    expected_queue = """__INITIAL_MSG__ = [
         {
             "recipient": agent2,
             "cache": cache,
@@ -139,7 +139,7 @@ def test_sequential_chat() -> None:
         },
 ]
 """
-    expected = "\n        results = agent1.sequential_run(_INITIAL)\n"
+    expected = "\n        results = agent1.sequential_run(__INITIAL_MSG__)\n"
     space = "    " * 2
     assert (
         exporter.extras.chat_initiation

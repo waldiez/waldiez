@@ -25,7 +25,7 @@ from ..core import (
 from .code_execution import CodeExecutionProcessor
 from .extras.captain_agent_extras import CaptainAgentProcessor
 from .extras.doc_agent_extras import DocAgentProcessor
-from .extras.group_manager_agent_extas import GroupManagerProcessor
+from .extras.group_manager_agent_extras import GroupManagerProcessor
 from .extras.group_member_extras import GroupMemberAgentProcessor
 from .extras.rag_user_proxy_agent_extras import RagUserProxyAgentProcessor
 from .extras.reasoning_agent_extras import ReasoningAgentProcessor
@@ -181,6 +181,7 @@ class AgentExporter(Exporter[StandardExtras]):
             termination_config=standard_extras.termination_config,
             code_execution_config=standard_extras.code_execution_config,
         )
+        self.agent_names = group_manager_processor.agent_names
         return group_manager_extras
 
     def _create_group_member_extras(self) -> StandardExtras:
@@ -352,15 +353,19 @@ class AgentExporter(Exporter[StandardExtras]):
         )
         result = agent_processor.process().content
         if result:
+            order = (
+                ContentOrder.MAIN_CONTENT
+                if not self.agent.is_group_manager
+                else ContentOrder.LATE_CLEANUP
+            )
             # Add the main agent definition content
+            agent_name = self.agent_names[self.agent.id]
+            if agent_name:
+                result += f'\n\n__AGENTS__["{agent_name}"] = {agent_name}\n\n'
             self.add_content(
                 result,
                 ExportPosition.AGENTS,
-                order=(
-                    ContentOrder.MAIN_CONTENT
-                    if not self.agent.is_group_manager
-                    else ContentOrder.LATE_CLEANUP
-                ),
+                order=order,
             )
             self.extras.append_after_all_agents(result)
         return result

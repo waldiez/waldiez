@@ -79,7 +79,9 @@ def test_export_captain_agent(tmp_path: Path) -> None:
         '        "max_turns": 5\n'
         "    },\n"
         "    llm_config='model-config'\n"
-        ")"
+        ")\n\n"
+        f'__AGENTS__["{agent.name}"] = {agent.name}'
+        "\n\n"
     )
     assert result.main_content == expected
     shutil.rmtree(output_dir)
@@ -156,7 +158,9 @@ def test_export_captain_agent(tmp_path: Path) -> None:
         '        "max_turns": 5\n'
         "    },\n"
         "    llm_config='model-config'\n"
-        ")"
+        ")\n\n"
+        f'__AGENTS__["{agent1.name}"] = {agent1.name}'
+        "\n\n"
     )
     assert exporter.export().main_content == expected
     shutil.rmtree(output_dir)
