@@ -141,6 +141,34 @@ class ExecutionGenerator:
         return content
 
     @staticmethod
+    def generate_prepare_resume(is_async: bool) -> str:
+        """Generate the function to prepare resuming a chat.
+
+        Parameters
+        ----------
+        is_async : bool
+            Whether to generate async content
+
+        Returns
+        -------
+        str
+            The complete function content.
+        """
+        content = "\nasync " if is_async else "\n"
+        content += '''def _prepare_resume(state_json: str | Path | None = None) -> None:
+    """Prepare resuming a chat from state.json.
+
+    Parameters
+    ----------
+    state_json : str | Path | None
+        The path to state.json to load previous state.
+    """
+    if not state_json or not Path(state_json).is_file():
+        return
+'''
+        return content
+
+    @staticmethod
     def generate_main_function(
         content: str,
         is_async: bool,
@@ -201,7 +229,10 @@ class ExecutionGenerator:
         )
         flow_content += f"    {main_doc_string()}\n"
         flow_content += "    if state_json:\n"
-        flow_content += '        print("prepare resuming from state")\n'
+        if is_async:
+            flow_content += "        await _prepare_resume(state_json)\n"
+        else:
+            flow_content += "        _prepare_resume(state_json)\n"
         if not is_async:
             flow_content += "    results: list[RunResponseProtocol] | RunResponseProtocol = []\n"
         else:

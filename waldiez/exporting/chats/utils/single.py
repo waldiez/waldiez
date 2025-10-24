@@ -20,6 +20,7 @@ def export_single_chat(
     sender: WaldiezAgent,
     recipient: WaldiezAgent,
     chat: WaldiezChat,
+    message_kwarg: tuple[str, str],
     agent_names: dict[str, str],
     chat_names: dict[str, str],
     serializer: Callable[[str], str],
@@ -38,6 +39,8 @@ def export_single_chat(
         The recipient.
     chat : WaldiezChat
         The chat.
+    message_kwarg : tuple[str, str]
+        The message kwarg and the var to use for it.
     agent_names : dict[str, str]
         A mapping of agent id to agent name.
     chat_names : dict[str, str]
@@ -60,12 +63,12 @@ def export_single_chat(
     """
     tab = " " * tab_length * tabs if tabs > 0 else ""
     chat_args = chat.get_chat_args(for_queue=False, sender=sender)
-    # chat_args = update_summary_chat_args(chat_args, skip_summary=True)
     if not chat_args:
         return get_empty_simple_chat_string(
             chat=chat,
             sender=sender,
             recipient=recipient,
+            message_kwarg=message_kwarg,
             agent_names=agent_names,
             tab=tab,
             is_async=is_async,
@@ -76,6 +79,7 @@ def export_single_chat(
         chat_args=chat_args,
         sender=sender,
         recipient=recipient,
+        message_kwarg=message_kwarg,
         agent_names=agent_names,
         chat_names=chat_names,
         serializer=serializer,
@@ -90,6 +94,7 @@ def get_simple_chat_string(
     chat: WaldiezChat,
     sender: WaldiezAgent,
     recipient: WaldiezAgent,
+    message_kwarg: tuple[str, str],
     agent_names: dict[str, str],
     chat_names: dict[str, str],
     chat_args: dict[str, Any],
@@ -108,6 +113,8 @@ def get_simple_chat_string(
         The sender.
     recipient : WaldiezAgent
         The recipient.
+    message_kwarg : tuple[str, str]
+        The message kwarg and the var to use for it.
     agent_names : dict[str, str]
         A mapping of agent id to agent name.
     chat_names : dict[str, str]
@@ -128,6 +135,7 @@ def get_simple_chat_string(
     tuple[str, str]
         The chat string and additional methods string if any.
     """
+    message_arg, message_var = message_kwarg
     tab = "    " * tabs
     sender_name = agent_names[sender.id]
     initiate = "run"
@@ -140,7 +148,10 @@ def get_simple_chat_string(
     if not skip_cache:
         chat_string += "\n" + f"{tab}    cache=cache,"
     for key, value in chat_args.items():
-        if isinstance(value, str) and key != "message":
+        if key == message_arg:
+            chat_string += "\n" + f"{tab}    {key}={message_var},"
+            continue
+        if isinstance(value, str):
             chat_string += "\n" + f'{tab}    {key}="{value}",'
         elif isinstance(value, dict):
             chat_string += (
@@ -148,23 +159,25 @@ def get_simple_chat_string(
             )
         else:
             chat_string += "\n" + f"{tab}    {key}={value},"
-    message_arg, additional_methods_string = get_chat_message(
+    message_arg, before_chat = get_chat_message(
         tab=tab,
         chat=chat,
         chat_names=chat_names,
         sender=sender,
         sender_name=sender_name,
+        message_kwarg=message_kwarg,
     )
     chat_string += message_arg
     chat_string += "\n" + f"{tab})" + "\n"
     chat_string += get_event_handler_string(space=tab, is_async=is_async)
-    return chat_string, additional_methods_string
+    return chat_string, before_chat
 
 
 def get_empty_simple_chat_string(
     chat: WaldiezChat,
     sender: WaldiezAgent,
     recipient: WaldiezAgent,
+    message_kwarg: tuple[str, str],
     agent_names: dict[str, str],
     tab: str,
     is_async: bool,
@@ -180,6 +193,8 @@ def get_empty_simple_chat_string(
         The sender.
     recipient : WaldiezAgent
         The recipient.
+    message_kwarg : tuple[str, str]
+        The message kwarg and the var to use for it.
     agent_names : dict[str, str]
         A mapping of agent id to agent name.
     tab : str
@@ -203,17 +218,18 @@ def get_empty_simple_chat_string(
     content += f"{tab}    {recipient_name}," + "\n"
     if not skip_cache:
         content += f"{tab}    cache=cache," + "\n"
-    message_arg, _ = get_chat_message(
+    message_arg, before_chat = get_chat_message(
         tab=tab,
         chat=chat,
         chat_names={},
         sender=sender,
         sender_name=sender_name,
+        message_kwarg=message_kwarg,
     )
     content += message_arg
     content += f"{tab})" + "\n"
     content += get_event_handler_string(space=tab, is_async=is_async)
-    return content, ""
+    return content, before_chat
 
 
 def get_chat_message(
@@ -222,6 +238,7 @@ def get_chat_message(
     chat_names: dict[str, str],
     sender: WaldiezAgent,
     sender_name: str,
+    message_kwarg: tuple[str, str],
 ) -> tuple[str, str]:
     """Get the chat message string.
 
@@ -237,46 +254,40 @@ def get_chat_message(
         The sender.
     sender_name : str
         The sender name.
+    message_kwarg : tuple[str, str]
+        The message kwarg and the var to use for it.
 
     Returns
     -------
     tuple[str, str]
         The message argument and additional methods string if any.
     """
-    additional_methods_string = ""
+    before_chat = ""
+    message_arg, message_var = message_kwarg
+    message_arg_var = "\n" + f"{tab}    {message_arg}={message_var},"
     if (
         sender.is_rag_user
         and isinstance(sender, WaldiezRagUserProxy)
         and chat.message.type == "rag_message_generator"
         and chat.message.use_carryover is False
     ):
-        message = f"{sender_name}.message_generator"
-        return "\n" + f"{tab}    message={message},", additional_methods_string
-    message, method_content = get_chat_message_string(
+        before_chat = f"{message_var}={sender_name}.message_generator"
+        return message_arg_var, before_chat
+    message_value, method_content = get_chat_message_string(
         sender=sender,
         chat=chat,
         chat_names=chat_names,
     )
-    if message and isinstance(chat.data.message, WaldiezChatMessage):
-        if chat.data.message.type == "method":
-            additional_methods_string += (
-                method_content if method_content else ""
-            )
-            return (
-                "\n" + f"{tab}    message={message},",
-                additional_methods_string,
-            )
+    if message_value and isinstance(chat.data.message, WaldiezChatMessage):
+        if chat.data.message.type in ("method", "rag_message_generator"):
+            before_chat = method_content if method_content else ""
+            before_chat += "\n"
+            before_chat += f"{message_var}={message_value}"
+            return message_arg_var, before_chat
         if chat.message.type == "string" and chat.data.message.content:
-            return (
-                "\n" + f"{tab}    message={message},",
-                additional_methods_string,
-            )
-        if chat.message.type == "rag_message_generator":
-            additional_methods_string += (
-                method_content if method_content else ""
-            )
-            return (
-                "\n" + f"{tab}    message={message},",
-                additional_methods_string,
-            )
-    return "", additional_methods_string  # pragma: no cover
+            before_chat += f"{message_var}={message_value}"
+            return message_arg_var, before_chat
+        if chat.message.type == "none":
+            before_chat += f"{message_var}=None"
+            return message_arg_var, before_chat
+    return "", before_chat  # pragma: no cover

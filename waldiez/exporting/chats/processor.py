@@ -2,6 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Chats processor."""
 
+import json
 from dataclasses import dataclass
 
 from waldiez.models import (
@@ -134,13 +135,16 @@ class ChatsProcessor:
         str
             The chat definition string.
         """
+        message_arg = "messages"
+        message_var = "_INITIAL"
         if len(self._chats.main) == 0:
             if not self._root_group_manager:
                 return ""
+            self._extras.set_chat_prerequisites(f"{message_var} = None")
             return export_group_chats(
                 agent_names=self._agent_names,
                 manager=self._root_group_manager,
-                initial_chat=None,
+                message=(message_arg, message_var),
                 tabs=self._chat_tabs,
                 is_async=self._is_async,
             )
@@ -154,19 +158,26 @@ class ChatsProcessor:
                 and not chat.message.is_method()
             ):
                 chat_massage_string: str | None = None
+                before_chat = f'{message_var}=""'
                 if chat.message.type == "string":
                     chat_massage_string = chat.message.content
+                    before_chat = (
+                        f"{message_var}={json.dumps(chat_massage_string)}"
+                    )
+                self._extras.set_chat_prerequisites(before_chat)
                 return export_group_chats(
                     agent_names=self._agent_names,
                     manager=recipient,
-                    initial_chat=chat_massage_string,
+                    message=(message_arg, message_var),
                     tabs=self._chat_tabs,
                     is_async=self._is_async,
                 )
+            message_arg = "message"  # .run(message=....)
             chat_string, before_chat = export_single_chat(
                 sender=sender,
                 recipient=recipient,
                 chat=chat,
+                message_kwarg=(message_arg, message_var),
                 agent_names=self._agent_names,
                 chat_names=self._chats.names,
                 serializer=self._serializer.serialize,
@@ -185,6 +196,7 @@ class ChatsProcessor:
             tabs=self._chat_tabs,
             is_async=self._is_async,
             skip_cache=self._cache_seed is None,
+            chat_queue_arg=message_var,
         )
         if before_chat:
             self._extras.set_chat_prerequisites(before_chat)

@@ -103,6 +103,8 @@ def callable_message(sender, recipient, context):
         "\n) -> Union[dict[str, Any], str]:"
         "\n"
         '    return f"Hello to {recipient.name} from {sender.name}"\n'
+        "\n"
+        f"_INITIAL=callable_message_{chat_name}"
     )
     assert before_export_str == expected_before_string
     after_export = exporter.extras.after_agent
@@ -120,7 +122,7 @@ def callable_message(sender, recipient, context):
             clear_history=True,
             variable1="value1",
             n_results=2,
-            message=callable_message_chat1,
+            message=_INITIAL,
         )
 """
     space = "        "
@@ -201,7 +203,7 @@ def test_empty_chat() -> None:
     imports = exporter.get_imports()
     assert not imports
     before_export = exporter.extras.chat_prerequisites
-    assert not before_export
+    assert before_export == "_INITIAL=None"
     generated = exporter.extras.chat_initiation
     space = "        "
     expected = (
@@ -209,6 +211,7 @@ def test_empty_chat() -> None:
         f"\n{space}    agent2,"
         f"\n{space}    cache=cache,"
         f"\n{space}    clear_history=True,"
+        f"\n{space}    message=_INITIAL,"
         f"\n{space})\n"
     )
     assert generated == expected + get_event_handler_string(
@@ -299,6 +302,8 @@ def test_chat_with_rag_and_carryover() -> None:
         "    context: dict[str, Any],\n"
         ") -> Union[dict[str, Any], str]:"
         f"{expected_before_body}"
+        "\n"
+        "_INITIAL=callable_message_chat1"
     )
     assert before_export == expected_before
     generated = exporter.extras.chat_initiation
@@ -318,7 +323,7 @@ def test_chat_with_rag_and_carryover() -> None:
         "\n"
         f'{space}{tab}model="one/model/name",'
         "\n"
-        f"{space}{tab}message=callable_message_{chat_name},"
+        f"{space}{tab}message=_INITIAL,"
         "\n"
         f"{space})"
         "\n"
@@ -402,7 +407,7 @@ def test_chat_with_rag_no_carryover() -> None:
     imports = exporter.get_imports()
     assert not imports
     before_export = exporter.extras.chat_prerequisites
-    assert not before_export
+    assert before_export == "_INITIAL=agent1.message_generator"
     generated = exporter.extras.chat_initiation
     tab = "    "
     space = tab * 2
@@ -418,7 +423,7 @@ def test_chat_with_rag_no_carryover() -> None:
         "\n"
         f'{space}{tab}key1="value1",'
         "\n"
-        f"{space}{tab}message={agent1_name}.message_generator,"
+        f"{space}{tab}message=_INITIAL,"
         "\n"
         f"{space})"
         "\n"

@@ -90,6 +90,8 @@ class ChatsExporter(Exporter[ChatExtras]):
         processor.process()
         if extras.chat_registration:
             extras.append_after_all_agents(extras.chat_registration)
+        if extras.chat_prerequisites:
+            extras.append_after_all_agents(extras.chat_prerequisites)
         return extras
 
     def generate_main_content(self) -> str | None:

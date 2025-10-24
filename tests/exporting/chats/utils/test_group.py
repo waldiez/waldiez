@@ -5,7 +5,6 @@
 # pylint: disable=no-self-use
 """Test waldiez.exporting.chats.utils.group."""
 
-import json
 from unittest.mock import Mock
 
 import pytest
@@ -42,7 +41,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=False,
         )
@@ -50,7 +49,7 @@ class TestExportGroupChats:
         expected_lines = [
             "    results = run_group_chat(",
             "        pattern=chat_manager_pattern,",
-            '        messages="",',
+            "        messages=_INITIAL,",
             "        max_rounds=10,",
             "    )",
         ]
@@ -70,7 +69,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=True,
         )
@@ -78,7 +77,7 @@ class TestExportGroupChats:
         expected_lines = [
             "    results = await a_run_group_chat(",
             "        pattern=chat_manager_pattern,",
-            '        messages="",',
+            "        messages=_INITIAL,",
             "        max_rounds=5,",
             "    )",
         ]
@@ -86,7 +85,6 @@ class TestExportGroupChats:
         for line in expected_lines:
             assert line in result
 
-        # Should contain async function name
         assert "a_run_group_chat(" in result
         assert " run_group_chat(" not in result
 
@@ -94,12 +92,11 @@ class TestExportGroupChats:
         """Test synchronous group chat with initial chat message."""
         agent_names = {"manager1": "group_manager"}
         manager = create_test_manager("manager1", max_round=15)
-        initial_chat = "Hello, let's start the discussion!"
 
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=initial_chat,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=False,
         )
@@ -107,7 +104,7 @@ class TestExportGroupChats:
         expected_lines = [
             "    results = run_group_chat(",
             "        pattern=group_manager_pattern,",
-            f"        messages={json.dumps(initial_chat)},",
+            "        messages=_INITIAL",
             "        max_rounds=15,",
             "    )",
         ]
@@ -119,12 +116,11 @@ class TestExportGroupChats:
         """Test asynchronous group chat with initial chat message."""
         agent_names = {"manager1": "async_manager"}
         manager = create_test_manager("manager1", max_round=20)
-        initial_chat = "Welcome to the async chat!"
 
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=initial_chat,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=True,
         )
@@ -132,7 +128,7 @@ class TestExportGroupChats:
         expected_lines = [
             "    results = await a_run_group_chat(",
             "        pattern=async_manager_pattern,",
-            f"        messages={json.dumps(initial_chat)},",
+            "        messages=_INITIAL,",
             "        max_rounds=20,",
             "    )",
         ]
@@ -149,7 +145,7 @@ class TestExportGroupChats:
         result_0_tabs = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=0,
             is_async=False,
         )
@@ -161,7 +157,7 @@ class TestExportGroupChats:
         result_2_tabs = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=2,
             is_async=False,
         )
@@ -173,7 +169,7 @@ class TestExportGroupChats:
         result_3_tabs = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=3,
             is_async=False,
         )
@@ -190,7 +186,7 @@ class TestExportGroupChats:
         result_1 = export_group_chats(
             agent_names=agent_names,
             manager=manager_1,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=False,
         )
@@ -201,7 +197,7 @@ class TestExportGroupChats:
         result_100 = export_group_chats(
             agent_names=agent_names,
             manager=manager_100,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=False,
         )
@@ -212,7 +208,7 @@ class TestExportGroupChats:
         result_0 = export_group_chats(
             agent_names=agent_names,
             manager=manager_0,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=False,
         )
@@ -227,7 +223,7 @@ class TestExportGroupChats:
         result_simple = export_group_chats(
             agent_names=agent_names_simple,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=False,
         )
@@ -238,7 +234,7 @@ class TestExportGroupChats:
         result_complex = export_group_chats(
             agent_names=agent_names_complex,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=False,
         )
@@ -252,43 +248,11 @@ class TestExportGroupChats:
         result_numeric = export_group_chats(
             agent_names=agent_names_numeric,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=False,
         )
         assert "pattern=manager_42_pattern," in result_numeric
-
-    def test_initial_chat_json_serialization(self) -> None:
-        """Test that initial chat is properly JSON serialized."""
-        agent_names = {"manager1": "json_manager"}
-        manager = create_test_manager("manager1")
-
-        # Test with string containing quotes
-        initial_chat_quotes = "Hello \"world\" and 'friends'!"
-        result_quotes = export_group_chats(
-            agent_names=agent_names,
-            manager=manager,
-            initial_chat=initial_chat_quotes,
-            tabs=1,
-            is_async=False,
-        )
-
-        # Should be properly JSON encoded
-        expected_json = json.dumps(initial_chat_quotes)
-        assert f"messages={expected_json}," in result_quotes
-
-        # Test with multiline string
-        initial_chat_multiline = "Line 1\nLine 2\nLine 3"
-        result_multiline = export_group_chats(
-            agent_names=agent_names,
-            manager=manager,
-            initial_chat=initial_chat_multiline,
-            tabs=1,
-            is_async=False,
-        )
-
-        expected_json_multiline = json.dumps(initial_chat_multiline)
-        assert f"messages={expected_json_multiline}," in result_multiline
 
     def test_empty_initial_chat_string(self) -> None:
         """Test with empty string as initial chat."""
@@ -298,13 +262,11 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat="",
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=False,
         )
-
-        # Empty string should be JSON serialized as '""'
-        assert 'messages="",' in result
+        assert "messages=_INITIAL," in result
 
     def test_return_type_is_string(self) -> None:
         """Test that function returns a string."""
@@ -314,7 +276,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=False,
         )
@@ -330,7 +292,7 @@ class TestExportGroupChats:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=False,
         )
@@ -361,7 +323,7 @@ class TestEdgeCases:
             export_group_chats(
                 agent_names=agent_names,
                 manager=manager,
-                initial_chat=None,
+                message=("messages", "_INITIAL"),
                 tabs=1,
                 is_async=False,
             )
@@ -379,7 +341,7 @@ class TestEdgeCases:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=False,
         )
@@ -395,32 +357,13 @@ class TestEdgeCases:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=-1,
             is_async=False,
         )
 
         # Should start with no indentation
         assert result.startswith("results = run_group_chat(")
-
-    def test_special_characters_in_initial_chat(self) -> None:
-        """Test with special characters in initial chat."""
-        agent_names = {"manager1": "special_manager"}
-        manager = create_test_manager("manager1")
-
-        # Test with various special characters
-        special_chat = "Special chars: @#$%^&*()[]{}|\\:;\"'<>,.?/~`"
-        result = export_group_chats(
-            agent_names=agent_names,
-            manager=manager,
-            initial_chat=special_chat,
-            tabs=1,
-            is_async=False,
-        )
-
-        # Should be properly JSON escaped
-        expected_json = json.dumps(special_chat)
-        assert f"messages={expected_json}," in result
 
 
 class TestOutputFormat:
@@ -434,7 +377,7 @@ class TestOutputFormat:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat="Hello",
+            message=("messages", "_INITIAL"),
             tabs=2,
             is_async=False,
         )
@@ -442,7 +385,7 @@ class TestOutputFormat:
         expected = (
             "        results = run_group_chat(\n"
             "            pattern=test_mgr_pattern,\n"
-            '            messages="Hello",\n'
+            "            messages=_INITIAL,\n"
             "            max_rounds=5,\n"
             "        )\n"
         ) + get_event_handler_string(space=space, is_async=False)
@@ -457,7 +400,7 @@ class TestOutputFormat:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=1,
             is_async=True,
         )
@@ -465,7 +408,7 @@ class TestOutputFormat:
         expected = (
             "    results = await a_run_group_chat(\n"
             "        pattern=async_mgr_pattern,\n"
-            '        messages="",\n'
+            "        messages=_INITIAL,\n"
             "        max_rounds=3,\n"
             "    )\n"
         ) + get_event_handler_string(space=space, is_async=True)
@@ -480,7 +423,7 @@ class TestOutputFormat:
         result = export_group_chats(
             agent_names=agent_names,
             manager=manager,
-            initial_chat=None,
+            message=("messages", "_INITIAL"),
             tabs=0,
             is_async=False,
         )
@@ -488,7 +431,7 @@ class TestOutputFormat:
         expected = (
             "results = run_group_chat(\n"
             "    pattern=no_tab_mgr_pattern,\n"
-            '    messages="",\n'
+            "    messages=_INITIAL,\n"
             "    max_rounds=1,\n"
             ")\n"
         ) + get_event_handler_string(space=space, is_async=False)

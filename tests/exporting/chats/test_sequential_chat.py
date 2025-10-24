@@ -119,27 +119,27 @@ def test_sequential_chat() -> None:
         is_async=False,
     )
     exporter.export()
-    expected = """
-        results = agent1.sequential_run([
-            {
-                "recipient": agent2,
-                "cache": cache,
-                "summary_method": "last_msg",
-                "clear_history": True,
-                "chat_id": 0,
-                "message": "Hello, how are you?",
-            },
-            {
-                "sender": agent2,
-                "recipient": agent3,
-                "cache": cache,
-                "summary_method": "last_msg",
-                "clear_history": True,
-                "chat_id": 0,
-                "message": "Hello, how are you?",
-            },
-        ])
+    expected_queue = """_INITIAL = [
+        {
+            "recipient": agent2,
+            "cache": cache,
+            "summary_method": "last_msg",
+            "clear_history": True,
+            "chat_id": 0,
+            "message": "Hello, how are you?",
+        },
+        {
+            "sender": agent2,
+            "recipient": agent3,
+            "cache": cache,
+            "summary_method": "last_msg",
+            "clear_history": True,
+            "chat_id": 0,
+            "message": "Hello, how are you?",
+        },
+]
 """
+    expected = "\n        results = agent1.sequential_run(_INITIAL)\n"
     space = "    " * 2
     assert (
         exporter.extras.chat_initiation
@@ -147,3 +147,4 @@ def test_sequential_chat() -> None:
     )
     imports = exporter.get_imports()
     assert imports is not None
+    assert expected_queue == exporter.extras.chat_prerequisites

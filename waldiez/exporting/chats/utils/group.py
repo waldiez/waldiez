@@ -6,8 +6,6 @@
 Using the group patterns (no group manager agent)
 """
 
-import json
-
 from waldiez.models import WaldiezGroupManager
 
 from .common import get_event_handler_string
@@ -16,7 +14,7 @@ from .common import get_event_handler_string
 def export_group_chats(
     agent_names: dict[str, str],
     manager: WaldiezGroupManager,
-    initial_chat: str | None,
+    message: tuple[str, str] | None,
     tabs: int,
     is_async: bool,
 ) -> str:
@@ -28,8 +26,8 @@ def export_group_chats(
         The agent names.
     manager : WaldiezGroupManager
         The group manager agent.
-    initial_chat : str | None
-        The initial chat to use if any.
+    message : str | None
+        The initial message/messages arg and value for the chat
     tabs : int
         The number of tabs for indentation.
     is_async : bool
@@ -46,12 +44,10 @@ def export_group_chats(
         run_group_chat = "await a_run_group_chat"
     manager_name = agent_names[manager.id]
     pattern_name = f"{manager_name}_pattern"
-    content = f"{space}results = {run_group_chat}(" + "\n"
+    content: str = f"{space}results = {run_group_chat}(" + "\n"
     content += f"{space}    pattern={pattern_name}," + "\n"
-    if initial_chat:
-        content += f"{space}    messages={json.dumps(initial_chat)}," + "\n"
-    else:
-        content += f'{space}    messages="",\n'
+    if message:
+        content += f"{space}    {message[0]}={message[1]},\n"
     content += f"{space}    max_rounds={manager.data.max_round},\n"
     content += f"{space})\n"
     content += get_event_handler_string(space=space, is_async=is_async)

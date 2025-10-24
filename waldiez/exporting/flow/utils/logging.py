@@ -90,6 +90,8 @@ def get_sync_sqlite_out() -> str:
     str
         The sqlite to csv and json conversion code string.
     """
+    # fmt: off
+    # pylint: disable=line-too-long
     content = "\n\n"
     content += (
         "def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:\n"
@@ -104,31 +106,42 @@ def get_sync_sqlite_out() -> str:
     content += "    csv_file : str\n"
     content += "        The csv file name.\n"
     content += '    """\n'
-    content += "    conn = sqlite3.connect(dbname)\n"
+    content += "    # pylint: disable=broad-exception-caught,too-many-try-statements\n"
+    content += "    try:\n"
+    content += "        conn = sqlite3.connect(dbname)\n"
+    content += "    except BaseException:\n"
+    content += "        return\n"
     content += '    query = f"SELECT * FROM {table}"  # nosec\n'
     content += "    try:\n"
     content += "        cursor = conn.execute(query)\n"
-    content += "    except sqlite3.OperationalError:\n"
+    content += "    except BaseException:\n"
     content += "        conn.close()\n"
     content += "        return\n"
-    content += "    rows = cursor.fetchall()\n"
-    content += "    column_names = [description[0] for description "
-    content += "in cursor.description]\n"
-    # pylint: disable=line-too-long
-    content += "    data = [dict(zip(column_names, row, strict=True)) for row in rows]\n"
-    content += "    conn.close()\n"
-    content += (
-        '    with open(csv_file, "w", newline="", encoding="utf-8") as file:\n'
-    )
-    content += (
-        "        csv_writer = csv.DictWriter(file, fieldnames=column_names)\n"
-    )
-    content += "        csv_writer.writeheader()\n"
-    content += "        csv_writer.writerows(data)\n"
-    content += '    json_file = csv_file.replace(".csv", ".json")\n'
-    content += '    with open(json_file, "w", encoding="utf-8", newline="\\n") as file:\n'
-    content += "        json.dump(data, file, indent=4, ensure_ascii=False)\n"
+    content += "    try:\n"
+    content += "        rows = cursor.fetchall()\n"
+    content += "        column_names = [description[0] for description in cursor.description]\n"
+    content += "        data = [dict(zip(column_names, row, strict=True)) for row in rows]\n"
+    content += "        cursor.close()\n"
+    content += "        conn.close()\n"
+    content += "    except BaseException:\n"
+    content += "        try:\n"
+    content += "            cursor.close()\n"
+    content += "            conn.close()\n"
+    content += "        except BaseException:\n"
+    content += "            pass\n"
+    content += "        return\n"
+    content += "    try:\n"
+    content += '        with open(csv_file, "w", newline="", encoding="utf-8") as file:\n'
+    content += "            csv_writer = csv.DictWriter(file, fieldnames=column_names)\n"
+    content += "            csv_writer.writeheader()\n"
+    content += "            csv_writer.writerows(data)\n"
+    content += '        json_file = csv_file.replace(".csv", ".json")\n'
+    content += '        with open(json_file, "w", encoding="utf-8", newline="\\n") as file:\n'
+    content += "            json.dump(data, file, indent=4, ensure_ascii=False)\n"
+    content += "    except BaseException:\n"
+    content += "        return\n"
     content += "\n"
+    # fmt: on
     return content
 
 
@@ -154,26 +167,40 @@ def get_async_sqlite_out() -> str:
     content += "    csv_file : str\n"
     content += "        The csv file name.\n"
     content += '    """\n'
-    content += "    conn = await aiosqlite.connect(dbname)\n"
+    content += "    # pylint: disable=broad-exception-caught,too-many-try-statements\n"
+    content += "    try:\n"
+    content += "        conn = await aiosqlite.connect(dbname)\n"
+    content += "    except BaseException:\n"
+    content += "        return\n"
     content += '    query = f"SELECT * FROM {table}"  # nosec\n'
     content += "    try:\n"
     content += "        cursor = await conn.execute(query)\n"
-    content += "    except BaseException:  # pylint: disable=broad-exception-caught\n"
+    content += "    except BaseException:\n"
     content += "        await conn.close()\n"
     content += "        return\n"
-    content += "    rows = await cursor.fetchall()\n"
-    content += "    column_names = [description[0] for description "
-    content += "in cursor.description]\n"
-    content += "    data = [dict(zip(column_names, row, strict=True)) for row in rows]\n"
-    content += "    await cursor.close()\n"
-    content += "    await conn.close()\n"
-    content += '    async with aiofiles.open(csv_file, "w", newline="", encoding="utf-8") as file:\n'
-    content += '        csv_writer = AsyncDictWriter(file, fieldnames=column_names, dialect="unix")\n'
-    content += "        await csv_writer.writeheader()\n"
-    content += "        await csv_writer.writerows(data)\n"
-    content += '    json_file = csv_file.replace(".csv", ".json")\n'
-    content += '    async with aiofiles.open(json_file, "w", encoding="utf-8", newline="\\n") as file:\n'
-    content += "        await file.write(json.dumps(data, indent=4, ensure_ascii=False))\n"
+    content += "    try:\n"
+    content += "        rows = await cursor.fetchall()\n"
+    content += "        column_names = [description[0] for description in cursor.description]\n"
+    content += "        data = [dict(zip(column_names, row, strict=True)) for row in rows]\n"
+    content += "        await cursor.close()\n"
+    content += "        await conn.close()\n"
+    content += "    except BaseException:\n"
+    content += "        try:\n"
+    content += "            await cursor.close()\n"
+    content += "            await conn.close()\n"
+    content += "        except BaseException:\n"
+    content += "            pass\n"
+    content += "        return\n"
+    content += "    try:\n"
+    content += '        async with aiofiles.open(csv_file, "w", newline="", encoding="utf-8") as file:\n'
+    content += "            csv_writer = AsyncDictWriter(file, fieldnames=column_names)\n"
+    content += "            await csv_writer.writeheader()\n"
+    content += "            await csv_writer.writerows(data)\n"
+    content += '        json_file = csv_file.replace(".csv", ".json")\n'
+    content += '        async with aiofiles.open(json_file, "w", encoding="utf-8", newline="\\n") as file:\n'
+    content += "            await file.write(json.dumps(data, indent=4, ensure_ascii=False))\n"
+    content += "    except BaseException:\n"
+    content += "        return\n"
     content += "\n"
     # fmt: on
     return content

@@ -13,6 +13,7 @@ from waldiez.models import (
 from .common import get_chat_message_string, get_event_handler_string
 
 
+# pylint: disable=too-many-locals
 def export_sequential_chat(
     main_chats: list[WaldiezAgentConnection],
     chat_names: dict[str, str],
@@ -21,6 +22,7 @@ def export_sequential_chat(
     tabs: int,
     is_async: bool,
     skip_cache: bool,
+    chat_queue_arg: str,
 ) -> tuple[str, str]:
     """Get the chats content, when there are more than one chats in the flow.
 
@@ -40,6 +42,8 @@ def export_sequential_chat(
         Whether the chat is asynchronous.
     skip_cache : bool
         Whether to skip the cache argument.
+    chat_queue_arg : str
+        The chat queue argument.
 
     Returns
     -------
@@ -54,7 +58,9 @@ def export_sequential_chat(
         tab=tab,
         is_async=is_async,
         sender=agent_names[sender.id],
+        chat_queue_arg=chat_queue_arg,
     )
+    chat_queue = f"{chat_queue_arg} = ["
     for idx, connection in enumerate(main_chats):
         chat_string, additional_methods = _get_chat_dict_string(
             is_first=idx == 0,
@@ -62,14 +68,15 @@ def export_sequential_chat(
             connection=connection,
             agent_names=agent_names,
             serializer=serializer,
-            tabs=tabs + 1,
+            tabs=tabs,
             skip_cache=skip_cache,
         )
         additional_methods_string += additional_methods
-        content += "\n" + f"{tab}    {chat_string}"
-    content += "\n" + "    " * tabs + "])\n"
+        chat_queue += "\n" + f"{tab}{chat_string}"
+    chat_queue += "\n]\n"
+    before_chat = additional_methods_string + chat_queue
     content += get_event_handler_string(space=tab, is_async=is_async)
-    return content, additional_methods_string
+    return content, before_chat
 
 
 # noinspection PyTypeChecker
@@ -182,6 +189,7 @@ def _get_initiate_chats_line(
     tab: str,
     is_async: bool,
     sender: str,
+    chat_queue_arg: str,
 ) -> str:
     """Get the initiate chats line.
 
@@ -193,6 +201,8 @@ def _get_initiate_chats_line(
         Whether the chat is asynchronous.
     sender : str
         The sender that starts the chat.
+    chat_queue_arg : str
+        The chat queue argument.
 
     Returns
     -------
@@ -204,4 +214,4 @@ def _get_initiate_chats_line(
     if is_async:
         results_is += "await "
         initiate = f"{sender}.a_sequential_run"
-    return results_is + initiate + "(["
+    return results_is + initiate + f"({chat_queue_arg})\n"
