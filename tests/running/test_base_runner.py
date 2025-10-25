@@ -344,7 +344,7 @@ def test_prepare_paths_and_before_run(
     output_file, uploads_root_path = runner._prepare_paths(
         output_path=None, uploads_root=None
     )
-    assert output_file.name == "waldiez_flow.py"
+    assert output_file.name == "dummy_flow.py"
     assert uploads_root_path is None
 
     # Test before_run creates temp dir and copies .env if given

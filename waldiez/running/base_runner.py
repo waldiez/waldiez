@@ -11,6 +11,7 @@ import shutil
 import sys
 import tempfile
 import threading
+import traceback as tb
 from datetime import datetime, timezone
 from pathlib import Path
 from types import ModuleType, TracebackType
@@ -70,12 +71,12 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         WaldiezBaseRunner._dot_env_path = Path(dot_env) if dot_env else None
         WaldiezBaseRunner._flow_name = ResultsMixin.safe_name(waldiez.name)
         WaldiezBaseRunner._storage_manager = StorageManager(None, workspace_arg)
+        WaldiezBaseRunner._waldiez = waldiez
         EventsMixin.set_input_function(input)
         EventsMixin.set_print_function(print)
         EventsMixin.set_send_function(print)
         EventsMixin.set_async(waldiez.is_async)
         RequirementsMixin.__init__(self)
-        self._waldiez = waldiez
         self._called_install_requirements = False
         self._exporter = WaldiezExporter(waldiez)
         self._stop_requested = threading.Event()
@@ -123,30 +124,46 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         return Path.cwd()  # should change on ".run(...)"
 
     @staticmethod
-    def _store_module_path(tmp_dir: Path, output_file: Path) -> None:
+    def _store_run_paths(tmp_dir: Path, output_file: Path) -> None:
         """Store the path of the module that is to be run."""
-        dir_path = StorageManager.default_root()
-        dir_path.mkdir(parents=True, exist_ok=True)
-        msg = json.dumps({"src": str(tmp_dir), "dst": str(output_file)})
-        with open(
-            dir_path / ResultsMixin.RUN_DETAILS, "w", encoding="utf-8"
-        ) as f:
-            f.write(msg)
-        to_log = f"stored: {msg} at: {dir_path / ResultsMixin.RUN_DETAILS}"
-        WaldiezBaseRunner._logger.debug(to_log)
+        # pylint: disable=too-many-try-statements,broad-exception-caught
+        try:
+            dir_path = StorageManager.default_root()
+            dir_path.mkdir(parents=True, exist_ok=True)
+            msg = json.dumps(
+                {
+                    "src": str(tmp_dir),
+                    "dst": str(output_file),
+                    "name": WaldiezBaseRunner._waldiez.name,
+                }
+            )
+            with open(
+                dir_path / ResultsMixin.RUN_DETAILS, "w", encoding="utf-8"
+            ) as f:
+                f.write(msg)
+        except BaseException:
+            WaldiezBaseRunner._logger.error(tb.format_exc())
 
     @staticmethod
-    async def _a_store_module_path(tmp_dir: Path, output_file: Path) -> None:
+    async def _a_store_run_paths(tmp_dir: Path, output_file: Path) -> None:
         """Store the path of the module that is to be run."""
-        dir_path = StorageManager.default_root()
-        dir_path.mkdir(parents=True, exist_ok=True)
-        msg = json.dumps({"src": str(tmp_dir), "dst": str(output_file)})
-        async with aiofiles.open(
-            dir_path / ResultsMixin.RUN_DETAILS, "w", encoding="utf-8"
-        ) as f:
-            await f.write(msg)
-        to_log = f"stored: {msg} at: {dir_path / ResultsMixin.RUN_DETAILS}"
-        WaldiezBaseRunner._logger.debug(to_log)
+        # pylint: disable=too-many-try-statements,broad-exception-caught
+        try:
+            dir_path = StorageManager.default_root()
+            dir_path.mkdir(parents=True, exist_ok=True)
+            msg = json.dumps(
+                {
+                    "src": str(tmp_dir),
+                    "dst": str(output_file),
+                    "name": WaldiezBaseRunner._waldiez.name,
+                }
+            )
+            async with aiofiles.open(
+                dir_path / ResultsMixin.RUN_DETAILS, "w", encoding="utf-8"
+            ) as f:
+                await f.write(msg)
+        except BaseException:
+            WaldiezBaseRunner._logger.error(tb.format_exc())
 
     @staticmethod
     def _check_dot_env(output_dir: Path) -> None:
@@ -395,7 +412,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             output_path = Path(output_path)
             WaldiezBaseRunner._output_path = output_path
         if not WaldiezBaseRunner._output_path:
-            WaldiezBaseRunner._output_path = Path.cwd() / "waldiez_flow.py"
+            WaldiezBaseRunner._output_path = (
+                Path.cwd()
+                / ResultsMixin.safe_name(WaldiezBaseRunner._waldiez.name)
+            ).with_suffix(".py")
         output_file: Path = Path(WaldiezBaseRunner._output_path)
         WaldiezBaseRunner._check_dot_env(output_file.parent)
         return output_file, uploads_root_path
@@ -811,7 +831,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     @property
     def waldiez(self) -> Waldiez:
         """Get the Waldiez instance."""
-        return self._waldiez
+        return WaldiezBaseRunner._waldiez
 
     @property
     def waldiez_file(self) -> Path:
@@ -821,7 +841,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     @property
     def is_async(self) -> bool:
         """Check if the workflow is async."""
-        return self._waldiez.is_async
+        return WaldiezBaseRunner._waldiez.is_async
 
     @property
     def running(self) -> bool:

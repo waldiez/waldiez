@@ -57,7 +57,7 @@ def get_flow(
     )
     flow = WaldiezFlow(
         id="wf-1",
-        name="flow_name",
+        name="dummy_flow_name",
         type="flow",
         description="Flow Description",
         tags=["flow"],

@@ -143,7 +143,7 @@ def get_runnable_flow() -> WaldiezFlow:
     )
     flow = WaldiezFlow(
         id="wf-1",
-        name="flow_name",
+        name="runnable_flow_name",
         type="flow",
         description="Flow Description",
         data=WaldiezFlowData(

@@ -89,7 +89,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
             loaded_module = self._load_module(output_file, temp_dir)
-            WaldiezBaseRunner._store_module_path(
+            WaldiezBaseRunner._store_run_paths(
                 tmp_dir=temp_dir, output_file=output_file
             )
             if self._stop_requested.is_set():
@@ -125,6 +125,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
 
         finally:
             results_container["completed"] = True
+            WaldiezBaseRunner._cleanup()
         return results_container["results"]
 
     def _on_event(
@@ -211,7 +212,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             # pylint: disable=too-many-try-statements,broad-exception-caught
             try:
                 loaded_module = self._load_module(output_file, temp_dir)
-                await WaldiezBaseRunner._a_store_module_path(
+                await WaldiezBaseRunner._a_store_run_paths(
                     tmp_dir=temp_dir, output_file=output_file,
                 )
                 if self._stop_requested.is_set():  # pragma: no cover
@@ -267,3 +268,5 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         except asyncio.CancelledError:
             self.log.debug("Execution cancelled (async)")
             return []
+        finally:
+            WaldiezBaseRunner._cleanup()

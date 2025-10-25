@@ -46,10 +46,12 @@ class WaldiezRunResults(TypedDict):
 class ResultsMixin:
     """Results related static methods."""
 
-    RUN_DETAILS = "details.json"
+    RUN_DETAILS = "run.json"
 
     @staticmethod
-    def _cleanup(file_path: Path) -> None:
+    def _cleanup(file_path: Path | None = None) -> None:
+        if file_path is None:
+            file_path = StorageManager.default_root() / ResultsMixin.RUN_DETAILS
         if not file_path.exists():
             return
         try:
@@ -58,7 +60,7 @@ class ResultsMixin:
             pass
 
     @staticmethod
-    def _load_from_tmp(file_path: Path) -> tuple[Path, Path] | None:
+    def _load_from_tmp(file_path: Path) -> tuple[Path, Path, str] | None:
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 details_dict = json.load(f)
@@ -84,7 +86,10 @@ class ResultsMixin:
         except BaseException:
             ResultsMixin._cleanup(file_path)
             return None
-        return src_path, dst_path
+        flow_name = details_dict.get("name", "")
+        if not flow_name or not isinstance(flow_name, str):
+            flow_name = dst_path.with_suffix("").name
+        return src_path, dst_path, flow_name
 
     @staticmethod
     def gather() -> tuple[bool, str]:
@@ -105,9 +110,8 @@ class ResultsMixin:
         loaded = ResultsMixin._load_from_tmp(details_path)
         if not loaded:
             return False, f"Could not load details from {details_path}."
-        tmp_dir, output_file = loaded
+        tmp_dir, output_file, flow_name = loaded
         waldiez_file = output_file.with_suffix(".waldiez")
-        flow_name = output_file.name
         ResultsMixin.post_run(
             results=[],
             error=None,
