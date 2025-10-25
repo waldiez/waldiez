@@ -188,7 +188,7 @@ async def test_async_run_raises_if_already_running(
 
 
 def test_process_event_calls_send(
-    monkeypatch: pytest.MonkeyPatch, waldiez_file: Path
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waldiez_file: Path
 ) -> None:
     """Test if process_event calls the send method."""
     _runner = DummyRunner(
@@ -208,7 +208,7 @@ def test_process_event_calls_send(
         assert e == event
 
     monkeypatch.setattr(EventsMixin, "_send", staticmethod(fake_send))
-    EventsMixin.process_event(event, [])
+    EventsMixin.process_event(event, [], tmp_path)
     assert called.get("sent") is True
 
 
@@ -248,7 +248,7 @@ def test_process_event_input_request(
         staticmethod(lambda prompt, password=False: "user_input"),
     )
 
-    EventsMixin.process_event(event, [])
+    EventsMixin.process_event(event, [], tmp_path)
     assert responded == "user_input"
 
 
@@ -256,6 +256,7 @@ def test_process_event_input_request(
 async def test_a_process_event_calls_send(
     monkeypatch: pytest.MonkeyPatch,
     waldiez_file: Path,
+    tmp_path: Path,
 ) -> None:
     """Test if async process_event calls the send method."""
     _runner = DummyRunner(
@@ -275,7 +276,7 @@ async def test_a_process_event_calls_send(
         assert e == event
 
     monkeypatch.setattr(EventsMixin, "_send", staticmethod(fake_send))
-    await EventsMixin.a_process_event(event, [])
+    await EventsMixin.a_process_event(event, [], tmp_path)
     assert called.get("sent") is True
 
 
@@ -283,6 +284,7 @@ async def test_a_process_event_calls_send(
 async def test_a_process_event_input_request(
     monkeypatch: pytest.MonkeyPatch,
     waldiez_file: Path,
+    tmp_path: Path,
 ) -> None:
     """Test if async process_event handles input_request events."""
     _runner = DummyRunner(
@@ -322,7 +324,7 @@ async def test_a_process_event_input_request(
         staticmethod(fake_input),
     )
 
-    await EventsMixin.a_process_event(event, [])
+    await EventsMixin.a_process_event(event, [], tmp_path)
     assert responded == "user_input"
 
 

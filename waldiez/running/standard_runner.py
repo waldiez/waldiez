@@ -104,6 +104,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             EventsMixin.set_print_function(stream.print)
             EventsMixin.set_input_function(stream.input)
             EventsMixin.set_send_function(stream.send)
+            self._output_dir = temp_dir
             self.print(MESSAGES["workflow_starting"])
             self.print(self.waldiez.info.model_dump_json())
             results = loaded_module.main(
@@ -136,7 +137,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             )
             return False
         try:
-            EventsMixin.process_event(event, agents)
+            EventsMixin.process_event(
+                event, agents, output_dir=self._output_dir
+            )
             self._processed_events += 1
         except SystemExit:  # pragma: no cover
             self.log.debug("Execution stopped by user (sync)")
@@ -163,7 +166,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             )
             return False
         try:
-            await EventsMixin.a_process_event(event, agents)
+            await EventsMixin.a_process_event(
+                event, agents, output_dir=self._output_dir
+            )
             self._processed_events += 1
         except SystemExit:  # pragma: no cover
             self.log.debug("Execution stopped by user (async)")
@@ -220,6 +225,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 EventsMixin.set_print_function(stream.print)
                 EventsMixin.set_input_function(stream.input)
                 EventsMixin.set_send_function(stream.send)
+                self._output_dir = temp_dir
                 self.print(MESSAGES["workflow_starting"])
                 self.print(self.waldiez.info.model_dump_json())
                 results = await loaded_module.main(

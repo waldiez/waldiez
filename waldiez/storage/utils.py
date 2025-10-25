@@ -174,11 +174,13 @@ def get_root_dir(user_id: str | None = None) -> Path:
         # if current user is "waldiez", let's skip dupe
         if root_dir.name.lower() != "waldiez":
             root_dir = root_dir / "waldiez"
-        root_dir = root_dir / "workspace" / "checkpoints"
+        root_dir = root_dir / "workspace" / "waldiez_checkpoints"
         root_dir.mkdir(parents=True, exist_ok=True)
         return root_dir
     files_root = (
-        Path(__file__).parent.parent.parent / "workspace" / "checkpoints"
+        Path(__file__).parent.parent.parent
+        / "workspace"
+        / "waldiez_checkpoints"
     )
     root_dir = files_root / user_id
     is_testing_env = os.environ.get("WALDIEZ_TESTING", "False").lower()

@@ -212,7 +212,7 @@ class TestGetRootDir:
                 / "user"
                 / "waldiez"
                 / "workspace"
-                / "checkpoints"
+                / "waldiez_checkpoints"
             )
             assert root_dir == expected
 
@@ -234,7 +234,7 @@ class TestGetRootDir:
                 / "user"
                 / "waldiez"
                 / "workspace"
-                / "checkpoints"
+                / "waldiez_checkpoints"
             )
             assert root_dir == expected
 

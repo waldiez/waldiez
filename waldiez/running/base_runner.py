@@ -41,12 +41,13 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     _structured_io: bool
     _output_path: str | Path | None
     _uploads_root: str | Path | None
-    _dot_env_path: str | Path | None
+    _dot_env_path: Path | None
     _running: bool
     _waldiez_file: Path
     _flow_name: str
-    _storage_manger: StorageManager
+    _storage_manager: StorageManager
     _checkpoint: Checkpoint | None
+    _output_dir: Path
 
     def __init__(
         self,
@@ -65,9 +66,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         WaldiezBaseRunner._structured_io = structured_io
         WaldiezBaseRunner._output_path = output_path
         WaldiezBaseRunner._uploads_root = uploads_root
-        WaldiezBaseRunner._dot_env_path = dot_env
+        WaldiezBaseRunner._dot_env_path = Path(dot_env) if dot_env else None
         WaldiezBaseRunner._flow_name = ResultsMixin.safe_name(waldiez.name)
-        WaldiezBaseRunner._storage_manger = StorageManager(None, workspace_arg)
+        WaldiezBaseRunner._storage_manager = StorageManager(None, workspace_arg)
         EventsMixin.set_input_function(input)
         EventsMixin.set_print_function(print)
         EventsMixin.set_send_function(print)
@@ -96,12 +97,38 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         if not waldiez_file_path or not waldiez_file_path.is_file():
             raise ValueError("Could not resolve a waldiez file path")
         WaldiezBaseRunner._waldiez_file = waldiez_file_path
+        if (waldiez_file_path.parent / ".env").exists():
+            WaldiezBaseRunner._dot_env_path = waldiez_file_path.parent / ".env"
         checkpoint_arg = kwargs.get("checkpoint", "")
         if checkpoint_arg and isinstance(checkpoint_arg, str):
             WaldiezBaseRunner._checkpoint = WaldiezBaseRunner._init_checkpoint(
                 checkpoint_arg,
                 session_name=WaldiezBaseRunner._flow_name,
             )
+        self._output_dir = WaldiezBaseRunner._init_output_dir(output_path)
+        WaldiezBaseRunner._check_dot_env(self._output_dir)
+
+    @staticmethod
+    def _init_output_dir(output_path: str | Path | None) -> Path:
+        if output_path:
+            if str(output_path).endswith((".py", ".ipynb", ".waldiez")):
+                return Path(output_path).parent
+            return (
+                Path(output_path)
+                if Path(output_path).is_dir()
+                else Path(output_path).parent
+            )
+        return Path.cwd()  # should change on ".run(...)"
+
+    @staticmethod
+    def _check_dot_env(output_dir: Path) -> None:
+        if (
+            WaldiezBaseRunner._dot_env_path
+            and WaldiezBaseRunner._dot_env_path.is_file()
+        ):
+            return
+        if (output_dir / ".env").is_file():
+            WaldiezBaseRunner._dot_env_path = output_dir / ".env"
 
     @staticmethod
     def _init_checkpoint(
@@ -112,11 +139,11 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         # pylint: disable=broad-exception-caught,too-many-try-statements
         if checkpoint_arg == "latest":
             try:
-                info = WaldiezBaseRunner._storage_manger.get_latest_checkpoint(
+                info = WaldiezBaseRunner._storage_manager.get_latest_checkpoint(
                     session_name
                 )
                 if info:
-                    checkpoint = WaldiezBaseRunner._storage_manger.load(info)
+                    checkpoint = WaldiezBaseRunner._storage_manager.load(info)
             except BaseException:
                 pass
         else:
@@ -124,11 +151,11 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 checkpoint_ts = datetime.strptime(
                     checkpoint_arg, "%Y%m%d_%H%M%S_%f"
                 ).replace(tzinfo=timezone.utc)
-                info = WaldiezBaseRunner._storage_manger.get(
+                info = WaldiezBaseRunner._storage_manager.get(
                     session_name, checkpoint_ts
                 )
                 if info:
-                    checkpoint = WaldiezBaseRunner._storage_manger.load(info)
+                    checkpoint = WaldiezBaseRunner._storage_manager.load(info)
             except BaseException:
                 pass
         return checkpoint
@@ -176,7 +203,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         spec.loader.exec_module(module)
         if not hasattr(module, "main"):
             raise ImportError(
-                "The waldiez file does not contain a main() function"
+                "The waldiez file does not contain a main(...) function"
             )
         self._loaded_module = module
         return module
@@ -189,6 +216,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         """Run before the flow execution."""
         self.log.info("Preparing workflow file: %s", output_file)
         temp_dir = Path(tempfile.mkdtemp(prefix="wlz-"))
+        self._output_dir = temp_dir
         file_name = output_file.name
         with chdir(to=temp_dir):
             self._exporter.export(
@@ -197,9 +225,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 uploads_root=uploads_root,
                 structured_io=WaldiezBaseRunner._structured_io,
             )
-            if self._dot_env_path:
+            if self.dot_env_path and self.dot_env_path.is_file():
                 shutil.copyfile(
-                    str(self._dot_env_path),
+                    str(self.dot_env_path),
                     str(temp_dir / ".env"),
                 )
         return temp_dir
@@ -210,7 +238,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         uploads_root: Path | None,
     ) -> Path:
         """Run before the flow execution asynchronously."""
-        temp_dir = Path(tempfile.mkdtemp())
+        temp_dir = Path(tempfile.mkdtemp(prefix="wlz-"))
+        self._output_dir = temp_dir
         file_name = output_file.name
         async with a_chdir(to=temp_dir):
             self._exporter.export(
@@ -219,10 +248,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 structured_io=self.structured_io,
                 force=True,
             )
-            if self._dot_env_path:
+            if self.dot_env_path and self.dot_env_path.is_file():
                 wrapped = wrap(shutil.copyfile)
                 await wrapped(
-                    str(self._dot_env_path),
+                    str(self.dot_env_path),
                     str(temp_dir / ".env"),
                 )
         return temp_dir
@@ -284,7 +313,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 uploads_root=uploads_root,
                 skip_mmd=skip_mmd,
                 skip_timeline=skip_timeline,
-                storage_manager=WaldiezBaseRunner._storage_manger,
+                storage_manager=WaldiezBaseRunner._storage_manager,
             )
         except BaseException as exc:  # pragma: no cover
             self.log.warning("Error occurred during after_run: %s", exc)
@@ -340,6 +369,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         if not WaldiezBaseRunner._output_path:
             WaldiezBaseRunner._output_path = Path.cwd() / "waldiez_flow.py"
         output_file: Path = Path(WaldiezBaseRunner._output_path)
+        WaldiezBaseRunner._check_dot_env(output_file.parent)
         return output_file, uploads_root_path
 
     @override
@@ -781,7 +811,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         return WaldiezBaseRunner._structured_io
 
     @property
-    def dot_env_path(self) -> str | Path | None:
+    def dot_env_path(self) -> Path | None:
         """Get the path to the .env file, if any."""
         return WaldiezBaseRunner._dot_env_path
 
@@ -807,6 +837,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         uploads_root: str | Path | None = None,
         structured_io: bool = False,
         dot_env: str | Path | None = None,
+        **kwargs: Any,
     ) -> "WaldiezBaseRunner":
         """Load a waldiez flow from a file and create a runner.
 
@@ -831,6 +862,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             by default False.
         dot_env : str | Path | None, optional
             The path to the .env file, if any, by default None.
+        **kwargs : Any
+            Additional kwargs to pass.
 
         Returns
         -------
@@ -850,6 +883,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             uploads_root=uploads_root,
             structured_io=structured_io,
             dot_env=dot_env,
+            **kwargs,
         )
 
     def stop(self) -> None:

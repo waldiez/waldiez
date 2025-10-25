@@ -40,6 +40,7 @@ EVENTS_MIXIN = "waldiez.running.events_mixin.EventsMixin"
 
 
 def _get_runner(
+    tmp_path: Path,
     breakpoints: list[WaldiezBreakpoint] | None = None,
 ) -> WaldiezStepByStepRunner:
     """Get a runner."""
@@ -48,15 +49,16 @@ def _get_runner(
     waldiez.info = WaldiezFlowInfo(participants=[])
     waldiez.model_dump_json = MagicMock(return_value='{"type": "flow"}')
     runner = WaldiezStepByStepRunner(waldiez=waldiez, breakpoints=breakpoints)
+    runner._output_dir = tmp_path
     # noinspection PyProtectedMember
     runner._stop_requested.clear()
     return runner
 
 
 @pytest.fixture(name="runner")
-def runner_fixture() -> WaldiezStepByStepRunner:
+def runner_fixture(tmp_path: Path) -> WaldiezStepByStepRunner:
     """Fixture for WaldiezStepByStepRunner."""
-    runner = _get_runner()
+    runner = _get_runner(tmp_path)
     return runner
 
 
@@ -172,7 +174,9 @@ def test_on_event_breaks_and_continues(
         with patch(f"{EVENTS_MIXIN}.process_event") as mock_process:
             result = runner._on_event(text_event, [])
             assert result is True
-            mock_process.assert_called_once_with(text_event, [], skip_send=True)
+            mock_process.assert_called_once_with(
+                text_event, [], output_dir=runner._output_dir, skip_send=True
+            )
 
     # Patch _handle_step_interaction to return False (stop)
     with patch.object(runner, "_handle_step_interaction", return_value=False):
@@ -199,7 +203,9 @@ async def test_async_on_event_continues_and_stops(
         ) as mock_process:
             result = await runner._a_on_event(text_event, [])
             assert result is True
-            mock_process.assert_called_once_with(text_event, [], skip_send=True)
+            mock_process.assert_called_once_with(
+                text_event, [], output_dir=runner._output_dir, skip_send=True
+            )
 
     # Patch _a_handle_step_interaction to return False (stop)
     with patch.object(
@@ -873,13 +879,13 @@ def test_clear_breakpoints_emits_correct_message(
     runner.emit.assert_called_once()
 
 
-def test_init_with_initial_breakpoints() -> None:
+def test_init_with_initial_breakpoints(tmp_path: Path) -> None:
     """Test init with initial breakpoints."""
     bp = WaldiezBreakpoint(
         type=WaldiezBreakpointType.EVENT,
         event_type="tool_call",
         description="Break on tool calls.",
     )
-    runner = _get_runner(breakpoints=[bp])
+    runner = _get_runner(tmp_path, breakpoints=[bp])
     assert runner._config.auto_continue is False
     assert runner._config.step_mode is True

@@ -93,7 +93,7 @@ class ResultsMixin:
         skip_timeline : bool, optional
             Whether to skip the timeline processing, by default False
         storage_manager: StorageManager | None
-            The storage manger for copying results and generating symlinks.
+            The storage manager for copying results and generating symlinks.
         metadata : dict[str, Any] | None
             Optional metadata to store in the checkpoint.
         link_latest : bool
@@ -207,7 +207,7 @@ class ResultsMixin:
         skip_timeline : bool, optional
             Whether to skip the timeline processing, by default False
         storage_manager: StorageManager | None
-            The storage manger for copying results and generating symlinks.
+            The storage manager for copying results and generating symlinks.
         metadata : dict[str, Any] | None
             Optional metadata to store in the checkpoint.
         link_latest : bool

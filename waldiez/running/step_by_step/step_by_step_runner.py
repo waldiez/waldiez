@@ -621,7 +621,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             EventsMixin.set_print_function(stream.print)
             EventsMixin.set_input_function(stream.input)
             EventsMixin.set_send_function(stream.send)
-
+            self._output_dir = temp_dir
             self.print(MESSAGES["workflow_starting"])
             self.print(self.waldiez.info.model_dump_json())
 
@@ -677,7 +677,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     raise StopRunningException(StopRunningException.reason)
                 self._re_emit_if_needed(event_info)
             # Process the actual event
-            EventsMixin.process_event(event, agents, skip_send=True)
+            EventsMixin.process_event(
+                event, agents, output_dir=self._output_dir, skip_send=True
+            )
             self._processed_events += 1
 
         except Exception as e:
@@ -728,6 +730,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 EventsMixin.set_input_function(stream.input)
                 EventsMixin.set_send_function(stream.send)
 
+                self._output_dir = temp_dir
                 self.print(MESSAGES["workflow_starting"])
                 self.print(self.waldiez.info.model_dump_json())
 
@@ -787,7 +790,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     raise StopRunningException(StopRunningException.reason)
                 self._re_emit_if_needed(event_info)
             # Process the actual event
-            await EventsMixin.a_process_event(event, agents, skip_send=True)
+            await EventsMixin.a_process_event(
+                event, agents, output_dir=self._output_dir, skip_send=True
+            )
             self._processed_events += 1
 
         except Exception as e:

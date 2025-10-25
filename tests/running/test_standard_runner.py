@@ -8,6 +8,7 @@
 """Test waldiez.running.standard_runner.*."""
 
 import json
+from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -20,13 +21,15 @@ EVENTS_MIXIN = "waldiez.running.events_mixin.EventsMixin"
 
 
 @pytest.fixture(name="runner")
-def runner_fixture() -> WaldiezStandardRunner:
+def runner_fixture(tmp_path: Path) -> WaldiezStandardRunner:
     """Fixture for WaldiezStandardRunner."""
     waldiez = MagicMock()
     waldiez.name = "Waldiez flow"
     waldiez.info = WaldiezFlowInfo(participants=[])
     waldiez.model_dump_json = MagicMock(return_value='{"type": "flow"}')
-    return WaldiezStandardRunner(waldiez=waldiez)
+    runner = WaldiezStandardRunner(waldiez=waldiez)
+    runner._output_dir = tmp_path
+    return runner
 
 
 def test_run_success_and_failure(runner: WaldiezStandardRunner) -> None:
@@ -65,7 +68,9 @@ def test_on_event_processing_and_stop(runner: WaldiezStandardRunner) -> None:
     with patch(f"{EVENTS_MIXIN}.process_event") as mock_process:
         result = runner._on_event(event, [])
         assert result is True
-        mock_process.assert_called_once_with(event, [])
+        mock_process.assert_called_once_with(
+            event, [], output_dir=runner._output_dir
+        )
 
     # Set stop_requested before event processing
     runner._stop_requested.set()
@@ -92,7 +97,9 @@ async def test_async_on_event_processing_and_stop(
     ) as mock_process:
         result = await runner._a_on_event(event, [])
         assert result is True
-        mock_process.assert_called_once_with(event, [])
+        mock_process.assert_called_once_with(
+            event, [], output_dir=runner._output_dir
+        )
 
     runner._stop_requested.set()
     result = await runner._a_on_event(event, [])

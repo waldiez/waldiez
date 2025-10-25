@@ -224,6 +224,16 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
         if _known_group_manager and hasattr(_known_group_manager, "groupchat"):
             if _state_messages and isinstance(_state_messages, list):
                 _known_group_manager.groupchat.messages = _state_messages
+        else:
+            _known_pattern = __GROUP__["patterns"].get(f"{_state_group_manager}_pattern")
+            if _known_pattern:
+                _state_context_variables = _state_dict.get("context_variables", {})
+                if _state_context_variables and isinstance(_state_context_variables, dict):
+                    _known_pattern.context_variables = ContextVariables(
+                        data=_state_context_variables
+                    )
+            if _state_messages and isinstance(_state_messages, list):
+                __INITIAL_MSG__ = _state_messages
 '''
         return content
 
@@ -302,6 +312,16 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
         if _known_group_manager and hasattr(_known_group_manager, "groupchat"):
             if _state_messages and isinstance(_state_messages, list):
                 _known_group_manager.groupchat.messages = _state_messages
+        else:
+            _known_pattern = __GROUP__["patterns"].get(f"{_state_group_manager}_pattern")
+            if _known_pattern:
+                _state_context_variables = _state_dict.get("context_variables", {})
+                if _state_context_variables and isinstance(_state_context_variables, dict):
+                    _known_pattern.context_variables = ContextVariables(
+                        data=_state_context_variables
+                    )
+            if _state_messages and isinstance(_state_messages, list):
+                __INITIAL_MSG__ = _state_messages
 '''
         return content
 

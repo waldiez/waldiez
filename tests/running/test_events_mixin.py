@@ -11,6 +11,7 @@
 """Tests for events_mixin module."""
 
 import asyncio
+from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -208,7 +209,7 @@ class TestEventsMixin:
         )
         assert result == "Simple async: Test prompt"
 
-    async def test_a_process_event_input_request(self) -> None:
+    async def test_a_process_event_input_request(self, tmp_path: Path) -> None:
         """Test async processing of input_request event."""
 
         # Setup
@@ -224,14 +225,16 @@ class TestEventsMixin:
         event = MockEvent("input_request", content)
 
         # Process event
-        await EventsMixin.a_process_event(event, [])
+        await EventsMixin.a_process_event(event, [], tmp_path)
 
         # Verify respond was called with user input
         content.respond.assert_called_once_with("User typed: Enter value: ")
         # Send should not be called for input_request
         mock_send.assert_not_called()
 
-    async def test_a_process_event_input_request_with_password(self) -> None:
+    async def test_a_process_event_input_request_with_password(
+        self, tmp_path: Path
+    ) -> None:
         """Test async processing of input_request with password."""
         # Mock input that tracks password parameter
         input_calls: list[Any] = []
@@ -247,37 +250,37 @@ class TestEventsMixin:
         event = MockEvent("input_request", content)
 
         # Process event
-        await EventsMixin.a_process_event(event, [])
+        await EventsMixin.a_process_event(event, [], tmp_path)
 
         # Verify password flag was passed
         assert input_calls == [("Password: ", True)]
         content.respond.assert_called_once_with("secret123")
 
-    async def test_a_process_event_regular_event(self) -> None:
+    async def test_a_process_event_regular_event(self, tmp_path: Path) -> None:
         """Test async processing of regular event."""
         mock_send = Mock()
         EventsMixin.set_send_function(mock_send)
 
         event = MockEvent("regular_event", {"data": "test"})
 
-        await EventsMixin.a_process_event(event, [])
+        await EventsMixin.a_process_event(event, [], tmp_path)
 
         # Regular events should be sent
         mock_send.assert_called_once_with(event)
 
-    async def test_a_process_event_skip_send(self) -> None:
+    async def test_a_process_event_skip_send(self, tmp_path: Path) -> None:
         """Test async processing with skip_send flag."""
         mock_send = Mock()
         EventsMixin.set_send_function(mock_send)
 
         event = MockEvent("some_event")
 
-        await EventsMixin.a_process_event(event, [], skip_send=True)
+        await EventsMixin.a_process_event(event, [], tmp_path, skip_send=True)
 
         # Should not send when skip_send is True
         mock_send.assert_not_called()
 
-    def test_process_event_input_request(self) -> None:
+    def test_process_event_input_request(self, tmp_path: Path) -> None:
         """Test sync processing of input_request event."""
 
         # Setup
@@ -294,35 +297,37 @@ class TestEventsMixin:
         event = MockEvent("input_request", content)
 
         # Process event
-        EventsMixin.process_event(event, [])
+        EventsMixin.process_event(event, [], tmp_path)
 
         # Verify respond was called
         content.sync_respond.assert_called_once_with("Sync input: Enter data: ")
         mock_send.assert_not_called()
 
-    def test_process_event_regular_event(self) -> None:
+    def test_process_event_regular_event(self, tmp_path: Path) -> None:
         """Test sync processing of regular event."""
         mock_send = Mock()
         EventsMixin.set_send_function(mock_send)
 
         event = MockEvent("text_event", {"message": "Hello"})
 
-        EventsMixin.process_event(event, [])
+        EventsMixin.process_event(event, [], tmp_path)
 
         mock_send.assert_called_once_with(event)
 
-    def test_process_event_skip_send(self) -> None:
+    def test_process_event_skip_send(self, tmp_path: Path) -> None:
         """Test sync processing with skip_send flag."""
         mock_send = Mock()
         EventsMixin.set_send_function(mock_send)
 
         event = MockEvent("some_event")
 
-        EventsMixin.process_event(event, [], skip_send=True)
+        EventsMixin.process_event(event, [], tmp_path, skip_send=True)
 
         mock_send.assert_not_called()
 
-    async def test_a_process_event_prompt_fallback(self) -> None:
+    async def test_a_process_event_prompt_fallback(
+        self, tmp_path: Path
+    ) -> None:
         """Test async event processing with prompt fallback logic."""
         EventsMixin.set_input_function(lambda p: f"Got: {p}")
 
@@ -331,17 +336,17 @@ class TestEventsMixin:
         event = MockEvent("input_request", content)
         event.prompt = "Event prompt: "
 
-        await EventsMixin.a_process_event(event, [])
+        await EventsMixin.a_process_event(event, [], tmp_path)
         content.respond.assert_called_with("Got: Event prompt: ")
 
         # Test with prompt in content only
         content2 = MockInputContent("Content prompt: ")
         event2 = MockEvent("input_request", content2)
 
-        await EventsMixin.a_process_event(event2, [])
+        await EventsMixin.a_process_event(event2, [], tmp_path)
         content2.respond.assert_called_with("Got: Content prompt: ")
 
-    def test_process_event_password_fallback(self) -> None:
+    def test_process_event_password_fallback(self, tmp_path: Path) -> None:
         """Test sync event processing with password fallback logic."""
         # Track password parameter
         calls: list[Any] = []
@@ -359,7 +364,7 @@ class TestEventsMixin:
         event.password = True
         event.prompt = "pwd: "
 
-        EventsMixin.process_event(event, [])
+        EventsMixin.process_event(event, [], tmp_path)
         assert calls == [("pwd: ", True)]
 
         # Test with password in content only
@@ -368,7 +373,7 @@ class TestEventsMixin:
         content2.respond = content2.sync_respond
         event2 = MockEvent("input_request", content2)
 
-        EventsMixin.process_event(event2, [])
+        EventsMixin.process_event(event2, [], tmp_path)
         assert calls == [("prompt", True)]
 
     async def test_a_get_user_input_with_kwargs(self) -> None:
@@ -399,7 +404,7 @@ class TestEventsMixin:
         result = EventsMixin.get_user_input("Test", password=False, echo=False)
         assert result == "Test (echo=False)"
 
-    async def test_concurrent_event_processing(self) -> None:
+    async def test_concurrent_event_processing(self, tmp_path: Path) -> None:
         """Test concurrent async event processing."""
         EventsMixin.set_input_function(lambda p: f"Response: {p}")
         mock_send = Mock()
@@ -415,7 +420,9 @@ class TestEventsMixin:
                 events.append(MockEvent(f"event_{i}"))
 
         # Process concurrently
-        tasks = [EventsMixin.a_process_event(event, []) for event in events]
+        tasks = [
+            EventsMixin.a_process_event(event, [], tmp_path) for event in events
+        ]
         await asyncio.gather(*tasks)
 
         # Verify input requests were processed
@@ -449,7 +456,7 @@ class TestEventsMixin:
         assert result == "sync result"
         sync_fn.assert_called_once()
 
-    def test_agents_parameter_unused(self) -> None:
+    def test_agents_parameter_unused(self, tmp_path: Path) -> None:
         """Test that agents parameter is properly ignored."""
         mock_send = Mock()
         EventsMixin.set_send_function(mock_send)
@@ -458,7 +465,7 @@ class TestEventsMixin:
         mock_agents = [Mock(), Mock()]  # Mock agents
 
         # Should work the same with or without agents
-        EventsMixin.process_event(event, mock_agents)
-        EventsMixin.process_event(event, [])
+        EventsMixin.process_event(event, mock_agents, tmp_path)
+        EventsMixin.process_event(event, [], tmp_path)
 
         assert mock_send.call_count == 2

@@ -9,8 +9,12 @@
 """Workflow events mixin."""
 
 import inspect
+import json
 from collections.abc import Coroutine
-from typing import TYPE_CHECKING, Any, Callable, Union
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Callable, Optional, Union
+
+import aiofiles
 
 from .async_utils import is_async_callable, syncify
 from .io_utils import input_async, input_sync
@@ -184,9 +188,64 @@ class EventsMixin:
             return str(input_function(prompt))
 
     @staticmethod
+    async def a_save_state(
+        manager: "ConversableAgent", output_dir: Path
+    ) -> None:
+        """Save the current state.
+
+        Parameters
+        ----------
+        manager : ConversableAgent
+            The group chat manager
+        output_dir : Path
+            The output directory to save the state.
+        """
+        group_chat = getattr(manager, "_groupchat", None)
+        state: dict[str, Any] = {"messages": [], "context_variables": {}}
+        if group_chat:
+            messages = getattr(group_chat, "messages", [])
+            if isinstance(messages, list):
+                state["messages"] = messages
+        context_variables: dict[str, Any] = {}
+        for key, value in manager.context_variables.items():
+            context_variables[key] = value
+        state["context_variables"] = context_variables
+        if state["context_variables"] or state["messages"]:
+            async with aiofiles.open(
+                output_dir / "state.json", "w", encoding="utf-8"
+            ) as f:
+                await f.write(json.dumps(state, default=str, indent=2))
+
+    @staticmethod
+    async def a_save_metadata(
+        manager: "ConversableAgent", output_dir: Path
+    ) -> None:
+        """Save metadata.
+
+        Parameters
+        ----------
+        manager : ConversableAgent
+            The group chat manager
+        output_dir : Path
+            The output directory to save the state.
+        """
+        metadata_dict = {
+            "type": "group",
+            "group": {
+                "manager": getattr(manager, "_name", manager.name),
+                "pattern": "",
+            },
+        }
+        async with aiofiles.open(
+            output_dir / "metadata.json", "w", encoding="utf-8"
+        ) as f:
+            await f.write(json.dumps(metadata_dict, default=str, indent=2))
+
+    @staticmethod
     async def a_process_event(
         event: Union["BaseEvent", "BaseMessage"],
-        agents: list["ConversableAgent"],  # pylint: disable=unused-argument
+        agents: list["ConversableAgent"],
+        output_dir: Path,
         skip_send: bool = False,
     ) -> None:
         """Process an event or message asynchronously.
@@ -197,9 +256,17 @@ class EventsMixin:
             The event or message to process.
         agents : list["ConversableAgent"]
             The known agents in the flow.
+        output_dir : Path
+            The output directory to save the state.
         skip_send : bool
             Skip sending the event.
         """
+        group_manager = EventsMixin._find_group_manager(agents)
+        if group_manager:
+            await EventsMixin.a_save_state(group_manager, output_dir=output_dir)
+            await EventsMixin.a_save_metadata(
+                group_manager, output_dir=output_dir
+            )
         if hasattr(event, "type"):  # pragma: no branch
             if getattr(event, "type", "") == "input_request":
                 prompt = getattr(
@@ -218,9 +285,56 @@ class EventsMixin:
                 EventsMixin._send(event)  # pyright: ignore[reportArgumentType]
 
     @staticmethod
+    def save_state(manager: "ConversableAgent", output_dir: Path) -> None:
+        """Save the current state.
+
+        Parameters
+        ----------
+        manager : ConversableAgent
+            The group chat manager
+        output_dir : Path
+            The output directory to save the state.
+        """
+        group_chat = getattr(manager, "_groupchat", None)
+        state: dict[str, Any] = {"messages": [], "context_variables": {}}
+        if group_chat:
+            messages = getattr(group_chat, "messages", [])
+            if isinstance(messages, list):
+                state["messages"] = messages
+        context_variables: dict[str, Any] = {}
+        for key, value in manager.context_variables.items():
+            context_variables[key] = value
+        state["context_variables"] = context_variables
+        if state["context_variables"] or state["messages"]:
+            with open(output_dir / "state.json", "w", encoding="utf-8") as f:
+                f.write(json.dumps(state, default=str, indent=2))
+
+    @staticmethod
+    def save_metadata(manager: "ConversableAgent", output_dir: Path) -> None:
+        """Save metadata.
+
+        Parameters
+        ----------
+        manager : ConversableAgent
+            The group chat manager
+        output_dir : Path
+            The output directory to save the state.
+        """
+        metadata_dict = {
+            "type": "group",
+            "group": {
+                "manager": getattr(manager, "_name", manager.name),
+                "pattern": "",
+            },
+        }
+        with open(output_dir / "metadata.json", "w", encoding="utf-8") as f:
+            f.write(json.dumps(metadata_dict, default=str, indent=2))
+
+    @staticmethod
     def process_event(
         event: Union["BaseEvent", "BaseMessage"],
-        agents: list["ConversableAgent"],  # pylint: disable=unused-argument
+        agents: list["ConversableAgent"],
+        output_dir: Path,
         skip_send: bool = False,
     ) -> None:
         """Process an event or message synchronously.
@@ -231,9 +345,15 @@ class EventsMixin:
             The event or message to process.
         agents : list["ConversableAgent"]
             The known agents in the flow.
+        output_dir : Path
+            The output directory to save the state.
         skip_send : bool
             Skip sending the event.
         """
+        group_manager = EventsMixin._find_group_manager(agents)
+        if group_manager:
+            EventsMixin.save_state(group_manager, output_dir=output_dir)
+            EventsMixin.save_metadata(group_manager, output_dir=output_dir)
         if hasattr(event, "type"):  # pragma: no branch
             if event.type == "input_request":
                 prompt = getattr(
@@ -250,3 +370,27 @@ class EventsMixin:
                 event.content.respond(user_input)
             elif not skip_send:
                 EventsMixin._send(event)  # pyright: ignore[reportArgumentType]
+
+    @staticmethod
+    def _find_group_manager(
+        agents: list["ConversableAgent"],
+    ) -> Optional["ConversableAgent"]:
+        for agent in agents:
+            manager = getattr(agent, "_group_manager", None)
+            if not manager:
+                continue
+
+            groupchat = getattr(manager, "_groupchat", None)
+            if groupchat is None:
+                continue
+
+            cls_name = (
+                groupchat.__name__
+                if inspect.isclass(groupchat)
+                else getattr(groupchat.__class__, "__name__", None)
+            )
+
+            if cls_name == "GroupChat":
+                return manager
+
+        return None
