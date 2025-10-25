@@ -210,7 +210,13 @@ def run(
     _do_run(runner, output_path, uploads_root, structured, env_file)
 
 
-@app.command()
+@app.command(
+    context_settings={
+        "help_option_names": ["-h", "--help"],
+        "allow_extra_args": True,
+        "ignore_unknown_options": True,
+    },
+)
 def convert(
     file: Annotated[
         Path,
@@ -275,7 +281,13 @@ def convert(
     typer.echo(f"Generated: {generated}")
 
 
-@app.command()
+@app.command(
+    context_settings={
+        "help_option_names": ["-h", "--help"],
+        "allow_extra_args": True,
+        "ignore_unknown_options": True,
+    },
+)
 def check(
     file: Annotated[
         Path,
@@ -295,6 +307,27 @@ def check(
         data = json.load(_file)
     Waldiez.from_dict(data)
     LOG.success("Waldiez flow seems valid.")
+
+
+@app.command(
+    context_settings={
+        "help_option_names": ["-h", "--help"],
+        "allow_extra_args": True,
+        "ignore_unknown_options": True,
+    },
+)
+def gather() -> None:
+    """Try to gather any generated data during a run.
+
+    To be used in case of a run interruption.
+    """
+    from waldiez.running import WaldiezBaseRunner
+
+    done, msg = WaldiezBaseRunner.gather()
+    if done:
+        LOG.success(msg)
+    else:
+        LOG.warning(msg)
 
 
 def _get_output_path(output: Path | None, force: bool) -> Path | None:

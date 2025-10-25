@@ -577,7 +577,7 @@ class ClientManager:
             )
 
         try:
-            runner.stop()
+            await runner.a_stop()
             await self.session_manager.update_session_status(
                 session_id, WorkflowStatus.STOPPING
             )

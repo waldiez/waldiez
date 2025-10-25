@@ -89,6 +89,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
             loaded_module = self._load_module(output_file, temp_dir)
+            WaldiezBaseRunner._store_module_path(
+                tmp_dir=temp_dir, output_file=output_file
+            )
             if self._stop_requested.is_set():
                 self.log.debug(
                     "Execution stopped before AG2 workflow start (sync)"
@@ -208,6 +211,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             # pylint: disable=too-many-try-statements,broad-exception-caught
             try:
                 loaded_module = self._load_module(output_file, temp_dir)
+                await WaldiezBaseRunner._a_store_module_path(
+                    tmp_dir=temp_dir, output_file=output_file,
+                )
                 if self._stop_requested.is_set():  # pragma: no cover
                     msg = (
                         "Execution stopped before AG2 "

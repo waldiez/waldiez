@@ -172,6 +172,29 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         return self.sync_runner
 
     @override
+    @staticmethod
+    def gather() -> tuple[bool, str]:
+        """Gather any results after run.
+
+        Returns
+        -------
+        tuple[bool, str]
+            True if operation succeeded and any related message.
+        """
+        return SyncSubprocessRunner.gather()
+
+    @staticmethod
+    async def a_gather() -> tuple[bool, str]:
+        """Gather any results after run.
+
+        Returns
+        -------
+        tuple[bool, str]
+            True if operation succeeded and any related message.
+        """
+        return await AsyncSubprocessRunner.gather()
+
+    @override
     def run(
         self,
         output_path: str | Path | None = None,
@@ -262,7 +285,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             runner.run_subprocess(self._waldiez_file, mode=self.mode)
             return self.read_from_output(output_file.parent)
 
-        except Exception as e:
+        except BaseException as e:
             self.log.error("Error in sync subprocess execution: %s", e)
             return [
                 {
@@ -375,7 +398,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             )
             return await self.a_read_from_output(output_file.parent)
 
-        except Exception as e:
+        except BaseException as e:
             self.log.error("Error in async subprocess execution: %s", e)
             return [
                 {
@@ -418,23 +441,39 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
     @override
     def stop(self) -> None:
         """Stop the workflow execution."""
-        super().stop()  # Set the base runner stop flag
+        # pylint: disable=too-many-try-statements,broad-exception-caught
+        try:
+            super().stop()  # Set the base runner stop flag
 
-        # Stop active subprocess runners
-        if self.async_runner and self.async_runner.is_running():
-            asyncio.create_task(self.async_runner.stop())
-        if self.sync_runner and self.sync_runner.is_running():
-            self.sync_runner.stop()
+            # Stop active subprocess runners
+            if self.async_runner and self.async_runner.is_running():
+                asyncio.create_task(self.async_runner.stop())
+            if self.sync_runner and self.sync_runner.is_running():
+                self.sync_runner.stop()
+        except BaseException:
+            pass
+        try:
+            SyncSubprocessRunner.gather()
+        except BaseException:
+            pass
 
     async def a_stop(self) -> None:
         """Stop the workflow execution (async version)."""
-        super().stop()  # Set the base runner stop flag
+        # pylint: disable=too-many-try-statements,broad-exception-caught
+        try:
+            super().stop()  # Set the base runner stop flag
 
-        # Stop active subprocess runners
-        if self.async_runner and self.async_runner.is_running():
-            await self.async_runner.stop()
-        if self.sync_runner and self.sync_runner.is_running():
-            await asyncio.to_thread(self.sync_runner.stop)
+            # Stop active subprocess runners
+            if self.async_runner and self.async_runner.is_running():
+                await self.async_runner.stop()
+            if self.sync_runner and self.sync_runner.is_running():
+                await asyncio.to_thread(self.sync_runner.stop)
+        except BaseException:
+            pass
+        try:
+            await AsyncSubprocessRunner.gather()
+        except BaseException:
+            pass
 
     def is_subprocess_running(self) -> bool:
         """Check if a subprocess is currently running.

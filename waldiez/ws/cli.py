@@ -53,7 +53,10 @@ def setup_logging(verbose: bool = False) -> None:
         Enable verbose logging
     """
     level = logging.DEBUG if verbose else logging.INFO
-    format_str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    format_str = (
+        "%(asctime)s - %(name)s - %(filename)s:%(lineno)d"
+        " -%(levelname)s - %(message)s"
+    )
 
     logging.basicConfig(
         level=level,

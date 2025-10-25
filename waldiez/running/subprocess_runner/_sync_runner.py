@@ -8,6 +8,7 @@
 import logging
 import queue
 import subprocess
+import sys
 import threading
 import time
 from pathlib import Path
@@ -126,6 +127,34 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
         finally:
             self._cleanup()
 
+    @staticmethod
+    def gather() -> tuple[bool, str]:
+        """Gather any results after run.
+
+        Returns
+        -------
+        tuple[bool, str]
+            True if operation succeeded and any related message.
+        """
+        try:
+            response = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "waldiez",
+                    "gather",
+                ],
+                check=True,
+            )
+            success = response.returncode == 0
+            output = output = response.stdout.decode()
+            if not output:
+                output = response.stderr.decode()
+            return success, output
+
+        except BaseException as e:
+            return False, str(e)
+
     def provide_user_input(self, user_input: str) -> None:
         """Provide user input response.
 
@@ -188,13 +217,13 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
                         if line_str:  # pragma: no branch
                             self._handle_stdout_line(line_str)
 
-                except Exception as e:
+                except BaseException as e:
                     self.logger.error(f"Error reading stdout: {e}")
                     break
 
                 time.sleep(0.01)  # Small delay to prevent busy waiting
 
-        except Exception as e:
+        except BaseException as e:
             self.logger.error(f"Error in stdout reader: {e}")
 
     # pylint: disable=too-complex,too-many-nested-blocks
@@ -209,7 +238,8 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
                     # Use readline with timeout simulation
                     if self.process.stderr.readable():  # pragma: no branch
                         line = self.process.stderr.readline()
-                        self.logger.debug("Stderr line: %s", line)
+                        self.logger.debug(self.process.stderr.read())
+                        self.logger.debug("Stderr line: %s ...", line[:200])
                         if not line:
                             time.sleep(0.1)
                             continue
@@ -272,7 +302,7 @@ class SyncSubprocessRunner(BaseSubprocessRunner):
         line : str
             Decoded line from stdout
         """
-        self.logger.debug(f"Stdout line: {line}")
+        self.logger.debug(f"Stdout line: {line[:200]}...")
         parsed_data = self.parse_output(line, stream="stdout")
         if not parsed_data:
             self.logger.debug("Non-structured output, forwarding as is")

@@ -48,6 +48,17 @@ class StorageManager:
         else:
             self._storage = storage
 
+    @staticmethod
+    def default_root() -> Path:
+        """Get the default global root.
+
+        Returns
+        -------
+        Path
+            The default global root.
+        """
+        return get_root_dir()
+
     @property
     def storage(self) -> Storage:
         """Get the underlying storage backend."""

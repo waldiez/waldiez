@@ -93,6 +93,10 @@ class MockSubprocessRunner:
         """Mock stop method."""
         self.is_stopped = True
 
+    async def a_stop(self) -> None:
+        """Mock stop method."""
+        self.is_stopped = True
+
     def provide_user_input(self, input_data: str) -> None:
         """Mock user input method."""
         self.input_queue.append(input_data)

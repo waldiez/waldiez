@@ -211,6 +211,7 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
     if not _state_dict or not isinstance(_state_dict, dict):
         return
     _state_messages = _state_dict.get("messages", [])
+    _known_pattern = None
     if _state_group_pattern and isinstance(_state_group_pattern, str):
         _known_pattern = __GROUP__["patterns"].get(_state_group_pattern, None)
         if _known_pattern:
@@ -234,6 +235,13 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages
+    if _known_pattern:
+        try:
+            _pattern_type = getattr(_known_pattern.__class__, "__name__", None)
+        except BaseException:
+            return
+        if _pattern_type == "RoundRobinPattern":
+            print("Handle round robin pattern")
 '''
         return content
 
@@ -299,6 +307,7 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
     if not _state_dict or not isinstance(_state_dict, dict):
         return
     _state_messages = _state_dict.get("context_variables", [])
+    _known_pattern = None
     if _state_group_pattern and isinstance(_state_group_pattern, str):
         _known_pattern = __GROUP__["patterns"].get(_state_group_pattern, None)
         if _known_pattern:
@@ -322,6 +331,13 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages
+    if _known_pattern:
+        try:
+            _pattern_type = getattr(_known_pattern.__class__, "__name__", None)
+        except BaseException:
+            return
+        if _pattern_type == "RoundRobinPattern":
+            print("Handle round robin pattern")
 '''
         return content
 

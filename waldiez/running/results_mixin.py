@@ -46,6 +46,80 @@ class WaldiezRunResults(TypedDict):
 class ResultsMixin:
     """Results related static methods."""
 
+    RUN_DETAILS = "details.json"
+
+    @staticmethod
+    def _cleanup(file_path: Path) -> None:
+        if not file_path.exists():
+            return
+        try:
+            file_path.unlink(missing_ok=True)
+        except BaseException:
+            pass
+
+    @staticmethod
+    def _load_from_tmp(file_path: Path) -> tuple[Path, Path] | None:
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                details_dict = json.load(f)
+        except BaseException:
+            ResultsMixin._cleanup(file_path)
+            return None
+        try:
+            src = details_dict.get("src", "")
+            dst = details_dict.get("dst", "")
+            if not src or not dst:
+                ResultsMixin._cleanup(file_path)
+                return None
+            src_path = Path(src)
+            dst_path = Path(dst)
+        except BaseException:
+            ResultsMixin._cleanup(file_path)
+            return None
+        if not src_path.is_dir():
+            ResultsMixin._cleanup(file_path)
+            return None
+        try:
+            dst_path.parent.mkdir(parents=True, exist_ok=True)
+        except BaseException:
+            ResultsMixin._cleanup(file_path)
+            return None
+        return src_path, dst_path
+
+    @staticmethod
+    def gather() -> tuple[bool, str]:
+        """Gather what we have from tmp dir.
+
+        To be used when the flow is interrupted and the tmp dir is not removed.
+
+        Returns
+        -------
+        tuple[bool, str]
+            True if operation succeeded and any related message.
+        """
+        dir_path = StorageManager.default_root()
+        details_path = dir_path / ResultsMixin.RUN_DETAILS
+
+        if not details_path.exists():
+            return False, f"No run details found at {details_path}."
+        loaded = ResultsMixin._load_from_tmp(details_path)
+        if not loaded:
+            return False, f"Could not load details from {details_path}."
+        tmp_dir, output_file = loaded
+        waldiez_file = output_file.with_suffix(".waldiez")
+        flow_name = output_file.name
+        ResultsMixin.post_run(
+            results=[],
+            error=None,
+            temp_dir=tmp_dir,
+            output_file=output_file,
+            flow_name=flow_name,
+            waldiez_file=waldiez_file,
+            skip_mmd=True,
+            skip_timeline=True,
+        )
+        return True, f"Gathered run data from {tmp_dir} to {output_file.parent}"
+
     # pylint: disable=unused-argument
     @staticmethod
     def post_run(
@@ -140,6 +214,9 @@ class ResultsMixin:
         )
         output_hint = output_file or Path.cwd() / waldiez_file.name
         session_name = ResultsMixin.safe_name(flow_name)
+        to_ignore = list(ignore_names)
+        if ResultsMixin.RUN_DETAILS not in to_ignore:
+            to_ignore.append(ResultsMixin.RUN_DETAILS)
         _checkpoint_path, public_link_path = storage_manager.finalize(
             session_name=session_name,
             output_file=output_hint,
@@ -151,14 +228,17 @@ class ResultsMixin:
             keep_tmp=keep_tmp,
             copy_into_subdir=copy_artifacts_into,
             promote_to_output=promote_to_output,
-            ignore_names=ignore_names,
+            ignore_names=to_ignore,
         )
         try:
             dst_waldiez = public_link_path / waldiez_file.name
             if not dst_waldiez.exists() and waldiez_file.is_file():
                 shutil.copyfile(waldiez_file, dst_waldiez)
-        except Exception:
+        except BaseException:
             pass
+        dir_path = StorageManager.default_root()
+        details_path = dir_path / ResultsMixin.RUN_DETAILS
+        ResultsMixin._cleanup(details_path)
         return public_link_path if output_file else None
 
     @staticmethod

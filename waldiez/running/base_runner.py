@@ -16,6 +16,7 @@ from pathlib import Path
 from types import ModuleType, TracebackType
 from typing import Any
 
+import aiofiles
 from aiofiles.os import wrap
 from anyio.from_thread import start_blocking_portal
 from typing_extensions import Self, override
@@ -87,6 +88,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             self._logger = logger
         else:
             self._logger = get_logger()
+        WaldiezBaseRunner._logger = self._logger
         waldiez_file = kwargs.get("waldiez_file", "")
         if isinstance(waldiez_file, str) and waldiez_file:
             waldiez_file_path = Path(waldiez_file).resolve()
@@ -119,6 +121,32 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 else Path(output_path).parent
             )
         return Path.cwd()  # should change on ".run(...)"
+
+    @staticmethod
+    def _store_module_path(tmp_dir: Path, output_file: Path) -> None:
+        """Store the path of the module that is to be run."""
+        dir_path = StorageManager.default_root()
+        dir_path.mkdir(parents=True, exist_ok=True)
+        msg = json.dumps({"src": str(tmp_dir), "dst": str(output_file)})
+        with open(
+            dir_path / ResultsMixin.RUN_DETAILS, "w", encoding="utf-8"
+        ) as f:
+            f.write(msg)
+        to_log = f"stored: {msg} at: {dir_path / ResultsMixin.RUN_DETAILS}"
+        WaldiezBaseRunner._logger.debug(to_log)
+
+    @staticmethod
+    async def _a_store_module_path(tmp_dir: Path, output_file: Path) -> None:
+        """Store the path of the module that is to be run."""
+        dir_path = StorageManager.default_root()
+        dir_path.mkdir(parents=True, exist_ok=True)
+        msg = json.dumps({"src": str(tmp_dir), "dst": str(output_file)})
+        async with aiofiles.open(
+            dir_path / ResultsMixin.RUN_DETAILS, "w", encoding="utf-8"
+        ) as f:
+            await f.write(msg)
+        to_log = f"stored: {msg} at: {dir_path / ResultsMixin.RUN_DETAILS}"
+        WaldiezBaseRunner._logger.debug(to_log)
 
     @staticmethod
     def _check_dot_env(output_dir: Path) -> None:

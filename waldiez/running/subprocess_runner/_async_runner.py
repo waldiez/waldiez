@@ -7,6 +7,7 @@
 
 import asyncio
 import logging
+import sys
 
 # noinspection PyProtectedMember
 from asyncio.subprocess import Process as AsyncProcess
@@ -140,6 +141,35 @@ class AsyncSubprocessRunner(BaseSubprocessRunner):
                 self.logger.debug(f"User input queued: {user_input}")
             except Exception as e:
                 self.logger.error(f"Error queuing user input: {e}")
+
+    @staticmethod
+    async def gather() -> tuple[bool, str]:
+        """Gather any results after run.
+
+        Returns
+        -------
+        tuple[bool, str]
+            True if operation succeeded and any related message.
+        """
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                *[
+                    sys.executable,
+                    "-m",
+                    "waldiez",
+                    "gather",
+                ],
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            result = await proc.wait()
+            output = ""
+            if proc.stdout:
+                output_bytes = await proc.stdout.read()
+                output = output_bytes.decode()
+            return result == 0, output
+        except BaseException as e:
+            return False, str(e)
 
     async def stop(self) -> None:
         """Stop the subprocess."""
