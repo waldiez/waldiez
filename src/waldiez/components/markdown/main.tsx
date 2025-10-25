@@ -2,12 +2,13 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import hljs from "highlight.js";
 import { Marked } from "marked";
 import { markedHighlight } from "marked-highlight";
 import Renderer from "marked-react";
 
 import { type FC, type JSX, type ReactNode, useMemo } from "react";
+
+import hljs from "@waldiez/components/markdown/hljs";
 
 type MarkdownRendererProps = {
     content: any;

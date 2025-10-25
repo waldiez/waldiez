@@ -15,7 +15,6 @@ import ReactDOM__default, { createPortal } from "react-dom";
 import { offset as offset$1, shift as shift$1, flip as flip$1, size as size$1, hide as hide$1, limitShift as limitShift$1, computePosition, arrow as arrow$2, autoUpdate } from "@floating-ui/dom";
 import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStepForward, FaStop as FaStop$1, FaPlusCircle, FaHourglassHalf, FaCog, FaCommentDots, FaCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
 import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaBug, FaPlay, FaStop, FaCaretLeft, FaInfo, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
-import hljs from "highlight.js";
 import { Marked } from "marked";
 import { MdTimeline, MdIosShare, MdMessage } from "react-icons/md";
 import { temporal } from "zundo";
@@ -4127,10 +4126,10 @@ const getAgent = (agentType, id, name, description, tags, requirements, createdA
     rest
   });
 };
-const getCaptainAgentLib = (json) => {
+const getCaptainAgentLib = (json2) => {
   const agentLib = [];
-  if ("agentLib" in json && Array.isArray(json.agentLib)) {
-    for (const entry of json.agentLib) {
+  if ("agentLib" in json2 && Array.isArray(json2.agentLib)) {
+    for (const entry of json2.agentLib) {
       if (typeof entry === "object" && "name" in entry && "description" in entry && "systemMessage" in entry) {
         agentLib.push(entry);
       }
@@ -4138,24 +4137,24 @@ const getCaptainAgentLib = (json) => {
   }
   return agentLib;
 };
-const getCaptainToolLib = (json) => {
-  if ("toolLib" in json && (json.toolLib === "default" || json.toolLib === null)) {
-    return json.toolLib;
+const getCaptainToolLib = (json2) => {
+  if ("toolLib" in json2 && (json2.toolLib === "default" || json2.toolLib === null)) {
+    return json2.toolLib;
   }
   return null;
 };
-const getCaptainMaxRound = (json) => {
-  if ("maxRound" in json && typeof json.maxRound === "number") {
-    const parsed = parseInt(json.maxRound.toString(), 10);
+const getCaptainMaxRound = (json2) => {
+  if ("maxRound" in json2 && typeof json2.maxRound === "number") {
+    const parsed = parseInt(json2.maxRound.toString(), 10);
     if (parsed > 0) {
       return parsed;
     }
   }
   return 10;
 };
-const getCaptainMaxTurns = (json) => {
-  if ("maxTurns" in json && typeof json.maxTurns === "number") {
-    const parsed = parseInt(json.maxTurns.toString(), 10);
+const getCaptainMaxTurns = (json2) => {
+  if ("maxTurns" in json2 && typeof json2.maxTurns === "number") {
+    const parsed = parseInt(json2.maxTurns.toString(), 10);
     if (parsed > 0) {
       return parsed;
     }
@@ -4208,65 +4207,65 @@ const getTerminationMethodContent = (data) => {
   }
   return null;
 };
-const getIdFromJSON = (json) => {
+const getIdFromJSON = (json2) => {
   let id = `w-${getId()}`;
-  if ("id" in json && typeof json.id === "string") {
-    id = json.id;
-  } else if ("type" in json && typeof json.type === "string" && json.type.length > 0) {
-    const itemType = json.type[0]?.toLowerCase();
+  if ("id" in json2 && typeof json2.id === "string") {
+    id = json2.id;
+  } else if ("type" in json2 && typeof json2.type === "string" && json2.type.length > 0) {
+    const itemType = json2.type[0]?.toLowerCase();
     id = `w${itemType}-${getId()}`;
   }
   return id;
 };
-const getNameFromJSON = (json, fallback) => {
+const getNameFromJSON = (json2, fallback) => {
   let name = fallback;
-  if ("name" in json && typeof json.name === "string") {
-    name = json.name;
-  } else if ("label" in json && typeof json.label === "string") {
-    name = json.label;
+  if ("name" in json2 && typeof json2.name === "string") {
+    name = json2.name;
+  } else if ("label" in json2 && typeof json2.label === "string") {
+    name = json2.label;
   }
   return name;
 };
-const getDescriptionFromJSON = (json, fallback) => {
+const getDescriptionFromJSON = (json2, fallback) => {
   let description = fallback;
-  if ("description" in json && typeof json.description === "string") {
-    description = json.description;
+  if ("description" in json2 && typeof json2.description === "string") {
+    description = json2.description;
   }
   return description;
 };
-const getTagsFromJSON = (json) => {
+const getTagsFromJSON = (json2) => {
   let tags = [];
-  if ("tags" in json && Array.isArray(json.tags)) {
-    tags = json.tags.filter((tag) => typeof tag === "string");
+  if ("tags" in json2 && Array.isArray(json2.tags)) {
+    tags = json2.tags.filter((tag) => typeof tag === "string");
   }
   return tags;
 };
-const getRequirementsFromJSON = (json) => {
+const getRequirementsFromJSON = (json2) => {
   let requirements = [];
-  if ("requirements" in json && Array.isArray(json.requirements)) {
-    requirements = json.requirements.filter((requirement) => typeof requirement === "string");
+  if ("requirements" in json2 && Array.isArray(json2.requirements)) {
+    requirements = json2.requirements.filter((requirement) => typeof requirement === "string");
   }
   return requirements;
 };
-const getCreatedAtFromJSON = (json) => {
+const getCreatedAtFromJSON = (json2) => {
   let createdAt = (/* @__PURE__ */ new Date()).toISOString();
-  if ("createdAt" in json && typeof json.createdAt === "string") {
-    createdAt = json.createdAt;
+  if ("createdAt" in json2 && typeof json2.createdAt === "string") {
+    createdAt = json2.createdAt;
   }
   return createdAt;
 };
-const getUpdatedAtFromJSON = (json) => {
+const getUpdatedAtFromJSON = (json2) => {
   let updatedAt = (/* @__PURE__ */ new Date()).toISOString();
-  if ("updatedAt" in json && typeof json.updatedAt === "string") {
-    updatedAt = json.updatedAt;
+  if ("updatedAt" in json2 && typeof json2.updatedAt === "string") {
+    updatedAt = json2.updatedAt;
   }
   return updatedAt;
 };
-const getRestFromJSON = (json, keysToExclude) => {
+const getRestFromJSON = (json2, keysToExclude) => {
   const rest = {};
-  Object.keys(json).forEach((key) => {
+  Object.keys(json2).forEach((key) => {
     if (!keysToExclude.includes(key)) {
-      rest[key] = json[key];
+      rest[key] = json2[key];
     }
   });
   return rest;
@@ -4366,18 +4365,18 @@ const getExpressionContextCondition = (data) => {
   }
   return condition;
 };
-const getHandoffAvailability = (json) => {
+const getHandoffAvailability = (json2) => {
   const availability = {
     type: "none",
     value: ""
   };
-  if ("available" in json && json.available) {
-    if (typeof json.available === "object") {
-      if ("type" in json.available && typeof json.available.type === "string" && ["string", "expression", "none"].includes(json.available.type)) {
-        availability.type = json.available.type;
+  if ("available" in json2 && json2.available) {
+    if (typeof json2.available === "object") {
+      if ("type" in json2.available && typeof json2.available.type === "string" && ["string", "expression", "none"].includes(json2.available.type)) {
+        availability.type = json2.available.type;
       }
-      if ("value" in json.available && typeof json.available.value === "string") {
-        availability.value = json.available.value;
+      if ("value" in json2.available && typeof json2.available.value === "string") {
+        availability.value = json2.available.value;
       }
     }
   }
@@ -4448,16 +4447,16 @@ const getAgentId = (data, agentId) => {
   }
   return id;
 };
-const getAgentType = (json) => {
+const getAgentType = (json2) => {
   let agentType = "user_proxy";
-  let jsonObject = json;
-  const inJson = "agentType" in json && typeof json.agentType === "string";
+  let jsonObject = json2;
+  const inJson = "agentType" in json2 && typeof json2.agentType === "string";
   if (!inJson) {
-    const inJsonData = "data" in json && typeof json.data === "object" && "agentType" in json.data && typeof json.data.agentType === "string";
+    const inJsonData = "data" in json2 && typeof json2.data === "object" && "agentType" in json2.data && typeof json2.data.agentType === "string";
     if (!inJsonData) {
       return agentType;
     }
-    jsonObject = json.data;
+    jsonObject = json2.data;
   }
   if (ValidAgentTypes$1.includes(jsonObject.agentType)) {
     agentType = jsonObject.agentType;
@@ -4731,7 +4730,7 @@ const getQueryEngine = (data) => {
 const getParsedDocsPath = (data) => {
   return data.parsedDocsPath ? String(data.parsedDocsPath) : null;
 };
-const getSpeakers = (json) => {
+const getSpeakers = (json2) => {
   let speakers = {
     selectionMethod: "auto",
     selectionCustomMethod: "",
@@ -4742,8 +4741,8 @@ const getSpeakers = (json) => {
     transitionsType: "allowed",
     order: []
   };
-  if ("speakers" in json && typeof json.speakers === "object") {
-    const data = json.speakers;
+  if ("speakers" in json2 && typeof json2.speakers === "object") {
+    const data = json2.speakers;
     speakers = {
       selectionMethod: getSelectionMethod(data),
       selectionCustomMethod: getSelectionCustomMethod(data),
@@ -4757,91 +4756,91 @@ const getSpeakers = (json) => {
   }
   return speakers;
 };
-const getGroupChatMaxRound = (json) => {
+const getGroupChatMaxRound = (json2) => {
   let maxRound = 20;
-  if ("maxRound" in json && typeof json.maxRound === "number") {
+  if ("maxRound" in json2 && typeof json2.maxRound === "number") {
     try {
-      maxRound = parseInt(json.maxRound.toString(), 10);
+      maxRound = parseInt(json2.maxRound.toString(), 10);
     } catch (_2) {
     }
   }
   return maxRound;
 };
-const getAdminName = (json) => {
+const getAdminName = (json2) => {
   let adminName = null;
-  if ("adminName" in json && typeof json.adminName === "string") {
-    adminName = json.adminName;
+  if ("adminName" in json2 && typeof json2.adminName === "string") {
+    adminName = json2.adminName;
   }
   return adminName;
 };
-const getEnableClearHistory = (json) => {
+const getEnableClearHistory = (json2) => {
   let enableClearHistory = false;
-  if ("enableClearHistory" in json && typeof json.enableClearHistory === "boolean") {
-    enableClearHistory = json.enableClearHistory;
+  if ("enableClearHistory" in json2 && typeof json2.enableClearHistory === "boolean") {
+    enableClearHistory = json2.enableClearHistory;
   }
   return enableClearHistory;
 };
-const getSendIntroductions = (json) => {
+const getSendIntroductions = (json2) => {
   let sendIntroductions = false;
-  if ("sendIntroductions" in json && typeof json.sendIntroductions === "boolean") {
-    sendIntroductions = json.sendIntroductions;
+  if ("sendIntroductions" in json2 && typeof json2.sendIntroductions === "boolean") {
+    sendIntroductions = json2.sendIntroductions;
   }
   return sendIntroductions;
 };
-const getGroupName = (json) => {
+const getGroupName = (json2) => {
   let groupName = void 0;
-  if ("groupName" in json && typeof json.groupName === "string") {
-    groupName = json.groupName;
+  if ("groupName" in json2 && typeof json2.groupName === "string") {
+    groupName = json2.groupName;
   }
   return groupName;
 };
-const getInitialAgentId = (json) => {
+const getInitialAgentId = (json2) => {
   let initialAgentId = void 0;
-  if ("initialAgentId" in json && typeof json.initialAgentId === "string") {
-    initialAgentId = json.initialAgentId;
+  if ("initialAgentId" in json2 && typeof json2.initialAgentId === "string") {
+    initialAgentId = json2.initialAgentId;
   }
   return initialAgentId;
 };
-const getSelectionMethod = (json) => {
+const getSelectionMethod = (json2) => {
   let selectionMethod = "auto";
-  if ("selectionMethod" in json && typeof json.selectionMethod === "string" && ["auto", "manual", "random", "round_robin", "default"].includes(json.selectionMethod)) {
-    selectionMethod = json.selectionMethod;
+  if ("selectionMethod" in json2 && typeof json2.selectionMethod === "string" && ["auto", "manual", "random", "round_robin", "default"].includes(json2.selectionMethod)) {
+    selectionMethod = json2.selectionMethod;
   }
   return selectionMethod;
 };
-const getSelectionCustomMethod = (json) => {
+const getSelectionCustomMethod = (json2) => {
   let selectionCustomMethod = "";
-  if ("selectionCustomMethod" in json && typeof json.selectionCustomMethod === "string") {
-    selectionCustomMethod = json.selectionCustomMethod;
+  if ("selectionCustomMethod" in json2 && typeof json2.selectionCustomMethod === "string") {
+    selectionCustomMethod = json2.selectionCustomMethod;
   }
   return selectionCustomMethod;
 };
-const getMaxRetriesForSelecting = (json) => {
+const getMaxRetriesForSelecting = (json2) => {
   let maxRetriesForSelecting = null;
-  if ("maxRetriesForSelecting" in json && typeof json.maxRetriesForSelecting === "number") {
-    maxRetriesForSelecting = json.maxRetriesForSelecting;
+  if ("maxRetriesForSelecting" in json2 && typeof json2.maxRetriesForSelecting === "number") {
+    maxRetriesForSelecting = json2.maxRetriesForSelecting;
   }
   return maxRetriesForSelecting;
 };
-const getSelectionMode = (json) => {
+const getSelectionMode = (json2) => {
   let selectionMode = "repeat";
-  if ("selectionMode" in json && typeof json.selectionMode === "string" && ["repeat", "transition"].includes(json.selectionMode)) {
-    selectionMode = json.selectionMode;
+  if ("selectionMode" in json2 && typeof json2.selectionMode === "string" && ["repeat", "transition"].includes(json2.selectionMode)) {
+    selectionMode = json2.selectionMode;
   }
   return selectionMode;
 };
-const getAllowRepeat = (json) => {
+const getAllowRepeat = (json2) => {
   let allowRepeat = true;
-  if ("allowRepeat" in json && typeof json.allowRepeat === "boolean") {
-    allowRepeat = json.allowRepeat;
+  if ("allowRepeat" in json2 && typeof json2.allowRepeat === "boolean") {
+    allowRepeat = json2.allowRepeat;
   }
   return allowRepeat;
 };
-const getAllowedOrDisallowedTransitions = (json) => {
+const getAllowedOrDisallowedTransitions = (json2) => {
   let allowedOrDisallowedTransitions = {};
-  if ("allowedOrDisallowedTransitions" in json && typeof json.allowedOrDisallowedTransitions === "object" && json.allowedOrDisallowedTransitions) {
+  if ("allowedOrDisallowedTransitions" in json2 && typeof json2.allowedOrDisallowedTransitions === "object" && json2.allowedOrDisallowedTransitions) {
     const transitions = {};
-    for (const [key, value] of Object.entries(json.allowedOrDisallowedTransitions)) {
+    for (const [key, value] of Object.entries(json2.allowedOrDisallowedTransitions)) {
       if (typeof key === "string" && Array.isArray(value)) {
         transitions[key] = value.filter((v) => typeof v === "string");
       }
@@ -4850,41 +4849,41 @@ const getAllowedOrDisallowedTransitions = (json) => {
   }
   return allowedOrDisallowedTransitions;
 };
-const getTransitionsType = (json) => {
+const getTransitionsType = (json2) => {
   let transitionsType = "allowed";
-  if ("transitionsType" in json && typeof json.transitionsType === "string" && ["allowed", "disallowed"].includes(json.transitionsType)) {
-    transitionsType = json.transitionsType;
+  if ("transitionsType" in json2 && typeof json2.transitionsType === "string" && ["allowed", "disallowed"].includes(json2.transitionsType)) {
+    transitionsType = json2.transitionsType;
   }
   return transitionsType;
 };
-const getGroupChatSpeakersOrder = (json) => {
+const getGroupChatSpeakersOrder = (json2) => {
   let order = [];
-  if ("order" in json && Array.isArray(json.order)) {
-    order = json.order.filter((id) => typeof id === "string");
+  if ("order" in json2 && Array.isArray(json2.order)) {
+    order = json2.order.filter((id) => typeof id === "string");
   }
   return order;
 };
-const getVerbose = (json) => {
-  if (typeof json !== "object") {
+const getVerbose = (json2) => {
+  if (typeof json2 !== "object") {
     return true;
   }
-  if ("verbose" in json && typeof json.verbose === "boolean") {
-    return json.verbose;
+  if ("verbose" in json2 && typeof json2.verbose === "boolean") {
+    return json2.verbose;
   }
-  if ("data" in json && typeof json.data === "object" && "verbose" in json.data && typeof json.data.verbose === "boolean") {
-    return json.data.verbose;
+  if ("data" in json2 && typeof json2.data === "object" && "verbose" in json2.data && typeof json2.data.verbose === "boolean") {
+    return json2.data.verbose;
   }
   return true;
 };
-const getReasonConfig = (json) => {
-  if (typeof json !== "object") {
+const getReasonConfig = (json2) => {
+  if (typeof json2 !== "object") {
     return defaultReasonConfig;
   }
   let jsonData = null;
-  if ("reasonConfig" in json && typeof json.reasonConfig === "object" && json.reasonConfig) {
-    jsonData = json.reasonConfig;
-  } else if ("data" in json && typeof json.data === "object" && json.data && "reasonConfig" in json.data && typeof json.data.reasonConfig === "object" && json.data.reasonConfig) {
-    jsonData = json.data.reasonConfig;
+  if ("reasonConfig" in json2 && typeof json2.reasonConfig === "object" && json2.reasonConfig) {
+    jsonData = json2.reasonConfig;
+  } else if ("data" in json2 && typeof json2.data === "object" && json2.data && "reasonConfig" in json2.data && typeof json2.data.reasonConfig === "object" && json2.data.reasonConfig) {
+    jsonData = json2.data.reasonConfig;
   }
   if (!jsonData) {
     return defaultReasonConfig;
@@ -4948,15 +4947,15 @@ const getReasonConfigExplorationConstant = (data) => {
   }
   return 1.41;
 };
-const getRetrieveConfig = (json) => {
-  if (typeof json !== "object") {
+const getRetrieveConfig = (json2) => {
+  if (typeof json2 !== "object") {
     return defaultRetrieveConfig;
   }
   let jsonData = null;
-  if ("retrieveConfig" in json && typeof json.retrieveConfig === "object" && json.retrieveConfig) {
-    jsonData = json.retrieveConfig;
-  } else if ("data" in json && typeof json.data === "object" && json.data && "retrieveConfig" in json.data && typeof json.data.retrieveConfig === "object" && json.data.retrieveConfig) {
-    jsonData = json.data.retrieveConfig;
+  if ("retrieveConfig" in json2 && typeof json2.retrieveConfig === "object" && json2.retrieveConfig) {
+    jsonData = json2.retrieveConfig;
+  } else if ("data" in json2 && typeof json2.data === "object" && json2.data && "retrieveConfig" in json2.data && typeof json2.data.retrieveConfig === "object" && json2.data.retrieveConfig) {
+    jsonData = json2.data.retrieveConfig;
   }
   if (!jsonData) {
     return defaultRetrieveConfig;
@@ -4990,77 +4989,77 @@ const getRetrieveConfig = (json) => {
     nResults: getNResults(jsonData)
   };
 };
-const getTask = (json) => {
+const getTask = (json2) => {
   let task = "default";
-  if ("task" in json && typeof json.task === "string" && ["code", "qa", "default"].includes(json.task)) {
-    task = json.task;
+  if ("task" in json2 && typeof json2.task === "string" && ["code", "qa", "default"].includes(json2.task)) {
+    task = json2.task;
   }
   return task;
 };
-const getVectorDb = (json) => {
+const getVectorDb = (json2) => {
   let vectorDb = "chroma";
-  if ("vectorDb" in json && typeof json.vectorDb === "string" && ["chroma", "pgvector", "mongodb", "qdrant"].includes(json.vectorDb)) {
-    vectorDb = json.vectorDb;
+  if ("vectorDb" in json2 && typeof json2.vectorDb === "string" && ["chroma", "pgvector", "mongodb", "qdrant"].includes(json2.vectorDb)) {
+    vectorDb = json2.vectorDb;
   }
   return vectorDb;
 };
-const getDbConfigModel = (json) => {
+const getDbConfigModel = (json2) => {
   let model = "all-MiniLM-L6-v2";
-  if ("model" in json && typeof json.model === "string" && json.model.length > 0) {
-    model = json.model;
+  if ("model" in json2 && typeof json2.model === "string" && json2.model.length > 0) {
+    model = json2.model;
   }
   return model;
 };
-const getDbConfigUseMemory = (json) => {
+const getDbConfigUseMemory = (json2) => {
   let useMemory = false;
-  if ("useMemory" in json && typeof json.useMemory === "boolean") {
-    useMemory = json.useMemory;
+  if ("useMemory" in json2 && typeof json2.useMemory === "boolean") {
+    useMemory = json2.useMemory;
   }
   return useMemory;
 };
-const getDbConfigUseLocalStorage = (json) => {
+const getDbConfigUseLocalStorage = (json2) => {
   let useLocalStorage = false;
-  if ("useLocalStorage" in json && typeof json.useLocalStorage === "boolean") {
-    useLocalStorage = json.useLocalStorage;
+  if ("useLocalStorage" in json2 && typeof json2.useLocalStorage === "boolean") {
+    useLocalStorage = json2.useLocalStorage;
   }
   return useLocalStorage;
 };
-const getDbConfigLocalStoragePath = (json) => {
+const getDbConfigLocalStoragePath = (json2) => {
   let localStoragePath = null;
-  if ("localStoragePath" in json && typeof json.localStoragePath === "string" && json.localStoragePath.length > 0) {
-    localStoragePath = json.localStoragePath;
+  if ("localStoragePath" in json2 && typeof json2.localStoragePath === "string" && json2.localStoragePath.length > 0) {
+    localStoragePath = json2.localStoragePath;
   }
   return localStoragePath;
 };
-const getDbConfigConnectionUrl = (json) => {
+const getDbConfigConnectionUrl = (json2) => {
   let connectionUrl = null;
-  if ("connectionUrl" in json && typeof json.connectionUrl === "string" && json.connectionUrl.length > 0) {
-    connectionUrl = json.connectionUrl;
+  if ("connectionUrl" in json2 && typeof json2.connectionUrl === "string" && json2.connectionUrl.length > 0) {
+    connectionUrl = json2.connectionUrl;
   }
   return connectionUrl;
 };
-const getDbConfigWaitUntilIndexReady = (json) => {
+const getDbConfigWaitUntilIndexReady = (json2) => {
   let waitUntilIndexReady = null;
-  if ("waitUntilIndexReady" in json && typeof json.waitUntilIndexReady === "boolean") {
-    waitUntilIndexReady = json.waitUntilIndexReady;
+  if ("waitUntilIndexReady" in json2 && typeof json2.waitUntilIndexReady === "boolean") {
+    waitUntilIndexReady = json2.waitUntilIndexReady;
   }
   return waitUntilIndexReady;
 };
-const getDbConfigWaitUntilDocumentReady = (json) => {
+const getDbConfigWaitUntilDocumentReady = (json2) => {
   let waitUntilDocumentReady = null;
-  if ("waitUntilDocumentReady" in json && typeof json.waitUntilDocumentReady === "boolean") {
-    waitUntilDocumentReady = json.waitUntilDocumentReady;
+  if ("waitUntilDocumentReady" in json2 && typeof json2.waitUntilDocumentReady === "boolean") {
+    waitUntilDocumentReady = json2.waitUntilDocumentReady;
   }
   return waitUntilDocumentReady;
 };
-const getDbConfigMetadata = (json) => {
+const getDbConfigMetadata = (json2) => {
   let metadata = null;
-  if ("metadata" in json && typeof json.metadata === "object" && json.metadata) {
-    metadata = json.metadata;
+  if ("metadata" in json2 && typeof json2.metadata === "object" && json2.metadata) {
+    metadata = json2.metadata;
   }
   return metadata;
 };
-const getDbConfig = (json) => {
+const getDbConfig = (json2) => {
   let dbConfig = {
     model: "all-MiniLM-L6-v2",
     useMemory: false,
@@ -5071,178 +5070,178 @@ const getDbConfig = (json) => {
     waitUntilDocumentReady: null,
     metadata: null
   };
-  if ("dbConfig" in json && typeof json.dbConfig === "object") {
+  if ("dbConfig" in json2 && typeof json2.dbConfig === "object") {
     dbConfig = {
-      model: getDbConfigModel(json.dbConfig),
-      useMemory: getDbConfigUseMemory(json.dbConfig),
-      useLocalStorage: getDbConfigUseLocalStorage(json.dbConfig),
-      localStoragePath: getDbConfigLocalStoragePath(json.dbConfig),
-      connectionUrl: getDbConfigConnectionUrl(json.dbConfig),
-      waitUntilIndexReady: getDbConfigWaitUntilIndexReady(json.dbConfig),
-      waitUntilDocumentReady: getDbConfigWaitUntilDocumentReady(json.dbConfig),
-      metadata: getDbConfigMetadata(json.dbConfig)
+      model: getDbConfigModel(json2.dbConfig),
+      useMemory: getDbConfigUseMemory(json2.dbConfig),
+      useLocalStorage: getDbConfigUseLocalStorage(json2.dbConfig),
+      localStoragePath: getDbConfigLocalStoragePath(json2.dbConfig),
+      connectionUrl: getDbConfigConnectionUrl(json2.dbConfig),
+      waitUntilIndexReady: getDbConfigWaitUntilIndexReady(json2.dbConfig),
+      waitUntilDocumentReady: getDbConfigWaitUntilDocumentReady(json2.dbConfig),
+      metadata: getDbConfigMetadata(json2.dbConfig)
     };
   }
   return dbConfig;
 };
-const getDocsPath = (json) => {
+const getDocsPath = (json2) => {
   let docsPath = [];
-  if ("docsPath" in json && Array.isArray(json.docsPath) && json.docsPath.length > 0) {
-    docsPath = json.docsPath.filter((d) => typeof d === "string" && d.length > 0);
+  if ("docsPath" in json2 && Array.isArray(json2.docsPath) && json2.docsPath.length > 0) {
+    docsPath = json2.docsPath.filter((d) => typeof d === "string" && d.length > 0);
   }
   return docsPath;
 };
-const getNewDocs = (json) => {
+const getNewDocs = (json2) => {
   let newDocs = true;
-  if ("newDocs" in json && typeof json.newDocs === "boolean") {
-    newDocs = json.newDocs;
+  if ("newDocs" in json2 && typeof json2.newDocs === "boolean") {
+    newDocs = json2.newDocs;
   }
   return newDocs;
 };
-const getModel = (json) => {
+const getModel = (json2) => {
   let model = null;
-  if ("model" in json && typeof json.model === "string") {
-    model = json.model;
+  if ("model" in json2 && typeof json2.model === "string") {
+    model = json2.model;
   }
   return model;
 };
-const getChunkTokenSize = (json) => {
+const getChunkTokenSize = (json2) => {
   let chunkTokenSize = null;
-  if ("chunkTokenSize" in json && typeof json.chunkTokenSize === "number") {
-    chunkTokenSize = json.chunkTokenSize;
+  if ("chunkTokenSize" in json2 && typeof json2.chunkTokenSize === "number") {
+    chunkTokenSize = json2.chunkTokenSize;
   }
   return chunkTokenSize;
 };
-const getContextMaxTokens = (json) => {
+const getContextMaxTokens = (json2) => {
   let contextMaxTokens = null;
-  if ("contextMaxTokens" in json && typeof json.contextMaxTokens === "number") {
-    contextMaxTokens = json.contextMaxTokens;
+  if ("contextMaxTokens" in json2 && typeof json2.contextMaxTokens === "number") {
+    contextMaxTokens = json2.contextMaxTokens;
   }
   return contextMaxTokens;
 };
-const getChunkMode = (json) => {
+const getChunkMode = (json2) => {
   let chunkMode = "multi_lines";
-  if ("chunkMode" in json && typeof json.chunkMode === "string" && ["multi_lines", "one_line"].includes(json.chunkMode)) {
-    chunkMode = json.chunkMode;
+  if ("chunkMode" in json2 && typeof json2.chunkMode === "string" && ["multi_lines", "one_line"].includes(json2.chunkMode)) {
+    chunkMode = json2.chunkMode;
   }
   return chunkMode;
 };
-const getMustBreakAtEmptyLine = (json) => {
+const getMustBreakAtEmptyLine = (json2) => {
   let mustBreakAtEmptyLine = true;
-  if ("mustBreakAtEmptyLine" in json && typeof json.mustBreakAtEmptyLine === "boolean") {
-    mustBreakAtEmptyLine = json.mustBreakAtEmptyLine;
+  if ("mustBreakAtEmptyLine" in json2 && typeof json2.mustBreakAtEmptyLine === "boolean") {
+    mustBreakAtEmptyLine = json2.mustBreakAtEmptyLine;
   }
   return mustBreakAtEmptyLine;
 };
-const getUseCustomEmbedding = (json) => {
+const getUseCustomEmbedding = (json2) => {
   let useCustomEmbedding = false;
-  if ("useCustomEmbedding" in json && typeof json.useCustomEmbedding === "boolean") {
-    useCustomEmbedding = json.useCustomEmbedding;
+  if ("useCustomEmbedding" in json2 && typeof json2.useCustomEmbedding === "boolean") {
+    useCustomEmbedding = json2.useCustomEmbedding;
   }
   return useCustomEmbedding;
 };
-const getEmbeddingFunction = (json) => {
+const getEmbeddingFunction = (json2) => {
   let embeddingFunction = null;
-  if ("embeddingFunction" in json && typeof json.embeddingFunction === "string") {
-    embeddingFunction = json.embeddingFunction;
+  if ("embeddingFunction" in json2 && typeof json2.embeddingFunction === "string") {
+    embeddingFunction = json2.embeddingFunction;
   }
   return embeddingFunction;
 };
-const getCustomizedPrompt = (json) => {
+const getCustomizedPrompt = (json2) => {
   let customizedPrompt = null;
-  if ("customizedPrompt" in json && typeof json.customizedPrompt === "string") {
-    customizedPrompt = json.customizedPrompt;
+  if ("customizedPrompt" in json2 && typeof json2.customizedPrompt === "string") {
+    customizedPrompt = json2.customizedPrompt;
   }
   return customizedPrompt;
 };
-const getCustomizedAnswerPrefix = (json) => {
+const getCustomizedAnswerPrefix = (json2) => {
   let customizedAnswerPrefix = null;
-  if ("customizedAnswerPrefix" in json && typeof json.customizedAnswerPrefix === "string") {
-    customizedAnswerPrefix = json.customizedAnswerPrefix;
+  if ("customizedAnswerPrefix" in json2 && typeof json2.customizedAnswerPrefix === "string") {
+    customizedAnswerPrefix = json2.customizedAnswerPrefix;
   }
   return customizedAnswerPrefix;
 };
-const getUpdateContext = (json) => {
+const getUpdateContext = (json2) => {
   let updateContext = true;
-  if ("updateContext" in json && typeof json.updateContext === "boolean") {
-    updateContext = json.updateContext;
+  if ("updateContext" in json2 && typeof json2.updateContext === "boolean") {
+    updateContext = json2.updateContext;
   }
   return updateContext;
 };
-const getCollectionName = (json) => {
+const getCollectionName = (json2) => {
   let collectionName = "autogen-docs";
-  if ("collectionName" in json && typeof json.collectionName === "string") {
-    collectionName = json.collectionName;
+  if ("collectionName" in json2 && typeof json2.collectionName === "string") {
+    collectionName = json2.collectionName;
   }
   return collectionName;
 };
-const getGetOrCreate = (json) => {
+const getGetOrCreate = (json2) => {
   let getOrCreate = true;
-  if ("getOrCreate" in json && typeof json.getOrCreate === "boolean") {
-    getOrCreate = json.getOrCreate;
+  if ("getOrCreate" in json2 && typeof json2.getOrCreate === "boolean") {
+    getOrCreate = json2.getOrCreate;
   }
   return getOrCreate;
 };
-const getOverwrite = (json) => {
+const getOverwrite = (json2) => {
   let overwrite = false;
-  if ("overwrite" in json && typeof json.overwrite === "boolean") {
-    overwrite = json.overwrite;
+  if ("overwrite" in json2 && typeof json2.overwrite === "boolean") {
+    overwrite = json2.overwrite;
   }
   return overwrite;
 };
-const getUseCustomTokenCount = (json) => {
+const getUseCustomTokenCount = (json2) => {
   let useCustomTokenCount = false;
-  if ("useCustomTokenCount" in json && typeof json.useCustomTokenCount === "boolean") {
-    useCustomTokenCount = json.useCustomTokenCount;
+  if ("useCustomTokenCount" in json2 && typeof json2.useCustomTokenCount === "boolean") {
+    useCustomTokenCount = json2.useCustomTokenCount;
   }
   return useCustomTokenCount;
 };
-const getCustomTokenCountFunction = (json) => {
+const getCustomTokenCountFunction = (json2) => {
   let customTokenCountFunction = null;
-  if ("customTokenCountFunction" in json && typeof json.customTokenCountFunction === "string") {
-    customTokenCountFunction = json.customTokenCountFunction;
+  if ("customTokenCountFunction" in json2 && typeof json2.customTokenCountFunction === "string") {
+    customTokenCountFunction = json2.customTokenCountFunction;
   }
   return customTokenCountFunction;
 };
-const getUseCustomTextSplit = (json) => {
+const getUseCustomTextSplit = (json2) => {
   let useCustomTextSplit = false;
-  if ("useCustomTextSplit" in json && typeof json.useCustomTextSplit === "boolean") {
-    useCustomTextSplit = json.useCustomTextSplit;
+  if ("useCustomTextSplit" in json2 && typeof json2.useCustomTextSplit === "boolean") {
+    useCustomTextSplit = json2.useCustomTextSplit;
   }
   return useCustomTextSplit;
 };
-const getCustomTextSplitFunction = (json) => {
+const getCustomTextSplitFunction = (json2) => {
   let customTextSplitFunction = null;
-  if ("customTextSplitFunction" in json && typeof json.customTextSplitFunction === "string") {
-    customTextSplitFunction = json.customTextSplitFunction;
+  if ("customTextSplitFunction" in json2 && typeof json2.customTextSplitFunction === "string") {
+    customTextSplitFunction = json2.customTextSplitFunction;
   }
   return customTextSplitFunction;
 };
-const getCustomTextTypes = (json) => {
+const getCustomTextTypes = (json2) => {
   let customTextTypes = [];
-  if ("customTextTypes" in json && Array.isArray(json.customTextTypes) && json.customTextTypes.length > 0) {
-    customTextTypes = json.customTextTypes.filter((d) => typeof d === "string" && d.length > 0);
+  if ("customTextTypes" in json2 && Array.isArray(json2.customTextTypes) && json2.customTextTypes.length > 0) {
+    customTextTypes = json2.customTextTypes.filter((d) => typeof d === "string" && d.length > 0);
   }
   return customTextTypes;
 };
-const getRecursive = (json) => {
+const getRecursive = (json2) => {
   let recursive = true;
-  if ("recursive" in json && typeof json.recursive === "boolean") {
-    recursive = json.recursive;
+  if ("recursive" in json2 && typeof json2.recursive === "boolean") {
+    recursive = json2.recursive;
   }
   return recursive;
 };
-const getDistanceThreshold = (json) => {
+const getDistanceThreshold = (json2) => {
   let distanceThreshold = -1;
-  if ("distanceThreshold" in json && typeof json.distanceThreshold === "number") {
-    distanceThreshold = json.distanceThreshold;
+  if ("distanceThreshold" in json2 && typeof json2.distanceThreshold === "number") {
+    distanceThreshold = json2.distanceThreshold;
   }
   return distanceThreshold;
 };
-const getNResults = (json) => {
+const getNResults = (json2) => {
   let nResults = null;
-  if ("nResults" in json && typeof json.nResults === "number") {
-    nResults = json.nResults;
+  if ("nResults" in json2 && typeof json2.nResults === "number") {
+    nResults = json2.nResults;
   }
   return nResults;
 };
@@ -5450,14 +5449,14 @@ const agentMapper = {
     if (!thing || typeof thing !== "object") {
       throw new Error("Invalid agent data");
     }
-    const json = thing;
-    const id = getAgentId(json, agentId);
-    const agentType = getAgentType(json);
-    const { name, description, tags, requirements, createdAt, updatedAt } = getAgentMeta(json, agentType);
-    const jsonData = json.data || json;
+    const json2 = thing;
+    const id = getAgentId(json2, agentId);
+    const agentType = getAgentType(json2);
+    const { name, description, tags, requirements, createdAt, updatedAt } = getAgentMeta(json2, agentType);
+    const jsonData = json2.data || json2;
     const data = getAgentDataToImport(jsonData, agentType);
     const toExclude = getKeysToExclude(agentType);
-    const rest = getRestFromJSON(json, toExclude);
+    const rest = getRestFromJSON(json2, toExclude);
     return getAgent(
       agentType,
       id,
@@ -5945,9 +5944,9 @@ const summaryMapper = {
    * @param json - The JSON representation of the chat summary.
    * @returns An object representing the imported chat summary.
    */
-  importSummary: (json) => {
-    if ("summary" in json) {
-      return getEdgeSummary(json);
+  importSummary: (json2) => {
+    if ("summary" in json2) {
+      return getEdgeSummary(json2);
     }
     return {
       method: null,
@@ -6105,12 +6104,12 @@ const getRealTarget = (data) => {
   }
   return realTarget;
 };
-const getChatType = (edge, json) => {
+const getChatType = (edge, json2) => {
   let edgeType = "chat";
-  if ("type" in json && typeof json.type === "string" && json.type && ValidChatTypes$1.includes(json.type)) {
-    edgeType = json.type;
-  } else if ("data" in json && typeof json.data === "object" && json.data !== null && "type" in json.data && typeof json.data.type === "string" && json.data.type && ValidChatTypes$1.includes(json.data.type)) {
-    edgeType = json.data.type;
+  if ("type" in json2 && typeof json2.type === "string" && json2.type && ValidChatTypes$1.includes(json2.type)) {
+    edgeType = json2.type;
+  } else if ("data" in json2 && typeof json2.data === "object" && json2.data !== null && "type" in json2.data && typeof json2.data.type === "string" && json2.data.type && ValidChatTypes$1.includes(json2.data.type)) {
+    edgeType = json2.data.type;
   }
   let chatType = edge?.type ?? edgeType;
   if (!ValidChatTypes$1.includes(chatType)) {
@@ -6118,9 +6117,9 @@ const getChatType = (edge, json) => {
   }
   return chatType;
 };
-const updateEdge = (edge, chatData, json, sourceNode, targetNode, rest) => {
+const updateEdge = (edge, chatData, json2, sourceNode, targetNode, rest) => {
   const sourceAgentType = sourceNode.data.agentType;
-  let chatType = getChatType(edge, json);
+  let chatType = getChatType(edge, json2);
   if ("type" in rest && typeof rest.type === "string" && ValidChatTypes$1.includes(rest.type)) {
     edge.type = rest.type;
     chatType = edge.type;
@@ -6196,8 +6195,8 @@ const setEdgeTargetHandle = (edge, rest) => {
   rest.targetHandle = targetHandle;
   edge.targetHandle = targetHandle;
 };
-const getChatRest = (json) => {
-  const rest = { ...json };
+const getChatRest = (json2) => {
+  const rest = { ...json2 };
   delete rest.id;
   delete rest.data;
   delete rest.type;
@@ -6205,18 +6204,18 @@ const getChatRest = (json) => {
   delete rest.target;
   return rest;
 };
-const findOoutWhyItIsInvalid = (json) => {
+const findOoutWhyItIsInvalid = (json2) => {
   const why = [];
-  if (!("id" in json) || typeof json.id !== "string") {
+  if (!("id" in json2) || typeof json2.id !== "string") {
     why.push("id must be a string");
   }
-  if (!("data" in json) || typeof json.data !== "object" || json.data === null) {
+  if (!("data" in json2) || typeof json2.data !== "object" || json2.data === null) {
     why.push("data must be an object");
   }
-  if (!("source" in json) || typeof json.source !== "string") {
+  if (!("source" in json2) || typeof json2.source !== "string") {
     why.push("source must be a string");
   }
-  if (!("target" in json) || typeof json.target !== "string") {
+  if (!("target" in json2) || typeof json2.target !== "string") {
     why.push("target must be a string");
   }
   if (why.length > 0) {
@@ -6224,88 +6223,88 @@ const findOoutWhyItIsInvalid = (json) => {
   }
   return "Invalid edge data ?";
 };
-const getChatSource = (json) => {
-  if ("source" in json && typeof json.source === "string") {
-    return json.source;
+const getChatSource = (json2) => {
+  if ("source" in json2 && typeof json2.source === "string") {
+    return json2.source;
   }
-  if ("data" in json && typeof json.data === "object" && json.data !== null && "source" in json.data && typeof json.data.source === "string") {
-    return json.data.source;
+  if ("data" in json2 && typeof json2.data === "object" && json2.data !== null && "source" in json2.data && typeof json2.data.source === "string") {
+    return json2.data.source;
   }
   throw new Error("Source not found in chat data");
 };
-const getChatTarget = (json) => {
-  if ("target" in json && typeof json.target === "string") {
-    return json.target;
+const getChatTarget = (json2) => {
+  if ("target" in json2 && typeof json2.target === "string") {
+    return json2.target;
   }
-  if ("data" in json && typeof json.data === "object" && json.data !== null && "target" in json.data && typeof json.data.target === "string") {
-    return json.data.target;
+  if ("data" in json2 && typeof json2.data === "object" && json2.data !== null && "target" in json2.data && typeof json2.data.target === "string") {
+    return json2.data.target;
   }
   throw new Error("Target not found in chat data");
 };
-const validateChatData = (json) => {
-  if (!json || typeof json !== "object") {
+const validateChatData = (json2) => {
+  if (!json2 || typeof json2 !== "object") {
     throw new Error("Invalid edge data");
   }
-  const isValid = "id" in json && typeof json.id === "string" && "data" in json && typeof json.data === "object" && json.data !== null;
-  json.source = getChatSource(json);
-  json.target = getChatTarget(json);
+  const isValid = "id" in json2 && typeof json2.id === "string" && "data" in json2 && typeof json2.data === "object" && json2.data !== null;
+  json2.source = getChatSource(json2);
+  json2.target = getChatTarget(json2);
   if (!isValid) {
-    throw new Error(findOoutWhyItIsInvalid(json));
+    throw new Error(findOoutWhyItIsInvalid(json2));
   }
 };
-const ensureValidEdgeType = (json) => {
-  if ("type" in json && typeof json.type === "string" && ValidChatTypes$1.includes(json.type)) {
-    json.type = json.type;
-  } else if ("data" in json && typeof json.data === "object" && json.data !== null && "type" in json.data && typeof json.data.type === "string" && ValidChatTypes$1.includes(json.data.type)) {
-    json.type = json.data.type;
+const ensureValidEdgeType = (json2) => {
+  if ("type" in json2 && typeof json2.type === "string" && ValidChatTypes$1.includes(json2.type)) {
+    json2.type = json2.type;
+  } else if ("data" in json2 && typeof json2.data === "object" && json2.data !== null && "type" in json2.data && typeof json2.data.type === "string" && ValidChatTypes$1.includes(json2.data.type)) {
+    json2.type = json2.data.type;
   } else {
-    json.type = "chat";
+    json2.type = "chat";
   }
 };
-const getChatSilent = (json) => {
+const getChatSilent = (json2) => {
   let silent = false;
-  if ("silent" in json && typeof json.silent === "boolean") {
-    silent = json.silent;
+  if ("silent" in json2 && typeof json2.silent === "boolean") {
+    silent = json2.silent;
   }
   return silent;
 };
-const checkChatData = (json, edges, nodes) => {
-  validateChatData(json);
-  ensureValidEdgeType(json);
-  const edge = edges.find((e) => e.id === json.id);
+const checkChatData = (json2, edges, nodes) => {
+  validateChatData(json2);
+  ensureValidEdgeType(json2);
+  const edge = edges.find((e) => e.id === json2.id);
   if (!edge) {
-    throw new Error(`Edge not found: ${json.id}`);
+    throw new Error(`Edge not found: ${json2.id}`);
   }
-  const sourceNode = nodes.find((n) => n.id === json.source);
+  const sourceNode = nodes.find((n) => n.id === json2.source);
   if (!sourceNode || sourceNode.type !== "agent") {
-    throw new Error(`Source node not found: ${json.source}`);
+    throw new Error(`Source node not found: ${json2.source}`);
   }
-  if (edge.source !== json.source) {
-    throw new Error(`Source node does not match edge source: ${json.source}`);
+  if (edge.source !== json2.source) {
+    throw new Error(`Source node does not match edge source: ${json2.source}`);
   }
-  const targetNode = nodes.find((n) => n.id === json.target);
+  const targetNode = nodes.find((n) => n.id === json2.target);
   if (!targetNode || targetNode.type !== "agent") {
-    throw new Error(`Target node not found: ${json.target}`);
+    throw new Error(`Target node not found: ${json2.target}`);
   }
-  if (edge.target !== json.target) {
-    throw new Error(`Target node does not match edge target: ${json.target}`);
+  if (edge.target !== json2.target) {
+    throw new Error(`Target node does not match edge target: ${json2.target}`);
   }
   return { edge, sourceNode, targetNode };
 };
-const getChatSourceType = (json) => {
+const getChatSourceType = (json2) => {
   let sourceType = "user_proxy";
-  if ("sourceType" in json && typeof json.sourceType === "string") {
-    sourceType = json.sourceType;
+  if ("sourceType" in json2 && typeof json2.sourceType === "string") {
+    sourceType = json2.sourceType;
   }
   if (ValidAgentTypes$2.includes(sourceType)) {
     return sourceType;
   }
   return "assistant";
 };
-const getChatTargetType = (json) => {
+const getChatTargetType = (json2) => {
   let targetType = "assistant";
-  if ("targetType" in json && typeof json.targetType === "string") {
-    targetType = json.targetType;
+  if ("targetType" in json2 && typeof json2.targetType === "string") {
+    targetType = json2.targetType;
   }
   if (ValidAgentTypes$2.includes(targetType)) {
     return targetType;
@@ -6322,11 +6321,11 @@ const chatMapper = {
    * @param index - The index of the chat in the graph.
    * @returns An object containing the imported chat and its edge.
    */
-  importChat: (json, edges, nodes, index2) => {
-    if (!json || typeof json !== "object") {
+  importChat: (json2, edges, nodes, index2) => {
+    if (!json2 || typeof json2 !== "object") {
       throw new Error("Invalid edge data");
     }
-    const jsonObject = json;
+    const jsonObject = json2;
     let result = null;
     try {
       result = checkChatData(jsonObject, edges, nodes);
@@ -6438,40 +6437,40 @@ const chatMapper = {
     };
   }
 };
-const getChatTypeFromJSON = (json) => {
+const getChatTypeFromJSON = (json2) => {
   const defaultType = "chat";
-  if ("data" in json && typeof json.data === "object" && "type" in json.data && typeof json.data.type === "string" && ValidChatTypes$1.includes(json.data.type.toLocaleLowerCase())) {
-    return json.data.type;
+  if ("data" in json2 && typeof json2.data === "object" && "type" in json2.data && typeof json2.data.type === "string" && ValidChatTypes$1.includes(json2.data.type.toLocaleLowerCase())) {
+    return json2.data.type;
   }
-  if ("type" in json && typeof json.type === "string") {
-    if (ValidChatTypes$1.includes(json.type.toLocaleLowerCase())) {
-      return json.type;
+  if ("type" in json2 && typeof json2.type === "string") {
+    if (ValidChatTypes$1.includes(json2.type.toLocaleLowerCase())) {
+      return json2.type;
     }
   }
   return defaultType;
 };
-const getChatData = (json, index2) => {
-  if (!json || typeof json !== "object") {
+const getChatData = (json2, index2) => {
+  if (!json2 || typeof json2 !== "object") {
     throw new Error("Invalid chat data");
   }
-  const name = getNameFromJSON(json, "New connection");
-  const description = getDescriptionFromJSON(json, "New connection");
-  const sourceType = getChatSourceType(json);
-  const targetType = getChatTargetType(json);
-  const clearHistory = getChatClearHistory(json);
-  const maxTurns = getChatMaxTurns(json);
-  const position2 = getChatPosition(json, index2);
-  const order = getChatOrder(json);
-  const message = messageMapper.importMessage(json);
-  const summary = summaryMapper.importSummary(json);
-  const nestedChat = getNestedChat(json);
-  const prerequisites = getChatPrerequisites(json);
-  const realSource = getRealSource(json);
-  const realTarget = getRealTarget(json);
-  const condition = getHandoffCondition(json);
-  const available = getHandoffAvailability(json);
-  const afterWork = getAfterWork(json);
-  const silent = getChatSilent(json);
+  const name = getNameFromJSON(json2, "New connection");
+  const description = getDescriptionFromJSON(json2, "New connection");
+  const sourceType = getChatSourceType(json2);
+  const targetType = getChatTargetType(json2);
+  const clearHistory = getChatClearHistory(json2);
+  const maxTurns = getChatMaxTurns(json2);
+  const position2 = getChatPosition(json2, index2);
+  const order = getChatOrder(json2);
+  const message = messageMapper.importMessage(json2);
+  const summary = summaryMapper.importSummary(json2);
+  const nestedChat = getNestedChat(json2);
+  const prerequisites = getChatPrerequisites(json2);
+  const realSource = getRealSource(json2);
+  const realTarget = getRealTarget(json2);
+  const condition = getHandoffCondition(json2);
+  const available = getHandoffAvailability(json2);
+  const afterWork = getAfterWork(json2);
+  const silent = getChatSilent(json2);
   return new WaldiezChatData({
     sourceType,
     targetType,
@@ -7004,8 +7003,8 @@ const modelMapper = {
    * @param json - The JSON representation of the model.
    * @returns A new instance of WaldiezModel.
    */
-  importModel: (json) => {
-    if (!json || typeof json !== "object") {
+  importModel: (json2) => {
+    if (!json2 || typeof json2 !== "object") {
       return new WaldiezModel({
         id: "wm-" + getId(),
         name: "Model",
@@ -7017,7 +7016,7 @@ const modelMapper = {
         data: new WaldiezModelData()
       });
     }
-    const jsonObject = json;
+    const jsonObject = json2;
     const id = getIdFromJSON(jsonObject);
     const { name, description, tags, requirements, createdAt, updatedAt } = getNodeMeta$1(jsonObject);
     const jsonData = jsonObject.data || jsonObject;
@@ -7154,30 +7153,30 @@ const replaceModelSecrets = (modelNode) => {
     aws
   };
 };
-const getModelName = (name, json) => {
+const getModelName = (name, json2) => {
   let modelName = name ?? "Model";
-  if ("name" in json && typeof json.name === "string") {
-    modelName = json.name;
+  if ("name" in json2 && typeof json2.name === "string") {
+    modelName = json2.name;
   }
   return modelName;
 };
-const getBaseUrl = (json) => {
+const getBaseUrl = (json2) => {
   let baseUrl = null;
-  if ("baseUrl" in json && typeof json.baseUrl === "string") {
-    baseUrl = json.baseUrl;
+  if ("baseUrl" in json2 && typeof json2.baseUrl === "string") {
+    baseUrl = json2.baseUrl;
   }
   return baseUrl;
 };
-const getApiKey = (json) => {
+const getApiKey = (json2) => {
   let apiKey = null;
-  if ("apiKey" in json && typeof json.apiKey === "string") {
-    apiKey = json.apiKey;
+  if ("apiKey" in json2 && typeof json2.apiKey === "string") {
+    apiKey = json2.apiKey;
   }
   return apiKey;
 };
-const getApiType = (json) => {
+const getApiType = (json2) => {
   let apiType = "openai";
-  if ("apiType" in json && typeof json.apiType === "string" && [
+  if ("apiType" in json2 && typeof json2.apiType === "string" && [
     "openai",
     "azure",
     "bedrock",
@@ -7190,82 +7189,82 @@ const getApiType = (json) => {
     "together",
     "nim",
     "other"
-  ].includes(json.apiType)) {
-    apiType = json.apiType;
+  ].includes(json2.apiType)) {
+    apiType = json2.apiType;
   }
   return apiType;
 };
-const getApiVersion = (json) => {
+const getApiVersion = (json2) => {
   let apiVersion = null;
-  if ("apiVersion" in json && typeof json.apiVersion === "string") {
-    apiVersion = json.apiVersion;
+  if ("apiVersion" in json2 && typeof json2.apiVersion === "string") {
+    apiVersion = json2.apiVersion;
   }
   return apiVersion;
 };
-const getTemperature = (json) => {
+const getTemperature = (json2) => {
   let temperature = null;
-  if ("temperature" in json && typeof json.temperature === "number") {
-    temperature = json.temperature;
+  if ("temperature" in json2 && typeof json2.temperature === "number") {
+    temperature = json2.temperature;
   }
   return temperature;
 };
-const getTopP = (json) => {
+const getTopP = (json2) => {
   let topP = null;
-  if ("topP" in json && typeof json.topP === "number") {
-    topP = json.topP;
+  if ("topP" in json2 && typeof json2.topP === "number") {
+    topP = json2.topP;
   }
   return topP;
 };
-const getMaxTokens = (json) => {
+const getMaxTokens = (json2) => {
   let maxTokens = null;
-  if ("maxTokens" in json && typeof json.maxTokens === "number") {
-    maxTokens = json.maxTokens;
+  if ("maxTokens" in json2 && typeof json2.maxTokens === "number") {
+    maxTokens = json2.maxTokens;
   }
   return maxTokens;
 };
-const getDefaultHeaders = (json) => {
+const getDefaultHeaders = (json2) => {
   let defaultHeaders = {};
-  if ("defaultHeaders" in json && typeof json.defaultHeaders === "object") {
-    defaultHeaders = json.defaultHeaders;
+  if ("defaultHeaders" in json2 && typeof json2.defaultHeaders === "object") {
+    defaultHeaders = json2.defaultHeaders;
   }
   return defaultHeaders;
 };
-const getExtras = (json) => {
+const getExtras = (json2) => {
   let extras = {};
-  if ("extras" in json && typeof json.extras === "object") {
-    extras = json.extras;
+  if ("extras" in json2 && typeof json2.extras === "object") {
+    extras = json2.extras;
   }
   return extras;
 };
-const getAWSRegion = (json) => {
+const getAWSRegion = (json2) => {
   let region = null;
-  if ("region" in json && typeof json.region === "string") {
-    region = json.region;
+  if ("region" in json2 && typeof json2.region === "string") {
+    region = json2.region;
   }
   return region;
 };
-const getAWSAccessKey = (json) => {
+const getAWSAccessKey = (json2) => {
   let accessKey = null;
-  if ("accessKey" in json && typeof json.accessKey === "string") {
-    accessKey = json.accessKey;
+  if ("accessKey" in json2 && typeof json2.accessKey === "string") {
+    accessKey = json2.accessKey;
   }
   return accessKey;
 };
-const getAWSSecretKey = (json) => {
+const getAWSSecretKey = (json2) => {
   let secretKey = null;
-  if ("secretKey" in json && typeof json.secretKey === "string") {
-    secretKey = json.secretKey;
+  if ("secretKey" in json2 && typeof json2.secretKey === "string") {
+    secretKey = json2.secretKey;
   }
   return secretKey;
 };
-const getAWSSessionToken = (json) => {
+const getAWSSessionToken = (json2) => {
   let sessionToken = null;
-  if ("sessionToken" in json && typeof json.sessionToken === "string") {
-    sessionToken = json.sessionToken;
+  if ("sessionToken" in json2 && typeof json2.sessionToken === "string") {
+    sessionToken = json2.sessionToken;
   }
   return sessionToken;
 };
-const getAWS = (json) => {
+const getAWS = (json2) => {
   const aws = {
     region: null,
     accessKey: null,
@@ -7273,38 +7272,38 @@ const getAWS = (json) => {
     sessionToken: null,
     profileName: null
   };
-  if ("aws" in json && typeof json.aws === "object" && json.aws) {
-    aws.region = getAWSRegion(json.aws);
-    aws.accessKey = getAWSAccessKey(json.aws);
-    aws.secretKey = getAWSSecretKey(json.aws);
-    aws.sessionToken = getAWSSessionToken(json.aws);
-    aws.profileName = getAWSRegion(json.aws);
+  if ("aws" in json2 && typeof json2.aws === "object" && json2.aws) {
+    aws.region = getAWSRegion(json2.aws);
+    aws.accessKey = getAWSAccessKey(json2.aws);
+    aws.secretKey = getAWSSecretKey(json2.aws);
+    aws.sessionToken = getAWSSessionToken(json2.aws);
+    aws.profileName = getAWSRegion(json2.aws);
   }
   return aws;
 };
-const getPrice = (json) => {
+const getPrice = (json2) => {
   const price = {
     promptPricePer1k: null,
     completionTokenPricePer1k: null
   };
-  if ("price" in json && typeof json.price === "object" && json.price) {
-    if ("promptPricePer1k" in json.price && typeof json.price.promptPricePer1k === "number") {
-      price.promptPricePer1k = json.price.promptPricePer1k;
+  if ("price" in json2 && typeof json2.price === "object" && json2.price) {
+    if ("promptPricePer1k" in json2.price && typeof json2.price.promptPricePer1k === "number") {
+      price.promptPricePer1k = json2.price.promptPricePer1k;
     }
-    if ("completionTokenPricePer1k" in json.price && typeof json.price.completionTokenPricePer1k === "number") {
-      price.completionTokenPricePer1k = json.price.completionTokenPricePer1k;
+    if ("completionTokenPricePer1k" in json2.price && typeof json2.price.completionTokenPricePer1k === "number") {
+      price.completionTokenPricePer1k = json2.price.completionTokenPricePer1k;
     }
   }
   return price;
 };
-const getNodeMeta$1 = (json) => {
-  const tmpName = getNameFromJSON(json, null);
-  const name = getModelName(tmpName, json);
-  const description = getDescriptionFromJSON(json, "A new model");
-  const tags = getTagsFromJSON(json);
-  const requirements = getRequirementsFromJSON(json);
-  const createdAt = getCreatedAtFromJSON(json);
-  const updatedAt = getUpdatedAtFromJSON(json);
+const getNodeMeta$1 = (json2) => {
+  const tmpName = getNameFromJSON(json2, null);
+  const name = getModelName(tmpName, json2);
+  const description = getDescriptionFromJSON(json2, "A new model");
+  const tags = getTagsFromJSON(json2);
+  const requirements = getRequirementsFromJSON(json2);
+  const createdAt = getCreatedAtFromJSON(json2);
+  const updatedAt = getUpdatedAtFromJSON(json2);
   return { name, description, tags, requirements, createdAt, updatedAt };
 };
 const getModelData = (jsonData) => {
@@ -7352,8 +7351,8 @@ const toolMapper = {
    * @param json - The JSON representation of the tool.
    * @returns A new instance of WaldiezTool.
    */
-  importTool: (json) => {
-    if (!json || typeof json !== "object") {
+  importTool: (json2) => {
+    if (!json2 || typeof json2 !== "object") {
       return new WaldiezTool({
         id: "wt-" + getId(),
         name: "new_tool",
@@ -7365,7 +7364,7 @@ const toolMapper = {
         data: new WaldiezToolData()
       });
     }
-    const jsonObject = json;
+    const jsonObject = json2;
     const id = getIdFromJSON(jsonObject);
     const { name, description, tags, requirements, createdAt, updatedAt } = getNodeMeta(jsonObject);
     const rest = getRestFromJSON(jsonObject, [
@@ -7477,18 +7476,18 @@ const toolMapper = {
     };
   }
 };
-const getToolDataContent = (json) => {
+const getToolDataContent = (json2) => {
   let content = DEFAULT_SHARED_TOOL_CONTENT;
-  if ("content" in json && typeof json.content === "string") {
-    content = json.content;
+  if ("content" in json2 && typeof json2.content === "string") {
+    content = json2.content;
   }
   return content;
 };
-const getToolDataSecrets = (json) => {
+const getToolDataSecrets = (json2) => {
   let secrets = {};
-  if ("secrets" in json && typeof json.secrets === "object") {
-    if (json.secrets !== null) {
-      secrets = Object.entries(json.secrets).reduce(
+  if ("secrets" in json2 && typeof json2.secrets === "object") {
+    if (json2.secrets !== null) {
+      secrets = Object.entries(json2.secrets).reduce(
         (acc, [key, value]) => {
           acc[key] = value.toString();
           return acc;
@@ -7518,30 +7517,30 @@ const replaceToolSecrets = (toolNode) => {
   }
   return secrets;
 };
-const getNodeMeta = (json) => {
-  const name = getNameFromJSON(json, "new_tool");
-  const description = getDescriptionFromJSON(json, "A new tool");
-  const tags = getTagsFromJSON(json);
-  const requirements = getRequirementsFromJSON(json);
-  const createdAt = getCreatedAtFromJSON(json);
-  const updatedAt = getUpdatedAtFromJSON(json);
+const getNodeMeta = (json2) => {
+  const name = getNameFromJSON(json2, "new_tool");
+  const description = getDescriptionFromJSON(json2, "A new tool");
+  const tags = getTagsFromJSON(json2);
+  const requirements = getRequirementsFromJSON(json2);
+  const createdAt = getCreatedAtFromJSON(json2);
+  const updatedAt = getUpdatedAtFromJSON(json2);
   return { name, description, tags, requirements, createdAt, updatedAt };
 };
-const getToolDataType = (json, toolName) => {
+const getToolDataType = (json2, toolName) => {
   let toolType = "shared";
-  if ("toolType" in json && typeof json.toolType === "string" && ["shared", "custom", "langchain", "crewai", "predefined"].includes(json.toolType)) {
-    toolType = json.toolType;
+  if ("toolType" in json2 && typeof json2.toolType === "string" && ["shared", "custom", "langchain", "crewai", "predefined"].includes(json2.toolType)) {
+    toolType = json2.toolType;
   }
   if (toolName === "waldiez_shared") {
     toolType = "shared";
   }
   return toolType;
 };
-const getToolDataKwargs = (json) => {
+const getToolDataKwargs = (json2) => {
   let kwargs = {};
-  if ("kwargs" in json && typeof json.kwargs === "object") {
-    if (json.kwargs !== null) {
-      kwargs = Object.entries(json.kwargs).reduce(
+  if ("kwargs" in json2 && typeof json2.kwargs === "object") {
+    if (json2.kwargs !== null) {
+      kwargs = Object.entries(json2.kwargs).reduce(
         (acc, [key, value]) => {
           acc[key] = value;
           return acc;
@@ -7564,12 +7563,12 @@ const exportTool = (tool, nodes, hideSecrets) => {
   }
   return waldiezTool;
 };
-const getEdges = (json) => {
-  if (!("edges" in json) || !Array.isArray(json.edges)) {
+const getEdges = (json2) => {
+  if (!("edges" in json2) || !Array.isArray(json2.edges)) {
     return [];
   }
   const edges = [];
-  json.edges.forEach((edgeJson) => {
+  json2.edges.forEach((edgeJson) => {
     if (!("id" in edgeJson) || typeof edgeJson.id !== "string") {
       return;
     }
@@ -7595,13 +7594,13 @@ const getEdges = (json) => {
   });
   return edges;
 };
-const getChats = (json, nodes, edges) => {
-  if (!("chats" in json) || !Array.isArray(json.chats)) {
+const getChats = (json2, nodes, edges) => {
+  if (!("chats" in json2) || !Array.isArray(json2.chats)) {
     return { chats: [], edges };
   }
   const chats = [];
   const updatedEdges = [];
-  json.chats.forEach((chatJson, index2) => {
+  json2.chats.forEach((chatJson, index2) => {
     try {
       const { chat, edge } = chatMapper.importChat(chatJson, edges, nodes, index2);
       chats.push(chat);
@@ -7612,15 +7611,15 @@ const getChats = (json, nodes, edges) => {
   });
   return { chats, edges: updatedEdges };
 };
-const importFlowMeta = (json) => {
-  const id = getIdFromJSON(json);
-  const name = getNameFromJSON(json, "Waldiez Flow");
-  const description = getDescriptionFromJSON(json, "A waldiez flow");
-  const tags = getTagsFromJSON(json);
-  const requirements = getRequirementsFromJSON(json);
-  const createdAt = getCreatedAtFromJSON(json);
-  const updatedAt = getUpdatedAtFromJSON(json);
-  const rest = getRestFromJSON(json, [
+const importFlowMeta = (json2) => {
+  const id = getIdFromJSON(json2);
+  const name = getNameFromJSON(json2, "Waldiez Flow");
+  const description = getDescriptionFromJSON(json2, "A waldiez flow");
+  const tags = getTagsFromJSON(json2);
+  const requirements = getRequirementsFromJSON(json2);
+  const createdAt = getCreatedAtFromJSON(json2);
+  const updatedAt = getUpdatedAtFromJSON(json2);
+  const rest = getRestFromJSON(json2, [
     "id",
     "storageId",
     "name",
@@ -7631,7 +7630,7 @@ const importFlowMeta = (json) => {
     "updatedAt",
     "data"
   ]);
-  const storageId = getStorageId(json, id);
+  const storageId = getStorageId(json2, id);
   return {
     id,
     storageId,
@@ -7651,30 +7650,30 @@ const getFlowViewport = (data) => {
   }
   return viewport;
 };
-const getStorageId = (json, id) => {
+const getStorageId = (json2, id) => {
   let storageId = id;
-  if ("storageId" in json && typeof json.storageId === "string") {
-    storageId = json.storageId;
+  if ("storageId" in json2 && typeof json2.storageId === "string") {
+    storageId = json2.storageId;
   }
   return storageId;
 };
-const getIsAsync = (json) => {
+const getIsAsync = (json2) => {
   let isAsync = false;
-  if ("isAsync" in json && typeof json.isAsync === "boolean") {
-    isAsync = json.isAsync;
+  if ("isAsync" in json2 && typeof json2.isAsync === "boolean") {
+    isAsync = json2.isAsync;
   }
   return isAsync;
 };
-const getCacheSeed = (json) => {
+const getCacheSeed = (json2) => {
   let cacheSeed = null;
-  if ("cacheSeed" in json) {
-    if (typeof json.cacheSeed === "number") {
-      cacheSeed = parseInt(`${json.cacheSeed}`, 10);
-    } else if (json.cacheSeed === null) {
+  if ("cacheSeed" in json2) {
+    if (typeof json2.cacheSeed === "number") {
+      cacheSeed = parseInt(`${json2.cacheSeed}`, 10);
+    } else if (json2.cacheSeed === null) {
       cacheSeed = null;
-    } else if (typeof json.cacheSeed === "string") {
+    } else if (typeof json2.cacheSeed === "string") {
       try {
-        const parsed = parseInt(json.cacheSeed, 10);
+        const parsed = parseInt(json2.cacheSeed, 10);
         if (!isNaN(parsed)) {
           cacheSeed = parsed;
         }
@@ -7684,8 +7683,8 @@ const getCacheSeed = (json) => {
   }
   return cacheSeed;
 };
-const getAgents = (json, nodes, modelIds, toolIds, chatIds) => {
-  if (!("agents" in json) || typeof json.agents !== "object") {
+const getAgents = (json2, nodes, modelIds, toolIds, chatIds) => {
+  if (!("agents" in json2) || typeof json2.agents !== "object") {
     return {
       userProxyAgents: [],
       assistantAgents: [],
@@ -7696,7 +7695,7 @@ const getAgents = (json, nodes, modelIds, toolIds, chatIds) => {
       docAgents: []
     };
   }
-  const agentsJson = json.agents;
+  const agentsJson = json2.agents;
   const agents = {
     userProxyAgents: getFlowAgents(
       "user_proxy",
@@ -7757,18 +7756,18 @@ const getAgents = (json, nodes, modelIds, toolIds, chatIds) => {
   };
   return agents;
 };
-const getFlowAgents = (agentType, json, nodes, modelIds, toolIds, chatIds) => {
+const getFlowAgents = (agentType, json2, nodes, modelIds, toolIds, chatIds) => {
   let keyToCheck = `${agentType}_agents`;
   if (agentType === "doc_agent") {
     keyToCheck = "docAgents";
   }
-  if (!(keyToCheck in json) || !Array.isArray(json[keyToCheck])) {
+  if (!(keyToCheck in json2) || !Array.isArray(json2[keyToCheck])) {
     keyToCheck = toCamelCase$1(keyToCheck);
-    if (!(keyToCheck in json) || !Array.isArray(json[keyToCheck])) {
+    if (!(keyToCheck in json2) || !Array.isArray(json2[keyToCheck])) {
       return [];
     }
   }
-  const jsonEntries = json[keyToCheck];
+  const jsonEntries = json2[keyToCheck];
   const agents = [];
   const nodeIds = nodes.map((node2) => node2.id);
   nodes.forEach((node2) => {
@@ -7838,12 +7837,12 @@ const filterRagUserProxyAgents = (agents, modelIds) => {
     return agent;
   });
 };
-const getModels = (json, nodes) => {
+const getModels = (json2, nodes) => {
   const models = [];
-  if (!("models" in json) || !Array.isArray(json.models)) {
+  if (!("models" in json2) || !Array.isArray(json2.models)) {
     return models;
   }
-  const jsonModels = json.models;
+  const jsonModels = json2.models;
   nodes.forEach((node2) => {
     if (node2.type === "model") {
       const modelJson = jsonModels.find((modelJson2) => {
@@ -7867,12 +7866,12 @@ const getModels = (json, nodes) => {
 };
 const ValidChatTypes = ["model", "tool", "agent"];
 const ValidAgentTypes = ["user_proxy", "assistant", "rag_user_proxy"];
-const getNodes = (json) => {
+const getNodes = (json2) => {
   const nodes = [];
-  if (!("nodes" in json) || !Array.isArray(json.nodes)) {
+  if (!("nodes" in json2) || !Array.isArray(json2.nodes)) {
     return nodes;
   }
-  json.nodes.forEach((nodeJson) => {
+  json2.nodes.forEach((nodeJson) => {
     const nodeEssentials = isValidNode(nodeJson);
     if (!nodeEssentials) {
       return;
@@ -7897,7 +7896,7 @@ const getNodes = (json) => {
       ...rest
     });
   });
-  updateNodes(json, nodes);
+  updateNodes(json2, nodes);
   return nodes;
 };
 const isValidNode = (nodeJson) => {
@@ -7941,20 +7940,20 @@ const getNodeData = (nodeJson, type) => {
   }
   return data;
 };
-const updateNodeLabel = (node2, json) => {
-  if ("data" in json && typeof json.data === "object" && json.data) {
-    const data = json.data;
+const updateNodeLabel = (node2, json2) => {
+  if ("data" in json2 && typeof json2.data === "object" && json2.data) {
+    const data = json2.data;
     if ("label" in data && typeof data.label === "string") {
       node2.data.label = data.label;
     }
   }
 };
-const updateNodes = (json, nodes) => {
+const updateNodes = (json2, nodes) => {
   ["models", "tools"].forEach((key) => {
-    if (!(key in json) || !Array.isArray(json[key])) {
+    if (!(key in json2) || !Array.isArray(json2[key])) {
       return;
     }
-    const jsonModels = json[key];
+    const jsonModels = json2[key];
     nodes.forEach((node2) => {
       const jsonModel = jsonModels.find((model) => {
         return getIdFromJSON(model) === node2.id;
@@ -7964,13 +7963,13 @@ const updateNodes = (json, nodes) => {
       }
     });
   });
-  updateAgentNodes(json, nodes);
+  updateAgentNodes(json2, nodes);
 };
-const updateAgentNodes = (json, nodes) => {
-  if (!("agents" in json) || typeof json.agents !== "object") {
+const updateAgentNodes = (json2, nodes) => {
+  if (!("agents" in json2) || typeof json2.agents !== "object") {
     return;
   }
-  const agents = json.agents;
+  const agents = json2.agents;
   nodes.forEach((node2) => {
     if (node2.type !== "agent") {
       return;
@@ -7995,12 +7994,12 @@ const updateAgentNodes = (json, nodes) => {
     });
   });
 };
-const getTools = (json, nodes) => {
+const getTools = (json2, nodes) => {
   const tools = [];
-  if (!("tools" in json) || !Array.isArray(json.tools)) {
+  if (!("tools" in json2) || !Array.isArray(json2.tools)) {
     return tools;
   }
-  const jsonTools = json.tools;
+  const jsonTools = json2.tools;
   nodes.forEach((node2) => {
     if (node2.type === "tool") {
       const toolJson = jsonTools.find((toolJson2) => {
@@ -8108,19 +8107,19 @@ const flowMapper = {
     return waldiezFlow;
   }
 };
-const getFlowDataToImport = (json) => {
-  const isAsync = getIsAsync(json);
-  const cacheSeed = getCacheSeed(json);
-  const viewport = getFlowViewport(json);
-  const nodes = getNodes(json);
-  let edges = getEdges(json);
-  const chatsNEdges = getChats(json, nodes, edges);
+const getFlowDataToImport = (json2) => {
+  const isAsync = getIsAsync(json2);
+  const cacheSeed = getCacheSeed(json2);
+  const viewport = getFlowViewport(json2);
+  const nodes = getNodes(json2);
+  let edges = getEdges(json2);
+  const chatsNEdges = getChats(json2, nodes, edges);
   edges = chatsNEdges.edges;
   const chats = chatsNEdges.chats;
-  const models = getModels(json, nodes);
-  const tools = getTools(json, nodes);
+  const models = getModels(json2, nodes);
+  const tools = getTools(json2, nodes);
   const agents = getAgents(
-    json,
+    json2,
     nodes,
     models.map((model) => model.id),
     tools.map((tool) => tool.id),
@@ -16901,6 +16900,4379 @@ const Markdown$1 = (props) => {
 };
 var Markdown_default = Markdown$1;
 var src_default = Markdown_default;
+var core;
+var hasRequiredCore;
+function requireCore() {
+  if (hasRequiredCore) return core;
+  hasRequiredCore = 1;
+  function deepFreeze(obj) {
+    if (obj instanceof Map) {
+      obj.clear = obj.delete = obj.set = function() {
+        throw new Error("map is read-only");
+      };
+    } else if (obj instanceof Set) {
+      obj.add = obj.clear = obj.delete = function() {
+        throw new Error("set is read-only");
+      };
+    }
+    Object.freeze(obj);
+    Object.getOwnPropertyNames(obj).forEach((name) => {
+      const prop = obj[name];
+      const type = typeof prop;
+      if ((type === "object" || type === "function") && !Object.isFrozen(prop)) {
+        deepFreeze(prop);
+      }
+    });
+    return obj;
+  }
+  class Response {
+    /**
+     * @param {CompiledMode} mode
+     */
+    constructor(mode) {
+      if (mode.data === void 0) mode.data = {};
+      this.data = mode.data;
+      this.isMatchIgnored = false;
+    }
+    ignoreMatch() {
+      this.isMatchIgnored = true;
+    }
+  }
+  function escapeHTML(value) {
+    return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
+  }
+  function inherit$1(original, ...objects) {
+    const result = /* @__PURE__ */ Object.create(null);
+    for (const key in original) {
+      result[key] = original[key];
+    }
+    objects.forEach(function(obj) {
+      for (const key in obj) {
+        result[key] = obj[key];
+      }
+    });
+    return (
+      /** @type {T} */
+      result
+    );
+  }
+  const SPAN_CLOSE = "</span>";
+  const emitsWrappingTags = (node2) => {
+    return !!node2.scope;
+  };
+  const scopeToCSSClass = (name, { prefix: prefix2 }) => {
+    if (name.startsWith("language:")) {
+      return name.replace("language:", "language-");
+    }
+    if (name.includes(".")) {
+      const pieces = name.split(".");
+      return [
+        `${prefix2}${pieces.shift()}`,
+        ...pieces.map((x2, i) => `${x2}${"_".repeat(i + 1)}`)
+      ].join(" ");
+    }
+    return `${prefix2}${name}`;
+  };
+  class HTMLRenderer {
+    /**
+     * Creates a new HTMLRenderer
+     *
+     * @param {Tree} parseTree - the parse tree (must support `walk` API)
+     * @param {{classPrefix: string}} options
+     */
+    constructor(parseTree, options2) {
+      this.buffer = "";
+      this.classPrefix = options2.classPrefix;
+      parseTree.walk(this);
+    }
+    /**
+     * Adds texts to the output stream
+     *
+     * @param {string} text */
+    addText(text) {
+      this.buffer += escapeHTML(text);
+    }
+    /**
+     * Adds a node open to the output stream (if needed)
+     *
+     * @param {Node} node */
+    openNode(node2) {
+      if (!emitsWrappingTags(node2)) return;
+      const className = scopeToCSSClass(
+        node2.scope,
+        { prefix: this.classPrefix }
+      );
+      this.span(className);
+    }
+    /**
+     * Adds a node close to the output stream (if needed)
+     *
+     * @param {Node} node */
+    closeNode(node2) {
+      if (!emitsWrappingTags(node2)) return;
+      this.buffer += SPAN_CLOSE;
+    }
+    /**
+     * returns the accumulated buffer
+    */
+    value() {
+      return this.buffer;
+    }
+    // helpers
+    /**
+     * Builds a span element
+     *
+     * @param {string} className */
+    span(className) {
+      this.buffer += `<span class="${className}">`;
+    }
+  }
+  const newNode = (opts = {}) => {
+    const result = { children: [] };
+    Object.assign(result, opts);
+    return result;
+  };
+  class TokenTree {
+    constructor() {
+      this.rootNode = newNode();
+      this.stack = [this.rootNode];
+    }
+    get top() {
+      return this.stack[this.stack.length - 1];
+    }
+    get root() {
+      return this.rootNode;
+    }
+    /** @param {Node} node */
+    add(node2) {
+      this.top.children.push(node2);
+    }
+    /** @param {string} scope */
+    openNode(scope) {
+      const node2 = newNode({ scope });
+      this.add(node2);
+      this.stack.push(node2);
+    }
+    closeNode() {
+      if (this.stack.length > 1) {
+        return this.stack.pop();
+      }
+      return void 0;
+    }
+    closeAllNodes() {
+      while (this.closeNode()) ;
+    }
+    toJSON() {
+      return JSON.stringify(this.rootNode, null, 4);
+    }
+    /**
+     * @typedef { import("./html_renderer").Renderer } Renderer
+     * @param {Renderer} builder
+     */
+    walk(builder) {
+      return this.constructor._walk(builder, this.rootNode);
+    }
+    /**
+     * @param {Renderer} builder
+     * @param {Node} node
+     */
+    static _walk(builder, node2) {
+      if (typeof node2 === "string") {
+        builder.addText(node2);
+      } else if (node2.children) {
+        builder.openNode(node2);
+        node2.children.forEach((child) => this._walk(builder, child));
+        builder.closeNode(node2);
+      }
+      return builder;
+    }
+    /**
+     * @param {Node} node
+     */
+    static _collapse(node2) {
+      if (typeof node2 === "string") return;
+      if (!node2.children) return;
+      if (node2.children.every((el) => typeof el === "string")) {
+        node2.children = [node2.children.join("")];
+      } else {
+        node2.children.forEach((child) => {
+          TokenTree._collapse(child);
+        });
+      }
+    }
+  }
+  class TokenTreeEmitter extends TokenTree {
+    /**
+     * @param {*} options
+     */
+    constructor(options2) {
+      super();
+      this.options = options2;
+    }
+    /**
+     * @param {string} text
+     */
+    addText(text) {
+      if (text === "") {
+        return;
+      }
+      this.add(text);
+    }
+    /** @param {string} scope */
+    startScope(scope) {
+      this.openNode(scope);
+    }
+    endScope() {
+      this.closeNode();
+    }
+    /**
+     * @param {Emitter & {root: DataNode}} emitter
+     * @param {string} name
+     */
+    __addSublanguage(emitter, name) {
+      const node2 = emitter.root;
+      if (name) node2.scope = `language:${name}`;
+      this.add(node2);
+    }
+    toHTML() {
+      const renderer = new HTMLRenderer(this, this.options);
+      return renderer.value();
+    }
+    finalize() {
+      this.closeAllNodes();
+      return true;
+    }
+  }
+  function source(re2) {
+    if (!re2) return null;
+    if (typeof re2 === "string") return re2;
+    return re2.source;
+  }
+  function lookahead(re2) {
+    return concat("(?=", re2, ")");
+  }
+  function anyNumberOfTimes(re2) {
+    return concat("(?:", re2, ")*");
+  }
+  function optional(re2) {
+    return concat("(?:", re2, ")?");
+  }
+  function concat(...args) {
+    const joined = args.map((x2) => source(x2)).join("");
+    return joined;
+  }
+  function stripOptionsFromArgs(args) {
+    const opts = args[args.length - 1];
+    if (typeof opts === "object" && opts.constructor === Object) {
+      args.splice(args.length - 1, 1);
+      return opts;
+    } else {
+      return {};
+    }
+  }
+  function either(...args) {
+    const opts = stripOptionsFromArgs(args);
+    const joined = "(" + (opts.capture ? "" : "?:") + args.map((x2) => source(x2)).join("|") + ")";
+    return joined;
+  }
+  function countMatchGroups(re2) {
+    return new RegExp(re2.toString() + "|").exec("").length - 1;
+  }
+  function startsWith(re2, lexeme) {
+    const match2 = re2 && re2.exec(lexeme);
+    return match2 && match2.index === 0;
+  }
+  const BACKREF_RE = /\[(?:[^\\\]]|\\.)*\]|\(\??|\\([1-9][0-9]*)|\\./;
+  function _rewriteBackreferences(regexps, { joinWith }) {
+    let numCaptures = 0;
+    return regexps.map((regex2) => {
+      numCaptures += 1;
+      const offset2 = numCaptures;
+      let re2 = source(regex2);
+      let out = "";
+      while (re2.length > 0) {
+        const match2 = BACKREF_RE.exec(re2);
+        if (!match2) {
+          out += re2;
+          break;
+        }
+        out += re2.substring(0, match2.index);
+        re2 = re2.substring(match2.index + match2[0].length);
+        if (match2[0][0] === "\\" && match2[1]) {
+          out += "\\" + String(Number(match2[1]) + offset2);
+        } else {
+          out += match2[0];
+          if (match2[0] === "(") {
+            numCaptures++;
+          }
+        }
+      }
+      return out;
+    }).map((re2) => `(${re2})`).join(joinWith);
+  }
+  const MATCH_NOTHING_RE = /\b\B/;
+  const IDENT_RE2 = "[a-zA-Z]\\w*";
+  const UNDERSCORE_IDENT_RE = "[a-zA-Z_]\\w*";
+  const NUMBER_RE = "\\b\\d+(\\.\\d+)?";
+  const C_NUMBER_RE = "(-?)(\\b0[xX][a-fA-F0-9]+|(\\b\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";
+  const BINARY_NUMBER_RE = "\\b(0b[01]+)";
+  const RE_STARTERS_RE = "!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|-|-=|/=|/|:|;|<<|<<=|<=|<|===|==|=|>>>=|>>=|>=|>>>|>>|>|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";
+  const SHEBANG = (opts = {}) => {
+    const beginShebang = /^#![ ]*\//;
+    if (opts.binary) {
+      opts.begin = concat(
+        beginShebang,
+        /.*\b/,
+        opts.binary,
+        /\b.*/
+      );
+    }
+    return inherit$1({
+      scope: "meta",
+      begin: beginShebang,
+      end: /$/,
+      relevance: 0,
+      /** @type {ModeCallback} */
+      "on:begin": (m, resp) => {
+        if (m.index !== 0) resp.ignoreMatch();
+      }
+    }, opts);
+  };
+  const BACKSLASH_ESCAPE = {
+    begin: "\\\\[\\s\\S]",
+    relevance: 0
+  };
+  const APOS_STRING_MODE = {
+    scope: "string",
+    begin: "'",
+    end: "'",
+    illegal: "\\n",
+    contains: [BACKSLASH_ESCAPE]
+  };
+  const QUOTE_STRING_MODE = {
+    scope: "string",
+    begin: '"',
+    end: '"',
+    illegal: "\\n",
+    contains: [BACKSLASH_ESCAPE]
+  };
+  const PHRASAL_WORDS_MODE = {
+    begin: /\b(a|an|the|are|I'm|isn't|don't|doesn't|won't|but|just|should|pretty|simply|enough|gonna|going|wtf|so|such|will|you|your|they|like|more)\b/
+  };
+  const COMMENT2 = function(begin, end, modeOptions = {}) {
+    const mode = inherit$1(
+      {
+        scope: "comment",
+        begin,
+        end,
+        contains: []
+      },
+      modeOptions
+    );
+    mode.contains.push({
+      scope: "doctag",
+      // hack to avoid the space from being included. the space is necessary to
+      // match here to prevent the plain text rule below from gobbling up doctags
+      begin: "[ ]*(?=(TODO|FIXME|NOTE|BUG|OPTIMIZE|HACK|XXX):)",
+      end: /(TODO|FIXME|NOTE|BUG|OPTIMIZE|HACK|XXX):/,
+      excludeBegin: true,
+      relevance: 0
+    });
+    const ENGLISH_WORD = either(
+      // list of common 1 and 2 letter words in English
+      "I",
+      "a",
+      "is",
+      "so",
+      "us",
+      "to",
+      "at",
+      "if",
+      "in",
+      "it",
+      "on",
+      // note: this is not an exhaustive list of contractions, just popular ones
+      /[A-Za-z]+['](d|ve|re|ll|t|s|n)/,
+      // contractions - can't we'd they're let's, etc
+      /[A-Za-z]+[-][a-z]+/,
+      // `no-way`, etc.
+      /[A-Za-z][a-z]{2,}/
+      // allow capitalized words at beginning of sentences
+    );
+    mode.contains.push(
+      {
+        // TODO: how to include ", (, ) without breaking grammars that use these for
+        // comment delimiters?
+        // begin: /[ ]+([()"]?([A-Za-z'-]{3,}|is|a|I|so|us|[tT][oO]|at|if|in|it|on)[.]?[()":]?([.][ ]|[ ]|\))){3}/
+        // ---
+        // this tries to find sequences of 3 english words in a row (without any
+        // "programming" type syntax) this gives us a strong signal that we've
+        // TRULY found a comment - vs perhaps scanning with the wrong language.
+        // It's possible to find something that LOOKS like the start of the
+        // comment - but then if there is no readable text - good chance it is a
+        // false match and not a comment.
+        //
+        // for a visual example please see:
+        // https://github.com/highlightjs/highlight.js/issues/2827
+        begin: concat(
+          /[ ]+/,
+          // necessary to prevent us gobbling up doctags like /* @author Bob Mcgill */
+          "(",
+          ENGLISH_WORD,
+          /[.]?[:]?([.][ ]|[ ])/,
+          "){3}"
+        )
+        // look for 3 words in a row
+      }
+    );
+    return mode;
+  };
+  const C_LINE_COMMENT_MODE = COMMENT2("//", "$");
+  const C_BLOCK_COMMENT_MODE = COMMENT2("/\\*", "\\*/");
+  const HASH_COMMENT_MODE = COMMENT2("#", "$");
+  const NUMBER_MODE = {
+    scope: "number",
+    begin: NUMBER_RE,
+    relevance: 0
+  };
+  const C_NUMBER_MODE = {
+    scope: "number",
+    begin: C_NUMBER_RE,
+    relevance: 0
+  };
+  const BINARY_NUMBER_MODE = {
+    scope: "number",
+    begin: BINARY_NUMBER_RE,
+    relevance: 0
+  };
+  const REGEXP_MODE = {
+    scope: "regexp",
+    begin: /\/(?=[^/\n]*\/)/,
+    end: /\/[gimuy]*/,
+    contains: [
+      BACKSLASH_ESCAPE,
+      {
+        begin: /\[/,
+        end: /\]/,
+        relevance: 0,
+        contains: [BACKSLASH_ESCAPE]
+      }
+    ]
+  };
+  const TITLE_MODE = {
+    scope: "title",
+    begin: IDENT_RE2,
+    relevance: 0
+  };
+  const UNDERSCORE_TITLE_MODE = {
+    scope: "title",
+    begin: UNDERSCORE_IDENT_RE,
+    relevance: 0
+  };
+  const METHOD_GUARD = {
+    // excludes method names from keyword processing
+    begin: "\\.\\s*" + UNDERSCORE_IDENT_RE,
+    relevance: 0
+  };
+  const END_SAME_AS_BEGIN = function(mode) {
+    return Object.assign(
+      mode,
+      {
+        /** @type {ModeCallback} */
+        "on:begin": (m, resp) => {
+          resp.data._beginMatch = m[1];
+        },
+        /** @type {ModeCallback} */
+        "on:end": (m, resp) => {
+          if (resp.data._beginMatch !== m[1]) resp.ignoreMatch();
+        }
+      }
+    );
+  };
+  var MODES = /* @__PURE__ */ Object.freeze({
+    __proto__: null,
+    APOS_STRING_MODE,
+    BACKSLASH_ESCAPE,
+    BINARY_NUMBER_MODE,
+    BINARY_NUMBER_RE,
+    COMMENT: COMMENT2,
+    C_BLOCK_COMMENT_MODE,
+    C_LINE_COMMENT_MODE,
+    C_NUMBER_MODE,
+    C_NUMBER_RE,
+    END_SAME_AS_BEGIN,
+    HASH_COMMENT_MODE,
+    IDENT_RE: IDENT_RE2,
+    MATCH_NOTHING_RE,
+    METHOD_GUARD,
+    NUMBER_MODE,
+    NUMBER_RE,
+    PHRASAL_WORDS_MODE,
+    QUOTE_STRING_MODE,
+    REGEXP_MODE,
+    RE_STARTERS_RE,
+    SHEBANG,
+    TITLE_MODE,
+    UNDERSCORE_IDENT_RE,
+    UNDERSCORE_TITLE_MODE
+  });
+  function skipIfHasPrecedingDot(match2, response) {
+    const before = match2.input[match2.index - 1];
+    if (before === ".") {
+      response.ignoreMatch();
+    }
+  }
+  function scopeClassName(mode, _parent) {
+    if (mode.className !== void 0) {
+      mode.scope = mode.className;
+      delete mode.className;
+    }
+  }
+  function beginKeywords(mode, parent) {
+    if (!parent) return;
+    if (!mode.beginKeywords) return;
+    mode.begin = "\\b(" + mode.beginKeywords.split(" ").join("|") + ")(?!\\.)(?=\\b|\\s)";
+    mode.__beforeBegin = skipIfHasPrecedingDot;
+    mode.keywords = mode.keywords || mode.beginKeywords;
+    delete mode.beginKeywords;
+    if (mode.relevance === void 0) mode.relevance = 0;
+  }
+  function compileIllegal(mode, _parent) {
+    if (!Array.isArray(mode.illegal)) return;
+    mode.illegal = either(...mode.illegal);
+  }
+  function compileMatch(mode, _parent) {
+    if (!mode.match) return;
+    if (mode.begin || mode.end) throw new Error("begin & end are not supported with match");
+    mode.begin = mode.match;
+    delete mode.match;
+  }
+  function compileRelevance(mode, _parent) {
+    if (mode.relevance === void 0) mode.relevance = 1;
+  }
+  const beforeMatchExt = (mode, parent) => {
+    if (!mode.beforeMatch) return;
+    if (mode.starts) throw new Error("beforeMatch cannot be used with starts");
+    const originalMode = Object.assign({}, mode);
+    Object.keys(mode).forEach((key) => {
+      delete mode[key];
+    });
+    mode.keywords = originalMode.keywords;
+    mode.begin = concat(originalMode.beforeMatch, lookahead(originalMode.begin));
+    mode.starts = {
+      relevance: 0,
+      contains: [
+        Object.assign(originalMode, { endsParent: true })
+      ]
+    };
+    mode.relevance = 0;
+    delete originalMode.beforeMatch;
+  };
+  const COMMON_KEYWORDS = [
+    "of",
+    "and",
+    "for",
+    "in",
+    "not",
+    "or",
+    "if",
+    "then",
+    "parent",
+    // common variable name
+    "list",
+    // common variable name
+    "value"
+    // common variable name
+  ];
+  const DEFAULT_KEYWORD_SCOPE = "keyword";
+  function compileKeywords(rawKeywords, caseInsensitive, scopeName = DEFAULT_KEYWORD_SCOPE) {
+    const compiledKeywords = /* @__PURE__ */ Object.create(null);
+    if (typeof rawKeywords === "string") {
+      compileList(scopeName, rawKeywords.split(" "));
+    } else if (Array.isArray(rawKeywords)) {
+      compileList(scopeName, rawKeywords);
+    } else {
+      Object.keys(rawKeywords).forEach(function(scopeName2) {
+        Object.assign(
+          compiledKeywords,
+          compileKeywords(rawKeywords[scopeName2], caseInsensitive, scopeName2)
+        );
+      });
+    }
+    return compiledKeywords;
+    function compileList(scopeName2, keywordList) {
+      if (caseInsensitive) {
+        keywordList = keywordList.map((x2) => x2.toLowerCase());
+      }
+      keywordList.forEach(function(keyword) {
+        const pair = keyword.split("|");
+        compiledKeywords[pair[0]] = [scopeName2, scoreForKeyword(pair[0], pair[1])];
+      });
+    }
+  }
+  function scoreForKeyword(keyword, providedScore) {
+    if (providedScore) {
+      return Number(providedScore);
+    }
+    return commonKeyword(keyword) ? 0 : 1;
+  }
+  function commonKeyword(keyword) {
+    return COMMON_KEYWORDS.includes(keyword.toLowerCase());
+  }
+  const seenDeprecations = {};
+  const error = (message) => {
+    console.error(message);
+  };
+  const warn = (message, ...args) => {
+    console.log(`WARN: ${message}`, ...args);
+  };
+  const deprecated = (version2, message) => {
+    if (seenDeprecations[`${version2}/${message}`]) return;
+    console.log(`Deprecated as of ${version2}. ${message}`);
+    seenDeprecations[`${version2}/${message}`] = true;
+  };
+  const MultiClassError = new Error();
+  function remapScopeNames(mode, regexes, { key }) {
+    let offset2 = 0;
+    const scopeNames = mode[key];
+    const emit = {};
+    const positions = {};
+    for (let i = 1; i <= regexes.length; i++) {
+      positions[i + offset2] = scopeNames[i];
+      emit[i + offset2] = true;
+      offset2 += countMatchGroups(regexes[i - 1]);
+    }
+    mode[key] = positions;
+    mode[key]._emit = emit;
+    mode[key]._multi = true;
+  }
+  function beginMultiClass(mode) {
+    if (!Array.isArray(mode.begin)) return;
+    if (mode.skip || mode.excludeBegin || mode.returnBegin) {
+      error("skip, excludeBegin, returnBegin not compatible with beginScope: {}");
+      throw MultiClassError;
+    }
+    if (typeof mode.beginScope !== "object" || mode.beginScope === null) {
+      error("beginScope must be object");
+      throw MultiClassError;
+    }
+    remapScopeNames(mode, mode.begin, { key: "beginScope" });
+    mode.begin = _rewriteBackreferences(mode.begin, { joinWith: "" });
+  }
+  function endMultiClass(mode) {
+    if (!Array.isArray(mode.end)) return;
+    if (mode.skip || mode.excludeEnd || mode.returnEnd) {
+      error("skip, excludeEnd, returnEnd not compatible with endScope: {}");
+      throw MultiClassError;
+    }
+    if (typeof mode.endScope !== "object" || mode.endScope === null) {
+      error("endScope must be object");
+      throw MultiClassError;
+    }
+    remapScopeNames(mode, mode.end, { key: "endScope" });
+    mode.end = _rewriteBackreferences(mode.end, { joinWith: "" });
+  }
+  function scopeSugar(mode) {
+    if (mode.scope && typeof mode.scope === "object" && mode.scope !== null) {
+      mode.beginScope = mode.scope;
+      delete mode.scope;
+    }
+  }
+  function MultiClass(mode) {
+    scopeSugar(mode);
+    if (typeof mode.beginScope === "string") {
+      mode.beginScope = { _wrap: mode.beginScope };
+    }
+    if (typeof mode.endScope === "string") {
+      mode.endScope = { _wrap: mode.endScope };
+    }
+    beginMultiClass(mode);
+    endMultiClass(mode);
+  }
+  function compileLanguage(language) {
+    function langRe(value, global2) {
+      return new RegExp(
+        source(value),
+        "m" + (language.case_insensitive ? "i" : "") + (language.unicodeRegex ? "u" : "") + (global2 ? "g" : "")
+      );
+    }
+    class MultiRegex {
+      constructor() {
+        this.matchIndexes = {};
+        this.regexes = [];
+        this.matchAt = 1;
+        this.position = 0;
+      }
+      // @ts-ignore
+      addRule(re2, opts) {
+        opts.position = this.position++;
+        this.matchIndexes[this.matchAt] = opts;
+        this.regexes.push([opts, re2]);
+        this.matchAt += countMatchGroups(re2) + 1;
+      }
+      compile() {
+        if (this.regexes.length === 0) {
+          this.exec = () => null;
+        }
+        const terminators = this.regexes.map((el) => el[1]);
+        this.matcherRe = langRe(_rewriteBackreferences(terminators, { joinWith: "|" }), true);
+        this.lastIndex = 0;
+      }
+      /** @param {string} s */
+      exec(s) {
+        this.matcherRe.lastIndex = this.lastIndex;
+        const match2 = this.matcherRe.exec(s);
+        if (!match2) {
+          return null;
+        }
+        const i = match2.findIndex((el, i2) => i2 > 0 && el !== void 0);
+        const matchData = this.matchIndexes[i];
+        match2.splice(0, i);
+        return Object.assign(match2, matchData);
+      }
+    }
+    class ResumableMultiRegex {
+      constructor() {
+        this.rules = [];
+        this.multiRegexes = [];
+        this.count = 0;
+        this.lastIndex = 0;
+        this.regexIndex = 0;
+      }
+      // @ts-ignore
+      getMatcher(index2) {
+        if (this.multiRegexes[index2]) return this.multiRegexes[index2];
+        const matcher = new MultiRegex();
+        this.rules.slice(index2).forEach(([re2, opts]) => matcher.addRule(re2, opts));
+        matcher.compile();
+        this.multiRegexes[index2] = matcher;
+        return matcher;
+      }
+      resumingScanAtSamePosition() {
+        return this.regexIndex !== 0;
+      }
+      considerAll() {
+        this.regexIndex = 0;
+      }
+      // @ts-ignore
+      addRule(re2, opts) {
+        this.rules.push([re2, opts]);
+        if (opts.type === "begin") this.count++;
+      }
+      /** @param {string} s */
+      exec(s) {
+        const m = this.getMatcher(this.regexIndex);
+        m.lastIndex = this.lastIndex;
+        let result = m.exec(s);
+        if (this.resumingScanAtSamePosition()) {
+          if (result && result.index === this.lastIndex) ;
+          else {
+            const m2 = this.getMatcher(0);
+            m2.lastIndex = this.lastIndex + 1;
+            result = m2.exec(s);
+          }
+        }
+        if (result) {
+          this.regexIndex += result.position + 1;
+          if (this.regexIndex === this.count) {
+            this.considerAll();
+          }
+        }
+        return result;
+      }
+    }
+    function buildModeRegex(mode) {
+      const mm = new ResumableMultiRegex();
+      mode.contains.forEach((term) => mm.addRule(term.begin, { rule: term, type: "begin" }));
+      if (mode.terminatorEnd) {
+        mm.addRule(mode.terminatorEnd, { type: "end" });
+      }
+      if (mode.illegal) {
+        mm.addRule(mode.illegal, { type: "illegal" });
+      }
+      return mm;
+    }
+    function compileMode(mode, parent) {
+      const cmode = (
+        /** @type CompiledMode */
+        mode
+      );
+      if (mode.isCompiled) return cmode;
+      [
+        scopeClassName,
+        // do this early so compiler extensions generally don't have to worry about
+        // the distinction between match/begin
+        compileMatch,
+        MultiClass,
+        beforeMatchExt
+      ].forEach((ext) => ext(mode, parent));
+      language.compilerExtensions.forEach((ext) => ext(mode, parent));
+      mode.__beforeBegin = null;
+      [
+        beginKeywords,
+        // do this later so compiler extensions that come earlier have access to the
+        // raw array if they wanted to perhaps manipulate it, etc.
+        compileIllegal,
+        // default to 1 relevance if not specified
+        compileRelevance
+      ].forEach((ext) => ext(mode, parent));
+      mode.isCompiled = true;
+      let keywordPattern = null;
+      if (typeof mode.keywords === "object" && mode.keywords.$pattern) {
+        mode.keywords = Object.assign({}, mode.keywords);
+        keywordPattern = mode.keywords.$pattern;
+        delete mode.keywords.$pattern;
+      }
+      keywordPattern = keywordPattern || /\w+/;
+      if (mode.keywords) {
+        mode.keywords = compileKeywords(mode.keywords, language.case_insensitive);
+      }
+      cmode.keywordPatternRe = langRe(keywordPattern, true);
+      if (parent) {
+        if (!mode.begin) mode.begin = /\B|\b/;
+        cmode.beginRe = langRe(cmode.begin);
+        if (!mode.end && !mode.endsWithParent) mode.end = /\B|\b/;
+        if (mode.end) cmode.endRe = langRe(cmode.end);
+        cmode.terminatorEnd = source(cmode.end) || "";
+        if (mode.endsWithParent && parent.terminatorEnd) {
+          cmode.terminatorEnd += (mode.end ? "|" : "") + parent.terminatorEnd;
+        }
+      }
+      if (mode.illegal) cmode.illegalRe = langRe(
+        /** @type {RegExp | string} */
+        mode.illegal
+      );
+      if (!mode.contains) mode.contains = [];
+      mode.contains = [].concat(...mode.contains.map(function(c) {
+        return expandOrCloneMode(c === "self" ? mode : c);
+      }));
+      mode.contains.forEach(function(c) {
+        compileMode(
+          /** @type Mode */
+          c,
+          cmode
+        );
+      });
+      if (mode.starts) {
+        compileMode(mode.starts, parent);
+      }
+      cmode.matcher = buildModeRegex(cmode);
+      return cmode;
+    }
+    if (!language.compilerExtensions) language.compilerExtensions = [];
+    if (language.contains && language.contains.includes("self")) {
+      throw new Error("ERR: contains `self` is not supported at the top-level of a language.  See documentation.");
+    }
+    language.classNameAliases = inherit$1(language.classNameAliases || {});
+    return compileMode(
+      /** @type Mode */
+      language
+    );
+  }
+  function dependencyOnParent(mode) {
+    if (!mode) return false;
+    return mode.endsWithParent || dependencyOnParent(mode.starts);
+  }
+  function expandOrCloneMode(mode) {
+    if (mode.variants && !mode.cachedVariants) {
+      mode.cachedVariants = mode.variants.map(function(variant) {
+        return inherit$1(mode, { variants: null }, variant);
+      });
+    }
+    if (mode.cachedVariants) {
+      return mode.cachedVariants;
+    }
+    if (dependencyOnParent(mode)) {
+      return inherit$1(mode, { starts: mode.starts ? inherit$1(mode.starts) : null });
+    }
+    if (Object.isFrozen(mode)) {
+      return inherit$1(mode);
+    }
+    return mode;
+  }
+  var version = "11.11.1";
+  class HTMLInjectionError extends Error {
+    constructor(reason, html) {
+      super(reason);
+      this.name = "HTMLInjectionError";
+      this.html = html;
+    }
+  }
+  const escape2 = escapeHTML;
+  const inherit = inherit$1;
+  const NO_MATCH = Symbol("nomatch");
+  const MAX_KEYWORD_HITS = 7;
+  const HLJS = function(hljs) {
+    const languages = /* @__PURE__ */ Object.create(null);
+    const aliases = /* @__PURE__ */ Object.create(null);
+    const plugins = [];
+    let SAFE_MODE = true;
+    const LANGUAGE_NOT_FOUND = "Could not find the language '{}', did you forget to load/include a language module?";
+    const PLAINTEXT_LANGUAGE = { disableAutodetect: true, name: "Plain text", contains: [] };
+    let options2 = {
+      ignoreUnescapedHTML: false,
+      throwUnescapedHTML: false,
+      noHighlightRe: /^(no-?highlight)$/i,
+      languageDetectRe: /\blang(?:uage)?-([\w-]+)\b/i,
+      classPrefix: "hljs-",
+      cssSelector: "pre code",
+      languages: null,
+      // beta configuration options, subject to change, welcome to discuss
+      // https://github.com/highlightjs/highlight.js/issues/1086
+      __emitter: TokenTreeEmitter
+    };
+    function shouldNotHighlight(languageName) {
+      return options2.noHighlightRe.test(languageName);
+    }
+    function blockLanguage(block) {
+      let classes = block.className + " ";
+      classes += block.parentNode ? block.parentNode.className : "";
+      const match2 = options2.languageDetectRe.exec(classes);
+      if (match2) {
+        const language = getLanguage(match2[1]);
+        if (!language) {
+          warn(LANGUAGE_NOT_FOUND.replace("{}", match2[1]));
+          warn("Falling back to no-highlight mode for this block.", block);
+        }
+        return language ? match2[1] : "no-highlight";
+      }
+      return classes.split(/\s+/).find((_class) => shouldNotHighlight(_class) || getLanguage(_class));
+    }
+    function highlight2(codeOrLanguageName, optionsOrCode, ignoreIllegals) {
+      let code = "";
+      let languageName = "";
+      if (typeof optionsOrCode === "object") {
+        code = codeOrLanguageName;
+        ignoreIllegals = optionsOrCode.ignoreIllegals;
+        languageName = optionsOrCode.language;
+      } else {
+        deprecated("10.7.0", "highlight(lang, code, ...args) has been deprecated.");
+        deprecated("10.7.0", "Please use highlight(code, options) instead.\nhttps://github.com/highlightjs/highlight.js/issues/2277");
+        languageName = codeOrLanguageName;
+        code = optionsOrCode;
+      }
+      if (ignoreIllegals === void 0) {
+        ignoreIllegals = true;
+      }
+      const context = {
+        code,
+        language: languageName
+      };
+      fire("before:highlight", context);
+      const result = context.result ? context.result : _highlight(context.language, context.code, ignoreIllegals);
+      result.code = context.code;
+      fire("after:highlight", result);
+      return result;
+    }
+    function _highlight(languageName, codeToHighlight, ignoreIllegals, continuation) {
+      const keywordHits = /* @__PURE__ */ Object.create(null);
+      function keywordData(mode, matchText) {
+        return mode.keywords[matchText];
+      }
+      function processKeywords() {
+        if (!top.keywords) {
+          emitter.addText(modeBuffer);
+          return;
+        }
+        let lastIndex = 0;
+        top.keywordPatternRe.lastIndex = 0;
+        let match2 = top.keywordPatternRe.exec(modeBuffer);
+        let buf = "";
+        while (match2) {
+          buf += modeBuffer.substring(lastIndex, match2.index);
+          const word = language.case_insensitive ? match2[0].toLowerCase() : match2[0];
+          const data = keywordData(top, word);
+          if (data) {
+            const [kind, keywordRelevance] = data;
+            emitter.addText(buf);
+            buf = "";
+            keywordHits[word] = (keywordHits[word] || 0) + 1;
+            if (keywordHits[word] <= MAX_KEYWORD_HITS) relevance += keywordRelevance;
+            if (kind.startsWith("_")) {
+              buf += match2[0];
+            } else {
+              const cssClass = language.classNameAliases[kind] || kind;
+              emitKeyword(match2[0], cssClass);
+            }
+          } else {
+            buf += match2[0];
+          }
+          lastIndex = top.keywordPatternRe.lastIndex;
+          match2 = top.keywordPatternRe.exec(modeBuffer);
+        }
+        buf += modeBuffer.substring(lastIndex);
+        emitter.addText(buf);
+      }
+      function processSubLanguage() {
+        if (modeBuffer === "") return;
+        let result2 = null;
+        if (typeof top.subLanguage === "string") {
+          if (!languages[top.subLanguage]) {
+            emitter.addText(modeBuffer);
+            return;
+          }
+          result2 = _highlight(top.subLanguage, modeBuffer, true, continuations[top.subLanguage]);
+          continuations[top.subLanguage] = /** @type {CompiledMode} */
+          result2._top;
+        } else {
+          result2 = highlightAuto(modeBuffer, top.subLanguage.length ? top.subLanguage : null);
+        }
+        if (top.relevance > 0) {
+          relevance += result2.relevance;
+        }
+        emitter.__addSublanguage(result2._emitter, result2.language);
+      }
+      function processBuffer() {
+        if (top.subLanguage != null) {
+          processSubLanguage();
+        } else {
+          processKeywords();
+        }
+        modeBuffer = "";
+      }
+      function emitKeyword(keyword, scope) {
+        if (keyword === "") return;
+        emitter.startScope(scope);
+        emitter.addText(keyword);
+        emitter.endScope();
+      }
+      function emitMultiClass(scope, match2) {
+        let i = 1;
+        const max = match2.length - 1;
+        while (i <= max) {
+          if (!scope._emit[i]) {
+            i++;
+            continue;
+          }
+          const klass = language.classNameAliases[scope[i]] || scope[i];
+          const text = match2[i];
+          if (klass) {
+            emitKeyword(text, klass);
+          } else {
+            modeBuffer = text;
+            processKeywords();
+            modeBuffer = "";
+          }
+          i++;
+        }
+      }
+      function startNewMode(mode, match2) {
+        if (mode.scope && typeof mode.scope === "string") {
+          emitter.openNode(language.classNameAliases[mode.scope] || mode.scope);
+        }
+        if (mode.beginScope) {
+          if (mode.beginScope._wrap) {
+            emitKeyword(modeBuffer, language.classNameAliases[mode.beginScope._wrap] || mode.beginScope._wrap);
+            modeBuffer = "";
+          } else if (mode.beginScope._multi) {
+            emitMultiClass(mode.beginScope, match2);
+            modeBuffer = "";
+          }
+        }
+        top = Object.create(mode, { parent: { value: top } });
+        return top;
+      }
+      function endOfMode(mode, match2, matchPlusRemainder) {
+        let matched = startsWith(mode.endRe, matchPlusRemainder);
+        if (matched) {
+          if (mode["on:end"]) {
+            const resp = new Response(mode);
+            mode["on:end"](match2, resp);
+            if (resp.isMatchIgnored) matched = false;
+          }
+          if (matched) {
+            while (mode.endsParent && mode.parent) {
+              mode = mode.parent;
+            }
+            return mode;
+          }
+        }
+        if (mode.endsWithParent) {
+          return endOfMode(mode.parent, match2, matchPlusRemainder);
+        }
+      }
+      function doIgnore(lexeme) {
+        if (top.matcher.regexIndex === 0) {
+          modeBuffer += lexeme[0];
+          return 1;
+        } else {
+          resumeScanAtSamePosition = true;
+          return 0;
+        }
+      }
+      function doBeginMatch(match2) {
+        const lexeme = match2[0];
+        const newMode = match2.rule;
+        const resp = new Response(newMode);
+        const beforeCallbacks = [newMode.__beforeBegin, newMode["on:begin"]];
+        for (const cb of beforeCallbacks) {
+          if (!cb) continue;
+          cb(match2, resp);
+          if (resp.isMatchIgnored) return doIgnore(lexeme);
+        }
+        if (newMode.skip) {
+          modeBuffer += lexeme;
+        } else {
+          if (newMode.excludeBegin) {
+            modeBuffer += lexeme;
+          }
+          processBuffer();
+          if (!newMode.returnBegin && !newMode.excludeBegin) {
+            modeBuffer = lexeme;
+          }
+        }
+        startNewMode(newMode, match2);
+        return newMode.returnBegin ? 0 : lexeme.length;
+      }
+      function doEndMatch(match2) {
+        const lexeme = match2[0];
+        const matchPlusRemainder = codeToHighlight.substring(match2.index);
+        const endMode = endOfMode(top, match2, matchPlusRemainder);
+        if (!endMode) {
+          return NO_MATCH;
+        }
+        const origin = top;
+        if (top.endScope && top.endScope._wrap) {
+          processBuffer();
+          emitKeyword(lexeme, top.endScope._wrap);
+        } else if (top.endScope && top.endScope._multi) {
+          processBuffer();
+          emitMultiClass(top.endScope, match2);
+        } else if (origin.skip) {
+          modeBuffer += lexeme;
+        } else {
+          if (!(origin.returnEnd || origin.excludeEnd)) {
+            modeBuffer += lexeme;
+          }
+          processBuffer();
+          if (origin.excludeEnd) {
+            modeBuffer = lexeme;
+          }
+        }
+        do {
+          if (top.scope) {
+            emitter.closeNode();
+          }
+          if (!top.skip && !top.subLanguage) {
+            relevance += top.relevance;
+          }
+          top = top.parent;
+        } while (top !== endMode.parent);
+        if (endMode.starts) {
+          startNewMode(endMode.starts, match2);
+        }
+        return origin.returnEnd ? 0 : lexeme.length;
+      }
+      function processContinuations() {
+        const list = [];
+        for (let current = top; current !== language; current = current.parent) {
+          if (current.scope) {
+            list.unshift(current.scope);
+          }
+        }
+        list.forEach((item) => emitter.openNode(item));
+      }
+      let lastMatch = {};
+      function processLexeme(textBeforeMatch, match2) {
+        const lexeme = match2 && match2[0];
+        modeBuffer += textBeforeMatch;
+        if (lexeme == null) {
+          processBuffer();
+          return 0;
+        }
+        if (lastMatch.type === "begin" && match2.type === "end" && lastMatch.index === match2.index && lexeme === "") {
+          modeBuffer += codeToHighlight.slice(match2.index, match2.index + 1);
+          if (!SAFE_MODE) {
+            const err = new Error(`0 width match regex (${languageName})`);
+            err.languageName = languageName;
+            err.badRule = lastMatch.rule;
+            throw err;
+          }
+          return 1;
+        }
+        lastMatch = match2;
+        if (match2.type === "begin") {
+          return doBeginMatch(match2);
+        } else if (match2.type === "illegal" && !ignoreIllegals) {
+          const err = new Error('Illegal lexeme "' + lexeme + '" for mode "' + (top.scope || "<unnamed>") + '"');
+          err.mode = top;
+          throw err;
+        } else if (match2.type === "end") {
+          const processed = doEndMatch(match2);
+          if (processed !== NO_MATCH) {
+            return processed;
+          }
+        }
+        if (match2.type === "illegal" && lexeme === "") {
+          modeBuffer += "\n";
+          return 1;
+        }
+        if (iterations > 1e5 && iterations > match2.index * 3) {
+          const err = new Error("potential infinite loop, way more iterations than matches");
+          throw err;
+        }
+        modeBuffer += lexeme;
+        return lexeme.length;
+      }
+      const language = getLanguage(languageName);
+      if (!language) {
+        error(LANGUAGE_NOT_FOUND.replace("{}", languageName));
+        throw new Error('Unknown language: "' + languageName + '"');
+      }
+      const md = compileLanguage(language);
+      let result = "";
+      let top = continuation || md;
+      const continuations = {};
+      const emitter = new options2.__emitter(options2);
+      processContinuations();
+      let modeBuffer = "";
+      let relevance = 0;
+      let index2 = 0;
+      let iterations = 0;
+      let resumeScanAtSamePosition = false;
+      try {
+        if (!language.__emitTokens) {
+          top.matcher.considerAll();
+          for (; ; ) {
+            iterations++;
+            if (resumeScanAtSamePosition) {
+              resumeScanAtSamePosition = false;
+            } else {
+              top.matcher.considerAll();
+            }
+            top.matcher.lastIndex = index2;
+            const match2 = top.matcher.exec(codeToHighlight);
+            if (!match2) break;
+            const beforeMatch = codeToHighlight.substring(index2, match2.index);
+            const processedCount = processLexeme(beforeMatch, match2);
+            index2 = match2.index + processedCount;
+          }
+          processLexeme(codeToHighlight.substring(index2));
+        } else {
+          language.__emitTokens(codeToHighlight, emitter);
+        }
+        emitter.finalize();
+        result = emitter.toHTML();
+        return {
+          language: languageName,
+          value: result,
+          relevance,
+          illegal: false,
+          _emitter: emitter,
+          _top: top
+        };
+      } catch (err) {
+        if (err.message && err.message.includes("Illegal")) {
+          return {
+            language: languageName,
+            value: escape2(codeToHighlight),
+            illegal: true,
+            relevance: 0,
+            _illegalBy: {
+              message: err.message,
+              index: index2,
+              context: codeToHighlight.slice(index2 - 100, index2 + 100),
+              mode: err.mode,
+              resultSoFar: result
+            },
+            _emitter: emitter
+          };
+        } else if (SAFE_MODE) {
+          return {
+            language: languageName,
+            value: escape2(codeToHighlight),
+            illegal: false,
+            relevance: 0,
+            errorRaised: err,
+            _emitter: emitter,
+            _top: top
+          };
+        } else {
+          throw err;
+        }
+      }
+    }
+    function justTextHighlightResult(code) {
+      const result = {
+        value: escape2(code),
+        illegal: false,
+        relevance: 0,
+        _top: PLAINTEXT_LANGUAGE,
+        _emitter: new options2.__emitter(options2)
+      };
+      result._emitter.addText(code);
+      return result;
+    }
+    function highlightAuto(code, languageSubset) {
+      languageSubset = languageSubset || options2.languages || Object.keys(languages);
+      const plaintext = justTextHighlightResult(code);
+      const results = languageSubset.filter(getLanguage).filter(autoDetection).map(
+        (name) => _highlight(name, code, false)
+      );
+      results.unshift(plaintext);
+      const sorted = results.sort((a, b) => {
+        if (a.relevance !== b.relevance) return b.relevance - a.relevance;
+        if (a.language && b.language) {
+          if (getLanguage(a.language).supersetOf === b.language) {
+            return 1;
+          } else if (getLanguage(b.language).supersetOf === a.language) {
+            return -1;
+          }
+        }
+        return 0;
+      });
+      const [best, secondBest] = sorted;
+      const result = best;
+      result.secondBest = secondBest;
+      return result;
+    }
+    function updateClassName(element, currentLang, resultLang) {
+      const language = currentLang && aliases[currentLang] || resultLang;
+      element.classList.add("hljs");
+      element.classList.add(`language-${language}`);
+    }
+    function highlightElement(element) {
+      let node2 = null;
+      const language = blockLanguage(element);
+      if (shouldNotHighlight(language)) return;
+      fire(
+        "before:highlightElement",
+        { el: element, language }
+      );
+      if (element.dataset.highlighted) {
+        console.log("Element previously highlighted. To highlight again, first unset `dataset.highlighted`.", element);
+        return;
+      }
+      if (element.children.length > 0) {
+        if (!options2.ignoreUnescapedHTML) {
+          console.warn("One of your code blocks includes unescaped HTML. This is a potentially serious security risk.");
+          console.warn("https://github.com/highlightjs/highlight.js/wiki/security");
+          console.warn("The element with unescaped HTML:");
+          console.warn(element);
+        }
+        if (options2.throwUnescapedHTML) {
+          const err = new HTMLInjectionError(
+            "One of your code blocks includes unescaped HTML.",
+            element.innerHTML
+          );
+          throw err;
+        }
+      }
+      node2 = element;
+      const text = node2.textContent;
+      const result = language ? highlight2(text, { language, ignoreIllegals: true }) : highlightAuto(text);
+      element.innerHTML = result.value;
+      element.dataset.highlighted = "yes";
+      updateClassName(element, language, result.language);
+      element.result = {
+        language: result.language,
+        // TODO: remove with version 11.0
+        re: result.relevance,
+        relevance: result.relevance
+      };
+      if (result.secondBest) {
+        element.secondBest = {
+          language: result.secondBest.language,
+          relevance: result.secondBest.relevance
+        };
+      }
+      fire("after:highlightElement", { el: element, result, text });
+    }
+    function configure(userOptions) {
+      options2 = inherit(options2, userOptions);
+    }
+    const initHighlighting = () => {
+      highlightAll();
+      deprecated("10.6.0", "initHighlighting() deprecated.  Use highlightAll() now.");
+    };
+    function initHighlightingOnLoad() {
+      highlightAll();
+      deprecated("10.6.0", "initHighlightingOnLoad() deprecated.  Use highlightAll() now.");
+    }
+    let wantsHighlight = false;
+    function highlightAll() {
+      function boot() {
+        highlightAll();
+      }
+      if (document.readyState === "loading") {
+        if (!wantsHighlight) {
+          window.addEventListener("DOMContentLoaded", boot, false);
+        }
+        wantsHighlight = true;
+        return;
+      }
+      const blocks = document.querySelectorAll(options2.cssSelector);
+      blocks.forEach(highlightElement);
+    }
+    function registerLanguage(languageName, languageDefinition) {
+      let lang = null;
+      try {
+        lang = languageDefinition(hljs);
+      } catch (error$1) {
+        error("Language definition for '{}' could not be registered.".replace("{}", languageName));
+        if (!SAFE_MODE) {
+          throw error$1;
+        } else {
+          error(error$1);
+        }
+        lang = PLAINTEXT_LANGUAGE;
+      }
+      if (!lang.name) lang.name = languageName;
+      languages[languageName] = lang;
+      lang.rawDefinition = languageDefinition.bind(null, hljs);
+      if (lang.aliases) {
+        registerAliases(lang.aliases, { languageName });
+      }
+    }
+    function unregisterLanguage(languageName) {
+      delete languages[languageName];
+      for (const alias of Object.keys(aliases)) {
+        if (aliases[alias] === languageName) {
+          delete aliases[alias];
+        }
+      }
+    }
+    function listLanguages() {
+      return Object.keys(languages);
+    }
+    function getLanguage(name) {
+      name = (name || "").toLowerCase();
+      return languages[name] || languages[aliases[name]];
+    }
+    function registerAliases(aliasList, { languageName }) {
+      if (typeof aliasList === "string") {
+        aliasList = [aliasList];
+      }
+      aliasList.forEach((alias) => {
+        aliases[alias.toLowerCase()] = languageName;
+      });
+    }
+    function autoDetection(name) {
+      const lang = getLanguage(name);
+      return lang && !lang.disableAutodetect;
+    }
+    function upgradePluginAPI(plugin) {
+      if (plugin["before:highlightBlock"] && !plugin["before:highlightElement"]) {
+        plugin["before:highlightElement"] = (data) => {
+          plugin["before:highlightBlock"](
+            Object.assign({ block: data.el }, data)
+          );
+        };
+      }
+      if (plugin["after:highlightBlock"] && !plugin["after:highlightElement"]) {
+        plugin["after:highlightElement"] = (data) => {
+          plugin["after:highlightBlock"](
+            Object.assign({ block: data.el }, data)
+          );
+        };
+      }
+    }
+    function addPlugin(plugin) {
+      upgradePluginAPI(plugin);
+      plugins.push(plugin);
+    }
+    function removePlugin(plugin) {
+      const index2 = plugins.indexOf(plugin);
+      if (index2 !== -1) {
+        plugins.splice(index2, 1);
+      }
+    }
+    function fire(event, args) {
+      const cb = event;
+      plugins.forEach(function(plugin) {
+        if (plugin[cb]) {
+          plugin[cb](args);
+        }
+      });
+    }
+    function deprecateHighlightBlock(el) {
+      deprecated("10.7.0", "highlightBlock will be removed entirely in v12.0");
+      deprecated("10.7.0", "Please use highlightElement now.");
+      return highlightElement(el);
+    }
+    Object.assign(hljs, {
+      highlight: highlight2,
+      highlightAuto,
+      highlightAll,
+      highlightElement,
+      // TODO: Remove with v12 API
+      highlightBlock: deprecateHighlightBlock,
+      configure,
+      initHighlighting,
+      initHighlightingOnLoad,
+      registerLanguage,
+      unregisterLanguage,
+      listLanguages,
+      getLanguage,
+      registerAliases,
+      autoDetection,
+      inherit,
+      addPlugin,
+      removePlugin
+    });
+    hljs.debugMode = function() {
+      SAFE_MODE = false;
+    };
+    hljs.safeMode = function() {
+      SAFE_MODE = true;
+    };
+    hljs.versionString = version;
+    hljs.regex = {
+      concat,
+      lookahead,
+      either,
+      optional,
+      anyNumberOfTimes
+    };
+    for (const key in MODES) {
+      if (typeof MODES[key] === "object") {
+        deepFreeze(MODES[key]);
+      }
+    }
+    Object.assign(hljs, MODES);
+    return hljs;
+  };
+  const highlight = HLJS({});
+  highlight.newInstance = () => HLJS({});
+  core = highlight;
+  highlight.HighlightJS = highlight;
+  highlight.default = highlight;
+  return core;
+}
+var coreExports = /* @__PURE__ */ requireCore();
+const HighlightJS = /* @__PURE__ */ getDefaultExportFromCjs(coreExports);
+function bash(hljs) {
+  const regex2 = hljs.regex;
+  const VAR = {};
+  const BRACED_VAR = {
+    begin: /\$\{/,
+    end: /\}/,
+    contains: [
+      "self",
+      {
+        begin: /:-/,
+        contains: [VAR]
+      }
+      // default values
+    ]
+  };
+  Object.assign(VAR, {
+    className: "variable",
+    variants: [
+      { begin: regex2.concat(
+        /\$[\w\d#@][\w\d_]*/,
+        // negative look-ahead tries to avoid matching patterns that are not
+        // Perl at all like $ident$, @ident@, etc.
+        `(?![\\w\\d])(?![$])`
+      ) },
+      BRACED_VAR
+    ]
+  });
+  const SUBST = {
+    className: "subst",
+    begin: /\$\(/,
+    end: /\)/,
+    contains: [hljs.BACKSLASH_ESCAPE]
+  };
+  const COMMENT2 = hljs.inherit(
+    hljs.COMMENT(),
+    {
+      match: [
+        /(^|\s)/,
+        /#.*$/
+      ],
+      scope: {
+        2: "comment"
+      }
+    }
+  );
+  const HERE_DOC = {
+    begin: /<<-?\s*(?=\w+)/,
+    starts: { contains: [
+      hljs.END_SAME_AS_BEGIN({
+        begin: /(\w+)/,
+        end: /(\w+)/,
+        className: "string"
+      })
+    ] }
+  };
+  const QUOTE_STRING = {
+    className: "string",
+    begin: /"/,
+    end: /"/,
+    contains: [
+      hljs.BACKSLASH_ESCAPE,
+      VAR,
+      SUBST
+    ]
+  };
+  SUBST.contains.push(QUOTE_STRING);
+  const ESCAPED_QUOTE = {
+    match: /\\"/
+  };
+  const APOS_STRING = {
+    className: "string",
+    begin: /'/,
+    end: /'/
+  };
+  const ESCAPED_APOS = {
+    match: /\\'/
+  };
+  const ARITHMETIC = {
+    begin: /\$?\(\(/,
+    end: /\)\)/,
+    contains: [
+      {
+        begin: /\d+#[0-9a-f]+/,
+        className: "number"
+      },
+      hljs.NUMBER_MODE,
+      VAR
+    ]
+  };
+  const SH_LIKE_SHELLS = [
+    "fish",
+    "bash",
+    "zsh",
+    "sh",
+    "csh",
+    "ksh",
+    "tcsh",
+    "dash",
+    "scsh"
+  ];
+  const KNOWN_SHEBANG = hljs.SHEBANG({
+    binary: `(${SH_LIKE_SHELLS.join("|")})`,
+    relevance: 10
+  });
+  const FUNCTION = {
+    className: "function",
+    begin: /\w[\w\d_]*\s*\(\s*\)\s*\{/,
+    returnBegin: true,
+    contains: [hljs.inherit(hljs.TITLE_MODE, { begin: /\w[\w\d_]*/ })],
+    relevance: 0
+  };
+  const KEYWORDS2 = [
+    "if",
+    "then",
+    "else",
+    "elif",
+    "fi",
+    "time",
+    "for",
+    "while",
+    "until",
+    "in",
+    "do",
+    "done",
+    "case",
+    "esac",
+    "coproc",
+    "function",
+    "select"
+  ];
+  const LITERALS2 = [
+    "true",
+    "false"
+  ];
+  const PATH_MODE = { match: /(\/[a-z._-]+)+/ };
+  const SHELL_BUILT_INS = [
+    "break",
+    "cd",
+    "continue",
+    "eval",
+    "exec",
+    "exit",
+    "export",
+    "getopts",
+    "hash",
+    "pwd",
+    "readonly",
+    "return",
+    "shift",
+    "test",
+    "times",
+    "trap",
+    "umask",
+    "unset"
+  ];
+  const BASH_BUILT_INS = [
+    "alias",
+    "bind",
+    "builtin",
+    "caller",
+    "command",
+    "declare",
+    "echo",
+    "enable",
+    "help",
+    "let",
+    "local",
+    "logout",
+    "mapfile",
+    "printf",
+    "read",
+    "readarray",
+    "source",
+    "sudo",
+    "type",
+    "typeset",
+    "ulimit",
+    "unalias"
+  ];
+  const ZSH_BUILT_INS = [
+    "autoload",
+    "bg",
+    "bindkey",
+    "bye",
+    "cap",
+    "chdir",
+    "clone",
+    "comparguments",
+    "compcall",
+    "compctl",
+    "compdescribe",
+    "compfiles",
+    "compgroups",
+    "compquote",
+    "comptags",
+    "comptry",
+    "compvalues",
+    "dirs",
+    "disable",
+    "disown",
+    "echotc",
+    "echoti",
+    "emulate",
+    "fc",
+    "fg",
+    "float",
+    "functions",
+    "getcap",
+    "getln",
+    "history",
+    "integer",
+    "jobs",
+    "kill",
+    "limit",
+    "log",
+    "noglob",
+    "popd",
+    "print",
+    "pushd",
+    "pushln",
+    "rehash",
+    "sched",
+    "setcap",
+    "setopt",
+    "stat",
+    "suspend",
+    "ttyctl",
+    "unfunction",
+    "unhash",
+    "unlimit",
+    "unsetopt",
+    "vared",
+    "wait",
+    "whence",
+    "where",
+    "which",
+    "zcompile",
+    "zformat",
+    "zftp",
+    "zle",
+    "zmodload",
+    "zparseopts",
+    "zprof",
+    "zpty",
+    "zregexparse",
+    "zsocket",
+    "zstyle",
+    "ztcp"
+  ];
+  const GNU_CORE_UTILS = [
+    "chcon",
+    "chgrp",
+    "chown",
+    "chmod",
+    "cp",
+    "dd",
+    "df",
+    "dir",
+    "dircolors",
+    "ln",
+    "ls",
+    "mkdir",
+    "mkfifo",
+    "mknod",
+    "mktemp",
+    "mv",
+    "realpath",
+    "rm",
+    "rmdir",
+    "shred",
+    "sync",
+    "touch",
+    "truncate",
+    "vdir",
+    "b2sum",
+    "base32",
+    "base64",
+    "cat",
+    "cksum",
+    "comm",
+    "csplit",
+    "cut",
+    "expand",
+    "fmt",
+    "fold",
+    "head",
+    "join",
+    "md5sum",
+    "nl",
+    "numfmt",
+    "od",
+    "paste",
+    "ptx",
+    "pr",
+    "sha1sum",
+    "sha224sum",
+    "sha256sum",
+    "sha384sum",
+    "sha512sum",
+    "shuf",
+    "sort",
+    "split",
+    "sum",
+    "tac",
+    "tail",
+    "tr",
+    "tsort",
+    "unexpand",
+    "uniq",
+    "wc",
+    "arch",
+    "basename",
+    "chroot",
+    "date",
+    "dirname",
+    "du",
+    "echo",
+    "env",
+    "expr",
+    "factor",
+    // "false", // keyword literal already
+    "groups",
+    "hostid",
+    "id",
+    "link",
+    "logname",
+    "nice",
+    "nohup",
+    "nproc",
+    "pathchk",
+    "pinky",
+    "printenv",
+    "printf",
+    "pwd",
+    "readlink",
+    "runcon",
+    "seq",
+    "sleep",
+    "stat",
+    "stdbuf",
+    "stty",
+    "tee",
+    "test",
+    "timeout",
+    // "true", // keyword literal already
+    "tty",
+    "uname",
+    "unlink",
+    "uptime",
+    "users",
+    "who",
+    "whoami",
+    "yes"
+  ];
+  return {
+    name: "Bash",
+    aliases: [
+      "sh",
+      "zsh"
+    ],
+    keywords: {
+      $pattern: /\b[a-z][a-z0-9._-]+\b/,
+      keyword: KEYWORDS2,
+      literal: LITERALS2,
+      built_in: [
+        ...SHELL_BUILT_INS,
+        ...BASH_BUILT_INS,
+        // Shell modifiers
+        "set",
+        "shopt",
+        ...ZSH_BUILT_INS,
+        ...GNU_CORE_UTILS
+      ]
+    },
+    contains: [
+      KNOWN_SHEBANG,
+      // to catch known shells and boost relevancy
+      hljs.SHEBANG(),
+      // to catch unknown shells but still highlight the shebang
+      FUNCTION,
+      ARITHMETIC,
+      COMMENT2,
+      HERE_DOC,
+      PATH_MODE,
+      QUOTE_STRING,
+      ESCAPED_QUOTE,
+      APOS_STRING,
+      ESCAPED_APOS,
+      VAR
+    ]
+  };
+}
+const IDENT_RE$1 = "[A-Za-z$_][0-9A-Za-z$_]*";
+const KEYWORDS$1 = [
+  "as",
+  // for exports
+  "in",
+  "of",
+  "if",
+  "for",
+  "while",
+  "finally",
+  "var",
+  "new",
+  "function",
+  "do",
+  "return",
+  "void",
+  "else",
+  "break",
+  "catch",
+  "instanceof",
+  "with",
+  "throw",
+  "case",
+  "default",
+  "try",
+  "switch",
+  "continue",
+  "typeof",
+  "delete",
+  "let",
+  "yield",
+  "const",
+  "class",
+  // JS handles these with a special rule
+  // "get",
+  // "set",
+  "debugger",
+  "async",
+  "await",
+  "static",
+  "import",
+  "from",
+  "export",
+  "extends",
+  // It's reached stage 3, which is "recommended for implementation":
+  "using"
+];
+const LITERALS$1 = [
+  "true",
+  "false",
+  "null",
+  "undefined",
+  "NaN",
+  "Infinity"
+];
+const TYPES$1 = [
+  // Fundamental objects
+  "Object",
+  "Function",
+  "Boolean",
+  "Symbol",
+  // numbers and dates
+  "Math",
+  "Date",
+  "Number",
+  "BigInt",
+  // text
+  "String",
+  "RegExp",
+  // Indexed collections
+  "Array",
+  "Float32Array",
+  "Float64Array",
+  "Int8Array",
+  "Uint8Array",
+  "Uint8ClampedArray",
+  "Int16Array",
+  "Int32Array",
+  "Uint16Array",
+  "Uint32Array",
+  "BigInt64Array",
+  "BigUint64Array",
+  // Keyed collections
+  "Set",
+  "Map",
+  "WeakSet",
+  "WeakMap",
+  // Structured data
+  "ArrayBuffer",
+  "SharedArrayBuffer",
+  "Atomics",
+  "DataView",
+  "JSON",
+  // Control abstraction objects
+  "Promise",
+  "Generator",
+  "GeneratorFunction",
+  "AsyncFunction",
+  // Reflection
+  "Reflect",
+  "Proxy",
+  // Internationalization
+  "Intl",
+  // WebAssembly
+  "WebAssembly"
+];
+const ERROR_TYPES$1 = [
+  "Error",
+  "EvalError",
+  "InternalError",
+  "RangeError",
+  "ReferenceError",
+  "SyntaxError",
+  "TypeError",
+  "URIError"
+];
+const BUILT_IN_GLOBALS$1 = [
+  "setInterval",
+  "setTimeout",
+  "clearInterval",
+  "clearTimeout",
+  "require",
+  "exports",
+  "eval",
+  "isFinite",
+  "isNaN",
+  "parseFloat",
+  "parseInt",
+  "decodeURI",
+  "decodeURIComponent",
+  "encodeURI",
+  "encodeURIComponent",
+  "escape",
+  "unescape"
+];
+const BUILT_IN_VARIABLES$1 = [
+  "arguments",
+  "this",
+  "super",
+  "console",
+  "window",
+  "document",
+  "localStorage",
+  "sessionStorage",
+  "module",
+  "global"
+  // Node.js
+];
+const BUILT_INS$1 = [].concat(
+  BUILT_IN_GLOBALS$1,
+  TYPES$1,
+  ERROR_TYPES$1
+);
+function javascript$1(hljs) {
+  const regex2 = hljs.regex;
+  const hasClosingTag = (match2, { after }) => {
+    const tag = "</" + match2[0].slice(1);
+    const pos = match2.input.indexOf(tag, after);
+    return pos !== -1;
+  };
+  const IDENT_RE$1$1 = IDENT_RE$1;
+  const FRAGMENT = {
+    begin: "<>",
+    end: "</>"
+  };
+  const XML_SELF_CLOSING = /<[A-Za-z0-9\\._:-]+\s*\/>/;
+  const XML_TAG = {
+    begin: /<[A-Za-z0-9\\._:-]+/,
+    end: /\/[A-Za-z0-9\\._:-]+>|\/>/,
+    /**
+     * @param {RegExpMatchArray} match
+     * @param {CallbackResponse} response
+     */
+    isTrulyOpeningTag: (match2, response) => {
+      const afterMatchIndex = match2[0].length + match2.index;
+      const nextChar = match2.input[afterMatchIndex];
+      if (
+        // HTML should not include another raw `<` inside a tag
+        // nested type?
+        // `<Array<Array<number>>`, etc.
+        nextChar === "<" || // the , gives away that this is not HTML
+        // `<T, A extends keyof T, V>`
+        nextChar === ","
+      ) {
+        response.ignoreMatch();
+        return;
+      }
+      if (nextChar === ">") {
+        if (!hasClosingTag(match2, { after: afterMatchIndex })) {
+          response.ignoreMatch();
+        }
+      }
+      let m;
+      const afterMatch = match2.input.substring(afterMatchIndex);
+      if (m = afterMatch.match(/^\s*=/)) {
+        response.ignoreMatch();
+        return;
+      }
+      if (m = afterMatch.match(/^\s+extends\s+/)) {
+        if (m.index === 0) {
+          response.ignoreMatch();
+          return;
+        }
+      }
+    }
+  };
+  const KEYWORDS$1$1 = {
+    $pattern: IDENT_RE$1,
+    keyword: KEYWORDS$1,
+    literal: LITERALS$1,
+    built_in: BUILT_INS$1,
+    "variable.language": BUILT_IN_VARIABLES$1
+  };
+  const decimalDigits = "[0-9](_?[0-9])*";
+  const frac = `\\.(${decimalDigits})`;
+  const decimalInteger = `0|[1-9](_?[0-9])*|0[0-7]*[89][0-9]*`;
+  const NUMBER = {
+    className: "number",
+    variants: [
+      // DecimalLiteral
+      { begin: `(\\b(${decimalInteger})((${frac})|\\.)?|(${frac}))[eE][+-]?(${decimalDigits})\\b` },
+      { begin: `\\b(${decimalInteger})\\b((${frac})\\b|\\.)?|(${frac})\\b` },
+      // DecimalBigIntegerLiteral
+      { begin: `\\b(0|[1-9](_?[0-9])*)n\\b` },
+      // NonDecimalIntegerLiteral
+      { begin: "\\b0[xX][0-9a-fA-F](_?[0-9a-fA-F])*n?\\b" },
+      { begin: "\\b0[bB][0-1](_?[0-1])*n?\\b" },
+      { begin: "\\b0[oO][0-7](_?[0-7])*n?\\b" },
+      // LegacyOctalIntegerLiteral (does not include underscore separators)
+      // https://tc39.es/ecma262/#sec-additional-syntax-numeric-literals
+      { begin: "\\b0[0-7]+n?\\b" }
+    ],
+    relevance: 0
+  };
+  const SUBST = {
+    className: "subst",
+    begin: "\\$\\{",
+    end: "\\}",
+    keywords: KEYWORDS$1$1,
+    contains: []
+    // defined later
+  };
+  const HTML_TEMPLATE = {
+    begin: ".?html`",
+    end: "",
+    starts: {
+      end: "`",
+      returnEnd: false,
+      contains: [
+        hljs.BACKSLASH_ESCAPE,
+        SUBST
+      ],
+      subLanguage: "xml"
+    }
+  };
+  const CSS_TEMPLATE = {
+    begin: ".?css`",
+    end: "",
+    starts: {
+      end: "`",
+      returnEnd: false,
+      contains: [
+        hljs.BACKSLASH_ESCAPE,
+        SUBST
+      ],
+      subLanguage: "css"
+    }
+  };
+  const GRAPHQL_TEMPLATE = {
+    begin: ".?gql`",
+    end: "",
+    starts: {
+      end: "`",
+      returnEnd: false,
+      contains: [
+        hljs.BACKSLASH_ESCAPE,
+        SUBST
+      ],
+      subLanguage: "graphql"
+    }
+  };
+  const TEMPLATE_STRING = {
+    className: "string",
+    begin: "`",
+    end: "`",
+    contains: [
+      hljs.BACKSLASH_ESCAPE,
+      SUBST
+    ]
+  };
+  const JSDOC_COMMENT = hljs.COMMENT(
+    /\/\*\*(?!\/)/,
+    "\\*/",
+    {
+      relevance: 0,
+      contains: [
+        {
+          begin: "(?=@[A-Za-z]+)",
+          relevance: 0,
+          contains: [
+            {
+              className: "doctag",
+              begin: "@[A-Za-z]+"
+            },
+            {
+              className: "type",
+              begin: "\\{",
+              end: "\\}",
+              excludeEnd: true,
+              excludeBegin: true,
+              relevance: 0
+            },
+            {
+              className: "variable",
+              begin: IDENT_RE$1$1 + "(?=\\s*(-)|$)",
+              endsParent: true,
+              relevance: 0
+            },
+            // eat spaces (not newlines) so we can find
+            // types or variables
+            {
+              begin: /(?=[^\n])\s/,
+              relevance: 0
+            }
+          ]
+        }
+      ]
+    }
+  );
+  const COMMENT2 = {
+    className: "comment",
+    variants: [
+      JSDOC_COMMENT,
+      hljs.C_BLOCK_COMMENT_MODE,
+      hljs.C_LINE_COMMENT_MODE
+    ]
+  };
+  const SUBST_INTERNALS = [
+    hljs.APOS_STRING_MODE,
+    hljs.QUOTE_STRING_MODE,
+    HTML_TEMPLATE,
+    CSS_TEMPLATE,
+    GRAPHQL_TEMPLATE,
+    TEMPLATE_STRING,
+    // Skip numbers when they are part of a variable name
+    { match: /\$\d+/ },
+    NUMBER
+    // This is intentional:
+    // See https://github.com/highlightjs/highlight.js/issues/3288
+    // hljs.REGEXP_MODE
+  ];
+  SUBST.contains = SUBST_INTERNALS.concat({
+    // we need to pair up {} inside our subst to prevent
+    // it from ending too early by matching another }
+    begin: /\{/,
+    end: /\}/,
+    keywords: KEYWORDS$1$1,
+    contains: [
+      "self"
+    ].concat(SUBST_INTERNALS)
+  });
+  const SUBST_AND_COMMENTS = [].concat(COMMENT2, SUBST.contains);
+  const PARAMS_CONTAINS = SUBST_AND_COMMENTS.concat([
+    // eat recursive parens in sub expressions
+    {
+      begin: /(\s*)\(/,
+      end: /\)/,
+      keywords: KEYWORDS$1$1,
+      contains: ["self"].concat(SUBST_AND_COMMENTS)
+    }
+  ]);
+  const PARAMS = {
+    className: "params",
+    // convert this to negative lookbehind in v12
+    begin: /(\s*)\(/,
+    // to match the parms with
+    end: /\)/,
+    excludeBegin: true,
+    excludeEnd: true,
+    keywords: KEYWORDS$1$1,
+    contains: PARAMS_CONTAINS
+  };
+  const CLASS_OR_EXTENDS = {
+    variants: [
+      // class Car extends vehicle
+      {
+        match: [
+          /class/,
+          /\s+/,
+          IDENT_RE$1$1,
+          /\s+/,
+          /extends/,
+          /\s+/,
+          regex2.concat(IDENT_RE$1$1, "(", regex2.concat(/\./, IDENT_RE$1$1), ")*")
+        ],
+        scope: {
+          1: "keyword",
+          3: "title.class",
+          5: "keyword",
+          7: "title.class.inherited"
+        }
+      },
+      // class Car
+      {
+        match: [
+          /class/,
+          /\s+/,
+          IDENT_RE$1$1
+        ],
+        scope: {
+          1: "keyword",
+          3: "title.class"
+        }
+      }
+    ]
+  };
+  const CLASS_REFERENCE = {
+    relevance: 0,
+    match: regex2.either(
+      // Hard coded exceptions
+      /\bJSON/,
+      // Float32Array, OutT
+      /\b[A-Z][a-z]+([A-Z][a-z]*|\d)*/,
+      // CSSFactory, CSSFactoryT
+      /\b[A-Z]{2,}([A-Z][a-z]+|\d)+([A-Z][a-z]*)*/,
+      // FPs, FPsT
+      /\b[A-Z]{2,}[a-z]+([A-Z][a-z]+|\d)*([A-Z][a-z]*)*/
+      // P
+      // single letters are not highlighted
+      // BLAH
+      // this will be flagged as a UPPER_CASE_CONSTANT instead
+    ),
+    className: "title.class",
+    keywords: {
+      _: [
+        // se we still get relevance credit for JS library classes
+        ...TYPES$1,
+        ...ERROR_TYPES$1
+      ]
+    }
+  };
+  const USE_STRICT = {
+    label: "use_strict",
+    className: "meta",
+    relevance: 10,
+    begin: /^\s*['"]use (strict|asm)['"]/
+  };
+  const FUNCTION_DEFINITION = {
+    variants: [
+      {
+        match: [
+          /function/,
+          /\s+/,
+          IDENT_RE$1$1,
+          /(?=\s*\()/
+        ]
+      },
+      // anonymous function
+      {
+        match: [
+          /function/,
+          /\s*(?=\()/
+        ]
+      }
+    ],
+    className: {
+      1: "keyword",
+      3: "title.function"
+    },
+    label: "func.def",
+    contains: [PARAMS],
+    illegal: /%/
+  };
+  const UPPER_CASE_CONSTANT = {
+    relevance: 0,
+    match: /\b[A-Z][A-Z_0-9]+\b/,
+    className: "variable.constant"
+  };
+  function noneOf(list) {
+    return regex2.concat("(?!", list.join("|"), ")");
+  }
+  const FUNCTION_CALL = {
+    match: regex2.concat(
+      /\b/,
+      noneOf([
+        ...BUILT_IN_GLOBALS$1,
+        "super",
+        "import"
+      ].map((x2) => `${x2}\\s*\\(`)),
+      IDENT_RE$1$1,
+      regex2.lookahead(/\s*\(/)
+    ),
+    className: "title.function",
+    relevance: 0
+  };
+  const PROPERTY_ACCESS = {
+    begin: regex2.concat(/\./, regex2.lookahead(
+      regex2.concat(IDENT_RE$1$1, /(?![0-9A-Za-z$_(])/)
+    )),
+    end: IDENT_RE$1$1,
+    excludeBegin: true,
+    keywords: "prototype",
+    className: "property",
+    relevance: 0
+  };
+  const GETTER_OR_SETTER = {
+    match: [
+      /get|set/,
+      /\s+/,
+      IDENT_RE$1$1,
+      /(?=\()/
+    ],
+    className: {
+      1: "keyword",
+      3: "title.function"
+    },
+    contains: [
+      {
+        // eat to avoid empty params
+        begin: /\(\)/
+      },
+      PARAMS
+    ]
+  };
+  const FUNC_LEAD_IN_RE = "(\\([^()]*(\\([^()]*(\\([^()]*\\)[^()]*)*\\)[^()]*)*\\)|" + hljs.UNDERSCORE_IDENT_RE + ")\\s*=>";
+  const FUNCTION_VARIABLE = {
+    match: [
+      /const|var|let/,
+      /\s+/,
+      IDENT_RE$1$1,
+      /\s*/,
+      /=\s*/,
+      /(async\s*)?/,
+      // async is optional
+      regex2.lookahead(FUNC_LEAD_IN_RE)
+    ],
+    keywords: "async",
+    className: {
+      1: "keyword",
+      3: "title.function"
+    },
+    contains: [
+      PARAMS
+    ]
+  };
+  return {
+    name: "JavaScript",
+    aliases: ["js", "jsx", "mjs", "cjs"],
+    keywords: KEYWORDS$1$1,
+    // this will be extended by TypeScript
+    exports: { PARAMS_CONTAINS, CLASS_REFERENCE },
+    illegal: /#(?![$_A-z])/,
+    contains: [
+      hljs.SHEBANG({
+        label: "shebang",
+        binary: "node",
+        relevance: 5
+      }),
+      USE_STRICT,
+      hljs.APOS_STRING_MODE,
+      hljs.QUOTE_STRING_MODE,
+      HTML_TEMPLATE,
+      CSS_TEMPLATE,
+      GRAPHQL_TEMPLATE,
+      TEMPLATE_STRING,
+      COMMENT2,
+      // Skip numbers when they are part of a variable name
+      { match: /\$\d+/ },
+      NUMBER,
+      CLASS_REFERENCE,
+      {
+        scope: "attr",
+        match: IDENT_RE$1$1 + regex2.lookahead(":"),
+        relevance: 0
+      },
+      FUNCTION_VARIABLE,
+      {
+        // "value" container
+        begin: "(" + hljs.RE_STARTERS_RE + "|\\b(case|return|throw)\\b)\\s*",
+        keywords: "return throw case",
+        relevance: 0,
+        contains: [
+          COMMENT2,
+          hljs.REGEXP_MODE,
+          {
+            className: "function",
+            // we have to count the parens to make sure we actually have the
+            // correct bounding ( ) before the =>.  There could be any number of
+            // sub-expressions inside also surrounded by parens.
+            begin: FUNC_LEAD_IN_RE,
+            returnBegin: true,
+            end: "\\s*=>",
+            contains: [
+              {
+                className: "params",
+                variants: [
+                  {
+                    begin: hljs.UNDERSCORE_IDENT_RE,
+                    relevance: 0
+                  },
+                  {
+                    className: null,
+                    begin: /\(\s*\)/,
+                    skip: true
+                  },
+                  {
+                    begin: /(\s*)\(/,
+                    end: /\)/,
+                    excludeBegin: true,
+                    excludeEnd: true,
+                    keywords: KEYWORDS$1$1,
+                    contains: PARAMS_CONTAINS
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            // could be a comma delimited list of params to a function call
+            begin: /,/,
+            relevance: 0
+          },
+          {
+            match: /\s+/,
+            relevance: 0
+          },
+          {
+            // JSX
+            variants: [
+              { begin: FRAGMENT.begin, end: FRAGMENT.end },
+              { match: XML_SELF_CLOSING },
+              {
+                begin: XML_TAG.begin,
+                // we carefully check the opening tag to see if it truly
+                // is a tag and not a false positive
+                "on:begin": XML_TAG.isTrulyOpeningTag,
+                end: XML_TAG.end
+              }
+            ],
+            subLanguage: "xml",
+            contains: [
+              {
+                begin: XML_TAG.begin,
+                end: XML_TAG.end,
+                skip: true,
+                contains: ["self"]
+              }
+            ]
+          }
+        ]
+      },
+      FUNCTION_DEFINITION,
+      {
+        // prevent this from getting swallowed up by function
+        // since they appear "function like"
+        beginKeywords: "while if switch catch for"
+      },
+      {
+        // we have to count the parens to make sure we actually have the correct
+        // bounding ( ).  There could be any number of sub-expressions inside
+        // also surrounded by parens.
+        begin: "\\b(?!function)" + hljs.UNDERSCORE_IDENT_RE + "\\([^()]*(\\([^()]*(\\([^()]*\\)[^()]*)*\\)[^()]*)*\\)\\s*\\{",
+        // end parens
+        returnBegin: true,
+        label: "func.def",
+        contains: [
+          PARAMS,
+          hljs.inherit(hljs.TITLE_MODE, { begin: IDENT_RE$1$1, className: "title.function" })
+        ]
+      },
+      // catch ... so it won't trigger the property rule below
+      {
+        match: /\.\.\./,
+        relevance: 0
+      },
+      PROPERTY_ACCESS,
+      // hack: prevents detection of keywords in some circumstances
+      // .keyword()
+      // $keyword = x
+      {
+        match: "\\$" + IDENT_RE$1$1,
+        relevance: 0
+      },
+      {
+        match: [/\bconstructor(?=\s*\()/],
+        className: { 1: "title.function" },
+        contains: [PARAMS]
+      },
+      FUNCTION_CALL,
+      UPPER_CASE_CONSTANT,
+      CLASS_OR_EXTENDS,
+      GETTER_OR_SETTER,
+      {
+        match: /\$[(.]/
+        // relevance booster for a pattern common to JS libs: `$(something)` and `$.something`
+      }
+    ]
+  };
+}
+function json(hljs) {
+  const ATTRIBUTE = {
+    className: "attr",
+    begin: /"(\\.|[^\\"\r\n])*"(?=\s*:)/,
+    relevance: 1.01
+  };
+  const PUNCTUATION = {
+    match: /[{}[\],:]/,
+    className: "punctuation",
+    relevance: 0
+  };
+  const LITERALS2 = [
+    "true",
+    "false",
+    "null"
+  ];
+  const LITERALS_MODE = {
+    scope: "literal",
+    beginKeywords: LITERALS2.join(" ")
+  };
+  return {
+    name: "JSON",
+    aliases: ["jsonc"],
+    keywords: {
+      literal: LITERALS2
+    },
+    contains: [
+      ATTRIBUTE,
+      PUNCTUATION,
+      hljs.QUOTE_STRING_MODE,
+      LITERALS_MODE,
+      hljs.C_NUMBER_MODE,
+      hljs.C_LINE_COMMENT_MODE,
+      hljs.C_BLOCK_COMMENT_MODE
+    ],
+    illegal: "\\S"
+  };
+}
+function markdown(hljs) {
+  const regex2 = hljs.regex;
+  const INLINE_HTML = {
+    begin: /<\/?[A-Za-z_]/,
+    end: ">",
+    subLanguage: "xml",
+    relevance: 0
+  };
+  const HORIZONTAL_RULE = {
+    begin: "^[-\\*]{3,}",
+    end: "$"
+  };
+  const CODE = {
+    className: "code",
+    variants: [
+      // TODO: fix to allow these to work with sublanguage also
+      { begin: "(`{3,})[^`](.|\\n)*?\\1`*[ ]*" },
+      { begin: "(~{3,})[^~](.|\\n)*?\\1~*[ ]*" },
+      // needed to allow markdown as a sublanguage to work
+      {
+        begin: "```",
+        end: "```+[ ]*$"
+      },
+      {
+        begin: "~~~",
+        end: "~~~+[ ]*$"
+      },
+      { begin: "`.+?`" },
+      {
+        begin: "(?=^( {4}|\\t))",
+        // use contains to gobble up multiple lines to allow the block to be whatever size
+        // but only have a single open/close tag vs one per line
+        contains: [
+          {
+            begin: "^( {4}|\\t)",
+            end: "(\\n)$"
+          }
+        ],
+        relevance: 0
+      }
+    ]
+  };
+  const LIST = {
+    className: "bullet",
+    begin: "^[ 	]*([*+-]|(\\d+\\.))(?=\\s+)",
+    end: "\\s+",
+    excludeEnd: true
+  };
+  const LINK_REFERENCE = {
+    begin: /^\[[^\n]+\]:/,
+    returnBegin: true,
+    contains: [
+      {
+        className: "symbol",
+        begin: /\[/,
+        end: /\]/,
+        excludeBegin: true,
+        excludeEnd: true
+      },
+      {
+        className: "link",
+        begin: /:\s*/,
+        end: /$/,
+        excludeBegin: true
+      }
+    ]
+  };
+  const URL_SCHEME = /[A-Za-z][A-Za-z0-9+.-]*/;
+  const LINK = {
+    variants: [
+      // too much like nested array access in so many languages
+      // to have any real relevance
+      {
+        begin: /\[.+?\]\[.*?\]/,
+        relevance: 0
+      },
+      // popular internet URLs
+      {
+        begin: /\[.+?\]\(((data|javascript|mailto):|(?:http|ftp)s?:\/\/).*?\)/,
+        relevance: 2
+      },
+      {
+        begin: regex2.concat(/\[.+?\]\(/, URL_SCHEME, /:\/\/.*?\)/),
+        relevance: 2
+      },
+      // relative urls
+      {
+        begin: /\[.+?\]\([./?&#].*?\)/,
+        relevance: 1
+      },
+      // whatever else, lower relevance (might not be a link at all)
+      {
+        begin: /\[.*?\]\(.*?\)/,
+        relevance: 0
+      }
+    ],
+    returnBegin: true,
+    contains: [
+      {
+        // empty strings for alt or link text
+        match: /\[(?=\])/
+      },
+      {
+        className: "string",
+        relevance: 0,
+        begin: "\\[",
+        end: "\\]",
+        excludeBegin: true,
+        returnEnd: true
+      },
+      {
+        className: "link",
+        relevance: 0,
+        begin: "\\]\\(",
+        end: "\\)",
+        excludeBegin: true,
+        excludeEnd: true
+      },
+      {
+        className: "symbol",
+        relevance: 0,
+        begin: "\\]\\[",
+        end: "\\]",
+        excludeBegin: true,
+        excludeEnd: true
+      }
+    ]
+  };
+  const BOLD = {
+    className: "strong",
+    contains: [],
+    // defined later
+    variants: [
+      {
+        begin: /_{2}(?!\s)/,
+        end: /_{2}/
+      },
+      {
+        begin: /\*{2}(?!\s)/,
+        end: /\*{2}/
+      }
+    ]
+  };
+  const ITALIC = {
+    className: "emphasis",
+    contains: [],
+    // defined later
+    variants: [
+      {
+        begin: /\*(?![*\s])/,
+        end: /\*/
+      },
+      {
+        begin: /_(?![_\s])/,
+        end: /_/,
+        relevance: 0
+      }
+    ]
+  };
+  const BOLD_WITHOUT_ITALIC = hljs.inherit(BOLD, { contains: [] });
+  const ITALIC_WITHOUT_BOLD = hljs.inherit(ITALIC, { contains: [] });
+  BOLD.contains.push(ITALIC_WITHOUT_BOLD);
+  ITALIC.contains.push(BOLD_WITHOUT_ITALIC);
+  let CONTAINABLE = [
+    INLINE_HTML,
+    LINK
+  ];
+  [
+    BOLD,
+    ITALIC,
+    BOLD_WITHOUT_ITALIC,
+    ITALIC_WITHOUT_BOLD
+  ].forEach((m) => {
+    m.contains = m.contains.concat(CONTAINABLE);
+  });
+  CONTAINABLE = CONTAINABLE.concat(BOLD, ITALIC);
+  const HEADER = {
+    className: "section",
+    variants: [
+      {
+        begin: "^#{1,6}",
+        end: "$",
+        contains: CONTAINABLE
+      },
+      {
+        begin: "(?=^.+?\\n[=-]{2,}$)",
+        contains: [
+          { begin: "^[=-]*$" },
+          {
+            begin: "^",
+            end: "\\n",
+            contains: CONTAINABLE
+          }
+        ]
+      }
+    ]
+  };
+  const BLOCKQUOTE = {
+    className: "quote",
+    begin: "^>\\s+",
+    contains: CONTAINABLE,
+    end: "$"
+  };
+  const ENTITY = {
+    //https://spec.commonmark.org/0.31.2/#entity-references
+    scope: "literal",
+    match: /&([a-zA-Z0-9]+|#[0-9]{1,7}|#[Xx][0-9a-fA-F]{1,6});/
+  };
+  return {
+    name: "Markdown",
+    aliases: [
+      "md",
+      "mkdown",
+      "mkd"
+    ],
+    contains: [
+      HEADER,
+      INLINE_HTML,
+      LIST,
+      BOLD,
+      ITALIC,
+      BLOCKQUOTE,
+      CODE,
+      HORIZONTAL_RULE,
+      LINK,
+      LINK_REFERENCE,
+      ENTITY
+    ]
+  };
+}
+function python(hljs) {
+  const regex2 = hljs.regex;
+  const IDENT_RE2 = new RegExp("[\\p{XID_Start}_]\\p{XID_Continue}*", "u");
+  const RESERVED_WORDS = [
+    "and",
+    "as",
+    "assert",
+    "async",
+    "await",
+    "break",
+    "case",
+    "class",
+    "continue",
+    "def",
+    "del",
+    "elif",
+    "else",
+    "except",
+    "finally",
+    "for",
+    "from",
+    "global",
+    "if",
+    "import",
+    "in",
+    "is",
+    "lambda",
+    "match",
+    "nonlocal|10",
+    "not",
+    "or",
+    "pass",
+    "raise",
+    "return",
+    "try",
+    "while",
+    "with",
+    "yield"
+  ];
+  const BUILT_INS2 = [
+    "__import__",
+    "abs",
+    "all",
+    "any",
+    "ascii",
+    "bin",
+    "bool",
+    "breakpoint",
+    "bytearray",
+    "bytes",
+    "callable",
+    "chr",
+    "classmethod",
+    "compile",
+    "complex",
+    "delattr",
+    "dict",
+    "dir",
+    "divmod",
+    "enumerate",
+    "eval",
+    "exec",
+    "filter",
+    "float",
+    "format",
+    "frozenset",
+    "getattr",
+    "globals",
+    "hasattr",
+    "hash",
+    "help",
+    "hex",
+    "id",
+    "input",
+    "int",
+    "isinstance",
+    "issubclass",
+    "iter",
+    "len",
+    "list",
+    "locals",
+    "map",
+    "max",
+    "memoryview",
+    "min",
+    "next",
+    "object",
+    "oct",
+    "open",
+    "ord",
+    "pow",
+    "print",
+    "property",
+    "range",
+    "repr",
+    "reversed",
+    "round",
+    "set",
+    "setattr",
+    "slice",
+    "sorted",
+    "staticmethod",
+    "str",
+    "sum",
+    "super",
+    "tuple",
+    "type",
+    "vars",
+    "zip"
+  ];
+  const LITERALS2 = [
+    "__debug__",
+    "Ellipsis",
+    "False",
+    "None",
+    "NotImplemented",
+    "True"
+  ];
+  const TYPES2 = [
+    "Any",
+    "Callable",
+    "Coroutine",
+    "Dict",
+    "List",
+    "Literal",
+    "Generic",
+    "Optional",
+    "Sequence",
+    "Set",
+    "Tuple",
+    "Type",
+    "Union"
+  ];
+  const KEYWORDS2 = {
+    $pattern: /[A-Za-z]\w+|__\w+__/,
+    keyword: RESERVED_WORDS,
+    built_in: BUILT_INS2,
+    literal: LITERALS2,
+    type: TYPES2
+  };
+  const PROMPT = {
+    className: "meta",
+    begin: /^(>>>|\.\.\.) /
+  };
+  const SUBST = {
+    className: "subst",
+    begin: /\{/,
+    end: /\}/,
+    keywords: KEYWORDS2,
+    illegal: /#/
+  };
+  const LITERAL_BRACKET = {
+    begin: /\{\{/,
+    relevance: 0
+  };
+  const STRING = {
+    className: "string",
+    contains: [hljs.BACKSLASH_ESCAPE],
+    variants: [
+      {
+        begin: /([uU]|[bB]|[rR]|[bB][rR]|[rR][bB])?'''/,
+        end: /'''/,
+        contains: [
+          hljs.BACKSLASH_ESCAPE,
+          PROMPT
+        ],
+        relevance: 10
+      },
+      {
+        begin: /([uU]|[bB]|[rR]|[bB][rR]|[rR][bB])?"""/,
+        end: /"""/,
+        contains: [
+          hljs.BACKSLASH_ESCAPE,
+          PROMPT
+        ],
+        relevance: 10
+      },
+      {
+        begin: /([fF][rR]|[rR][fF]|[fF])'''/,
+        end: /'''/,
+        contains: [
+          hljs.BACKSLASH_ESCAPE,
+          PROMPT,
+          LITERAL_BRACKET,
+          SUBST
+        ]
+      },
+      {
+        begin: /([fF][rR]|[rR][fF]|[fF])"""/,
+        end: /"""/,
+        contains: [
+          hljs.BACKSLASH_ESCAPE,
+          PROMPT,
+          LITERAL_BRACKET,
+          SUBST
+        ]
+      },
+      {
+        begin: /([uU]|[rR])'/,
+        end: /'/,
+        relevance: 10
+      },
+      {
+        begin: /([uU]|[rR])"/,
+        end: /"/,
+        relevance: 10
+      },
+      {
+        begin: /([bB]|[bB][rR]|[rR][bB])'/,
+        end: /'/
+      },
+      {
+        begin: /([bB]|[bB][rR]|[rR][bB])"/,
+        end: /"/
+      },
+      {
+        begin: /([fF][rR]|[rR][fF]|[fF])'/,
+        end: /'/,
+        contains: [
+          hljs.BACKSLASH_ESCAPE,
+          LITERAL_BRACKET,
+          SUBST
+        ]
+      },
+      {
+        begin: /([fF][rR]|[rR][fF]|[fF])"/,
+        end: /"/,
+        contains: [
+          hljs.BACKSLASH_ESCAPE,
+          LITERAL_BRACKET,
+          SUBST
+        ]
+      },
+      hljs.APOS_STRING_MODE,
+      hljs.QUOTE_STRING_MODE
+    ]
+  };
+  const digitpart = "[0-9](_?[0-9])*";
+  const pointfloat = `(\\b(${digitpart}))?\\.(${digitpart})|\\b(${digitpart})\\.`;
+  const lookahead = `\\b|${RESERVED_WORDS.join("|")}`;
+  const NUMBER = {
+    className: "number",
+    relevance: 0,
+    variants: [
+      // exponentfloat, pointfloat
+      // https://docs.python.org/3.9/reference/lexical_analysis.html#floating-point-literals
+      // optionally imaginary
+      // https://docs.python.org/3.9/reference/lexical_analysis.html#imaginary-literals
+      // Note: no leading \b because floats can start with a decimal point
+      // and we don't want to mishandle e.g. `fn(.5)`,
+      // no trailing \b for pointfloat because it can end with a decimal point
+      // and we don't want to mishandle e.g. `0..hex()`; this should be safe
+      // because both MUST contain a decimal point and so cannot be confused with
+      // the interior part of an identifier
+      {
+        begin: `(\\b(${digitpart})|(${pointfloat}))[eE][+-]?(${digitpart})[jJ]?(?=${lookahead})`
+      },
+      {
+        begin: `(${pointfloat})[jJ]?`
+      },
+      // decinteger, bininteger, octinteger, hexinteger
+      // https://docs.python.org/3.9/reference/lexical_analysis.html#integer-literals
+      // optionally "long" in Python 2
+      // https://docs.python.org/2.7/reference/lexical_analysis.html#integer-and-long-integer-literals
+      // decinteger is optionally imaginary
+      // https://docs.python.org/3.9/reference/lexical_analysis.html#imaginary-literals
+      {
+        begin: `\\b([1-9](_?[0-9])*|0+(_?0)*)[lLjJ]?(?=${lookahead})`
+      },
+      {
+        begin: `\\b0[bB](_?[01])+[lL]?(?=${lookahead})`
+      },
+      {
+        begin: `\\b0[oO](_?[0-7])+[lL]?(?=${lookahead})`
+      },
+      {
+        begin: `\\b0[xX](_?[0-9a-fA-F])+[lL]?(?=${lookahead})`
+      },
+      // imagnumber (digitpart-based)
+      // https://docs.python.org/3.9/reference/lexical_analysis.html#imaginary-literals
+      {
+        begin: `\\b(${digitpart})[jJ](?=${lookahead})`
+      }
+    ]
+  };
+  const COMMENT_TYPE = {
+    className: "comment",
+    begin: regex2.lookahead(/# type:/),
+    end: /$/,
+    keywords: KEYWORDS2,
+    contains: [
+      {
+        // prevent keywords from coloring `type`
+        begin: /# type:/
+      },
+      // comment within a datatype comment includes no keywords
+      {
+        begin: /#/,
+        end: /\b\B/,
+        endsWithParent: true
+      }
+    ]
+  };
+  const PARAMS = {
+    className: "params",
+    variants: [
+      // Exclude params in functions without params
+      {
+        className: "",
+        begin: /\(\s*\)/,
+        skip: true
+      },
+      {
+        begin: /\(/,
+        end: /\)/,
+        excludeBegin: true,
+        excludeEnd: true,
+        keywords: KEYWORDS2,
+        contains: [
+          "self",
+          PROMPT,
+          NUMBER,
+          STRING,
+          hljs.HASH_COMMENT_MODE
+        ]
+      }
+    ]
+  };
+  SUBST.contains = [
+    STRING,
+    NUMBER,
+    PROMPT
+  ];
+  return {
+    name: "Python",
+    aliases: [
+      "py",
+      "gyp",
+      "ipython"
+    ],
+    unicodeRegex: true,
+    keywords: KEYWORDS2,
+    illegal: /(<\/|\?)|=>/,
+    contains: [
+      PROMPT,
+      NUMBER,
+      {
+        // very common convention
+        scope: "variable.language",
+        match: /\bself\b/
+      },
+      {
+        // eat "if" prior to string so that it won't accidentally be
+        // labeled as an f-string
+        beginKeywords: "if",
+        relevance: 0
+      },
+      { match: /\bor\b/, scope: "keyword" },
+      STRING,
+      COMMENT_TYPE,
+      hljs.HASH_COMMENT_MODE,
+      {
+        match: [
+          /\bdef/,
+          /\s+/,
+          IDENT_RE2
+        ],
+        scope: {
+          1: "keyword",
+          3: "title.function"
+        },
+        contains: [PARAMS]
+      },
+      {
+        variants: [
+          {
+            match: [
+              /\bclass/,
+              /\s+/,
+              IDENT_RE2,
+              /\s*/,
+              /\(\s*/,
+              IDENT_RE2,
+              /\s*\)/
+            ]
+          },
+          {
+            match: [
+              /\bclass/,
+              /\s+/,
+              IDENT_RE2
+            ]
+          }
+        ],
+        scope: {
+          1: "keyword",
+          3: "title.class",
+          6: "title.class.inherited"
+        }
+      },
+      {
+        className: "meta",
+        begin: /^[\t ]*@/,
+        end: /(?=#)|$/,
+        contains: [
+          NUMBER,
+          PARAMS,
+          STRING
+        ]
+      }
+    ]
+  };
+}
+const IDENT_RE = "[A-Za-z$_][0-9A-Za-z$_]*";
+const KEYWORDS = [
+  "as",
+  // for exports
+  "in",
+  "of",
+  "if",
+  "for",
+  "while",
+  "finally",
+  "var",
+  "new",
+  "function",
+  "do",
+  "return",
+  "void",
+  "else",
+  "break",
+  "catch",
+  "instanceof",
+  "with",
+  "throw",
+  "case",
+  "default",
+  "try",
+  "switch",
+  "continue",
+  "typeof",
+  "delete",
+  "let",
+  "yield",
+  "const",
+  "class",
+  // JS handles these with a special rule
+  // "get",
+  // "set",
+  "debugger",
+  "async",
+  "await",
+  "static",
+  "import",
+  "from",
+  "export",
+  "extends",
+  // It's reached stage 3, which is "recommended for implementation":
+  "using"
+];
+const LITERALS = [
+  "true",
+  "false",
+  "null",
+  "undefined",
+  "NaN",
+  "Infinity"
+];
+const TYPES = [
+  // Fundamental objects
+  "Object",
+  "Function",
+  "Boolean",
+  "Symbol",
+  // numbers and dates
+  "Math",
+  "Date",
+  "Number",
+  "BigInt",
+  // text
+  "String",
+  "RegExp",
+  // Indexed collections
+  "Array",
+  "Float32Array",
+  "Float64Array",
+  "Int8Array",
+  "Uint8Array",
+  "Uint8ClampedArray",
+  "Int16Array",
+  "Int32Array",
+  "Uint16Array",
+  "Uint32Array",
+  "BigInt64Array",
+  "BigUint64Array",
+  // Keyed collections
+  "Set",
+  "Map",
+  "WeakSet",
+  "WeakMap",
+  // Structured data
+  "ArrayBuffer",
+  "SharedArrayBuffer",
+  "Atomics",
+  "DataView",
+  "JSON",
+  // Control abstraction objects
+  "Promise",
+  "Generator",
+  "GeneratorFunction",
+  "AsyncFunction",
+  // Reflection
+  "Reflect",
+  "Proxy",
+  // Internationalization
+  "Intl",
+  // WebAssembly
+  "WebAssembly"
+];
+const ERROR_TYPES = [
+  "Error",
+  "EvalError",
+  "InternalError",
+  "RangeError",
+  "ReferenceError",
+  "SyntaxError",
+  "TypeError",
+  "URIError"
+];
+const BUILT_IN_GLOBALS = [
+  "setInterval",
+  "setTimeout",
+  "clearInterval",
+  "clearTimeout",
+  "require",
+  "exports",
+  "eval",
+  "isFinite",
+  "isNaN",
+  "parseFloat",
+  "parseInt",
+  "decodeURI",
+  "decodeURIComponent",
+  "encodeURI",
+  "encodeURIComponent",
+  "escape",
+  "unescape"
+];
+const BUILT_IN_VARIABLES = [
+  "arguments",
+  "this",
+  "super",
+  "console",
+  "window",
+  "document",
+  "localStorage",
+  "sessionStorage",
+  "module",
+  "global"
+  // Node.js
+];
+const BUILT_INS = [].concat(
+  BUILT_IN_GLOBALS,
+  TYPES,
+  ERROR_TYPES
+);
+function javascript(hljs) {
+  const regex2 = hljs.regex;
+  const hasClosingTag = (match2, { after }) => {
+    const tag = "</" + match2[0].slice(1);
+    const pos = match2.input.indexOf(tag, after);
+    return pos !== -1;
+  };
+  const IDENT_RE$12 = IDENT_RE;
+  const FRAGMENT = {
+    begin: "<>",
+    end: "</>"
+  };
+  const XML_SELF_CLOSING = /<[A-Za-z0-9\\._:-]+\s*\/>/;
+  const XML_TAG = {
+    begin: /<[A-Za-z0-9\\._:-]+/,
+    end: /\/[A-Za-z0-9\\._:-]+>|\/>/,
+    /**
+     * @param {RegExpMatchArray} match
+     * @param {CallbackResponse} response
+     */
+    isTrulyOpeningTag: (match2, response) => {
+      const afterMatchIndex = match2[0].length + match2.index;
+      const nextChar = match2.input[afterMatchIndex];
+      if (
+        // HTML should not include another raw `<` inside a tag
+        // nested type?
+        // `<Array<Array<number>>`, etc.
+        nextChar === "<" || // the , gives away that this is not HTML
+        // `<T, A extends keyof T, V>`
+        nextChar === ","
+      ) {
+        response.ignoreMatch();
+        return;
+      }
+      if (nextChar === ">") {
+        if (!hasClosingTag(match2, { after: afterMatchIndex })) {
+          response.ignoreMatch();
+        }
+      }
+      let m;
+      const afterMatch = match2.input.substring(afterMatchIndex);
+      if (m = afterMatch.match(/^\s*=/)) {
+        response.ignoreMatch();
+        return;
+      }
+      if (m = afterMatch.match(/^\s+extends\s+/)) {
+        if (m.index === 0) {
+          response.ignoreMatch();
+          return;
+        }
+      }
+    }
+  };
+  const KEYWORDS$12 = {
+    $pattern: IDENT_RE,
+    keyword: KEYWORDS,
+    literal: LITERALS,
+    built_in: BUILT_INS,
+    "variable.language": BUILT_IN_VARIABLES
+  };
+  const decimalDigits = "[0-9](_?[0-9])*";
+  const frac = `\\.(${decimalDigits})`;
+  const decimalInteger = `0|[1-9](_?[0-9])*|0[0-7]*[89][0-9]*`;
+  const NUMBER = {
+    className: "number",
+    variants: [
+      // DecimalLiteral
+      { begin: `(\\b(${decimalInteger})((${frac})|\\.)?|(${frac}))[eE][+-]?(${decimalDigits})\\b` },
+      { begin: `\\b(${decimalInteger})\\b((${frac})\\b|\\.)?|(${frac})\\b` },
+      // DecimalBigIntegerLiteral
+      { begin: `\\b(0|[1-9](_?[0-9])*)n\\b` },
+      // NonDecimalIntegerLiteral
+      { begin: "\\b0[xX][0-9a-fA-F](_?[0-9a-fA-F])*n?\\b" },
+      { begin: "\\b0[bB][0-1](_?[0-1])*n?\\b" },
+      { begin: "\\b0[oO][0-7](_?[0-7])*n?\\b" },
+      // LegacyOctalIntegerLiteral (does not include underscore separators)
+      // https://tc39.es/ecma262/#sec-additional-syntax-numeric-literals
+      { begin: "\\b0[0-7]+n?\\b" }
+    ],
+    relevance: 0
+  };
+  const SUBST = {
+    className: "subst",
+    begin: "\\$\\{",
+    end: "\\}",
+    keywords: KEYWORDS$12,
+    contains: []
+    // defined later
+  };
+  const HTML_TEMPLATE = {
+    begin: ".?html`",
+    end: "",
+    starts: {
+      end: "`",
+      returnEnd: false,
+      contains: [
+        hljs.BACKSLASH_ESCAPE,
+        SUBST
+      ],
+      subLanguage: "xml"
+    }
+  };
+  const CSS_TEMPLATE = {
+    begin: ".?css`",
+    end: "",
+    starts: {
+      end: "`",
+      returnEnd: false,
+      contains: [
+        hljs.BACKSLASH_ESCAPE,
+        SUBST
+      ],
+      subLanguage: "css"
+    }
+  };
+  const GRAPHQL_TEMPLATE = {
+    begin: ".?gql`",
+    end: "",
+    starts: {
+      end: "`",
+      returnEnd: false,
+      contains: [
+        hljs.BACKSLASH_ESCAPE,
+        SUBST
+      ],
+      subLanguage: "graphql"
+    }
+  };
+  const TEMPLATE_STRING = {
+    className: "string",
+    begin: "`",
+    end: "`",
+    contains: [
+      hljs.BACKSLASH_ESCAPE,
+      SUBST
+    ]
+  };
+  const JSDOC_COMMENT = hljs.COMMENT(
+    /\/\*\*(?!\/)/,
+    "\\*/",
+    {
+      relevance: 0,
+      contains: [
+        {
+          begin: "(?=@[A-Za-z]+)",
+          relevance: 0,
+          contains: [
+            {
+              className: "doctag",
+              begin: "@[A-Za-z]+"
+            },
+            {
+              className: "type",
+              begin: "\\{",
+              end: "\\}",
+              excludeEnd: true,
+              excludeBegin: true,
+              relevance: 0
+            },
+            {
+              className: "variable",
+              begin: IDENT_RE$12 + "(?=\\s*(-)|$)",
+              endsParent: true,
+              relevance: 0
+            },
+            // eat spaces (not newlines) so we can find
+            // types or variables
+            {
+              begin: /(?=[^\n])\s/,
+              relevance: 0
+            }
+          ]
+        }
+      ]
+    }
+  );
+  const COMMENT2 = {
+    className: "comment",
+    variants: [
+      JSDOC_COMMENT,
+      hljs.C_BLOCK_COMMENT_MODE,
+      hljs.C_LINE_COMMENT_MODE
+    ]
+  };
+  const SUBST_INTERNALS = [
+    hljs.APOS_STRING_MODE,
+    hljs.QUOTE_STRING_MODE,
+    HTML_TEMPLATE,
+    CSS_TEMPLATE,
+    GRAPHQL_TEMPLATE,
+    TEMPLATE_STRING,
+    // Skip numbers when they are part of a variable name
+    { match: /\$\d+/ },
+    NUMBER
+    // This is intentional:
+    // See https://github.com/highlightjs/highlight.js/issues/3288
+    // hljs.REGEXP_MODE
+  ];
+  SUBST.contains = SUBST_INTERNALS.concat({
+    // we need to pair up {} inside our subst to prevent
+    // it from ending too early by matching another }
+    begin: /\{/,
+    end: /\}/,
+    keywords: KEYWORDS$12,
+    contains: [
+      "self"
+    ].concat(SUBST_INTERNALS)
+  });
+  const SUBST_AND_COMMENTS = [].concat(COMMENT2, SUBST.contains);
+  const PARAMS_CONTAINS = SUBST_AND_COMMENTS.concat([
+    // eat recursive parens in sub expressions
+    {
+      begin: /(\s*)\(/,
+      end: /\)/,
+      keywords: KEYWORDS$12,
+      contains: ["self"].concat(SUBST_AND_COMMENTS)
+    }
+  ]);
+  const PARAMS = {
+    className: "params",
+    // convert this to negative lookbehind in v12
+    begin: /(\s*)\(/,
+    // to match the parms with
+    end: /\)/,
+    excludeBegin: true,
+    excludeEnd: true,
+    keywords: KEYWORDS$12,
+    contains: PARAMS_CONTAINS
+  };
+  const CLASS_OR_EXTENDS = {
+    variants: [
+      // class Car extends vehicle
+      {
+        match: [
+          /class/,
+          /\s+/,
+          IDENT_RE$12,
+          /\s+/,
+          /extends/,
+          /\s+/,
+          regex2.concat(IDENT_RE$12, "(", regex2.concat(/\./, IDENT_RE$12), ")*")
+        ],
+        scope: {
+          1: "keyword",
+          3: "title.class",
+          5: "keyword",
+          7: "title.class.inherited"
+        }
+      },
+      // class Car
+      {
+        match: [
+          /class/,
+          /\s+/,
+          IDENT_RE$12
+        ],
+        scope: {
+          1: "keyword",
+          3: "title.class"
+        }
+      }
+    ]
+  };
+  const CLASS_REFERENCE = {
+    relevance: 0,
+    match: regex2.either(
+      // Hard coded exceptions
+      /\bJSON/,
+      // Float32Array, OutT
+      /\b[A-Z][a-z]+([A-Z][a-z]*|\d)*/,
+      // CSSFactory, CSSFactoryT
+      /\b[A-Z]{2,}([A-Z][a-z]+|\d)+([A-Z][a-z]*)*/,
+      // FPs, FPsT
+      /\b[A-Z]{2,}[a-z]+([A-Z][a-z]+|\d)*([A-Z][a-z]*)*/
+      // P
+      // single letters are not highlighted
+      // BLAH
+      // this will be flagged as a UPPER_CASE_CONSTANT instead
+    ),
+    className: "title.class",
+    keywords: {
+      _: [
+        // se we still get relevance credit for JS library classes
+        ...TYPES,
+        ...ERROR_TYPES
+      ]
+    }
+  };
+  const USE_STRICT = {
+    label: "use_strict",
+    className: "meta",
+    relevance: 10,
+    begin: /^\s*['"]use (strict|asm)['"]/
+  };
+  const FUNCTION_DEFINITION = {
+    variants: [
+      {
+        match: [
+          /function/,
+          /\s+/,
+          IDENT_RE$12,
+          /(?=\s*\()/
+        ]
+      },
+      // anonymous function
+      {
+        match: [
+          /function/,
+          /\s*(?=\()/
+        ]
+      }
+    ],
+    className: {
+      1: "keyword",
+      3: "title.function"
+    },
+    label: "func.def",
+    contains: [PARAMS],
+    illegal: /%/
+  };
+  const UPPER_CASE_CONSTANT = {
+    relevance: 0,
+    match: /\b[A-Z][A-Z_0-9]+\b/,
+    className: "variable.constant"
+  };
+  function noneOf(list) {
+    return regex2.concat("(?!", list.join("|"), ")");
+  }
+  const FUNCTION_CALL = {
+    match: regex2.concat(
+      /\b/,
+      noneOf([
+        ...BUILT_IN_GLOBALS,
+        "super",
+        "import"
+      ].map((x2) => `${x2}\\s*\\(`)),
+      IDENT_RE$12,
+      regex2.lookahead(/\s*\(/)
+    ),
+    className: "title.function",
+    relevance: 0
+  };
+  const PROPERTY_ACCESS = {
+    begin: regex2.concat(/\./, regex2.lookahead(
+      regex2.concat(IDENT_RE$12, /(?![0-9A-Za-z$_(])/)
+    )),
+    end: IDENT_RE$12,
+    excludeBegin: true,
+    keywords: "prototype",
+    className: "property",
+    relevance: 0
+  };
+  const GETTER_OR_SETTER = {
+    match: [
+      /get|set/,
+      /\s+/,
+      IDENT_RE$12,
+      /(?=\()/
+    ],
+    className: {
+      1: "keyword",
+      3: "title.function"
+    },
+    contains: [
+      {
+        // eat to avoid empty params
+        begin: /\(\)/
+      },
+      PARAMS
+    ]
+  };
+  const FUNC_LEAD_IN_RE = "(\\([^()]*(\\([^()]*(\\([^()]*\\)[^()]*)*\\)[^()]*)*\\)|" + hljs.UNDERSCORE_IDENT_RE + ")\\s*=>";
+  const FUNCTION_VARIABLE = {
+    match: [
+      /const|var|let/,
+      /\s+/,
+      IDENT_RE$12,
+      /\s*/,
+      /=\s*/,
+      /(async\s*)?/,
+      // async is optional
+      regex2.lookahead(FUNC_LEAD_IN_RE)
+    ],
+    keywords: "async",
+    className: {
+      1: "keyword",
+      3: "title.function"
+    },
+    contains: [
+      PARAMS
+    ]
+  };
+  return {
+    name: "JavaScript",
+    aliases: ["js", "jsx", "mjs", "cjs"],
+    keywords: KEYWORDS$12,
+    // this will be extended by TypeScript
+    exports: { PARAMS_CONTAINS, CLASS_REFERENCE },
+    illegal: /#(?![$_A-z])/,
+    contains: [
+      hljs.SHEBANG({
+        label: "shebang",
+        binary: "node",
+        relevance: 5
+      }),
+      USE_STRICT,
+      hljs.APOS_STRING_MODE,
+      hljs.QUOTE_STRING_MODE,
+      HTML_TEMPLATE,
+      CSS_TEMPLATE,
+      GRAPHQL_TEMPLATE,
+      TEMPLATE_STRING,
+      COMMENT2,
+      // Skip numbers when they are part of a variable name
+      { match: /\$\d+/ },
+      NUMBER,
+      CLASS_REFERENCE,
+      {
+        scope: "attr",
+        match: IDENT_RE$12 + regex2.lookahead(":"),
+        relevance: 0
+      },
+      FUNCTION_VARIABLE,
+      {
+        // "value" container
+        begin: "(" + hljs.RE_STARTERS_RE + "|\\b(case|return|throw)\\b)\\s*",
+        keywords: "return throw case",
+        relevance: 0,
+        contains: [
+          COMMENT2,
+          hljs.REGEXP_MODE,
+          {
+            className: "function",
+            // we have to count the parens to make sure we actually have the
+            // correct bounding ( ) before the =>.  There could be any number of
+            // sub-expressions inside also surrounded by parens.
+            begin: FUNC_LEAD_IN_RE,
+            returnBegin: true,
+            end: "\\s*=>",
+            contains: [
+              {
+                className: "params",
+                variants: [
+                  {
+                    begin: hljs.UNDERSCORE_IDENT_RE,
+                    relevance: 0
+                  },
+                  {
+                    className: null,
+                    begin: /\(\s*\)/,
+                    skip: true
+                  },
+                  {
+                    begin: /(\s*)\(/,
+                    end: /\)/,
+                    excludeBegin: true,
+                    excludeEnd: true,
+                    keywords: KEYWORDS$12,
+                    contains: PARAMS_CONTAINS
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            // could be a comma delimited list of params to a function call
+            begin: /,/,
+            relevance: 0
+          },
+          {
+            match: /\s+/,
+            relevance: 0
+          },
+          {
+            // JSX
+            variants: [
+              { begin: FRAGMENT.begin, end: FRAGMENT.end },
+              { match: XML_SELF_CLOSING },
+              {
+                begin: XML_TAG.begin,
+                // we carefully check the opening tag to see if it truly
+                // is a tag and not a false positive
+                "on:begin": XML_TAG.isTrulyOpeningTag,
+                end: XML_TAG.end
+              }
+            ],
+            subLanguage: "xml",
+            contains: [
+              {
+                begin: XML_TAG.begin,
+                end: XML_TAG.end,
+                skip: true,
+                contains: ["self"]
+              }
+            ]
+          }
+        ]
+      },
+      FUNCTION_DEFINITION,
+      {
+        // prevent this from getting swallowed up by function
+        // since they appear "function like"
+        beginKeywords: "while if switch catch for"
+      },
+      {
+        // we have to count the parens to make sure we actually have the correct
+        // bounding ( ).  There could be any number of sub-expressions inside
+        // also surrounded by parens.
+        begin: "\\b(?!function)" + hljs.UNDERSCORE_IDENT_RE + "\\([^()]*(\\([^()]*(\\([^()]*\\)[^()]*)*\\)[^()]*)*\\)\\s*\\{",
+        // end parens
+        returnBegin: true,
+        label: "func.def",
+        contains: [
+          PARAMS,
+          hljs.inherit(hljs.TITLE_MODE, { begin: IDENT_RE$12, className: "title.function" })
+        ]
+      },
+      // catch ... so it won't trigger the property rule below
+      {
+        match: /\.\.\./,
+        relevance: 0
+      },
+      PROPERTY_ACCESS,
+      // hack: prevents detection of keywords in some circumstances
+      // .keyword()
+      // $keyword = x
+      {
+        match: "\\$" + IDENT_RE$12,
+        relevance: 0
+      },
+      {
+        match: [/\bconstructor(?=\s*\()/],
+        className: { 1: "title.function" },
+        contains: [PARAMS]
+      },
+      FUNCTION_CALL,
+      UPPER_CASE_CONSTANT,
+      CLASS_OR_EXTENDS,
+      GETTER_OR_SETTER,
+      {
+        match: /\$[(.]/
+        // relevance booster for a pattern common to JS libs: `$(something)` and `$.something`
+      }
+    ]
+  };
+}
+function typescript(hljs) {
+  const regex2 = hljs.regex;
+  const tsLanguage = javascript(hljs);
+  const IDENT_RE$12 = IDENT_RE;
+  const TYPES2 = [
+    "any",
+    "void",
+    "number",
+    "boolean",
+    "string",
+    "object",
+    "never",
+    "symbol",
+    "bigint",
+    "unknown"
+  ];
+  const NAMESPACE = {
+    begin: [
+      /namespace/,
+      /\s+/,
+      hljs.IDENT_RE
+    ],
+    beginScope: {
+      1: "keyword",
+      3: "title.class"
+    }
+  };
+  const INTERFACE = {
+    beginKeywords: "interface",
+    end: /\{/,
+    excludeEnd: true,
+    keywords: {
+      keyword: "interface extends",
+      built_in: TYPES2
+    },
+    contains: [tsLanguage.exports.CLASS_REFERENCE]
+  };
+  const USE_STRICT = {
+    className: "meta",
+    relevance: 10,
+    begin: /^\s*['"]use strict['"]/
+  };
+  const TS_SPECIFIC_KEYWORDS = [
+    "type",
+    // "namespace",
+    "interface",
+    "public",
+    "private",
+    "protected",
+    "implements",
+    "declare",
+    "abstract",
+    "readonly",
+    "enum",
+    "override",
+    "satisfies"
+  ];
+  const KEYWORDS$12 = {
+    $pattern: IDENT_RE,
+    keyword: KEYWORDS.concat(TS_SPECIFIC_KEYWORDS),
+    literal: LITERALS,
+    built_in: BUILT_INS.concat(TYPES2),
+    "variable.language": BUILT_IN_VARIABLES
+  };
+  const DECORATOR = {
+    className: "meta",
+    begin: "@" + IDENT_RE$12
+  };
+  const swapMode = (mode, label, replacement) => {
+    const indx = mode.contains.findIndex((m) => m.label === label);
+    if (indx === -1) {
+      throw new Error("can not find mode to replace");
+    }
+    mode.contains.splice(indx, 1, replacement);
+  };
+  Object.assign(tsLanguage.keywords, KEYWORDS$12);
+  tsLanguage.exports.PARAMS_CONTAINS.push(DECORATOR);
+  const ATTRIBUTE_HIGHLIGHT = tsLanguage.contains.find((c) => c.scope === "attr");
+  const OPTIONAL_KEY_OR_ARGUMENT = Object.assign(
+    {},
+    ATTRIBUTE_HIGHLIGHT,
+    { match: regex2.concat(IDENT_RE$12, regex2.lookahead(/\s*\?:/)) }
+  );
+  tsLanguage.exports.PARAMS_CONTAINS.push([
+    tsLanguage.exports.CLASS_REFERENCE,
+    // class reference for highlighting the params types
+    ATTRIBUTE_HIGHLIGHT,
+    // highlight the params key
+    OPTIONAL_KEY_OR_ARGUMENT
+    // Added for optional property assignment highlighting
+  ]);
+  tsLanguage.contains = tsLanguage.contains.concat([
+    DECORATOR,
+    NAMESPACE,
+    INTERFACE,
+    OPTIONAL_KEY_OR_ARGUMENT
+    // Added for optional property assignment highlighting
+  ]);
+  swapMode(tsLanguage, "shebang", hljs.SHEBANG());
+  swapMode(tsLanguage, "use_strict", USE_STRICT);
+  const functionDeclaration = tsLanguage.contains.find((m) => m.label === "func.def");
+  functionDeclaration.relevance = 0;
+  Object.assign(tsLanguage, {
+    name: "TypeScript",
+    aliases: [
+      "ts",
+      "tsx",
+      "mts",
+      "cts"
+    ]
+  });
+  return tsLanguage;
+}
+function xml(hljs) {
+  const regex2 = hljs.regex;
+  const TAG_NAME_RE = regex2.concat(/[\p{L}_]/u, regex2.optional(/[\p{L}0-9_.-]*:/u), /[\p{L}0-9_.-]*/u);
+  const XML_IDENT_RE = /[\p{L}0-9._:-]+/u;
+  const XML_ENTITIES = {
+    className: "symbol",
+    begin: /&[a-z]+;|&#[0-9]+;|&#x[a-f0-9]+;/
+  };
+  const XML_META_KEYWORDS = {
+    begin: /\s/,
+    contains: [
+      {
+        className: "keyword",
+        begin: /#?[a-z_][a-z1-9_-]+/,
+        illegal: /\n/
+      }
+    ]
+  };
+  const XML_META_PAR_KEYWORDS = hljs.inherit(XML_META_KEYWORDS, {
+    begin: /\(/,
+    end: /\)/
+  });
+  const APOS_META_STRING_MODE = hljs.inherit(hljs.APOS_STRING_MODE, { className: "string" });
+  const QUOTE_META_STRING_MODE = hljs.inherit(hljs.QUOTE_STRING_MODE, { className: "string" });
+  const TAG_INTERNALS = {
+    endsWithParent: true,
+    illegal: /</,
+    relevance: 0,
+    contains: [
+      {
+        className: "attr",
+        begin: XML_IDENT_RE,
+        relevance: 0
+      },
+      {
+        begin: /=\s*/,
+        relevance: 0,
+        contains: [
+          {
+            className: "string",
+            endsParent: true,
+            variants: [
+              {
+                begin: /"/,
+                end: /"/,
+                contains: [XML_ENTITIES]
+              },
+              {
+                begin: /'/,
+                end: /'/,
+                contains: [XML_ENTITIES]
+              },
+              { begin: /[^\s"'=<>`]+/ }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+  return {
+    name: "HTML, XML",
+    aliases: [
+      "html",
+      "xhtml",
+      "rss",
+      "atom",
+      "xjb",
+      "xsd",
+      "xsl",
+      "plist",
+      "wsf",
+      "svg"
+    ],
+    case_insensitive: true,
+    unicodeRegex: true,
+    contains: [
+      {
+        className: "meta",
+        begin: /<![a-z]/,
+        end: />/,
+        relevance: 10,
+        contains: [
+          XML_META_KEYWORDS,
+          QUOTE_META_STRING_MODE,
+          APOS_META_STRING_MODE,
+          XML_META_PAR_KEYWORDS,
+          {
+            begin: /\[/,
+            end: /\]/,
+            contains: [
+              {
+                className: "meta",
+                begin: /<![a-z]/,
+                end: />/,
+                contains: [
+                  XML_META_KEYWORDS,
+                  XML_META_PAR_KEYWORDS,
+                  QUOTE_META_STRING_MODE,
+                  APOS_META_STRING_MODE
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      hljs.COMMENT(
+        /<!--/,
+        /-->/,
+        { relevance: 10 }
+      ),
+      {
+        begin: /<!\[CDATA\[/,
+        end: /\]\]>/,
+        relevance: 10
+      },
+      XML_ENTITIES,
+      // xml processing instructions
+      {
+        className: "meta",
+        end: /\?>/,
+        variants: [
+          {
+            begin: /<\?xml/,
+            relevance: 10,
+            contains: [
+              QUOTE_META_STRING_MODE
+            ]
+          },
+          {
+            begin: /<\?[a-z][a-z0-9]+/
+          }
+        ]
+      },
+      {
+        className: "tag",
+        /*
+        The lookahead pattern (?=...) ensures that 'begin' only matches
+        '<style' as a single word, followed by a whitespace or an
+        ending bracket.
+        */
+        begin: /<style(?=\s|>)/,
+        end: />/,
+        keywords: { name: "style" },
+        contains: [TAG_INTERNALS],
+        starts: {
+          end: /<\/style>/,
+          returnEnd: true,
+          subLanguage: [
+            "css",
+            "xml"
+          ]
+        }
+      },
+      {
+        className: "tag",
+        // See the comment in the <style tag about the lookahead pattern
+        begin: /<script(?=\s|>)/,
+        end: />/,
+        keywords: { name: "script" },
+        contains: [TAG_INTERNALS],
+        starts: {
+          end: /<\/script>/,
+          returnEnd: true,
+          subLanguage: [
+            "javascript",
+            "handlebars",
+            "xml"
+          ]
+        }
+      },
+      // we need this for now for jSX
+      {
+        className: "tag",
+        begin: /<>|<\/>/
+      },
+      // open tag
+      {
+        className: "tag",
+        begin: regex2.concat(
+          /</,
+          regex2.lookahead(regex2.concat(
+            TAG_NAME_RE,
+            // <tag/>
+            // <tag>
+            // <tag ...
+            regex2.either(/\/>/, />/, /\s/)
+          ))
+        ),
+        end: /\/?>/,
+        contains: [
+          {
+            className: "name",
+            begin: TAG_NAME_RE,
+            relevance: 0,
+            starts: TAG_INTERNALS
+          }
+        ]
+      },
+      // close tag
+      {
+        className: "tag",
+        begin: regex2.concat(
+          /<\//,
+          regex2.lookahead(regex2.concat(
+            TAG_NAME_RE,
+            />/
+          ))
+        ),
+        contains: [
+          {
+            className: "name",
+            begin: TAG_NAME_RE,
+            relevance: 0
+          },
+          {
+            begin: />/,
+            relevance: 0,
+            endsParent: true
+          }
+        ]
+      }
+    ]
+  };
+}
+if (!HighlightJS.getLanguage("python")) {
+  HighlightJS.registerLanguage("python", python);
+}
+if (!HighlightJS.getLanguage("markdown")) {
+  HighlightJS.registerLanguage("markdown", markdown);
+}
+if (!HighlightJS.getLanguage("json")) {
+  HighlightJS.registerLanguage("json", json);
+}
+if (!HighlightJS.getLanguage("bash")) {
+  HighlightJS.registerLanguage("bash", bash);
+}
+if (!HighlightJS.getLanguage("javascript")) {
+  HighlightJS.registerLanguage("javascript", javascript$1);
+}
+if (!HighlightJS.getLanguage("typescript")) {
+  HighlightJS.registerLanguage("typescript", typescript);
+}
+if (!HighlightJS.getLanguage("xml")) {
+  HighlightJS.registerLanguage("xml", xml);
+}
+if (!HighlightJS.getLanguage("html")) {
+  HighlightJS.registerLanguage("html", xml);
+}
 const mightBeMarkdown = (text) => {
   const markdownPatterns = [
     /\*\*(.*?)\*\*/,
@@ -17003,8 +21375,8 @@ const Markdown = ({ content, isDarkMode = false, onImageClick }) => {
       markedHighlight({
         langPrefix: "hljs language-",
         highlight(code, lang) {
-          const language = hljs.getLanguage(lang) ? lang : "plaintext";
-          return hljs.highlight(code, { language }).value;
+          const language = HighlightJS.getLanguage(lang) ? lang : "plaintext";
+          return HighlightJS.highlight(code, { language }).value;
         }
       })
     );
