@@ -181,7 +181,7 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
     # pylint: disable=broad-exception-caught,too-many-try-statements
     if not state_json or not Path(state_json).is_file():
         return
-    metadata_json = state_json.replace("state.json", "metadata.json")
+    metadata_json = str(state_json).replace("state.json", "metadata.json")
     if not metadata_json or not Path(metadata_json).is_file():
         return
     try:
@@ -257,7 +257,7 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
     # pylint: disable=broad-exception-caught,too-many-try-statements
     if not state_json or not Path(state_json).is_file():
         return
-    metadata_json = state_json.replace("state.json", "metadata.json")
+    metadata_json = str(state_json).replace("state.json", "metadata.json")
     if not metadata_json or not Path(metadata_json).is_file():
         return
     try:

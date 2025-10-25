@@ -131,6 +131,7 @@ class ExportOrchestrator:
 
         # 4. Agents last
         # we always have at least one agent (already validated in Waldiez init)
+        self.logger.info("Exporting agents ...")
         agent_results = self._export_all_agents(agent_arguments)
         results.extend(agent_results)
 
@@ -140,7 +141,7 @@ class ExportOrchestrator:
         # Check for issues
         stats = merger.get_merge_statistics()
         if stats.conflicts_found:
-            self.logger.info(
+            self.logger.warning(
                 "Resolved %d merge conflicts", len(stats.conflicts_found)
             )
         self.logger.debug("Merged result: %s", merged_result)
@@ -211,14 +212,6 @@ class ExportOrchestrator:
             all_imports=all_imports,
             is_async=self.waldiez.is_async,
         )
-        if self.config.for_notebook:
-            cell_ignore_comment = (
-                "# pyright: "
-                "reportUnusedImport=false,"
-                "reportMissingTypeStubs=false"
-                "\n"
-            )
-            import_string = cell_ignore_comment + import_string
         merged_result.add_content(
             import_string,
             position=ExportPosition.IMPORTS,  # imports section
