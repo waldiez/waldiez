@@ -11,9 +11,9 @@ mkdocs-minify-html-plugin;python_version == '3.10' and sys_platform == 'win32' a
 mkdocs-minify-html-plugin;python_version == '3.10' and sys_platform == 'win32' and platform_machine == 'ARM64'
 mkdocs-minify-html-plugin;python_version =='3.10' and sys_platform == 'win32' and platform_machine == 'aarch64'
 mkdocs-minify-html-plugin;python_version =='3.10' and sys_platform == 'win32' and platform_machine == 'arm64'
-mkdocs-minify-html-plugin==0.3.6;python_version <= '3.13' and sys_platform != 'win32'
-mkdocs-minify-html-plugin==0.3.6;python_version == '3.10' and sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-mkdocs-minify-html-plugin==0.3.6;python_version >='3.11'
+mkdocs-minify-html-plugin==0.3.8;python_version <= '3.13' and sys_platform != 'win32'
+mkdocs-minify-html-plugin==0.3.8;python_version == '3.10' and sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
+mkdocs-minify-html-plugin==0.3.8;python_version >='3.11'
 mkdocs-open-in-new-tab==1.0.8
 mkdocs==1.6.1
 mkdocstrings-crystal==0.3.7
