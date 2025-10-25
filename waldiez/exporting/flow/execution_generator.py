@@ -204,7 +204,7 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
     if not _state_group_pattern and not _state_group_manager:
         return
     try:
-        with open(metadata_json, "r", encoding="utf-8") as f:
+        with open(state_json, "r", encoding="utf-8") as f:
             _state_dict = json.load(f)
     except BaseException:
         return
@@ -281,7 +281,7 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
     if not _state_group_pattern and not _state_group_manager:
         return
     try:
-        async with aiofiles.open(metadata_json, "r", encoding="utf-8") as f:
+        async with aiofiles.open(state_json, "r", encoding="utf-8") as f:
             f_data = await f.read()
             _state_dict = json.loads(f_data)
     except BaseException:
