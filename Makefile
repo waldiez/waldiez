@@ -30,6 +30,7 @@ help:
 	@echo " test-exporting   Run the tests on exporting module"
 	@echo " test-running     Run the tests on running module"
 	@echo " test-io          Run the tests on IO module"
+	@echo " test-ws          Run the tests on ws module"
 	@echo " test-storage     Run the tests on the storage module"
 	@echo " test-schema      Run the tests on the schema"
 	@echo " build            Build the python package"
@@ -110,6 +111,18 @@ test_io:
 
 .PHONY: test-io
 test-io: test_io
+
+.PHONY: test_ws
+test_ws:
+	pytest \
+		-c pyproject.toml -vv \
+		--cov-report=term-missing:skip-covered \
+		--cov=${.PACKAGE_NAME}/ws \
+		--cov-branch \
+		${.TESTS_DIR}/ws
+
+.PHONY: test-ws
+test-ws: test_ws
 
 .PHONY: test_storage
 test_storage:
