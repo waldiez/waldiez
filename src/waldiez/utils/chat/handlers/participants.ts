@@ -65,7 +65,7 @@ export class WaldiezChatParticipantsHandler implements WaldiezChatMessageHandler
                     try {
                         const innerDumped = JSON.parse(parsedData);
                         return this.extractParticipants(innerDumped);
-                        //* c8 ignore next 3 -- @preserve */
+                        /* c8 ignore next 3 -- @preserve */
                     } catch (_) {
                         return undefined;
                     }

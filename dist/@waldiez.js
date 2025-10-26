@@ -701,7 +701,7 @@ class WaldiezChatParticipantsHandler {
           try {
             const innerDumped = JSON.parse(parsedData);
             return this.extractParticipants(innerDumped);
-            //* c8 ignore next 3 -- @preserve */
+            /* c8 ignore next 3 -- @preserve */
           } catch (_2) {
             return void 0;
           }
