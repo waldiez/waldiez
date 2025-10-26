@@ -6,7 +6,7 @@
 import typer
 from typer.models import CommandInfo
 
-from .checkpoint import Checkpoint, CheckpointInfo
+from .checkpoint import WaldiezCheckpoint, WaldiezCheckpointInfo
 from .cli import handle_checkpoints
 from .filesystem_storage import FilesystemStorage
 from .protocol import Storage
@@ -36,8 +36,8 @@ __all__ = [
     "Storage",
     "StorageManager",
     "FilesystemStorage",
-    "Checkpoint",
-    "CheckpointInfo",
+    "WaldiezCheckpoint",
+    "WaldiezCheckpointInfo",
     "symlink",
     "get_root_dir",
     "handle_checkpoints",

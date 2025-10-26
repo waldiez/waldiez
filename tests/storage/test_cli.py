@@ -20,8 +20,8 @@ from typer.testing import CliRunner
 from waldiez.storage.cli import app, handle_checkpoints
 
 
-class MockCheckpointInfo:
-    """Mock CheckpointInfo for testing."""
+class MockWaldiezCheckpointInfo:
+    """Mock WaldiezCheckpointInfo for testing."""
 
     def __init__(
         self,
@@ -101,13 +101,13 @@ class TestStorageCLI:
         checkpoints_root = tmp_path / "workspace"
         # Create mock checkpoints
         checkpoints = [
-            MockCheckpointInfo(
+            MockWaldiezCheckpointInfo(
                 "session1",
                 datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
                 checkpoints_root / "session1" / "20240101_120000_000",
                 {"version": "1.0"},
             ),
-            MockCheckpointInfo(
+            MockWaldiezCheckpointInfo(
                 "session2",
                 datetime(2024, 1, 2, 13, 0, 0, tzinfo=timezone.utc),
                 checkpoints_root / "session2" / "20240102_130000_000",
@@ -140,7 +140,7 @@ class TestStorageCLI:
         mock_storage_manager.return_value = mock_instance
 
         checkpoints = [
-            MockCheckpointInfo(
+            MockWaldiezCheckpointInfo(
                 "session1",
                 datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
                 tmp_path / "workspace" / "session1" / "20240101_120000_000",
@@ -496,7 +496,7 @@ class TestStorageCLI:
         mock_storage_manager.return_value = mock_instance
         # Create checkpoints with various data types
         checkpoints = [
-            MockCheckpointInfo(
+            MockWaldiezCheckpointInfo(
                 "test_session",
                 datetime(2024, 1, 1, 12, 30, 45, 123456, tzinfo=timezone.utc),
                 tmp_path / "workspace" / "test" / "checkpoint",

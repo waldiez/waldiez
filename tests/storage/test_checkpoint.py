@@ -9,15 +9,15 @@
 from datetime import datetime, timezone
 from pathlib import Path
 
-from waldiez.storage.checkpoint import Checkpoint, CheckpointInfo
+from waldiez.storage.checkpoint import WaldiezCheckpoint, WaldiezCheckpointInfo
 
 
-class TestCheckpoint:
-    """Tests for Checkpoint class."""
+class TestWaldiezCheckpoint:
+    """Tests for WaldiezCheckpoint class."""
 
     def test_checkpoint_creation(self, tmp_path: Path) -> None:
         """Test creating a checkpoint."""
-        checkpoint = Checkpoint(
+        checkpoint = WaldiezCheckpoint(
             session_name="test_session",
             timestamp=datetime.now(timezone.utc),
             path=tmp_path / "checkpoint",
@@ -29,7 +29,7 @@ class TestCheckpoint:
 
     def test_state_file_property(self, tmp_path: Path) -> None:
         """Test state_file property."""
-        checkpoint = Checkpoint(
+        checkpoint = WaldiezCheckpoint(
             session_name="test_session",
             timestamp=datetime.now(timezone.utc),
             path=tmp_path / "checkpoint",
@@ -40,7 +40,7 @@ class TestCheckpoint:
     def test_exists_property(self, tmp_path: Path) -> None:
         """Test exists property."""
         checkpoint_path = tmp_path / "checkpoint"
-        checkpoint = Checkpoint(
+        checkpoint = WaldiezCheckpoint(
             session_name="test_session",
             timestamp=datetime.now(timezone.utc),
             path=checkpoint_path,
@@ -60,13 +60,29 @@ class TestCheckpoint:
         (checkpoint_path / "state.json").unlink()
         assert not checkpoint.exists
 
+    def test_timestamp_formatting(self) -> None:
+        """Test timestamp formatting and parsing."""
+        original = datetime.now(timezone.utc)
 
-class TestCheckpointInfo:
-    """Tests for CheckpointInfo class."""
+        # Format and parse
+        formatted = WaldiezCheckpoint.format_timestamp(original)
+        parsed = WaldiezCheckpoint.parse_timestamp(formatted)
+        assert parsed
+
+        # Should be very close (within microseconds)
+        diff = abs((original - parsed).total_seconds())
+        assert diff < 0.001  # Less than 1 millisecond
+
+        invalid = WaldiezCheckpoint.parse_timestamp("invalid")
+        assert not invalid
+
+
+class TestWaldiezCheckpointInfo:
+    """Tests for WaldiezCheckpointInfo class."""
 
     def test_checkpoint_info_creation(self, tmp_path: Path) -> None:
         """Test creating checkpoint info."""
-        info = CheckpointInfo(
+        info = WaldiezCheckpointInfo(
             session_name="test_session",
             timestamp=datetime.now(timezone.utc),
             path=tmp_path / "checkpoint",
@@ -77,14 +93,14 @@ class TestCheckpointInfo:
         assert info.path == tmp_path / "checkpoint"
 
     def test_from_checkpoint(self, tmp_path: Path) -> None:
-        """Test creating CheckpointInfo from Checkpoint."""
-        checkpoint = Checkpoint(
+        """Test creating WaldiezCheckpointInfo from WaldiezCheckpoint."""
+        checkpoint = WaldiezCheckpoint(
             session_name="test_session",
             timestamp=datetime.now(timezone.utc),
             path=tmp_path / "checkpoint",
         )
 
-        info = CheckpointInfo.from_checkpoint(checkpoint)
+        info = WaldiezCheckpointInfo.from_checkpoint(checkpoint)
 
         assert info.session_name == checkpoint.session_name
         assert info.timestamp == checkpoint.timestamp

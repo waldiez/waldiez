@@ -5,12 +5,15 @@
 # pyright: reportUnknownArgumentType=false, reportMissingTypeStubs=false
 # pyright: reportDeprecated=false, reportUninitializedInstanceVariable=false
 # pyright: reportGeneralTypeIssues=false, reportUnknownVariableType=false
-# pyright: reportUnusedParameter=false
+# pyright: reportUnusedParameter=false,reportUnnecessaryIsInstance=false
+# pyright: reportUnreachable=false
+
 """Workflow events mixin."""
 
 import inspect
 import json
 from collections.abc import Coroutine
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Optional, Union
 
@@ -242,6 +245,65 @@ class EventsMixin:
             await f.write(json.dumps(metadata_dict, default=str, indent=2))
 
     @staticmethod
+    async def a_save_history(output_dir: Path) -> None:
+        """Append the current state and metadata to history.json (async).
+
+        Reads the latest `state.json` and `metadata.json` (if present) and
+        appends them to a list in `history.json`. Each entry includes a UTC
+        ISO timestamp. Missing or malformed files are handled gracefully.
+
+        Parameters
+        ----------
+        output_dir : Path
+            The output directory where the files are stored.
+        """
+        state_file = output_dir / "state.json"
+        metadata_file = output_dir / "metadata.json"
+        history_file = output_dir / "history.json"
+
+        # If either state or metadata is missing, there's nothing to record.
+        if not state_file.exists() or not metadata_file.exists():
+            return
+
+        async def _read_json(path: Path) -> dict[str, Any] | list[Any] | None:
+            # pylint: disable=broad-exception-caught
+            try:
+                async with aiofiles.open(path, "r", encoding="utf-8") as f:
+                    text = await f.read()
+                return json.loads(text)
+            except Exception:
+                return None
+
+        state_data = await _read_json(state_file)
+        metadata_data = await _read_json(metadata_file)
+
+        if state_data is None or metadata_data is None:
+            # If either is unreadable, skip appending
+            return
+
+        entry = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "state": state_data,
+            "metadata": metadata_data,
+        }
+
+        # Load existing history (if present)
+        history: list[dict[str, Any]] = []
+        if history_file.exists():
+            existing = await _read_json(history_file)
+            if isinstance(existing, list):
+                history = existing
+            elif existing is not None:
+                # If someone wrote a non-list, wrap it to preserve data
+                history = [existing]
+
+        history.append(entry)
+
+        # Write back updated history
+        async with aiofiles.open(history_file, "w", encoding="utf-8") as f:
+            await f.write(json.dumps(history, default=str, indent=2))
+
+    @staticmethod
     async def a_process_event(
         event: Union["BaseEvent", "BaseMessage"],
         agents: list["ConversableAgent"],
@@ -267,6 +329,7 @@ class EventsMixin:
             await EventsMixin.a_save_metadata(
                 group_manager, output_dir=output_dir
             )
+            await EventsMixin.a_save_history(output_dir=output_dir)
         if hasattr(event, "type"):  # pragma: no branch
             if getattr(event, "type", "") == "input_request":
                 prompt = getattr(
@@ -331,6 +394,62 @@ class EventsMixin:
             f.write(json.dumps(metadata_dict, default=str, indent=2))
 
     @staticmethod
+    def save_history(output_dir: Path) -> None:
+        """Append the current state and metadata to history.json.
+
+        Reads the latest `state.json` and `metadata.json` (if present) and
+        appends them to a list in `history.json`. Each entry includes a UTC
+        ISO timestamp.
+
+        Parameters
+        ----------
+        output_dir : Path
+            The output directory where the files are stored.
+        """
+        state_file = output_dir / "state.json"
+        metadata_file = output_dir / "metadata.json"
+        history_file = output_dir / "history.json"
+
+        if not state_file.exists() or not metadata_file.exists():
+            return  # Nothing to append if either is missing
+        # pylint: disable=broad-exception-caught
+        try:
+            with open(state_file, "r", encoding="utf-8") as f:
+                state = json.load(f)
+        except Exception:
+            state = {}
+
+        try:
+            with open(metadata_file, "r", encoding="utf-8") as f:
+                metadata = json.load(f)
+        except Exception:
+            metadata = {}
+
+        # Compose the new history entry
+        entry = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "state": state,
+            "metadata": metadata,
+        }
+
+        # Load existing history if available
+        history: list[dict[str, Any]] = []
+        if history_file.exists():
+            # pylint: disable=too-many-try-statements
+            try:
+                with open(history_file, "r", encoding="utf-8") as f:
+                    history = json.load(f)
+                if not isinstance(history, list):
+                    history = [history]
+            except Exception:
+                history = []
+
+        # Append new entry and write back
+        history.append(entry)
+        with open(history_file, "w", encoding="utf-8") as f:
+            f.write(json.dumps(history, default=str, indent=2))
+
+    @staticmethod
     def process_event(
         event: Union["BaseEvent", "BaseMessage"],
         agents: list["ConversableAgent"],
@@ -354,6 +473,7 @@ class EventsMixin:
         if group_manager:
             EventsMixin.save_state(group_manager, output_dir=output_dir)
             EventsMixin.save_metadata(group_manager, output_dir=output_dir)
+            EventsMixin.save_history(output_dir=output_dir)
         if hasattr(event, "type"):  # pragma: no branch
             if event.type == "input_request":
                 prompt = getattr(

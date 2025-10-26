@@ -21,7 +21,7 @@ from typing import Any
 import pytest
 
 from waldiez.storage import StorageManager
-from waldiez.storage.checkpoint import CheckpointInfo
+from waldiez.storage.checkpoint import WaldiezCheckpointInfo
 
 
 class TestStorageIntegration:
@@ -155,8 +155,8 @@ class TestStorageIntegration:
                     storage.link(link_dir, session)
 
                     # List checkpoints
-                    checkpoints: list[CheckpointInfo] = storage.checkpoints(
-                        session
+                    checkpoints: list[WaldiezCheckpointInfo] = (
+                        storage.checkpoints(session)
                     )
                     results.append(("list", len(checkpoints)))
 

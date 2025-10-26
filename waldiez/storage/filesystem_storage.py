@@ -22,7 +22,7 @@ from typing import Any
 
 from typing_extensions import Self
 
-from .checkpoint import Checkpoint, CheckpointInfo
+from .checkpoint import WaldiezCheckpoint, WaldiezCheckpointInfo
 from .utils import symlink
 
 _PATTERNS = r"^(?!.*\.\.)(?!\.)(?!.*\.$)[\w\-.]{1,128}$"
@@ -97,7 +97,7 @@ class FilesystemStorage:
 
     def get_checkpoint(
         self, session_name: str, timestamp: datetime | None = None
-    ) -> CheckpointInfo | None:
+    ) -> WaldiezCheckpointInfo | None:
         """Load a checkpoint for a session.
 
         Parameters
@@ -114,7 +114,7 @@ class FilesystemStorage:
 
         Returns
         -------
-        CheckpointInfo | None
+        WaldiezCheckpointInfo | None
             The loaded checkpoint info.
         """
         if timestamp is None:
@@ -128,23 +128,23 @@ class FilesystemStorage:
             checkpoint_path = self._get_checkpoint_path(session_name, timestamp)
             if not checkpoint_path.exists():
                 msg = (
-                    f"Checkpoint not found for session '{session_name}' "
-                    f"at {self._format_timestamp(timestamp)}"
+                    f"WaldiezCheckpoint not found for session '{session_name}' "
+                    f"at {WaldiezCheckpoint.format_timestamp(timestamp)}"
                 )
                 raise FileNotFoundError(msg)
-            checkpoint = Checkpoint(
+            checkpoint = WaldiezCheckpoint(
                 session_name=session_name,
                 timestamp=timestamp,
                 path=checkpoint_path,
             )
-        return CheckpointInfo.from_checkpoint(checkpoint)
+        return WaldiezCheckpointInfo.from_checkpoint(checkpoint)
 
-    def load_checkpoint(self, info: CheckpointInfo) -> Checkpoint:
+    def load_checkpoint(self, info: WaldiezCheckpointInfo) -> WaldiezCheckpoint:
         """Load a checkpoint.
 
         Parameters
         ----------
-        info: CheckpointInfo
+        info: WaldiezCheckpointInfo
             The checkpoint info to get the path.
 
         Returns
@@ -152,7 +152,7 @@ class FilesystemStorage:
         dict[str, Any]
             The loaded checkpoint data.
         """
-        return Checkpoint(
+        return WaldiezCheckpoint(
             session_name=info.session_name,
             timestamp=info.timestamp,
             path=info.path,
@@ -196,11 +196,11 @@ class FilesystemStorage:
             checkpoint_path = self._get_checkpoint_path(session_name, timestamp)
             if not checkpoint_path.exists():
                 msg = (
-                    f"Checkpoint not found for session '{session_name}' "
-                    f"at {self._format_timestamp(timestamp)}"
+                    f"WaldiezCheckpoint not found for session '{session_name}' "
+                    f"at {WaldiezCheckpoint.format_timestamp(timestamp)}"
                 )
                 raise FileNotFoundError(msg)
-            checkpoint = Checkpoint(
+            checkpoint = WaldiezCheckpoint(
                 session_name=session_name,
                 timestamp=timestamp,
                 path=checkpoint_path,
@@ -226,9 +226,56 @@ class FilesystemStorage:
             reverse=True,
         )
 
+    def delete_session(self, session_name: str) -> None:
+        """Delete a session and all its checkpoints.
+
+        Parameters
+        ----------
+        session_name : str
+            The session to delete.
+        """
+        session_dir = self._get_session_dir(session_name)
+        if not session_dir.exists():
+            return
+
+        checkpoints = self._find_checkpoints(session_name)
+
+        external_links: list[Path] = []
+        for cp in checkpoints:
+            external_links.extend(self._unregister_checkpoint_links(cp.path))
+
+        for link_path in external_links:
+            if link_path.is_symlink():
+                try:
+                    link_path.unlink(missing_ok=True)
+                except Exception:
+                    pass
+
+        try:
+            shutil.rmtree(session_dir)
+        except Exception:
+            try:
+                self._clean_broken_symlinks(session_dir)
+                shutil.rmtree(session_dir)
+            except Exception:
+                pass
+
+        # remove any entries still pointing under this session.
+        with self._registry_transaction():
+            to_delete: list[str] = []
+            for checkpoint_str in self._links_registry.keys():
+                try:
+                    rel = Path(checkpoint_str).relative_to(self._workspace_dir)
+                except ValueError:
+                    continue
+                if rel.parts and rel.parts[0] == session_name:
+                    to_delete.append(checkpoint_str)
+            for key in to_delete:
+                self._links_registry.pop(key, None)
+
     def list_checkpoints(
         self, session_name: str | None = None
-    ) -> list[CheckpointInfo]:
+    ) -> list[WaldiezCheckpointInfo]:
         """List available checkpoints.
 
         Parameters
@@ -238,10 +285,10 @@ class FilesystemStorage:
 
         Returns
         -------
-        list[CheckpointInfo]
+        list[WaldiezCheckpointInfo]
             The list of the checkpoints found.
         """
-        checkpoints: list[Checkpoint] = []
+        checkpoints: list[WaldiezCheckpoint] = []
 
         if session_name:
             session_checkpoints = self._find_checkpoints(session_name)
@@ -256,7 +303,7 @@ class FilesystemStorage:
                         if session_checkpoints:
                             checkpoints.extend(session_checkpoints)
 
-        return [CheckpointInfo.from_checkpoint(c) for c in checkpoints]
+        return [WaldiezCheckpointInfo.from_checkpoint(c) for c in checkpoints]
 
     def delete_checkpoint(self, session_name: str, timestamp: datetime) -> None:
         """Delete a specific checkpoint and clean up all its symlinks.
@@ -276,8 +323,8 @@ class FilesystemStorage:
         checkpoint_path = self._get_checkpoint_path(session_name, timestamp)
         if not checkpoint_path.exists():
             msg = (
-                f"Checkpoint not found for session '{session_name}' "
-                f"at {self._format_timestamp(timestamp)}"
+                f"WaldiezCheckpoint not found for session '{session_name}' "
+                f"at {WaldiezCheckpoint.format_timestamp(timestamp)}"
             )
             raise FileNotFoundError(msg)
 
@@ -647,37 +694,30 @@ class FilesystemStorage:
             raise ValueError("Invalid session_name")
         return self._workspace_dir / session_name
 
-    def _format_timestamp(self, timestamp: datetime) -> str:
-        """Format timestamp for directory name."""
-        return timestamp.strftime("%Y%m%d_%H%M%S_%f")
-
-    def _parse_timestamp(self, timestamp_str: str) -> datetime:
-        """Parse timestamp from directory name."""
-        dt = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S_%f")
-        return dt.replace(tzinfo=timezone.utc)
-
     def _get_checkpoint_path(
         self, session_name: str, timestamp: datetime
     ) -> Path:
         """Get the path for a checkpoint."""
-        timestamp_str = self._format_timestamp(timestamp)
+        timestamp_str = WaldiezCheckpoint.format_timestamp(timestamp)
         return self._get_session_dir(session_name) / timestamp_str
 
-    def _find_checkpoints(self, session_name: str) -> list[Checkpoint]:
+    def _find_checkpoints(self, session_name: str) -> list[WaldiezCheckpoint]:
         """Find all checkpoints for a session."""
         session_dir = self._get_session_dir(session_name)
         if not session_dir.exists():
             return []
 
-        checkpoints: list[Checkpoint] = []
+        checkpoints: list[WaldiezCheckpoint] = []
         for path in session_dir.iterdir():
             if not path.is_dir():
                 continue
             try:
-                timestamp = self._parse_timestamp(path.name)
+                timestamp = WaldiezCheckpoint.parse_timestamp(path.name)
+                if not timestamp:
+                    continue
                 state_file = path / "state.json"
                 if state_file.exists():
-                    checkpoint = Checkpoint(
+                    checkpoint = WaldiezCheckpoint(
                         session_name=session_name,
                         timestamp=timestamp,
                         path=path,

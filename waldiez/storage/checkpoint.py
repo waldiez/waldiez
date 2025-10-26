@@ -3,7 +3,7 @@
 
 # pyright: reportUnknownVariableType=false
 
-"""Checkpoint data structures."""
+"""WaldiezCheckpoint data structures."""
 
 import json
 from contextlib import suppress
@@ -14,7 +14,7 @@ from typing import Any
 
 
 @dataclass
-class Checkpoint:
+class WaldiezCheckpoint:
     """A saved checkpoint."""
 
     session_name: str
@@ -22,6 +22,42 @@ class Checkpoint:
     path: Path
     _state: dict[str, Any] | None = field(init=False, default=None)
     _metadata: dict[str, Any] | None = field(init=False, default=None)
+
+    @staticmethod
+    def parse_timestamp(timestamp_str: str) -> datetime | None:
+        """Parse timestamp from directory name.
+
+        Parameters
+        ----------
+        timestamp_str : str
+            The directory name
+
+        Returns
+        -------
+        datetime | None
+            The parsed datetime if the directory name has the expected format.
+        """
+        try:
+            dt = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S_%f")
+            return dt.replace(tzinfo=timezone.utc)
+        except Exception:  # pylint: disable=broad-exception-caught
+            return None
+
+    @staticmethod
+    def format_timestamp(timestamp: datetime) -> str:
+        """Format timestamp for directory name.
+
+        Parameters
+        ----------
+        timestamp: datetime
+            The datetime instance.
+
+        Returns
+        -------
+        str
+            The formatted string.
+        """
+        return timestamp.strftime("%Y%m%d_%H%M%S_%f")
 
     @property
     def state(self) -> dict[str, Any]:
@@ -74,19 +110,19 @@ class Checkpoint:
 
 
 @dataclass
-class CheckpointInfo:
+class WaldiezCheckpointInfo:
     """Information about a checkpoint."""
 
     session_name: str
     timestamp: datetime
     path: Path
-    _checkpoint: Checkpoint | None = field(init=False, default=None)
+    _checkpoint: WaldiezCheckpoint | None = field(init=False, default=None)
 
     @property
-    def checkpoint(self) -> Checkpoint:
+    def checkpoint(self) -> WaldiezCheckpoint:
         """Get the checkpoint."""
         if self._checkpoint is None:
-            self._checkpoint = Checkpoint(
+            self._checkpoint = WaldiezCheckpoint(
                 session_name=self.session_name,
                 timestamp=self.timestamp,
                 path=self.path,
@@ -114,17 +150,19 @@ class CheckpointInfo:
         }
 
     @classmethod
-    def from_checkpoint(cls, checkpoint: Checkpoint) -> "CheckpointInfo":
-        """Create CheckpointInfo from a Checkpoint.
+    def from_checkpoint(
+        cls, checkpoint: WaldiezCheckpoint
+    ) -> "WaldiezCheckpointInfo":
+        """Create WaldiezCheckpointInfo from a WaldiezCheckpoint.
 
         Parameters
         ----------
-        checkpoint : Checkpoint
+        checkpoint : WaldiezCheckpoint
             The checkpoint to load info from
 
         Returns
         -------
-        CheckpointInfo
+        WaldiezCheckpointInfo
             The loaded checkpoint info.
         """
         return cls(

@@ -17,6 +17,7 @@ from typing import Any
 
 import pytest
 
+from waldiez.storage import WaldiezCheckpoint
 from waldiez.storage.filesystem_storage import FilesystemStorage
 
 
@@ -424,18 +425,6 @@ class TestFilesystemStorage:
         backup = storage._links_registry_file.with_suffix(".corrupted")
         assert backup.exists()
 
-    def test_timestamp_formatting(self, storage: FilesystemStorage) -> None:
-        """Test timestamp formatting and parsing."""
-        original = datetime.now(timezone.utc)
-
-        # Format and parse
-        formatted = storage._format_timestamp(original)
-        parsed = storage._parse_timestamp(formatted)
-
-        # Should be very close (within microseconds)
-        diff = abs((original - parsed).total_seconds())
-        assert diff < 0.001  # Less than 1 millisecond
-
     def test_session_directory_structure(
         self, storage: FilesystemStorage
     ) -> None:
@@ -468,3 +457,153 @@ class TestFilesystemStorage:
         # Registry should be loaded
         assert str(checkpoint_path) in storage2._links_registry
         assert len(storage2._links_registry[str(checkpoint_path)]) == 1
+
+    def test_delete_session_removes_all_checkpoints_and_links(
+        self, storage: FilesystemStorage, tmp_path: Path
+    ) -> None:
+        """Deleting a session removes everything."""
+        # Create a few checkpoints
+        cps: list[Path] = []
+        for i in range(3):
+            cp = storage.save_checkpoint("to_delete", {"i": i})
+            cps.append(cp)
+            time.sleep(0.01)
+
+        # Create an internal "latest" (already created by save_checkpoint)
+        session_dir = storage.workspace_dir / "to_delete"
+        latest_link = session_dir / "latest"
+        assert latest_link.is_symlink()
+
+        # Create external links for each checkpoint
+        ext_links: list[Path] = []
+        for i, cp in enumerate(cps):
+            link_dir = tmp_path / f"ext_{i}"
+            link_dir.mkdir()
+            if i == 0:
+                storage.link_checkpoint(link_dir, "to_delete")
+            else:
+                storage.link_checkpoint(
+                    link_dir,
+                    "to_delete",
+                    WaldiezCheckpoint.parse_timestamp(cp.name),
+                )
+            if i == 0:
+                # latest link uses newest checkpoint name
+                newest = storage._find_checkpoints("to_delete")[0].path
+                ext_links.append(link_dir / newest.name)
+            else:
+                ext_links.append(link_dir / cp.name)
+
+        # Sanity: links exist and registry has entries
+        for lp in ext_links:
+            assert lp.is_symlink()
+        assert any(
+            session_dir in Path(k).parents
+            or Path(k).is_relative_to(session_dir)
+            for k in storage._links_registry.keys()
+        )
+
+        # Delete the whole session
+        storage.delete_session("to_delete")
+
+        # Session dir gone (and thus internal 'latest' gone)
+        assert not session_dir.exists()
+
+        # All external links removed
+        for lp in ext_links:
+            assert not lp.exists()
+
+        # No registry entries left for that session
+        assert all(
+            not (
+                Path(k).is_relative_to(storage.workspace_dir)
+                and Path(k).relative_to(storage.workspace_dir).parts[:1]
+                == ("to_delete",)
+            )
+            for k in storage._links_registry.keys()
+        )
+
+    def test_delete_session_nonexistent_noop(
+        self, storage: FilesystemStorage
+    ) -> None:
+        """Deleting a non-existent session should not raise or affect others."""
+        # Create another session to ensure isolation
+        storage.save_checkpoint("keep_me", {"ok": True})
+        storage.delete_session("does_not_exist")
+
+        # 'keep_me' still present
+        assert "keep_me" in storage.list_sessions()
+        assert len(storage.list_checkpoints("keep_me")) == 1
+
+    def test_delete_session_does_not_affect_other_sessions(
+        self, storage: FilesystemStorage, tmp_path: Path
+    ) -> None:
+        """Deleting one session doesn't touch other sessions' data or links."""
+        # Create two sessions
+        cp_keep = storage.save_checkpoint("keep_session", {"k": 1})
+        cp_del = storage.save_checkpoint("del_session", {"d": 1})
+
+        # External link for the session that should be kept
+        link_dir = tmp_path / "ext_keep"
+        link_dir.mkdir()
+        storage.link_checkpoint(link_dir, "keep_session")
+        keep_link = link_dir / cp_keep.name  # name of the newest checkpoint
+
+        # External link for the session to delete
+        link_dir2 = tmp_path / "ext_del"
+        link_dir2.mkdir()
+        storage.link_checkpoint(link_dir2, "del_session")
+        del_link = link_dir2 / cp_del.name
+
+        # Delete only 'del_session'
+        storage.delete_session("del_session")
+
+        # 'keep_session' intact
+        assert "keep_session" in storage.list_sessions()
+        assert keep_link.exists() and keep_link.is_symlink()
+        assert str(cp_keep) in storage._links_registry
+
+        # 'del_session' gone and its link removed
+        assert "del_session" not in storage.list_sessions()
+        assert not del_link.exists()
+        assert all(
+            "del_session" not in k for k in storage._links_registry.keys()
+        )
+
+    def test_delete_session_cleans_registry_garbage(
+        self, storage: FilesystemStorage
+    ) -> None:
+        """If registry has stray entries under session dir, they are purged."""
+        # Create a valid checkpoint so the session exists
+        storage.save_checkpoint("garbage_session", {"x": 1})
+        session_dir = storage.workspace_dir / "garbage_session"
+        assert session_dir.exists()
+
+        # Manually inject garbage registry entries pointing under the session
+        fake_cp_dir = session_dir / "1900-01-01T00-00-00Z"
+        fake_link = storage.workspace_dir.parent / "outside" / "fake_link"
+        storage._links_registry[str(fake_cp_dir)] = [str(fake_link)]
+        storage._save_links_registry()
+
+        # Delete the session
+        storage.delete_session("garbage_session")
+
+        # Session gone and registry entries purged
+        assert not session_dir.exists()
+        assert all(
+            "garbage_session" not in k for k in storage._links_registry.keys()
+        )
+
+    def test_delete_session_updates_list_sessions(
+        self, storage: FilesystemStorage
+    ) -> None:
+        """list_sessions reflects removal after delete_session."""
+        storage.save_checkpoint("s1", {"a": 1})
+        storage.save_checkpoint("s2", {"b": 2})
+        sessions = set(storage.list_sessions())
+        assert {"s1", "s2"} <= sessions
+
+        storage.delete_session("s1")
+        sessions_after = set(storage.list_sessions())
+        assert "s1" not in sessions_after
+        assert "s2" in sessions_after

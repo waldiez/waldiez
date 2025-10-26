@@ -15,7 +15,7 @@ from typing import Any
 
 from typing_extensions import Self
 
-from .checkpoint import Checkpoint, CheckpointInfo
+from .checkpoint import WaldiezCheckpoint, WaldiezCheckpointInfo
 from .filesystem_storage import FilesystemStorage
 from .protocol import Storage
 from .utils import copy_results, get_root_dir, symlink
@@ -213,7 +213,7 @@ class StorageManager:
 
     def get(
         self, session_name: str, timestamp: datetime | None = None
-    ) -> CheckpointInfo | None:
+    ) -> WaldiezCheckpointInfo | None:
         """
         Get a checkpoint (latest by default).
 
@@ -226,22 +226,57 @@ class StorageManager:
 
         Returns
         -------
-        CheckpointInfo | None
+        WaldiezCheckpointInfo | None
             The loaded state data
         """
         return self._storage.get_checkpoint(
             session_name=session_name, timestamp=timestamp
         )
 
+    def update(
+        self,
+        session_name: str,
+        checkpoint: str | datetime,
+        state: dict[str, Any],
+        metadata: dict[str, Any] | None,
+    ) -> None:
+        """Update a checkpoint with new state and optionally new metadata.
+
+        Parameters
+        ----------
+        session_name : str
+            The name of the session
+        checkpoint : str | datetime
+            Specific timestamp for checkpoint.
+        state : dict[str, Any]
+            The new state to set.
+        metadata : dict[str, Any]
+            Optional new metadata to set.
+        """
+        if isinstance(checkpoint, str):
+            # maybe a full
+            dir_name = Path(checkpoint).name
+            checkpoint_dt = WaldiezCheckpoint.parse_timestamp(dir_name)
+            if not checkpoint_dt:
+                return
+        else:
+            checkpoint_dt = checkpoint
+        self._storage.save_checkpoint(
+            session_name=session_name,
+            state=state,
+            metadata=metadata,
+            timestamp=checkpoint_dt,
+        )
+
     def load(
         self,
-        info: CheckpointInfo,
-    ) -> Checkpoint:
+        info: WaldiezCheckpointInfo,
+    ) -> WaldiezCheckpoint:
         """Load a checkpoint.
 
         Parameters
         ----------
-        info: CheckpointInfo
+        info: WaldiezCheckpointInfo
             The checkpoint info to load.
 
         Returns
@@ -277,7 +312,7 @@ class StorageManager:
 
     def checkpoints(
         self, session_name: str | None = None
-    ) -> list[CheckpointInfo]:
+    ) -> list[WaldiezCheckpointInfo]:
         """
         List available checkpoints.
 
@@ -288,7 +323,7 @@ class StorageManager:
 
         Returns
         -------
-        list[CheckpointInfo]
+        list[WaldiezCheckpointInfo]
             List of checkpoint information
         """
         return self._storage.list_checkpoints(session_name=session_name)
@@ -302,6 +337,16 @@ class StorageManager:
             The workspace sessions.
         """
         return self._storage.list_sessions()
+
+    def delete_session(self, session_name: str) -> None:
+        """Delete a session and all its checkpoints.
+
+        Parameters
+        ----------
+        session_name : str
+            The session to delete.
+        """
+        self.storage.delete_session(session_name)
 
     def delete(self, session_name: str, timestamp: datetime) -> None:
         """
@@ -379,7 +424,9 @@ class StorageManager:
             # No transaction support, just yield
             yield self
 
-    def get_latest_checkpoint(self, session_name: str) -> CheckpointInfo | None:
+    def get_latest_checkpoint(
+        self, session_name: str
+    ) -> WaldiezCheckpointInfo | None:
         """Get information about the latest checkpoint for a session.
 
         Parameters
@@ -389,8 +436,8 @@ class StorageManager:
 
         Returns
         -------
-        CheckpointInfo | None
-            Checkpoint info if found, None otherwise
+        WaldiezCheckpointInfo | None
+            WaldiezCheckpoint info if found, None otherwise
         """
         checkpoints = self.checkpoints(session_name=session_name)
         if checkpoints:

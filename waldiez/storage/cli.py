@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pylint: disable=missing-function-docstring, missing-param-doc
-# pylint: disable=missing-raises-doc
+# pylint: disable=missing-raises-doc,too-complex,too-many-branches
 
 """CLI interface for Waldiez checkpoints."""
 
@@ -33,7 +33,7 @@ DEFAULT_WORKSPACE = get_root_dir()
 
 
 @app.command(name="checkpoints", no_args_is_help=True)
-def handle_checkpoints(
+def handle_checkpoints(  # noqa: C901
     workspace: Annotated[
         Path,
         typer.Option(
@@ -60,6 +60,14 @@ def handle_checkpoints(
     ] = None,
     delete_checkpoint: Annotated[
         bool, typer.Option("--delete", "-d", help="Delete a checkpoint.")
+    ] = False,
+    delete_session: Annotated[
+        bool,
+        typer.Option(
+            "--delete-session",
+            "-ds",
+            help="Delete a session (and all its checkpoints).",
+        ),
     ] = False,
     checkpoint: Annotated[
         str | None,
@@ -99,6 +107,11 @@ def handle_checkpoints(
         sessions = manager.sessions()
         pretty_print(sessions)
         raise typer.Exit(0)
+    if delete_session:
+        if not session:
+            typer.echo("Please provide the session.", err=True)
+            raise typer.Exit(1)
+        manager.delete_session(session)
     if delete_checkpoint:
         if not session:
             typer.echo("Please provide the session.", err=True)

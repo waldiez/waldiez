@@ -25,7 +25,7 @@ from typing_extensions import Self, override
 from waldiez.exporter import WaldiezExporter
 from waldiez.logger import WaldiezLogger, get_logger
 from waldiez.models import Waldiez
-from waldiez.storage import Checkpoint, StorageManager
+from waldiez.storage import StorageManager, WaldiezCheckpoint
 
 from .dir_utils import a_chdir, chdir
 from .environment import reset_env_vars, set_env_vars
@@ -48,7 +48,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     _waldiez_file: Path
     _flow_name: str
     _storage_manager: StorageManager
-    _checkpoint: Checkpoint | None
+    _checkpoint: WaldiezCheckpoint | None
     _output_dir: Path
 
     def __init__(
@@ -184,8 +184,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     def _init_checkpoint(
         checkpoint_arg: str,
         session_name: str,
-    ) -> Checkpoint | None:
-        checkpoint: Checkpoint | None = None
+    ) -> WaldiezCheckpoint | None:
+        checkpoint: WaldiezCheckpoint | None = None
         # pylint: disable=broad-exception-caught,too-many-try-statements
         if checkpoint_arg == "latest":
             try:

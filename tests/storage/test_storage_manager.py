@@ -59,7 +59,7 @@ class TestStorageManager:
         state = {"agents": ["agent1", "agent2"]}
         metadata = {"version": "1.0"}
 
-        checkpoint_path = manager.save("test_session", state, metadata)
+        checkpoint_path = manager.save("test_session_save", state, metadata)
 
         assert checkpoint_path.exists()
         assert (checkpoint_path / "state.json").exists()
@@ -68,12 +68,38 @@ class TestStorageManager:
             saved_state = json.load(f)
         assert saved_state == state
 
+    def test_update(self, manager: StorageManager) -> None:
+        """Test updating a checkpoint."""
+        state = {"agents": ["agent1", "agent2"]}
+        metadata = {"version": "1.0"}
+
+        checkpoint_path = manager.save("test_session_update", state, metadata)
+
+        assert checkpoint_path.exists()
+        assert (checkpoint_path / "state.json").exists()
+
+        with open(checkpoint_path / "state.json", encoding="utf-8") as f:
+            saved_state = json.load(f)
+        assert saved_state == state
+
+        new_state = {"agents": ["agent2", "agent3"]}
+        new_metadata = {"version": "1.0"}
+        manager.update(
+            session_name="test_session_update",
+            checkpoint=checkpoint_path.name,
+            state=new_state,
+            metadata=new_metadata,
+        )
+        with open(checkpoint_path / "state.json", encoding="utf-8") as f:
+            saved_state = json.load(f)
+        assert saved_state == new_state
+
     def test_load(self, manager: StorageManager) -> None:
         """Test loading a checkpoint."""
         state = {"data": "test"}
-        manager.save("test_session", state)
+        manager.save("test_session_load", state)
 
-        loaded_info = manager.get("test_session")
+        loaded_info = manager.get("test_session_load")
         assert loaded_info
         loaded_state = loaded_info.checkpoint.state
         assert loaded_state == state
@@ -84,22 +110,22 @@ class TestStorageManager:
         state = {"data": "specific"}
 
         manager.storage.save_checkpoint(
-            "test_session", state, timestamp=timestamp
+            "test_session_load_with_ts", state, timestamp=timestamp
         )
 
-        loaded_info = manager.get("test_session", timestamp)
+        loaded_info = manager.get("test_session_load_with_ts", timestamp)
         assert loaded_info
         loaded_state = loaded_info.checkpoint.state
         assert loaded_state == state
 
     def test_link(self, manager: StorageManager, tmp_path: Path) -> None:
         """Test creating a symlink."""
-        manager.save("test_session", {"data": "test"})
+        manager.save("test_session_load_with_ts", {"data": "test"})
 
         link_dir = tmp_path / "links"
         link_dir.mkdir()
 
-        manager.link(link_dir, "test_session")
+        manager.link(link_dir, "test_session_load_with_ts")
 
         # Should have created a link
         links = list(link_dir.iterdir())

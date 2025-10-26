@@ -12,7 +12,7 @@ from typing import Any, Protocol, runtime_checkable
 
 from typing_extensions import Self
 
-from .checkpoint import Checkpoint, CheckpointInfo
+from .checkpoint import WaldiezCheckpoint, WaldiezCheckpointInfo
 
 
 @runtime_checkable
@@ -66,7 +66,7 @@ class Storage(Protocol):  # pragma: no cover
 
     def get_checkpoint(
         self, session_name: str, timestamp: datetime | None = None
-    ) -> CheckpointInfo | None:
+    ) -> WaldiezCheckpointInfo | None:
         """Load a checkpoint for a session.
 
         Parameters
@@ -83,12 +83,12 @@ class Storage(Protocol):  # pragma: no cover
         """
         ...
 
-    def load_checkpoint(self, info: CheckpointInfo) -> Checkpoint:
+    def load_checkpoint(self, info: WaldiezCheckpointInfo) -> WaldiezCheckpoint:
         """Load a checkpoint.
 
         Parameters
         ----------
-        info: CheckpointInfo
+        info: WaldiezCheckpointInfo
             The checkpoint info to get the path.
         """
         ...
@@ -119,7 +119,7 @@ class Storage(Protocol):  # pragma: no cover
 
     def list_checkpoints(
         self, session_name: str | None = None
-    ) -> list[CheckpointInfo]:
+    ) -> list[WaldiezCheckpointInfo]:
         """List available checkpoints.
 
         Parameters
@@ -131,6 +131,16 @@ class Storage(Protocol):  # pragma: no cover
 
     def list_sessions(self) -> list[str]:
         """List available sessions."""
+        ...
+
+    def delete_session(self, session_name: str) -> None:
+        """Delete a session and all its checkpoints.
+
+        Parameters
+        ----------
+        session_name : str
+            The session to delete.
+        """
         ...
 
     def delete_checkpoint(self, session_name: str, timestamp: datetime) -> None:
