@@ -197,7 +197,7 @@ export class WaldiezStepByStepProcessor {
      * Parse a raw message
      */
     private static parseMessage(message: any): WaldiezDebugMessage | null {
-        /* c8 ignore next 3 */
+        /* c8 ignore next 3 -- @preserve */
         if (!message) {
             return null;
         }

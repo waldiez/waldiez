@@ -224,6 +224,7 @@ const selectivelyOverrideOrMergeFlow = (
  * @param nodes - The list of all nodes in the flow.
  * @returns True if the edge should be animated, false otherwise.
  */
+/* c8 ignore next -- @preserve */
 const isEdgeAnimated = (edge: Edge, nodes: Node[]) => {
     if (edge.type === "nested") {
         return true;

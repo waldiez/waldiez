@@ -29,7 +29,7 @@ export class WaldiezChatPrintMessageHandler implements WaldiezChatMessageHandler
         if (typeof message === "string") {
             return MESSAGE_CONSTANTS.WORKFLOW_END_MARKERS.some(marker => message.includes(marker));
         }
-        /* c8 ignore next 3 */
+        /* c8 ignore next 3 -- @preserve */
         if (typeof message !== "object" && !message.content && !message.data) {
             return false;
         }
@@ -50,7 +50,7 @@ export class WaldiezChatPrintMessageHandler implements WaldiezChatMessageHandler
         if (!message || typeof message !== "object") {
             return false;
         }
-        /* c8 ignore next 6 */
+        /* c8 ignore next 6 -- @preserve */
         if (typeof message.type !== "string" || message.type !== "print") {
             return false;
         }
@@ -61,7 +61,7 @@ export class WaldiezChatPrintMessageHandler implements WaldiezChatMessageHandler
         if (!message.content || typeof message.content !== "object") {
             return false;
         }
-        /* c8 ignore next 3 */
+        /* c8 ignore next 3 -- @preserve */
         if (!message.content.data) {
             return false;
         }

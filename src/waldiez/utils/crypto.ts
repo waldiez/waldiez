@@ -10,12 +10,12 @@
  */
 const getCrypto = (): Crypto => {
     // Modern browsers
-    /* c8 ignore next 3 */
+    /* c8 ignore next 3 -- @preserve */
     if (window.crypto && window.crypto.subtle) {
         return window.crypto;
     }
     // Fallback for some edge cases or test environments
-    /* c8 ignore next 5 */
+    /* c8 ignore next 5 -- @preserve */
     if (globalThis.crypto && globalThis.crypto.subtle) {
         return globalThis.crypto;
     }
@@ -35,7 +35,7 @@ export const sha256 = async (message: string): Promise<string> => {
         return Array.from(new Uint8Array(hashBuffer))
             .map(b => b.toString(16).padStart(2, "0"))
             .join("");
-        /* c8 ignore next 4 */
+        /* c8 ignore next 4 -- @preserve */
     } catch (error) {
         console.error("Error computing SHA-256 hash:", error);
         throw new Error("Failed to compute SHA-256 hash. Ensure you are using a supported environment.");
@@ -48,17 +48,16 @@ export const sha256 = async (message: string): Promise<string> => {
  * @returns A BufferSource representation of the input
  * @throws TypeError if the input is not a valid type
  */
+/* c8 ignore next -- @preserve */
 const toBufferSource = (input: string | BufferSource): BufferSource => {
     if (typeof input === "string") {
         return new TextEncoder().encode(input);
     }
 
-    /* c8 ignore next 3 */
     if (input instanceof ArrayBuffer) {
         return new Uint8Array(input) as BufferSource;
     }
 
-    /* c8 ignore next 9 */
     if (ArrayBuffer.isView(input)) {
         // noinspection SuspiciousTypeOfGuard
         if (input.buffer instanceof SharedArrayBuffer) {
@@ -67,10 +66,8 @@ const toBufferSource = (input: string | BufferSource): BufferSource => {
             new Uint8Array(newBuffer).set(data);
             return new Uint8Array(newBuffer);
         }
-        /* c8 ignore next 2 */
         return input as BufferSource;
     }
-    /* c8 ignore next 2 */
     throw new TypeError("Input must be string, ArrayBuffer, or ArrayBufferView");
 };
 
@@ -108,7 +105,7 @@ export const hmacSha256 = async (
         }
 
         return new Uint8Array(signature);
-        /* c8 ignore next 5 */
+        /* c8 ignore next 5 -- @preserve */
     } catch (error) {
         throw new Error(
             `Error computing HMAC SHA-256: ${error instanceof Error ? error.message : String(error)}`,

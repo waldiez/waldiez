@@ -18,10 +18,10 @@ export const WaldiezThemeProvider: FC<{
     initialDark?: boolean;
 }> = ({ children, initialDark }) => {
     const [isDark, setIsDark] = useState(() =>
-        /* c8 ignore next */
+        /* c8 ignore next -- @preserve */
         typeof initialDark === "boolean" ? initialDark : isInitiallyDark(),
     );
-    /* c8 ignore next 3 */
+    /* c8 ignore next 3 -- @preserve */
     if (typeof initialDark === "boolean") {
         setIsDarkMode(initialDark);
     }
@@ -39,7 +39,7 @@ export const WaldiezThemeProvider: FC<{
      * Sets the theme to dark or light mode.
      * @param dark - If true, sets the theme to dark mode; otherwise, sets it to light mode.
      */
-    /* c8 ignore next 4 */
+    /* c8 ignore next 4 -- @preserve */
     const setTheme = (dark: boolean) => {
         setIsDarkMode(dark);
         setIsDark(dark);

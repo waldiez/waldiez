@@ -21,7 +21,7 @@ export class WaldiezChatTimelineDataHandler implements WaldiezChatMessageHandler
     static isTimelineMessage(data: any): boolean {
         return Boolean(
             (data && data.type === "timeline") ||
-                /* c8 ignore next 9 */
+                /* c8 ignore next 9 -- @preserve */
                 (data &&
                     data.type === "print" &&
                     "data" in data &&
@@ -37,7 +37,7 @@ export class WaldiezChatTimelineDataHandler implements WaldiezChatMessageHandler
 
     // eslint-disable-next-line complexity
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        /* c8 ignore next 3 */
+        /* c8 ignore next 3 -- @preserve */
         if (!data || typeof data !== "object") {
             return undefined;
         }

@@ -18,13 +18,12 @@ export class WaldiezChatUsingAutoReplyHandler implements WaldiezChatMessageHandl
     canHandle(type: string): boolean {
         return type === "using_auto_reply";
     }
+    /* c8 ignore next -- @preserve */
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        /* c8 ignore next 3 */
         if (!data || typeof data !== "object" || data.type !== "using_auto_reply") {
             return undefined;
         }
         const message: WaldiezChatMessage = {
-            /* c8 ignore next */
             id: data.content?.uuid || nanoid(),
             timestamp: new Date().toISOString(),
             type: "using_auto_reply",
@@ -34,9 +33,7 @@ export class WaldiezChatUsingAutoReplyHandler implements WaldiezChatMessageHandl
                     text: "Using auto reply",
                 },
             ],
-            /* c8 ignore next */
             sender: data.content?.sender,
-            /* c8 ignore next */
             recipient: data.content?.recipient,
         };
         return { message };

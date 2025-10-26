@@ -46,11 +46,11 @@ export class DebugBreakpointsHandler implements WaldiezStepByStepHandler {
 
         if (isDebugBreakpointsList(data)) {
             result.stateUpdate = {
-                breakpoints: data.breakpoints || /* c8 ignore next */ [],
+                breakpoints: data.breakpoints || /* c8 ignore next -- @preserve */ [],
             };
             result.controlAction = {
                 type: "update_breakpoints",
-                breakpoints: data.breakpoints /* c8 ignore next */ || [],
+                breakpoints: data.breakpoints /* c8 ignore next -- @preserve */ || [],
             };
         } else if (isDebugBreakpointAdded(data)) {
             const currentBreakpoints = context.currentState?.breakpoints || [];
@@ -81,7 +81,7 @@ export class DebugBreakpointsHandler implements WaldiezStepByStepHandler {
             };
             result.controlAction = {
                 type: "show_notification",
-                message: data.message || /* c8 ignore next */ "All breakpoints cleared",
+                message: data.message || /* c8 ignore next -- @preserve */ "All breakpoints cleared",
                 severity: "info",
             };
         } else {

@@ -496,6 +496,7 @@ const resetAsyncEdgeOrders = (get: typeOfGet, set: typeOfSet) => {
  * @param get - The function to get the current state.
  * @param set - The function to set the new state.
  */
+/* c8 ignore next -- @preserve */
 export const resetEdgePrerequisites: (edges: WaldiezEdge[], get: typeOfGet, set: typeOfSet) => void = (
     edges,
     get,

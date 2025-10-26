@@ -31,7 +31,7 @@ export class WaldiezChatTextMessageHandler implements WaldiezChatMessageHandler 
      * @returns True if the data is a valid text message, false otherwise.
      */
     static isValidTextMessage(data: any): data is WaldiezChatTextMessageData {
-        /* c8 ignore next 9 */
+        /* c8 ignore next 9 -- @preserve */
         if (!data || typeof data !== "object") {
             return false;
         }

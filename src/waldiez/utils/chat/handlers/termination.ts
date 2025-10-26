@@ -62,8 +62,8 @@ export class WaldiezChatTerminationHandler implements WaldiezChatMessageHandler 
                     type: "text",
                     text:
                         data.content?.termination_reason ||
-                        /* c8 ignore next */ data.termination_reason ||
-                        /* c8 ignore next */ "Chat terminated",
+                        /* c8 ignore next -- @preserve */ data.termination_reason ||
+                        /* c8 ignore next -- @preserve */ "Chat terminated",
                 },
             ],
         };
@@ -82,7 +82,7 @@ export class WaldiezChatTerminationAndHumanReplyNoInputHandler implements Waldie
         return type === "termination_and_human_reply_no_input";
     }
     handle(data: any): WaldiezChatMessageProcessingResult | undefined {
-        /* c8 ignore next 3 */
+        /* c8 ignore next 3 -- @preserve */
         if (!data || typeof data !== "object" || data.type !== "termination_and_human_reply_no_input") {
             return undefined;
         }

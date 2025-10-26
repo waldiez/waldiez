@@ -20,7 +20,7 @@ const isAppleDevice = (): boolean => {
         const userAgentData = navigator.userAgentData;
         if (userAgentData && "platform" in userAgentData && typeof userAgentData.platform === "string") {
             const platform = userAgentData.platform.toLowerCase();
-            /* c8 ignore next */
+            /* c8 ignore next -- @preserve */
             return platform.includes("mac") || platform.includes("ios");
         }
     }
@@ -75,7 +75,7 @@ const downloadFile = (blob: Blob, filename: string) => {
 export const getFilenameForExporting = (baseName: string, itemType: "model" | "tool" | "agent" | "flow") => {
     const extension = getItemExtension(itemType);
     let filename = baseName || "flow";
-    /* c8 ignore next 3 */
+    /* c8 ignore next 3 -- @preserve */
     if (filename.length < 3) {
         filename = "flow";
     }

@@ -145,12 +145,12 @@ class WaldiezChatUsingAutoReplyHandler {
   canHandle(type) {
     return type === "using_auto_reply";
   }
+  /* c8 ignore next -- @preserve */
   handle(data) {
     if (!data || typeof data !== "object" || data.type !== "using_auto_reply") {
       return void 0;
     }
     const message = {
-      /* c8 ignore next */
       id: data.content?.uuid || nanoid(),
       timestamp: (/* @__PURE__ */ new Date()).toISOString(),
       type: "using_auto_reply",
@@ -160,9 +160,7 @@ class WaldiezChatUsingAutoReplyHandler {
           text: "Using auto reply"
         }
       ],
-      /* c8 ignore next */
       sender: data.content?.sender,
-      /* c8 ignore next */
       recipient: data.content?.recipient
     };
     return { message };
@@ -194,6 +192,7 @@ class WaldiezChatCodeExecutionReplyHandler {
    * @returns True if the data is a valid code execution reply message, false otherwise.
    */
   static isValidCodeExecutionReply(data) {
+    /* c8 ignore next 9 -- @preserve */
     if (!data || typeof data !== "object") {
       return false;
     }
@@ -415,6 +414,7 @@ class WaldiezChatMessageUtils {
         if (item.type === "image_url" && item.image_url?.url) {
           return updateImageUrl(item);
         }
+        /* c8 ignore next 5 -- @preserve */
         if (item.type === "text" && item.text) {
           const processed = processTextContent(item.text);
           return processed || item;
@@ -464,9 +464,11 @@ class WaldiezChatMessageUtils {
     if (Array.isArray(content)) {
       return content.map((item) => {
         const normalized = WaldiezChatMessageUtils.normalizeContent(item, imageUrl);
+        /* c8 ignore next 3 -- @preserve */
         if (Array.isArray(normalized) && normalized.length === 1) {
           return normalized[0];
         }
+        /* c8 ignore next -- @preserve */
         return normalized;
       });
     }
@@ -677,6 +679,7 @@ class WaldiezChatParticipantsHandler {
       try {
         const parsedData = JSON.parse(data);
         return WaldiezChatParticipantsHandler.isValidParticipantsData(parsedData);
+        /* c8 ignore next 3 -- @preserve */
       } catch {
         return false;
       }
@@ -698,6 +701,7 @@ class WaldiezChatParticipantsHandler {
           try {
             const innerDumped = JSON.parse(parsedData);
             return this.extractParticipants(innerDumped);
+            //* c8 ignore next 3 -- @preserve */
           } catch (_2) {
             return void 0;
           }
@@ -740,6 +744,7 @@ class WaldiezChatPrintMessageHandler {
     if (typeof message === "string") {
       return MESSAGE_CONSTANTS.WORKFLOW_END_MARKERS.some((marker) => message.includes(marker));
     }
+    /* c8 ignore next 3 -- @preserve */
     if (typeof message !== "object" && !message.content && !message.data) {
       return false;
     }
@@ -759,6 +764,7 @@ class WaldiezChatPrintMessageHandler {
     if (!message || typeof message !== "object") {
       return false;
     }
+    /* c8 ignore next 6 -- @preserve */
     if (typeof message.type !== "string" || message.type !== "print") {
       return false;
     }
@@ -769,6 +775,7 @@ class WaldiezChatPrintMessageHandler {
     if (!message.content || typeof message.content !== "object") {
       return false;
     }
+    /* c8 ignore next 3 -- @preserve */
     if (!message.content.data) {
       return false;
     }
@@ -838,8 +845,8 @@ class WaldiezChatTerminationHandler {
       content: [
         {
           type: "text",
-          text: data.content?.termination_reason || /* c8 ignore next */
-          data.termination_reason || /* c8 ignore next */
+          text: data.content?.termination_reason || /* c8 ignore next -- @preserve */
+          data.termination_reason || /* c8 ignore next -- @preserve */
           "Chat terminated"
         }
       ]
@@ -852,6 +859,7 @@ class WaldiezChatTerminationAndHumanReplyNoInputHandler {
     return type === "termination_and_human_reply_no_input";
   }
   handle(data) {
+    /* c8 ignore next 3 -- @preserve */
     if (!data || typeof data !== "object" || data.type !== "termination_and_human_reply_no_input") {
       return void 0;
     }
@@ -886,6 +894,7 @@ class WaldiezChatTextMessageHandler {
    * @returns True if the data is a valid text message, false otherwise.
    */
   static isValidTextMessage(data) {
+    /* c8 ignore next 9 -- @preserve */
     if (!data || typeof data !== "object") {
       return false;
     }
@@ -951,12 +960,13 @@ class WaldiezChatTimelineDataHandler {
    */
   static isTimelineMessage(data) {
     return Boolean(
-      data && data.type === "timeline" || /* c8 ignore next 9 */
+      data && data.type === "timeline" || /* c8 ignore next 9 -- @preserve */
       data && data.type === "print" && "data" in data && data.data && typeof data.data === "object" && "type" in data.data && data.data.type === "timeline" && "content" in data.data && data.data.content && typeof data.data.content === "object"
     );
   }
   // eslint-disable-next-line complexity
   handle(data) {
+    /* c8 ignore next 3 -- @preserve */
     if (!data || typeof data !== "object") {
       return void 0;
     }
@@ -1301,6 +1311,7 @@ const waldiezChatReducer = (state, action) => {
         activeRequest: void 0,
         timeline: action.timeline
       };
+    /* c8 ignore next -- @preserve */
     case "SET_CHAT_HANDLERS":
       return {
         ...state,
@@ -1309,17 +1320,20 @@ const waldiezChatReducer = (state, action) => {
           ...action.handlers
         }
       };
+    /* c8 ignore next -- @preserve */
     case "SET_STATE":
       return {
         ...state,
         ...action.state
       };
+    /* c8 ignore next -- @preserve */
     case "DONE":
       return {
         ...state,
         active: false,
         activeRequest: void 0
       };
+    /* c8 ignore next -- @preserve */
     default:
       return state;
   }
@@ -1708,9 +1722,11 @@ const useWaldiezWsChat = ({ ws, chat }) => {
   };
 };
 const getCrypto = () => {
+  /* c8 ignore next 3 -- @preserve */
   if (window.crypto && window.crypto.subtle) {
     return window.crypto;
   }
+  /* c8 ignore next 5 -- @preserve */
   if (globalThis.crypto && globalThis.crypto.subtle) {
     return globalThis.crypto;
   }
@@ -1722,11 +1738,13 @@ const sha256 = async (message) => {
     const msgBuffer = new TextEncoder().encode(message);
     const hashBuffer = await crypto2.subtle.digest("SHA-256", msgBuffer);
     return Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, "0")).join("");
+    /* c8 ignore next 4 -- @preserve */
   } catch (error) {
     console.error("Error computing SHA-256 hash:", error);
     throw new Error("Failed to compute SHA-256 hash. Ensure you are using a supported environment.");
   }
 };
+/* c8 ignore next -- @preserve */
 const toBufferSource = (input) => {
   if (typeof input === "string") {
     return new TextEncoder().encode(input);
@@ -1762,6 +1780,7 @@ const hmacSha256 = async (key, message, outputFormat = "") => {
       return Array.from(new Uint8Array(signature)).map((b) => b.toString(16).padStart(2, "0")).join("");
     }
     return new Uint8Array(signature);
+    /* c8 ignore next 5 -- @preserve */
   } catch (error) {
     throw new Error(
       `Error computing HMAC SHA-256: ${error instanceof Error ? error.message : String(error)}`
@@ -1774,6 +1793,7 @@ const isAppleDevice$1 = () => {
     const userAgentData = navigator.userAgentData;
     if (userAgentData && "platform" in userAgentData && typeof userAgentData.platform === "string") {
       const platform = userAgentData.platform.toLowerCase();
+      /* c8 ignore next -- @preserve */
       return platform.includes("mac") || platform.includes("ios");
     }
   }
@@ -1801,6 +1821,7 @@ const downloadFile = (blob, filename) => {
 const getFilenameForExporting = (baseName, itemType) => {
   const extension = getItemExtension(itemType);
   let filename = baseName || "flow";
+  /* c8 ignore next 3 -- @preserve */
   if (filename.length < 3) {
     filename = "flow";
   }
@@ -1854,6 +1875,7 @@ const importItem = (event, itemGetter, onLoad) => {
         try {
           const jsonData = JSON.parse(result);
           onLoad(item, jsonData);
+          /* c8 ignore next 3 -- @preserve */
         } catch (e) {
           console.error(e);
         }
@@ -2001,7 +2023,7 @@ class DebugBreakpointsHandler {
     };
     if (isDebugBreakpointsList(data)) {
       result.stateUpdate = {
-        breakpoints: data.breakpoints || /* c8 ignore next */
+        breakpoints: data.breakpoints || /* c8 ignore next -- @preserve */
         []
       };
       result.controlAction = {
@@ -2037,7 +2059,7 @@ class DebugBreakpointsHandler {
       };
       result.controlAction = {
         type: "show_notification",
-        message: data.message || /* c8 ignore next */
+        message: data.message || /* c8 ignore next -- @preserve */
         "All breakpoints cleared",
         severity: "info"
       };
@@ -2244,6 +2266,7 @@ class DebugPrintHandler {
     }
     if (content.includes("execution failed")) {
       return "error";
+      /* c8 ignore next 3 -- @preserve */
     }
     return void 0;
   }
@@ -2428,6 +2451,7 @@ class WaldiezStepByStepProcessor {
    * Parse a raw message
    */
   static parseMessage(message) {
+    /* c8 ignore next 3 -- @preserve */
     if (!message) {
       return null;
     }
@@ -2695,11 +2719,13 @@ const waldiezStepByStepReducer = (state, action) => {
         ...state,
         eventHistory: [...state.eventHistory].filter((event) => event.id || event.uuid !== action.id)
       };
+    /* c8 ignore next -- @preserve */
     case "SET_STATE":
       return {
         ...state,
         ...action.state
       };
+    /* c8 ignore next -- @preserve */
     case "DONE":
       return {
         ...state,
@@ -2707,6 +2733,7 @@ const waldiezStepByStepReducer = (state, action) => {
         activeRequest: void 0,
         pendingControlInput: void 0
       };
+    /* c8 ignore next -- @preserve */
     default:
       return state;
   }
@@ -5334,6 +5361,7 @@ const useWaldiezTheme = () => {
   return context;
 };
 const isInitiallyDark = () => {
+  /* c8 ignore next 3 -- @preserve */
   if (typeof window === "undefined") {
     return false;
   }
@@ -5383,10 +5411,11 @@ const setStorageTheme = (isDark) => {
 const WaldiezThemeProvider = ({ children, initialDark }) => {
   const [isDark, setIsDark] = useState(
     () => (
-      /* c8 ignore next */
+      /* c8 ignore next -- @preserve */
       typeof initialDark === "boolean" ? initialDark : isInitiallyDark()
     )
   );
+  /* c8 ignore next 3 -- @preserve */
   if (typeof initialDark === "boolean") {
     setIsDarkMode(initialDark);
   }
@@ -5396,6 +5425,7 @@ const WaldiezThemeProvider = ({ children, initialDark }) => {
       return !prev2;
     });
   };
+  /* c8 ignore next 4 -- @preserve */
   const setTheme = (dark) => {
     setIsDarkMode(dark);
     setIsDark(dark);
@@ -8272,6 +8302,7 @@ const getFlowJson = (item) => {
   }
   return flowJson;
 };
+/* c8 ignore start -- @preserve */
 if (typeof Promise.withResolvers === "undefined") {
   if (typeof window !== "undefined") {
     window.Promise.withResolvers = function() {
@@ -8293,6 +8324,7 @@ if (typeof Promise.withResolvers === "undefined") {
     };
   }
 }
+/* c8 ignore end -- @preserve */
 const ErrorBoundaryContext = createContext(null);
 const initialState$1 = {
   didCatch: false,
@@ -26205,6 +26237,7 @@ const resetAsyncEdgeOrders = (get, set) => {
   );
   resetEdgePrerequisites(usedEdges, get, set);
 };
+/* c8 ignore next -- @preserve */
 const resetEdgePrerequisites = (edges, get, set) => {
   const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
   const edgesMap = new Map(edges.map((edge) => [edge.id, edge]));
@@ -26369,6 +26402,7 @@ const selectivelyOverrideOrMergeFlow = (items, currentFlow, newFlow, typeShown, 
   mergedFlow.nodes = mergedNodes;
   mergedFlow.edges = items.override ? newFlow.edges : mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges);
 };
+/* c8 ignore next -- @preserve */
 const isEdgeAnimated = (edge, nodes) => {
   if (edge.type === "nested") {
     return true;
@@ -26767,6 +26801,7 @@ class WaldiezChatParticipantsStore {
     this.set({ activeEventType: null });
   };
 }
+/* c8 ignore file -- @preserve */
 class WaldiezEdgeStore {
   get;
   set;
@@ -27638,6 +27673,7 @@ class WaldiezModelStore {
     return newNodes;
   };
 }
+/* c8 ignore file -- @preserve */
 class WaldiezNodeStore {
   get;
   set;

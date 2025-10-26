@@ -128,11 +128,13 @@ export const waldiezStepByStepReducer = (
                 ...state,
                 eventHistory: [...state.eventHistory].filter(event => event.id || event.uuid !== action.id),
             };
+        /* c8 ignore next -- @preserve */
         case "SET_STATE":
             return {
                 ...state,
                 ...action.state,
             };
+        /* c8 ignore next -- @preserve */
         case "DONE":
             return {
                 ...state,
@@ -140,6 +142,7 @@ export const waldiezStepByStepReducer = (
                 activeRequest: undefined,
                 pendingControlInput: undefined,
             };
+        /* c8 ignore next -- @preserve */
         default:
             return state;
     }

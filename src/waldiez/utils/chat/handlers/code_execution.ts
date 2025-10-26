@@ -32,7 +32,7 @@ export class WaldiezChatCodeExecutionReplyHandler implements WaldiezChatMessageH
      * @returns True if the data is a valid code execution reply message, false otherwise.
      */
     static isValidCodeExecutionReply(data: any): data is WaldiezChatCodeExecutionReplyData {
-        /* c8 ignore next 9 */
+        /* c8 ignore next 9 -- @preserve */
         if (!data || typeof data !== "object") {
             return false;
         }

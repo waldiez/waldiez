@@ -28,7 +28,7 @@ export const importItem = <T>(
                 try {
                     const jsonData = JSON.parse(result);
                     onLoad(item, jsonData);
-                    /* c8 ignore next 3 */
+                    /* c8 ignore next 3 -- @preserve */
                 } catch (e) {
                     console.error(e);
                 }

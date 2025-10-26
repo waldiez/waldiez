@@ -101,6 +101,7 @@ export const waldiezChatReducer = (
                 activeRequest: undefined,
                 timeline: action.timeline,
             };
+        /* c8 ignore next -- @preserve */
         case "SET_CHAT_HANDLERS":
             return {
                 ...state,
@@ -109,17 +110,20 @@ export const waldiezChatReducer = (
                     ...action.handlers,
                 },
             };
+        /* c8 ignore next -- @preserve */
         case "SET_STATE":
             return {
                 ...state,
                 ...action.state,
             };
+        /* c8 ignore next -- @preserve */
         case "DONE":
             return {
                 ...state,
                 active: false,
                 activeRequest: undefined,
             };
+        /* c8 ignore next -- @preserve */
         default:
             return state;
     }

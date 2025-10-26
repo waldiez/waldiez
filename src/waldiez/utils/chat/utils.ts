@@ -106,7 +106,7 @@ export class WaldiezChatMessageUtils {
                     if (item.type === "image_url" && item.image_url?.url) {
                         return updateImageUrl(item);
                     }
-                    /* c8 ignore next 5 */
+                    /* c8 ignore next 5 -- @preserve */
                     if (item.type === "text" && item.text) {
                         const processed = processTextContent(item.text);
                         return processed || item;
@@ -173,11 +173,11 @@ export class WaldiezChatMessageUtils {
         if (Array.isArray(content)) {
             return content.map(item => {
                 const normalized = WaldiezChatMessageUtils.normalizeContent(item, imageUrl);
-                /* c8 ignore next 3 */
+                /* c8 ignore next 3 -- @preserve */
                 if (Array.isArray(normalized) && normalized.length === 1) {
                     return normalized[0];
                 }
-                /* c8 ignore next */
+                /* c8 ignore next -- @preserve */
                 return normalized;
             }) as WaldiezChatContent;
         }

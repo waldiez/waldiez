@@ -100,7 +100,7 @@ export class DebugPrintHandler implements WaldiezStepByStepHandler {
         }
         if (content.includes("execution failed")) {
             return "error";
-            /* c8 ignore next 3 */
+            /* c8 ignore next 3 -- @preserve */
         }
         return undefined;
     }
