@@ -240,9 +240,7 @@ class ResultsMixin:
                 shutil.copyfile(waldiez_file, dst_waldiez)
         except BaseException:
             pass
-        dir_path = StorageManager.default_root()
-        details_path = dir_path / ResultsMixin.RUN_DETAILS
-        ResultsMixin._cleanup(details_path)
+        ResultsMixin._cleanup()
         return public_link_path if output_file else None
 
     @staticmethod

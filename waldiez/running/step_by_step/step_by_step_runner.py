@@ -640,7 +640,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             self.print(MESSAGES["workflow_failed"].format(error=str(e)))
         finally:
             results_container["completed"] = True
-            WaldiezBaseRunner._cleanup()
+            WaldiezBaseRunner._remove_run_paths()
 
         return results_container["results"]
 
@@ -753,6 +753,8 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 self.print(MESSAGES["workflow_failed"].format(error=str(e)))
                 traceback.print_exc()
                 return []
+            finally:
+                WaldiezBaseRunner._remove_run_paths()
 
         # Create and monitor cancellable task
         task = asyncio.create_task(_execute_workflow())
@@ -768,8 +770,6 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         except asyncio.CancelledError:
             self.log.debug("Step-by-step execution cancelled")
             return []
-        finally:
-            WaldiezBaseRunner._cleanup()
 
     async def _a_on_event(
         self,

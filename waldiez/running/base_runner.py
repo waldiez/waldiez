@@ -145,6 +145,11 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             WaldiezBaseRunner._logger.error(tb.format_exc())
 
     @staticmethod
+    def _remove_run_paths() -> None:
+        """Remove run paths."""
+        ResultsMixin._cleanup()
+
+    @staticmethod
     async def _a_store_run_paths(tmp_dir: Path, output_file: Path) -> None:
         """Store the path of the module that is to be run."""
         # pylint: disable=too-many-try-statements,broad-exception-caught

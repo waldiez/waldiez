@@ -125,7 +125,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
 
         finally:
             results_container["completed"] = True
-            WaldiezBaseRunner._cleanup()
+            WaldiezBaseRunner._remove_run_paths()
         return results_container["results"]
 
     def _on_event(
@@ -248,6 +248,8 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 raise RuntimeError(
                     f"Error loading workflow: {e}\n{traceback.format_exc()}"
                 ) from e
+            finally:
+                WaldiezBaseRunner._remove_run_paths()
             return results
 
         # Create cancellable task
@@ -268,5 +270,3 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         except asyncio.CancelledError:
             self.log.debug("Execution cancelled (async)")
             return []
-        finally:
-            WaldiezBaseRunner._cleanup()

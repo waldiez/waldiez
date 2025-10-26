@@ -163,7 +163,9 @@ def ensure_error_json(output_dir: Path, error: BaseException) -> None:
     existing = output_dir / "error.json"
     if not existing.exists():
         with open(existing, "w", encoding="utf-8", newline="\n") as file:
-            file.write(json.dumps({"error": str(error)}))
+            file.write(
+                json.dumps({"error": str(error) or "Execution interrupted"})
+            )
     remove_results_json(output_dir)
 
 
@@ -182,7 +184,9 @@ async def a_ensure_error_json(output_dir: Path, error: BaseException) -> None:
         async with aiofiles.open(
             existing, "w", encoding="utf-8", newline="\n"
         ) as file:
-            await file.write(json.dumps({"error": str(error)}))
+            await file.write(
+                json.dumps({"error": str(error) or "Execution interrupted"})
+            )
     remove_results_json(output_dir)
 
 
