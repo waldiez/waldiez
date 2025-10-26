@@ -21,12 +21,13 @@ exports[`All > should render Waldiez components 1`] = `
           class="flow-main"
         >
           <div
-            class="sidebar"
+            class="waldiez-sidebar"
             data-testid="sidebar-test-flow"
-            style="width: 200px;"
+            style="width: 200px; max-width: 200px;"
           >
             <div
-              class="sidebar-header"
+              class="waldiez-sidebar-header"
+              style="justify-content: space-between;"
             >
               <div
                 class="title"
@@ -35,13 +36,13 @@ exports[`All > should render Waldiez components 1`] = `
               </div>
               <div
                 aria-hidden="true"
-                class="sidebar-toggle"
+                class="waldiez-sidebar-toggle"
                 data-testid="sidebar-toggle"
                 role="button"
               >
                 <svg
                   aria-hidden="true"
-                  class="sidebar-toggle-button tooltip-container clickable"
+                  class="waldiez-sidebar-toggle-button tooltip-container clickable"
                   fill="currentColor"
                   height="1em"
                   stroke="currentColor"
@@ -60,7 +61,7 @@ exports[`All > should render Waldiez components 1`] = `
               </div>
             </div>
             <div
-              class="sidebar-content"
+              class="waldiez-sidebar-content"
             >
               <ul>
                 <li
@@ -580,12 +581,13 @@ exports[`All > should render Waldiez components 1`] = `
         class="flow-main"
       >
         <div
-          class="sidebar"
+          class="waldiez-sidebar"
           data-testid="sidebar-test-flow"
-          style="width: 200px;"
+          style="width: 200px; max-width: 200px;"
         >
           <div
-            class="sidebar-header"
+            class="waldiez-sidebar-header"
+            style="justify-content: space-between;"
           >
             <div
               class="title"
@@ -594,13 +596,13 @@ exports[`All > should render Waldiez components 1`] = `
             </div>
             <div
               aria-hidden="true"
-              class="sidebar-toggle"
+              class="waldiez-sidebar-toggle"
               data-testid="sidebar-toggle"
               role="button"
             >
               <svg
                 aria-hidden="true"
-                class="sidebar-toggle-button tooltip-container clickable"
+                class="waldiez-sidebar-toggle-button tooltip-container clickable"
                 fill="currentColor"
                 height="1em"
                 stroke="currentColor"
@@ -619,7 +621,7 @@ exports[`All > should render Waldiez components 1`] = `
             </div>
           </div>
           <div
-            class="sidebar-content"
+            class="waldiez-sidebar-content"
           >
             <ul>
               <li

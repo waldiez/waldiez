@@ -43216,23 +43216,23 @@ const SideBar = (props) => {
   return /* @__PURE__ */ jsxs(
     "div",
     {
-      className: `sidebar${isReadonly ? " hidden" : ""}`,
+      className: `waldiez-sidebar${isReadonly ? " hidden" : ""}`,
       "data-testid": `sidebar-${flowId}`,
-      style: { width: isCollapsed ? "40px" : "200px" },
+      style: { width: isCollapsed ? "40px" : "200px", maxWidth: isCollapsed ? "40px" : "200px" },
       children: [
         /* @__PURE__ */ jsxs(
           "div",
           {
-            className: "sidebar-header",
+            className: "waldiez-sidebar-header",
             style: {
-              justifyContent: isCollapsed ? "center" : "between"
+              justifyContent: isCollapsed ? "center" : "space-between"
             },
             children: [
               !isCollapsed && /* @__PURE__ */ jsx$1("div", { className: "title", children: "Waldiez" }),
               /* @__PURE__ */ jsx$1(
                 "div",
                 {
-                  className: "sidebar-toggle",
+                  className: "waldiez-sidebar-toggle",
                   onClick: toggleSidebar,
                   role: "button",
                   "aria-hidden": "true",
@@ -43240,7 +43240,7 @@ const SideBar = (props) => {
                   children: /* @__PURE__ */ jsx$1(
                     FaBars,
                     {
-                      className: "sidebar-toggle-button tooltip-container clickable",
+                      className: "waldiez-sidebar-toggle-button tooltip-container clickable",
                       title: isCollapsed ? "Open sidebar" : "Close sidebar",
                       "aria-hidden": "true"
                     }
@@ -43250,7 +43250,7 @@ const SideBar = (props) => {
             ]
           }
         ),
-        /* @__PURE__ */ jsxs("div", { className: "sidebar-content", children: [
+        /* @__PURE__ */ jsxs("div", { className: "waldiez-sidebar-content", children: [
           /* @__PURE__ */ jsxs("ul", { children: [
             /* @__PURE__ */ jsx$1(
               "li",

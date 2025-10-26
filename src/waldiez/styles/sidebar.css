@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.flow-main .sidebar {
+.flow-main .waldiez-sidebar {
   padding: 0;
   font-size: small;
   display: flex;
@@ -13,22 +13,22 @@
   overflow-y: hidden;
 }
 
-body.waldiez-light .flow-main .sidebar {
+body.waldiez-light .flow-main .waldiez-sidebar {
   border-right: 1px solid #eee;
 }
 
-body.waldiez-dark .flow-main .sidebar {
+body.waldiez-dark .flow-main .waldiez-sidebar {
   border-right: 1px solid #333;
 }
 
-.flow-main .sidebar .sidebar-header {
+.flow-main .waldiez-sidebar .waldiez-sidebar-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 9;
 }
 
-.flow-main .sidebar .sidebar-header .title {
+.flow-main .waldiez-sidebar .waldiez-sidebar-header .title {
   font-size: 1.2rem;
   font-weight: 600;
   padding: 10px;
@@ -37,79 +37,79 @@ body.waldiez-dark .flow-main .sidebar {
   font-family: Fredoka, sans-serif;
 }
 
-.flow-main .sidebar .sidebar-header .sidebar-toggle {
+.flow-main .waldiez-sidebar .waldiez-sidebar-header .waldiez-sidebar-toggle {
   padding: 10px;
   font-weight: 600;
   cursor: pointer;
 }
 
-.flow-main .sidebar .spacer {
+.flow-main .waldiez-sidebar .spacer {
   flex-grow: 1;
 }
 
-.flow-main .sidebar-content {
+.flow-main .waldiez-sidebar-content {
   overflow-x: auto;
 }
 
-.flow-main .sidebar svg {
+.flow-main .waldiez-sidebar svg {
   font-size: larger;
   height: 1rem;
   vertical-align: -0.2rem;
 }
 
-.flow-main .sidebar.sidebar.collapsed .sidebar-header {
+.flow-main .waldiez-sidebar.waldiez-sidebar.collapsed .waldiez-sidebar-header {
   justify-content: center;
   padding: 10px 10px 0;
 }
 
-.flow-main .sidebar ul {
+.flow-main .waldiez-sidebar ul {
   list-style: none;
   padding: 0;
   margin: 0 0 2px 4px;
 }
 
-.flow-main .sidebar ul li {
+.flow-main .waldiez-sidebar ul li {
   padding: 10px;
   cursor: pointer;
   overflow: hidden;
 }
 
-.flow-main .sidebar ul li.expandable {
+.flow-main .waldiez-sidebar ul li.expandable {
   display: flex;
   justify-content: space-between;
 }
 
-.flow-main .sidebar ul li :first-child {
+.flow-main .waldiez-sidebar ul li :first-child {
   margin-right: 10px;
 }
 
-.flow-main .sidebar .sidebar-footer {
+.flow-main .waldiez-sidebar .waldiez-sidebar-footer {
   margin-bottom: 8px;
 }
 
-.flow-main .sidebar.sidebar.collapsed .sidebar-footer ul li :first-child {
+.flow-main .waldiez-sidebar.waldiez-sidebar.collapsed .waldiez-sidebar-footer ul li :first-child {
   margin-right: 0;
   margin-top: -2px;
 }
 
-.flow-main .sidebar .dnd-description {
+.flow-main .waldiez-sidebar .dnd-description {
   margin: 10px;
   font-size: small;
 }
 
-.flow-main .sidebar.sidebar.collapsed ul {
+.flow-main .waldiez-sidebar.waldiez-sidebar.collapsed ul {
   display: none;
 }
 
-.flow-main .sidebar.sidebar.collapsed .sidebar-footer ul {
+.flow-main .waldiez-sidebar.waldiez-sidebar.collapsed .waldiez-sidebar-footer ul {
   display: unset;
 }
 
-.flow-main .sidebar.sidebar.collapsed .dnd-description {
+.flow-main .waldiez-sidebar.waldiez-sidebar.collapsed .dnd-description {
   display: none;
 }
 
-.flow-main .sidebar .dnd-area {
+.flow-main .waldiez-sidebar .dnd-area {
   padding: 1px 10px;
   border-radius: 5px;
   margin: 4px;
@@ -122,39 +122,39 @@ body.waldiez-dark .flow-main .sidebar {
   align-items: center;
 }
 
-body.waldiez-light .flow-main .sidebar .dnd-area {
+body.waldiez-light .flow-main .waldiez-sidebar .dnd-area {
   border: 2px dotted #ccc;
 }
 
-body.waldiez-dark .flow-main .sidebar .dnd-area {
+body.waldiez-dark .flow-main .waldiez-sidebar .dnd-area {
   border: 2px dotted #999;
 }
 
-.flow-main .sidebar.sidebar.collapsed .dnd-area {
+.flow-main .waldiez-sidebar.waldiez-sidebar.collapsed .dnd-area {
   display: none;
 }
 
-.flow-main .sidebar .dnd-area img {
+.flow-main .waldiez-sidebar .dnd-area img {
   max-width: 40px;
   margin-right: 8px;
 }
 
-.flow-main .sidebar .dnd-area.user-proxy {
+.flow-main .waldiez-sidebar .dnd-area.user-proxy {
   border-color: var(--user-proxy-agent-color);
 }
 
-.flow-main .sidebar .dnd-area.assistant {
+.flow-main .waldiez-sidebar .dnd-area.assistant {
   border-color: var(--assistant-agent-color);
 }
 
-.flow-main .sidebar .dnd-area.rag-user {
+.flow-main .waldiez-sidebar .dnd-area.rag-user {
   border-color: var(--rag-user-proxy-agent-color);
 }
 
-.flow-main .sidebar .dnd-area.reasoning {
+.flow-main .waldiez-sidebar .dnd-area.reasoning {
   border-color: var(--reasoning-agent-color);
 }
 
-.flow-main .sidebar .dnd-area.captain {
+.flow-main .waldiez-sidebar .dnd-area.captain {
   border-color: var(--captain-agent-color);
 }

@@ -33,32 +33,32 @@ export const SideBar = (props: SidebarViewProps) => {
     const { isCollapsed, toggleSidebar } = useSidebar();
     return (
         <div
-            className={`sidebar${isReadonly ? " hidden" : ""}`}
+            className={`waldiez-sidebar${isReadonly ? " hidden" : ""}`}
             data-testid={`sidebar-${flowId}`}
-            style={{ width: isCollapsed ? "40px" : "200px" }}
+            style={{ width: isCollapsed ? "40px" : "200px", maxWidth: isCollapsed ? "40px" : "200px" }}
         >
             <div
-                className="sidebar-header"
+                className="waldiez-sidebar-header"
                 style={{
-                    justifyContent: isCollapsed ? "center" : "between",
+                    justifyContent: isCollapsed ? "center" : "space-between",
                 }}
             >
                 {!isCollapsed && <div className="title">Waldiez</div>}
                 <div
-                    className="sidebar-toggle"
+                    className="waldiez-sidebar-toggle"
                     onClick={toggleSidebar}
                     role="button"
                     aria-hidden="true"
                     data-testid="sidebar-toggle"
                 >
                     <FaBars
-                        className="sidebar-toggle-button tooltip-container clickable"
+                        className="waldiez-sidebar-toggle-button tooltip-container clickable"
                         title={isCollapsed ? "Open sidebar" : "Close sidebar"}
                         aria-hidden="true"
                     />
                 </div>
             </div>
-            <div className="sidebar-content">
+            <div className="waldiez-sidebar-content">
                 <ul>
                     <li
                         className="clickable"
