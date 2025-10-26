@@ -5,7 +5,7 @@
 # pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
 # pyright: reportUnknownArgumentType=false, reportOptionalMemberAccess=false
 # pyright: reportDeprecated=false, reportMissingTypeStubs=false
-# pyright: reportUnsafeMultipleInheritance=false
+# pyright: reportUnsafeMultipleInheritance=false,reportArgumentType=false
 # flake8: noqa: E501
 
 """Step-by-step Waldiez runner with user interaction capabilities."""
