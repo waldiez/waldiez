@@ -2,10 +2,10 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { page, userEvent } from "@vitest/browser/context";
 import { Waldiez } from "@waldiez";
 import { describe, expect, it } from "vitest";
 import { render } from "vitest-browser-react";
+import { page, userEvent } from "vitest/browser";
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
