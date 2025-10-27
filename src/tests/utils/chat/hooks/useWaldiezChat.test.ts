@@ -37,7 +37,7 @@ vi.mock("@waldiez/components/chatUI/utils/messageKey", () => ({
     ),
 }));
 
-const mockedChatMessageProcessor = vi.mocked(WaldiezChatMessageProcessor);
+const mockedChatMessageProcessorProcess = vi.mocked(WaldiezChatMessageProcessor.process);
 
 describe("useWaldiezChat", () => {
     const mockHandlers: WaldiezChatHandlers = {
@@ -451,7 +451,7 @@ describe("useWaldiezChat", () => {
                 },
             };
 
-            mockedChatMessageProcessor.process.mockReturnValue(mockResult);
+            mockedChatMessageProcessorProcess.mockReturnValue(mockResult);
 
             const { result } = renderHook(() => useWaldiezChat({}));
 
@@ -459,7 +459,7 @@ describe("useWaldiezChat", () => {
                 result.current.process({ type: "text", content: "test" });
             });
 
-            expect(mockedChatMessageProcessor.process).toHaveBeenCalledWith(
+            expect(mockedChatMessageProcessorProcess).toHaveBeenCalledWith(
                 { type: "text", content: "test" },
                 undefined,
                 undefined,
@@ -473,14 +473,14 @@ describe("useWaldiezChat", () => {
 
             const { result } = renderHook(() => useWaldiezChat({ preprocess }));
 
-            mockedChatMessageProcessor.process.mockReturnValue(undefined);
+            mockedChatMessageProcessorProcess.mockReturnValue(undefined);
 
             act(() => {
                 result.current.process({ original: true });
             });
 
             expect(preprocess).toHaveBeenCalledWith({ original: true });
-            expect(mockedChatMessageProcessor.process).toHaveBeenCalledWith(
+            expect(mockedChatMessageProcessorProcess).toHaveBeenCalledWith(
                 { modified: true },
                 undefined,
                 undefined,
@@ -497,7 +497,7 @@ describe("useWaldiezChat", () => {
             });
 
             expect(preprocess).toHaveBeenCalledWith({ original: true });
-            expect(mockedChatMessageProcessor.process).not.toHaveBeenCalled();
+            expect(mockedChatMessageProcessorProcess).not.toHaveBeenCalled();
         });
 
         it("should handle workflow done messages", () => {
@@ -515,11 +515,11 @@ describe("useWaldiezChat", () => {
             });
 
             expect(result.current.chat.active).toBe(false);
-            expect(mockedChatMessageProcessor.process).not.toHaveBeenCalled();
+            expect(mockedChatMessageProcessorProcess).not.toHaveBeenCalled();
         });
 
         it("should handle processing errors", () => {
-            mockedChatMessageProcessor.process.mockImplementation(() => {
+            mockedChatMessageProcessorProcess.mockImplementation(() => {
                 throw new Error("Processing failed");
             });
 
@@ -551,7 +551,7 @@ describe("useWaldiezChat", () => {
                 requestId: "req-123",
             };
 
-            mockedChatMessageProcessor.process.mockReturnValue(mockResult);
+            mockedChatMessageProcessorProcess.mockReturnValue(mockResult);
 
             const { result } = renderHook(() => useWaldiezChat({}));
 
@@ -595,7 +595,7 @@ describe("useWaldiezChat", () => {
                 timeline: mockTimeline,
             };
 
-            mockedChatMessageProcessor.process.mockReturnValue(mockResult);
+            mockedChatMessageProcessorProcess.mockReturnValue(mockResult);
 
             const { result } = renderHook(() => useWaldiezChat({}));
 
@@ -616,7 +616,7 @@ describe("useWaldiezChat", () => {
                 participants: mockParticipants,
             };
 
-            mockedChatMessageProcessor.process.mockReturnValue(mockResult);
+            mockedChatMessageProcessorProcess.mockReturnValue(mockResult);
 
             const { result } = renderHook(() => useWaldiezChat({}));
 
@@ -642,14 +642,14 @@ describe("useWaldiezChat", () => {
                 result.current.setActiveRequest(mockRequest);
             });
 
-            mockedChatMessageProcessor.process.mockReturnValue(undefined);
+            mockedChatMessageProcessorProcess.mockReturnValue(undefined);
 
             act(() => {
                 result.current.process({ type: "test" });
             });
 
             expect(onPreview).toHaveBeenCalledWith("active-req");
-            expect(mockedChatMessageProcessor.process).toHaveBeenCalledWith(
+            expect(mockedChatMessageProcessorProcess).toHaveBeenCalledWith(
                 { type: "test" },
                 "active-req",
                 "https://preview.url",
@@ -676,7 +676,7 @@ describe("useWaldiezChat", () => {
                 requestId: "new-req",
             };
 
-            mockedChatMessageProcessor.process.mockReturnValue(mockResult);
+            mockedChatMessageProcessorProcess.mockReturnValue(mockResult);
 
             const { result } = renderHook(() => useWaldiezChat({}));
 
@@ -705,7 +705,7 @@ describe("useWaldiezChat", () => {
                 isWorkflowEnd: true,
             };
 
-            mockedChatMessageProcessor.process.mockReturnValue(mockResult);
+            mockedChatMessageProcessorProcess.mockReturnValue(mockResult);
 
             const { result } = renderHook(() => useWaldiezChat({}));
 
@@ -814,7 +814,7 @@ describe("useWaldiezChat", () => {
         });
 
         it("should handle processor returning undefined", () => {
-            mockedChatMessageProcessor.process.mockReturnValue(undefined);
+            mockedChatMessageProcessorProcess.mockReturnValue(undefined);
 
             const { result } = renderHook(() => useWaldiezChat({}));
 
@@ -839,7 +839,7 @@ describe("useWaldiezChat", () => {
                 requestId: "req-123",
             };
 
-            mockedChatMessageProcessor.process.mockReturnValue(mockResult);
+            mockedChatMessageProcessorProcess.mockReturnValue(mockResult);
 
             const { result } = renderHook(() => useWaldiezChat({}));
 
@@ -866,7 +866,7 @@ describe("useWaldiezChat", () => {
                 requestId: "req-123",
             };
 
-            mockedChatMessageProcessor.process.mockReturnValue(mockResult);
+            mockedChatMessageProcessorProcess.mockReturnValue(mockResult);
 
             const { result } = renderHook(() => useWaldiezChat({}));
 

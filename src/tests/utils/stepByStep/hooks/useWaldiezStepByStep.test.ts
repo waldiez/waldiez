@@ -38,7 +38,7 @@ vi.mock("@waldiez/components/stepByStep/utils", () => ({
     ),
 }));
 
-const mockedStepByStepProcessor = vi.mocked(WaldiezStepByStepProcessor);
+const mockedStepByStepProcessorProcess = vi.mocked(WaldiezStepByStepProcessor.process);
 
 describe("useWaldiezStepByStep", () => {
     const mockHandlers: WaldiezStepHandlers = {
@@ -353,7 +353,7 @@ describe("useWaldiezStepByStep", () => {
                 },
             };
 
-            mockedStepByStepProcessor.process.mockReturnValue(mockResult);
+            mockedStepByStepProcessorProcess.mockReturnValue(mockResult);
 
             const { result } = renderHook(() => useWaldiezStepByStep({}));
 
@@ -361,7 +361,7 @@ describe("useWaldiezStepByStep", () => {
                 result.current.process({ type: "debug_message", content: "test" });
             });
 
-            expect(mockedStepByStepProcessor.process).toHaveBeenCalledWith({
+            expect(mockedStepByStepProcessorProcess).toHaveBeenCalledWith({
                 type: "debug_message",
                 content: "test",
             });
@@ -373,14 +373,14 @@ describe("useWaldiezStepByStep", () => {
 
             const { result } = renderHook(() => useWaldiezStepByStep({ preprocess }));
 
-            mockedStepByStepProcessor.process.mockReturnValue(undefined);
+            mockedStepByStepProcessorProcess.mockReturnValue(undefined);
 
             act(() => {
                 result.current.process({ original: true });
             });
 
             expect(preprocess).toHaveBeenCalledWith({ original: true });
-            expect(mockedStepByStepProcessor.process).toHaveBeenCalledWith({ modified: true });
+            expect(mockedStepByStepProcessorProcess).toHaveBeenCalledWith({ modified: true });
         });
 
         it("should skip processing when preprocessing handles the message", () => {
@@ -393,11 +393,11 @@ describe("useWaldiezStepByStep", () => {
             });
 
             expect(preprocess).toHaveBeenCalledWith({ original: true });
-            expect(mockedStepByStepProcessor.process).not.toHaveBeenCalled();
+            expect(mockedStepByStepProcessorProcess).not.toHaveBeenCalled();
         });
 
         it("should handle processing errors", () => {
-            mockedStepByStepProcessor.process.mockImplementation(() => {
+            mockedStepByStepProcessorProcess.mockImplementation(() => {
                 throw new Error("Processing failed");
             });
 
@@ -440,7 +440,7 @@ describe("useWaldiezStepByStep", () => {
                     },
                 },
             };
-            mockedStepByStepProcessor.process.mockReturnValue(timelineResult);
+            mockedStepByStepProcessorProcess.mockReturnValue(timelineResult);
 
             act(() => {
                 result.current.process({ type: "timeline" });
@@ -452,7 +452,7 @@ describe("useWaldiezStepByStep", () => {
             const controlResult: WaldiezStepByStepProcessingResult = {
                 stateUpdate: { pendingControlInput: { request_id: "test", prompt: "test" } },
             };
-            mockedStepByStepProcessor.process.mockReturnValue(controlResult);
+            mockedStepByStepProcessorProcess.mockReturnValue(controlResult);
 
             act(() => {
                 result.current.process({ type: "control" });
@@ -468,7 +468,7 @@ describe("useWaldiezStepByStep", () => {
                     activeRequest: { request_id: "test", prompt: "test", password: false },
                 },
             };
-            mockedStepByStepProcessor.process.mockReturnValue(requestResult);
+            mockedStepByStepProcessorProcess.mockReturnValue(requestResult);
 
             act(() => {
                 result.current.process({ type: "request" });
@@ -480,7 +480,7 @@ describe("useWaldiezStepByStep", () => {
             const autoContinueResult: WaldiezStepByStepProcessingResult = {
                 stateUpdate: { autoContinue: true },
             };
-            mockedStepByStepProcessor.process.mockReturnValue(autoContinueResult);
+            mockedStepByStepProcessorProcess.mockReturnValue(autoContinueResult);
 
             act(() => {
                 result.current.process({ type: "auto" });
@@ -493,7 +493,7 @@ describe("useWaldiezStepByStep", () => {
                 error: new Error("Test error"),
                 isWorkflowEnd: true,
             };
-            mockedStepByStepProcessor.process.mockReturnValue(errorResult);
+            mockedStepByStepProcessorProcess.mockReturnValue(errorResult);
 
             act(() => {
                 result.current.process({ type: "error" });
@@ -511,7 +511,7 @@ describe("useWaldiezStepByStep", () => {
                     ],
                 },
             };
-            mockedStepByStepProcessor.process.mockReturnValue(eventsResult);
+            mockedStepByStepProcessorProcess.mockReturnValue(eventsResult);
 
             act(() => {
                 result.current.process({ type: "events" });
@@ -564,7 +564,7 @@ describe("useWaldiezStepByStep", () => {
             const { WaldiezChatMessageProcessor } = await import("@waldiez/utils/chat");
             vi.mocked(WaldiezChatMessageProcessor.process).mockReturnValue(mockChatResult);
 
-            mockedStepByStepProcessor.process.mockReturnValue(undefined);
+            mockedStepByStepProcessorProcess.mockReturnValue(undefined);
 
             const { result } = renderHook(() => useWaldiezStepByStep({}));
 
@@ -593,7 +593,7 @@ describe("useWaldiezStepByStep", () => {
             const { WaldiezChatMessageProcessor } = await import("@waldiez/utils/chat");
             vi.mocked(WaldiezChatMessageProcessor.process).mockReturnValue(mockChatResult);
 
-            mockedStepByStepProcessor.process.mockReturnValue(undefined);
+            mockedStepByStepProcessorProcess.mockReturnValue(undefined);
 
             const { result } = renderHook(() => useWaldiezStepByStep({}));
 
@@ -617,7 +617,7 @@ describe("useWaldiezStepByStep", () => {
             const { WaldiezChatMessageProcessor } = await import("@waldiez/utils/chat");
             vi.mocked(WaldiezChatMessageProcessor.process).mockReturnValue(mockChatResult);
 
-            mockedStepByStepProcessor.process.mockReturnValue(undefined);
+            mockedStepByStepProcessorProcess.mockReturnValue(undefined);
 
             const { result } = renderHook(() => useWaldiezStepByStep({}));
 
@@ -650,7 +650,7 @@ describe("useWaldiezStepByStep", () => {
             const emptyEventsResult: WaldiezStepByStepProcessingResult = {
                 stateUpdate: { eventHistory: [] },
             };
-            mockedStepByStepProcessor.process.mockReturnValue(emptyEventsResult);
+            mockedStepByStepProcessorProcess.mockReturnValue(emptyEventsResult);
 
             const { result } = renderHook(() => useWaldiezStepByStep({}));
 
@@ -676,7 +676,7 @@ describe("useWaldiezStepByStep", () => {
             const { WaldiezChatMessageProcessor } = await import("@waldiez/utils/chat");
             vi.mocked(WaldiezChatMessageProcessor.process).mockReturnValue(mockChatResult);
 
-            mockedStepByStepProcessor.process.mockReturnValue(undefined);
+            mockedStepByStepProcessorProcess.mockReturnValue(undefined);
 
             const { result } = renderHook(() => useWaldiezStepByStep({}));
 
