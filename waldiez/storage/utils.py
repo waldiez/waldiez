@@ -221,33 +221,45 @@ def _normalize_link_target(link_path: Path, raw_target: Path) -> Path:
     )
 
 
-def _pre_link(link_path: Path, link_target: Path, overwrite: bool) -> bool:
+# pylint: disable=too-complex
+def _pre_link(
+    link_path: Path,
+    link_target: Path,
+    overwrite: bool,
+) -> bool:  # noqa: C901
     """Prepare for creating a link; return False if no-op, True to proceed."""
     if link_path == link_target:
         return False
-    if link_path.is_symlink():
+    is_link = link_path.is_symlink() or _is_windows_junction(link_path)
+    if is_link:
         # pylint: disable=too-many-try-statements
         try:
-            current_raw = link_path.readlink()
-            current = _normalize_link_target(link_path, current_raw)
+            # For junctions, we need a different approach to read the target
+            if _is_windows_junction(link_path):
+                # Resolve the junction and compare
+                current = link_path.resolve()
+            else:
+                current_raw = link_path.readlink()
+                current = _normalize_link_target(link_path, current_raw)
+
             if current == link_target:
                 return False
         except OSError:
             pass
 
-    if link_path.exists() or link_path.is_symlink():
+    if link_path.exists() or is_link:
         if not overwrite:
             raise FileExistsError(
                 f"{link_path} already exists; set overwrite=True to replace it."
             )
 
-        if link_path.is_symlink() or link_path.is_file():
-            link_path.unlink(missing_ok=True)
-        else:
+        if is_link or link_path.is_file():
             if _is_windows_junction(link_path):
                 os.rmdir(link_path)  # removes the junction itself
             else:
-                shutil.rmtree(link_path)
+                link_path.unlink(missing_ok=True)
+        else:
+            shutil.rmtree(link_path)
 
     return True
 
