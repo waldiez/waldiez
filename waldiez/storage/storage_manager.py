@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import os
 import shutil
+import sys
 from collections.abc import Generator, Iterable
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -172,9 +173,18 @@ class StorageManager:
             latest_link = session_out_dir / "latest"
             tmp_latest = session_out_dir / ".latest.tmp"
             symlink(tmp_latest, checkpoint_path, overwrite=True)
-            # Atomic swap; if replace fails for any reason, clean up temp
+            # pylint: disable=too-many-try-statements,broad-exception-caught
             try:
-                os.replace(tmp_latest, latest_link)
+                if sys.platform == "win32":
+                    # Windows: remove target first
+                    if os.path.exists(latest_link):
+                        os.remove(latest_link)
+                    os.rename(tmp_latest, latest_link)
+                else:
+                    # Unix-like: atomic replace
+                    os.replace(tmp_latest, latest_link)
+            except BaseException:
+                pass
             finally:
                 if tmp_latest.exists():
                     tmp_latest.unlink(missing_ok=True)
