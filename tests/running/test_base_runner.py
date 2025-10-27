@@ -351,7 +351,7 @@ def test_prepare_paths_and_before_run(
     dummy_env = tmp_path / ".env"
     dummy_env.write_text("TEST=1")
 
-    runner._dot_env_path = dummy_env
+    WaldiezBaseRunner._dot_env_path = dummy_env
     runner._exporter.export = MagicMock()  # type: ignore
 
     temp_dir = runner._before_run(
