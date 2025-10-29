@@ -25,7 +25,7 @@ from typing_extensions import Self, override
 from waldiez.exporter import WaldiezExporter
 from waldiez.logger import WaldiezLogger, get_logger
 from waldiez.models import Waldiez
-from waldiez.storage import StorageManager, WaldiezCheckpoint
+from waldiez.storage import StorageManager, WaldiezCheckpoint, safe_name
 
 from .dir_utils import a_chdir, chdir
 from .environment import reset_env_vars, set_env_vars
@@ -69,7 +69,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         WaldiezBaseRunner._output_path = output_path
         WaldiezBaseRunner._uploads_root = uploads_root
         WaldiezBaseRunner._dot_env_path = Path(dot_env) if dot_env else None
-        WaldiezBaseRunner._flow_name = ResultsMixin.safe_name(waldiez.name)
+        WaldiezBaseRunner._flow_name = safe_name(waldiez.name)
         WaldiezBaseRunner._storage_manager = StorageManager(None, workspace_arg)
         WaldiezBaseRunner._waldiez = waldiez
         EventsMixin.set_input_function(input)
@@ -418,8 +418,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             WaldiezBaseRunner._output_path = output_path
         if not WaldiezBaseRunner._output_path:
             WaldiezBaseRunner._output_path = (
-                Path.cwd()
-                / ResultsMixin.safe_name(WaldiezBaseRunner._waldiez.name)
+                Path.cwd() / safe_name(WaldiezBaseRunner._waldiez.name)
             ).with_suffix(".py")
         output_file: Path = Path(WaldiezBaseRunner._output_path)
         WaldiezBaseRunner._check_dot_env(output_file.parent)

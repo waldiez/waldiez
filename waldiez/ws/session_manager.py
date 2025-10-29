@@ -9,7 +9,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, final
 
-from .models import ExecutionMode, SessionState, WorkflowSession, WorkflowStatus
+from .models import ExecutionMode, SessionState, WorkflowStatus
+from .session import WorkflowSession
 from .session_stats import SessionStats
 
 

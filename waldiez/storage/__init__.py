@@ -11,7 +11,7 @@ from .cli import handle_checkpoints
 from .filesystem_storage import FilesystemStorage
 from .protocol import Storage
 from .storage_manager import StorageManager
-from .utils import get_root_dir, symlink
+from .utils import get_root_dir, safe_name, symlink
 
 
 def add_checkpoints_app(app: typer.Typer) -> None:
@@ -39,6 +39,7 @@ __all__ = [
     "WaldiezCheckpoint",
     "WaldiezCheckpointInfo",
     "symlink",
+    "safe_name",
     "get_root_dir",
     "handle_checkpoints",
     "add_checkpoints_app",

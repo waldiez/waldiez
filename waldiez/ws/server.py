@@ -84,7 +84,7 @@ class WaldiezWsServer:
         port: int = 8765,
         auto_reload: bool = False,
         workspace_dir: Path = CWD,
-        max_clients: int = 1,
+        max_clients: int = 2,
         allowed_origins: Sequence[re.Pattern[str]] | None = None,
         **kwargs: Any,
     ):
@@ -101,7 +101,7 @@ class WaldiezWsServer:
         workspace_dir : Path
             Path to the workspace directory
         max_clients : int
-            Maximum number of concurrent clients (default: 1)
+            Maximum number of concurrent clients (default: 2)
         allowed_origins : Sequence[re.Pattern[str]] | None
             List of allowed origins for CORS (default: None)
         ping_interval : float | None

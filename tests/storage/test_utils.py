@@ -21,6 +21,7 @@ from waldiez.storage.utils import (
     get_root_dir,
     is_frozen,
     is_installed_package,
+    safe_name,
     symlink,
 )
 
@@ -519,3 +520,39 @@ class TestCopyResults:
         assert (
             destination_dir / "subdir" / "file2.txt"
         ).read_text() == "existing"
+
+
+# pylint: disable=too-few-public-methods
+class TestSafeName:
+    """Tests for safe_name function."""
+
+    def test_safe_name(self) -> None:
+        """Test _safe_name method."""
+        # Basic test
+        assert safe_name("test_flow") == "test_flow"
+
+        # Special characters
+        assert safe_name("test/flow@123!") == "test_flow_123"
+
+        # Multiple underscores
+        assert safe_name("test___flow") == "test_flow"
+
+        # Leading/trailing underscores
+        assert safe_name("_test_flow_") == "test_flow"
+
+        # Empty string
+        assert safe_name("") == "invalid_name"
+
+        # Only special characters
+        assert safe_name("@#$%^&*") == "invalid_name"
+
+        # Max length
+        long_name = "a" * 300
+        assert len(safe_name(long_name)) == 255
+
+        # Custom max length
+        assert len(safe_name("test_flow", max_length=5)) == 4
+        assert len(safe_name("testing_flow", max_length=5)) == 5
+
+        # Custom fallback
+        assert safe_name("", fallback="custom") == "custom"

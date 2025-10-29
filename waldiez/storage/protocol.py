@@ -24,6 +24,32 @@ class Storage(Protocol):  # pragma: no cover
         """Base workspace directory."""
         ...
 
+    @staticmethod
+    def load_dict(json_file: Path) -> dict[str, Any]:
+        """Load dict from json.
+
+        Parameters
+        ----------
+        json_file : Path
+            The path of the file to load data from.
+        """
+        ...
+
+    @staticmethod
+    def load_list(
+        json_file: Path, fallback_dict_key: str
+    ) -> list[dict[str, Any]]:
+        """Load list from json.
+
+        Parameters
+        ----------
+        json_file : Path
+            The path of the file to load data from.
+        fallback_dict_key : str
+            The key to get the list from if the loaded data is dict.
+        """
+        ...
+
     @contextmanager
     def transaction(self) -> Generator[Self, None, None]:
         """Batch multiple operations together.

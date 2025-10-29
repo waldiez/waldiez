@@ -19,6 +19,9 @@ from typing import TYPE_CHECKING, Any, Callable, Optional, Union
 
 import aiofiles
 
+from waldiez.storage import WaldiezCheckpoint
+from waldiez.storage.storage_manager import StorageManager
+
 from .async_utils import is_async_callable, syncify
 from .io_utils import input_async, input_sync
 
@@ -409,45 +412,29 @@ class EventsMixin:
         state_file = output_dir / "state.json"
         metadata_file = output_dir / "metadata.json"
         history_file = output_dir / "history.json"
-
-        if not state_file.exists() or not metadata_file.exists():
-            return  # Nothing to append if either is missing
         # pylint: disable=broad-exception-caught
-        try:
-            with open(state_file, "r", encoding="utf-8") as f:
-                state = json.load(f)
-        except Exception:
-            state = {}
-
-        try:
-            with open(metadata_file, "r", encoding="utf-8") as f:
-                metadata = json.load(f)
-        except Exception:
-            metadata = {}
-
+        state = StorageManager.load_dict(state_file)
+        metadata = StorageManager.load_dict(metadata_file)
+        if not state:  # pragma: no cover
+            return
+        history = StorageManager.load_list(history_file, "history")
         # Compose the new history entry
         entry = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": WaldiezCheckpoint.format_timestamp(
+                datetime.now(timezone.utc)
+            ),
             "state": state,
-            "metadata": metadata,
         }
-
-        # Load existing history if available
-        history: list[dict[str, Any]] = []
-        if history_file.exists():
-            # pylint: disable=too-many-try-statements
-            try:
-                with open(history_file, "r", encoding="utf-8") as f:
-                    history = json.load(f)
-                if not isinstance(history, list):
-                    history = [history]
-            except Exception:
-                history = []
-
         # Append new entry and write back
         history.append(entry)
         with open(history_file, "w", encoding="utf-8") as f:
-            f.write(json.dumps(history, default=str, indent=2))
+            f.write(
+                json.dumps(
+                    {"history": history, "metadata": metadata},
+                    default=str,
+                    indent=2,
+                )
+            )
 
     @staticmethod
     def process_event(

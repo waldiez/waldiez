@@ -153,7 +153,7 @@ def run(
             "--checkpoint",
             "-c",
             help=(
-                "The checkpoint (by its timestamp) to delete. "
+                "The checkpoint (by its timestamp) to use (for resuming). "
                 "NOTE: use 'latest' to load the latest checkpoint, or "
                 "format: '%Y%m%d_%H%M%S_%f', e.g.: '20251022_075906_254779'"
                 " (as named in the checkpoint path)."
@@ -176,6 +176,7 @@ def run(
     os.environ["NEP50_DISABLE_WARNING"] = "1"
     output_path = _get_output_path(output, force)
     from waldiez.runner import create_runner
+    from waldiez.storage import safe_name
 
     run_mode: Literal["standard", "debug", "subprocess"] = "standard"
     if subprocess:
@@ -185,6 +186,8 @@ def run(
     subprocess_mode = "run"
     if run_mode == "subprocess":
         subprocess_mode = "debug" if step else "run"
+    if checkpoint:
+        checkpoint = safe_name(checkpoint, fallback="latest")
     try:
         runner = create_runner(
             Waldiez.load(file),

@@ -7,6 +7,7 @@ import builtins
 import getpass
 import os
 import platform
+import re
 import shutil
 import stat
 import subprocess
@@ -194,6 +195,37 @@ def get_root_dir(user_id: str | None = None) -> Path:
         )
     root_dir.mkdir(parents=True, exist_ok=True)
     return root_dir.resolve(True)
+
+
+def safe_name(
+    name: str, max_length: int = 255, fallback: str = "invalid_name"
+) -> str:
+    """Return a filesystem-safe version of a name.
+
+    Parameters
+    ----------
+    name : str
+        The original name.
+    max_length : int
+        The new name's max length.
+    fallback : str
+        A fallback name to use.
+
+    Returns
+    -------
+    str
+        The safe version of the name
+    """
+    safe = name.strip()
+
+    if not safe:
+        return fallback
+    safe = re.sub(r"[^a-zA-Z0-9_.-]+", "_", safe)
+    safe = re.sub(r"_+", "_", safe)
+    safe = re.sub(r"\.{2,}", "_", safe)
+    safe = safe.strip("._")
+    safe = safe[:max_length].rstrip("._")
+    return safe or fallback
 
 
 def _is_windows_junction(p: Path) -> bool:

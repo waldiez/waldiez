@@ -179,7 +179,11 @@ class TestFilesystemStorage:
     ) -> None:
         """Test listing checkpoints for all sessions."""
         # Save checkpoints for multiple sessions
-        for session in ["session1", "session2", "session3"]:
+        for session in [
+            "test_list_checkpoints_all_sessions1",
+            "test_list_checkpoints_all_sessions2",
+            "test_list_checkpoints_all_sessions3",
+        ]:
             for i in range(2):
                 storage.save_checkpoint(session, {"iteration": i})
 
@@ -188,20 +192,24 @@ class TestFilesystemStorage:
 
         # Verify all sessions are included
         sessions = {cp.session_name for cp in checkpoints}
-        assert sessions == {"session1", "session2", "session3"}
+        assert sessions == {
+            "test_list_checkpoints_all_sessions1",
+            "test_list_checkpoints_all_sessions2",
+            "test_list_checkpoints_all_sessions3",
+        }
 
     def test_delete_checkpoint(self, storage: FilesystemStorage) -> None:
         """Test deleting a checkpoint."""
         timestamp = datetime.now(timezone.utc)
         checkpoint_path = storage.save_checkpoint(
-            "test_session", {"data": "test"}, timestamp=timestamp
+            "test_delete_checkpoint", {"data": "test"}, timestamp=timestamp
         )
 
         # Verify checkpoint exists
         assert checkpoint_path.exists()
 
         # Delete checkpoint
-        storage.delete_checkpoint("test_session", timestamp)
+        storage.delete_checkpoint("test_delete_checkpoint", timestamp)
 
         # Verify checkpoint is gone
         assert not checkpoint_path.exists()
@@ -212,47 +220,28 @@ class TestFilesystemStorage:
         """Test deleting a checkpoint removes external links."""
         timestamp = datetime.now(timezone.utc)
         checkpoint_path = storage.save_checkpoint(
-            "test_session", {"data": "test"}, timestamp=timestamp
+            "test_delete_checkpoint_with_external_links",
+            {"data": "test"},
+            timestamp=timestamp,
         )
 
         # Create external link
         link_dir = tmp_path / "external"
         link_dir.mkdir()
-        storage.link_checkpoint(link_dir, "test_session", timestamp)
+        storage.link_checkpoint(
+            link_dir, "test_delete_checkpoint_with_external_links", timestamp
+        )
 
         link_path = link_dir / checkpoint_path.name
         assert link_path.is_symlink()
 
         # Delete checkpoint
-        storage.delete_checkpoint("test_session", timestamp)
+        storage.delete_checkpoint(
+            "test_delete_checkpoint_with_external_links", timestamp
+        )
 
         # Verify link was removed
         assert not link_path.exists()
-
-    # def test_delete_checkpoint_updates_latest(
-    #     self, storage: FilesystemStorage
-    # ) -> None:
-    #     """Test deleting the latest checkpoint updates the latest symlink."""
-    #     # Save multiple checkpoints
-    #     timestamps: list[datetime] = []
-    #     for i in range(3):
-    #         timestamp = datetime.now(timezone.utc) + timedelta(seconds=i)
-    #         storage.save_checkpoint(
-    #             "test_session", {"iteration": i}, timestamp=timestamp
-    #         )
-    #         timestamps.append(timestamp)
-    #         time.sleep(0.01)
-
-    #     latest_link = storage.workspace_dir / "test_session" / "latest"
-
-    #     # Delete the most recent checkpoint
-    #     storage.delete_checkpoint("test_session", timestamps[-1])
-
-    #     # Verify latest now points to the second checkpoint
-    #     second_checkpoint = storage._get_checkpoint_path(
-    #         "test_session", timestamps[-2]
-    #     )
-    #     assert latest_link.resolve() == second_checkpoint
 
     def test_cleanup_old_checkpoints(self, storage: FilesystemStorage) -> None:
         """Test cleaning up old checkpoints."""

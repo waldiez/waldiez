@@ -9,7 +9,6 @@
 """Waldiez run results module."""
 
 import json
-import re
 import shutil
 from collections.abc import Iterable
 from datetime import datetime, timezone
@@ -19,7 +18,7 @@ from typing import Any, TypedDict
 import aiofiles
 import anyio.to_thread
 
-from waldiez.storage import StorageManager
+from waldiez.storage import StorageManager, safe_name
 
 from .db_utils import a_get_sqlite_out, get_sqlite_out
 from .gen_seq_diagram import generate_sequence_diagram
@@ -217,7 +216,7 @@ class ResultsMixin:
             else (waldiez_file.parent / "waldiez_out")
         )
         output_hint = output_file or Path.cwd() / waldiez_file.name
-        session_name = ResultsMixin.safe_name(flow_name)
+        session_name = safe_name(flow_name)
         to_ignore = list(ignore_names)
         if ResultsMixin.RUN_DETAILS not in to_ignore:
             to_ignore.append(ResultsMixin.RUN_DETAILS)
@@ -712,34 +711,3 @@ class ResultsMixin:
             table_json = dest / f"{table}.json"
             if not table_csv.exists() or not table_json.exists():
                 await a_get_sqlite_out(str(flow_db), table, str(table_csv))
-
-    @staticmethod
-    def safe_name(
-        name: str, max_length: int = 255, fallback: str = "invalid_name"
-    ) -> str:
-        """Return a filesystem-safe version of a name.
-
-        Parameters
-        ----------
-        name : str
-            The original name.
-        max_length : int
-            The new name's max length.
-        fallback : str
-            A fallback name to use.
-
-        Returns
-        -------
-        str
-            The safe version of the name
-        """
-        safe = name.strip()
-
-        if not safe:
-            return fallback
-        safe = re.sub(r"[^a-zA-Z0-9_.-]+", "_", safe)
-        safe = re.sub(r"_+", "_", safe)
-        safe = re.sub(r"\.{2,}", "_", safe)
-        safe = safe.strip("._")
-        safe = safe[:max_length].rstrip("._")
-        return safe or fallback

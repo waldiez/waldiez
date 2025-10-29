@@ -7,7 +7,8 @@
 
 from pydantic import BaseModel, Field
 
-from .models import WorkflowSession, WorkflowStatus
+from .models import WorkflowStatus
+from .session import WorkflowSession
 
 
 class SessionStats(BaseModel):

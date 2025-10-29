@@ -98,7 +98,7 @@ class TestWaldiezWsServer:
 
         assert server.host == "localhost"
         assert server.port == 8765
-        assert server.max_clients == 1
+        assert server.max_clients == 2
         assert server.allowed_origins is None
         assert server.ping_interval == 20.0
         assert server.ping_timeout == 20.0

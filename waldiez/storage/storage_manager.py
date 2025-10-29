@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+# pylint: disable=too-many-public-methods
+
 """High-level storage manager for workspace and checkpoint operations."""
 
 from __future__ import annotations
@@ -59,6 +61,42 @@ class StorageManager:
             The default global root.
         """
         return get_root_dir()
+
+    @staticmethod
+    def load_dict(json_file: Path) -> dict[str, Any]:
+        """Load dict from json.
+
+        Parameters
+        ----------
+        json_file : Path
+            The path of the file to load data from.
+
+        Returns
+        -------
+        dict[str, Any]
+            The loaded dict.
+        """
+        return FilesystemStorage.load_dict(json_file)
+
+    @staticmethod
+    def load_list(
+        json_file: Path, fallback_dict_key: str
+    ) -> list[dict[str, Any]]:
+        """Load list from json.
+
+        Parameters
+        ----------
+        json_file : Path
+            The path of the file to load data from.
+        fallback_dict_key : str
+            The key to get the list from if the loaded data is dict.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            The loaded list.
+        """
+        return FilesystemStorage.load_list(json_file, fallback_dict_key)
 
     @property
     def storage(self) -> Storage:
@@ -248,7 +286,7 @@ class StorageManager:
         session_name: str,
         checkpoint: str | datetime,
         state: dict[str, Any],
-        metadata: dict[str, Any] | None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         """Update a checkpoint with new state and optionally new metadata.
 
@@ -337,6 +375,44 @@ class StorageManager:
             List of checkpoint information
         """
         return self._storage.list_checkpoints(session_name=session_name)
+
+    def history(
+        self, session_name: str, checkpoint_name: str | None = None
+    ) -> dict[str, list[dict[str, Any]]]:
+        """Get a session's checkpoints' history.
+
+        Parameters
+        ----------
+        session_name : str
+            The session to use.
+        checkpoint_name : str | None
+            Optional checkpoint/folder name to use
+
+        Returns
+        -------
+        list[list[dict[str, Any]]]
+            Each checkpoint's history.
+        """
+        entries: dict[str, list[dict[str, Any]]] = {}
+        if checkpoint_name:
+            checkpoint_dt = WaldiezCheckpoint.parse_timestamp(checkpoint_name)
+            checkpoint_info = self._storage.get_checkpoint(
+                session_name=session_name, timestamp=checkpoint_dt
+            )
+            if not checkpoint_info:
+                return {"history": []}
+            return {"history": checkpoint_info.checkpoint.history()}
+        for checkpoint_info in self._storage.list_checkpoints(
+            session_name=session_name
+        ):
+            checkpoint_history = checkpoint_info.checkpoint.history()
+            if checkpoint_history:
+                entries[
+                    WaldiezCheckpoint.format_timestamp(
+                        checkpoint_info.timestamp
+                    )
+                ] = checkpoint_history
+        return entries
 
     def sessions(self) -> list[str]:
         """List available sessions.

@@ -164,13 +164,13 @@ class TestStorageManager:
         """Test cleanup of old checkpoints."""
         # Save 10 checkpoints
         for i in range(10):
-            manager.save("test_session", {"iteration": i})
+            manager.save("test_session_cleanup", {"iteration": i})
 
         # Cleanup keeping only 3
-        deleted = manager.cleanup("test_session", keep_count=3)
+        deleted = manager.cleanup("test_session_cleanup", keep_count=3)
         assert deleted == 7
 
-        remaining = manager.checkpoints("test_session")
+        remaining = manager.checkpoints("test_session_cleanup")
         assert len(remaining) == 3
 
     def test_clean_broken_symlinks(self, manager: StorageManager) -> None:

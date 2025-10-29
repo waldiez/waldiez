@@ -610,7 +610,7 @@ class TestCLIIntegration:
         # Create a test checkpoint structure
         workspace = tmp_path / "test_workspace"
         session_dir = workspace / "test_session"
-        checkpoint_dir = session_dir / "20240101_120000_123456"
+        checkpoint_dir = session_dir / "1761725646601"
         checkpoint_dir.mkdir(parents=True)
 
         state_file = checkpoint_dir / "state.json"
@@ -631,4 +631,4 @@ class TestCLIIntegration:
         assert result.exit_code == 0
         # Should show the checkpoint
         assert "test_session" in result.output
-        assert "20240101_120000_123456" in result.output
+        assert "1761725646601" in result.output

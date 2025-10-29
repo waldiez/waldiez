@@ -4,7 +4,7 @@
 # pylint: disable=broad-exception-caught,no-self-use,too-many-try-statements
 # pylint: disable=import-error,too-complex,possibly-used-before-assignment
 # pyright: reportPossiblyUnboundVariable=false,reportUnknownVariableType=false
-# pyright: reportUnknownMemberType=false
+# pyright: reportUnknownMemberType=false,reportUnknownArgumentType=false
 # flake8: noqa: C901
 
 """Filesystem-based implementation of the Storage protocol."""
@@ -47,6 +47,69 @@ class FilesystemStorage:
         self._links_registry: dict[str, list[str]] = {}
         self._registry_lock = threading.RLock()
         self._load_links_registry()
+
+    @staticmethod
+    def load_dict(json_file: Path) -> dict[str, Any]:
+        """Load dict from json.
+
+        Parameters
+        ----------
+        json_file : Path
+            The path of the file to load data from.
+
+        Returns
+        -------
+        dict[str, Any]
+            The loaded dict.
+        """
+        if not json_file.is_file():
+            return {}
+        # pylint: disable=broad-exception-caught,too-many-try-statements
+        try:
+            with open(json_file, "r", encoding="utf-8") as f:
+                loaded = json.load(f)
+                if isinstance(loaded, dict):
+                    return loaded
+                if isinstance(loaded, list):
+                    if len(loaded) == 1 and isinstance(loaded[0], dict):
+                        return loaded[1]
+                return {}
+        except Exception:
+            return {}
+
+    @staticmethod
+    def load_list(
+        json_file: Path, fallback_dict_key: str
+    ) -> list[dict[str, Any]]:
+        """Load list from json.
+
+        Parameters
+        ----------
+        json_file : Path
+            The path of the file to load data from.
+        fallback_dict_key : str
+            The key to get the list from if the loaded data is dict.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            The loaded list.
+        """
+        if not json_file.is_file():
+            return []
+        # pylint: disable=broad-exception-caught,too-many-try-statements
+        try:
+            with open(json_file, "r", encoding="utf-8") as f:
+                entries = json.load(f)
+            if isinstance(entries, list):
+                return entries
+            if isinstance(entries, dict):
+                entries = entries.get(fallback_dict_key, [])
+            if isinstance(entries, list):
+                return entries
+            return []
+        except Exception:
+            return []
 
     @property
     def workspace_dir(self) -> Path:

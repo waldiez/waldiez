@@ -23,6 +23,36 @@ class WaldiezCheckpoint:
     _state: dict[str, Any] | None = field(init=False, default=None)
     _metadata: dict[str, Any] | None = field(init=False, default=None)
 
+    def to_dict(self, include_history: bool = False) -> dict[str, Any]:
+        """Get the dict representation of the checkpoint.
+
+        Parameters
+        ----------
+        include_history : bool
+            Include the history in the dict or not.
+
+        Returns
+        -------
+        dict[str, Any]
+            The dict representation of the checkpoint.
+        """
+        ts = self.timestamp
+        if ts.tzinfo is None:
+            ts = ts.astimezone(timezone.utc)
+        elif ts.tzinfo != timezone.utc:
+            ts = ts.replace(tzinfo=timezone.utc)
+        the_dict: dict[str, Any] = {
+            "session": self.session_name,
+            "timestamp": WaldiezCheckpoint.format_timestamp(ts),
+            "path": self.path,
+            "name": str(self.path.name),
+            "state": self.state,
+            "metadata": self.metadata,
+        }
+        if include_history:
+            the_dict["history"] = self.history()
+        return the_dict
+
     @staticmethod
     def parse_timestamp(timestamp_str: str) -> datetime | None:
         """Parse timestamp from directory name.
@@ -37,10 +67,21 @@ class WaldiezCheckpoint:
         datetime | None
             The parsed datetime if the directory name has the expected format.
         """
+        # pylint: disable=broad-exception-caught
         try:
-            dt = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S_%f")
-            return dt.replace(tzinfo=timezone.utc)
-        except Exception:  # pylint: disable=broad-exception-caught
+            ts_int = int(timestamp_str)
+        except Exception:
+            return None
+        # Normalize to seconds
+        if ts_int > 1e15:  # microseconds
+            ts_sec = ts_int / 1_000_000
+        elif ts_int > 1e12:  # milliseconds
+            ts_sec = ts_int / 1_000
+        else:  # seconds
+            ts_sec = ts_int
+        try:
+            return datetime.fromtimestamp(ts_sec, tz=timezone.utc)
+        except Exception:
             return None
 
     @staticmethod
@@ -57,7 +98,7 @@ class WaldiezCheckpoint:
         str
             The formatted string.
         """
-        return timestamp.strftime("%Y%m%d_%H%M%S_%f")
+        return str(int(timestamp.timestamp() * 1_000_000))
 
     @property
     def state(self) -> dict[str, Any]:
@@ -72,6 +113,24 @@ class WaldiezCheckpoint:
         if self._metadata is None:
             self._metadata = self._load_json(self.metadata_file) or {}
         return self._metadata
+
+    def history(self) -> list[dict[str, Any]]:
+        """Get the state history.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            The stored history entries
+        """
+        if not self.history_file.is_file():
+            return []
+        history_dict = self._load_json(self.history_file)
+        if not history_dict:
+            return []
+        history_entries = history_dict.get("history", [])
+        if history_entries and isinstance(history_entries, list):
+            return history_entries
+        return []
 
     @staticmethod
     def _load_json(path: Path) -> dict[str, Any] | None:
@@ -104,6 +163,11 @@ class WaldiezCheckpoint:
         return self.path / "metadata.json"
 
     @property
+    def history_file(self) -> Path:
+        """Path to the history.json file."""
+        return self.path / "history.json"
+
+    @property
     def exists(self) -> bool:
         """Check if the checkpoint exists on disk."""
         return self.path.is_dir() and self.state_file.is_file()
@@ -117,6 +181,11 @@ class WaldiezCheckpointInfo:
     timestamp: datetime
     path: Path
     _checkpoint: WaldiezCheckpoint | None = field(init=False, default=None)
+
+    @property
+    def id(self) -> str:
+        """Get the id of the checkpoint info."""
+        return WaldiezCheckpoint.format_timestamp(self.timestamp)
 
     @property
     def checkpoint(self) -> WaldiezCheckpoint:
@@ -144,7 +213,7 @@ class WaldiezCheckpointInfo:
             ts = ts.replace(tzinfo=timezone.utc)
         return {
             "session": self.session_name,
-            "timestamp": self.timestamp.strftime("%Y%m%d_%H%M%S_%f"),
+            "timestamp": WaldiezCheckpoint.format_timestamp(ts),
             "path": str(self.path),
             "name": str(self.path.name),
         }

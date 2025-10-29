@@ -14,7 +14,7 @@ from rich import print as pretty_print
 from typing_extensions import Annotated
 
 from .storage_manager import StorageManager
-from .utils import get_root_dir
+from .utils import get_root_dir, safe_name
 
 app = typer.Typer(
     name="waldiez-checkpoints",
@@ -32,6 +32,7 @@ app = typer.Typer(
 DEFAULT_WORKSPACE = get_root_dir()
 
 
+# pylint: disable=too-many-locals
 @app.command(name="checkpoints", no_args_is_help=True)
 def handle_checkpoints(  # noqa: C901
     workspace: Annotated[
@@ -76,11 +77,17 @@ def handle_checkpoints(  # noqa: C901
             "-c",
             help=(
                 "The checkpoint (by its timestamp) to delete. "
-                "NOTE: format: '%Y%m%d_%H%M%S_%f'"
+                "NOTE: should be in Unix ms timestamp format: '1410715640579'"
                 " (as listed in the checkpoint's path)"
             ),
         ),
     ] = None,
+    details: Annotated[
+        bool,
+        typer.Option(
+            "--details", help="Show the full history of the checkpoint(s)."
+        ),
+    ] = False,
     cleanup: Annotated[
         bool,
         typer.Option(
@@ -99,6 +106,8 @@ def handle_checkpoints(  # noqa: C901
 ) -> None:
     """Handle waldiez checkpoints."""
     manager = StorageManager(workspace_dir=workspace)
+    if checkpoint:
+        checkpoint = safe_name(checkpoint, fallback="latest")
     if list_checkpoints:
         checkpoints = manager.checkpoints(session_name=session)
         pretty_print([checkpoint.to_dict() for checkpoint in checkpoints])
@@ -136,6 +145,17 @@ def handle_checkpoints(  # noqa: C901
             sessions = [session]
         for _session in sessions:
             manager.cleanup(session_name=_session, keep_count=keep_count)
+    if details:
+        if not session:
+            typer.echo("Please provide the session.", err=True)
+            raise typer.Exit(1)
+        if not checkpoint:
+            typer.echo(
+                "Please provide the checkpoint's timestamp to show.", err=True
+            )
+            raise typer.Exit(1)
+        data = manager.history(session_name=session, checkpoint_name=checkpoint)
+        pretty_print(data)
 
 
 if __name__ == "__main__":
