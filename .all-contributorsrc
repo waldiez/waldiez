@@ -42,8 +42,15 @@
             "avatar_url": "https://avatars.githubusercontent.com/u/23460824?v=4",
             "profile": "https://github.com/hchris0",
             "contributions": ["code"]
+        },
+        {
+            "login": "kunalmhaske21212",
+            "name": "Kunal Mhaske",
+            "avatar_url": "https://avatars.githubusercontent.com/u/178289692?v=4",
+            "profile": "https://github.com/kunalmhaske21212",
+            "contributions": ["bug"]
         }
     ],
-    "contributorsPerLine": 7,
+    "contributorsPerLine": 5,
     "linkToUsage": true
 }

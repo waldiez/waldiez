@@ -188,32 +188,78 @@ runner.run(output_path=output_path)
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!--suppress ALL -->
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- ALL-CONTRIBUTORS-LIST:START -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://scholar.google.com/citations?user=JmW9DwkAAAAJ"><img src="https://avatars.githubusercontent.com/u/29335277?v=4?s=100" width="100px;" alt="Panagiotis Kasnesis"/><br /><sub><b>Panagiotis Kasnesis</b></sub></a><br /><a href="#projectManagement-ounospanas" title="Project Management">📆</a> <a href="#research-ounospanas" title="Research">🔬</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/lazToum"><img src="https://avatars.githubusercontent.com/u/4764837?v=4?s=100" width="100px;" alt="Lazaros Toumanidis"/><br /><sub><b>Lazaros Toumanidis</b></sub></a><br /><a href="https://github.com/waldiez/waldiez/commits?author=lazToum" title="Code">💻</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://humancentered.gr/"><img src="https://avatars.githubusercontent.com/u/3456066?v=4?s=100" width="100px;" alt="Stella Ioannidou"/><br /><sub><b>Stella Ioannidou</b></sub></a><br /><a href="#promotion-siioannidou" title="Promotion">📣</a> <a href="#design-siioannidou" title="Design">🎨</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/amaliacontiero"><img src="https://avatars.githubusercontent.com/u/29499343?v=4?s=100" width="100px;" alt="Amalia Contiero"/><br /><sub><b>Amalia Contiero</b></sub></a><br /><a href="https://github.com/waldiez/vscode/commits?author=amaliacontiero" title="Code">💻</a> <a href="https://github.com/waldiez/vscode/issues?q=author%3Aamaliacontiero" title="Bug reports">🐛</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/hchris0"><img src="https://avatars.githubusercontent.com/u/23460824?v=4?s=100" width="100px;" alt="Christos Chatzigeorgiou"/><br /><sub><b>Christos Chatzigeorgiou</b></sub></a><br /><a href="https://github.com/waldiez/runner/commits?author=hchris0" title="Code">💻</a></td>
-    </tr>
-  </tbody>
-  <tfoot>
-    <tr>
-      <td align="center" size="13px" colspan="7">
-        <img src="https://raw.githubusercontent.com/all-contributors/all-contributors-cli/1b8533af435da9854653492b1327a23a4dbd0a10/assets/logo-small.svg">
+<div align="center">
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+    <div style="flex: 1 1 120px; max-width: 120px;">
+      <a href="https://scholar.google.com/citations?user=JmW9DwkAAAAJ">
+        <img src="https://avatars.githubusercontent.com/u/29335277?v=4?s=100" width="100px;" alt="Panagiotis Kasnesis"/>
+        <br/>
+        <b>Panagiotis Kasnesis</b>
+      </a>
+      <br/>
+      <a href="#projectManagement-ounospanas" title="Project Management">📆</a>
+      <a href="#research-ounospanas" title="Research">🔬</a>
+    </div>
+    <div style="flex: 1 1 120px; max-width: 120px;">
+      <a href="https://github.com/lazToum">
+        <img src="https://avatars.githubusercontent.com/u/4764837?v=4&s=100" width="100px;" alt="Lazaros Toumanidis"/>
+        <br/>
+        <b>Lazaros Toumanidis</b>
+      </a>
+      <br/>
+      <a href="https://github.com/waldiez/waldiez/commits?author=lazToum" title="Code">💻</a>
+    </div>
+    <div style="flex: 1 1 120px; max-width: 120px;">
+      <a href="https://humancentered.gr">
+        <img src="https://avatars.githubusercontent.com/u/3456066?v=4&s=100" width="100px;" alt="Stella Ioannidou"/>
+        <br/>
+        <b>Stella Ioannidou</b>
+      </a>
+      <br/>
+      <a href="#promotion-siioannidou" title="Promotion">📣</a>
+      <a href="#design-siioannidou" title="Design">🎨</a>
+    </div>
+    <div style="flex: 1 1 120px; max-width: 120px;">
+      <a href="https://github.com/amaliacontiero">
+        <img src="https://avatars.githubusercontent.com/u/29499343?v=4&s=100" width="100px;" alt="Amalia Contiero"/>
+        <br/>
+        <b>Amalia Contiero</b>
+      </a>
+      <br/>
+      <a href="https://github.com/waldiez/vscode/commits?author=amaliacontiero" title="Code">💻</a>
+      <a href="https://github.com/waldiez/vscode/issues?q=author%3Aamaliacontiero" title="Bug reports">🐛</a>
+    </div>
+    <div style="flex: 1 1 120px; max-width: 120px;">
+      <a href="https://github.com/hchris0">
+        <img src="https://avatars.githubusercontent.com/u/23460824?v=4&s=100" width="100px;" alt="Christos Chatzigeorgiou"/>
+        <br/>
+        <b>Christos Chatzigeorgiou</b>
+      </a>
+      <br/>
+      <a href="https://github.com/waldiez/runner/commits?author=hchris0" title="Code">💻</a>
+    </div>
+    <div style="flex: 1 1 120px; max-width: 120px;">
+      <a href="https://github.com/kunalmhaske21212">
+        <img src="https://avatars.githubusercontent.com/u/178289692?v=4&s=100" width="100px;" alt="Kunal Mhaske"/>
+        <br/>
+        <b>Kunal Mhaske</b>
+      </a>
+      <br/>
+      <a href="#bugReports-kunalmhaske21212" title="Bug reports">🐛</a>
+    </div>
+  </div>
+  <div style="margin-top: 20px;">
+      <div>
+        <img src="https://raw.githubusercontent.com/all-contributors/all-contributors-cli/1b8533af435da9854653492b1327a23a4dbd0a10/assets/logo-small.svg" alt="all-contributors" width="13px"/>
         <a href="https://all-contributors.js.org/docs/en/bot/usage">Add your contributions</a>
-      </td>
-    </tr>
-  </tfoot>
-</table>
-
+      </div>
+  </div>
+</div>
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## License
