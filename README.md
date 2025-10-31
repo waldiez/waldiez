@@ -201,7 +201,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <a href="#projectManagement-ounospanas">📆</a>
       <a href="#research-ounospanas">🔬</a>
     </td>
-
     <td align="center" width="20%">
       <a href="https://github.com/lazToum">
         <img src="https://avatars.githubusercontent.com/u/4764837?v=4&s=100" width="100px" alt="Lazaros Toumanidis"/><br/>
@@ -209,7 +208,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       </a><br/>
       <a href="https://github.com/waldiez/waldiez/commits?author=lazToum">💻</a>
     </td>
-
     <td align="center" width="20%">
       <a href="https://humancentered.gr">
         <img src="https://avatars.githubusercontent.com/u/3456066?v=4&s=100" width="100px" alt="Stella Ioannidou"/><br/>
@@ -218,7 +216,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <a href="#promotion-siioannidou">📣</a>
       <a href="#design-siioannidou">🎨</a>
     </td>
-
     <td align="center" width="20%">
       <a href="https://github.com/amaliacontiero">
         <img src="https://avatars.githubusercontent.com/u/29499343?v=4&s=100" width="100px" alt="Amalia Contiero"/><br/>
@@ -227,7 +224,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <a href="https://github.com/waldiez/vscode/commits?author=amaliacontiero">💻</a>
       <a href="https://github.com/waldiez/vscode/issues?q=author%3Aamaliacontiero">🐛</a>
     </td>
-
     <td align="center" width="20%">
       <a href="https://github.com/hchris0">
         <img src="https://avatars.githubusercontent.com/u/23460824?v=4&s=100" width="100px" alt="Christos Chatzigeorgiou"/><br/>
@@ -236,7 +232,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <a href="https://github.com/waldiez/runner/commits?author=hchris0">💻</a>
     </td>
   </tr>
-
   <tr>
     <td align="center">
       <a href="https://github.com/kunalmhaske21212">
@@ -245,7 +240,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       </a><br/>
       <a href="#bugReports-kunalmhaske21212">🐛</a>
     </td>
-
     <!-- Empty cells for layout symmetry -->
     <td></td><td></td><td></td><td></td>
   </tr>
@@ -258,7 +252,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
   </tfoot>
 </table>
-
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
