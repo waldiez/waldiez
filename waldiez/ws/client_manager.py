@@ -94,9 +94,7 @@ class ClientManager:
         self.client_id = client_id
         self.session_manager = session_manager
         self.workspace_dir = workspace_dir
-        self.storage_manager = StorageManager(
-            workspace_dir=workspace_dir / "workspace" / "waldiez_checkpoints"
-        )
+        self.storage_manager = StorageManager()
         self.is_active = True
 
         # Active runners per session
@@ -320,8 +318,12 @@ class ClientManager:
                 logger=self.logger,
             )
 
+        # checkpoints related
         if isinstance(msg, GetCheckpointsRequest):
             return await self._handle_get_checkpoints(msg)
+
+        if isinstance(msg, SaveCheckpointRequest):
+            return await self._handle_save_checkpoint(msg)
 
         # Start workflow (STANDARD)
         if isinstance(msg, RunWorkflowRequest):
@@ -440,6 +442,7 @@ class ClientManager:
                 error=f"Invalid flow_data: {e}",
                 session_id="",
                 breakpoints=msg.breakpoints,
+                checkpoint=msg.checkpoint,
             ).model_dump(mode="json")
         session_id = self._next_session_id()
         runner = WaldiezSubprocessRunner(
@@ -448,6 +451,7 @@ class ClientManager:
             on_input_request=self._mk_on_input_request(session_id),
             mode="debug",  # step-by-step via CLI
             breakpoints=msg.breakpoints,
+            checkpoint=msg.checkpoint,
         )
 
         await self._create_session_for_runner(
@@ -460,6 +464,7 @@ class ClientManager:
             session.state.metadata.update(
                 {
                     "breakpoints": list(msg.breakpoints),
+                    "checkpoint": msg.checkpoint,
                 }
             )
 
@@ -468,6 +473,7 @@ class ClientManager:
         return StepRunWorkflowResponse.ok(
             session_id=session_id,
             breakpoints=list(msg.breakpoints),
+            checkpoint=msg.checkpoint,
         ).model_dump(mode="json")
 
     async def _create_session_for_runner(

@@ -627,8 +627,10 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             self._output_dir = temp_dir
             self.print(MESSAGES["workflow_starting"])
             self.print(self.waldiez.info.model_dump_json())
-
-            results = loaded_module.main(on_event=self._on_event)
+            results = loaded_module.main(
+                on_event=self._on_event,
+                state_json=self.state_json,
+            )
             results_container["results"] = results
             self.print(MESSAGES["workflow_finished"])
 
@@ -741,7 +743,10 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 self.print(MESSAGES["workflow_starting"])
                 self.print(self.waldiez.info.model_dump_json())
 
-                results = await loaded_module.main(on_event=self._a_on_event)
+                results = await loaded_module.main(
+                    on_event=self._a_on_event,
+                    state_json=self.state_json,
+                )
                 self.print(MESSAGES["workflow_finished"])
                 return results
 

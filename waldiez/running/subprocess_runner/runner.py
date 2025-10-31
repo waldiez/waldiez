@@ -74,7 +74,6 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             **kwargs,
         )
         self.breakpoints = self._parse_breakpoints(**kwargs)
-
         # Store callbacks
         self.sync_on_output = on_output or self._default_sync_output
         self.sync_on_input_request = (
@@ -155,6 +154,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             dot_env=self.dot_env_path,
             logger=self.log,
             breakpoints=self.breakpoints,
+            checkpoint=WaldiezBaseRunner._checkpoint,
         )
         return self.async_runner
 
@@ -168,6 +168,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             dot_env=self.dot_env_path,
             logger=self.log,
             breakpoints=self.breakpoints,
+            checkpoint=WaldiezBaseRunner._checkpoint,
         )
         return self.sync_runner
 

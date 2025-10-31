@@ -12,6 +12,8 @@ import uuid
 from pathlib import Path
 from typing import Any, Literal
 
+from waldiez.storage import WaldiezCheckpoint
+
 
 class BaseSubprocessRunner:
     """Base class with common logic for subprocess runners."""
@@ -54,6 +56,9 @@ class BaseSubprocessRunner:
         if not isinstance(breakpoints, list):
             breakpoints = []
         self.breakpoints: list[str] = breakpoints
+        self.checkpoint: WaldiezCheckpoint | None = kwargs.get(
+            "checkpoint", None
+        )
 
     def build_command(
         self,
@@ -117,6 +122,8 @@ class BaseSubprocessRunner:
         if self.breakpoints:
             for entry in self.breakpoints:
                 cmd.extend(["--breakpoints", entry])
+        if self.checkpoint:
+            cmd.extend(["--checkpoint", self.checkpoint.id])
         self.logger.debug("Runner command: %s", " ".join(cmd))
         return cmd
 

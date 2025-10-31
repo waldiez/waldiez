@@ -24,6 +24,69 @@ class WaldiezCheckpoint:
     _state: dict[str, Any] | None = field(init=False, default=None)
     _metadata: dict[str, Any] | None = field(init=False, default=None)
 
+    @property
+    def id(self) -> str:
+        """Get the id of the checkpoint.
+
+        Returns
+        -------
+        str
+            The id of the checkpoint.
+        """
+        return WaldiezCheckpoint.format_timestamp(self.timestamp)
+
+    @property
+    def state(self) -> dict[str, Any]:
+        """Get the checkpoint's state."""
+        if self._state is None:
+            self._state = self._load_json(self.state_file) or {}
+        return self._state
+
+    @property
+    def metadata(self) -> dict[str, Any]:
+        """Get the checkpoint's metadata."""
+        if self._metadata is None:
+            self._metadata = self._load_json(self.metadata_file) or {}
+        return self._metadata
+
+    @property
+    def state_file(self) -> Path:
+        """Path to the state.json file."""
+        return self.path / "state.json"
+
+    @property
+    def metadata_file(self) -> Path:
+        """Path to the metadata.json file."""
+        return self.path / "metadata.json"
+
+    @property
+    def history_file(self) -> Path:
+        """Path to the history.json file."""
+        return self.path / "history.json"
+
+    @property
+    def exists(self) -> bool:
+        """Check if the checkpoint exists on disk."""
+        return self.path.is_dir() and self.state_file.is_file()
+
+    def history(self) -> list[dict[str, Any]]:
+        """Get the state history.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            The stored history entries
+        """
+        if not self.history_file.is_file():
+            return []
+        history_dict = self._load_json(self.history_file)
+        if not history_dict:
+            return []
+        history_entries = history_dict.get("history", [])
+        if history_entries and isinstance(history_entries, list):
+            return history_entries
+        return []
+
     def to_dict(self, include_history: bool = False) -> dict[str, Any]:
         """Get the dict representation of the checkpoint.
 
@@ -53,6 +116,11 @@ class WaldiezCheckpoint:
         if include_history:
             the_dict["history"] = self.history()
         return the_dict
+
+    def refresh(self) -> None:
+        """Reset the state and metadata."""
+        self._state = None
+        self._metadata = None
 
     @staticmethod
     def parse_timestamp(timestamp_str: str) -> datetime | None:
@@ -101,38 +169,6 @@ class WaldiezCheckpoint:
         """
         return str(int(timestamp.timestamp() * 1_000_000))
 
-    @property
-    def state(self) -> dict[str, Any]:
-        """Get the checkpoint's state."""
-        if self._state is None:
-            self._state = self._load_json(self.state_file) or {}
-        return self._state
-
-    @property
-    def metadata(self) -> dict[str, Any]:
-        """Get the checkpoint's metadata."""
-        if self._metadata is None:
-            self._metadata = self._load_json(self.metadata_file) or {}
-        return self._metadata
-
-    def history(self) -> list[dict[str, Any]]:
-        """Get the state history.
-
-        Returns
-        -------
-        list[dict[str, Any]]
-            The stored history entries
-        """
-        if not self.history_file.is_file():
-            return []
-        history_dict = self._load_json(self.history_file)
-        if not history_dict:
-            return []
-        history_entries = history_dict.get("history", [])
-        if history_entries and isinstance(history_entries, list):
-            return history_entries
-        return []
-
     @staticmethod
     def _load_json(path: Path) -> dict[str, Any] | None:
         with suppress(Exception):
@@ -147,31 +183,6 @@ class WaldiezCheckpoint:
                 ):
                     return data[0]
         return None
-
-    def refresh(self) -> None:
-        """Reset the state and metadata."""
-        self._state = None
-        self._metadata = None
-
-    @property
-    def state_file(self) -> Path:
-        """Path to the state.json file."""
-        return self.path / "state.json"
-
-    @property
-    def metadata_file(self) -> Path:
-        """Path to the metadata.json file."""
-        return self.path / "metadata.json"
-
-    @property
-    def history_file(self) -> Path:
-        """Path to the history.json file."""
-        return self.path / "history.json"
-
-    @property
-    def exists(self) -> bool:
-        """Check if the checkpoint exists on disk."""
-        return self.path.is_dir() and self.state_file.is_file()
 
 
 @dataclass

@@ -155,8 +155,8 @@ def run(
             help=(
                 "The checkpoint (by its timestamp) to use (for resuming). "
                 "NOTE: use 'latest' to load the latest checkpoint, or "
-                "format: '%Y%m%d_%H%M%S_%f', e.g.: '20251022_075906_254779'"
-                " (as named in the checkpoint path)."
+                " Unix ms timestamp format: '1410715640579'"
+                " (as listed in the checkpoint's path)"
             ),
         ),
     ] = None,

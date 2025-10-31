@@ -140,6 +140,7 @@ class StepRunWorkflowRequest(BaseRequest):
     type: Literal["step_run"] = "step_run"
     data: str  # JSON string of workflow
     breakpoints: list[str] = Field(default_factory=list)
+    checkpoint: str | None = None
     path: str | None = None
 
 
@@ -290,6 +291,7 @@ class StepRunWorkflowResponse(BaseResponse):
     type: Literal["step_run_response"] = "step_run_response"
     session_id: str
     breakpoints: list[str]
+    checkpoint: str | None = None
     error: str | None = None
 
 

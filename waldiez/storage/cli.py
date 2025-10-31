@@ -6,13 +6,13 @@
 
 """CLI interface for Waldiez checkpoints."""
 
-from datetime import datetime, timezone
 from pathlib import Path
 
 import typer
 from rich import print as pretty_print
 from typing_extensions import Annotated
 
+from .checkpoint import WaldiezCheckpoint
 from .storage_manager import StorageManager
 from .utils import get_root_dir, safe_name
 
@@ -130,10 +130,9 @@ def handle_checkpoints(  # noqa: C901
                 "Please provide the checkpoint's timestamp to delete.", err=True
             )
             raise typer.Exit(1)
-        checkpoint_timestamp = datetime.strptime(
-            checkpoint, "%Y%m%d_%H%M%S_%f"
-        ).replace(tzinfo=timezone.utc)
-        manager.delete(session_name=session, timestamp=checkpoint_timestamp)
+        checkpoint_timestamp = WaldiezCheckpoint.parse_timestamp(checkpoint)
+        if checkpoint_timestamp:
+            manager.delete(session_name=session, timestamp=checkpoint_timestamp)
     if cleanup:
         if not isinstance(keep, int):
             keep_count = 0

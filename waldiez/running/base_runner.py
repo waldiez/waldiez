@@ -12,7 +12,6 @@ import sys
 import tempfile
 import threading
 import traceback as tb
-from datetime import datetime, timezone
 from pathlib import Path
 from types import ModuleType, TracebackType
 from typing import Any
@@ -104,12 +103,14 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         WaldiezBaseRunner._waldiez_file = waldiez_file_path
         if (waldiez_file_path.parent / ".env").exists():
             WaldiezBaseRunner._dot_env_path = waldiez_file_path.parent / ".env"
+        WaldiezBaseRunner._checkpoint = None
         checkpoint_arg = kwargs.get("checkpoint", "")
         if checkpoint_arg and isinstance(checkpoint_arg, str):
             WaldiezBaseRunner._checkpoint = WaldiezBaseRunner._init_checkpoint(
                 checkpoint_arg,
                 session_name=WaldiezBaseRunner._flow_name,
             )
+        print(WaldiezBaseRunner._checkpoint)
         self._output_dir = WaldiezBaseRunner._init_output_dir(output_path)
         WaldiezBaseRunner._check_dot_env(self._output_dir)
 
@@ -200,9 +201,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 pass
         else:
             try:
-                checkpoint_ts = datetime.strptime(
-                    checkpoint_arg, "%Y%m%d_%H%M%S_%f"
-                ).replace(tzinfo=timezone.utc)
+                checkpoint_ts = WaldiezCheckpoint.parse_timestamp(
+                    checkpoint_arg
+                )
                 info = WaldiezBaseRunner._storage_manager.get(
                     session_name, checkpoint_ts
                 )
@@ -878,6 +879,15 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     def uploads_root(self) -> str | Path | None:
         """Get the uploads root path for the runner."""
         return WaldiezBaseRunner._uploads_root
+
+    @property
+    def state_json(self) -> Path | None:
+        """Get the state.json path to resume from if any."""
+        if WaldiezBaseRunner._checkpoint:
+            state_file = WaldiezBaseRunner._checkpoint.state_file
+            if state_file.is_file():
+                return state_file
+        return None
 
     @classmethod
     def load(
