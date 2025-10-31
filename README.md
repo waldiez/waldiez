@@ -192,7 +192,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <div align="center">
-  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+  <div style="display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px;">
     <div style="flex: 1 1 120px; max-width: 120px;">
       <a href="https://scholar.google.com/citations?user=JmW9DwkAAAAJ">
         <img src="https://avatars.githubusercontent.com/u/29335277?v=4?s=100" width="100px;" alt="Panagiotis Kasnesis"/>
