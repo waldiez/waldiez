@@ -20,7 +20,7 @@ label.hidden {
 }
 
 .no-border {
-  border: none;
+  border: none !important;
 }
 
 .no-margin {
@@ -221,4 +221,8 @@ label.hidden {
 
 .padding-right-20 {
   padding-right: 20px;
+}
+
+.bg-transparent {
+  background: transparent !important;
 }

@@ -3172,10 +3172,29 @@ const useWaldiezWsMessaging = ({ flowId, onSave, onConvert, onRun, chat, stepByS
     chat,
     stepByStep
   });
+  const pendingRequestsRef = useRef(/* @__PURE__ */ new Map());
+  const rpcTimeout = ws.rpcTimeout ?? 3e4;
+  const generateId = useCallback(() => {
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+  }, []);
   const handleWsMessage = useCallback(
     (event) => {
       try {
         const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+        if (typeof data === "object" && "request_id" in data) {
+          const message = data;
+          if (pendingRequestsRef.current.has(message.request_id)) {
+            const pending = pendingRequestsRef.current.get(message.request_id);
+            clearTimeout(pending.timeout);
+            pendingRequestsRef.current.delete(message.request_id);
+            if (message.error) {
+              pending.reject(new Error(message.error));
+            } else {
+              pending.resolve(message.payload);
+            }
+            return;
+          }
+        }
         process2(data);
       } catch (_2) {
         process2(event.data);
@@ -3183,7 +3202,13 @@ const useWaldiezWsMessaging = ({ flowId, onSave, onConvert, onRun, chat, stepByS
     },
     [process2]
   );
-  const { send, connected, getConnectionState, reconnect, disconnect } = useWaldiezWs({
+  const {
+    send,
+    connected,
+    getConnectionState,
+    reconnect: wsReconnect,
+    disconnect: wsDisconnect
+  } = useWaldiezWs({
     wsUrl: ws.url,
     protocols: ws.protocols,
     autoPingMs: ws.autoPingMs,
@@ -3192,6 +3217,46 @@ const useWaldiezWsMessaging = ({ flowId, onSave, onConvert, onRun, chat, stepByS
       ws?.onError?.(error);
     }
   });
+  const request = useCallback(
+    (type, payload) => {
+      return new Promise((resolve, reject) => {
+        const state = getConnectionState();
+        if (state !== WebSocket.OPEN) {
+          reject(new Error("WebSocket is not connected"));
+          return;
+        }
+        const request_id = generateId();
+        const message = { request_id, type, payload };
+        const timeout = setTimeout(() => {
+          pendingRequestsRef.current.delete(request_id);
+          reject(new Error(`Request timeout after ${rpcTimeout}ms`));
+        }, rpcTimeout);
+        pendingRequestsRef.current.set(request_id, { resolve, reject, timeout });
+        const success = send(message);
+        if (!success) {
+          clearTimeout(timeout);
+          pendingRequestsRef.current.delete(request_id);
+          reject(new Error("Failed to send message"));
+        }
+      });
+    },
+    [getConnectionState, generateId, rpcTimeout, send]
+  );
+  const clearPendingRequests = useCallback((reason) => {
+    pendingRequestsRef.current.forEach(({ reject, timeout }) => {
+      clearTimeout(timeout);
+      reject(new Error(reason));
+    });
+    pendingRequestsRef.current.clear();
+  }, []);
+  const disconnect = useCallback(() => {
+    clearPendingRequests("WebSocket disconnected");
+    wsDisconnect();
+  }, [wsDisconnect, clearPendingRequests]);
+  const reconnect = useCallback(() => {
+    clearPendingRequests("WebSocket reconnecting");
+    wsReconnect();
+  }, [wsReconnect, clearPendingRequests]);
   return {
     save,
     convert,
@@ -3209,6 +3274,7 @@ const useWaldiezWsMessaging = ({ flowId, onSave, onConvert, onRun, chat, stepByS
     getConnectionState,
     reconnect,
     disconnect,
+    request,
     actions
   };
 };
@@ -3459,6 +3525,35 @@ const getFriendlyString = (str) => {
 };
 const toCamelCase$1 = (str) => {
   return str.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/([0-9])([A-Z])/g, "$1 $2").replace(/_/g, " ").replace(/-/g, " ").trim().toLowerCase().split(" ").map((word) => capitalize(word)).join("").replace(/^[A-Z]/, (match2) => match2.toLowerCase());
+};
+const parseTimestamp = (timestampStr) => {
+  if (!timestampStr) {
+    return null;
+  }
+  const parsed = Date.parse(timestampStr);
+  if (!Number.isNaN) {
+    return new Date(parsed);
+  }
+  const n = Number(timestampStr);
+  if (Number.isNaN(n)) {
+    return null;
+  }
+  let ms;
+  if (n > 1e15) {
+    ms = n / 1e3;
+  } else if (n > 1e12) {
+    ms = n;
+  } else {
+    ms = n * 1e3;
+  }
+  return new Date(ms);
+};
+const formatTimestamp = (timestamp) => {
+  const date = parseTimestamp(timestamp);
+  if (!date) {
+    return timestamp;
+  }
+  return date.toLocaleString();
 };
 class WaldiezAgent {
   id;
@@ -25065,16 +25160,58 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$9 = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$9);
+const __iconNode$d = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$d);
 /**
  * @license lucide-react v0.548.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$8 = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("chevron-right", __iconNode$8);
+const __iconNode$c = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$c);
+/**
+ * @license lucide-react v0.548.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$b = [
+  ["path", { d: "M21.801 10A10 10 0 1 1 17 3.335", key: "yps3ct" }],
+  ["path", { d: "m9 11 3 3L22 4", key: "1pflzl" }]
+];
+const CircleCheckBig = createLucideIcon("circle-check-big", __iconNode$b);
+/**
+ * @license lucide-react v0.548.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$a = [["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]];
+const Circle = createLucideIcon("circle", __iconNode$a);
+/**
+ * @license lucide-react v0.548.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$9 = [
+  ["path", { d: "M12 6v6l4 2", key: "mmk7yg" }],
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]
+];
+const Clock = createLucideIcon("clock", __iconNode$9);
+/**
+ * @license lucide-react v0.548.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$8 = [
+  ["path", { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" }],
+  ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
+  ["path", { d: "M12 7v5l4 2", key: "1fdv2h" }]
+];
+const History = createLucideIcon("history", __iconNode$8);
 /**
  * @license lucide-react v0.548.0 - ISC
  *
@@ -28148,7 +28285,8 @@ const createWaldiezStore = (props) => {
     onSave = null,
     onRun = null,
     onStepRun = null,
-    onConvert = null
+    onConvert = null,
+    checkpoints = null
   } = props;
   const storageId = props.storageId ?? flowId;
   return createStore()(
@@ -28176,6 +28314,7 @@ const createWaldiezStore = (props) => {
         onRun,
         onStepRun,
         onConvert,
+        checkpoints,
         activeSenderId: null,
         activeRecipientId: null,
         activeEventType: null,
@@ -28242,6 +28381,7 @@ function WaldiezProvider({ children, ...props }) {
   const onRun = props.onRun ?? null;
   const onStepRun = props.onStepRun ?? null;
   const onConvert = props.onConvert ?? null;
+  const checkpoints = props.checkpoints ?? null;
   const rfInstance = props.rfInstance;
   const isAsync = props.isAsync ?? false;
   props.cacheSeed ?? 42;
@@ -28265,7 +28405,8 @@ function WaldiezProvider({ children, ...props }) {
       onSave,
       onRun,
       onStepRun,
-      onConvert
+      onConvert,
+      checkpoints
     });
     return storeRef.current;
   }, [flowId]);
@@ -29975,6 +30116,7 @@ const useFlowEvents = (flowId) => {
   const skipImport = useWaldiez((s) => s.skipImport);
   const skipExport = useWaldiez((s) => s.skipExport);
   const isReadOnly = readOnly === true;
+  const checkpoints = useWaldiez((s) => s.checkpoints);
   const runner = useWaldiez((s) => s.onRun);
   const stepRunner = useWaldiez((s) => s.onStepRun);
   const onConvert = useWaldiez((s) => s.onConvert);
@@ -30127,17 +30269,42 @@ const useFlowEvents = (flowId) => {
     [isReadOnly, runner, canRun, onFlowChanged, getFlowInfo, flowId]
   );
   const onStepRun = useCallback(
-    (breakpoints, path) => {
+    (breakpoints, checkpoint, path) => {
       if (isReadOnly || typeof stepRunner !== "function") {
         return;
       }
       const flow = onFlowChanged();
       if (flow) {
         const { path: flowPath } = getFlowInfo();
-        stepRunner(JSON.stringify(flow), breakpoints, path || flowPath);
+        stepRunner(JSON.stringify(flow), breakpoints, checkpoint, path || flowPath);
       }
     },
     [isReadOnly, stepRunner, onFlowChanged, getFlowInfo]
+  );
+  const onGetCheckpoints = useCallback(async () => {
+    if (isReadOnly || typeof checkpoints?.get !== "function") {
+      return null;
+    }
+    const info = getFlowInfo();
+    try {
+      const result = await checkpoints.get(info.name);
+      return result;
+    } catch {
+      return null;
+    }
+  }, [isReadOnly, checkpoints, getFlowInfo]);
+  const onSubmitCheckpoint = useCallback(
+    async (checkpoint) => {
+      if (isReadOnly || typeof checkpoints?.submit !== "function") {
+        return;
+      }
+      const info = getFlowInfo();
+      try {
+        await checkpoints.submit(info.name, checkpoint);
+      } catch {
+      }
+    },
+    [isReadOnly, checkpoints, getFlowInfo]
   );
   const onExport = useCallback(
     async (_e) => {
@@ -30173,7 +30340,9 @@ const useFlowEvents = (flowId) => {
       onNodesChange,
       onEdgesChange,
       onNodeDoubleClick,
-      onEdgeDoubleClick
+      onEdgeDoubleClick,
+      onGetCheckpoints,
+      onSubmitCheckpoint
     }),
     [
       convertToPy,
@@ -30186,7 +30355,9 @@ const useFlowEvents = (flowId) => {
       onNodesChange,
       onEdgesChange,
       onNodeDoubleClick,
-      onEdgeDoubleClick
+      onEdgeDoubleClick,
+      onGetCheckpoints,
+      onSubmitCheckpoint
     ]
   );
 };
@@ -31744,13 +31915,9 @@ const eventDescriptions = {
   error: "When an error occurs",
   termination_and_human_reply_no_input: "Termination with no user input required"
 };
-const useStepRunModal = (_props) => {
-  const getAgents2 = useWaldiez((s) => s.getAgents);
-  const agents = getAgents2();
+const useStepRunBreakpoints = (props) => {
+  const { agents, breakpoints, setBreakpoints } = props;
   const [activeTab, setActiveTab] = useState("preset");
-  const [breakpoints, setBreakpoints] = useState([
-    { type: "all", description: "Break on all events (default)" }
-  ]);
   const [selectedEventTypes, setSelectedEventTypes] = useState([]);
   const [selectedAgentEventType, setSelectedAgentEventType] = useState(void 0);
   const [selectedAgentEventAgent, setSelectedAgentEventAgent] = useState(void 0);
@@ -31806,51 +31973,54 @@ const useStepRunModal = (_props) => {
       setActiveTab("current");
     }
   }, []);
-  const setPresetBreakpoints = useCallback((preset) => {
-    setBreakpointSource("preset");
-    setSelectedAgents([]);
-    setSelectedEventTypes([]);
-    setSelectedAgentEventAgent(void 0);
-    setSelectedAgentEventType(void 0);
-    switch (preset) {
-      case "all":
-        setBreakpoints([{ type: "all", description: "Break on all events (default)" }]);
-        break;
-      case "tools":
-        setBreakpoints([
-          {
-            type: "event",
-            event_type: "tool_call",
-            description: "Break on event: tool_call (Before executing a tool/function call)"
-          },
-          {
-            type: "event",
-            event_type: "execute_function",
-            description: "Break on event: execute_function (When starting function execution)"
-          },
-          {
-            type: "event",
-            event_type: "executed_function",
-            description: "Break on event: executed_function (After function execution completes)"
-          },
-          {
-            type: "event",
-            event_type: "tool_response",
-            description: "Break on event: tool_response (When tool returns a response)"
-          }
-        ]);
-        break;
-      case "errors":
-        setBreakpoints([
-          {
-            type: "event",
-            event_type: "error",
-            description: "Break on event: error (When an error occurs)"
-          }
-        ]);
-        break;
-    }
-  }, []);
+  const setPresetBreakpoints = useCallback(
+    (preset) => {
+      setBreakpointSource("preset");
+      setSelectedAgents([]);
+      setSelectedEventTypes([]);
+      setSelectedAgentEventAgent(void 0);
+      setSelectedAgentEventType(void 0);
+      switch (preset) {
+        case "all":
+          setBreakpoints([{ type: "all", description: "Break on all events (default)" }]);
+          break;
+        case "tools":
+          setBreakpoints([
+            {
+              type: "event",
+              event_type: "tool_call",
+              description: "Break on event: tool_call (Before executing a tool/function call)"
+            },
+            {
+              type: "event",
+              event_type: "execute_function",
+              description: "Break on event: execute_function (When starting function execution)"
+            },
+            {
+              type: "event",
+              event_type: "executed_function",
+              description: "Break on event: executed_function (After function execution completes)"
+            },
+            {
+              type: "event",
+              event_type: "tool_response",
+              description: "Break on event: tool_response (When tool returns a response)"
+            }
+          ]);
+          break;
+        case "errors":
+          setBreakpoints([
+            {
+              type: "event",
+              event_type: "error",
+              description: "Break on event: error (When an error occurs)"
+            }
+          ]);
+          break;
+      }
+    },
+    [setBreakpoints]
+  );
   const addBreakpoint = useCallback(
     (type, agent, event_type) => {
       setBreakpointSource("custom");
@@ -31875,18 +32045,21 @@ const useStepRunModal = (_props) => {
         setSelectedAgentEventType(void 0);
       }
     },
-    [generateDescription]
+    [generateDescription, setBreakpoints]
   );
-  const removeBreakpoint = useCallback((index2) => {
-    setBreakpointSource("custom");
-    setBreakpoints((prev2) => {
-      const updated = prev2.filter((_2, i) => i !== index2);
-      if (updated.length === 0) {
-        return [{ type: "all", description: "Break on all events (default)" }];
-      }
-      return updated;
-    });
-  }, []);
+  const removeBreakpoint = useCallback(
+    (index2) => {
+      setBreakpointSource("custom");
+      setBreakpoints((prev2) => {
+        const updated = prev2.filter((_2, i) => i !== index2);
+        if (updated.length === 0) {
+          return [{ type: "all", description: "Break on all events (default)" }];
+        }
+        return updated;
+      });
+    },
+    [setBreakpoints]
+  );
   useEffect(() => {
     if (breakpointSource !== "custom") {
       return;
@@ -31926,7 +32099,7 @@ const useStepRunModal = (_props) => {
       }
       return updated;
     });
-  }, [selectedEventTypes, breakpointSource, generateDescription]);
+  }, [selectedEventTypes, breakpointSource, generateDescription, breakpoints, setBreakpoints]);
   useEffect(() => {
     if (breakpointSource !== "custom") {
       return;
@@ -31964,7 +32137,7 @@ const useStepRunModal = (_props) => {
       }
       return updated;
     });
-  }, [selectedAgents, breakpointSource, generateDescription]);
+  }, [selectedAgents, breakpointSource, generateDescription, breakpoints, setBreakpoints]);
   const onSelectedAgentsChange = useCallback((options2) => {
     setBreakpointSource("custom");
     if (!options2 || options2.length === 0) {
@@ -32017,13 +32190,12 @@ const useStepRunModal = (_props) => {
     onSelectedEventTypesChange
   };
 };
-const StepRunModal = memo((props) => {
-  const { darkMode: isDark, flowId, onClose, onStart } = props;
+const BreakpointsTabs = (props) => {
+  const { darkMode: isDark, agents, breakpoints, setBreakpoints } = props;
   const {
     activeTab,
     setActiveTab,
     onActiveTabChange,
-    breakpoints,
     eventOptions,
     selectedEventTypes,
     agentOptions,
@@ -32032,22 +32204,18 @@ const StepRunModal = memo((props) => {
     selectedAgentEventType,
     setSelectedAgentEventType,
     setSelectedAgentEventAgent,
-    setBreakpoints,
     setPresetBreakpoints,
     removeBreakpoint,
     onSelectedAgentsChange,
     onSelectedEventTypesChange,
     addAgentEventBreakpoint
-  } = useStepRunModal();
+  } = useStepRunBreakpoints({ agents, breakpoints, setBreakpoints });
   useEffect(() => {
     setBreakpoints([{ type: "all", description: "Break on all events (default)" }]);
     setActiveTab("preset");
   }, []);
-  const doStart = () => {
-    onStart(breakpoints.map((bp) => WaldiezBreakpointToString(bp)).filter((item) => item.trim() !== ""));
-  };
-  return /* @__PURE__ */ jsxs(Modal, { isOpen: true, onClose, onCancel: onClose, flowId, title: "Set breakpoints", children: [
-    /* @__PURE__ */ jsx$1("div", { className: "modal-body", children: /* @__PURE__ */ jsxs(
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsxs(
       TabItems,
       {
         activeTabIndex: ["preset", "custom", "current"].indexOf(activeTab),
@@ -32236,7 +32404,7 @@ const StepRunModal = memo((props) => {
           ] }) })
         ]
       }
-    ) }),
+    ),
     /* @__PURE__ */ jsx$1("h3", { className: `text-lg font-medium ${isDark ? "text-white" : "text-gray-900"} mt-4 mb-4`, children: "Active Breakpoints" }),
     breakpoints.length === 0 ? /* @__PURE__ */ jsx$1("p", { className: `${isDark ? "text-gray-400" : "text-gray-500"} text-sm`, children: "No breakpoints configured" }) : /* @__PURE__ */ jsx$1("div", { className: "space-y-3 max-h-64 overflow-y-auto", children: breakpoints.map((bp, index2) => /* @__PURE__ */ jsx$1(
       "div",
@@ -32269,7 +32437,404 @@ const StepRunModal = memo((props) => {
         ] })
       },
       index2
-    )) }),
+    )) })
+  ] });
+};
+const CheckpointHistory = (props) => {
+  const { isDark, currentHistory, selectedMessages, setSelectedMessages } = props;
+  const toggleMessage = useCallback(
+    (index2) => {
+      const newSelected = new Set(selectedMessages);
+      if (newSelected.has(index2)) {
+        newSelected.delete(index2);
+      } else {
+        newSelected.add(index2);
+      }
+      setSelectedMessages(newSelected);
+    },
+    [selectedMessages, setSelectedMessages]
+  );
+  const getMessagePreview = useCallback((message) => {
+    if (message.content && message.content !== "None") {
+      return message.content.substring(0, 60) + (message.content.length > 60 ? "..." : "");
+    }
+    if (message.tool_calls) {
+      return `[Tool Call: ${message.tool_calls[0]?.function?.name || "unknown"}]`;
+    }
+    return "[No content]";
+  }, []);
+  return /* @__PURE__ */ jsxs(
+    "div",
+    {
+      className: `${isDark ? "border-gray-700" : "border-gray-200"} mt-2 border rounded-lg overflow-hidden flex flex-col`,
+      children: [
+        /* @__PURE__ */ jsx$1(
+          "div",
+          {
+            className: `${isDark ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"} p-3 border-b`,
+            children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ jsxs("h4", { className: `font-medium text-sm ${isDark ? "text-white" : "text-gray-900"}`, children: [
+                "Messages (",
+                selectedMessages.size,
+                "/",
+                currentHistory.state.messages.length,
+                ")"
+              ] }),
+              /* @__PURE__ */ jsx$1(
+                "button",
+                {
+                  onClick: () => {
+                    if (selectedMessages.size === currentHistory.state.messages.length) {
+                      setSelectedMessages(/* @__PURE__ */ new Set());
+                    } else {
+                      setSelectedMessages(new Set(currentHistory.state.messages.map((_2, i) => i)));
+                    }
+                  },
+                  className: `text-xs p-2 rounded-sm ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"}`,
+                  children: selectedMessages.size === currentHistory.state.messages.length ? "Deselect All" : "Select All"
+                }
+              )
+            ] })
+          }
+        ),
+        /* @__PURE__ */ jsx$1("div", { className: "flex-1 overflow-y-auto p-2 space-y-2", children: currentHistory.state.messages.map((message, index2) => /* @__PURE__ */ jsx$1(
+          "button",
+          {
+            onClick: () => toggleMessage(index2),
+            className: `w-full p-2 text-left border rounded ${selectedMessages.has(index2) ? isDark ? "border-indigo-400 bg-indigo-900/30" : "border-indigo-300 bg-indigo-50" : isDark ? "border-gray-700 hover:border-gray-600" : "border-gray-200 hover:border-gray-300"} transition-colors`,
+            children: /* @__PURE__ */ jsxs("div", { className: "flex items-start space-x-2", children: [
+              /* @__PURE__ */ jsx$1("div", { className: "mt-0.5", children: selectedMessages.has(index2) ? /* @__PURE__ */ jsx$1(
+                CircleCheckBig,
+                {
+                  className: `h-4 w-4 ${isDark ? "text-indigo-400" : "text-indigo-600"}`
+                }
+              ) : /* @__PURE__ */ jsx$1(
+                Circle,
+                {
+                  className: `h-4 w-4 ${isDark ? "text-gray-600" : "text-gray-400"}`
+                }
+              ) }),
+              /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
+                /* @__PURE__ */ jsx$1("div", { className: "flex items-center space-x-2 mb-1", children: /* @__PURE__ */ jsx$1(
+                  "span",
+                  {
+                    className: `px-2 py-0.5 text-xs font-medium rounded ${message.role === "user" ? isDark ? "bg-blue-900 text-blue-200" : "bg-blue-100 text-blue-700" : message.role === "assistant" ? isDark ? "bg-green-900 text-green-200" : "bg-green-100 text-green-700" : isDark ? "bg-purple-900 text-purple-200" : "bg-purple-100 text-purple-700"}`,
+                    children: message.role
+                  }
+                ) }),
+                /* @__PURE__ */ jsx$1(
+                  "p",
+                  {
+                    className: `text-xs ${isDark ? "text-gray-300" : "text-gray-600"} truncate`,
+                    children: getMessagePreview(message)
+                  }
+                )
+              ] })
+            ] })
+          },
+          index2
+        )) })
+      ]
+    }
+  );
+};
+const CheckpointView = (props) => {
+  const { isDark, checkpoint, onBack } = props;
+  const [_selectedHistoryIndex, setSelectedHistoryIndex] = useState(null);
+  const [expandedHistoryIndex, setExpandedHistoryIndex] = useState(null);
+  const [selectedMessages, setSelectedMessages] = useState(/* @__PURE__ */ new Set());
+  const handleHistorySelect = (index2) => {
+    setSelectedHistoryIndex(index2);
+    if (expandedHistoryIndex === index2) {
+      setExpandedHistoryIndex(null);
+    } else {
+      setExpandedHistoryIndex(index2);
+    }
+    const history = checkpoint.history?.[index2];
+    if (history?.state?.messages) {
+      setSelectedMessages(new Set(history.state.messages.map((_2, i) => i)));
+    }
+  };
+  return /* @__PURE__ */ jsxs("div", { children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex w-full space-between", children: [
+      /* @__PURE__ */ jsxs("button", { className: "p-2 flex flex-row items-center bg-transparent no-border", onClick: onBack, children: [
+        /* @__PURE__ */ jsx$1(FaCaretLeft, {}),
+        " ",
+        /* @__PURE__ */ jsx$1("span", { children: "Back" })
+      ] }),
+      /* @__PURE__ */ jsx$1("div", { className: "flex-1" }),
+      /* @__PURE__ */ jsxs(
+        "button",
+        {
+          className: "p-2 flex flex-row bg-transparent no-border rounded-sm items-center gap-2",
+          onClick: onBack,
+          children: [
+            /* @__PURE__ */ jsx$1(FaSave, {}),
+            " ",
+            /* @__PURE__ */ jsx$1("span", { children: "Save" })
+          ]
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsx$1("div", { className: "rounded-lg p-3 mb-2 shadow-sm hover:shadow-md transition-shadow", children: /* @__PURE__ */ jsx$1("div", { className: "rounded-lg overflow-hidden flex flex-col", children: /* @__PURE__ */ jsx$1("div", { className: "flex-1 overflow-y-auto", children: checkpoint.history.map((entry, index2) => /* @__PURE__ */ jsxs(
+      "div",
+      {
+        className: `w-full p-3 text-left border-b ${isDark ? "border-gray-700" : "border-gray-100"} ${expandedHistoryIndex !== index2 ? isDark ? "hover:bg-gray-800" : "hover:bg-gray-50" : ""} transition-colors`,
+        children: [
+          /* @__PURE__ */ jsxs(
+            "div",
+            {
+              className: "flex items-center justify-between",
+              onClick: () => handleHistorySelect(index2),
+              children: [
+                /* @__PURE__ */ jsxs("div", { className: "flex-1", children: [
+                  /* @__PURE__ */ jsxs(
+                    "div",
+                    {
+                      className: `text-xs ${isDark ? "text-gray-400" : "text-gray-500"} mb-1`,
+                      children: [
+                        "Entry #",
+                        index2 + 1
+                      ]
+                    }
+                  ),
+                  /* @__PURE__ */ jsxs(
+                    "div",
+                    {
+                      className: `text-xs ${isDark ? "text-gray-300" : "text-gray-600"}`,
+                      children: [
+                        /* @__PURE__ */ jsx$1(Clock, { className: "inline h-3 w-3 mr-1" }),
+                        formatTimestamp(entry.timestamp)
+                      ]
+                    }
+                  ),
+                  /* @__PURE__ */ jsxs(
+                    "div",
+                    {
+                      className: `text-xs ${isDark ? "text-gray-400" : "text-gray-500"} mt-1`,
+                      children: [
+                        entry.state.messages.length,
+                        " message",
+                        entry.state.messages.length !== 1 && "s"
+                      ]
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsx$1("div", { children: expandedHistoryIndex === index2 ? /* @__PURE__ */ jsx$1(
+                  ChevronDown,
+                  {
+                    className: `w-4 h-4 ${isDark ? "text-gray-500" : "text-gray-400"}`
+                  }
+                ) : /* @__PURE__ */ jsx$1(
+                  ChevronRight,
+                  {
+                    className: `w-4 h-4 ${isDark ? "text-gray-500" : "text-gray-400"}`
+                  }
+                ) })
+              ]
+            }
+          ),
+          expandedHistoryIndex === index2 && /* @__PURE__ */ jsx$1(
+            CheckpointHistory,
+            {
+              isDark,
+              currentHistory: entry,
+              selectedMessages,
+              setSelectedMessages
+            }
+          )
+        ]
+      },
+      index2
+    )) }) }) })
+  ] });
+};
+const CheckpointsTabs = (props) => {
+  const { getCheckpoints, selectedCheckpoint, setSelectedCheckpoint, darkMode: isDark } = props;
+  const [gotCheckPoints, setGotCheckpoints] = useState(false);
+  const [checkpoints, setCheckpoints] = useState([]);
+  const [expandedCheckpoint, setExpandedCheckpoint] = useState(null);
+  const [loadingCheckpoints, setLoadingCheckpoints] = useState(false);
+  const [checkpointError, setCheckpointError] = useState(null);
+  const loadCheckpoints = async () => {
+    if (!getCheckpoints || gotCheckPoints) {
+      return;
+    }
+    setLoadingCheckpoints(true);
+    setCheckpointError(null);
+    try {
+      const data = await getCheckpoints();
+      if (!data || Object.keys(data).length === 0) {
+        setCheckpoints([]);
+        return;
+      }
+      const checkpointArray = Object.entries(data).map(([id, checkpoints2]) => ({
+        id,
+        history: [...checkpoints2]
+      }));
+      setCheckpoints(checkpointArray);
+    } catch (err) {
+      setCheckpointError(err.message || "Failed to load checkpoints");
+      setCheckpoints([]);
+    } finally {
+      setLoadingCheckpoints(false);
+      setGotCheckpoints(true);
+    }
+  };
+  const formatCheckPointLength = (checkpoint) => {
+    const ending = checkpoint.history.length !== 1 ? "entries" : "entry";
+    return `${checkpoint.history.length} ${ending}`;
+  };
+  const handleCheckpointSelect = (checkpoint) => {
+    setSelectedCheckpoint(checkpoint);
+  };
+  useEffect(() => {
+    loadCheckpoints();
+  }, []);
+  return /* @__PURE__ */ jsx$1("div", { children: loadingCheckpoints ? /* @__PURE__ */ jsxs("div", { className: "text-center py-8", children: [
+    /* @__PURE__ */ jsx$1(
+      "div",
+      {
+        className: `animate-spin rounded-full h-8 w-8 border-b-2 ${isDark ? "border-blue-400" : "border-blue-600"} mx-auto mb-3`
+      }
+    ),
+    /* @__PURE__ */ jsx$1("p", { className: isDark ? "text-gray-400" : "text-gray-600", children: "Loading checkpoints..." })
+  ] }) : checkpointError ? /* @__PURE__ */ jsxs(
+    "div",
+    {
+      className: `${isDark ? "bg-red-900/20 border-red-800" : "bg-red-50 border-red-200"} border rounded-lg p-4`,
+      children: [
+        /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-red-400" : "text-red-600"}`, children: checkpointError }),
+        /* @__PURE__ */ jsx$1("button", { onClick: loadCheckpoints, className: "mt-2 text-sm underline hover:no-underline", children: "Retry" })
+      ]
+    }
+  ) : checkpoints.length === 0 ? /* @__PURE__ */ jsxs("div", { className: `text-center py-8 ${isDark ? "text-gray-400" : "text-gray-500"}`, children: [
+    /* @__PURE__ */ jsx$1(History, { className: "h-12 w-12 mx-auto mb-3 opacity-50" }),
+    /* @__PURE__ */ jsx$1("p", { children: "No checkpoints available" })
+  ] }) : /* @__PURE__ */ jsx$1("div", { className: "grid grid-cols gap-4 mb-4 space-y-1 overflow-y-auto", children: expandedCheckpoint ? /* @__PURE__ */ jsx$1(
+    CheckpointView,
+    {
+      checkpoint: expandedCheckpoint,
+      isDark,
+      onBack: () => setExpandedCheckpoint(null)
+    }
+  ) : /* @__PURE__ */ jsxs("div", { children: [
+    checkpoints.map((checkpoint) => /* @__PURE__ */ jsx$1(
+      "div",
+      {
+        role: "button",
+        onClick: () => handleCheckpointSelect(checkpoint),
+        className: `w-full p-3 text-left border-b ${isDark ? "border-gray-700 hover:bg-gray-800" : "border-gray-100 hover:bg-gray-50"} transition-colors ${selectedCheckpoint?.id === checkpoint.id ? isDark ? "rounded-sm bg-blue-900/30 border-l-4 border-l-blue-400" : "rounded-sm bg-blue-50 border-l-4 border-l-blue-500" : ""}`,
+        children: /* @__PURE__ */ jsxs("div", { className: "flex flex-row justify-between items-center", children: [
+          /* @__PURE__ */ jsxs("div", { className: "flex flex-col", children: [
+            /* @__PURE__ */ jsx$1(
+              "div",
+              {
+                className: `font-medium text-sm ${isDark ? "text-white" : "text-gray-900"} truncate mb-1`,
+                children: checkpoint.id
+              }
+            ),
+            /* @__PURE__ */ jsxs(
+              "div",
+              {
+                className: `text-xs ${isDark ? "text-gray-400" : "text-gray-500"}`,
+                children: [
+                  formatTimestamp(checkpoint.id),
+                  " (",
+                  formatCheckPointLength(checkpoint),
+                  ")"
+                ]
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsx$1("div", { children: /* @__PURE__ */ jsx$1(
+            "div",
+            {
+              className: `p-2 cursor-pointer ${isDark ? "text-gray-400" : "text-gray-500"}`,
+              role: "button",
+              onClick: () => {
+                setSelectedCheckpoint(checkpoint);
+                setExpandedCheckpoint(checkpoint);
+              },
+              children: /* @__PURE__ */ jsx$1(ChevronRight, { className: "h-10 w-4" })
+            }
+          ) })
+        ] })
+      },
+      checkpoint.id
+    )),
+    /* @__PURE__ */ jsx$1(
+      "div",
+      {
+        className: `${isDark ? "border-[#444]" : "border-[#ccc]"} mt-2 p-3 rounded-lg border shadow-sm`,
+        children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between min-h-8", children: [
+          selectedCheckpoint ? `Selected checkpoint: ${selectedCheckpoint.id}` : "No checkpoint selected",
+          /* @__PURE__ */ jsx$1(
+            "button",
+            {
+              onClick: () => {
+                setSelectedCheckpoint(null);
+                setExpandedCheckpoint(null);
+              },
+              className: selectedCheckpoint ? `p-2 hover:${isDark ? "bg-red-900" : "bg-red-50"} rounded-md transition-colors ml-2` : "hidden",
+              children: /* @__PURE__ */ jsx$1(
+                Trash2,
+                {
+                  className: `h-3 w-3 ${isDark ? "text-red-400" : "text-red-500"}`
+                }
+              )
+            }
+          )
+        ] })
+      }
+    )
+  ] }) }) });
+};
+const StepRunModal = memo((props) => {
+  const { flowId, onStart, onClose } = props;
+  const getAgents2 = useWaldiez((s) => s.getAgents);
+  const agents = getAgents2();
+  const isGroupChat = agents.find((agent) => agent.data.agentType === "group_manager");
+  const [breakpoints, setBreakpoints] = useState([
+    { type: "all", description: "Break on all events (default)" }
+  ]);
+  const [selectedCheckpoint, setSelectedCheckpoint] = useState(null);
+  const doStart = () => {
+    const bps = breakpoints.map((bp) => WaldiezBreakpointToString(bp)).filter((item) => item.trim() !== "");
+    if (!selectedCheckpoint) {
+      onStart(bps);
+    } else {
+      onStart(bps, selectedCheckpoint.id);
+    }
+  };
+  return /* @__PURE__ */ jsxs(Modal, { isOpen: true, onClose, onCancel: onClose, flowId, title: "Step run", children: [
+    /* @__PURE__ */ jsx$1("div", { className: "modal-body", children: isGroupChat ? /* @__PURE__ */ jsxs(TabItems, { activeTabIndex: 0, children: [
+      /* @__PURE__ */ jsx$1(TabItem, { id: "step-run-breakpoints", label: "Breakpoints", children: /* @__PURE__ */ jsx$1(
+        BreakpointsTabs,
+        {
+          ...props,
+          agents,
+          breakpoints,
+          setBreakpoints
+        }
+      ) }),
+      /* @__PURE__ */ jsx$1(TabItem, { id: "step-run-checkpoints", label: "Checkpoints", children: /* @__PURE__ */ jsx$1(
+        CheckpointsTabs,
+        {
+          ...props,
+          selectedCheckpoint,
+          setSelectedCheckpoint
+        }
+      ) })
+    ] }) : /* @__PURE__ */ jsx$1(
+      BreakpointsTabs,
+      {
+        ...props,
+        agents,
+        breakpoints,
+        setBreakpoints
+      }
+    ) }),
     /* @__PURE__ */ jsxs("div", { className: "modal-actions", children: [
       /* @__PURE__ */ jsx$1("button", { type: "reset", className: "modal-action-cancel", onClick: onClose, children: "Cancel" }),
       /* @__PURE__ */ jsx$1("div", { className: "flex-1" }),
@@ -43459,7 +44024,9 @@ const WaldiezFlowView = memo((props) => {
     onNodesChange,
     onEdgesChange,
     onNodeDoubleClick,
-    onEdgeDoubleClick
+    onEdgeDoubleClick,
+    onGetCheckpoints,
+    onSubmitCheckpoint
   } = useFlowEvents(flowId);
   const handleStepRun = useCallback(() => {
     if (stepByStep?.show === true) {
@@ -43473,9 +44040,9 @@ const WaldiezFlowView = memo((props) => {
     setStepRunModalOpen(false);
   }, []);
   const doStepRun = useCallback(
-    (breakpoints) => {
+    (breakpoints, checkpoint) => {
       setStepRunModalOpen(false);
-      onStepRun(breakpoints);
+      onStepRun(breakpoints, checkpoint);
     },
     [onStepRun]
   );
@@ -43549,6 +44116,15 @@ const WaldiezFlowView = memo((props) => {
     const exported = exportFlow2(true, false);
     return JSON.stringify(exported);
   }, [exportFlow2]);
+  const handleGetCheckpoints = useCallback(async () => {
+    return await onGetCheckpoints();
+  }, [onGetCheckpoints]);
+  const handleSubmitCheckpoint = useCallback(
+    async (checkpoint) => {
+      await onSubmitCheckpoint(checkpoint);
+    },
+    [onSubmitCheckpoint]
+  );
   const { onDragOver, onDrop, onNodeDrag, onNodeDragStop } = useDnD(onNewAgent);
   const flowNodes = useMemo(() => nodes, [nodes]);
   const flowEdges = useMemo(() => edges, [edges]);
@@ -43653,7 +44229,9 @@ const WaldiezFlowView = memo((props) => {
             flowId,
             onClose: closeStepRunModal,
             onStart: doStepRun,
-            darkMode: isDark
+            darkMode: isDark,
+            getCheckpoints: handleGetCheckpoints,
+            submitCheckpoint: handleSubmitCheckpoint
           }
         )
       ]

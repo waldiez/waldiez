@@ -68,33 +68,39 @@ export const toCamelCase = (str: string) => {
     );
 };
 
-// export const toKebabCase = (str: string) => {
-//     return str
-//         .replace(/([a-z])([A-Z])/g, "$1-$2")
-//         .replace(/([0-9])([A-Z])/g, "$1-$2")
-//         .replace(/_/g, "-")
-//         .replace(/ /g, "-")
-//         .toLowerCase();
-// };
-//
-// export const toSnakeCase = (str: string) => {
-//     return str
-//         .replace(/([a-z])([A-Z])/g, "$1_$2")
-//         .replace(/([0-9])([A-Z])/g, "$1_$2")
-//         .replace(/-/g, "_")
-//         .replace(/ /g, "_")
-//         .toLowerCase();
-// };
-//
-// export const toPascalCase = (str: string) => {
-//     return str
-//         .replace(/([a-z])([A-Z])/g, "$1 $2")
-//         .replace(/([0-9])([A-Z])/g, "$1 $2")
-//         .replace(/_/g, " ")
-//         .replace(/-/g, " ")
-//         .trim()
-//         .toLowerCase()
-//         .split(" ")
-//         .map(word => capitalize(word))
-//         .join("");
-// };
+export const parseTimestamp = (timestampStr: string): Date | null => {
+    if (!timestampStr) {
+        return null;
+    }
+    const parsed = Date.parse(timestampStr);
+    if (!Number.isNaN) {
+        return new Date(parsed);
+    }
+    const n = Number(timestampStr);
+    if (Number.isNaN(n)) {
+        return null;
+    }
+
+    let ms: number;
+
+    if (n > 1e15) {
+        // microseconds → milliseconds
+        ms = n / 1_000;
+    } else if (n > 1e12) {
+        // milliseconds (old format)
+        ms = n;
+    } else {
+        // seconds
+        ms = n * 1_000;
+    }
+
+    return new Date(ms);
+};
+
+export const formatTimestamp = (timestamp: string) => {
+    const date = parseTimestamp(timestamp);
+    if (!date) {
+        return timestamp;
+    }
+    return date.toLocaleString();
+};

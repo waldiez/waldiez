@@ -83,6 +83,8 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
         onEdgesChange,
         onNodeDoubleClick,
         onEdgeDoubleClick,
+        onGetCheckpoints,
+        onSubmitCheckpoint,
     } = useFlowEvents(flowId);
 
     /**
@@ -108,9 +110,9 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
      * Call the onStepRun callback with the selected breakpoints if any.
      */
     const doStepRun = useCallback(
-        (breakpoints: string[]) => {
+        (breakpoints: string[], checkpoint?: string | null) => {
             setStepRunModalOpen(false);
-            onStepRun(breakpoints);
+            onStepRun(breakpoints, checkpoint);
         },
         [onStepRun],
     );
@@ -233,6 +235,20 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
         return JSON.stringify(exported);
     }, [exportFlow]);
 
+    /**
+     * Get the flow's previous checkpoints.
+     */
+    const handleGetCheckpoints = useCallback(async () => {
+        return await onGetCheckpoints();
+    }, [onGetCheckpoints]);
+
+    const handleSubmitCheckpoint = useCallback(
+        async (checkpoint: Record<string, any>) => {
+            await onSubmitCheckpoint(checkpoint);
+        },
+        [onSubmitCheckpoint],
+    );
+
     // Get drag and drop handlers
     const { onDragOver, onDrop, onNodeDrag, onNodeDragStop } = useDnD(onNewAgent);
 
@@ -333,6 +349,8 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
                     onClose={closeStepRunModal}
                     onStart={doStepRun}
                     darkMode={isDark}
+                    getCheckpoints={handleGetCheckpoints}
+                    submitCheckpoint={handleSubmitCheckpoint}
                 />
             )}
         </div>

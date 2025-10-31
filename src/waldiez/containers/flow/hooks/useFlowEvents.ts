@@ -20,6 +20,7 @@ export const useFlowEvents = (flowId: string) => {
     const skipImport = useWaldiez(s => s.skipImport);
     const skipExport = useWaldiez(s => s.skipExport);
     const isReadOnly = readOnly === true;
+    const checkpoints = useWaldiez(s => s.checkpoints);
 
     // Get action handlers from store
     const runner = useWaldiez(s => s.onRun);
@@ -233,17 +234,45 @@ export const useFlowEvents = (flowId: string) => {
      * Run the flow step-by-step
      */
     const onStepRun = useCallback(
-        (breakpoints?: string[], path?: string | null) => {
+        (breakpoints?: string[], checkpoint?: string | null, path?: string | null) => {
             if (isReadOnly || typeof stepRunner !== "function") {
                 return;
             }
             const flow = onFlowChanged();
             if (flow) {
                 const { path: flowPath } = getFlowInfo();
-                stepRunner(JSON.stringify(flow), breakpoints, path || flowPath);
+                stepRunner(JSON.stringify(flow), breakpoints, checkpoint, path || flowPath);
             }
         },
         [isReadOnly, stepRunner, onFlowChanged, getFlowInfo],
+    );
+
+    const onGetCheckpoints: () => Promise<Record<string, any> | null> = useCallback(async () => {
+        if (isReadOnly || typeof checkpoints?.get !== "function") {
+            return null;
+        }
+        const info = getFlowInfo();
+        try {
+            const result = await checkpoints.get(info.name);
+            return result;
+        } catch {
+            return null;
+        }
+    }, [isReadOnly, checkpoints, getFlowInfo]);
+
+    const onSubmitCheckpoint: (checkpoint: Record<string, any>) => Promise<void> = useCallback(
+        async (checkpoint: Record<string, any>) => {
+            if (isReadOnly || typeof checkpoints?.submit !== "function") {
+                return;
+            }
+            const info = getFlowInfo();
+            try {
+                await checkpoints.submit(info.name, checkpoint);
+            } catch {
+                //
+            }
+        },
+        [isReadOnly, checkpoints, getFlowInfo],
     );
 
     /**
@@ -292,6 +321,8 @@ export const useFlowEvents = (flowId: string) => {
             onEdgesChange,
             onNodeDoubleClick,
             onEdgeDoubleClick,
+            onGetCheckpoints,
+            onSubmitCheckpoint,
         }),
         [
             convertToPy,
@@ -305,6 +336,8 @@ export const useFlowEvents = (flowId: string) => {
             onEdgesChange,
             onNodeDoubleClick,
             onEdgeDoubleClick,
+            onGetCheckpoints,
+            onSubmitCheckpoint,
         ],
     );
 };

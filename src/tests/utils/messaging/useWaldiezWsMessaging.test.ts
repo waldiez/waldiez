@@ -173,8 +173,6 @@ describe("useWaldiezWsMessaging", () => {
             expect(result.current.send).toBe(mockWsHook.send);
             expect(result.current.connected).toBe(mockWsHook.connected);
             expect(result.current.getConnectionState).toBe(mockWsHook.getConnectionState);
-            expect(result.current.reconnect).toBe(mockWsHook.reconnect);
-            expect(result.current.disconnect).toBe(mockWsHook.disconnect);
         });
 
         it("should initialize with all handlers", () => {

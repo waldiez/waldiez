@@ -48,6 +48,7 @@ export const createWaldiezStore = (props: WaldiezStoreProps) => {
         onRun = null,
         onStepRun = null,
         onConvert = null,
+        checkpoints = null,
     } = props;
     const storageId = props.storageId ?? flowId;
     return createStore<WaldiezState>()(
@@ -75,6 +76,7 @@ export const createWaldiezStore = (props: WaldiezStoreProps) => {
                 onRun,
                 onStepRun,
                 onConvert,
+                checkpoints,
                 activeSenderId: null,
                 activeRecipientId: null,
                 activeEventType: null,

@@ -56,6 +56,7 @@ export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
     const onRun = props.onRun ?? null;
     const onStepRun = props.onStepRun ?? null;
     const onConvert = props.onConvert ?? null;
+    const checkpoints = props.checkpoints ?? null;
     const rfInstance = props.rfInstance;
     const isAsync = props.isAsync ?? false;
     const cacheSeed = props.cacheSeed ?? 42;
@@ -81,6 +82,7 @@ export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
             onRun,
             onStepRun,
             onConvert,
+            checkpoints,
         });
         return storeRef.current;
         // eslint-disable-next-line react-hooks/exhaustive-deps

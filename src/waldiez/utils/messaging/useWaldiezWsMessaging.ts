@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { type Dispatch, useCallback } from "react";
+import { type Dispatch, useCallback, useRef } from "react";
 
 import type {
     WaldiezActiveRequest,
@@ -25,6 +25,25 @@ import { type WaldiezStepByStepMessageDeduplicationOptions } from "@waldiez/util
 import type { WaldiezStepByStepAction } from "@waldiez/utils/stepByStep/reducer";
 import { type WaldiezWsMessageHandler, useWaldiezWs } from "@waldiez/utils/ws";
 
+type PendingRequest = {
+    resolve: (value: any) => void;
+    reject: (error: any) => void;
+    timeout: NodeJS.Timeout;
+};
+
+type RpcRequestMessage = {
+    request_id: string;
+    type: string;
+    payload?: any;
+};
+
+type RpcResponseMessage = {
+    request_id: string;
+    type: string;
+    payload?: any;
+    error?: string;
+};
+
 export const useWaldiezWsMessaging: (props: {
     flowId: string;
     onSave?: (contents: string, path?: string | null) => void | Promise<void>;
@@ -33,6 +52,7 @@ export const useWaldiezWsMessaging: (props: {
     onStepRun?: (
         contents: string,
         breakpoints?: (string | WaldiezBreakpoint)[],
+        checkpoint?: string | null,
         path?: string | null,
     ) => void | Promise<void>;
     preprocess?: (message: any) => { handled: boolean; updated?: any };
@@ -41,6 +61,7 @@ export const useWaldiezWsMessaging: (props: {
         protocols?: string | string[] | undefined;
         autoPingMs?: number;
         onError?: (error: any) => void;
+        rpcTimeout?: number;
     };
     chat?: {
         initialConfig?: Partial<WaldiezChatConfig>;
@@ -112,6 +133,7 @@ export const useWaldiezWsMessaging: (props: {
     send: (message: any) => void;
     reconnect: () => void;
     disconnect: () => void;
+    request: <T = any>(type: string, payload?: any) => Promise<T>;
 } = ({ flowId, onSave, onConvert, onRun, chat, stepByStep, onStepRun, preprocess, ws }) => {
     const {
         save,
@@ -136,10 +158,30 @@ export const useWaldiezWsMessaging: (props: {
         chat,
         stepByStep,
     });
+    const pendingRequestsRef = useRef<Map<string, PendingRequest>>(new Map());
+    const rpcTimeout = ws.rpcTimeout ?? 30000;
+    const generateId = useCallback((): string => {
+        return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    }, []);
     const handleWsMessage: WaldiezWsMessageHandler = useCallback(
         (event: MessageEvent) => {
             try {
                 const data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
+                if (typeof data === "object" && "request_id" in data) {
+                    const message = data as RpcResponseMessage;
+                    if (pendingRequestsRef.current.has(message.request_id)) {
+                        const pending = pendingRequestsRef.current.get(message.request_id)!;
+                        clearTimeout(pending.timeout);
+                        pendingRequestsRef.current.delete(message.request_id);
+                        if (message.error) {
+                            pending.reject(new Error(message.error));
+                        } else {
+                            pending.resolve(message.payload);
+                        }
+                        return;
+                    }
+                }
+                // Not an RPC response - process normally
                 process(data);
             } catch (_) {
                 process(event.data);
@@ -147,7 +189,13 @@ export const useWaldiezWsMessaging: (props: {
         },
         [process],
     );
-    const { send, connected, getConnectionState, reconnect, disconnect } = useWaldiezWs({
+    const {
+        send,
+        connected,
+        getConnectionState,
+        reconnect: wsReconnect,
+        disconnect: wsDisconnect,
+    } = useWaldiezWs({
         wsUrl: ws.url,
         protocols: ws.protocols,
         autoPingMs: ws.autoPingMs,
@@ -156,6 +204,55 @@ export const useWaldiezWsMessaging: (props: {
             ws?.onError?.(error);
         },
     });
+    const request = useCallback(
+        <T = any>(type: string, payload?: any): Promise<T> => {
+            return new Promise((resolve, reject) => {
+                const state = getConnectionState();
+                if (state !== WebSocket.OPEN) {
+                    reject(new Error("WebSocket is not connected"));
+                    return;
+                }
+
+                const request_id = generateId();
+                const message: RpcRequestMessage = { request_id, type, payload };
+
+                // Set timeout
+                const timeout = setTimeout(() => {
+                    pendingRequestsRef.current.delete(request_id);
+                    reject(new Error(`Request timeout after ${rpcTimeout}ms`));
+                }, rpcTimeout);
+
+                // Store pending request
+                pendingRequestsRef.current.set(request_id, { resolve, reject, timeout });
+
+                // Send message
+                const success = send(message);
+                if (!success) {
+                    clearTimeout(timeout);
+                    pendingRequestsRef.current.delete(request_id);
+                    reject(new Error("Failed to send message"));
+                }
+            });
+        },
+        [getConnectionState, generateId, rpcTimeout, send],
+    );
+    const clearPendingRequests = useCallback((reason: string) => {
+        // Reject all pending requests
+        pendingRequestsRef.current.forEach(({ reject, timeout }) => {
+            clearTimeout(timeout);
+            reject(new Error(reason));
+        });
+        pendingRequestsRef.current.clear();
+    }, []);
+    const disconnect = useCallback(() => {
+        clearPendingRequests("WebSocket disconnected");
+        wsDisconnect();
+    }, [wsDisconnect, clearPendingRequests]);
+
+    const reconnect = useCallback(() => {
+        clearPendingRequests("WebSocket reconnecting");
+        wsReconnect();
+    }, [wsReconnect, clearPendingRequests]);
     return {
         save,
         convert,
@@ -173,6 +270,7 @@ export const useWaldiezWsMessaging: (props: {
         getConnectionState,
         reconnect,
         disconnect,
+        request,
         actions,
     };
 };

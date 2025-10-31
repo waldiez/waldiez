@@ -11,7 +11,10 @@ import type { WaldiezProps } from "@waldiez/types";
 import { useWaldiezWrapper } from "./hooks/wrapper";
 
 type WaldiezWrapperProps = {
-    waldiezProps: Omit<WaldiezProps, "onRun" | "onStepRun" | "onSave" | "onUpload" | "onConvert" | "chat">;
+    waldiezProps: Omit<
+        WaldiezProps,
+        "onRun" | "onStepRun" | "onSave" | "onUpload" | "onConvert" | "onGetCheckpoints" | "chat"
+    >;
     wsUrl?: string;
     protocols?: string | string[] | undefined;
 };
@@ -24,7 +27,7 @@ export const WaldiezWrapper: FC<WaldiezWrapperProps> = ({
     const onError = useCallback((error: any) => {
         showSnackbar({ message: "Workflow Error", details: error, level: "error", withCloseButton: true });
     }, []);
-    const { chat, stepByStep, onRun, onStepRun, onConvert, onSave } = useWaldiezWrapper({
+    const { chat, stepByStep, onRun, onStepRun, onConvert, onSave, checkpoints } = useWaldiezWrapper({
         flowId: waldiezProps.flowId,
         wsUrl,
         protocols,
@@ -36,6 +39,7 @@ export const WaldiezWrapper: FC<WaldiezWrapperProps> = ({
         onStepRun,
         onSave,
         onConvert,
+        checkpoints,
         chat,
         stepByStep,
     };

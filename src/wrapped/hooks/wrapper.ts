@@ -30,10 +30,19 @@ export const useWaldiezWrapper = ({
     chat: WaldiezChatConfig;
     stepByStep: WaldiezStepByStep;
     onRun: (flowJson: string, path?: string | null) => void;
-    onStepRun: (flowJson: string, breakpoints?: (string | WaldiezBreakpoint)[], path?: string | null) => void;
+    onStepRun: (
+        flowJson: string,
+        breakpoints?: (string | WaldiezBreakpoint)[],
+        checkpoint?: string | null,
+        path?: string | null,
+    ) => void;
     onSave: (flowJson: string, path?: string | null) => void;
     onConvert: (flowJson: string, to: "py" | "ipynb", path?: string | null) => void;
     sendMessage: (message: unknown) => boolean | void;
+    checkpoints?: {
+        get: (flowName: string) => Promise<Record<string, any> | null>;
+        submit: (flowName: string, checkpoint: Record<string, any> | null) => Promise<void>;
+    };
     reset: () => void;
 } => {
     const messageSender = useRef<((msg: any) => boolean | void) | undefined>(undefined);
@@ -49,11 +58,17 @@ export const useWaldiezWrapper = ({
         });
     }, []);
     const onStepRunCb = useCallback(
-        (data: string, breakpoints?: (string | WaldiezBreakpoint)[], path?: string | null) => {
+        (
+            data: string,
+            breakpoints?: (string | WaldiezBreakpoint)[],
+            checkpoint?: string | null,
+            path?: string | null,
+        ) => {
             messageSender.current?.({
                 type: "step_run",
                 data,
                 breakpoints,
+                checkpoint,
                 path,
             });
         },
@@ -146,6 +161,7 @@ export const useWaldiezWrapper = ({
         dispatch,
         run: onRun,
         stepRun: onStepRun,
+        request,
     } = useWaldiezWsMessaging({
         flowId,
         onRun: onRunCb,
@@ -176,6 +192,28 @@ export const useWaldiezWrapper = ({
             onError,
         },
     });
+    const onGetCheckpoints = useCallback(
+        async (flowName: string) => {
+            try {
+                return await request("get_checkpoints", { flow_name: flowName });
+            } catch (error) {
+                console.error(error);
+                return null;
+            }
+        },
+        [request],
+    );
+    const onSubmitCheckpoints = useCallback(
+        async (flowName: string, checkpoint: Record<string, any> | null) => {
+            try {
+                await request("set_checkpoint", { flow_name: flowName, checkpoint });
+            } catch {
+                //
+            }
+        },
+        [request],
+    );
+
     messageSender.current = sendMessage;
     chatDispatchRef.current = dispatch.chat;
     stepDispatchRef.current = dispatch.step;
@@ -188,5 +226,9 @@ export const useWaldiezWrapper = ({
         onStepRun,
         onSave,
         reset,
+        checkpoints: {
+            get: onGetCheckpoints,
+            submit: onSubmitCheckpoints,
+        },
     };
 };

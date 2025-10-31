@@ -72,6 +72,7 @@ export type WaldiezStoreProps = {
         | ((
               flow: string,
               breakpoints?: (string | WaldiezBreakpoint)[],
+              checkpoint?: string | null,
               path?: string | null,
           ) => void | Promise<void>)
         | null; // handler for running the flow in step-by-step mode (send to backend)
@@ -79,6 +80,10 @@ export type WaldiezStoreProps = {
     onUpload?: ((files: File[], path?: string | null) => string[] | Promise<string[]>) | null; // handler for file uploads (send to backend)
     onChange?: ((content: string, path?: string | null) => void | Promise<void>) | null; // handler for changes in the flow (send to backend)
     onSave?: ((flow: string, path?: string | null) => void | Promise<void>) | null; // handler for saving the flow (send to backend)
+    checkpoints?: {
+        get: (flowName: string) => Promise<Record<string, any> | null>; // handler for getting previous checkpoints for the flow (send to backend)
+        submit: (flowName: string, checkpoint: Record<string, any>) => Promise<void>; // handler for setting checkpoint for the flow (send to backend)
+    } | null;
 };
 
 /**

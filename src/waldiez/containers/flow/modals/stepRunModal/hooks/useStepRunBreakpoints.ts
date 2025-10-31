@@ -2,11 +2,15 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { type Dispatch, type SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 
-import type { StepRunModalProps } from "@waldiez/containers/flow/modals/stepRunModal/types";
-import { useWaldiez } from "@waldiez/store";
-import type { EventType, MultiValue, WaldiezBreakpoint, WaldiezBreakpointType } from "@waldiez/types";
+import type {
+    EventType,
+    MultiValue,
+    WaldiezBreakpoint,
+    WaldiezBreakpointType,
+    WaldiezNodeAgent,
+} from "@waldiez/types";
 
 const eventDescriptions: Record<EventType, string> = {
     post_carryover_processing: "After processing carryover messages",
@@ -25,13 +29,13 @@ const eventDescriptions: Record<EventType, string> = {
     termination_and_human_reply_no_input: "Termination with no user input required",
 };
 
-export const useStepRunModal = (_props: StepRunModalProps) => {
-    const getAgents = useWaldiez(s => s.getAgents);
-    const agents = getAgents();
+export const useStepRunBreakpoints = (props: {
+    agents: WaldiezNodeAgent[];
+    breakpoints: WaldiezBreakpoint[];
+    setBreakpoints: Dispatch<SetStateAction<WaldiezBreakpoint[]>>;
+}) => {
+    const { agents, breakpoints, setBreakpoints } = props;
     const [activeTab, setActiveTab] = useState<"preset" | "custom" | "current">("preset");
-    const [breakpoints, setBreakpoints] = useState<WaldiezBreakpoint[]>([
-        { type: "all", description: "Break on all events (default)" },
-    ]);
     const [selectedEventTypes, setSelectedEventTypes] = useState<{ label: string; value: EventType }[]>([]);
     const [selectedAgentEventType, setSelectedAgentEventType] = useState<
         { label: string; value: EventType } | undefined
@@ -106,55 +110,60 @@ export const useStepRunModal = (_props: StepRunModalProps) => {
         }
     }, []);
 
-    const setPresetBreakpoints = useCallback((preset: "all" | "tools" | "errors") => {
-        // Mark that we're using a preset
-        setBreakpointSource("preset");
+    const setPresetBreakpoints = useCallback(
+        (preset: "all" | "tools" | "errors") => {
+            // Mark that we're using a preset
+            setBreakpointSource("preset");
 
-        // Clear custom selections when using presets
-        setSelectedAgents([]);
-        setSelectedEventTypes([]);
-        setSelectedAgentEventAgent(undefined);
-        setSelectedAgentEventType(undefined);
+            // Clear custom selections when using presets
+            setSelectedAgents([]);
+            setSelectedEventTypes([]);
+            setSelectedAgentEventAgent(undefined);
+            setSelectedAgentEventType(undefined);
 
-        switch (preset) {
-            case "all":
-                setBreakpoints([{ type: "all", description: "Break on all events (default)" }]);
-                break;
-            case "tools":
-                setBreakpoints([
-                    {
-                        type: "event",
-                        event_type: "tool_call",
-                        description: "Break on event: tool_call (Before executing a tool/function call)",
-                    },
-                    {
-                        type: "event",
-                        event_type: "execute_function",
-                        description: "Break on event: execute_function (When starting function execution)",
-                    },
-                    {
-                        type: "event",
-                        event_type: "executed_function",
-                        description: "Break on event: executed_function (After function execution completes)",
-                    },
-                    {
-                        type: "event",
-                        event_type: "tool_response",
-                        description: "Break on event: tool_response (When tool returns a response)",
-                    },
-                ]);
-                break;
-            case "errors":
-                setBreakpoints([
-                    {
-                        type: "event",
-                        event_type: "error",
-                        description: "Break on event: error (When an error occurs)",
-                    },
-                ]);
-                break;
-        }
-    }, []);
+            switch (preset) {
+                case "all":
+                    setBreakpoints([{ type: "all", description: "Break on all events (default)" }]);
+                    break;
+                case "tools":
+                    setBreakpoints([
+                        {
+                            type: "event",
+                            event_type: "tool_call",
+                            description: "Break on event: tool_call (Before executing a tool/function call)",
+                        },
+                        {
+                            type: "event",
+                            event_type: "execute_function",
+                            description:
+                                "Break on event: execute_function (When starting function execution)",
+                        },
+                        {
+                            type: "event",
+                            event_type: "executed_function",
+                            description:
+                                "Break on event: executed_function (After function execution completes)",
+                        },
+                        {
+                            type: "event",
+                            event_type: "tool_response",
+                            description: "Break on event: tool_response (When tool returns a response)",
+                        },
+                    ]);
+                    break;
+                case "errors":
+                    setBreakpoints([
+                        {
+                            type: "event",
+                            event_type: "error",
+                            description: "Break on event: error (When an error occurs)",
+                        },
+                    ]);
+                    break;
+            }
+        },
+        [setBreakpoints],
+    );
 
     const addBreakpoint = useCallback(
         (type: WaldiezBreakpointType, agent?: string, event_type?: string) => {
@@ -188,20 +197,23 @@ export const useStepRunModal = (_props: StepRunModalProps) => {
                 setSelectedAgentEventType(undefined);
             }
         },
-        [generateDescription],
+        [generateDescription, setBreakpoints],
     );
 
-    const removeBreakpoint = useCallback((index: number) => {
-        setBreakpointSource("custom");
-        setBreakpoints(prev => {
-            const updated = prev.filter((_, i) => i !== index);
-            // If no breakpoints left, add back the 'all' default
-            if (updated.length === 0) {
-                return [{ type: "all", description: "Break on all events (default)" }];
-            }
-            return updated;
-        });
-    }, []);
+    const removeBreakpoint = useCallback(
+        (index: number) => {
+            setBreakpointSource("custom");
+            setBreakpoints(prev => {
+                const updated = prev.filter((_, i) => i !== index);
+                // If no breakpoints left, add back the 'all' default
+                if (updated.length === 0) {
+                    return [{ type: "all", description: "Break on all events (default)" }];
+                }
+                return updated;
+            });
+        },
+        [setBreakpoints],
+    );
 
     // Sync selected event types with breakpoints (only for custom changes)
     useEffect(() => {
@@ -260,8 +272,7 @@ export const useStepRunModal = (_props: StepRunModalProps) => {
 
             return updated;
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedEventTypes, breakpointSource, generateDescription]);
+    }, [selectedEventTypes, breakpointSource, generateDescription, breakpoints, setBreakpoints]);
 
     // Sync selected agents with breakpoints (only for custom changes)
     useEffect(() => {
@@ -318,8 +329,7 @@ export const useStepRunModal = (_props: StepRunModalProps) => {
 
             return updated;
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedAgents, breakpointSource, generateDescription]);
+    }, [selectedAgents, breakpointSource, generateDescription, breakpoints, setBreakpoints]);
 
     const onSelectedAgentsChange = useCallback((options: MultiValue<{ label: string; value: string }>) => {
         setBreakpointSource("custom");

@@ -1029,7 +1029,7 @@ export declare const useWaldiezWsMessaging: (props: {
     onSave?: (contents: string, path?: string | null) => void | Promise<void>;
     onConvert?: (contents: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>;
     onRun?: (contents: string, path?: string | null) => void | Promise<void>;
-    onStepRun?: (contents: string, breakpoints?: (string | WaldiezBreakpoint)[], path?: string | null) => void | Promise<void>;
+    onStepRun?: (contents: string, breakpoints?: (string | WaldiezBreakpoint)[], checkpoint?: string | null, path?: string | null) => void | Promise<void>;
     preprocess?: (message: any) => {
         handled: boolean;
         updated?: any;
@@ -1039,6 +1039,7 @@ export declare const useWaldiezWsMessaging: (props: {
         protocols?: string | string[] | undefined;
         autoPingMs?: number;
         onError?: (error: any) => void;
+        rpcTimeout?: number;
     };
     chat?: {
         initialConfig?: Partial<WaldiezChatConfig>;
@@ -1112,6 +1113,7 @@ export declare const useWaldiezWsMessaging: (props: {
     send: (message: any) => void;
     reconnect: () => void;
     disconnect: () => void;
+    request: <T = any>(type: string, payload?: any) => Promise<T>;
 };
 
 export declare const useWaldiezWsStepByStep: (props: {
@@ -4166,9 +4168,13 @@ export declare type WaldiezProps = WaldiezFlowProps & {
     onUpload?: (files: File[]) => Promise<string[]>;
     onChange?: (flow: string) => void;
     onRun?: (flow: string, path?: string | null) => void;
-    onStepRun?: (flow: string, breakpoints?: (string | WaldiezBreakpoint)[], path?: string | null) => void;
+    onStepRun?: (flow: string, breakpoints?: (string | WaldiezBreakpoint)[], checkpoint?: string | null, path?: string | null) => void;
     onConvert?: (flow: string, to: "py" | "ipynb", path?: string | null) => void;
     onSave?: (flow: string, path?: string | null) => void;
+    checkpoints?: {
+        get: (flowName: string) => Promise<Record<string, any> | null>;
+        submit: (flowName: string, checkpoint: Record<string, any>) => Promise<void>;
+    };
 };
 
 /**
@@ -4651,11 +4657,15 @@ export declare type WaldiezStoreProps = {
     viewport?: Viewport;
     previousViewport?: Viewport;
     onRun?: ((flow: string, path?: string | null) => void | Promise<void>) | null;
-    onStepRun?: ((flow: string, breakpoints?: (string | WaldiezBreakpoint)[], path?: string | null) => void | Promise<void>) | null;
+    onStepRun?: ((flow: string, breakpoints?: (string | WaldiezBreakpoint)[], checkpoint?: string | null, path?: string | null) => void | Promise<void>) | null;
     onConvert?: ((flow: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>) | null;
     onUpload?: ((files: File[], path?: string | null) => string[] | Promise<string[]>) | null;
     onChange?: ((content: string, path?: string | null) => void | Promise<void>) | null;
     onSave?: ((flow: string, path?: string | null) => void | Promise<void>) | null;
+    checkpoints?: {
+        get: (flowName: string) => Promise<Record<string, any> | null>;
+        submit: (flowName: string, checkpoint: Record<string, any>) => Promise<void>;
+    } | null;
 };
 
 /**

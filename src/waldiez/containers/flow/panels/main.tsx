@@ -23,7 +23,7 @@ type WaldiezFlowPanelsProps = {
     selectedNodeType: WaldiezNodeType;
     onAddNode: () => void;
     onRun: (path?: string | null) => void;
-    onStepRun: (path?: string | null, breakpoints?: string[]) => void;
+    onStepRun: (path?: string | null, breakpoints?: string[], checkpoint?: string | null) => void;
     onConvertToPy: (path?: string | null) => void;
     onConvertToIpynb: (path?: string | null) => void;
     onOpenImportModal: () => void;

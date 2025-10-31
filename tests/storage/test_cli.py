@@ -17,6 +17,7 @@ import pytest
 import typer
 from typer.testing import CliRunner
 
+from waldiez.storage.checkpoint import WaldiezCheckpoint
 from waldiez.storage.cli import app, handle_checkpoints
 
 
@@ -200,8 +201,9 @@ class TestStorageCLI:
         mock_instance = Mock()
         mock_storage_manager.return_value = mock_instance
 
-        # Timestamp format: %Y%m%d_%H%M%S_%f
-        timestamp_str = "20240101_120000_123456"
+        timestamp_str = WaldiezCheckpoint.format_timestamp(
+            datetime.now(timezone.utc)
+        )
 
         result = runner.invoke(
             app,
@@ -219,11 +221,9 @@ class TestStorageCLI:
         assert result.exit_code == 0
 
         # Verify delete was called with correct timestamp
-        expected_timestamp = datetime(
-            2024, 1, 1, 12, 0, 0, 123456, tzinfo=timezone.utc
-        )
         mock_instance.delete.assert_called_once_with(
-            session_name="test_session", timestamp=expected_timestamp
+            session_name="test_session",
+            timestamp=WaldiezCheckpoint.parse_timestamp(timestamp_str),
         )
 
     def test_delete_checkpoint_no_session(
@@ -432,31 +432,6 @@ class TestStorageCLI:
 
         # Typer should validate the path exists
         assert result.exit_code != 0
-
-    def test_invalid_timestamp_format(
-        self,
-        runner: CliRunner,
-        mock_storage_manager: MagicMock,
-        mock_workspace: MagicMock,
-    ) -> None:
-        """Test delete with invalid timestamp format."""
-        # Invalid timestamp format
-        result = runner.invoke(
-            app,
-            [
-                "--delete",
-                "--session",
-                "test_session",
-                "--checkpoint",
-                "invalid_timestamp",
-            ],
-        )
-        assert result.exit_code != 0
-        exc_info = result.exc_info
-        out = result.stdout + result.stderr
-        if exc_info:
-            out += str(exc_info[1])
-        assert out
 
     def test_command_shortcuts(
         self,

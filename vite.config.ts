@@ -72,6 +72,7 @@ const getPublicDir = (command: "build" | "serve"): string | false => {
     return command === "build" ? false : normalizedResolve("public");
 };
 
+// noinspection DuplicatedCode
 type CopyTarget = { src: string; dest: string };
 
 /**

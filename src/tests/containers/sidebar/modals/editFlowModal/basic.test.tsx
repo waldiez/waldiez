@@ -81,6 +81,7 @@ describe("Sidebar Edit flow modal config tab", () => {
         fireEvent.click(moveEdgeDownButton);
     });
     it("Should toggle async mode", async () => {
+        // noinspection DuplicatedCode
         await act(async () => {
             await renderFlow([-1, 0, 1, 2]);
         });

@@ -91,7 +91,16 @@ export type WaldiezProps = WaldiezFlowProps & {
     onUpload?: (files: File[]) => Promise<string[]>;
     onChange?: (flow: string) => void;
     onRun?: (flow: string, path?: string | null) => void;
-    onStepRun?: (flow: string, breakpoints?: (string | WaldiezBreakpoint)[], path?: string | null) => void;
+    onStepRun?: (
+        flow: string,
+        breakpoints?: (string | WaldiezBreakpoint)[],
+        checkpoint?: string | null,
+        path?: string | null,
+    ) => void;
     onConvert?: (flow: string, to: "py" | "ipynb", path?: string | null) => void;
     onSave?: (flow: string, path?: string | null) => void;
+    checkpoints?: {
+        get: (flowName: string) => Promise<Record<string, any> | null>;
+        submit: (flowName: string, checkpoint: Record<string, any>) => Promise<void>;
+    };
 };

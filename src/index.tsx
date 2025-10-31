@@ -95,6 +95,19 @@ const devHandlers = {
             });
         });
     },
+    checkpoints: {
+        get: async (flowName: string) => {
+            console.info("[DEV] getting previous checkpoints for flow:", flowName);
+            return new Promise<Record<string, any> | null>(resolve => {
+                setTimeout(() => {
+                    resolve(null);
+                }, 1000);
+            });
+        },
+        submit: async (flowName: string, checkpoint: Record<string, any>) => {
+            console.info(`[DEV] submit checkpoint ${checkpoint} for flow: ${flowName}`);
+        },
+    },
 };
 
 /**
@@ -130,6 +143,7 @@ const defaultWaldiezProps: Partial<WaldiezProps> = {
               onStepRun: undefined,
               onConvert: undefined,
               onUpload: undefined,
+              checkpoints: undefined,
           }
         : !USE_DEV_SERVER
           ? {
