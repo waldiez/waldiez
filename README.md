@@ -233,15 +233,13 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </td>
   </tr>
   <tr>
-    <td align="center">
+    <td align="center" width="20%">
       <a href="https://github.com/kunalmhaske21212">
         <img src="https://avatars.githubusercontent.com/u/178289692?v=4&s=100" width="100px" alt="Kunal Mhaske"/><br/>
         <sub><b>Kunal Mhaske</b></sub>
       </a><br/>
       <a href="#bugReports-kunalmhaske21212">🐛</a>
     </td>
-    <!-- Empty cells for layout symmetry -->
-    <td></td><td></td><td></td><td></td>
   </tr>
   <tfoot>
     <tr>
