@@ -20,7 +20,7 @@ from ._async_runner import AsyncSubprocessRunner
 from ._sync_runner import SyncSubprocessRunner
 
 
-# noinspection PyUnusedLocal
+# noinspection PyUnusedLocal,PyBroadException
 class WaldiezSubprocessRunner(WaldiezBaseRunner):
     """Waldiez runner that uses subprocess execution via standalone runners."""
 
@@ -282,6 +282,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             runner = self._create_sync_subprocess_runner()
 
             # Run subprocess
+            # noinspection PyTypeChecker
             runner.run_subprocess(self._waldiez_file, mode=self.mode)
             return self.read_from_output(output_file.parent)
 
@@ -392,6 +393,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             runner = self._create_async_subprocess_runner()
 
             # Run subprocess
+            # noinspection PyTypeChecker
             await runner.run_subprocess(
                 self._waldiez_file,
                 mode=self.mode,

@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 
+# noinspection PyBroadException
 @dataclass
 class WaldiezCheckpoint:
     """A saved checkpoint."""

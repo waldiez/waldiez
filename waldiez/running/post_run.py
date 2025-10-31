@@ -14,6 +14,7 @@ from typing import Any
 import aiofiles
 
 
+# noinspection PyBroadException
 def get_results_from_json(output_dir: Path) -> list[dict[str, Any]]:
     """Get the results dumped in results.json if any.
 
@@ -46,6 +47,7 @@ def get_results_from_json(output_dir: Path) -> list[dict[str, Any]]:
     return results
 
 
+# noinspection PyBroadException
 async def a_get_results_from_json(output_dir: Path) -> list[dict[str, Any]]:
     """Get the results dumped in results.json if any.
 
@@ -79,6 +81,7 @@ async def a_get_results_from_json(output_dir: Path) -> list[dict[str, Any]]:
     return results
 
 
+# noinspection PyBroadException
 def remove_results_json(output_dir: Path) -> None:
     """Remove results.json if exists.
 
@@ -190,6 +193,7 @@ async def a_ensure_error_json(output_dir: Path, error: BaseException) -> None:
     remove_results_json(output_dir)
 
 
+# noinspection PyBroadException
 def store_full_results(
     output_dir: Path,
 ) -> None:
@@ -224,6 +228,7 @@ def store_full_results(
             pass
 
 
+# noinspection PyBroadException
 async def a_store_full_results(
     output_dir: Path,
 ) -> None:

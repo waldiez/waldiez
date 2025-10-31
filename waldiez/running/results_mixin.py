@@ -42,6 +42,7 @@ class WaldiezRunResults(TypedDict):
     completed: bool
 
 
+# noinspection PyBroadException,PyUnusedLocal
 class ResultsMixin:
     """Results related static methods."""
 

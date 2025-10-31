@@ -2,7 +2,7 @@
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pylint: disable=too-many-try-statements,broad-exception-caught,line-too-long
-# pylint: disable=too-complex,too-many-return-statements,import-error
+# pylint: disable=too-complex,too-many-return-statements,import-error,too-many-branches
 # pyright: reportUnknownMemberType=false,reportAttributeAccessIssue=false
 # pyright: reportUnknownVariableType=false,reportUnknownArgumentType=false
 # pyright: reportAssignmentType=false,reportUnknownParameterType=false
@@ -926,6 +926,7 @@ class ClientManager:
         ).model_dump(mode="json")
 
 
+# noinspection PyBroadException,PyUnusedLocal
 def _get_checkpoint_info(
     msg: SaveCheckpointRequest, storage_manager: StorageManager
 ) -> tuple[WaldiezCheckpointInfo, dict[str, Any]] | None:

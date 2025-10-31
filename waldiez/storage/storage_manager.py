@@ -212,6 +212,7 @@ class StorageManager:
             tmp_latest = session_out_dir / ".latest.tmp"
             symlink(tmp_latest, checkpoint_path, overwrite=True)
             # pylint: disable=too-many-try-statements,broad-exception-caught
+            # noinspection PyBroadException
             try:
                 if sys.platform == "win32":
                     # Windows: remove target first

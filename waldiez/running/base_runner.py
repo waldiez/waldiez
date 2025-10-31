@@ -37,6 +37,7 @@ from .results_mixin import ResultsMixin
 
 
 # pylint: disable=too-many-public-methods
+# noinspection PyBroadException
 class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     """Base runner for Waldiez."""
 
@@ -50,6 +51,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     _storage_manager: StorageManager
     _checkpoint: WaldiezCheckpoint | None
     _output_dir: Path
+    _logger: WaldiezLogger
 
     def __init__(
         self,

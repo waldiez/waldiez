@@ -23,6 +23,7 @@ if TYPE_CHECKING:
 
 
 # pylint: disable=too-few-public-methods
+# noinspection PyBroadException
 class EventProcessor:
     """Processes events for the step-by-step runner."""
 
@@ -113,9 +114,8 @@ class EventProcessor:
         self.runner.last_sender = event_info["sender"]
         self.runner.last_recipient = event_info["recipient"]
 
-    def _extract_participants_from_content(
-        self, event_info: dict[str, Any]
-    ) -> None:
+    @staticmethod
+    def _extract_participants_from_content(event_info: dict[str, Any]) -> None:
         """Extract sender/recipient from nested content structure.
 
         Parameters
@@ -136,7 +136,8 @@ class EventProcessor:
         if not event_info["recipient"] and "recipient" in content:
             event_info["recipient"] = content["recipient"]
 
-    def _check_for_event_speaker(self, event_info: dict[str, Any]) -> None:
+    @staticmethod
+    def _check_for_event_speaker(event_info: dict[str, Any]) -> None:
         """Handle speaker information for group chat events.
 
         Parameters
@@ -150,8 +151,9 @@ class EventProcessor:
             if isinstance(speaker, str) and speaker:
                 event_info["sender"] = speaker
 
+    @staticmethod
     def _extract_participants_from_direct_content(
-        self, event_info: dict[str, Any]
+        event_info: dict[str, Any],
     ) -> None:
         """Extract sender/recipient directly from content dictionary.
 
@@ -274,6 +276,7 @@ class EventProcessor:
 
 # pylint: disable=too-complex,too-many-return-statements,
 # pylint: disable=broad-exception-caught,too-complex,too-many-branches
+# noinspection TryExceptPass,PyBroadException
 def _trimmed(  # noqa: C901
     value: Any, max_len: int = 200, _depth: int = 0, _max_depth: int = 10
 ) -> Any:

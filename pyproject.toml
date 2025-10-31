@@ -80,7 +80,7 @@ studio = [
   "waldiez_studio==0.6.1",
 ]
 reload = [
-    "watchdog>=5.0.0",
+  "watchdog>=5.0.0",
 ]
 ag2_extras = [
   "ag2[a2a]==0.10.0",
@@ -157,7 +157,7 @@ dev = [
   "pydocstyle==6.3.0",
   "pylint==4.0.2",
   "python-dotenv==1.2.1",
-  "ruff==0.14.2",
+  "ruff==0.14.3",
   "types-aiofiles==25.1.0.20251011",
   "types-jsonschema==4.25.1.20251009",
   "types-pyyaml==6.0.12.20250915",

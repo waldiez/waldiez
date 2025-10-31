@@ -14,6 +14,7 @@ import aiosqlite
 from aiocsv import AsyncDictWriter
 
 
+# noinspection PyBroadException,SqlNoDataSourceInspection
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
     """Convert a sqlite table to csv and json files.
 
@@ -62,6 +63,7 @@ def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
         return
 
 
+# noinspection PyBroadException,SqlNoDataSourceInspection
 async def a_get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
     """Convert a sqlite table to csv and json files.
 

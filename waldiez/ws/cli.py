@@ -80,6 +80,7 @@ app = typer.Typer(
 )
 
 
+# noinspection PyBroadException
 def _get_ws_port() -> int:
     """Get the default ws server port to use."""
     vite_ws_config = os.environ.get("VITE_DEV_WS_URL", "")
@@ -95,6 +96,7 @@ def _get_ws_port() -> int:
         return DEFAULT_WS_PORT
 
 
+# noinspection PyBroadException
 @app.command()
 def serve(
     host: Annotated[

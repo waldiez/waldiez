@@ -280,6 +280,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             # Default to "standard" if mode is not specified or invalid
             # This ensures backward compatibility and avoids errors
             mode = "standard"
+        # noinspection PyTypeChecker
         return cls(
             waldiez=waldiez,
             mode=mode,

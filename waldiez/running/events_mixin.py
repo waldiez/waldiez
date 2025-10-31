@@ -194,6 +194,20 @@ class EventsMixin:
             return str(input_function(prompt))
 
     @staticmethod
+    def _get_state_to_save(manager: "ConversableAgent") -> dict[str, Any]:
+        group_chat = getattr(manager, "_groupchat", None)
+        state: dict[str, Any] = {"messages": [], "context_variables": {}}
+        if group_chat:
+            messages = getattr(group_chat, "messages", [])
+            if isinstance(messages, list):
+                state["messages"] = messages
+        context_variables: dict[str, Any] = {}
+        for key, value in manager.context_variables.items():
+            context_variables[key] = value
+        state["context_variables"] = context_variables
+        return state
+
+    @staticmethod
     async def a_save_state(
         manager: "ConversableAgent", output_dir: Path
     ) -> None:
@@ -206,16 +220,7 @@ class EventsMixin:
         output_dir : Path
             The output directory to save the state.
         """
-        group_chat = getattr(manager, "_groupchat", None)
-        state: dict[str, Any] = {"messages": [], "context_variables": {}}
-        if group_chat:
-            messages = getattr(group_chat, "messages", [])
-            if isinstance(messages, list):
-                state["messages"] = messages
-        context_variables: dict[str, Any] = {}
-        for key, value in manager.context_variables.items():
-            context_variables[key] = value
-        state["context_variables"] = context_variables
+        state = EventsMixin._get_state_to_save(manager)
         if state["context_variables"] or state["messages"]:
             async with aiofiles.open(
                 output_dir / "state.json", "w", encoding="utf-8"
@@ -270,9 +275,10 @@ class EventsMixin:
 
         async def _read_json(path: Path) -> dict[str, Any] | list[Any] | None:
             # pylint: disable=broad-exception-caught
+            # noinspection PyBroadException
             try:
-                async with aiofiles.open(path, "r", encoding="utf-8") as f:
-                    text = await f.read()
+                async with aiofiles.open(path, "r", encoding="utf-8") as f_in:
+                    text = await f_in.read()
                 return json.loads(text)
             except Exception:
                 return None
@@ -303,8 +309,8 @@ class EventsMixin:
         history.append(entry)
 
         # Write back updated history
-        async with aiofiles.open(history_file, "w", encoding="utf-8") as f:
-            await f.write(json.dumps(history, default=str, indent=2))
+        async with aiofiles.open(history_file, "w", encoding="utf-8") as f_out:
+            await f_out.write(json.dumps(history, default=str, indent=2))
 
     @staticmethod
     async def a_process_event(
@@ -361,16 +367,7 @@ class EventsMixin:
         output_dir : Path
             The output directory to save the state.
         """
-        group_chat = getattr(manager, "_groupchat", None)
-        state: dict[str, Any] = {"messages": [], "context_variables": {}}
-        if group_chat:
-            messages = getattr(group_chat, "messages", [])
-            if isinstance(messages, list):
-                state["messages"] = messages
-        context_variables: dict[str, Any] = {}
-        for key, value in manager.context_variables.items():
-            context_variables[key] = value
-        state["context_variables"] = context_variables
+        state = EventsMixin._get_state_to_save(manager)
         if state["context_variables"] or state["messages"]:
             with open(output_dir / "state.json", "w", encoding="utf-8") as f:
                 f.write(json.dumps(state, default=str, indent=2))

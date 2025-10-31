@@ -106,6 +106,7 @@ class BreakpointsMixin:
         breakpoints: set[WaldiezBreakpoint] = set()
         for item in items:
             if isinstance(item, str):
+                # noinspection PyBroadException
                 try:
                     entry = WaldiezBreakpoint.from_string(item)
                     breakpoints.add(entry)

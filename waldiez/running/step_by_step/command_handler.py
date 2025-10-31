@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 
 
 # pylint: disable=too-few-public-methods
+# noinspection PyUnusedLocal
 class CommandHandler:
     """Handler for debug commands to reduce complexity in main runner."""
 

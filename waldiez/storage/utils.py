@@ -126,6 +126,7 @@ def is_installed_package() -> bool:
     bool
         True if detected as installed, False otherwise.
     """
+    # noinspection PyBroadException
     try:
         # Check if running from site-packages
         module_path = Path(__file__).resolve()
@@ -144,6 +145,7 @@ def is_frozen() -> bool:
     bool
         True if detected frozen.
     """
+    # noinspection PyBroadException
     try:
         compiled = getattr(builtins, "__compiled__", False)
     except Exception:  # pylint: disable=broad-exception-caught
@@ -297,6 +299,7 @@ def _pre_link(
 
 
 # pylint: disable=too-complex
+# noinspection TryExceptPass,PyBroadException
 def copy_results(
     temp_dir: Path,
     output_file: Path,
@@ -385,6 +388,7 @@ def _copy_output_file(
         src = src_root / out_path.name
         if src.exists():
             dst = destination_dir / out_path.name
+            # noinspection TryExceptPass,PyBroadException
             try:
                 if dst.exists():
                     dst.unlink()

@@ -30,6 +30,7 @@ _PATTERNS = r"^(?!.*\.\.)(?!\.)(?!.*\.$)[\w\-.]{1,128}$"
 _SAFE = re.compile(_PATTERNS, re.UNICODE)
 
 
+# noinspection PyBroadException,PyUnusedLocal,TryExceptPass,PyMethodMayBeStatic
 class FilesystemStorage:
     """Filesystem-based storage implementation."""
 
