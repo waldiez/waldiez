@@ -50,7 +50,7 @@ vi.mock("@waldiez/components", () => ({
 }));
 
 describe("UpdateState Component", () => {
-    let mockOnDataChange: ReturnType<typeof vi.fn>;
+    let mockOnDataChange: (data: Partial<WaldiezNodeAgentData>) => void;
     let defaultData: WaldiezNodeAgentData;
 
     beforeEach(() => {

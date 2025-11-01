@@ -64,7 +64,7 @@ describe("useWaldiezWsStepByStep", () => {
         wsRef: undefined as any,
         send: vi.fn(),
         connected: false,
-        getConnectionState: vi.fn(() => WebSocket.CONNECTING as number),
+        getConnectionState: vi.fn(() => 0), //WebSocket.CONNECTING
         reconnect: vi.fn(),
         disconnect: vi.fn(),
         setMessageHandler: vi.fn(),
@@ -312,7 +312,7 @@ describe("useWaldiezWsStepByStep", () => {
 
             const state = result.current.getConnectionState();
             expect(mockWsHook.getConnectionState).toHaveBeenCalled();
-            expect(state).toBe(WebSocket.CONNECTING);
+            expect(state).toBe(0);
         });
 
         it("should provide reconnect functionality", () => {

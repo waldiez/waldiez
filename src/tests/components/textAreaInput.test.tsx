@@ -20,7 +20,7 @@ const mockRequestAnimationFrame = vi.fn(cb => {
 global.requestAnimationFrame = mockRequestAnimationFrame;
 
 describe("TextareaInput", () => {
-    let mockOnChange: ReturnType<typeof vi.fn>;
+    let mockOnChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 
     beforeEach(() => {
         mockOnChange = vi.fn();
@@ -132,6 +132,7 @@ describe("TextareaInput", () => {
             expect(mockOnChange).toHaveBeenCalled();
 
             // Verify the event structure
+            // @ts-expect-error mock call
             const calls = mockOnChange.mock.calls;
             expect(calls.length).toBeGreaterThan(0);
             expect(calls[0]![0]).toHaveProperty("target");

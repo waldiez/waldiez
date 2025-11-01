@@ -6,6 +6,7 @@
 // @ts-nocheck
 import "@testing-library/jest-dom";
 import { cleanup } from "@testing-library/react";
+import { Blob, FormData } from "formdata-node";
 import { afterEach, beforeAll, beforeEach, vi } from "vitest";
 
 export const mockMatchMedia = (matches: boolean = false) => {
@@ -126,6 +127,9 @@ vi.mock("@monaco-editor/loader", () => ({
         config: vi.fn(),
     },
 }));
+
+globalThis.Blob = Blob;
+globalThis.FormData = FormData;
 const mockWebCrypto = async () => {
     // Mock Web Crypto API for Vitest on Windows
     if (!globalThis.crypto || !globalThis.crypto.subtle) {

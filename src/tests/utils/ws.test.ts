@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/* eslint-disable prefer-arrow-callback */
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -393,7 +394,9 @@ describe("useWaldiezWs", () => {
             });
             waitFor(() => {
                 expect(mockWebSocketInstances).toHaveLength(1);
-                const sendSpy = vi.spyOn(mockWebSocketInstances[0]!, "send").mockImplementation(() => true);
+                const sendSpy = vi.spyOn(mockWebSocketInstances[0]!, "send").mockImplementation(function () {
+                    return true;
+                });
                 const testData = { type: "test", message: "hello" };
 
                 act(() => {
@@ -414,7 +417,9 @@ describe("useWaldiezWs", () => {
             });
             waitFor(() => {
                 expect(mockWebSocketInstances).toHaveLength(1);
-                const sendSpy = vi.spyOn(mockWebSocketInstances[0]!, "send").mockImplementation(() => true);
+                const sendSpy = vi.spyOn(mockWebSocketInstances[0]!, "send").mockImplementation(function () {
+                    return true;
+                });
                 const testString = "test message";
 
                 act(() => {
