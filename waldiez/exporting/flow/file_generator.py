@@ -119,8 +119,7 @@ class FileGenerator(ContentGenerator):
             everything.append(
                 "\n".join([entry.content for entry in imports_section])
             )
-        everything.append('__GROUP__ = {"chats": {}, "patterns": {}}\n')
-        everything.append("__AGENTS__ = {}\n")
+        everything.append(FileGenerator._get_global_dicts())
         if tools_section:
             comment = get_comment(
                 "Tools",
@@ -158,6 +157,22 @@ class FileGenerator(ContentGenerator):
             everything.append(execution_block)
 
         return "\n".join(everything)
+
+    @staticmethod
+    def _get_global_dicts() -> str:
+        """Get global dict definitions and initializations."""
+        return '''
+
+class GroupDict(TypedDict):
+    """Group related global dict."""
+    chats: dict[str, GroupChat]
+    patterns: dict[str, Pattern]
+
+__GROUP__: GroupDict = {"chats": {}, "patterns": {}}
+
+__AGENTS__: dict[str, ConversableAgent] = {}
+
+'''
 
     def _get_execution_content(
         self,

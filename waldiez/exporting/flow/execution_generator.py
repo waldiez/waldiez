@@ -141,6 +141,51 @@ class ExecutionGenerator:
         return content
 
     @staticmethod
+    def _generate_get_agent_by_name() -> str:
+        """Generate the function to get an agent by its name."""
+        return '''
+def _get_agent_by_name(agents: list[ConversableAgent], agent_name: str) -> tuple[int, ConversableAgent | None]:
+    """Get an agent by its name."""
+    for ind,agent in enumerate(agents):
+        if agent.name == agent_name:
+            return ind, agent
+    return -1, None
+'''
+
+    @staticmethod
+    def _generate_handle_resume_group_pattern() -> str:
+        """Generate the function to handle the detected pattern for resuming a group chat."""
+        return '''
+def _handle_resume_group_pattern(detected_pattern: Pattern, state_messages: list[dict[str, Any]]) -> None:
+    """Handle detected pattern for resuming a group chat."""
+    # pylint: disable=broad-exception-caught,too-many-try-statements
+    try:
+        _pattern_type = getattr(detected_pattern.__class__, "__name__", None)
+    except BaseException:
+        return
+    if _pattern_type == "RoundRobinPattern" and state_messages:
+        last_message = state_messages[-1]
+        if not last_message or not isinstance(last_message, dict):
+            return
+        last_agent_name = last_message.get("name", "")
+        if not last_agent_name:
+            return
+        try:
+            idx, last_agent = _get_agent_by_name(detected_pattern.agents,last_agent_name)
+            if last_agent and len(detected_pattern.agents)>(idx + 1):
+                detected_pattern.agents.append(detected_pattern.user_agent)
+                detected_pattern.initial_agent = detected_pattern.agents[idx+1]
+                detected_pattern.user_agent = detected_pattern.agents[idx]
+                # fmt: off
+                new_agent_order_list = detected_pattern.agents[idx+1:] + detected_pattern.agents[:idx]
+                # fmt: on
+                detected_pattern.agents = new_agent_order_list
+        except BaseException:
+            pass
+
+'''
+
+    @staticmethod
     def _generate_sync_prepare_resume() -> str:
         """Generate the function to prepare resuming a chat.
 
@@ -154,7 +199,9 @@ class ExecutionGenerator:
         str
             The complete function content.
         """
-        content = '''
+        content = ExecutionGenerator._generate_get_agent_by_name()
+        content += ExecutionGenerator._generate_handle_resume_group_pattern()
+        content += '''
 def _prepare_resume(state_json: str | Path | None = None) -> None:
     """Prepare resuming a chat from state.json.
 
@@ -177,8 +224,8 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
     state_json : str | Path | None
         The path to state.json to load previous state.
     """
+    # pylint: disable=broad-exception-caught,too-many-try-statements,global-statement
     global __INITIAL_MSG__
-    # pylint: disable=broad-exception-caught,too-many-try-statements
     if not state_json or not Path(state_json).is_file():
         return
     metadata_json = str(state_json).replace("state.json", "metadata.json")
@@ -187,7 +234,7 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
     try:
         with open(metadata_json, "r", encoding="utf-8") as f:
             _metadata_dict = json.load(f)
-    except BaseException:  # pylint: disable=broad-exception-caught
+    except BaseException:
         return
     if not _metadata_dict or not isinstance(_metadata_dict, dict):
         return
@@ -211,13 +258,13 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
     if not _state_dict or not isinstance(_state_dict, dict):
         return
     _state_messages = _state_dict.get("messages", [])
-    _known_pattern = None
+    _detected_pattern = None
     if _state_group_pattern and isinstance(_state_group_pattern, str):
-        _known_pattern = __GROUP__["patterns"].get(_state_group_pattern, None)
-        if _known_pattern:
+        _detected_pattern = __GROUP__["patterns"].get(_state_group_pattern, None)
+        if _detected_pattern:
             _state_context_variables = _state_dict.get("context_variables", {})
             if _state_context_variables and isinstance(_state_context_variables, dict):
-                _known_pattern.context_variables = ContextVariables(data=_state_context_variables)
+                _detected_pattern.context_variables = ContextVariables(data=_state_context_variables)
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
     elif _state_group_manager and isinstance(_state_group_manager, str):
@@ -226,29 +273,26 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _state_messages and isinstance(_state_messages, list):
                 _known_group_manager.groupchat.messages = _state_messages
         else:
-            _known_pattern = __GROUP__["patterns"].get(f"{_state_group_manager}_pattern")
-            if _known_pattern:
+            _detected_pattern = __GROUP__["patterns"].get(f"{_state_group_manager}_pattern")
+            if _detected_pattern:
                 _state_context_variables = _state_dict.get("context_variables", {})
                 if _state_context_variables and isinstance(_state_context_variables, dict):
-                    _known_pattern.context_variables = ContextVariables(
+                    _detected_pattern.context_variables = ContextVariables(
                         data=_state_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages
-    if _known_pattern:
-        try:
-            _pattern_type = getattr(_known_pattern.__class__, "__name__", None)
-        except BaseException:
-            return
-        if _pattern_type == "RoundRobinPattern":
-            print("Handle round robin pattern")
+    if _detected_pattern and _state_messages and isinstance(_state_messages, list):
+        _handle_resume_group_pattern(_detected_pattern, _state_messages)
 '''
         return content
 
     @staticmethod
     def _generate_async_prepare_resume() -> str:
         """Generate the function to prepare resuming a chat (async)."""
-        content = '''
+        content = ExecutionGenerator._generate_get_agent_by_name()
+        content += ExecutionGenerator._generate_handle_resume_group_pattern()
+        content += '''
 async def _prepare_resume(state_json: str | Path | None = None) -> None:
     """Prepare resuming a chat from state.json.
 
@@ -307,13 +351,13 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
     if not _state_dict or not isinstance(_state_dict, dict):
         return
     _state_messages = _state_dict.get("context_variables", [])
-    _known_pattern = None
+    _detected_pattern = None
     if _state_group_pattern and isinstance(_state_group_pattern, str):
-        _known_pattern = __GROUP__["patterns"].get(_state_group_pattern, None)
-        if _known_pattern:
+        _detected_pattern = __GROUP__["patterns"].get(_state_group_pattern, None)
+        if _detected_pattern:
             _state_context_variables = _state_dict.get("context_variables", {})
             if _state_context_variables and isinstance(_state_context_variables, dict):
-                _known_pattern.context_variables = ContextVariables(data=_state_context_variables)
+                _detected_pattern.context_variables = ContextVariables(data=_state_context_variables)
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
     elif _state_group_manager and isinstance(_state_group_manager, str):
@@ -322,22 +366,17 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _state_messages and isinstance(_state_messages, list):
                 _known_group_manager.groupchat.messages = _state_messages
         else:
-            _known_pattern = __GROUP__["patterns"].get(f"{_state_group_manager}_pattern")
-            if _known_pattern:
+            _detected_pattern = __GROUP__["patterns"].get(f"{_state_group_manager}_pattern")
+            if _detected_pattern:
                 _state_context_variables = _state_dict.get("context_variables", {})
                 if _state_context_variables and isinstance(_state_context_variables, dict):
-                    _known_pattern.context_variables = ContextVariables(
+                    _detected_pattern.context_variables = ContextVariables(
                         data=_state_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages
-    if _known_pattern:
-        try:
-            _pattern_type = getattr(_known_pattern.__class__, "__name__", None)
-        except BaseException:
-            return
-        if _pattern_type == "RoundRobinPattern":
-            print("Handle round robin pattern")
+    if _detected_pattern and _state_messages and isinstance(_state_messages, list):
+        _handle_resume_group_pattern(_detected_pattern, _state_messages)
 '''
         return content
 

@@ -28,6 +28,7 @@ TYPING_IMPORT_NAMES = [
     "Optional",
     "Set",
     "Tuple",
+    "TypedDict",
     "Union",
 ]
 # pylint: disable=inconsistent-quotes
@@ -41,6 +42,7 @@ COMMON_AUTOGEN_IMPORTS = [
     "from autogen import runtime_logging",
     "from autogen.events import BaseEvent",
     "from autogen.agentchat.group import ContextVariables",
+    "from autogen.agentchat.group.patterns.pattern import Pattern",
     "from autogen.io.run_response import RunResponseProtocol",
     "from autogen.io.run_response import AsyncRunResponseProtocol",
 ]
