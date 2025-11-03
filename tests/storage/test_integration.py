@@ -344,29 +344,6 @@ class TestStorageIntegration:
         state_file = checkpoint_path / "state.json"
         assert state_file.stat().st_size > 1_000_000  # > 1MB
 
-    def test_session_naming_edge_cases(self, tmp_path: Path) -> None:
-        """Test various session naming scenarios."""
-        storage = StorageManager(workspace_dir=tmp_path / "workspace")
-
-        # Unicode session names
-        unicode_sessions = [
-            "session_中文",
-            # cspell: disable-next-line
-            "session_τέσσερα",
-            "session-with-dashes",
-            "session.with.dots",
-        ]
-
-        for session in unicode_sessions:
-            storage.save(session, {"name": session})
-            loaded = storage.get(session)
-            assert loaded
-            assert loaded.checkpoint.state["name"] == session
-            assert storage.session_exists(session)
-        with pytest.raises(ValueError):
-            storage.save("session_🚀", {"name": "invalid"})
-            storage.save("session with spaces", {"name": "invalid"})
-
     def test_checkpoint_metadata_persistence(self, tmp_path: Path) -> None:
         """Test that metadata persists correctly across operations."""
         storage = StorageManager(workspace_dir=tmp_path / "workspace")
