@@ -28199,14 +28199,13 @@ const getContentString = (data) => {
   }
   return String(data);
 };
-const AgentEventInfo = ({ agentData, stats, darkMode }) => {
+const AgentEventInfo = ({ agentData, stats, darkMode, maxContentLen }) => {
   const [expanded, setExpanded] = useState(false);
   const data = typeof agentData === "string" ? JSON.parse(agentData) : agentData;
   const agentName = data.name || "Unknown Agent";
   const systemMessage = getContentString(data.system_message || data.description || "");
   const totalCost = data.cost?.total?.total_cost || data.cost?.actual?.total_cost || 0;
   const activityCount = stats.count;
-  const getLastActivity = () => stats.lastActivity;
   const contextVars = data.context_variables?.data || data.context_variables || null;
   const hasContextVars = contextVars && Object.keys(contextVars).length > 0;
   const formatValue = (value) => {
@@ -28219,8 +28218,8 @@ const AgentEventInfo = ({ agentData, stats, darkMode }) => {
     if (typeof value === "object") {
       return JSON.stringify(value);
     }
-    if (typeof value === "string" && value.length > 30) {
-      return value.substring(0, 30) + "...";
+    if (typeof value === "string" && value.length > maxContentLen) {
+      return value.substring(0, maxContentLen) + "...";
     }
     return String(value);
   };
@@ -28301,7 +28300,7 @@ const AgentEventInfo = ({ agentData, stats, darkMode }) => {
                   "div",
                   {
                     className: `text-xs p-2 rounded ${darkMode ? "text-gray-300 bg-gray-900" : "text-gray-700 bg-gray-50"}`,
-                    children: getLastActivity()
+                    children: stats.lastActivity
                   }
                 )
               ] }),
@@ -28346,6 +28345,7 @@ const AgentEventInfo = ({ agentData, stats, darkMode }) => {
     }
   );
 };
+const MAX_CONTENT_LEN = 300;
 const EventAgentsList = ({ agents, darkMode }) => {
   const getAgentStats = (agentName) => {
     if (!Array.isArray(agents) || agents.length === 0) {
@@ -28366,7 +28366,7 @@ const EventAgentsList = ({ agents, darkMode }) => {
       const t = c.trim().toLowerCase();
       return t !== "" && t !== "none";
     };
-    const clip = (s, n = 80) => s.length > n ? s.slice(0, n) + "..." : s;
+    const clip = (s, n = MAX_CONTENT_LEN) => s.length > n ? s.slice(0, n) + "..." : s;
     const seen = /* @__PURE__ */ new Set();
     const uniqueAuthored = authored.filter((m) => {
       const fp = JSON.stringify({
@@ -28407,7 +28407,8 @@ const EventAgentsList = ({ agents, darkMode }) => {
       {
         agentData: agent,
         stats,
-        darkMode
+        darkMode,
+        maxContentLen: MAX_CONTENT_LEN
       },
       `agent-${index2}`
     );

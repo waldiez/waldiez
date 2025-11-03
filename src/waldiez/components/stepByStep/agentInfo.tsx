@@ -35,7 +35,8 @@ export const AgentEventInfo: FC<{
     agentData: any;
     darkMode: boolean;
     stats: { count: number; lastActivity: string };
-}> = ({ agentData, stats, darkMode }) => {
+    maxContentLen: number;
+}> = ({ agentData, stats, darkMode, maxContentLen }) => {
     const [expanded, setExpanded] = useState(false);
 
     const data = typeof agentData === "string" ? JSON.parse(agentData) : agentData;
@@ -43,7 +44,6 @@ export const AgentEventInfo: FC<{
     const systemMessage = getContentString(data.system_message || data.description || "");
     const totalCost = data.cost?.total?.total_cost || data.cost?.actual?.total_cost || 0;
     const activityCount = stats.count;
-    const getLastActivity = () => stats.lastActivity;
     const contextVars = data.context_variables?.data || data.context_variables || null;
     const hasContextVars = contextVars && Object.keys(contextVars).length > 0;
 
@@ -58,8 +58,8 @@ export const AgentEventInfo: FC<{
         if (typeof value === "object") {
             return JSON.stringify(value);
         }
-        if (typeof value === "string" && value.length > 30) {
-            return value.substring(0, 30) + "...";
+        if (typeof value === "string" && value.length > maxContentLen) {
+            return value.substring(0, maxContentLen) + "...";
         }
         return String(value);
     };
@@ -151,7 +151,7 @@ export const AgentEventInfo: FC<{
                                 darkMode ? "text-gray-300 bg-gray-900" : "text-gray-700 bg-gray-50"
                             }`}
                         >
-                            {getLastActivity()}
+                            {stats.lastActivity}
                         </div>
                     </div>
 

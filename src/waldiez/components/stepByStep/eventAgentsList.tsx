@@ -7,6 +7,8 @@ import { type FC } from "react";
 import { AgentEventInfo } from "@waldiez/components/stepByStep/agentInfo";
 import { getContentString } from "@waldiez/components/stepByStep/utils";
 
+const MAX_CONTENT_LEN = 300;
+
 export const EventAgentsList: FC<{
     agents: any[];
     darkMode: boolean;
@@ -33,7 +35,7 @@ export const EventAgentsList: FC<{
             return t !== "" && t !== "none";
         };
 
-        const clip = (s: string, n = 80) => (s.length > n ? s.slice(0, n) + "..." : s);
+        const clip = (s: string, n = MAX_CONTENT_LEN) => (s.length > n ? s.slice(0, n) + "..." : s);
 
         const seen = new Set<string>();
         const uniqueAuthored = authored.filter(m => {
@@ -87,6 +89,7 @@ export const EventAgentsList: FC<{
                         agentData={agent}
                         stats={stats}
                         darkMode={darkMode}
+                        maxContentLen={MAX_CONTENT_LEN}
                     />
                 );
             })}
