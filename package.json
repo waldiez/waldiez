@@ -158,7 +158,7 @@
         "@types/gunzip-maybe": "^1.4.3",
         "@types/jest": "^30.0.0",
         "@types/jest-image-snapshot": "^6.4.0",
-        "@types/node": "^24.9.2",
+        "@types/node": "^24.10.0",
         "@types/react": "^19.2.2",
         "@types/react-dom": "^19.2.2",
         "@types/tar-stream": "^3.1.4",
@@ -187,7 +187,7 @@
         "eslint-plugin-tsdoc": "^0.4.0",
         "formdata-node": "^6.0.3",
         "fs-extra": "^11.3.2",
-        "got": "^14.6.1",
+        "got": "^14.6.2",
         "gunzip-maybe": "^1.4.2",
         "hint": "^7.1.13",
         "husky": "^9.1.7",
@@ -272,7 +272,7 @@
     "resolutions": {
         "cross-spawn": "^7.0.6",
         "ws": "^8.18.3",
-        "got": "^14.6.1",
+        "got": "^14.6.2",
         "marked": "16.4.1",
         "tmp": "0.2.5",
         "ajv-draft-04": "npm:ajv@^6.12.4"
