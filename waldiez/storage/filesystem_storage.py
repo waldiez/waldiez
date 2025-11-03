@@ -23,7 +23,7 @@ from typing import Any
 from typing_extensions import Self
 
 from .checkpoint import WaldiezCheckpoint, WaldiezCheckpointInfo
-from .utils import symlink
+from .utils import safe_name, symlink
 
 _PATTERNS = r"^(?!.*\.\.)(?!\.)(?!.*\.$)[\w\-.]{1,128}$"
 
@@ -754,9 +754,10 @@ class FilesystemStorage:
 
     def _get_session_dir(self, session_name: str) -> Path:
         """Get the directory for a session."""
-        if not _SAFE.match(session_name):
+        name = safe_name(session_name)
+        if not _SAFE.match(name):
             raise ValueError("Invalid session_name")
-        return self._workspace_dir / session_name
+        return self._workspace_dir / name
 
     def _get_checkpoint_path(
         self, session_name: str, timestamp: datetime
