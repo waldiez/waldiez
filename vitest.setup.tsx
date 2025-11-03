@@ -33,7 +33,20 @@ export class ResizeObserver {
     }
 
     observe(target: Element) {
-        this.callback([{ target } as globalThis.ResizeObserverEntry], this);
+        const contentRect = {
+            width: 10,
+            height: 10,
+            top: 10,
+            left: 10,
+        };
+        if (typeof target.getBoundingClientRect === "function") {
+            const boundingRect = target.getBoundingClientRect();
+            contentRect.width = boundingRect.width;
+            contentRect.height = boundingRect.height;
+            contentRect.top = boundingRect.top;
+            contentRect.left = boundingRect.left;
+        }
+        this.callback([{ target, contentRect } as globalThis.ResizeObserverEntry], this);
     }
 
     unobserve() {}
