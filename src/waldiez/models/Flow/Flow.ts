@@ -98,7 +98,7 @@ export const emptyFlow: WaldiezFlow = {
         tools: [],
         chats: [],
         isAsync: false,
-        cacheSeed: 42,
+        cacheSeed: null,
         silent: false,
         nodes: [],
         edges: [],

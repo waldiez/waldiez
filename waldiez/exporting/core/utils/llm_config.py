@@ -59,9 +59,9 @@ def _get_agent_llm_config_arg_as_arg(
     model_names: dict[str, str],
     cache_seed: int | None,
     tabs: int = 1,
-    tab_leng: int = 4,
+    tab_length: int = 4,
 ) -> str:
-    tab = " " * tab_leng * tabs if tabs > 0 else ""
+    tab = " " * tab_length * tabs if tabs > 0 else ""
     # tab = "    " * tabs if tabs > 0 else ""
     if not agent.data.model_ids:
         return f"{tab}llm_config=False," + "\n"

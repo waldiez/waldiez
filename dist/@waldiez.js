@@ -6924,7 +6924,7 @@ class WaldiezFlowData {
   tools;
   chats;
   isAsync = false;
-  cacheSeed = 42;
+  cacheSeed = null;
   silent = false;
   constructor(props = {
     nodes: [],
@@ -6947,7 +6947,7 @@ class WaldiezFlowData {
     tools: [],
     chats: [],
     isAsync: false,
-    cacheSeed: 42,
+    cacheSeed: null,
     silent: false
   }) {
     this.nodes = props.nodes;
@@ -7015,7 +7015,7 @@ const emptyFlow = {
     tools: [],
     chats: [],
     isAsync: false,
-    cacheSeed: 42,
+    cacheSeed: null,
     silent: false,
     nodes: [],
     edges: [],
@@ -9999,7 +9999,7 @@ const loadFlow = (items, currentFlow, newFlow, typeShown) => {
       tags: mergeTags(currentFlow.tags, newFlow.tags),
       requirements: mergeRequirements(currentFlow.requirements, newFlow.requirements),
       isAsync: newFlow.isAsync ?? currentFlow.isAsync,
-      cacheSeed: newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 42,
+      cacheSeed: newFlow.cacheSeed ?? currentFlow.cacheSeed ?? null,
       nodes: mergedNodes,
       edges: mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges)
     };

@@ -475,6 +475,11 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
                 f"    with Cache.disk(cache_seed={cache_seed}) as cache:\n"
             )
             space = f"{space}    "
+        else:
+            flow_content += (
+                '    if Path(".cache").is_dir():\n'
+                '        shutil.rmtree(".cache", ignore_errors=True)\n'
+            )
         flow_content += f"{content}" + "\n"
         if not skip_logging:
             flow_content += ExecutionGenerator._get_stop_logging_call(

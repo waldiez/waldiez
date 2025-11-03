@@ -53,7 +53,7 @@ export class WaldiezFlowData {
     tools: WaldiezTool[];
     chats: WaldiezChat[];
     isAsync?: boolean = false;
-    cacheSeed?: number | null = 42;
+    cacheSeed?: number | null = null;
     silent?: boolean = false;
 
     constructor(
@@ -97,7 +97,7 @@ export class WaldiezFlowData {
             tools: [],
             chats: [],
             isAsync: false,
-            cacheSeed: 42,
+            cacheSeed: null,
             silent: false,
         },
     ) {

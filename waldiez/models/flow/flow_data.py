@@ -60,7 +60,7 @@ class WaldiezFlowData(WaldiezBase):
     is_async : bool
         Whether the flow is asynchronous or not.
     cache_seed : Optional[int]
-        The seed for the cache. If None, the seed is not set. Default is 41.
+        The seed for the cache. If None, the seed is not set. Default is None.
     """
 
     # we ignore the three below (nodes, edges, viewport)
@@ -133,11 +133,11 @@ class WaldiezFlowData(WaldiezBase):
     cache_seed: Annotated[
         int | None,
         Field(
-            42,
+            None,
             alias="cacheSeed",
             description=(
                 "The seed for the cache. If None, the seed is not set."
-                "Default is 42."
+                "Default is None."
             ),
             title="Cache Seed",
         ),
@@ -285,7 +285,7 @@ class WaldiezFlowData(WaldiezBase):
                 ),
             ],
             is_async=False,
-            cache_seed=42,
+            cache_seed=None,
         )
 
 

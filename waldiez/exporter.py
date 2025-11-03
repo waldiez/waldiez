@@ -14,6 +14,7 @@ The resulting file(s): a `flow.py` file with one `main()` function
 to trigger the chat(s).
 """
 
+import shutil
 from pathlib import Path
 
 import jupytext  # type: ignore[import-untyped]
@@ -107,6 +108,8 @@ class WaldiezExporter:
                 raise FileExistsError(f"File already exists: {path}")
             path.unlink(missing_ok=True)
         path.parent.mkdir(parents=True, exist_ok=True)
+        if (path.parent / ".cache").is_dir():
+            shutil.rmtree(str(path.parent / ".cache"), ignore_errors=True)
         extension = path.suffix
         if extension == ".waldiez":
             self.to_waldiez(path, debug=debug)

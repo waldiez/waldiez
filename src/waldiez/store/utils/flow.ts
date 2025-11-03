@@ -161,7 +161,7 @@ export const loadFlow: (
                   tags: mergeTags(currentFlow.tags, newFlow.tags),
                   requirements: mergeRequirements(currentFlow.requirements, newFlow.requirements),
                   isAsync: newFlow.isAsync ?? currentFlow.isAsync,
-                  cacheSeed: newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 42,
+                  cacheSeed: newFlow.cacheSeed ?? currentFlow.cacheSeed ?? null,
                   nodes: mergedNodes,
                   edges: mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges),
               };
