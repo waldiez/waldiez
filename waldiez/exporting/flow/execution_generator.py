@@ -172,7 +172,7 @@ def _handle_resume_group_pattern(detected_pattern: Pattern, state_messages: list
             return
         try:
             idx, last_agent = _get_agent_by_name(detected_pattern.agents,last_agent_name)
-            if last_agent and len(detected_pattern.agents)>(idx + 1):
+            if last_agent and len(detected_pattern.agents)>=(idx + 1):
                 detected_pattern.agents.append(detected_pattern.user_agent)
                 detected_pattern.initial_agent = detected_pattern.agents[idx+1]
                 detected_pattern.user_agent = detected_pattern.agents[idx]
