@@ -18,6 +18,7 @@ export const TimelineModal: FC<{
     return (
         <Modal
             flowId={flowId}
+            dataTestId="timeline-modal"
             id="timeline-modal"
             title="Chat Timeline"
             isOpen={isOpen}
@@ -36,7 +37,7 @@ export const TimelineModal: FC<{
             </div>
             <button
                 type="button"
-                title="Close preview"
+                title="Close"
                 className="modal-close"
                 onClick={onClose}
                 data-testid="modal-close"

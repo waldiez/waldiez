@@ -6,6 +6,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { StepByStepView } from "@waldiez/components/stepByStep";
+import type { WaldiezEvent } from "@waldiez/components/stepByStep/console";
 import type { WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
 import { WaldiezProvider } from "@waldiez/store";
 
@@ -30,10 +31,15 @@ vi.mock("react-icons/fa6", () => ({
     FaX: () => <div data-testid="icon-x" />,
 }));
 
-const _renderView = (stepByStep?: WaldiezStepByStep | null) => {
+const _renderView = (stepByStep?: WaldiezStepByStep | null, events?: WaldiezEvent[]) => {
     return render(
         <WaldiezProvider flowId="flow-123" edges={[]} nodes={[]}>
-            <StepByStepView flowId="flow-123" stepByStep={stepByStep} isDarkMode={false} />
+            <StepByStepView
+                flowId="flow-123"
+                stepByStep={stepByStep}
+                isDarkMode={false}
+                events={events || []}
+            />
         </WaldiezProvider>,
     );
 };
@@ -60,434 +66,298 @@ describe("StepByStepView", () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
-
-    describe("rendering", () => {
-        it("should render successfully when active", () => {
-            _renderView(defaultStepByStep);
-
-            expect(screen.getByText("Step-by-step Run")).toBeInTheDocument();
-            expect(screen.getByTestId("icon-bug")).toBeInTheDocument();
-        });
-
-        it("should not render when inactive and no event history", () => {
-            const inactiveStepByStep = {
-                ...defaultStepByStep,
-                active: false,
-                eventHistory: [],
-            };
-            const { container } = _renderView(inactiveStepByStep);
-            expect(container.firstChild).toBeNull();
-        });
-
-        it("should render when inactive but has event history and close handler", () => {
-            const inactiveStepByStep = {
-                ...defaultStepByStep,
-                active: false,
-                eventHistory: [{ data: "some event" }],
-            };
-            _renderView(inactiveStepByStep);
-
-            expect(screen.getByText("Step-by-step Run")).toBeInTheDocument();
-            expect(screen.getByText("Finished")).toBeInTheDocument();
-        });
-    });
-
-    describe("header functionality", () => {
-        it("should display current event type in badge when active", () => {
-            const stepByStepWithEvent = {
-                ...defaultStepByStep,
-                currentEvent: { type: "message", sender: "user" },
-            };
-            _renderView(stepByStepWithEvent);
-
-            expect(screen.getByText("message")).toBeInTheDocument();
-        });
-
-        it("should display 'Running' when active but no current event type", () => {
-            const stepByStepWithoutEventType = {
-                ...defaultStepByStep,
-                currentEvent: { sender: "user" }, // No type property
-            };
-            _renderView(stepByStepWithoutEventType);
-
-            expect(screen.getByText("Running")).toBeInTheDocument();
-        });
-
-        it("should show 'Finished' badge when inactive", () => {
-            const inactiveStepByStep = {
-                ...defaultStepByStep,
-                active: false,
-                eventHistory: [{ type: "something", data: "some event" }],
-            };
-            _renderView(inactiveStepByStep);
-
-            expect(screen.getByText("Finished")).toBeInTheDocument();
-        });
-
-        it("should toggle expansion when toggle button is clicked", () => {
-            _renderView(defaultStepByStep);
-
-            // Initially expanded - should show collapse icon
-            expect(screen.getByTestId("icon-chevron-down")).toBeInTheDocument();
-
-            // Click toggle button
-            const toggleButton = screen.getByTitle("Collapse");
-            fireEvent.click(toggleButton);
-
-            // Should be collapsed - show expand icon and hide content
-            expect(screen.getByTestId("icon-chevron-up")).toBeInTheDocument();
-
-            // Click again to expand
-            const expandButton = screen.getByTitle("Expand");
-            fireEvent.click(expandButton);
-
-            // Should be expanded again
-            expect(screen.getByTestId("icon-chevron-down")).toBeInTheDocument();
-        });
-
-        it("should call close handler when close button is clicked", () => {
-            const inactiveStepByStep = {
-                ...defaultStepByStep,
-                active: false,
-                eventHistory: [{ data: "some event" }],
-            };
-
-            _renderView(inactiveStepByStep);
-
-            const closeButton = screen.getByTitle("Close");
-            fireEvent.click(closeButton);
-
-            expect(mockHandlers.close).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe("control buttons", () => {
-        it("should show control buttons when there is pending control input", () => {
-            const stepByStepWithPendingInput = {
-                ...defaultStepByStep,
-                pendingControlInput: {
-                    request_id: "req-123",
-                    prompt: "Enter command:",
-                },
-            };
-
-            _renderView(stepByStepWithPendingInput);
-
-            expect(screen.getByText("Continue")).toBeInTheDocument();
-            expect(screen.getByText("Run")).toBeInTheDocument();
-            expect(screen.getByText("Quit")).toBeInTheDocument();
-        });
-
-        it("should not show control buttons when no pending control input", () => {
-            _renderView(defaultStepByStep);
-
-            expect(screen.queryByText("Continue")).not.toBeInTheDocument();
-            expect(screen.queryByText("Run")).not.toBeInTheDocument();
-            expect(screen.queryByText("Quit")).not.toBeInTheDocument();
-        });
-
-        it("should send continue command when Continue button is clicked", () => {
-            const stepByStepWithPendingInput = {
-                ...defaultStepByStep,
-                pendingControlInput: {
-                    request_id: "req-123",
-                    prompt: "Enter command:",
-                },
-                activeRequest: {
-                    request_id: "req-123",
-                    prompt: "Enter command:",
-                },
-            };
-
-            _renderView(stepByStepWithPendingInput);
-
-            const continueButton = screen.getByText("Continue");
-            fireEvent.click(continueButton);
-
-            expect(mockHandlers.sendControl).toHaveBeenCalledWith({
-                data: "c",
+    it("should show control buttons when there is pending control input", () => {
+        const stepByStepWithPendingInput = {
+            ...defaultStepByStep,
+            pendingControlInput: {
                 request_id: "req-123",
-            });
+                prompt: "Enter command:",
+            },
+        };
+
+        _renderView(stepByStepWithPendingInput);
+
+        expect(screen.getByText("Continue")).toBeInTheDocument();
+        expect(screen.getByText("Run")).toBeInTheDocument();
+        expect(screen.getByText("Quit")).toBeInTheDocument();
+    });
+
+    it("should not show control buttons when no pending control input", () => {
+        _renderView(defaultStepByStep);
+
+        expect(screen.queryByText("Continue")).not.toBeInTheDocument();
+        expect(screen.queryByText("Run")).not.toBeInTheDocument();
+        expect(screen.queryByText("Quit")).not.toBeInTheDocument();
+    });
+
+    it("should send continue command when Continue button is clicked", () => {
+        const stepByStepWithPendingInput = {
+            ...defaultStepByStep,
+            pendingControlInput: {
+                request_id: "req-123",
+                prompt: "Enter command:",
+            },
+            activeRequest: {
+                request_id: "req-123",
+                prompt: "Enter command:",
+            },
+        };
+
+        _renderView(stepByStepWithPendingInput);
+
+        const continueButton = screen.getByText("Continue");
+        fireEvent.click(continueButton);
+
+        expect(mockHandlers.sendControl).toHaveBeenCalledWith({
+            data: "c",
+            request_id: "req-123",
         });
+    });
 
-        it("should send run command when Run button is clicked", () => {
-            const stepByStepWithPendingInput = {
-                ...defaultStepByStep,
-                pendingControlInput: {
-                    request_id: "req-456",
-                    prompt: "Enter command:",
-                },
-                activeRequest: {
-                    request_id: "req-456",
-                    prompt: "Enter command:",
-                },
-            };
-
-            _renderView(stepByStepWithPendingInput);
-
-            const runButton = screen.getByText("Run");
-            fireEvent.click(runButton);
-
-            expect(mockHandlers.sendControl).toHaveBeenCalledWith({
-                data: "r",
+    it("should send run command when Run button is clicked", () => {
+        const stepByStepWithPendingInput = {
+            ...defaultStepByStep,
+            pendingControlInput: {
                 request_id: "req-456",
-            });
+                prompt: "Enter command:",
+            },
+            activeRequest: {
+                request_id: "req-456",
+                prompt: "Enter command:",
+            },
+        };
+
+        _renderView(stepByStepWithPendingInput);
+
+        const runButton = screen.getByText("Run");
+        fireEvent.click(runButton);
+
+        expect(mockHandlers.sendControl).toHaveBeenCalledWith({
+            data: "r",
+            request_id: "req-456",
         });
+    });
 
-        it("should send quit command when Quit button is clicked", () => {
-            const stepByStepWithPendingInput = {
-                ...defaultStepByStep,
-                pendingControlInput: {
-                    request_id: "req-789",
-                    prompt: "Enter command:",
-                },
-                activeRequest: {
-                    request_id: "req-789",
-                    prompt: "Enter command:",
-                },
-            };
-
-            _renderView(stepByStepWithPendingInput);
-
-            const quitButton = screen.getByText("Quit");
-            fireEvent.click(quitButton);
-
-            expect(mockHandlers.sendControl).toHaveBeenCalledWith({
-                data: "q",
+    it("should send quit command when Quit button is clicked", () => {
+        const stepByStepWithPendingInput = {
+            ...defaultStepByStep,
+            pendingControlInput: {
                 request_id: "req-789",
-            });
-        });
+                prompt: "Enter command:",
+            },
+            activeRequest: {
+                request_id: "req-789",
+                prompt: "Enter command:",
+            },
+        };
 
-        it("should use '<unknown>' as request_id when activeRequest is null", () => {
-            const stepByStepWithPendingInput = {
-                ...defaultStepByStep,
-                pendingControlInput: {
-                    request_id: "req-123",
-                    prompt: "Enter command:",
-                },
-                activeRequest: null,
-            };
+        _renderView(stepByStepWithPendingInput);
 
-            _renderView(stepByStepWithPendingInput);
+        const quitButton = screen.getByText("Quit");
+        fireEvent.click(quitButton);
 
-            const continueButton = screen.getByText("Continue");
-            fireEvent.click(continueButton);
-
-            expect(mockHandlers.sendControl).toHaveBeenCalledWith({
-                data: "c",
-                request_id: "<unknown>",
-            });
+        expect(mockHandlers.sendControl).toHaveBeenCalledWith({
+            data: "q",
+            request_id: "req-789",
         });
     });
 
-    describe("active request (user input)", () => {
-        it("should show input field when there is an active request", () => {
-            const stepByStepWithActiveRequest = {
-                ...defaultStepByStep,
-                activeRequest: {
-                    request_id: "req-input-123",
-                    prompt: "Please enter your name:",
-                },
-            };
+    it("should use '<unknown>' as request_id when activeRequest is null", () => {
+        const stepByStepWithPendingInput = {
+            ...defaultStepByStep,
+            pendingControlInput: {
+                request_id: "req-123",
+                prompt: "Enter command:",
+            },
+            activeRequest: null,
+        };
 
-            _renderView(stepByStepWithActiveRequest);
+        _renderView(stepByStepWithPendingInput);
 
-            expect(screen.getByText("Waiting for input")).toBeInTheDocument();
-            expect(screen.getByText("Please enter your name:")).toBeInTheDocument();
-            expect(screen.getByPlaceholderText("Type your response... (Enter to send)")).toBeInTheDocument();
-            expect(screen.getByText("Send")).toBeInTheDocument();
+        const continueButton = screen.getByText("Continue");
+        fireEvent.click(continueButton);
+
+        expect(mockHandlers.sendControl).toHaveBeenCalledWith({
+            data: "c",
+            request_id: "<unknown>",
         });
-
-        it("should not show input field when no active request", () => {
-            _renderView(defaultStepByStep);
-
-            expect(screen.queryByText("Waiting for input")).not.toBeInTheDocument();
-            expect(
-                screen.queryByPlaceholderText("Type your response... (Enter to send)"),
-            ).not.toBeInTheDocument();
-        });
-
-        it("should show password input when activeRequest has password flag", () => {
-            const stepByStepWithPasswordRequest = {
-                ...defaultStepByStep,
-                activeRequest: {
-                    request_id: "req-pwd-123",
-                    prompt: "Enter password:",
-                    password: true,
-                },
-            };
-
-            _renderView(stepByStepWithPasswordRequest);
-
-            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
-            expect(input).toHaveAttribute("type", "password");
-        });
-
-        it("should show text input when activeRequest does not have password flag", () => {
-            const stepByStepWithTextRequest = {
-                ...defaultStepByStep,
-                activeRequest: {
-                    request_id: "req-txt-123",
-                    prompt: "Enter your name:",
-                    password: false,
-                },
-            };
-
-            _renderView(stepByStepWithTextRequest);
-
-            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
-            expect(input).toHaveAttribute("type", "text");
-        });
-
-        it("should update input value when typed", () => {
-            const stepByStepWithActiveRequest = {
-                ...defaultStepByStep,
-                activeRequest: {
-                    request_id: "req-input-123",
-                    prompt: "Please enter your name:",
-                },
-            };
-
-            _renderView(stepByStepWithActiveRequest);
-
-            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
-            fireEvent.change(input, { target: { value: "John Doe" } });
-
-            expect(input).toHaveValue("John Doe");
-        });
-
-        it("should send response when Enter key is pressed", () => {
-            const stepByStepWithActiveRequest = {
-                ...defaultStepByStep,
-                activeRequest: {
-                    request_id: "req-input-123",
-                    prompt: "Please enter your name:",
-                },
-            };
-
-            _renderView(stepByStepWithActiveRequest);
-
-            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
-            fireEvent.change(input, { target: { value: "John Doe" } });
-            fireEvent.keyDown(input, { key: "Enter" });
-
-            expect(mockHandlers.respond).toHaveBeenCalledWith({
-                id: "mock-id-123",
-                timestamp: expect.any(Number),
-                data: "John Doe",
+    });
+    it("should show input field when there is an active request", () => {
+        const stepByStepWithActiveRequest = {
+            ...defaultStepByStep,
+            activeRequest: {
                 request_id: "req-input-123",
-                type: "input_response",
-            });
+                prompt: "Please enter your name:",
+            },
+        };
 
-            // Input should be cleared after sending
-            expect(input).toHaveValue("");
+        _renderView(stepByStepWithActiveRequest);
+
+        expect(screen.getByText("Waiting for input")).toBeInTheDocument();
+        expect(screen.getByText("Please enter your name:")).toBeInTheDocument();
+        expect(screen.getByPlaceholderText("Type your response... (Enter to send)")).toBeInTheDocument();
+        expect(screen.getByText("Send")).toBeInTheDocument();
+    });
+
+    it("should not show input field when no active request", () => {
+        _renderView(defaultStepByStep);
+
+        expect(screen.queryByText("Waiting for input")).not.toBeInTheDocument();
+        expect(
+            screen.queryByPlaceholderText("Type your response... (Enter to send)"),
+        ).not.toBeInTheDocument();
+    });
+
+    it("should show password input when activeRequest has password flag", () => {
+        const stepByStepWithPasswordRequest = {
+            ...defaultStepByStep,
+            activeRequest: {
+                request_id: "req-pwd-123",
+                prompt: "Enter password:",
+                password: true,
+            },
+        };
+
+        _renderView(stepByStepWithPasswordRequest);
+
+        const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
+        expect(input).toHaveAttribute("type", "password");
+    });
+
+    it("should show text input when activeRequest does not have password flag", () => {
+        const stepByStepWithTextRequest = {
+            ...defaultStepByStep,
+            activeRequest: {
+                request_id: "req-txt-123",
+                prompt: "Enter your name:",
+                password: false,
+            },
+        };
+
+        _renderView(stepByStepWithTextRequest);
+
+        const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
+        expect(input).toHaveAttribute("type", "text");
+    });
+
+    it("should update input value when typed", () => {
+        const stepByStepWithActiveRequest = {
+            ...defaultStepByStep,
+            activeRequest: {
+                request_id: "req-input-123",
+                prompt: "Please enter your name:",
+            },
+        };
+
+        _renderView(stepByStepWithActiveRequest);
+
+        const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
+        fireEvent.change(input, { target: { value: "John Doe" } });
+
+        expect(input).toHaveValue("John Doe");
+    });
+
+    it("should send response when Enter key is pressed", () => {
+        const stepByStepWithActiveRequest = {
+            ...defaultStepByStep,
+            activeRequest: {
+                request_id: "req-input-123",
+                prompt: "Please enter your name:",
+            },
+        };
+
+        _renderView(stepByStepWithActiveRequest);
+
+        const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
+        fireEvent.change(input, { target: { value: "John Doe" } });
+        fireEvent.keyDown(input, { key: "Enter" });
+
+        expect(mockHandlers.respond).toHaveBeenCalledWith({
+            id: "mock-id-123",
+            timestamp: expect.any(Number),
+            data: "John Doe",
+            request_id: "req-input-123",
+            type: "input_response",
         });
 
-        it("should send response when Send button is clicked", () => {
-            const stepByStepWithActiveRequest = {
-                ...defaultStepByStep,
-                activeRequest: {
-                    request_id: "req-input-456",
-                    prompt: "Please enter your age:",
-                },
-            };
+        // Input should be cleared after sending
+        expect(input).toHaveValue("");
+    });
 
-            _renderView(stepByStepWithActiveRequest);
-
-            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
-            const sendButton = screen.getByText("Send");
-
-            fireEvent.change(input, { target: { value: "25" } });
-            fireEvent.click(sendButton);
-
-            expect(mockHandlers.respond).toHaveBeenCalledWith({
-                id: "mock-id-123",
-                timestamp: expect.any(Number),
-                data: "25",
+    it("should send response when Send button is clicked", () => {
+        const stepByStepWithActiveRequest = {
+            ...defaultStepByStep,
+            activeRequest: {
                 request_id: "req-input-456",
-                type: "input_response",
-            });
+                prompt: "Please enter your age:",
+            },
+        };
 
-            // Input should be cleared after sending
-            expect(input).toHaveValue("");
+        _renderView(stepByStepWithActiveRequest);
+
+        const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
+        const sendButton = screen.getByText("Send");
+
+        fireEvent.change(input, { target: { value: "25" } });
+        fireEvent.click(sendButton);
+
+        expect(mockHandlers.respond).toHaveBeenCalledWith({
+            id: "mock-id-123",
+            timestamp: expect.any(Number),
+            data: "25",
+            request_id: "req-input-456",
+            type: "input_response",
         });
 
-        it("should not send response for non-Enter keys", () => {
-            const stepByStepWithActiveRequest = {
-                ...defaultStepByStep,
-                activeRequest: {
-                    request_id: "req-input-123",
-                    prompt: "Please enter your name:",
-                },
-            };
-
-            _renderView(stepByStepWithActiveRequest);
-
-            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
-            fireEvent.change(input, { target: { value: "John" } });
-            fireEvent.keyDown(input, { key: "Tab" });
-
-            expect(mockHandlers.respond).not.toHaveBeenCalled();
-            expect(input).toHaveValue("John");
-        });
+        // Input should be cleared after sending
+        expect(input).toHaveValue("");
     });
 
-    describe("edge cases", () => {
-        it("should handle missing handlers gracefully", () => {
-            const stepByStepWithoutHandlers = {
-                ...defaultStepByStep,
-                handlers: {} as any,
-            };
+    it("should not send response for non-Enter keys", () => {
+        const stepByStepWithActiveRequest = {
+            ...defaultStepByStep,
+            activeRequest: {
+                request_id: "req-input-123",
+                prompt: "Please enter your name:",
+            },
+        };
 
-            _renderView(stepByStepWithoutHandlers);
+        _renderView(stepByStepWithActiveRequest);
 
-            expect(screen.getByText("Step-by-step Run")).toBeInTheDocument();
-        });
+        const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
+        fireEvent.change(input, { target: { value: "John" } });
+        fireEvent.keyDown(input, { key: "Tab" });
 
-        it("should handle undefined activeRequest.request_id", () => {
-            const stepByStepWithActiveRequest = {
-                ...defaultStepByStep,
-                activeRequest: {
-                    prompt: "Please enter your name:",
-                } as any,
-            };
-
-            _renderView(stepByStepWithActiveRequest);
-            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
-            fireEvent.change(input, { target: { value: "John" } });
-            fireEvent.keyDown(input, { key: "Enter" });
-
-            expect(mockHandlers.respond).not.toHaveBeenCalled();
-        });
+        expect(mockHandlers.respond).not.toHaveBeenCalled();
+        expect(input).toHaveValue("John");
     });
+    it("should handle undefined activeRequest.request_id", () => {
+        const stepByStepWithActiveRequest = {
+            ...defaultStepByStep,
+            activeRequest: {
+                prompt: "Please enter your name:",
+            } as any,
+        };
 
-    describe("accessibility", () => {
-        it("should have proper button titles for accessibility", () => {
-            const inactiveStepByStep = {
-                ...defaultStepByStep,
-                active: false,
-                eventHistory: [{ data: "some event" }],
-            };
+        _renderView(stepByStepWithActiveRequest);
+        const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
+        fireEvent.change(input, { target: { value: "John" } });
+        fireEvent.keyDown(input, { key: "Enter" });
 
-            _renderView(inactiveStepByStep);
+        expect(mockHandlers.respond).not.toHaveBeenCalled();
+    });
+    it("should have proper input types for password fields", () => {
+        const stepByStepWithPasswordRequest = {
+            ...defaultStepByStep,
+            activeRequest: {
+                request_id: "req-pwd-123",
+                prompt: "Enter password:",
+                password: true,
+            },
+        };
+        _renderView(stepByStepWithPasswordRequest);
 
-            expect(screen.getByTitle("Collapse")).toBeInTheDocument();
-            expect(screen.getByTitle("Close")).toBeInTheDocument();
-        });
-
-        it("should have proper input types for password fields", () => {
-            const stepByStepWithPasswordRequest = {
-                ...defaultStepByStep,
-                activeRequest: {
-                    request_id: "req-pwd-123",
-                    prompt: "Enter password:",
-                    password: true,
-                },
-            };
-            _renderView(stepByStepWithPasswordRequest);
-
-            const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
-            expect(input).toHaveAttribute("type", "password");
-        });
+        const input = screen.getByPlaceholderText("Type your response... (Enter to send)");
+        expect(input).toHaveAttribute("type", "password");
     });
 });

@@ -5,10 +5,12 @@
 .modal {
   position: fixed;
   resize: both;
-  overflow: auto;
+  overflow: hidden;
   width: 50vw;
   margin: 0 auto;
-  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  height: auto;
   max-width: 95vw;
   max-height: 95vh;
   min-width: 320px;
@@ -23,6 +25,9 @@
   background-color: var(--background-color);
   border: 1px solid color-mix(in srgb, var(--text-color) 15%, var(--background-color));
   backdrop-filter: blur(8px);
+  box-sizing: border-box;
+  padding-right: 8px;
+  padding-bottom: 8px;
 }
 
 .agent-node .modal {
@@ -45,7 +50,9 @@ body.waldiez-dark .modal {
   width: 100vw !important;
   height: 100vh !important;
   resize: none !important;
-  border-radius: 0;
+  overflow: auto !important;
+  display: unset !important;
+  border-radius: 0 !important;
   min-width: 0 !important;
   min-height: 0 !important;
   max-width: none !important;
@@ -60,6 +67,7 @@ body.waldiez-dark .modal {
   resize: none !important;
   overflow: hidden;
   max-width: 240px;
+  padding-bottom: 0;
 }
 
 .modal-minimized .modal-content.hidden {
@@ -71,6 +79,7 @@ body.waldiez-dark .modal {
   align-items: center;
   justify-content: space-between;
   padding: 0.25rem 1rem;
+  margin-right: -8px;
   cursor: move;
   -webkit-user-select: none;
   user-select: none;
@@ -81,7 +90,8 @@ body.waldiez-dark .modal {
     color-mix(in srgb, var(--text-color) 6%, var(--background-color))
   );
   border-bottom: 1px solid color-mix(in srgb, var(--text-color) 10%, var(--background-color));
-  position: relative;
+  position: sticky;
+  top: 0;
 }
 
 .modal-header::before {
@@ -214,7 +224,7 @@ body.waldiez-dark .modal {
 }
 
 .modal-content {
-  padding: 24px;
+  padding: 0;
   flex: 1;
   min-width: 320px;
   min-height: 120px;
@@ -232,9 +242,39 @@ body.waldiez-dark .modal {
   flex: 1;
   justify-content: space-between;
   min-height: 0;
-  padding: 0;
+  margin: 20px;
   background: transparent;
   gap: 16px;
+  overflow: auto;
+}
+
+.modal-body-main {
+  flex: 1;
+  min-height: 0;
+}
+
+/* pinned areas */
+.modal-sticky-top,
+.modal-sticky-bottom {
+  position: sticky;
+  z-index: 2;
+  background: var(--background-color);
+}
+
+.modal-sticky-top {
+  top: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--text-color) 10%, var(--background-color));
+}
+
+.modal-sticky-bottom {
+  position: absolute;
+  width: calc(100% - 32px);
+  bottom: 0;
+  margin-left: 16px;
+  margin-right: 16px;
+  padding: 2px;
+  font-size: small;
+  color: color-mix(in srgb, var(--text-color) 50%, var(--background-color));
 }
 
 .modal.confirmation .modal-content {
@@ -246,7 +286,7 @@ body.waldiez-dark .modal {
   gap: 12px;
   align-items: center;
   justify-content: flex-end;
-  padding: 20px 0 0;
+  padding: 24px;
   margin-top: auto;
 }
 

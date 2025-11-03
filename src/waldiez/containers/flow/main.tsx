@@ -14,10 +14,16 @@ import {
     useState,
 } from "react";
 
-import { StepByStepView } from "@waldiez/components";
+// import { StepByStepView } from "@waldiez/components";
 import type { WaldiezStepByStep } from "@waldiez/components/types";
 import { useDnD, useFlowEvents, useKeys } from "@waldiez/containers/flow/hooks";
-import { ChatModal, ExportFlowModal, ImportFlowModal, StepRunModal } from "@waldiez/containers/flow/modals";
+import {
+    ChatModal,
+    ExportFlowModal,
+    ImportFlowModal,
+    PreStepRunModal,
+    StepRunModal,
+} from "@waldiez/containers/flow/modals";
 import { WaldiezFlowPanels } from "@waldiez/containers/flow/panels";
 import { edgeTypes, nodeTypes } from "@waldiez/containers/rfTypes";
 import { SideBar } from "@waldiez/containers/sidebar";
@@ -321,7 +327,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
                 </div>
             </div>
 
-            <StepByStepView flowId={flowId} stepByStep={stepByStep} isDarkMode={isDark} />
+            <StepRunModal flowId={flowId} stepByStep={stepByStep} isDarkMode={isDark} />
             <ChatModal flowId={flowId} chat={chat} isDarkMode={isDark} />
             {isImportModalOpen && (
                 <ImportFlowModal
@@ -344,7 +350,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
             )}
 
             {isStepRunModalOpen && (
-                <StepRunModal
+                <PreStepRunModal
                     flowId={flowId}
                     onClose={closeStepRunModal}
                     onStart={doStepRun}

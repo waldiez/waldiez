@@ -20,7 +20,7 @@ export const ImportFlowModal: FC<ImportFlowModalProps> = (props: ImportFlowModal
             title="Import Flow"
             dataTestId={`import-flow-modal-${flowId}`}
         >
-            <div className="modal-body padding-10">
+            <div className="modal-body">
                 <Wizard
                     activeStep={0}
                     canGoForward={!!state.loadedFlowData}

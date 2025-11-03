@@ -23,10 +23,13 @@ export const Timeline: FC<{
     useLayoutEffect(() => {
         if (chartRef.current) {
             const svgElement = chartRef.current.querySelector("svg");
+            const rect = chartRef.current.getBoundingClientRect();
             if (svgElement) {
-                const width = parseInt(svgElement.getAttribute("width") || "800");
-                const height = parseInt(svgElement.getAttribute("height") || "400");
+                const width = parseInt(svgElement.getAttribute("width") || `${rect.width}`);
+                const height = parseInt(svgElement.getAttribute("height") || `${rect.height}`);
                 setDimensions({ width, height });
+            } else {
+                setDimensions({ width: rect.width, height: rect.height });
             }
         }
     }, []);
@@ -82,7 +85,7 @@ export const Timeline: FC<{
                 </div>
                 <div className="card-content">
                     <div className="w-full">
-                        <ResponsiveContainer width="100%" height={height}>
+                        <ResponsiveContainer width="100%" height={height} ref={chartRef}>
                             <TimelineChart
                                 width={dimensions.width}
                                 height={dimensions.height}

@@ -101,7 +101,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
         <TabItems activeTabIndex={activeTabIndex}>
             {/* Group Settings Tab */}
             <TabItem label="Group" id={`wf-${flowId}-agent-group-manager-config-${id}`}>
-                <div className="modal-body  agent-panel">
+                <div className="agent-panel">
                     <TextInput
                         label="Group Name:"
                         name="group-name"
@@ -153,7 +153,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
 
             {/* Group Manager Tab */}
             <TabItem label="Group Manager" id={`wf-${flowId}-agent-group-manager-agent-${id}`}>
-                <div className="modal-body agent-panel">
+                <div className="agent-panel">
                     {/* Models Selection */}
                     <div>
                         <WaldiezAgentModels
@@ -226,7 +226,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
 
             {/* Speakers Tab */}
             <TabItem label="Speakers" id={`wf-${flowId}-agent-group-manager-speakers-${id}`}>
-                <div className="modal-body agent-panel">
+                <div className="agent-panel">
                     <div className="margin-top-10">
                         <div className="info">
                             The method for selecting the next speaker. The default is{" "}
@@ -348,7 +348,7 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
             {/* Afterwards Tab - Conditionally Shown */}
             {showAfterwardsTab && (
                 <TabItem label="Afterwards" id={`wf-${flowId}-agent-group-manager-after-work-${id}`}>
-                    <div className="modal-body agent-panel">
+                    <div className="agent-panel">
                         <AfterWork
                             target={data.afterWork}
                             agents={groupMembers}

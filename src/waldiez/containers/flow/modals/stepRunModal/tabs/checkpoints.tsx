@@ -57,6 +57,11 @@ export const CheckpointsTabs: FC<
     const handleCheckpointSelect = (checkpoint: Checkpoint) => {
         setSelectedCheckpoint(checkpoint);
     };
+    const retryGetCheckpoints = async () => {
+        setGotCheckpoints(false);
+        setCheckpointError(null);
+        await loadCheckpoints();
+    };
     useEffect(() => {
         loadCheckpoints();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -75,7 +80,10 @@ export const CheckpointsTabs: FC<
                     className={`${isDark ? "bg-red-900/20 border-red-800" : "bg-red-50 border-red-200"} border rounded-lg p-4`}
                 >
                     <p className={`text-sm ${isDark ? "text-red-400" : "text-red-600"}`}>{checkpointError}</p>
-                    <button onClick={loadCheckpoints} className="mt-2 text-sm underline hover:no-underline">
+                    <button
+                        onClick={retryGetCheckpoints}
+                        className="mt-2 text-sm underline hover:no-underline"
+                    >
                         Retry
                     </button>
                 </div>
@@ -145,6 +153,7 @@ export const CheckpointsTabs: FC<
                                         ? `Selected checkpoint: ${selectedCheckpoint.id}`
                                         : "No checkpoint selected"}
                                     <button
+                                        data-testid="clear-checkpoints"
                                         onClick={() => {
                                             setSelectedCheckpoint(null);
                                             setExpandedCheckpoint(null);

@@ -12,14 +12,14 @@ import { Editor, loader } from "@monaco-editor/react";
 import { motion } from "framer-motion";
 import * as ReactDOM from "react-dom";
 import ReactDOM__default, { createPortal } from "react-dom";
-import { offset as offset$1, shift as shift$1, flip as flip$1, size as size$1, hide as hide$1, limitShift as limitShift$1, computePosition, arrow as arrow$2, autoUpdate } from "@floating-ui/dom";
-import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStepForward, FaStop as FaStop$1, FaPlusCircle, FaHourglassHalf, FaCog, FaCommentDots, FaCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
-import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaBug, FaPlay, FaStop, FaCaretLeft, FaInfo, FaXmark, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
-import { Marked } from "marked";
-import { MdTimeline, MdIosShare, MdMessage } from "react-icons/md";
 import { temporal } from "zundo";
 import { createStore } from "zustand";
+import { offset as offset$1, shift as shift$1, flip as flip$1, size as size$1, hide as hide$1, limitShift as limitShift$1, computePosition, arrow as arrow$2, autoUpdate } from "@floating-ui/dom";
+import { FaInfoCircle, FaEyeSlash, FaEye, FaTrash, FaSave, FaPlus, FaCloudUploadAlt, FaStepForward, FaStop as FaStop$1, FaPlusCircle, FaHourglassHalf, FaCog, FaCommentDots, FaCircle, FaFileImport as FaFileImport$1, FaFileExport, FaCopy, FaEdit, FaTools } from "react-icons/fa";
+import { FaX, FaRegUser, FaChevronUp, FaChevronDown, FaCompress, FaExpand, FaCircleXmark, FaPlay, FaStop, FaCaretLeft, FaInfo, FaXmark, FaBug, FaCirclePlay, FaPython, FaFileImport, FaGithub, FaSun, FaMoon, FaTrashCan, FaRegFileCode, FaCode, FaLock, FaTrash as FaTrash$1, FaGear, FaCopy as FaCopy$1, FaBars, FaRobot } from "react-icons/fa6";
+import { Marked } from "marked";
 import { ResponsiveContainer } from "recharts";
+import { MdTimeline, MdIosShare, MdMessage } from "react-icons/md";
 import { GiNestEggs, GiShakingHands } from "react-icons/gi";
 import { GoAlert, GoChevronDown, GoChevronUp } from "react-icons/go";
 class WaldiezAgentData {
@@ -9047,6 +9047,3143 @@ const SnackbarProvider = ({ children }) => {
     )
   ] });
 };
+const isIterable = (obj) => Symbol.iterator in obj;
+const hasIterableEntries = (value) => (
+  // HACK: avoid checking entries type
+  "entries" in value
+);
+const compareEntries = (valueA, valueB) => {
+  const mapA = valueA instanceof Map ? valueA : new Map(valueA.entries());
+  const mapB = valueB instanceof Map ? valueB : new Map(valueB.entries());
+  if (mapA.size !== mapB.size) {
+    return false;
+  }
+  for (const [key, value] of mapA) {
+    if (!mapB.has(key) || !Object.is(value, mapB.get(key))) {
+      return false;
+    }
+  }
+  return true;
+};
+const compareIterables = (valueA, valueB) => {
+  const iteratorA = valueA[Symbol.iterator]();
+  const iteratorB = valueB[Symbol.iterator]();
+  let nextA = iteratorA.next();
+  let nextB = iteratorB.next();
+  while (!nextA.done && !nextB.done) {
+    if (!Object.is(nextA.value, nextB.value)) {
+      return false;
+    }
+    nextA = iteratorA.next();
+    nextB = iteratorB.next();
+  }
+  return !!nextA.done && !!nextB.done;
+};
+function shallow(valueA, valueB) {
+  if (Object.is(valueA, valueB)) {
+    return true;
+  }
+  if (typeof valueA !== "object" || valueA === null || typeof valueB !== "object" || valueB === null) {
+    return false;
+  }
+  if (Object.getPrototypeOf(valueA) !== Object.getPrototypeOf(valueB)) {
+    return false;
+  }
+  if (isIterable(valueA) && isIterable(valueB)) {
+    if (hasIterableEntries(valueA) && hasIterableEntries(valueB)) {
+      return compareEntries(valueA, valueB);
+    }
+    return compareIterables(valueA, valueB);
+  }
+  return compareEntries(
+    { entries: () => Object.entries(valueA) },
+    { entries: () => Object.entries(valueB) }
+  );
+}
+function getDefaultExportFromCjs(x2) {
+  return x2 && x2.__esModule && Object.prototype.hasOwnProperty.call(x2, "default") ? x2["default"] : x2;
+}
+var withSelector = { exports: {} };
+var withSelector_production = {};
+var shim = { exports: {} };
+var useSyncExternalStoreShim_production = {};
+/**
+ * @license React
+ * use-sync-external-store-shim.production.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var hasRequiredUseSyncExternalStoreShim_production;
+function requireUseSyncExternalStoreShim_production() {
+  if (hasRequiredUseSyncExternalStoreShim_production) return useSyncExternalStoreShim_production;
+  hasRequiredUseSyncExternalStoreShim_production = 1;
+  var React2 = React__default;
+  function is(x2, y) {
+    return x2 === y && (0 !== x2 || 1 / x2 === 1 / y) || x2 !== x2 && y !== y;
+  }
+  var objectIs = "function" === typeof Object.is ? Object.is : is, useState2 = React2.useState, useEffect2 = React2.useEffect, useLayoutEffect3 = React2.useLayoutEffect, useDebugValue = React2.useDebugValue;
+  function useSyncExternalStore$2(subscribe, getSnapshot) {
+    var value = getSnapshot(), _useState = useState2({ inst: { value, getSnapshot } }), inst = _useState[0].inst, forceUpdate = _useState[1];
+    useLayoutEffect3(
+      function() {
+        inst.value = value;
+        inst.getSnapshot = getSnapshot;
+        checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+      },
+      [subscribe, value, getSnapshot]
+    );
+    useEffect2(
+      function() {
+        checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+        return subscribe(function() {
+          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+        });
+      },
+      [subscribe]
+    );
+    useDebugValue(value);
+    return value;
+  }
+  function checkIfSnapshotChanged(inst) {
+    var latestGetSnapshot = inst.getSnapshot;
+    inst = inst.value;
+    try {
+      var nextValue = latestGetSnapshot();
+      return !objectIs(inst, nextValue);
+    } catch (error) {
+      return true;
+    }
+  }
+  function useSyncExternalStore$1(subscribe, getSnapshot) {
+    return getSnapshot();
+  }
+  var shim2 = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1 : useSyncExternalStore$2;
+  useSyncExternalStoreShim_production.useSyncExternalStore = void 0 !== React2.useSyncExternalStore ? React2.useSyncExternalStore : shim2;
+  return useSyncExternalStoreShim_production;
+}
+var useSyncExternalStoreShim_development = {};
+/**
+ * @license React
+ * use-sync-external-store-shim.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var hasRequiredUseSyncExternalStoreShim_development;
+function requireUseSyncExternalStoreShim_development() {
+  if (hasRequiredUseSyncExternalStoreShim_development) return useSyncExternalStoreShim_development;
+  hasRequiredUseSyncExternalStoreShim_development = 1;
+  "production" !== process.env.NODE_ENV && (function() {
+    function is(x2, y) {
+      return x2 === y && (0 !== x2 || 1 / x2 === 1 / y) || x2 !== x2 && y !== y;
+    }
+    function useSyncExternalStore$2(subscribe, getSnapshot) {
+      didWarnOld18Alpha || void 0 === React2.startTransition || (didWarnOld18Alpha = true, console.error(
+        "You are using an outdated, pre-release alpha of React 18 that does not support useSyncExternalStore. The use-sync-external-store shim will not work correctly. Upgrade to a newer pre-release."
+      ));
+      var value = getSnapshot();
+      if (!didWarnUncachedGetSnapshot) {
+        var cachedValue = getSnapshot();
+        objectIs(value, cachedValue) || (console.error(
+          "The result of getSnapshot should be cached to avoid an infinite loop"
+        ), didWarnUncachedGetSnapshot = true);
+      }
+      cachedValue = useState2({
+        inst: { value, getSnapshot }
+      });
+      var inst = cachedValue[0].inst, forceUpdate = cachedValue[1];
+      useLayoutEffect3(
+        function() {
+          inst.value = value;
+          inst.getSnapshot = getSnapshot;
+          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+        },
+        [subscribe, value, getSnapshot]
+      );
+      useEffect2(
+        function() {
+          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+          return subscribe(function() {
+            checkIfSnapshotChanged(inst) && forceUpdate({ inst });
+          });
+        },
+        [subscribe]
+      );
+      useDebugValue(value);
+      return value;
+    }
+    function checkIfSnapshotChanged(inst) {
+      var latestGetSnapshot = inst.getSnapshot;
+      inst = inst.value;
+      try {
+        var nextValue = latestGetSnapshot();
+        return !objectIs(inst, nextValue);
+      } catch (error) {
+        return true;
+      }
+    }
+    function useSyncExternalStore$1(subscribe, getSnapshot) {
+      return getSnapshot();
+    }
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
+    var React2 = React__default, objectIs = "function" === typeof Object.is ? Object.is : is, useState2 = React2.useState, useEffect2 = React2.useEffect, useLayoutEffect3 = React2.useLayoutEffect, useDebugValue = React2.useDebugValue, didWarnOld18Alpha = false, didWarnUncachedGetSnapshot = false, shim2 = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1 : useSyncExternalStore$2;
+    useSyncExternalStoreShim_development.useSyncExternalStore = void 0 !== React2.useSyncExternalStore ? React2.useSyncExternalStore : shim2;
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
+  })();
+  return useSyncExternalStoreShim_development;
+}
+var hasRequiredShim;
+function requireShim() {
+  if (hasRequiredShim) return shim.exports;
+  hasRequiredShim = 1;
+  if (process.env.NODE_ENV === "production") {
+    shim.exports = requireUseSyncExternalStoreShim_production();
+  } else {
+    shim.exports = requireUseSyncExternalStoreShim_development();
+  }
+  return shim.exports;
+}
+/**
+ * @license React
+ * use-sync-external-store-shim/with-selector.production.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var hasRequiredWithSelector_production;
+function requireWithSelector_production() {
+  if (hasRequiredWithSelector_production) return withSelector_production;
+  hasRequiredWithSelector_production = 1;
+  var React2 = React__default, shim2 = requireShim();
+  function is(x2, y) {
+    return x2 === y && (0 !== x2 || 1 / x2 === 1 / y) || x2 !== x2 && y !== y;
+  }
+  var objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore = shim2.useSyncExternalStore, useRef2 = React2.useRef, useEffect2 = React2.useEffect, useMemo2 = React2.useMemo, useDebugValue = React2.useDebugValue;
+  withSelector_production.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual2) {
+    var instRef = useRef2(null);
+    if (null === instRef.current) {
+      var inst = { hasValue: false, value: null };
+      instRef.current = inst;
+    } else inst = instRef.current;
+    instRef = useMemo2(
+      function() {
+        function memoizedSelector(nextSnapshot) {
+          if (!hasMemo) {
+            hasMemo = true;
+            memoizedSnapshot = nextSnapshot;
+            nextSnapshot = selector(nextSnapshot);
+            if (void 0 !== isEqual2 && inst.hasValue) {
+              var currentSelection = inst.value;
+              if (isEqual2(currentSelection, nextSnapshot))
+                return memoizedSelection = currentSelection;
+            }
+            return memoizedSelection = nextSnapshot;
+          }
+          currentSelection = memoizedSelection;
+          if (objectIs(memoizedSnapshot, nextSnapshot)) return currentSelection;
+          var nextSelection = selector(nextSnapshot);
+          if (void 0 !== isEqual2 && isEqual2(currentSelection, nextSelection))
+            return memoizedSnapshot = nextSnapshot, currentSelection;
+          memoizedSnapshot = nextSnapshot;
+          return memoizedSelection = nextSelection;
+        }
+        var hasMemo = false, memoizedSnapshot, memoizedSelection, maybeGetServerSnapshot = void 0 === getServerSnapshot ? null : getServerSnapshot;
+        return [
+          function() {
+            return memoizedSelector(getSnapshot());
+          },
+          null === maybeGetServerSnapshot ? void 0 : function() {
+            return memoizedSelector(maybeGetServerSnapshot());
+          }
+        ];
+      },
+      [getSnapshot, getServerSnapshot, selector, isEqual2]
+    );
+    var value = useSyncExternalStore(subscribe, instRef[0], instRef[1]);
+    useEffect2(
+      function() {
+        inst.hasValue = true;
+        inst.value = value;
+      },
+      [value]
+    );
+    useDebugValue(value);
+    return value;
+  };
+  return withSelector_production;
+}
+var withSelector_development = {};
+/**
+ * @license React
+ * use-sync-external-store-shim/with-selector.development.js
+ *
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var hasRequiredWithSelector_development;
+function requireWithSelector_development() {
+  if (hasRequiredWithSelector_development) return withSelector_development;
+  hasRequiredWithSelector_development = 1;
+  "production" !== process.env.NODE_ENV && (function() {
+    function is(x2, y) {
+      return x2 === y && (0 !== x2 || 1 / x2 === 1 / y) || x2 !== x2 && y !== y;
+    }
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
+    var React2 = React__default, shim2 = requireShim(), objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore = shim2.useSyncExternalStore, useRef2 = React2.useRef, useEffect2 = React2.useEffect, useMemo2 = React2.useMemo, useDebugValue = React2.useDebugValue;
+    withSelector_development.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual2) {
+      var instRef = useRef2(null);
+      if (null === instRef.current) {
+        var inst = { hasValue: false, value: null };
+        instRef.current = inst;
+      } else inst = instRef.current;
+      instRef = useMemo2(
+        function() {
+          function memoizedSelector(nextSnapshot) {
+            if (!hasMemo) {
+              hasMemo = true;
+              memoizedSnapshot = nextSnapshot;
+              nextSnapshot = selector(nextSnapshot);
+              if (void 0 !== isEqual2 && inst.hasValue) {
+                var currentSelection = inst.value;
+                if (isEqual2(currentSelection, nextSnapshot))
+                  return memoizedSelection = currentSelection;
+              }
+              return memoizedSelection = nextSnapshot;
+            }
+            currentSelection = memoizedSelection;
+            if (objectIs(memoizedSnapshot, nextSnapshot))
+              return currentSelection;
+            var nextSelection = selector(nextSnapshot);
+            if (void 0 !== isEqual2 && isEqual2(currentSelection, nextSelection))
+              return memoizedSnapshot = nextSnapshot, currentSelection;
+            memoizedSnapshot = nextSnapshot;
+            return memoizedSelection = nextSelection;
+          }
+          var hasMemo = false, memoizedSnapshot, memoizedSelection, maybeGetServerSnapshot = void 0 === getServerSnapshot ? null : getServerSnapshot;
+          return [
+            function() {
+              return memoizedSelector(getSnapshot());
+            },
+            null === maybeGetServerSnapshot ? void 0 : function() {
+              return memoizedSelector(maybeGetServerSnapshot());
+            }
+          ];
+        },
+        [getSnapshot, getServerSnapshot, selector, isEqual2]
+      );
+      var value = useSyncExternalStore(subscribe, instRef[0], instRef[1]);
+      useEffect2(
+        function() {
+          inst.hasValue = true;
+          inst.value = value;
+        },
+        [value]
+      );
+      useDebugValue(value);
+      return value;
+    };
+    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
+  })();
+  return withSelector_development;
+}
+var hasRequiredWithSelector;
+function requireWithSelector() {
+  if (hasRequiredWithSelector) return withSelector.exports;
+  hasRequiredWithSelector = 1;
+  if (process.env.NODE_ENV === "production") {
+    withSelector.exports = requireWithSelector_production();
+  } else {
+    withSelector.exports = requireWithSelector_development();
+  }
+  return withSelector.exports;
+}
+var withSelectorExports = requireWithSelector();
+const useSyncExternalStoreExports = /* @__PURE__ */ getDefaultExportFromCjs(withSelectorExports);
+const { useSyncExternalStoreWithSelector } = useSyncExternalStoreExports;
+const identity = (arg) => arg;
+function useStoreWithEqualityFn(api, selector = identity, equalityFn) {
+  const slice2 = useSyncExternalStoreWithSelector(
+    api.subscribe,
+    api.getState,
+    api.getInitialState,
+    selector,
+    equalityFn
+  );
+  React__default.useDebugValue(slice2);
+  return slice2;
+}
+const WaldiezContext = createContext(null);
+function useWaldiez(selector, equalityFn) {
+  const store = useContext(WaldiezContext);
+  if (!store) {
+    console.error("DEBUG: Missing WaldiezContext.Provider in the tree");
+    throw new Error("Missing WaldiezContext.Provider in the tree");
+  }
+  return useStoreWithEqualityFn(store, selector, shallow);
+}
+const useWaldiezHistory = (selector) => {
+  const store = useContext(WaldiezContext);
+  if (!store) {
+    throw new Error("Missing WaldiezContext.Provider in the tree");
+  }
+  return useStoreWithEqualityFn(store.temporal, selector, shallow);
+};
+const richTypes = { Date: true, RegExp: true, String: true, Number: true };
+function diff(obj, newObj, options2 = { cyclesFix: true }, _stack = []) {
+  let diffs = [];
+  const isObjArray = Array.isArray(obj);
+  for (const key in obj) {
+    const objKey = obj[key];
+    const path = isObjArray ? +key : key;
+    if (!(key in newObj)) {
+      diffs.push({
+        type: "REMOVE",
+        path: [path],
+        oldValue: obj[key]
+      });
+      continue;
+    }
+    const newObjKey = newObj[key];
+    const areCompatibleObjects = typeof objKey === "object" && typeof newObjKey === "object" && Array.isArray(objKey) === Array.isArray(newObjKey);
+    if (objKey && newObjKey && areCompatibleObjects && !richTypes[Object.getPrototypeOf(objKey)?.constructor?.name] && (!options2.cyclesFix || !_stack.includes(objKey))) {
+      diffs.push.apply(diffs, diff(objKey, newObjKey, options2, options2.cyclesFix ? _stack.concat([objKey]) : []).map((difference) => {
+        difference.path.unshift(path);
+        return difference;
+      }));
+    } else if (objKey !== newObjKey && // treat NaN values as equivalent
+    !(Number.isNaN(objKey) && Number.isNaN(newObjKey)) && !(areCompatibleObjects && (isNaN(objKey) ? objKey + "" === newObjKey + "" : +objKey === +newObjKey))) {
+      diffs.push({
+        path: [path],
+        type: "CHANGE",
+        value: newObjKey,
+        oldValue: objKey
+      });
+    }
+  }
+  const isNewObjArray = Array.isArray(newObj);
+  for (const key in newObj) {
+    if (!(key in obj)) {
+      diffs.push({
+        type: "CREATE",
+        path: [isNewObjArray ? +key : key],
+        value: newObj[key]
+      });
+    }
+  }
+  return diffs;
+}
+const getAgentNode = (agentType, position2, parentId) => {
+  const newAgent = WaldiezAgent.create(agentType);
+  const agentNode = agentMapper.asNode(newAgent, position2);
+  agentNode.data.parentId = parentId;
+  if (agentType === "rag_user_proxy") {
+    const agentExtras = new WaldiezAgentRagUserData();
+    agentNode.data = { ...agentNode.data, ...agentExtras };
+  } else if (agentType === "reasoning") {
+    const agentExtras = new WaldiezAgentReasoningData();
+    agentNode.data = { ...agentNode.data, ...agentExtras };
+  } else if (agentType === "captain") {
+    const agentExtras = new WaldiezAgentCaptainData();
+    agentNode.data = { ...agentNode.data, ...agentExtras };
+  } else if (agentType === "group_manager") {
+    const agentExtras = new WaldiezAgentGroupManagerData();
+    agentExtras.groupName = "Group";
+    agentNode.data = { ...agentNode.data, ...agentExtras };
+  }
+  if (parentId) {
+    agentNode.parentId = parentId;
+    agentNode.extent = "parent";
+  }
+  return agentNode;
+};
+const getAgentConnections = (nodes, edges, nodeId, options2) => {
+  if (!options2) {
+    options2 = {
+      sourcesOnly: false,
+      targetsOnly: false
+    };
+  }
+  const sourceConnectedNodes = [];
+  const sourceConnectionEdges = [];
+  const targetConnectedNodes = [];
+  const targetConnectionEdges = [];
+  for (const edge of edges) {
+    const { sourceNode, targetNode } = getAgentEdgeConnections(nodeId, edge, nodes, options2);
+    if (sourceNode) {
+      sourceConnectedNodes.push(sourceNode);
+      sourceConnectionEdges.push(edge);
+    }
+    if (targetNode) {
+      targetConnectedNodes.push(targetNode);
+      targetConnectionEdges.push(edge);
+    }
+  }
+  return {
+    sources: {
+      nodes: sourceConnectedNodes,
+      edges: sourceConnectionEdges
+    },
+    targets: {
+      nodes: targetConnectedNodes,
+      edges: targetConnectionEdges
+    }
+  };
+};
+const getAgentEdgeConnections = (nodeId, edge, nodes, options2) => {
+  let targetNode;
+  let sourceNode;
+  if (edge.target === nodeId && !options2.targetsOnly) {
+    sourceNode = nodes.find((node2) => node2.id === edge.source);
+  }
+  if (edge.source === nodeId && !options2.sourcesOnly) {
+    targetNode = nodes.find((node2) => node2.id === edge.target);
+  }
+  return { sourceNode, targetNode };
+};
+const calculateNewNodePosition = (rfInstance, flowWrapper, currentNodesCount, entriesDistance) => {
+  const zoom = rfInstance?.getZoom() ?? 1;
+  const flowWrapperRect = flowWrapper.getBoundingClientRect();
+  const canvasWidth = flowWrapperRect.width / zoom;
+  const maxNodesPerRow = Math.floor(canvasWidth / (entriesDistance.x * 1.1));
+  const x2 = currentNodesCount % maxNodesPerRow * entriesDistance.x;
+  let y = Math.floor(currentNodesCount / maxNodesPerRow) * entriesDistance.y;
+  if (y === 0) {
+    y += 10;
+  } else {
+    y -= 5;
+  }
+  return { x: x2, y };
+};
+const getNewNodePosition = (currentNodesCount, flowId, rfInstance, entriesDistance = { x: 200, y: 140 }) => {
+  const flowRoot = getFlowRoot(flowId);
+  if (!flowRoot) {
+    return { x: 0, y: 0 };
+  }
+  const flowWrapper = flowRoot.querySelector(".react-flow-wrapper");
+  if (!flowWrapper) {
+    return { x: 0, y: 0 };
+  }
+  return calculateNewNodePosition(
+    rfInstance,
+    flowWrapper,
+    currentNodesCount,
+    entriesDistance
+  );
+};
+const setViewPortTopLeft = (rfInstance) => {
+  if (rfInstance) {
+    const zoom = rfInstance.getZoom();
+    rfInstance.setViewport({
+      zoom,
+      x: 20,
+      y: 40
+    }).then(() => {
+    });
+  }
+};
+const reArrangeNodes = (nodes, flowId, nodeType, rfInstance) => {
+  let nodesAdded = 0;
+  const newNodes = [];
+  nodes.forEach((node2) => {
+    if (node2.type === nodeType) {
+      const position2 = getNewNodePosition(nodesAdded, flowId, rfInstance);
+      newNodes.push({ ...node2, position: position2 });
+      nodesAdded++;
+    } else {
+      newNodes.push(node2);
+    }
+  });
+  return newNodes;
+};
+const edgeCommonStyle = (edgeType, color) => ({
+  markerEnd: edgeType !== "nested" ? {
+    type: MarkerType.ArrowClosed,
+    color,
+    width: 10,
+    height: 10
+  } : void 0,
+  style: {
+    stroke: color,
+    strokeWidth: 1
+  }
+});
+const getNewEdgeNodes = (allNodes, source, target) => {
+  const sourceNode = allNodes.find((node2) => node2.id === source);
+  if (!sourceNode) {
+    return { sourceNode: null, targetNode: null };
+  }
+  const targetNode = allNodes.find((node2) => node2.id === target);
+  if (!targetNode) {
+    return { sourceNode: null, targetNode: null };
+  }
+  return {
+    sourceNode,
+    targetNode
+  };
+};
+const getNewEdgeName = (sourceNode, targetNode) => {
+  const sourceLabel = sourceNode.data.label.slice(0, 15);
+  const targetLabel = targetNode.data.label.slice(0, 15);
+  return `${sourceLabel} => ${targetLabel}`;
+};
+const getNewChatType = (sourceNode, targetNode, hidden) => {
+  if (hidden) {
+    return "hidden";
+  }
+  if (sourceNode.data.agentType === "group_manager" || targetNode.data.agentType === "group_manager") {
+    return "group";
+  }
+  if (sourceNode.data.parentId !== void 0 || targetNode.data.parentId !== void 0) {
+    return "group";
+  }
+  return "chat";
+};
+const isGroupEdge = (sourceNode, targetNode) => {
+  return sourceNode.data.parentId !== void 0 || targetNode.data.parentId !== void 0 || sourceNode.data.agentType === "group_manager" || targetNode.data.agentType === "group_manager";
+};
+const shouldNotCreateGroupEdge = (sourceNode, targetNode, allEdges, flowId) => {
+  if (typeof sourceNode.data.agentType !== "string" || typeof targetNode.data.agentType !== "string") {
+    showSnackbar({
+      flowId,
+      message: `Could not create a connection from ${sourceNode.data.label} to ${targetNode.data.label}`,
+      level: "warning",
+      details: "Invalid agent type",
+      withCloseButton: true
+    });
+    return true;
+  }
+  if (!sourceNode.data.parentId && !["user_proxy", "rag_user_proxy", "group_manager"].includes(sourceNode.data.agentType)) {
+    showSnackbar({
+      flowId,
+      message: `Invalid source agent type: ${getFriendlyString(sourceNode.data.agentType)}`,
+      level: "warning",
+      details: void 0,
+      withCloseButton: true
+    });
+    return true;
+  }
+  if (!sourceNode.data.parentId && targetNode.data.parentId) {
+    showSnackbar({
+      flowId,
+      message: "A connection from a non-group member to a group member is not allowed",
+      level: "warning",
+      details: void 0,
+      withCloseButton: true
+    });
+    return true;
+  }
+  if (targetNode.data.agentType === "group_manager") {
+    const edgesWithTheSameTarget = allEdges.filter((edge) => edge.target === targetNode.id);
+    if (edgesWithTheSameTarget.length > 0) {
+      showSnackbar({
+        flowId,
+        message: "A connection to this group manager already exists",
+        level: "warning",
+        details: void 0,
+        withCloseButton: true
+      });
+      return true;
+    }
+  }
+  return false;
+};
+const getNewEdge = (params) => {
+  const { flowId, hidden, positionGetter, sourceNode, targetNode, edges } = params;
+  if (isGroupEdge(sourceNode, targetNode)) {
+    if (shouldNotCreateGroupEdge(sourceNode, targetNode, edges, flowId)) {
+      return null;
+    }
+  }
+  const sourceType = sourceNode.data.agentType;
+  const { chat, chatType } = getNewChat(sourceNode, targetNode, hidden, positionGetter);
+  const newEdge = chatMapper.asEdge(chat);
+  const color = AGENT_COLORS[sourceType];
+  const isFromGroupToOutside = !!sourceNode.data.parentId && !targetNode.data.parentId;
+  return {
+    ...newEdge,
+    type: chatType,
+    animated: isFromGroupToOutside,
+    selected: true,
+    ...edgeCommonStyle(chatType, color)
+  };
+};
+const getNewChat = (sourceNode, targetNode, hidden, positionGetter) => {
+  const edgeName = getNewEdgeName(sourceNode, targetNode);
+  const sourceType = sourceNode.data.agentType;
+  const targetType = targetNode.data.agentType;
+  const chatData = new WaldiezChatData();
+  chatData.sourceType = sourceType;
+  chatData.targetType = targetType;
+  chatData.description = `${sourceNode.data.label} to ${targetNode.data.label}`;
+  chatData.condition = {
+    conditionType: "string_llm",
+    prompt: ""
+  };
+  chatData.name = edgeName;
+  chatData.order = -1;
+  const chatType = getNewChatType(sourceNode, targetNode, hidden);
+  chatData.position = positionGetter(chatType);
+  const chat = new WaldiezChat({
+    id: `wc-${getId()}`,
+    data: chatData,
+    type: chatType,
+    source: sourceNode.id,
+    target: targetNode.id,
+    rest: {}
+  });
+  return { chat, chatType };
+};
+const getNewChatsOfType = (allEdges, type) => {
+  const edgesOfType = allEdges.filter((edge) => edge.type === type);
+  const edgesOfTypeBySource = {};
+  edgesOfType.forEach((edge) => {
+    if (!edgesOfTypeBySource[edge.source]) {
+      edgesOfTypeBySource[edge.source] = [];
+    }
+    edgesOfTypeBySource[edge.source]?.push(edge);
+  });
+  return edgesOfType.map((edge, index2) => {
+    return {
+      ...edge,
+      data: { ...edge.data, position: index2 + 1 }
+    };
+  });
+};
+const getNewChatEdges = (allEdges) => {
+  return getNewChatsOfType(allEdges, "chat");
+};
+const getNewNestedEdges = (allEdges) => {
+  return getNewChatsOfType(allEdges, "nested");
+};
+const getNewHiddenEdges = (allEdges) => {
+  return getNewChatsOfType(allEdges, "hidden");
+};
+const getNewGroupEdges = (allEdges) => {
+  return getNewChatsOfType(allEdges, "group");
+};
+const resetEdgeOrdersAndPositions = (get, set) => {
+  resetEdgePositions(get, set);
+  resetEdgeOrders(get, set);
+};
+const shouldReconnect = (newConnection, nodes) => {
+  const newTarget = nodes.find((node2) => node2.id === newConnection.target);
+  const newSource = nodes.find((node2) => node2.id === newConnection.source);
+  return !(!newSource || !newTarget);
+};
+const getNewEdgeConnectionProps = (oldEdge, newConnection, nodes) => {
+  let oldSourceNode;
+  let oldTargetNode;
+  let newSourceNode;
+  let newTargetNode;
+  let color;
+  for (const node2 of nodes) {
+    if (node2.id === oldEdge.source) {
+      oldSourceNode = node2;
+    }
+    if (node2.id === oldEdge.target) {
+      oldTargetNode = node2;
+    }
+    if (node2.id === newConnection.source) {
+      newSourceNode = node2;
+      color = AGENT_COLORS[newSourceNode.data.agentType];
+    }
+    if (node2.id === newConnection.target) {
+      newTargetNode = node2;
+    }
+    if (oldSourceNode && oldTargetNode && newSourceNode && newTargetNode) {
+      break;
+    }
+  }
+  return {
+    oldSourceNode,
+    oldTargetNode,
+    newSourceNode,
+    newTargetNode,
+    color
+  };
+};
+const updateNestedEdges = (get, set) => {
+  const agentNodes = get().nodes.filter((node2) => node2.type === "agent");
+  const nestedEdges = [];
+  const nestedEdgeIds = [];
+  agentNodes.forEach((agentNode) => {
+    const nestedChats = agentNode.data.nestedChats ?? [];
+    nestedChats.forEach((nestedChat) => {
+      const messages = nestedChat.messages;
+      let edgeIndex = 0;
+      messages.forEach((message) => {
+        const edge = get().edges.find((edge2) => edge2.id === message.id);
+        if (edge && edge.type === "nested" && !nestedEdgeIds.includes(edge.id)) {
+          nestedEdges.push({
+            ...edge,
+            data: { ...edge.data, position: edgeIndex + 1 }
+          });
+          nestedEdgeIds.push(edge.id);
+          edgeIndex++;
+        }
+      });
+    });
+  });
+  const otherEdges = get().edges.filter((edge) => !nestedEdgeIds.includes(edge.id));
+  set({
+    edges: [...otherEdges, ...nestedEdges],
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  });
+};
+const resetSyncEdgeOrders = (get, set) => {
+  const edges = get().edges;
+  const sorted = edges.slice().sort((a, b) => {
+    const aOrder = a.data?.order ?? -1;
+    const bOrder = b.data?.order ?? -1;
+    return aOrder - bOrder;
+  });
+  const usedOrders = /* @__PURE__ */ new Set();
+  const finalEdges = sorted.map((edge) => {
+    let order = edge.data?.order;
+    if (!order || order < 0) {
+      return { ...edge, data: { ...edge.data, order } };
+    }
+    while (order > 0 && usedOrders.has(order)) {
+      order++;
+    }
+    usedOrders.add(order);
+    return { ...edge, data: { ...edge.data, order } };
+  });
+  set({
+    edges: finalEdges,
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  });
+};
+const resetAsyncEdgeOrders = (get, set) => {
+  const usedEdges = get().edges.filter(
+    (edge) => edge.data?.order !== void 0 && edge.data.order >= 0
+  );
+  resetEdgePrerequisites(usedEdges, get, set);
+};
+/* c8 ignore next -- @preserve */
+const resetEdgePrerequisites = (edges, get, set) => {
+  const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
+  const edgesMap = new Map(edges.map((edge) => [edge.id, edge]));
+  const computeOrder = (edge) => {
+    if (!edge.data || !edge.data.prerequisites || edge.data.prerequisites.length === 0) {
+      return 0;
+    }
+    return Math.max(
+      ...edge.data.prerequisites.map((id) => {
+        const edge2 = edges.find((e) => e.id === id);
+        return edge2?.data?.order ?? 0;
+      })
+    ) + 1;
+  };
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const edge of edges) {
+      const newOrder = computeOrder(edge);
+      if (edgesMap.get(edge.id).data?.order !== newOrder) {
+        edgesMap.get(edge.id).data.order = newOrder;
+        changed = true;
+      }
+    }
+  }
+  const updatedEdges = Array.from(edgesMap.values());
+  const remainingEdges = get().edges.filter((edge) => !updatedEdges.find((e) => e.id === edge.id)).map((edge) => {
+    return {
+      ...edge,
+      data: { ...edge.data, order: -1, prerequisites: [] }
+    };
+  });
+  set({
+    edges: [...updatedEdges, ...remainingEdges],
+    updatedAt
+  });
+};
+const resetEdgeOrders = (get, set) => {
+  const isAsync = get().isAsync;
+  isAsync ? resetAsyncEdgeOrders(get, set) : resetSyncEdgeOrders(get, set);
+};
+const resetEdgePositions = (get, set) => {
+  const edges = get().edges;
+  const newEdges = edges.map((edge) => {
+    return {
+      ...edge,
+      data: { ...edge.data, position: 1 }
+    };
+  });
+  const newChatEdges = getNewChatEdges(newEdges);
+  const newNestedEdges = getNewNestedEdges(newEdges);
+  const newHiddenEdges = getNewHiddenEdges(newEdges);
+  const newGroupEdges = getNewGroupEdges(newEdges);
+  const allEdges = [...newChatEdges, ...newNestedEdges, ...newHiddenEdges, ...newGroupEdges];
+  const edgeIds = allEdges.map((edge) => edge.id);
+  const uniqueEdgeIds = Array.from(new Set(edgeIds));
+  const uniqueEdges = allEdges.filter((edge) => uniqueEdgeIds.includes(edge.id));
+  set({
+    edges: uniqueEdges,
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  });
+  updateNestedEdges(get, set);
+};
+const mergeTags = (currentTags, newTags) => {
+  return Array.from(/* @__PURE__ */ new Set([...currentTags, ...newTags]));
+};
+const mergeRequirements = (currentRequirements, newRequirements) => {
+  return Array.from(/* @__PURE__ */ new Set([...currentRequirements, ...newRequirements]));
+};
+const mergeEdges = (allNodes, currentEdges, newEdges) => {
+  const isEmpty = allNodes.length === 0 && currentEdges.length === 0;
+  if (isEmpty) {
+    return newEdges.map((edge) => {
+      const animated = isEdgeAnimated(edge, allNodes);
+      const hidden = edge.type === "hidden";
+      return { ...edge, animated, hidden };
+    });
+  }
+  const unorderedEdges = newEdges.map((edge) => {
+    return { ...edge, data: { ...edge.data, order: -1 } };
+  });
+  const nonDuplicateEdges = unorderedEdges.filter(
+    (edge) => !currentEdges.find((currentEdge) => currentEdge.id === edge.id)
+  );
+  return [...currentEdges, ...nonDuplicateEdges].map((edge) => {
+    const animated = isEdgeAnimated(edge, allNodes);
+    const hidden = edge.type === "hidden";
+    return { ...edge, animated, hidden };
+  });
+};
+const mergeNodes = (currentNodes, newNodes, typeShown) => {
+  const nonDuplicateNodes = newNodes.filter(
+    (node2) => !currentNodes.find((currentNode) => currentNode.id === node2.id)
+  );
+  return [...currentNodes, ...nonDuplicateNodes].map((node2) => {
+    if (node2.type === typeShown) {
+      return { ...node2, hidden: false };
+    }
+    return { ...node2, hidden: true };
+  });
+};
+const mergeFlowName = (currentName, newName, currentNodes, currentEdges) => {
+  if (currentNodes.length === 0 && currentEdges.length === 0) {
+    return newName;
+  }
+  return currentName;
+};
+const mergeFlowDescription = (currentDescription, newDescription, currentNodes, currentEdges) => {
+  if (currentNodes.length === 0 && currentEdges.length === 0) {
+    return newDescription;
+  }
+  return currentDescription;
+};
+const loadFlow = (items, currentFlow, newFlow, typeShown) => {
+  let mergedFlow = items.override ? { ...newFlow, nodes: [], edges: [] } : { ...currentFlow };
+  if (items.everything) {
+    const mergedNodes = items.override ? newFlow.nodes : mergeNodes(currentFlow.nodes, newFlow.nodes, typeShown);
+    mergedFlow = items.override ? newFlow : {
+      ...mergedFlow,
+      name: mergeFlowName(currentFlow.name, newFlow.name, currentFlow.nodes, currentFlow.edges),
+      description: mergeFlowDescription(
+        currentFlow.description,
+        newFlow.description,
+        currentFlow.nodes,
+        currentFlow.edges
+      ),
+      tags: mergeTags(currentFlow.tags, newFlow.tags),
+      requirements: mergeRequirements(currentFlow.requirements, newFlow.requirements),
+      isAsync: newFlow.isAsync ?? currentFlow.isAsync,
+      cacheSeed: newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 42,
+      nodes: mergedNodes,
+      edges: mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges)
+    };
+  } else {
+    selectivelyOverrideOrMergeFlow(items, currentFlow, newFlow, typeShown, mergedFlow);
+  }
+  return mergedFlow;
+};
+const selectivelyOverrideOrMergeFlow = (items, currentFlow, newFlow, typeShown, mergedFlow) => {
+  if (items.name) {
+    mergedFlow.name = newFlow.name;
+  }
+  if (items.description) {
+    mergedFlow.description = newFlow.description;
+  }
+  if (items.tags) {
+    mergedFlow.tags = mergeTags(currentFlow.tags, newFlow.tags);
+  }
+  if (items.requirements) {
+    mergedFlow.requirements = mergeRequirements(currentFlow.requirements, newFlow.requirements);
+  }
+  if (items.isAsync) {
+    mergedFlow.isAsync = newFlow.isAsync ?? currentFlow.isAsync;
+  }
+  if (items.cacheSeed) {
+    mergedFlow.cacheSeed = newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 42;
+  }
+  const itemNodes = [...items.nodes.models, ...items.nodes.tools, ...items.nodes.agents];
+  const itemNodeIds = itemNodes.map((node2) => node2.id);
+  const newFlowNodesToUse = newFlow.nodes.filter((node2) => itemNodeIds.includes(node2.id));
+  const mergedNodes = items.override ? newFlowNodesToUse : mergeNodes(currentFlow.nodes, newFlowNodesToUse, typeShown);
+  mergedFlow.nodes = mergedNodes;
+  mergedFlow.edges = items.override ? newFlow.edges : mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges);
+};
+/* c8 ignore next -- @preserve */
+const isEdgeAnimated = (edge, nodes) => {
+  if (edge.type === "nested") {
+    return true;
+  }
+  const sourceNode = nodes.find((node2) => node2.id === edge.source);
+  const targetNode = nodes.find((node2) => node2.id === edge.target);
+  if (!sourceNode || !targetNode) {
+    return false;
+  }
+  return false;
+};
+const reArrangeModels = (get, set) => {
+  const nodes = reArrangeNodes(get().nodes, get().flowId, "model", get().rfInstance);
+  set({
+    nodes,
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  });
+  return nodes;
+};
+const reArrangeTools = (get, set) => {
+  const nodes = reArrangeNodes(get().nodes, get().flowId, "tool", get().rfInstance);
+  set({
+    nodes,
+    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+  });
+  return nodes;
+};
+class WaldiezAgentStore {
+  get;
+  set;
+  /**
+   * Constructor for the WaldiezAgentStore class.
+   * @param get - Function to get the current state of the store.
+   * @param set - Function to set the new state of the store.
+   */
+  constructor(get, set) {
+    this.get = get;
+    this.set = set;
+  }
+  /**
+   * Static method to create an instance of WaldiezAgentStore.
+   * @param get - Function to get the current state of the store.
+   * @param set - Function to set the new state of the store.
+   * @returns An instance of WaldiezAgentStore.
+   */
+  static create(get, set) {
+    return new WaldiezAgentStore(get, set);
+  }
+  /**
+   * Retrieves the current state of the agent store.
+   * @returns The current state of the agent store.
+   * @see {@link IWaldiezAgentStore.getAgents}
+   */
+  getAgents = () => {
+    return this.get().nodes.filter((node2) => node2.type === "agent");
+  };
+  /**
+   * Retrieves an agent by its ID.
+   * @param id - The ID of the agent to retrieve.
+   * @returns The agent with the specified ID, or null if not found.
+   * @see {@link IWaldiezAgentStore.getAgentById}
+   */
+  getAgentById = (id) => {
+    const agent = this.get().nodes.find((node2) => node2.id === id);
+    if (!agent || agent.type !== "agent") {
+      return null;
+    }
+    return agent;
+  };
+  /**
+   * Adds a new agent to the store.
+   * @param agentType - The type of the agent to add.
+   * @param position - The position of the agent in the graph.
+   * @param parentId - The ID of the parent agent, if any.
+   * @returns The newly added agent node.
+   * @see {@link IWaldiezAgentStore.addAgent}
+   */
+  addAgent = (agentType, position2, parentId) => {
+    const agentNode = getAgentNode(agentType, position2, parentId);
+    agentNode.style = {
+      width: agentType === "group_manager" ? INITIAL_AGENT_SIZE.group_manager.width : agentType !== "user_proxy" ? INITIAL_AGENT_SIZE.other.width : INITIAL_AGENT_SIZE.user.width
+    };
+    if (agentType === "group_manager") {
+      this.set({
+        nodes: [agentNode, ...this.get().nodes],
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      });
+    } else {
+      this.set({
+        nodes: [...this.get().nodes, agentNode],
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      });
+    }
+    return agentNode;
+  };
+  /**
+   * Clones an existing agent by its ID.
+   * @param id - The ID of the agent to clone.
+   * @returns The cloned agent node, or null if the agent was not found.
+   * @see {@link IWaldiezAgentStore.cloneAgent}
+   */
+  cloneAgent = (id) => {
+    const agent = this.get().nodes.find((node2) => node2.id === id);
+    if (agent) {
+      const newName = agent.data.label + " (copy)";
+      const position2 = {
+        x: agent.position.x + (agent.width ?? 100) + 40,
+        y: agent.position.y + (agent.height ?? 100) + 40
+      };
+      const newAgent = {
+        ...agent,
+        position: position2,
+        id: getId(),
+        data: { ...agent.data, label: newName }
+      };
+      this.set({
+        nodes: [...this.get().nodes, newAgent],
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      });
+      setTimeout(() => {
+        this.set({
+          nodes: this.get().nodes.map((node2) => {
+            if (node2.id === newAgent.id) {
+              return { ...node2, selected: true };
+            }
+            return { ...node2, selected: false };
+          })
+        });
+      }, 10);
+      return newAgent;
+    }
+    return null;
+  };
+  /**
+   * Updates the data of an agent by its ID.
+   * @param id - The ID of the agent to update.
+   * @param data - The new data to set for the agent.
+   * @see {@link IWaldiezAgentStore.updateAgentData}
+   */
+  updateAgentData = (id, data) => {
+    this.set({
+      nodes: this.get().nodes.map((node2) => {
+        if (node2.id === id) {
+          if (data.parentId !== node2.data.parentId) {
+            node2.parentId = data.parentId ?? void 0;
+            node2.extent = data.parentId ? "parent" : void 0;
+          }
+          return {
+            ...node2,
+            data: { ...node2.data, ...data }
+          };
+        }
+        return node2;
+      }),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    resetEdgeOrdersAndPositions(this.get, this.set);
+  };
+  /**
+   * Deletes an agent by its ID.
+   * @param id - The ID of the agent to delete.
+   * @see {@link IWaldiezAgentStore.deleteAgent}
+   */
+  deleteAgent = (id) => {
+    const agent = this.get().nodes.find((node2) => node2.id === id);
+    if (agent) {
+      const idsToRemove = [id];
+      const idsToResetParent = [];
+      if (agent.data.agentType === "group_manager") {
+        const groupMembers = this.getGroupMembers(id);
+        idsToResetParent.push(...groupMembers.map((member) => member.id));
+      }
+      this.set({
+        nodes: this.get().nodes.filter((node2) => !idsToRemove.includes(node2.id)).map((node2) => {
+          if (idsToResetParent.includes(node2.id)) {
+            node2.parentId = void 0;
+            node2.data.parentId = void 0;
+            node2.extent = void 0;
+          }
+          return node2;
+        }),
+        edges: this.get().edges.filter(
+          (edge) => !idsToRemove.includes(edge.source) && !idsToRemove.includes(edge.target)
+        ).map((edge) => {
+          if (idsToResetParent.includes(edge.source) || idsToResetParent.includes(edge.target)) {
+            return {
+              ...edge,
+              animated: false,
+              type: "chat"
+            };
+          }
+          return edge;
+        }),
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      });
+    } else {
+      this.set({
+        nodes: this.get().nodes.filter((node2) => node2.id !== id),
+        edges: this.get().edges.filter((edge) => edge.source !== id && edge.target !== id),
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      });
+    }
+    resetEdgeOrdersAndPositions(this.get, this.set);
+  };
+  /**
+   * Imports an agent from a JSON object.
+   * @param agent - The agent data to import.
+   * @param agentId - The ID to assign to the imported agent.
+   * @param skipLinks - Whether to skip importing links.
+   * @param position - The position to place the imported agent in the graph.
+   * @param save - Whether to save the imported agent to the store.
+   * @returns The newly imported agent node.
+   * @see {@link IWaldiezAgentStore.importAgent}
+   */
+  importAgent = (agent, agentId, skipLinks, position2, save = true) => {
+    const newAgent = agentMapper.importAgent(agent, agentId);
+    const newAgentNode = agentMapper.asNode(newAgent, position2, skipLinks);
+    if (position2) {
+      newAgentNode.position = position2;
+    }
+    if (save) {
+      this.set({
+        nodes: [...this.get().nodes, { ...newAgentNode }],
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      });
+    }
+    return newAgentNode;
+  };
+  /**
+   * Exports an agent by its ID.
+   * @param agentId - The ID of the agent to export.
+   * @param hideSecrets - Whether to hide sensitive information in the exported data.
+   * @returns The exported agent data.
+   * @see {@link IWaldiezAgentStore.exportAgent}
+   */
+  exportAgent = (agentId, hideSecrets) => {
+    const agent = this.get().nodes.find((node2) => node2.id === agentId);
+    if (!agent) {
+      return {};
+    }
+    return agentMapper.exportAgent(agent, hideSecrets);
+  };
+  /**
+   * Retrieves the connections of an agent by its ID.
+   * @param nodeId - The ID of the agent to get connections for.
+   * @param options - Options to filter connections (sourcesOnly, targetsOnly).
+   * @returns An array of connections for the specified agent.
+   * @see {@link IWaldiezAgentStore.getAgentConnections}
+   */
+  getAgentConnections = (nodeId, options2) => {
+    if (!options2) {
+      options2 = {
+        sourcesOnly: false,
+        targetsOnly: false
+      };
+    }
+    return getAgentConnections(this.get().nodes, this.get().edges, nodeId, options2);
+  };
+  /**
+   * Sets the agent group for a specific agent.
+   * @param agentId - The ID of the agent to set the group for.
+   * @param groupId - The ID of the group to set.
+   * @param position - The position to place the agent in the group.
+   * @see {@link IWaldiezAgentStore.setAgentGroup}
+   */
+  setAgentGroup = (agentId, groupId, position2) => {
+    this.set({
+      nodes: this.get().nodes.map((node2) => {
+        if (node2.id === agentId) {
+          return {
+            ...node2,
+            position: position2 ?? node2.position,
+            parentId: groupId,
+            extent: "parent",
+            data: {
+              ...node2.data,
+              parentId: groupId
+            }
+          };
+        }
+        return node2;
+      }),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+  };
+  /**
+   * Retrieves the group members of a specific group by its ID.
+   * @param groupId - The ID of the group to get members for.
+   * @returns An array of agents that are members of the specified group.
+   * @see {@link IWaldiezAgentStore.getGroupMembers}
+   */
+  getGroupMembers = (groupId) => {
+    return this.get().nodes.filter(
+      (node2) => node2.type === "agent" && node2.data.parentId === groupId
+    );
+  };
+  /**
+   * Adds a member to a group by its ID.
+   * @param groupId - The ID of the group to add the member to.
+   * @param memberId - The ID of the member to add.
+   * @param position - The position to place the member in the group.
+   * @see {@link IWaldiezAgentStore.addGroupMember}
+   */
+  addGroupMember = (groupId, memberId, position2) => {
+    this.set({
+      nodes: this.get().nodes.map((node2) => {
+        if (node2.id === memberId) {
+          return {
+            ...node2,
+            position: position2 || node2.position,
+            parentId: groupId,
+            extent: "parent",
+            data: { ...node2.data, parentId: groupId }
+          };
+        }
+        return node2;
+      }),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    resetEdgeOrdersAndPositions(this.get, this.set);
+  };
+  /**
+   * Removes a member from a group by its ID.
+   * @param groupId - The ID of the group to remove the member from.
+   * @param memberId - The ID of the member to remove.
+   * @see {@link IWaldiezAgentStore.removeGroupMember}
+   */
+  removeGroupMember = (groupId, memberId) => {
+    const nodes = [
+      ...this.get().nodes.map((node2) => {
+        if (node2.id === memberId && node2.data.parentId === groupId) {
+          node2.data.parentId = void 0;
+          node2.parentId = void 0;
+          node2.extent = void 0;
+          node2.position = {
+            x: node2.position.x + 50,
+            y: node2.position.y + 50
+          };
+        }
+        return { ...node2 };
+      })
+    ];
+    this.set({
+      nodes,
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    resetEdgeOrdersAndPositions(this.get, this.set);
+  };
+  getGroupManager = () => {
+    const result = this.get().nodes.filter((node2) => node2.type === "agent").find((agent) => agent.data.agentType === "group_manager");
+    if (result) {
+      return result;
+    }
+    return void 0;
+  };
+}
+class WaldiezChatParticipantsStore {
+  get;
+  set;
+  /**
+   * Creates an instance of WaldiezEdgeStore.
+   * @param get - A function to get the current state of the store.
+   * @param set - A function to set the new state of the store.
+   */
+  constructor(get, set) {
+    this.get = get;
+    this.set = set;
+  }
+  /**
+   * Factory method to create a new instance of WaldiezEdgeStore.
+   * @param get - A function to get the current state of the store.
+   * @param set - A function to set the new state of the store.
+   * @returns A new instance of WaldiezEdgeStore.
+   */
+  static create(get, set) {
+    return new WaldiezChatParticipantsStore(get, set);
+  }
+  setActiveParticipants = (sender, recipient) => {
+    const { activeSenderId, activeRecipientId } = this.get();
+    if (activeSenderId === sender && activeRecipientId === recipient) {
+      return;
+    }
+    this.set({ activeSenderId: sender, activeRecipientId: recipient });
+  };
+  resetActiveParticipants = () => {
+    const { activeSenderId, activeRecipientId } = this.get();
+    if (activeSenderId === null && activeRecipientId === null) {
+      return;
+    }
+    this.set({ activeSenderId: null, activeRecipientId: null });
+  };
+  setActiveEventType = (activeEventType) => {
+    this.set({ activeEventType });
+  };
+  resetActiveEventType = () => {
+    this.set({ activeEventType: null });
+  };
+}
+/* c8 ignore file -- @preserve */
+class WaldiezEdgeStore {
+  get;
+  set;
+  /**
+   * Creates an instance of WaldiezEdgeStore.
+   * @param get - A function to get the current state of the store.
+   * @param set - A function to set the new state of the store.
+   */
+  constructor(get, set) {
+    this.get = get;
+    this.set = set;
+  }
+  /**
+   * Factory method to create a new instance of WaldiezEdgeStore.
+   * @param get - A function to get the current state of the store.
+   * @param set - A function to set the new state of the store.
+   * @returns A new instance of WaldiezEdgeStore.
+   */
+  static create(get, set) {
+    return new WaldiezEdgeStore(get, set);
+  }
+  /**
+   * Retrieves all edges from the store.
+   * @returns An array of WaldiezEdge objects.
+   * @see {@link WaldiezEdge}
+   * @see {@link IWaldiezEdgeStore.getEdges}
+   */
+  getEdges = () => this.get().edges;
+  /**
+   * Retrieves an edge by its ID.
+   * @param id - The ID of the edge to retrieve.
+   * @returns The WaldiezEdge object if found, otherwise undefined.
+   * @see {@link WaldiezEdge}
+   * @see {@link IWaldiezEdgeStore.getEdgeById}
+   */
+  getEdgeById = (id) => {
+    const edge = this.get().edges.find((edge2) => edge2.id === id);
+    return edge;
+  };
+  /**
+   * Deletes an edge by its ID.
+   * This method also updates the nested chats of agent nodes to remove messages associated with the deleted edge.
+   * @param id - The ID of the edge to delete.
+   * @see {@link IWaldiezEdgeStore.deleteEdge}
+   */
+  deleteEdge = (id) => {
+    const agents = this.get().nodes.filter((node2) => node2.type === "agent");
+    const notaAgentNodes = this.get().nodes.filter((node2) => node2.type !== "agent");
+    const agentNodes = agents.map((agentNode) => {
+      const nestedChats = agentNode.data.nestedChats ?? [];
+      return {
+        ...agentNode,
+        data: {
+          ...agentNode.data,
+          nestedChats: nestedChats.map((nestedChat) => {
+            return {
+              ...nestedChat,
+              messages: nestedChat.messages.filter((message) => message.id !== id),
+              // also check if the edge sources (agent's triggeredBy) are still valid
+              triggeredBy: nestedChat.triggeredBy
+            };
+          })
+        }
+      };
+    });
+    const nodes = [...notaAgentNodes, ...agentNodes];
+    const newEdges = this.get().edges.filter((edge) => edge.id !== id);
+    this.set({
+      nodes,
+      edges: newEdges.map((edge, index2) => {
+        return {
+          ...edge,
+          data: { ...edge.data, position: index2 + 1 }
+        };
+      }),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    this.resetEdgeOrdersAndPositions();
+  };
+  /**
+   * Updates the data of an edge by its ID.
+   * @param id - The ID of the edge to update.
+   * @param data - Partial data to update the edge with.
+   * @see {@link IWaldiezEdgeStore.updateEdgeData}
+   */
+  updateEdgeData = (id, data) => {
+    const edge = this.get().edges.find((edge2) => edge2.id === id);
+    if (edge) {
+      const updatedEdge = { ...edge, data: { ...edge.data, ...data } };
+      const edges = this.get().edges.map((edge2) => edge2.id === id ? updatedEdge : edge2);
+      this.set({ edges, updatedAt: (/* @__PURE__ */ new Date()).toISOString() });
+      this.resetEdgeOrdersAndPositions();
+    }
+  };
+  /**
+   * Updates the type of an edge by its ID.
+   * @param id - The ID of the edge to update.
+   * @param edgeType - The new type for the edge.
+   * @see {@link IWaldiezEdgeStore.updateEdgeType}
+   */
+  updateEdgeType = (id, edgeType) => {
+    this.set({
+      edges: this.get().edges.map((edge) => {
+        if (edge.id === id) {
+          const sourceNode = this.get().nodes.find((node2) => node2.id === edge.source);
+          if (!sourceNode) {
+            throw new Error(`Source node not found for edge ${id}`);
+          }
+          const color = AGENT_COLORS[sourceNode.data.agentType];
+          return {
+            ...edge,
+            type: edgeType,
+            hidden: false,
+            data: {
+              ...edge.data,
+              type: edgeType,
+              order: edgeType === "nested" ? -1 : edge.data?.order ?? -1,
+              prerequisites: edgeType === "nested" ? [] : edge.data?.prerequisites ?? []
+            },
+            animated: edgeType === "nested",
+            ...edgeCommonStyle(edgeType, color)
+          };
+        }
+        return edge;
+      }),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    this.resetEdgeOrdersAndPositions();
+  };
+  /**
+   * Updates the path of an edge by its ID and agent type.
+   * @param id - The ID of the edge to update.
+   * @param agentType - The agent type to determine the edge color and style.
+   * @see {@link IWaldiezEdgeStore.updateEdgePath}
+   */
+  updateEdgePath = (id, agentType) => {
+    const currentEdge = this.get().edges.find((edge) => edge.id === id);
+    if (!currentEdge) {
+      console.error(`Edge with id ${id} not found`);
+      return;
+    }
+    const edgeType = currentEdge.type;
+    const color = AGENT_COLORS[agentType];
+    const { style, markerEnd } = edgeCommonStyle(edgeType, color);
+    this.set({
+      edges: this.get().edges.map((edge) => {
+        if (edge.id === id) {
+          return { ...edge, style, markerEnd };
+        }
+        return { ...edge };
+      }),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    this.resetEdgeOrdersAndPositions();
+  };
+  /**
+   * Adds a new edge to the store.
+   * @param options - An object containing the flow ID, connection details, and whether the edge is hidden.
+   * @returns The newly added WaldiezEdge object or null if the edge could not be created.
+   * @see {@link IWaldiezEdgeStore.addEdge}
+   */
+  addEdge = (options2) => {
+    const { flowId, connection, hidden } = options2;
+    const nodes = this.get().nodes;
+    const edges = this.get().edges;
+    const positionGetter = (chatType) => edges.filter((edge) => edge.type === chatType).length;
+    const { source, target, sourceHandle, targetHandle } = connection;
+    const { sourceNode, targetNode } = getNewEdgeNodes(nodes, source, target);
+    if (!sourceNode || !targetNode) {
+      return null;
+    }
+    const newEdge = getNewEdge({
+      flowId,
+      hidden,
+      sourceNode,
+      targetNode,
+      positionGetter,
+      edges
+    });
+    if (!newEdge) {
+      return null;
+    }
+    this.set({
+      edges: [...this.get().edges, { ...newEdge, sourceHandle, targetHandle }],
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    this.resetEdgeOrdersAndPositions();
+    const newStoredEdge = this.get().edges.find((edge) => edge.id === newEdge.id);
+    return newStoredEdge ?? newEdge;
+  };
+  /**
+   * Handles the double-click event on an edge.
+   * If a dialog is open, it does nothing. Otherwise, it finds the flow root and triggers the appropriate modal button.
+   * @param _event - The event object.
+   * @param edge - The WaldiezEdge that was double-clicked.
+   * @see {@link IWaldiezEdgeStore.onEdgeDoubleClick}
+   */
+  onEdgeDoubleClick = (_event, edge) => {
+    const openModals = Array.from(document.querySelectorAll(".modal-root .modal")).filter(
+      (el) => el.querySelector(".modal-content").offsetParent !== null
+      // Only visible modals
+    );
+    if (openModals.length > 0) {
+      console.warn("Edge double-click ignored due to open modals");
+      return;
+    }
+    const flowRoot = getFlowRoot(this.get().flowId);
+    if (flowRoot) {
+      const srcModalBtn = flowRoot.querySelector(
+        `[data-edge-node-id="${edge.source}"]`
+      );
+      if (srcModalBtn) {
+        srcModalBtn.setAttribute("data-edge-id", edge.id);
+        srcModalBtn.click();
+      } else {
+        const dstModalBtn = flowRoot.querySelector(
+          `[data-edge-node-id="${edge.target}"]`
+        );
+        if (dstModalBtn) {
+          dstModalBtn.setAttribute("data-edge-id", edge.id);
+          dstModalBtn.click();
+        }
+      }
+    }
+  };
+  /**
+   * Retrieves the source agent of an edge.
+   * @param edge - The WaldiezEdge to get the source agent from.
+   * @returns The WaldiezNodeAgent if found, otherwise undefined.
+   * @see {@link IWaldiezEdgeStore.getEdgeSourceAgent}
+   */
+  getEdgeSourceAgent = (edge) => {
+    const agent = this.get().nodes.find((node2) => node2.id === edge.source);
+    if (agent && agent.type === "agent") {
+      return agent;
+    }
+    return void 0;
+  };
+  /**
+   * Retrieves the target agent of an edge.
+   * @param edge - The WaldiezEdge to get the target agent from.
+   * @returns The WaldiezNodeAgent if found, otherwise undefined.
+   * @see {@link IWaldiezEdgeStore.getEdgeTargetAgent}
+   */
+  getEdgeTargetAgent = (edge) => {
+    const agent = this.get().nodes.find((node2) => node2.id === edge.target);
+    if (agent && agent.type === "agent") {
+      return agent;
+    }
+    return void 0;
+  };
+  /**
+   * Handles the reconnection of an edge when the source or target node changes.
+   * It updates the edge's source and target properties, and adjusts the edge's label if necessary.
+   * @param oldEdge - The original edge that is being reconnected.
+   * @param newConnection - The new connection details for the edge.
+   * @see {@link IWaldiezEdgeStore.onReconnect}
+   */
+  onReconnect = (oldEdge, newConnection) => {
+    const nodes = this.get().nodes;
+    if (!shouldReconnect(newConnection, nodes)) {
+      return;
+    }
+    const { oldSourceNode, oldTargetNode, newSourceNode, newTargetNode, color } = getNewEdgeConnectionProps(oldEdge, newConnection, nodes);
+    if (!oldSourceNode || !oldTargetNode || !newSourceNode || !newTargetNode) {
+      console.error("Not all nodes found");
+      return;
+    }
+    if (!color) {
+      return false;
+    }
+    const oldLabel = oldEdge.data?.label;
+    if (oldEdge.data && oldLabel === `${oldSourceNode.data.agentType} => ${oldTargetNode.data.agentType}`) {
+      oldEdge.data.label = getNewEdgeName(newSourceNode, newTargetNode);
+    }
+    this.set({
+      edges: [
+        ...this.get().edges.map((edge) => {
+          if (edge.id !== oldEdge.id) {
+            return edge;
+          }
+          return {
+            ...oldEdge,
+            source: newConnection.source,
+            target: newConnection.target,
+            sourceHandle: newConnection.sourceHandle,
+            targetHandle: newConnection.targetHandle,
+            ...edgeCommonStyle(oldEdge.type, color),
+            data: {
+              ...edge.data,
+              realSource: newSourceNode.id,
+              realTarget: newTargetNode.id,
+              sourceType: newSourceNode.data.agentType,
+              targetType: newTargetNode.data.agentType
+            }
+          };
+        })
+      ],
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    this.resetEdgeOrdersAndPositions();
+  };
+  /**
+   * Handles changes to edges, applying the changes to the current edges in the store.
+   * @param changes - An array of EdgeChange objects representing the changes to apply.
+   * @see {@link IWaldiezEdgeStore.onEdgesChange}
+   */
+  onEdgesChange = (changes) => {
+    const edges = applyEdgeChanges(changes, this.get().edges);
+    this.set({ edges, updatedAt: (/* @__PURE__ */ new Date()).toISOString() });
+  };
+  /**
+   * Resets the edge orders and positions in the store.
+   * This method is typically called after adding, deleting, or updating edges to ensure the order and positions are consistent.
+   * @see {@link IWaldiezEdgeStore.resetEdgeOrdersAndPositions}
+   */
+  resetEdgeOrdersAndPositions = () => {
+    resetEdgeOrdersAndPositions(this.get, this.set);
+  };
+}
+class WaldiezFlowStore {
+  get;
+  set;
+  /**
+   * Creates an instance of WaldiezFlowStore.
+   * @param get - A function to get the current state.
+   * @param set - A function to set the new state.
+   */
+  constructor(get, set) {
+    this.get = get;
+    this.set = set;
+  }
+  /**
+   * Creates a new instance of WaldiezFlowStore.
+   * @param get - A function to get the current state.
+   * @param set - A function to set the new state.
+   * @returns A new instance of WaldiezFlowStore.
+   */
+  static create(get, set) {
+    return new WaldiezFlowStore(get, set);
+  }
+  /**
+   * Gets the current flow state's viewport.
+   * @returns The current viewport of the flow.
+   * @see {@link IWaldiezFlowStore.viewport}
+   */
+  getViewport = () => this.get().viewport;
+  /**
+   * Gets the current flow state's react flow instance.
+   * @returns The current ReactFlowInstance of the flow.
+   * @see {@link IWaldiezFlowStore.getRfInstance}
+   */
+  getRfInstance = () => this.get().rfInstance;
+  /**
+   * Sets the current flow state's react flow instance.
+   * @param instance - The ReactFlowInstance to set.
+   * @returns void
+   * @see {@link IWaldiezFlowStore.setRfInstance}
+   */
+  setRfInstance = (instance) => {
+    const currentInstance = this.get().rfInstance;
+    this.set({ rfInstance: instance });
+    if (!currentInstance) {
+      reArrangeModels(this.get, this.set);
+      reArrangeTools(this.get, this.set);
+    }
+  };
+  /**
+   * Gets the current flow information.
+   * @returns An object containing the flow's information.
+   * @see {@link IWaldiezFlowStore.getFlowInfo}
+   */
+  getFlowInfo = () => {
+    const {
+      flowId,
+      storageId,
+      name,
+      description,
+      tags,
+      requirements,
+      createdAt,
+      updatedAt,
+      isAsync,
+      cacheSeed
+    } = this.get();
+    return {
+      flowId,
+      storageId: storageId ?? flowId,
+      name: name ?? "Untitled Flow",
+      description: description ?? "A new Waldiez flow",
+      tags: tags ?? [],
+      requirements: requirements ?? [],
+      createdAt,
+      updatedAt,
+      isAsync: isAsync ?? false,
+      cacheSeed: typeof cacheSeed !== "undefined" ? cacheSeed : 42
+    };
+  };
+  /**
+   * Handles changes in the flow.
+   * This method exports the current flow state and calls the onChange callback if provided.
+   * @returns The exported flow state.
+   * @see {@link IWaldiezFlowStore.onFlowChanged}
+   */
+  onFlowChanged = () => {
+    const { onChange: onChange2 } = this.get();
+    const exported = this.exportFlow(false);
+    if (onChange2) {
+      onChange2(JSON.stringify(exported));
+    }
+    return exported;
+  };
+  /**
+   * Gets the flow edges, separating used and remaining edges.
+   * Used edges are those with a defined order, while remaining edges do not have an order.
+   * @returns An object containing used and remaining edges.
+   * @see {@link IWaldiezFlowStore.getFlowEdges}
+   */
+  getFlowEdges = () => {
+    const allEdges = this.get().edges.filter((edge) => edge.type === "chat");
+    const usedEdges = [];
+    const remainingEdges = [];
+    allEdges.forEach((edge) => {
+      let edgeOrder;
+      if (typeof edge.data?.order === "number") {
+        edgeOrder = edge.data.order;
+      } else {
+        edgeOrder = -1;
+      }
+      if (edgeOrder >= 0) {
+        usedEdges.push(edge);
+      } else {
+        remainingEdges.push(edge);
+      }
+    });
+    const sortedEdgesUsed = usedEdges.sort((a, b) => (a.data?.order ?? 0) - (b.data?.order ?? 0));
+    return { used: sortedEdgesUsed, remaining: remainingEdges };
+  };
+  /**
+   * Saves the current flow state.
+   * This method calls the onSave callback with the exported flow data.
+   * @returns void
+   * @see {@link IWaldiezFlowStore.saveFlow}
+   */
+  saveFlow = () => {
+    const { onSave } = this.get();
+    if (typeof onSave === "function") {
+      const exported = this.exportFlow(false);
+      onSave(JSON.stringify(exported));
+    }
+  };
+  /**
+   * Handles changes in the viewport.
+   * If the zoom level has changed, it rearranges nodes and sets the new viewport.
+   * @param viewport - The new viewport object containing x, y, and zoom properties.
+   * @param nodeType - The type of node being viewed (model or tool).
+   * @returns void
+   * @see {@link IWaldiezFlowStore.onViewportChange}
+   */
+  onViewportChange = (viewport, nodeType) => {
+    if (nodeType === "model" || nodeType === "tool") {
+      const zoomChanged = viewport.zoom !== this.get().viewport?.zoom;
+      if (zoomChanged) {
+        const { nodes, rfInstance, flowId } = this.get();
+        this.set({
+          nodes: reArrangeNodes(nodes, flowId, nodeType, rfInstance),
+          updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+        });
+        setTimeout(() => {
+          setViewPortTopLeft(this.get().rfInstance);
+          this.set({
+            viewport
+          });
+        }, 100);
+      }
+    } else {
+      this.set({ viewport });
+    }
+  };
+  /**
+   * Imports a flow from the provided data.
+   * This method loads the flow data, updates the current flow state, and rearranges nodes and edges.
+   * It also fits the view of the React Flow instance after importing.
+   * @param items - The items to import from.
+   * @param flowData - The imported flow data.
+   * @param typeShown - The type of node being shown (model or tool).
+   * @returns void
+   * @see {@link IWaldiezFlowStore.importFlow}
+   */
+  importFlow = (items, flowData, typeShown) => {
+    const {
+      storageId,
+      name: currentName,
+      description: currentDescription,
+      tags: currentTags,
+      requirements: currentRequirements,
+      nodes: currentNodes,
+      edges: currentEdges,
+      isAsync: currentIsAsync,
+      rfInstance
+    } = this.get();
+    const currentFlow = {
+      name: currentName ?? "Untitled Flow",
+      description: currentDescription ?? "A new Waldiez flow",
+      tags: currentTags ?? [],
+      requirements: currentRequirements ?? [],
+      nodes: currentNodes,
+      edges: currentEdges,
+      isAsync: currentIsAsync ?? false
+    };
+    const { name, createdAt, description, tags, requirements, isAsync, nodes, edges } = loadFlow(
+      items,
+      currentFlow,
+      flowData,
+      typeShown
+    );
+    this.set({
+      name,
+      description,
+      tags,
+      requirements,
+      isAsync,
+      storageId: storageId ?? `wf-${getId()}`,
+      createdAt: createdAt ?? (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      nodes,
+      edges
+    });
+    resetEdgeOrdersAndPositions(this.get, this.set);
+    reArrangeModels(this.get, this.set);
+    reArrangeTools(this.get, this.set);
+    setTimeout(() => {
+      rfInstance?.fitView({
+        includeHiddenNodes: false,
+        padding: 0.2,
+        duration: 100
+        // maxZoom: rfInstance?.getZoom(),
+        // minZoom: rfInstance?.getZoom(),
+      });
+    }, 200);
+  };
+  /**
+   * Exports the current flow state.
+   * This method creates a flow object with the current state and returns it.
+   * @param hideSecrets - A boolean indicating whether to hide secrets in the exported flow.
+   * @returns The exported flow object.
+   * @see {@link IWaldiezFlowStore.exportFlow}
+   */
+  exportFlow = (hideSecrets) => {
+    const {
+      isAsync,
+      cacheSeed,
+      viewport,
+      rfInstance,
+      name,
+      description,
+      tags,
+      requirements,
+      createdAt,
+      updatedAt,
+      flowId,
+      storageId
+    } = this.get();
+    const flow = {
+      nodes: this.get().nodes,
+      edges: this.get().edges,
+      viewport: rfInstance?.getViewport() ?? viewport ?? { zoom: 1, x: 20, y: 20 },
+      name: name ?? "Untitled Flow",
+      description: description ?? "A new Waldiez flow",
+      tags: tags ?? [],
+      requirements: requirements ?? [],
+      createdAt: createdAt ?? (/* @__PURE__ */ new Date()).toISOString(),
+      updatedAt: updatedAt ?? (/* @__PURE__ */ new Date()).toISOString(),
+      flowId,
+      storageId: storageId ?? flowId,
+      isAsync: isAsync ?? false,
+      cacheSeed
+    };
+    return flowMapper.exportFlow(flow, hideSecrets, false);
+  };
+  /**
+   * Updates the flow's order.
+   * This method updates the order of the edges in the flow based on the provided data.
+   * @param data - An array of objects containing the edge id and its new order.
+   * @returns void
+   * @see {@link IWaldiezFlowStore.updateFlowOrder}
+   */
+  updateFlowOrder = (data) => {
+    const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
+    this.set({
+      edges: this.get().edges.map((edge) => {
+        const order = data.find((d) => d.id === edge.id)?.order ?? edge.data?.order ?? -1;
+        return {
+          ...edge,
+          data: { ...edge.data, order }
+        };
+      }),
+      updatedAt
+    });
+  };
+  /**
+   * Updates the flow edges' prerequisites.
+   * This method resets the prerequisites of the edges based on the provided edges.
+   * @param edges - An array of WaldiezEdge objects to update prerequisites for.
+   * @returns void
+   * @see {@link IWaldiezFlowStore.updateFlowPrerequisites}
+   */
+  updateFlowPrerequisites = (edges) => {
+    resetEdgePrerequisites(edges, this.get, this.set);
+  };
+  /**
+   * Updates the information of the flow.
+   * This method sets the new flow information such as name, description, tags, requirements, and other properties.
+   * @param data - An object containing the new flow information.
+   * @returns void
+   * @see {@link IWaldiezFlowStore.updateFlowInfo}
+   */
+  updateFlowInfo = (data) => {
+    this.set({
+      name: data.name,
+      description: data.description,
+      tags: data.tags,
+      requirements: data.requirements,
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
+      isAsync: data.isAsync,
+      cacheSeed: data.cacheSeed
+    });
+  };
+}
+class WaldiezModelStore {
+  get;
+  set;
+  /**
+   * Creates an instance of WaldiezModelStore.
+   * @param get - A function to get the current state of the store.
+   * @param set - A function to set the new state of the store.
+   */
+  constructor(get, set) {
+    this.get = get;
+    this.set = set;
+  }
+  /**
+   * Creates a new instance of WaldiezModelStore.
+   * @param get - A function to get the current state of the store.
+   * @param set - A function to set the new state of the store.
+   * @returns A new instance of WaldiezModelStore.
+   */
+  static create(get, set) {
+    return new WaldiezModelStore(get, set);
+  }
+  /**
+   * Gets all models from the store.
+   * @returns An array of WaldiezNodeModel objects.
+   * @see {@link WaldiezNodeModel}
+   * @see {@link IWaldiezModelStore.getModels}
+   */
+  getModels = () => {
+    return this.get().nodes.filter((node2) => node2.type === "model");
+  };
+  /**
+   * Gets a model by its ID.
+   * @param id - The ID of the model to retrieve.
+   * @returns The WaldiezNodeModel object if found, otherwise null.
+   * @see {@link WaldiezNodeModel}
+   * @see {@link IWaldiezModelStore.getModelById}
+   */
+  getModelById = (id) => {
+    const model = this.get().nodes.find((node2) => node2.id === id);
+    if (!model || model.type !== "model") {
+      return null;
+    }
+    return model;
+  };
+  /**
+   * Adds a new model to the store.
+   * @returns The newly created WaldiezNodeModel object.
+   * @see {@link WaldiezNodeModel}
+   * @see {@link IWaldiezModelStore.addModel}
+   */
+  addModel = () => {
+    const existingModels = this.get().nodes.filter((node2) => node2.type === "model");
+    const modelCount = existingModels.length;
+    const flowId = this.get().flowId;
+    const rfInstance = this.get().rfInstance;
+    const position2 = getNewNodePosition(modelCount, flowId, rfInstance);
+    const newModel = WaldiezModel.create();
+    const newNode = modelMapper.asNode(newModel, position2);
+    this.set({
+      nodes: [
+        ...this.get().nodes,
+        {
+          ...newNode,
+          type: "model"
+        }
+      ],
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    reArrangeModels(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+    const model = this.get().nodes.find((node2) => node2.id === newNode.id);
+    return model;
+  };
+  /**
+   * Clones an existing model by its ID.
+   * @param id - The ID of the model to clone.
+   * @returns The cloned WaldiezNodeModel object if successful, otherwise null.
+   * @see {@link WaldiezNodeModel}
+   * @see {@link IWaldiezModelStore.cloneModel}
+   */
+  cloneModel = (id) => {
+    const model = this.get().nodes.find((node2) => node2.id === id);
+    if (!model || model.type !== "model") {
+      return null;
+    }
+    const rfInstance = this.get().rfInstance;
+    reArrangeModels(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+    const newLabel = model.data.label + " (copy)";
+    const newModel = this.getClonedModel(id, rfInstance);
+    newModel.data.label = newLabel;
+    this.set({
+      nodes: [
+        ...this.get().nodes.map((node2) => {
+          if (node2.id === id) {
+            return { ...node2, selected: false };
+          }
+          return node2;
+        }),
+        {
+          ...newModel,
+          type: "model",
+          selected: true
+        }
+      ],
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    reArrangeModels(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+    const modelWithNewPosition = this.get().nodes.find((node2) => node2.id === newModel.id);
+    return modelWithNewPosition;
+  };
+  /**
+   * Updates the data of an existing model by its ID.
+   * @param id - The ID of the model to update.
+   * @param data - The partial data to update the model with.
+   * @see {@link WaldiezNodeModelData}
+   * @see {@link IWaldiezModelStore.updateModelData}
+   */
+  updateModelData = (id, data) => {
+    const model = this.get().nodes.find((node2) => node2.id === id);
+    if (!model || model.type !== "model") {
+      return;
+    }
+    const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
+    this.set({
+      nodes: [
+        ...this.get().nodes.map((node2) => {
+          if (node2.id === id) {
+            return {
+              ...node2,
+              data: { ...node2.data, ...data, updatedAt }
+            };
+          }
+          return node2;
+        })
+      ],
+      updatedAt
+    });
+  };
+  /**
+   * Deletes a model by its ID.
+   * @param id - The ID of the model to delete.
+   * @see {@link IWaldiezModelStore.deleteModel}
+   */
+  deleteModel = (id) => {
+    const rfInstance = this.get().rfInstance;
+    const newNodes = this.getNodesAfterModelDeletion(id, rfInstance);
+    this.set({
+      nodes: newNodes,
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    reArrangeModels(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+  };
+  /**
+   * Imports a model from a given model object.
+   * @param model - The model object to import.
+   * @param modelId - The ID to assign to the imported model.
+   * @param position - The position to place the imported model in the flow.
+   * @param save - Whether to save the imported model immediately (default: true).
+   * @returns The imported WaldiezNodeModel object.
+   * @see {@link WaldiezNodeModel}
+   * @see {@link IWaldiezModelStore.importModel}
+   */
+  importModel = (model, modelId, position2, save = true) => {
+    const newModel = modelMapper.importModel(model);
+    const modelNode = modelMapper.asNode(newModel, position2);
+    modelNode.id = modelId;
+    if (position2) {
+      modelNode.position = position2;
+    }
+    if (save) {
+      this.set({
+        nodes: this.get().nodes.map((node2) => node2.id === modelId ? modelNode : node2)
+      });
+    }
+    return modelNode;
+  };
+  /**
+   * Exports a model by its ID.
+   * @param modelId - The ID of the model to export.
+   * @param hideSecrets - Whether to hide secrets in the exported model (default: true).
+   * @returns The exported model object.
+   * @see {@link IWaldiezModelStore.exportModel}
+   */
+  exportModel = (modelId, hideSecrets) => {
+    const model = this.get().nodes.find((node2) => node2.id === modelId);
+    if (!model || model.type !== "model") {
+      throw new Error(`Model with id ${modelId} not found`);
+    }
+    return modelMapper.exportModel(model, hideSecrets);
+  };
+  getClonedModel = (modelId, rfInstance) => {
+    const model = this.get().nodes.find((node2) => node2.id === modelId);
+    if (!model) {
+      throw new Error(`Model with id ${modelId} not found`);
+    }
+    const existingModels = this.get().nodes.filter((node2) => node2.type === "model");
+    const modelCount = existingModels.length;
+    const flowId = this.get().flowId;
+    const position2 = getNewNodePosition(modelCount, flowId, rfInstance);
+    const newModel = WaldiezModel.create();
+    return modelMapper.asNode(newModel, position2);
+  };
+  /**
+   * Gets the nodes after a model deletion.
+   * This method rearranges the nodes and updates the positions of the remaining model nodes.
+   * It also checks if the deleted model was linked to any agents and updates them accordingly.
+   * @param modelId - The ID of the model that was deleted.
+   * @param rfInstance - The React Flow instance to get the new positions for the nodes.
+   * @returns An array of updated nodes after the model deletion.
+   */
+  getNodesAfterModelDeletion = (modelId, rfInstance) => {
+    const newModelNodes = this.get().nodes.filter((node2) => node2.type === "model" && node2.id !== modelId);
+    const newModelNodesCount = newModelNodes.length;
+    const flowId = this.get().flowId;
+    for (let i = 0; i < newModelNodesCount; i++) {
+      const node2 = newModelNodes[i];
+      const position2 = getNewNodePosition(i, flowId, rfInstance);
+      newModelNodes[i] = { ...node2, id: node2?.id || `wa-${getId()}`, data: node2?.data || {}, position: position2 };
+    }
+    const allNodes = newModelNodes.concat(this.get().nodes.filter((node2) => node2.type !== "model"));
+    const newNodes = [];
+    allNodes.forEach((node2) => {
+      if (node2.type === "agent") {
+        const agent = node2;
+        if (agent.data.modelIds.includes(modelId)) {
+          newNodes.push({
+            ...agent,
+            data: { ...agent.data, modelIds: agent.data.modelIds.filter((id) => id !== modelId) }
+          });
+        } else {
+          newNodes.push(agent);
+        }
+      } else {
+        newNodes.push(node2);
+      }
+    });
+    return newNodes;
+  };
+}
+/* c8 ignore file -- @preserve */
+class WaldiezNodeStore {
+  get;
+  set;
+  /**
+   * Creates an instance of WaldiezNodeStore.
+   * @param get - A function to get the current state.
+   * @param set - A function to set the new state.
+   */
+  constructor(get, set) {
+    this.get = get;
+    this.set = set;
+  }
+  /**
+   * Creates a new instance of WaldiezNodeStore.
+   * @param get - A function to get the current state.
+   * @param set - A function to set the new state.
+   * @returns A new instance of WaldiezNodeStore.
+   */
+  static create(get, set) {
+    return new WaldiezNodeStore(get, set);
+  }
+  /**
+   * Shows nodes of a specific type and hides others.
+   * If the node type is "agent", it restores the previous viewport.
+   * Otherwise, it stores the current viewport before changing the visibility.
+   * @param nodeType - The type of nodes to show.
+   * @see {@link WaldiezNodeType}
+   * @see {@link IWaldiezNodeStore.showNodes}
+   */
+  showNodes = (nodeType) => {
+    if (nodeType !== "agent") {
+      if (this.isShowingAgents()) {
+        this.storePreviousViewport();
+      }
+      setViewPortTopLeft(this.get().rfInstance);
+    } else {
+      this.restorePreviousViewport();
+    }
+    this.set({
+      nodes: this.get().nodes.map((node2) => {
+        if (node2.type === nodeType) {
+          return { ...node2, hidden: false };
+        }
+        return { ...node2, hidden: true };
+      })
+    });
+  };
+  /**
+   * Checks if there are any visible agent nodes in the current state.
+   * @returns True if there are visible agent nodes, false otherwise.
+   * @see {@link IWaldiezNodeStore.isShowingAgents}
+   */
+  isShowingAgents = () => {
+    return this.get().nodes.some((node2) => node2.type === "agent" && node2.hidden === false);
+  };
+  /**
+   * Stores the current viewport before changing visibility of nodes.
+   * @see {@link IWaldiezNodeStore.storePreviousViewport}
+   */
+  storePreviousViewport = () => {
+    const rfInstance = this.get().rfInstance;
+    let previousViewport;
+    if (rfInstance) {
+      previousViewport = {
+        x: rfInstance.getViewport().x,
+        y: rfInstance.getViewport().y,
+        zoom: rfInstance.getViewport().zoom
+      };
+    } else {
+      previousViewport = this.get().viewport;
+    }
+    this.set({
+      previousViewport,
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+  };
+  /**
+   * Restores the previous viewport stored in the state.
+   * If a previous viewport exists, it sets the current viewport to that value
+   * and updates the rfInstance if available.
+   * @see {@link IWaldiezNodeStore.restorePreviousViewport}
+   */
+  restorePreviousViewport = () => {
+    const previousViewport = this.get().previousViewport;
+    if (previousViewport) {
+      this.set({
+        viewport: previousViewport,
+        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      });
+      const rfInstance = this.get().rfInstance;
+      if (rfInstance) {
+        rfInstance.setViewport(previousViewport);
+      }
+    }
+  };
+  /**
+   * Handles changes to nodes.
+   * It applies the changes to the current nodes and updates the state.
+   * @param changes - An array of NodeChange objects representing the changes to apply.
+   * @see {@link IWaldiezNodeStore.onNodesChange}
+   */
+  onNodesChange = (changes) => {
+    const nodes = applyNodeChanges(changes, this.get().nodes);
+    this.set({ nodes, updatedAt: (/* @__PURE__ */ new Date()).toISOString() });
+  };
+  /**
+   * Handles double-click events on nodes.
+   * If a dialog is open, it does nothing.
+   * Otherwise, it finds the flow root and triggers a click on the button associated with the node.
+   * @param _event - The event object.
+   * @param node - The node that was double-clicked.
+   * @see {@link IWaldiezNodeStore.onNodeDoubleClick}
+   */
+  onNodeDoubleClick = (_event, node2) => {
+    const openModals = Array.from(document.querySelectorAll(".modal-root .modal")).filter(
+      (el) => el.querySelector(".modal-content").offsetParent !== null
+      // Only visible modals
+    );
+    if (openModals.length > 0) {
+      return;
+    }
+    const flowId = this.get().flowId;
+    const flowRoot = getFlowRoot(flowId);
+    if (flowRoot) {
+      const openModalBtn = flowRoot.querySelector(`[data-node-id="${node2.id}"]`);
+      if (openModalBtn) {
+        openModalBtn.click();
+      }
+    }
+  };
+  /**
+   * Selects a node by its ID.
+   * If the node is already selected, it deselects it.
+   * Otherwise, it selects the node and deselects all others.
+   * @param id - The ID of the node to select.
+   * @see {@link IWaldiezNodeStore.reselectNode}
+   */
+  reselectNode = (id) => {
+    const node2 = this.get().nodes.find((n) => n.id === id);
+    if (!node2) {
+      return;
+    }
+    if (node2.selected) {
+      this.set({
+        nodes: this.get().nodes.map((node22) => {
+          if (node22.id === id) {
+            return { ...node22, selected: false };
+          }
+          return node22;
+        })
+      });
+    }
+    this.set({
+      nodes: this.get().nodes.map((node22) => {
+        if (node22.id === id) {
+          return { ...node22, selected: true };
+        }
+        return { ...node22, selected: false };
+      })
+    });
+  };
+  /**
+   * Highlights a node by its ID.
+   * It sets the className of the node to "highlight" if it matches the ID.
+   * Otherwise, it clears the highlight by setting className to an empty string.
+   * @param nodeId - The ID of the node to highlight.
+   * @see {@link IWaldiezNodeStore.highlightNode}
+   */
+  highlightNode = (nodeId) => {
+    this.set({
+      nodes: this.get().nodes.map((node2) => ({
+        ...node2,
+        className: node2.id === nodeId ? "highlight" : ""
+      }))
+    });
+  };
+  /**
+   * Clears the highlight from all nodes by setting their className to an empty string.
+   * @see {@link IWaldiezNodeStore.clearNodeHighlight}
+   */
+  clearNodeHighlight = () => {
+    this.set({
+      nodes: this.get().nodes.map((node2) => ({
+        ...node2,
+        className: ""
+      }))
+    });
+  };
+}
+class WaldiezToolStore {
+  get;
+  set;
+  /**
+   * Creates an instance of WaldiezToolStore.
+   * @param get - A function to get the current state.
+   * @param set - A function to set the new state.
+   */
+  constructor(get, set) {
+    this.get = get;
+    this.set = set;
+  }
+  /**
+   * Creates a new instance of WaldiezToolStore.
+   * @param get - A function to get the current state.
+   * @param set - A function to set the new state.
+   * @returns A new instance of WaldiezToolStore.
+   */
+  static create(get, set) {
+    return new WaldiezToolStore(get, set);
+  }
+  /**
+   * Returns the type of the store.
+   * @returns The type of the store, which is "tool".
+   * @see {@link IWaldiezToolStore.getTools}
+   */
+  getTools = () => {
+    return this.get().nodes.filter((node2) => node2.type === "tool");
+  };
+  /**
+   * Returns a tool by its ID.
+   * @param id - The ID of the tool to retrieve.
+   * @returns The tool with the specified ID, or null if not found or not a tool.
+   * @see {@link IWaldiezToolStore.getToolById}
+   */
+  getToolById = (id) => {
+    const tool = this.get().nodes.find((node2) => node2.id === id);
+    if (!tool || tool.type !== "tool") {
+      return null;
+    }
+    return tool;
+  };
+  /**
+   * Adds a new tool to the store.
+   * @returns The newly added tool with its position.
+   * @see {@link IWaldiezToolStore.addTool}
+   */
+  addTool = () => {
+    const existingTools = this.get().nodes.filter((node2) => node2.type === "tool");
+    const flowId = this.get().flowId;
+    const rfInstance = this.get().rfInstance;
+    const toolCount = existingTools.length;
+    const position2 = getNewNodePosition(toolCount, flowId, rfInstance);
+    const newTool = WaldiezTool.create();
+    const newNode = toolMapper.asNode(newTool, position2);
+    this.set({
+      nodes: [
+        ...this.get().nodes,
+        {
+          ...newNode,
+          type: "tool"
+        }
+      ],
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    reArrangeTools(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+    const toolWithNewPosition = this.get().nodes.find((node2) => node2.id === newNode.id);
+    return toolWithNewPosition;
+  };
+  /**
+   * Clones an existing tool by its ID.
+   * @param id - The ID of the tool to clone.
+   * @returns The cloned tool with its new position, or null if the tool is not found or not a tool.
+   * @see {@link IWaldiezToolStore.cloneTool}
+   */
+  cloneTool = (id) => {
+    const tool = this.get().nodes.find((node2) => node2.id === id);
+    if (!tool || tool.type !== "tool") {
+      return null;
+    }
+    const rfInstance = this.get().rfInstance;
+    const newTool = this.getClonedTool(tool, rfInstance);
+    this.set({
+      nodes: [
+        ...this.get().nodes.map((node2) => {
+          if (node2.id === id) {
+            return { ...node2, selected: false };
+          }
+          return node2;
+        }),
+        {
+          ...newTool,
+          type: "tool",
+          selected: true
+        }
+      ],
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    reArrangeTools(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+    const toolWithNewPosition = this.get().nodes.find((node2) => node2.id === newTool.id);
+    return toolWithNewPosition;
+  };
+  /**
+   * Updates the data of an existing tool by its ID.
+   * @param id - The ID of the tool to update.
+   * @param data - The new data to update the tool with.
+   * @see {@link IWaldiezToolStore.updateToolData}
+   */
+  updateToolData = (id, data) => {
+    const tool = this.get().nodes.find((node2) => node2.id === id);
+    if (!tool || tool.type !== "tool") {
+      return;
+    }
+    const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
+    this.set({
+      nodes: [
+        ...this.get().nodes.map((node2) => {
+          if (node2.type === "tool" && node2.id === id) {
+            return {
+              ...node2,
+              data: { ...tool.data, ...data, updatedAt }
+            };
+          }
+          return node2;
+        })
+      ],
+      updatedAt
+    });
+  };
+  /**
+   * Deletes a tool by its ID.
+   * @param id - The ID of the tool to delete.
+   * @see {@link IWaldiezToolStore.deleteTool}
+   */
+  deleteTool = (id) => {
+    const rfInstance = this.get().rfInstance;
+    const allNodes = this.getAgentsAfterToolDeletion(id, rfInstance);
+    this.set({
+      nodes: allNodes,
+      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
+    });
+    reArrangeTools(this.get, this.set);
+    setViewPortTopLeft(rfInstance);
+  };
+  /**
+   * Imports a tool from an external source.
+   * @param tool - The tool data to import.
+   * @param toolId - The ID to assign to the imported tool.
+   * @param position - The position to place the imported tool, if any.
+   * @param save - Whether to save the imported tool immediately.
+   * @returns The imported tool as a node.
+   * @see {@link IWaldiezToolStore.importTool}
+   */
+  importTool = (tool, toolId, position2, save) => {
+    const newTool = toolMapper.importTool(tool);
+    const toolNode = toolMapper.asNode(newTool, position2);
+    toolNode.id = toolId;
+    if (position2) {
+      toolNode.position = position2;
+    }
+    if (save) {
+      this.set({
+        nodes: this.get().nodes.map((node2) => node2.id === toolId ? toolNode : node2)
+      });
+    }
+    return toolNode;
+  };
+  /**
+   * Exports a tool by its ID.
+   * @param toolId - The ID of the tool to export.
+   * @param hideSecrets - Whether to hide secrets in the exported tool data.
+   * @returns The exported tool data.
+   * @see {@link IWaldiezToolStore.exportTool}
+   */
+  exportTool = (toolId, hideSecrets) => {
+    const tool = this.get().nodes.find((node2) => node2.id === toolId);
+    if (!tool || tool.type !== "tool") {
+      return {};
+    }
+    return toolMapper.exportTool(tool, hideSecrets);
+  };
+  /**
+   * Gets a cloned version of a tool with a new ID and position.
+   * @param tool - The tool to clone.
+   * @param rfInstance - The React Flow instance to use for positioning.
+   * @returns A cloned tool with a new ID, position, and updated timestamps.
+   */
+  getClonedTool = (tool, rfInstance) => {
+    const createdAt = (/* @__PURE__ */ new Date()).toISOString();
+    const updatedAt = createdAt;
+    const toolsCount = this.get().nodes.filter((node2) => node2.type === "tool").length;
+    const flowId = this.get().flowId;
+    const position2 = getNewNodePosition(toolsCount, flowId, rfInstance);
+    const label = tool.data.label + " (copy)";
+    return {
+      ...tool,
+      id: `wt-${getId()}`,
+      data: { ...tool.data, label, createdAt, updatedAt },
+      position: position2
+    };
+  };
+  /**
+   * Gets the agent after a tool has been deleted.
+   * @param toolId - The ID of the tool that was deleted.
+   * @param agent - The agent to update.
+   * @returns The updated agent with the tool removed.
+   */
+  getAgentAfterToolDeletion = (toolId, agent) => {
+    const tools = agent.data.tools;
+    const newTools = tools.filter((tool) => tool.id !== toolId);
+    const codeExecution = agent.data.codeExecutionConfig;
+    if (typeof codeExecution === "boolean") {
+      return {
+        ...agent,
+        data: {
+          ...agent.data,
+          tools: newTools
+        }
+      };
+    }
+    const functions = codeExecution.functions ?? [];
+    const newFunctions = functions.filter((func) => func !== toolId);
+    return {
+      ...agent,
+      data: {
+        ...agent.data,
+        tools: newTools,
+        codeExecutionConfig: {
+          ...codeExecution,
+          functions: newFunctions
+        }
+      }
+    };
+  };
+  /**
+   * Gets all agents after a tool has been deleted.
+   * @param toolId - The ID of the tool that was deleted.
+   * @param rfInstance - The React Flow instance to use for positioning.
+   * @returns An array of updated nodes with agents reflecting the tool deletion.
+   */
+  getAgentsAfterToolDeletion = (toolId, rfInstance) => {
+    const newToolNodes = this.get().nodes.filter((node2) => node2.type === "tool" && node2.id !== toolId);
+    const newToolNodesCount = newToolNodes.length;
+    const flowId = this.get().flowId;
+    for (let i = 0; i < newToolNodesCount; i++) {
+      const node2 = newToolNodes[i];
+      const position2 = getNewNodePosition(i, flowId, rfInstance);
+      newToolNodes[i] = { ...node2, id: node2?.id || `wa-${getId()}`, data: node2?.data || {}, position: position2 };
+    }
+    const allNodes = newToolNodes.concat(this.get().nodes.filter((node2) => node2.type !== "tool"));
+    const newNodes = [];
+    allNodes.forEach((node2) => {
+      if (node2.type === "agent") {
+        const agent = this.getAgentAfterToolDeletion(toolId, node2);
+        newNodes.push(agent);
+      } else {
+        newNodes.push(node2);
+      }
+    });
+    return newNodes;
+  };
+}
+const createWaldiezStore = (props) => {
+  const {
+    flowId = `wf-${getId()}`,
+    isAsync = false,
+    isReadOnly = false,
+    skipExport = false,
+    skipImport = false,
+    edges = [],
+    nodes = [],
+    name = "Untitled Flow",
+    description = "A new Waldiez flow",
+    tags = [],
+    requirements = [],
+    createdAt = (/* @__PURE__ */ new Date()).toISOString(),
+    updatedAt = (/* @__PURE__ */ new Date()).toISOString(),
+    viewport = { zoom: 1, x: 50, y: 50 },
+    onUpload = null,
+    onChange: onChange2 = null,
+    onSave = null,
+    onRun = null,
+    onStepRun = null,
+    onConvert = null,
+    checkpoints = null
+  } = props;
+  const storageId = props.storageId ?? flowId;
+  return createStore()(
+    temporal(
+      (set, get) => ({
+        rfInstance: props?.rfInstance,
+        flowId,
+        isAsync,
+        isReadOnly,
+        skipExport,
+        skipImport,
+        storageId,
+        name,
+        description,
+        tags,
+        requirements,
+        createdAt,
+        updatedAt,
+        viewport,
+        nodes,
+        edges,
+        onUpload,
+        onChange: onChange2,
+        onSave,
+        onRun,
+        onStepRun,
+        onConvert,
+        checkpoints,
+        activeSenderId: null,
+        activeRecipientId: null,
+        activeEventType: null,
+        ...WaldiezChatParticipantsStore.create(get, set),
+        ...WaldiezAgentStore.create(get, set),
+        ...WaldiezModelStore.create(get, set),
+        ...WaldiezToolStore.create(get, set),
+        ...WaldiezNodeStore.create(get, set),
+        ...WaldiezEdgeStore.create(get, set),
+        ...WaldiezFlowStore.create(get, set)
+      }),
+      {
+        equality: zundoEquality,
+        partialize: (state) => {
+          const { flowId: flowId2, nodes: nodes2, edges: edges2, name: name2, description: description2, requirements: requirements2, tags: tags2 } = state;
+          return {
+            flowId: flowId2,
+            nodes: nodes2,
+            edges: edges2,
+            name: name2,
+            description: description2,
+            requirements: requirements2,
+            tags: tags2
+          };
+        }
+      }
+    )
+  );
+};
+const zundoEquality = (pastState, currentState) => {
+  const diffs = diff(pastState, currentState);
+  if (diffs.length === 0) {
+    return true;
+  }
+  return diffs.every((diff2) => {
+    if (diff2.type === "CREATE" && diff2.path.length === 2) {
+      return false;
+    }
+    if (diff2.path.length === 1 && typeof diff2.path[0] === "string" && ["name", "description", "tags", "requirements"].includes(diff2.path[0])) {
+      return false;
+    }
+    if (diff2.path.includes("nodes") && diff2.path.includes("data")) {
+      return false;
+    }
+    return !(diff2.path.includes("edges") && diff2.path.includes("data") && !diff2.path.includes("position"));
+  });
+};
+function WaldiezProvider({ children, ...props }) {
+  const storeRef = useRef(void 0);
+  const isReadOnly = typeof props.isReadOnly === "boolean" ? props.isReadOnly : false;
+  const nodes = props.nodes;
+  const edges = props.edges;
+  const flowId = props.flowId;
+  const name = props.name;
+  const description = props.description;
+  const tags = props.tags;
+  const requirements = props.requirements;
+  const createdAt = props.createdAt;
+  const updatedAt = props.updatedAt;
+  const storageId = props.storageId;
+  const onUpload = props.onUpload ?? null;
+  const onChange2 = props.onChange ?? null;
+  const onSave = props.onSave ?? null;
+  const onRun = props.onRun ?? null;
+  const onStepRun = props.onStepRun ?? null;
+  const onConvert = props.onConvert ?? null;
+  const checkpoints = props.checkpoints ?? null;
+  const rfInstance = props.rfInstance;
+  const isAsync = props.isAsync ?? false;
+  props.cacheSeed ?? 42;
+  const store = useMemo(() => {
+    storeRef.current = createWaldiezStore({
+      flowId,
+      isAsync,
+      isReadOnly,
+      name,
+      description,
+      tags,
+      requirements,
+      storageId,
+      createdAt,
+      updatedAt,
+      nodes,
+      edges,
+      rfInstance,
+      onUpload,
+      onChange: onChange2,
+      onSave,
+      onRun,
+      onStepRun,
+      onConvert,
+      checkpoints
+    });
+    return storeRef.current;
+  }, [flowId]);
+  return /* @__PURE__ */ jsx$1(WaldiezContext.Provider, { value: store, children });
+}
+const useDnD = (onNewAgent) => {
+  const { screenToFlowPosition, getIntersectingNodes } = useReactFlow();
+  const addAgent = useWaldiez((s) => s.addAgent);
+  const setAgentGroup = useWaldiez((s) => s.setAgentGroup);
+  const addGroupMember = useWaldiez((s) => s.addGroupMember);
+  const getRfInstance = useWaldiez((s) => s.getRfInstance);
+  const highlightNode = useWaldiez((s) => s.highlightNode);
+  const clearNodeHighlight = useWaldiez((s) => s.clearNodeHighlight);
+  const getAgentType2 = useCallback((event) => {
+    const nodeTypeData = event.dataTransfer.getData("application/node");
+    if (nodeTypeData !== "agent") {
+      return void 0;
+    }
+    const agentTypeData = event.dataTransfer.getData("application/agent");
+    if (ValidAgentTypes$2.includes(agentTypeData)) {
+      return agentTypeData;
+    }
+    return void 0;
+  }, []);
+  const onDragOver = useCallback((event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    document.body.classList.add("dragging");
+  }, []);
+  const getIntersectingParent = useCallback((intersectingNodes) => {
+    return intersectingNodes.find(
+      (node2) => node2.type === "agent" && node2.data.agentType === "group_manager"
+    );
+  }, []);
+  const getDroppedAgentParent = useCallback(
+    (position2) => {
+      const { x: x2, y } = position2;
+      const nodeRect = { x: x2, y, width: 100, height: 100 };
+      try {
+        const intersectingNodes = getIntersectingNodes(nodeRect);
+        if (intersectingNodes.length > 0) {
+          return getIntersectingParent(intersectingNodes);
+        }
+      } catch (_2) {
+      }
+      return void 0;
+    },
+    [getIntersectingNodes, getIntersectingParent]
+  );
+  const getParentPosition = useCallback(
+    (parent) => {
+      const rfInstance = getRfInstance();
+      if (!rfInstance) {
+        return void 0;
+      }
+      const parentPos = rfInstance.getInternalNode(parent.id);
+      if (parentPos?.internals.positionAbsolute) {
+        return {
+          x: parentPos.internals.positionAbsolute.x,
+          y: parentPos.internals.positionAbsolute.y
+        };
+      }
+      return void 0;
+    },
+    [getRfInstance]
+  );
+  const getAgentPositionAndParent = useCallback(
+    (event, parentNode) => {
+      let position2 = screenToFlowPosition(
+        {
+          x: event.clientX,
+          y: event.clientY
+        },
+        {
+          snapToGrid: false
+        }
+      );
+      const parent = parentNode || getDroppedAgentParent(position2);
+      if (parent) {
+        const parentPos = getParentPosition(parent);
+        if (parentPos) {
+          const screenPos = screenToFlowPosition({
+            x: event.clientX,
+            y: event.clientY
+          });
+          position2 = {
+            x: screenPos.x - parentPos.x - 50,
+            y: screenPos.y - parentPos.y - 50
+          };
+        }
+      }
+      return { position: position2, parent };
+    },
+    [screenToFlowPosition, getDroppedAgentParent, getParentPosition]
+  );
+  const addAgentNode = useCallback(
+    (event, agentType) => {
+      const { position: position2, parent } = getAgentPositionAndParent(event);
+      const newNode = addAgent(agentType, position2, parent?.id);
+      if (parent) {
+        newNode.parentId = parent.id;
+        newNode.data.parentId = parent.id;
+        window.requestAnimationFrame(() => {
+          setAgentGroup(newNode.id, parent.id);
+        });
+      }
+      return newNode;
+    },
+    [getAgentPositionAndParent, addAgent, setAgentGroup]
+  );
+  const onDrop = useCallback(
+    (event) => {
+      document.body.classList.remove("dragging");
+      const agentType = getAgentType2(event);
+      if (agentType) {
+        event.preventDefault();
+        addAgentNode(event, agentType);
+        onNewAgent();
+      }
+    },
+    [getAgentType2, addAgentNode, onNewAgent]
+  );
+  const getIntersectingGroupManager = useCallback(
+    (_event, node2) => {
+      try {
+        const intersectingNodes = getIntersectingNodes(node2);
+        const intersections = intersectingNodes.filter(
+          (node22) => node22.type === "agent" && node22.data.agentType === "group_manager"
+        );
+        if (intersections.length === 1) {
+          return intersections[0];
+        }
+      } catch (_2) {
+      }
+      return void 0;
+    },
+    [getIntersectingNodes]
+  );
+  const onNodeDrag = useCallback(
+    (event, node2) => {
+      if (!node2.parentId && node2.data.agentType !== "group_manager") {
+        const groupManager = getIntersectingGroupManager(event, node2);
+        if (groupManager) {
+          highlightNode(groupManager.id);
+        } else {
+          clearNodeHighlight();
+        }
+      } else {
+        clearNodeHighlight();
+      }
+    },
+    [getIntersectingGroupManager, highlightNode, clearNodeHighlight]
+  );
+  const onNodeDragStop = useCallback(
+    (event, node2) => {
+      if (!node2.parentId && node2.data.agentType !== "group_manager") {
+        const groupManager = getIntersectingGroupManager(event, node2);
+        if (groupManager) {
+          const { position: position2 } = getAgentPositionAndParent(event, groupManager);
+          addGroupMember(groupManager.id, node2.id, position2);
+        }
+      }
+      clearNodeHighlight();
+    },
+    [getIntersectingGroupManager, getAgentPositionAndParent, addGroupMember, clearNodeHighlight]
+  );
+  return useMemo(
+    () => ({
+      onDragOver,
+      onDrop,
+      onNodeDrag,
+      onNodeDragStop
+    }),
+    [onDragOver, onDrop, onNodeDrag, onNodeDragStop]
+  );
+};
+const useKeys = (flowId, onSave) => {
+  const { undo, redo, futureStates, pastStates } = useWaldiezHistory((s) => s);
+  const readOnly = useWaldiez((s) => s.isReadOnly);
+  const isReadOnly = readOnly === true;
+  const deleteAgent = useWaldiez((s) => s.deleteAgent);
+  const deleteEdge = useWaldiez((s) => s.deleteEdge);
+  const deleteModel = useWaldiez((s) => s.deleteModel);
+  const deleteTool = useWaldiez((s) => s.deleteTool);
+  const saveFlow = useWaldiez((s) => s.saveFlow);
+  const listenForSave = typeof onSave === "function" && !isReadOnly;
+  const isFlowVisible = () => {
+    const rootDiv = getFlowRoot(flowId);
+    if (!rootDiv) {
+      return false;
+    }
+    const clientRect = rootDiv.getBoundingClientRect();
+    return clientRect.width > 0 && clientRect.height > 0;
+  };
+  {
+    fe(
+      "mod+z",
+      () => {
+        if (pastStates.length > 0) {
+          if (isFlowVisible()) {
+            undo();
+          }
+        }
+      },
+      { scopes: flowId }
+    );
+    fe(
+      ["shift+mod+z", "mod+y"],
+      () => {
+        if (futureStates.length > 0) {
+          if (isFlowVisible()) {
+            redo();
+          }
+        }
+      },
+      { scopes: flowId }
+    );
+  }
+  if (listenForSave) {
+    fe(
+      "mod+s",
+      (event) => {
+        if (isFlowVisible()) {
+          event.preventDefault();
+          saveFlow();
+        }
+      },
+      { scopes: flowId }
+    );
+  }
+  const onDeleteKey = (event) => {
+    if (isReadOnly) {
+      return;
+    }
+    const target = event.target;
+    const isNode = target instanceof Element && target.classList.contains("react-flow__node");
+    if (isNode) {
+      deleteNode(target);
+    } else {
+      const isEdge = target instanceof Element && (target.classList.contains("react-flow__edge") || target.classList.contains("edge-data-view"));
+      if (isEdge) {
+        onDeleteEdge(target);
+      }
+    }
+  };
+  const onKeyDown = (event) => {
+    if (isReadOnly) {
+      return;
+    }
+    if (event?.key === "Delete" || event?.key === "Backspace") {
+      if (isFlowVisible()) {
+        onDeleteKey(event);
+      }
+    }
+  };
+  const deleteNode = (target) => {
+    const nodeId = target.getAttribute("data-id");
+    if (nodeId) {
+      const isAgent = target.classList.contains("react-flow__node-agent");
+      const isModel = target.classList.contains("react-flow__node-model");
+      const isTool = target.classList.contains("react-flow__node-tool");
+      if (isAgent) {
+        deleteAgent(nodeId);
+      } else {
+        if (isModel) {
+          deleteModel(nodeId);
+        } else {
+          if (isTool) {
+            deleteTool(nodeId);
+          }
+        }
+      }
+    }
+  };
+  const onDeleteEdge = (target) => {
+    const edgeId = target.getAttribute("data-id");
+    if (edgeId) {
+      deleteEdge(edgeId);
+    }
+  };
+  return { onKeyDown };
+};
 function composeEventHandlers(originalEventHandler, ourEventHandler, { checkForDefaultPrevented = true } = {}) {
   return function handleEvent(event) {
     originalEventHandler?.(event);
@@ -12164,9 +15301,6 @@ var createCache = function createCache2(options2) {
   cache.sheet.hydrate(nodesToHydrate);
   return cache;
 };
-function getDefaultExportFromCjs(x2) {
-  return x2 && x2.__esModule && Object.prototype.hasOwnProperty.call(x2, "default") ? x2["default"] : x2;
-}
 var reactIs = { exports: {} };
 var reactIs_production_min = {};
 /** @license React v16.13.1
@@ -24498,282 +27632,6 @@ const NumberInput = memo((props) => {
   ] });
 });
 NumberInput.displayName = "NumberInput";
-const toPixels = (val, axis, iw, ih) => {
-  if (val === void 0 || val === "auto") {
-    return void 0;
-  }
-  if (typeof val === "number") {
-    return val;
-  }
-  const s = String(val).trim().toLowerCase();
-  const num = parseFloat(s);
-  if (Number.isNaN(num)) {
-    return void 0;
-  }
-  if (s.endsWith("px") || /^[0-9.]+$/.test(s)) {
-    return num;
-  }
-  if (s.endsWith("vw")) {
-    return num / 100 * iw;
-  }
-  if (s.endsWith("vh")) {
-    return num / 100 * ih;
-  }
-  if (s.endsWith("%")) {
-    return num / 100 * (axis === "w" ? iw : ih);
-  }
-  return void 0;
-};
-const clampOpt = (v, min, max) => Math.min(max ?? Number.POSITIVE_INFINITY, Math.max(min ?? Number.NEGATIVE_INFINITY, v));
-const FloatingPanel = ({
-  flowId,
-  title = "Panel",
-  headerClassName = "",
-  headerLeft = void 0,
-  headerRight = void 0,
-  headerStyle = {},
-  minWidth = 420,
-  maxWidth = 720,
-  maxHeight = 720,
-  minHeight = 50,
-  rightOffset = 10,
-  bottomOffset = 10,
-  initialWidth = "35vw",
-  initialHeight = 100,
-  children
-}) => {
-  const headerHeight = 40;
-  const getBoundaryRect = useCallback(() => {
-    const el = document.getElementById(`rf-root-${flowId}`);
-    if (el) {
-      return el.getBoundingClientRect();
-    }
-    return new DOMRect(0, 0, window.innerWidth, window.innerHeight);
-  }, [flowId]);
-  const initialSize = useMemo(() => {
-    if (typeof document === "undefined" || typeof window === "undefined") {
-      const iw2 = 1200;
-      const ih2 = 800;
-      const w02 = toPixels(initialWidth, "w", iw2, ih2) ?? Math.round(iw2 * 35 / 100);
-      const h02 = toPixels(initialHeight, "h", iw2, ih2) ?? 300;
-      return { w: w02, h: h02 };
-    }
-    const container = document.getElementById(`rf-root-${flowId}`) || document.body;
-    const rect = container.getBoundingClientRect();
-    const iw = rect?.width ?? 1200;
-    const ih = rect?.height ?? 800;
-    const parsedMinW = toPixels(minWidth, "w", iw, ih);
-    const parsedMaxW = toPixels(maxWidth, "w", iw, ih);
-    const parsedMinH = toPixels(minHeight, "h", iw, ih);
-    const parsedMaxH = toPixels(maxHeight, "h", iw, ih);
-    const defaultMinW = 320;
-    const defaultMaxW = 720;
-    const defaultMinH = 100;
-    const defaultMaxH = 720;
-    const minW = parsedMinW ?? defaultMinW;
-    const maxW = parsedMaxW ?? defaultMaxW;
-    const minH = parsedMinH ?? defaultMinH;
-    const maxH = parsedMaxH ?? defaultMaxH;
-    const w0 = toPixels(initialWidth, "w", iw, ih) ?? Math.round(iw * 35 / 100);
-    const h0 = toPixels(initialHeight, "h", iw, ih) ?? 300;
-    const w2 = clampOpt(w0, Math.min(minW, maxW), Math.max(minW, maxW));
-    const h = clampOpt(h0, Math.min(minH, maxH), Math.max(minH, maxH));
-    return { w: w2, h };
-  }, [flowId, minWidth, maxWidth, minHeight, maxHeight, initialWidth, initialHeight]);
-  const [left, setLeft] = useState(0);
-  const [top, setTop] = useState(0);
-  const [width, setWidth] = useState(initialSize.w);
-  const [height, setHeight] = useState(initialSize.h);
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const lastExpanded = useRef(null);
-  const rootRef = useRef(null);
-  const dragState = useRef(
-    null
-  );
-  const clampSize = useCallback(
-    // eslint-disable-next-line max-statements
-    (w2, h) => {
-      const rect = getBoundaryRect();
-      const iw = rect.width;
-      const ih = rect.height;
-      const parsedMinW = toPixels(minWidth, "w", iw, ih);
-      const parsedMaxW = toPixels(maxWidth, "w", iw, ih);
-      const parsedMinH = toPixels(minHeight, "h", iw, ih);
-      const parsedMaxH = toPixels(maxHeight, "h", iw, ih);
-      const viewportMaxW = iw - rightOffset - 10;
-      const viewportMaxH = ih - bottomOffset - 10;
-      const intrinsicMinW = 120;
-      const intrinsicMinH = headerHeight + 40;
-      const effMinW = Math.max(parsedMinW ?? 0, intrinsicMinW);
-      const effMaxW = Math.min(parsedMaxW ?? Number.POSITIVE_INFINITY, viewportMaxW);
-      const effMinH = Math.max(parsedMinH ?? 0, intrinsicMinH);
-      const effMaxH = Math.min(parsedMaxH ?? Number.POSITIVE_INFINITY, viewportMaxH);
-      return {
-        w: clampOpt(w2, effMinW, effMaxW),
-        h: clampOpt(h, effMinH, effMaxH)
-      };
-    },
-    [getBoundaryRect, minWidth, maxWidth, minHeight, maxHeight, rightOffset, bottomOffset]
-  );
-  const clampPos = useCallback(
-    (l, t, w2 = width, h = height) => {
-      const rect = getBoundaryRect();
-      const iw = rect.width;
-      const ih = rect.height;
-      const minLeft = 10;
-      const minTop = 10;
-      const maxLeft = Math.max(minLeft, iw - w2 - 10);
-      const maxTop = Math.max(minTop, ih - h - 10);
-      return {
-        l: Math.min(Math.max(l, minLeft), maxLeft),
-        t: Math.min(Math.max(t, minTop), maxTop)
-      };
-    },
-    [width, height, getBoundaryRect]
-  );
-  useEffect(() => {
-    const rect = getBoundaryRect();
-    const iw = rect.width;
-    const ih = rect.height;
-    const clamped = clampSize(initialSize.w, initialSize.h);
-    const l = iw - clamped.w - rightOffset;
-    const t = ih - clamped.h - bottomOffset;
-    const { l: cl, t: ct } = clampPos(l, t, clamped.w, clamped.h);
-    setWidth(clamped.w);
-    setHeight(clamped.h);
-    setLeft(cl);
-    setTop(ct);
-  }, [initialSize.w, initialSize.h, rightOffset, bottomOffset, clampSize, clampPos, getBoundaryRect]);
-  useEffect(() => {
-    const onResize = () => {
-      if (isCollapsed) {
-        return;
-      }
-      const clampedSize = clampSize(width, height);
-      const clampedPos = clampPos(left, top, clampedSize.w, clampedSize.h);
-      setWidth(clampedSize.w);
-      setHeight(clampedSize.h);
-      setLeft(clampedPos.l);
-      setTop(clampedPos.t);
-    };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [isCollapsed, left, top, width, height]);
-  const onHeaderPointerDown = (e) => {
-    if (isCollapsed) {
-      return;
-    }
-    e.target.setPointerCapture?.(e.pointerId);
-    dragState.current = { startX: e.clientX, startY: e.clientY, startLeft: left, startTop: top };
-    window.addEventListener("pointermove", onHeaderPointerMove);
-    window.addEventListener("pointerup", onHeaderPointerUp, { once: true });
-  };
-  const onHeaderPointerMove = (e) => {
-    if (!dragState.current) {
-      return;
-    }
-    const dx = e.clientX - dragState.current.startX;
-    const dy = e.clientY - dragState.current.startY;
-    const { l, t } = clampPos(dragState.current.startLeft + dx, dragState.current.startTop + dy);
-    setLeft(l);
-    setTop(t);
-  };
-  const onHeaderPointerUp = () => {
-    dragState.current = null;
-    window.removeEventListener("pointermove", onHeaderPointerMove);
-  };
-  const toggleCollapsed = () => {
-    if (!isCollapsed) {
-      lastExpanded.current = { left, top, width, height };
-      setIsCollapsed(true);
-    } else {
-      const fallback = lastExpanded.current ?? { left, top, width, height };
-      const size2 = clampSize(fallback.width, fallback.height);
-      const pos = clampPos(fallback.left, fallback.top, size2.w, size2.h);
-      setWidth(size2.w);
-      setHeight(size2.h);
-      setLeft(pos.l);
-      setTop(pos.t);
-      setIsCollapsed(false);
-    }
-  };
-  const expandedStyle = {
-    position: "absolute",
-    left,
-    top,
-    width,
-    height,
-    maxWidth,
-    maxHeight,
-    minWidth,
-    minHeight,
-    zIndex: 1e6,
-    resize: "both"
-  };
-  const collapsedStyle = {
-    position: "absolute",
-    right: rightOffset,
-    bottom: bottomOffset,
-    zIndex: 1e6,
-    minWidth: 260
-  };
-  return /* @__PURE__ */ jsxs(
-    "div",
-    {
-      ref: rootRef,
-      className: `floating-panel ${isCollapsed ? "is-collapsed" : "is-expanded"}`,
-      style: isCollapsed ? collapsedStyle : expandedStyle,
-      "aria-expanded": !isCollapsed,
-      children: [
-        /* @__PURE__ */ jsxs(
-          "div",
-          {
-            className: `fp-header ${headerClassName}`,
-            style: {
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              ...headerStyle
-            },
-            onPointerDown: onHeaderPointerDown,
-            role: "toolbar",
-            "aria-label": "Panel header",
-            children: [
-              headerLeft && /* @__PURE__ */ jsx$1(
-                "div",
-                {
-                  className: "fp-left",
-                  style: {
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8
-                  },
-                  children: headerLeft
-                }
-              ),
-              /* @__PURE__ */ jsx$1("div", { className: "fp-title", title: typeof title === "string" ? title : void 0, children: title }),
-              /* @__PURE__ */ jsxs("div", { className: "fp-right", style: { display: "flex", alignItems: "center", gap: 0 }, children: [
-                /* @__PURE__ */ jsx$1(
-                  "button",
-                  {
-                    title: isCollapsed ? "Expand" : "Collapse",
-                    type: "button",
-                    onClick: toggleCollapsed,
-                    className: "fp-toggle",
-                    "aria-label": isCollapsed ? "Expand panel" : "Collapse panel",
-                    children: isCollapsed ? /* @__PURE__ */ jsx$1(FaChevronUp, { size: 14 }) : /* @__PURE__ */ jsx$1(FaChevronDown, { size: 14 })
-                  }
-                ),
-                headerRight
-              ] })
-            ]
-          }
-        ),
-        !isCollapsed && /* @__PURE__ */ jsx$1("div", { className: "fp-content", children: children ?? /* @__PURE__ */ jsx$1("div", { className: "padding-10", children: "..." }) })
-      ]
-    }
-  );
-};
 const formatArgs = (args) => {
   try {
     if (args === null) {
@@ -25555,2863 +28413,6 @@ const EventAgentsList = ({ agents, darkMode }) => {
     );
   }) });
 };
-const isIterable = (obj) => Symbol.iterator in obj;
-const hasIterableEntries = (value) => (
-  // HACK: avoid checking entries type
-  "entries" in value
-);
-const compareEntries = (valueA, valueB) => {
-  const mapA = valueA instanceof Map ? valueA : new Map(valueA.entries());
-  const mapB = valueB instanceof Map ? valueB : new Map(valueB.entries());
-  if (mapA.size !== mapB.size) {
-    return false;
-  }
-  for (const [key, value] of mapA) {
-    if (!mapB.has(key) || !Object.is(value, mapB.get(key))) {
-      return false;
-    }
-  }
-  return true;
-};
-const compareIterables = (valueA, valueB) => {
-  const iteratorA = valueA[Symbol.iterator]();
-  const iteratorB = valueB[Symbol.iterator]();
-  let nextA = iteratorA.next();
-  let nextB = iteratorB.next();
-  while (!nextA.done && !nextB.done) {
-    if (!Object.is(nextA.value, nextB.value)) {
-      return false;
-    }
-    nextA = iteratorA.next();
-    nextB = iteratorB.next();
-  }
-  return !!nextA.done && !!nextB.done;
-};
-function shallow(valueA, valueB) {
-  if (Object.is(valueA, valueB)) {
-    return true;
-  }
-  if (typeof valueA !== "object" || valueA === null || typeof valueB !== "object" || valueB === null) {
-    return false;
-  }
-  if (Object.getPrototypeOf(valueA) !== Object.getPrototypeOf(valueB)) {
-    return false;
-  }
-  if (isIterable(valueA) && isIterable(valueB)) {
-    if (hasIterableEntries(valueA) && hasIterableEntries(valueB)) {
-      return compareEntries(valueA, valueB);
-    }
-    return compareIterables(valueA, valueB);
-  }
-  return compareEntries(
-    { entries: () => Object.entries(valueA) },
-    { entries: () => Object.entries(valueB) }
-  );
-}
-var withSelector = { exports: {} };
-var withSelector_production = {};
-var shim = { exports: {} };
-var useSyncExternalStoreShim_production = {};
-/**
- * @license React
- * use-sync-external-store-shim.production.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var hasRequiredUseSyncExternalStoreShim_production;
-function requireUseSyncExternalStoreShim_production() {
-  if (hasRequiredUseSyncExternalStoreShim_production) return useSyncExternalStoreShim_production;
-  hasRequiredUseSyncExternalStoreShim_production = 1;
-  var React2 = React__default;
-  function is(x2, y) {
-    return x2 === y && (0 !== x2 || 1 / x2 === 1 / y) || x2 !== x2 && y !== y;
-  }
-  var objectIs = "function" === typeof Object.is ? Object.is : is, useState2 = React2.useState, useEffect2 = React2.useEffect, useLayoutEffect3 = React2.useLayoutEffect, useDebugValue = React2.useDebugValue;
-  function useSyncExternalStore$2(subscribe, getSnapshot) {
-    var value = getSnapshot(), _useState = useState2({ inst: { value, getSnapshot } }), inst = _useState[0].inst, forceUpdate = _useState[1];
-    useLayoutEffect3(
-      function() {
-        inst.value = value;
-        inst.getSnapshot = getSnapshot;
-        checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-      },
-      [subscribe, value, getSnapshot]
-    );
-    useEffect2(
-      function() {
-        checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-        return subscribe(function() {
-          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-        });
-      },
-      [subscribe]
-    );
-    useDebugValue(value);
-    return value;
-  }
-  function checkIfSnapshotChanged(inst) {
-    var latestGetSnapshot = inst.getSnapshot;
-    inst = inst.value;
-    try {
-      var nextValue = latestGetSnapshot();
-      return !objectIs(inst, nextValue);
-    } catch (error) {
-      return true;
-    }
-  }
-  function useSyncExternalStore$1(subscribe, getSnapshot) {
-    return getSnapshot();
-  }
-  var shim2 = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1 : useSyncExternalStore$2;
-  useSyncExternalStoreShim_production.useSyncExternalStore = void 0 !== React2.useSyncExternalStore ? React2.useSyncExternalStore : shim2;
-  return useSyncExternalStoreShim_production;
-}
-var useSyncExternalStoreShim_development = {};
-/**
- * @license React
- * use-sync-external-store-shim.development.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var hasRequiredUseSyncExternalStoreShim_development;
-function requireUseSyncExternalStoreShim_development() {
-  if (hasRequiredUseSyncExternalStoreShim_development) return useSyncExternalStoreShim_development;
-  hasRequiredUseSyncExternalStoreShim_development = 1;
-  "production" !== process.env.NODE_ENV && (function() {
-    function is(x2, y) {
-      return x2 === y && (0 !== x2 || 1 / x2 === 1 / y) || x2 !== x2 && y !== y;
-    }
-    function useSyncExternalStore$2(subscribe, getSnapshot) {
-      didWarnOld18Alpha || void 0 === React2.startTransition || (didWarnOld18Alpha = true, console.error(
-        "You are using an outdated, pre-release alpha of React 18 that does not support useSyncExternalStore. The use-sync-external-store shim will not work correctly. Upgrade to a newer pre-release."
-      ));
-      var value = getSnapshot();
-      if (!didWarnUncachedGetSnapshot) {
-        var cachedValue = getSnapshot();
-        objectIs(value, cachedValue) || (console.error(
-          "The result of getSnapshot should be cached to avoid an infinite loop"
-        ), didWarnUncachedGetSnapshot = true);
-      }
-      cachedValue = useState2({
-        inst: { value, getSnapshot }
-      });
-      var inst = cachedValue[0].inst, forceUpdate = cachedValue[1];
-      useLayoutEffect3(
-        function() {
-          inst.value = value;
-          inst.getSnapshot = getSnapshot;
-          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-        },
-        [subscribe, value, getSnapshot]
-      );
-      useEffect2(
-        function() {
-          checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-          return subscribe(function() {
-            checkIfSnapshotChanged(inst) && forceUpdate({ inst });
-          });
-        },
-        [subscribe]
-      );
-      useDebugValue(value);
-      return value;
-    }
-    function checkIfSnapshotChanged(inst) {
-      var latestGetSnapshot = inst.getSnapshot;
-      inst = inst.value;
-      try {
-        var nextValue = latestGetSnapshot();
-        return !objectIs(inst, nextValue);
-      } catch (error) {
-        return true;
-      }
-    }
-    function useSyncExternalStore$1(subscribe, getSnapshot) {
-      return getSnapshot();
-    }
-    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-    var React2 = React__default, objectIs = "function" === typeof Object.is ? Object.is : is, useState2 = React2.useState, useEffect2 = React2.useEffect, useLayoutEffect3 = React2.useLayoutEffect, useDebugValue = React2.useDebugValue, didWarnOld18Alpha = false, didWarnUncachedGetSnapshot = false, shim2 = "undefined" === typeof window || "undefined" === typeof window.document || "undefined" === typeof window.document.createElement ? useSyncExternalStore$1 : useSyncExternalStore$2;
-    useSyncExternalStoreShim_development.useSyncExternalStore = void 0 !== React2.useSyncExternalStore ? React2.useSyncExternalStore : shim2;
-    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
-  })();
-  return useSyncExternalStoreShim_development;
-}
-var hasRequiredShim;
-function requireShim() {
-  if (hasRequiredShim) return shim.exports;
-  hasRequiredShim = 1;
-  if (process.env.NODE_ENV === "production") {
-    shim.exports = requireUseSyncExternalStoreShim_production();
-  } else {
-    shim.exports = requireUseSyncExternalStoreShim_development();
-  }
-  return shim.exports;
-}
-/**
- * @license React
- * use-sync-external-store-shim/with-selector.production.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var hasRequiredWithSelector_production;
-function requireWithSelector_production() {
-  if (hasRequiredWithSelector_production) return withSelector_production;
-  hasRequiredWithSelector_production = 1;
-  var React2 = React__default, shim2 = requireShim();
-  function is(x2, y) {
-    return x2 === y && (0 !== x2 || 1 / x2 === 1 / y) || x2 !== x2 && y !== y;
-  }
-  var objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore = shim2.useSyncExternalStore, useRef2 = React2.useRef, useEffect2 = React2.useEffect, useMemo2 = React2.useMemo, useDebugValue = React2.useDebugValue;
-  withSelector_production.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual2) {
-    var instRef = useRef2(null);
-    if (null === instRef.current) {
-      var inst = { hasValue: false, value: null };
-      instRef.current = inst;
-    } else inst = instRef.current;
-    instRef = useMemo2(
-      function() {
-        function memoizedSelector(nextSnapshot) {
-          if (!hasMemo) {
-            hasMemo = true;
-            memoizedSnapshot = nextSnapshot;
-            nextSnapshot = selector(nextSnapshot);
-            if (void 0 !== isEqual2 && inst.hasValue) {
-              var currentSelection = inst.value;
-              if (isEqual2(currentSelection, nextSnapshot))
-                return memoizedSelection = currentSelection;
-            }
-            return memoizedSelection = nextSnapshot;
-          }
-          currentSelection = memoizedSelection;
-          if (objectIs(memoizedSnapshot, nextSnapshot)) return currentSelection;
-          var nextSelection = selector(nextSnapshot);
-          if (void 0 !== isEqual2 && isEqual2(currentSelection, nextSelection))
-            return memoizedSnapshot = nextSnapshot, currentSelection;
-          memoizedSnapshot = nextSnapshot;
-          return memoizedSelection = nextSelection;
-        }
-        var hasMemo = false, memoizedSnapshot, memoizedSelection, maybeGetServerSnapshot = void 0 === getServerSnapshot ? null : getServerSnapshot;
-        return [
-          function() {
-            return memoizedSelector(getSnapshot());
-          },
-          null === maybeGetServerSnapshot ? void 0 : function() {
-            return memoizedSelector(maybeGetServerSnapshot());
-          }
-        ];
-      },
-      [getSnapshot, getServerSnapshot, selector, isEqual2]
-    );
-    var value = useSyncExternalStore(subscribe, instRef[0], instRef[1]);
-    useEffect2(
-      function() {
-        inst.hasValue = true;
-        inst.value = value;
-      },
-      [value]
-    );
-    useDebugValue(value);
-    return value;
-  };
-  return withSelector_production;
-}
-var withSelector_development = {};
-/**
- * @license React
- * use-sync-external-store-shim/with-selector.development.js
- *
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var hasRequiredWithSelector_development;
-function requireWithSelector_development() {
-  if (hasRequiredWithSelector_development) return withSelector_development;
-  hasRequiredWithSelector_development = 1;
-  "production" !== process.env.NODE_ENV && (function() {
-    function is(x2, y) {
-      return x2 === y && (0 !== x2 || 1 / x2 === 1 / y) || x2 !== x2 && y !== y;
-    }
-    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-    var React2 = React__default, shim2 = requireShim(), objectIs = "function" === typeof Object.is ? Object.is : is, useSyncExternalStore = shim2.useSyncExternalStore, useRef2 = React2.useRef, useEffect2 = React2.useEffect, useMemo2 = React2.useMemo, useDebugValue = React2.useDebugValue;
-    withSelector_development.useSyncExternalStoreWithSelector = function(subscribe, getSnapshot, getServerSnapshot, selector, isEqual2) {
-      var instRef = useRef2(null);
-      if (null === instRef.current) {
-        var inst = { hasValue: false, value: null };
-        instRef.current = inst;
-      } else inst = instRef.current;
-      instRef = useMemo2(
-        function() {
-          function memoizedSelector(nextSnapshot) {
-            if (!hasMemo) {
-              hasMemo = true;
-              memoizedSnapshot = nextSnapshot;
-              nextSnapshot = selector(nextSnapshot);
-              if (void 0 !== isEqual2 && inst.hasValue) {
-                var currentSelection = inst.value;
-                if (isEqual2(currentSelection, nextSnapshot))
-                  return memoizedSelection = currentSelection;
-              }
-              return memoizedSelection = nextSnapshot;
-            }
-            currentSelection = memoizedSelection;
-            if (objectIs(memoizedSnapshot, nextSnapshot))
-              return currentSelection;
-            var nextSelection = selector(nextSnapshot);
-            if (void 0 !== isEqual2 && isEqual2(currentSelection, nextSelection))
-              return memoizedSnapshot = nextSnapshot, currentSelection;
-            memoizedSnapshot = nextSnapshot;
-            return memoizedSelection = nextSelection;
-          }
-          var hasMemo = false, memoizedSnapshot, memoizedSelection, maybeGetServerSnapshot = void 0 === getServerSnapshot ? null : getServerSnapshot;
-          return [
-            function() {
-              return memoizedSelector(getSnapshot());
-            },
-            null === maybeGetServerSnapshot ? void 0 : function() {
-              return memoizedSelector(maybeGetServerSnapshot());
-            }
-          ];
-        },
-        [getSnapshot, getServerSnapshot, selector, isEqual2]
-      );
-      var value = useSyncExternalStore(subscribe, instRef[0], instRef[1]);
-      useEffect2(
-        function() {
-          inst.hasValue = true;
-          inst.value = value;
-        },
-        [value]
-      );
-      useDebugValue(value);
-      return value;
-    };
-    "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
-  })();
-  return withSelector_development;
-}
-var hasRequiredWithSelector;
-function requireWithSelector() {
-  if (hasRequiredWithSelector) return withSelector.exports;
-  hasRequiredWithSelector = 1;
-  if (process.env.NODE_ENV === "production") {
-    withSelector.exports = requireWithSelector_production();
-  } else {
-    withSelector.exports = requireWithSelector_development();
-  }
-  return withSelector.exports;
-}
-var withSelectorExports = requireWithSelector();
-const useSyncExternalStoreExports = /* @__PURE__ */ getDefaultExportFromCjs(withSelectorExports);
-const { useSyncExternalStoreWithSelector } = useSyncExternalStoreExports;
-const identity = (arg) => arg;
-function useStoreWithEqualityFn(api, selector = identity, equalityFn) {
-  const slice2 = useSyncExternalStoreWithSelector(
-    api.subscribe,
-    api.getState,
-    api.getInitialState,
-    selector,
-    equalityFn
-  );
-  React__default.useDebugValue(slice2);
-  return slice2;
-}
-const WaldiezContext = createContext(null);
-function useWaldiez(selector, equalityFn) {
-  const store = useContext(WaldiezContext);
-  if (!store) {
-    console.error("DEBUG: Missing WaldiezContext.Provider in the tree");
-    throw new Error("Missing WaldiezContext.Provider in the tree");
-  }
-  return useStoreWithEqualityFn(store, selector, shallow);
-}
-const useWaldiezHistory = (selector) => {
-  const store = useContext(WaldiezContext);
-  if (!store) {
-    throw new Error("Missing WaldiezContext.Provider in the tree");
-  }
-  return useStoreWithEqualityFn(store.temporal, selector, shallow);
-};
-const richTypes = { Date: true, RegExp: true, String: true, Number: true };
-function diff(obj, newObj, options2 = { cyclesFix: true }, _stack = []) {
-  let diffs = [];
-  const isObjArray = Array.isArray(obj);
-  for (const key in obj) {
-    const objKey = obj[key];
-    const path = isObjArray ? +key : key;
-    if (!(key in newObj)) {
-      diffs.push({
-        type: "REMOVE",
-        path: [path],
-        oldValue: obj[key]
-      });
-      continue;
-    }
-    const newObjKey = newObj[key];
-    const areCompatibleObjects = typeof objKey === "object" && typeof newObjKey === "object" && Array.isArray(objKey) === Array.isArray(newObjKey);
-    if (objKey && newObjKey && areCompatibleObjects && !richTypes[Object.getPrototypeOf(objKey)?.constructor?.name] && (!options2.cyclesFix || !_stack.includes(objKey))) {
-      diffs.push.apply(diffs, diff(objKey, newObjKey, options2, options2.cyclesFix ? _stack.concat([objKey]) : []).map((difference) => {
-        difference.path.unshift(path);
-        return difference;
-      }));
-    } else if (objKey !== newObjKey && // treat NaN values as equivalent
-    !(Number.isNaN(objKey) && Number.isNaN(newObjKey)) && !(areCompatibleObjects && (isNaN(objKey) ? objKey + "" === newObjKey + "" : +objKey === +newObjKey))) {
-      diffs.push({
-        path: [path],
-        type: "CHANGE",
-        value: newObjKey,
-        oldValue: objKey
-      });
-    }
-  }
-  const isNewObjArray = Array.isArray(newObj);
-  for (const key in newObj) {
-    if (!(key in obj)) {
-      diffs.push({
-        type: "CREATE",
-        path: [isNewObjArray ? +key : key],
-        value: newObj[key]
-      });
-    }
-  }
-  return diffs;
-}
-const getAgentNode = (agentType, position2, parentId) => {
-  const newAgent = WaldiezAgent.create(agentType);
-  const agentNode = agentMapper.asNode(newAgent, position2);
-  agentNode.data.parentId = parentId;
-  if (agentType === "rag_user_proxy") {
-    const agentExtras = new WaldiezAgentRagUserData();
-    agentNode.data = { ...agentNode.data, ...agentExtras };
-  } else if (agentType === "reasoning") {
-    const agentExtras = new WaldiezAgentReasoningData();
-    agentNode.data = { ...agentNode.data, ...agentExtras };
-  } else if (agentType === "captain") {
-    const agentExtras = new WaldiezAgentCaptainData();
-    agentNode.data = { ...agentNode.data, ...agentExtras };
-  } else if (agentType === "group_manager") {
-    const agentExtras = new WaldiezAgentGroupManagerData();
-    agentExtras.groupName = "Group";
-    agentNode.data = { ...agentNode.data, ...agentExtras };
-  }
-  if (parentId) {
-    agentNode.parentId = parentId;
-    agentNode.extent = "parent";
-  }
-  return agentNode;
-};
-const getAgentConnections = (nodes, edges, nodeId, options2) => {
-  if (!options2) {
-    options2 = {
-      sourcesOnly: false,
-      targetsOnly: false
-    };
-  }
-  const sourceConnectedNodes = [];
-  const sourceConnectionEdges = [];
-  const targetConnectedNodes = [];
-  const targetConnectionEdges = [];
-  for (const edge of edges) {
-    const { sourceNode, targetNode } = getAgentEdgeConnections(nodeId, edge, nodes, options2);
-    if (sourceNode) {
-      sourceConnectedNodes.push(sourceNode);
-      sourceConnectionEdges.push(edge);
-    }
-    if (targetNode) {
-      targetConnectedNodes.push(targetNode);
-      targetConnectionEdges.push(edge);
-    }
-  }
-  return {
-    sources: {
-      nodes: sourceConnectedNodes,
-      edges: sourceConnectionEdges
-    },
-    targets: {
-      nodes: targetConnectedNodes,
-      edges: targetConnectionEdges
-    }
-  };
-};
-const getAgentEdgeConnections = (nodeId, edge, nodes, options2) => {
-  let targetNode;
-  let sourceNode;
-  if (edge.target === nodeId && !options2.targetsOnly) {
-    sourceNode = nodes.find((node2) => node2.id === edge.source);
-  }
-  if (edge.source === nodeId && !options2.sourcesOnly) {
-    targetNode = nodes.find((node2) => node2.id === edge.target);
-  }
-  return { sourceNode, targetNode };
-};
-const calculateNewNodePosition = (rfInstance, flowWrapper, currentNodesCount, entriesDistance) => {
-  const zoom = rfInstance?.getZoom() ?? 1;
-  const flowWrapperRect = flowWrapper.getBoundingClientRect();
-  const canvasWidth = flowWrapperRect.width / zoom;
-  const maxNodesPerRow = Math.floor(canvasWidth / (entriesDistance.x * 1.1));
-  const x2 = currentNodesCount % maxNodesPerRow * entriesDistance.x;
-  let y = Math.floor(currentNodesCount / maxNodesPerRow) * entriesDistance.y;
-  if (y === 0) {
-    y += 10;
-  } else {
-    y -= 5;
-  }
-  return { x: x2, y };
-};
-const getNewNodePosition = (currentNodesCount, flowId, rfInstance, entriesDistance = { x: 200, y: 140 }) => {
-  const flowRoot = getFlowRoot(flowId);
-  if (!flowRoot) {
-    return { x: 0, y: 0 };
-  }
-  const flowWrapper = flowRoot.querySelector(".react-flow-wrapper");
-  if (!flowWrapper) {
-    return { x: 0, y: 0 };
-  }
-  return calculateNewNodePosition(
-    rfInstance,
-    flowWrapper,
-    currentNodesCount,
-    entriesDistance
-  );
-};
-const setViewPortTopLeft = (rfInstance) => {
-  if (rfInstance) {
-    const zoom = rfInstance.getZoom();
-    rfInstance.setViewport({
-      zoom,
-      x: 20,
-      y: 40
-    }).then(() => {
-    });
-  }
-};
-const reArrangeNodes = (nodes, flowId, nodeType, rfInstance) => {
-  let nodesAdded = 0;
-  const newNodes = [];
-  nodes.forEach((node2) => {
-    if (node2.type === nodeType) {
-      const position2 = getNewNodePosition(nodesAdded, flowId, rfInstance);
-      newNodes.push({ ...node2, position: position2 });
-      nodesAdded++;
-    } else {
-      newNodes.push(node2);
-    }
-  });
-  return newNodes;
-};
-const edgeCommonStyle = (edgeType, color) => ({
-  markerEnd: edgeType !== "nested" ? {
-    type: MarkerType.ArrowClosed,
-    color,
-    width: 10,
-    height: 10
-  } : void 0,
-  style: {
-    stroke: color,
-    strokeWidth: 1
-  }
-});
-const getNewEdgeNodes = (allNodes, source, target) => {
-  const sourceNode = allNodes.find((node2) => node2.id === source);
-  if (!sourceNode) {
-    return { sourceNode: null, targetNode: null };
-  }
-  const targetNode = allNodes.find((node2) => node2.id === target);
-  if (!targetNode) {
-    return { sourceNode: null, targetNode: null };
-  }
-  return {
-    sourceNode,
-    targetNode
-  };
-};
-const getNewEdgeName = (sourceNode, targetNode) => {
-  const sourceLabel = sourceNode.data.label.slice(0, 15);
-  const targetLabel = targetNode.data.label.slice(0, 15);
-  return `${sourceLabel} => ${targetLabel}`;
-};
-const getNewChatType = (sourceNode, targetNode, hidden) => {
-  if (hidden) {
-    return "hidden";
-  }
-  if (sourceNode.data.agentType === "group_manager" || targetNode.data.agentType === "group_manager") {
-    return "group";
-  }
-  if (sourceNode.data.parentId !== void 0 || targetNode.data.parentId !== void 0) {
-    return "group";
-  }
-  return "chat";
-};
-const isGroupEdge = (sourceNode, targetNode) => {
-  return sourceNode.data.parentId !== void 0 || targetNode.data.parentId !== void 0 || sourceNode.data.agentType === "group_manager" || targetNode.data.agentType === "group_manager";
-};
-const shouldNotCreateGroupEdge = (sourceNode, targetNode, allEdges, flowId) => {
-  if (typeof sourceNode.data.agentType !== "string" || typeof targetNode.data.agentType !== "string") {
-    showSnackbar({
-      flowId,
-      message: `Could not create a connection from ${sourceNode.data.label} to ${targetNode.data.label}`,
-      level: "warning",
-      details: "Invalid agent type",
-      withCloseButton: true
-    });
-    return true;
-  }
-  if (!sourceNode.data.parentId && !["user_proxy", "rag_user_proxy", "group_manager"].includes(sourceNode.data.agentType)) {
-    showSnackbar({
-      flowId,
-      message: `Invalid source agent type: ${getFriendlyString(sourceNode.data.agentType)}`,
-      level: "warning",
-      details: void 0,
-      withCloseButton: true
-    });
-    return true;
-  }
-  if (!sourceNode.data.parentId && targetNode.data.parentId) {
-    showSnackbar({
-      flowId,
-      message: "A connection from a non-group member to a group member is not allowed",
-      level: "warning",
-      details: void 0,
-      withCloseButton: true
-    });
-    return true;
-  }
-  if (targetNode.data.agentType === "group_manager") {
-    const edgesWithTheSameTarget = allEdges.filter((edge) => edge.target === targetNode.id);
-    if (edgesWithTheSameTarget.length > 0) {
-      showSnackbar({
-        flowId,
-        message: "A connection to this group manager already exists",
-        level: "warning",
-        details: void 0,
-        withCloseButton: true
-      });
-      return true;
-    }
-  }
-  return false;
-};
-const getNewEdge = (params) => {
-  const { flowId, hidden, positionGetter, sourceNode, targetNode, edges } = params;
-  if (isGroupEdge(sourceNode, targetNode)) {
-    if (shouldNotCreateGroupEdge(sourceNode, targetNode, edges, flowId)) {
-      return null;
-    }
-  }
-  const sourceType = sourceNode.data.agentType;
-  const { chat, chatType } = getNewChat(sourceNode, targetNode, hidden, positionGetter);
-  const newEdge = chatMapper.asEdge(chat);
-  const color = AGENT_COLORS[sourceType];
-  const isFromGroupToOutside = !!sourceNode.data.parentId && !targetNode.data.parentId;
-  return {
-    ...newEdge,
-    type: chatType,
-    animated: isFromGroupToOutside,
-    selected: true,
-    ...edgeCommonStyle(chatType, color)
-  };
-};
-const getNewChat = (sourceNode, targetNode, hidden, positionGetter) => {
-  const edgeName = getNewEdgeName(sourceNode, targetNode);
-  const sourceType = sourceNode.data.agentType;
-  const targetType = targetNode.data.agentType;
-  const chatData = new WaldiezChatData();
-  chatData.sourceType = sourceType;
-  chatData.targetType = targetType;
-  chatData.description = `${sourceNode.data.label} to ${targetNode.data.label}`;
-  chatData.condition = {
-    conditionType: "string_llm",
-    prompt: ""
-  };
-  chatData.name = edgeName;
-  chatData.order = -1;
-  const chatType = getNewChatType(sourceNode, targetNode, hidden);
-  chatData.position = positionGetter(chatType);
-  const chat = new WaldiezChat({
-    id: `wc-${getId()}`,
-    data: chatData,
-    type: chatType,
-    source: sourceNode.id,
-    target: targetNode.id,
-    rest: {}
-  });
-  return { chat, chatType };
-};
-const getNewChatsOfType = (allEdges, type) => {
-  const edgesOfType = allEdges.filter((edge) => edge.type === type);
-  const edgesOfTypeBySource = {};
-  edgesOfType.forEach((edge) => {
-    if (!edgesOfTypeBySource[edge.source]) {
-      edgesOfTypeBySource[edge.source] = [];
-    }
-    edgesOfTypeBySource[edge.source]?.push(edge);
-  });
-  return edgesOfType.map((edge, index2) => {
-    return {
-      ...edge,
-      data: { ...edge.data, position: index2 + 1 }
-    };
-  });
-};
-const getNewChatEdges = (allEdges) => {
-  return getNewChatsOfType(allEdges, "chat");
-};
-const getNewNestedEdges = (allEdges) => {
-  return getNewChatsOfType(allEdges, "nested");
-};
-const getNewHiddenEdges = (allEdges) => {
-  return getNewChatsOfType(allEdges, "hidden");
-};
-const getNewGroupEdges = (allEdges) => {
-  return getNewChatsOfType(allEdges, "group");
-};
-const resetEdgeOrdersAndPositions = (get, set) => {
-  resetEdgePositions(get, set);
-  resetEdgeOrders(get, set);
-};
-const shouldReconnect = (newConnection, nodes) => {
-  const newTarget = nodes.find((node2) => node2.id === newConnection.target);
-  const newSource = nodes.find((node2) => node2.id === newConnection.source);
-  return !(!newSource || !newTarget);
-};
-const getNewEdgeConnectionProps = (oldEdge, newConnection, nodes) => {
-  let oldSourceNode;
-  let oldTargetNode;
-  let newSourceNode;
-  let newTargetNode;
-  let color;
-  for (const node2 of nodes) {
-    if (node2.id === oldEdge.source) {
-      oldSourceNode = node2;
-    }
-    if (node2.id === oldEdge.target) {
-      oldTargetNode = node2;
-    }
-    if (node2.id === newConnection.source) {
-      newSourceNode = node2;
-      color = AGENT_COLORS[newSourceNode.data.agentType];
-    }
-    if (node2.id === newConnection.target) {
-      newTargetNode = node2;
-    }
-    if (oldSourceNode && oldTargetNode && newSourceNode && newTargetNode) {
-      break;
-    }
-  }
-  return {
-    oldSourceNode,
-    oldTargetNode,
-    newSourceNode,
-    newTargetNode,
-    color
-  };
-};
-const updateNestedEdges = (get, set) => {
-  const agentNodes = get().nodes.filter((node2) => node2.type === "agent");
-  const nestedEdges = [];
-  const nestedEdgeIds = [];
-  agentNodes.forEach((agentNode) => {
-    const nestedChats = agentNode.data.nestedChats ?? [];
-    nestedChats.forEach((nestedChat) => {
-      const messages = nestedChat.messages;
-      let edgeIndex = 0;
-      messages.forEach((message) => {
-        const edge = get().edges.find((edge2) => edge2.id === message.id);
-        if (edge && edge.type === "nested" && !nestedEdgeIds.includes(edge.id)) {
-          nestedEdges.push({
-            ...edge,
-            data: { ...edge.data, position: edgeIndex + 1 }
-          });
-          nestedEdgeIds.push(edge.id);
-          edgeIndex++;
-        }
-      });
-    });
-  });
-  const otherEdges = get().edges.filter((edge) => !nestedEdgeIds.includes(edge.id));
-  set({
-    edges: [...otherEdges, ...nestedEdges],
-    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-  });
-};
-const resetSyncEdgeOrders = (get, set) => {
-  const edges = get().edges;
-  const sorted = edges.slice().sort((a, b) => {
-    const aOrder = a.data?.order ?? -1;
-    const bOrder = b.data?.order ?? -1;
-    return aOrder - bOrder;
-  });
-  const usedOrders = /* @__PURE__ */ new Set();
-  const finalEdges = sorted.map((edge) => {
-    let order = edge.data?.order;
-    if (!order || order < 0) {
-      return { ...edge, data: { ...edge.data, order } };
-    }
-    while (order > 0 && usedOrders.has(order)) {
-      order++;
-    }
-    usedOrders.add(order);
-    return { ...edge, data: { ...edge.data, order } };
-  });
-  set({
-    edges: finalEdges,
-    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-  });
-};
-const resetAsyncEdgeOrders = (get, set) => {
-  const usedEdges = get().edges.filter(
-    (edge) => edge.data?.order !== void 0 && edge.data.order >= 0
-  );
-  resetEdgePrerequisites(usedEdges, get, set);
-};
-/* c8 ignore next -- @preserve */
-const resetEdgePrerequisites = (edges, get, set) => {
-  const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
-  const edgesMap = new Map(edges.map((edge) => [edge.id, edge]));
-  const computeOrder = (edge) => {
-    if (!edge.data || !edge.data.prerequisites || edge.data.prerequisites.length === 0) {
-      return 0;
-    }
-    return Math.max(
-      ...edge.data.prerequisites.map((id) => {
-        const edge2 = edges.find((e) => e.id === id);
-        return edge2?.data?.order ?? 0;
-      })
-    ) + 1;
-  };
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (const edge of edges) {
-      const newOrder = computeOrder(edge);
-      if (edgesMap.get(edge.id).data?.order !== newOrder) {
-        edgesMap.get(edge.id).data.order = newOrder;
-        changed = true;
-      }
-    }
-  }
-  const updatedEdges = Array.from(edgesMap.values());
-  const remainingEdges = get().edges.filter((edge) => !updatedEdges.find((e) => e.id === edge.id)).map((edge) => {
-    return {
-      ...edge,
-      data: { ...edge.data, order: -1, prerequisites: [] }
-    };
-  });
-  set({
-    edges: [...updatedEdges, ...remainingEdges],
-    updatedAt
-  });
-};
-const resetEdgeOrders = (get, set) => {
-  const isAsync = get().isAsync;
-  isAsync ? resetAsyncEdgeOrders(get, set) : resetSyncEdgeOrders(get, set);
-};
-const resetEdgePositions = (get, set) => {
-  const edges = get().edges;
-  const newEdges = edges.map((edge) => {
-    return {
-      ...edge,
-      data: { ...edge.data, position: 1 }
-    };
-  });
-  const newChatEdges = getNewChatEdges(newEdges);
-  const newNestedEdges = getNewNestedEdges(newEdges);
-  const newHiddenEdges = getNewHiddenEdges(newEdges);
-  const newGroupEdges = getNewGroupEdges(newEdges);
-  const allEdges = [...newChatEdges, ...newNestedEdges, ...newHiddenEdges, ...newGroupEdges];
-  const edgeIds = allEdges.map((edge) => edge.id);
-  const uniqueEdgeIds = Array.from(new Set(edgeIds));
-  const uniqueEdges = allEdges.filter((edge) => uniqueEdgeIds.includes(edge.id));
-  set({
-    edges: uniqueEdges,
-    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-  });
-  updateNestedEdges(get, set);
-};
-const mergeTags = (currentTags, newTags) => {
-  return Array.from(/* @__PURE__ */ new Set([...currentTags, ...newTags]));
-};
-const mergeRequirements = (currentRequirements, newRequirements) => {
-  return Array.from(/* @__PURE__ */ new Set([...currentRequirements, ...newRequirements]));
-};
-const mergeEdges = (allNodes, currentEdges, newEdges) => {
-  const isEmpty = allNodes.length === 0 && currentEdges.length === 0;
-  if (isEmpty) {
-    return newEdges.map((edge) => {
-      const animated = isEdgeAnimated(edge, allNodes);
-      const hidden = edge.type === "hidden";
-      return { ...edge, animated, hidden };
-    });
-  }
-  const unorderedEdges = newEdges.map((edge) => {
-    return { ...edge, data: { ...edge.data, order: -1 } };
-  });
-  const nonDuplicateEdges = unorderedEdges.filter(
-    (edge) => !currentEdges.find((currentEdge) => currentEdge.id === edge.id)
-  );
-  return [...currentEdges, ...nonDuplicateEdges].map((edge) => {
-    const animated = isEdgeAnimated(edge, allNodes);
-    const hidden = edge.type === "hidden";
-    return { ...edge, animated, hidden };
-  });
-};
-const mergeNodes = (currentNodes, newNodes, typeShown) => {
-  const nonDuplicateNodes = newNodes.filter(
-    (node2) => !currentNodes.find((currentNode) => currentNode.id === node2.id)
-  );
-  return [...currentNodes, ...nonDuplicateNodes].map((node2) => {
-    if (node2.type === typeShown) {
-      return { ...node2, hidden: false };
-    }
-    return { ...node2, hidden: true };
-  });
-};
-const mergeFlowName = (currentName, newName, currentNodes, currentEdges) => {
-  if (currentNodes.length === 0 && currentEdges.length === 0) {
-    return newName;
-  }
-  return currentName;
-};
-const mergeFlowDescription = (currentDescription, newDescription, currentNodes, currentEdges) => {
-  if (currentNodes.length === 0 && currentEdges.length === 0) {
-    return newDescription;
-  }
-  return currentDescription;
-};
-const loadFlow = (items, currentFlow, newFlow, typeShown) => {
-  let mergedFlow = items.override ? { ...newFlow, nodes: [], edges: [] } : { ...currentFlow };
-  if (items.everything) {
-    const mergedNodes = items.override ? newFlow.nodes : mergeNodes(currentFlow.nodes, newFlow.nodes, typeShown);
-    mergedFlow = items.override ? newFlow : {
-      ...mergedFlow,
-      name: mergeFlowName(currentFlow.name, newFlow.name, currentFlow.nodes, currentFlow.edges),
-      description: mergeFlowDescription(
-        currentFlow.description,
-        newFlow.description,
-        currentFlow.nodes,
-        currentFlow.edges
-      ),
-      tags: mergeTags(currentFlow.tags, newFlow.tags),
-      requirements: mergeRequirements(currentFlow.requirements, newFlow.requirements),
-      isAsync: newFlow.isAsync ?? currentFlow.isAsync,
-      cacheSeed: newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 42,
-      nodes: mergedNodes,
-      edges: mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges)
-    };
-  } else {
-    selectivelyOverrideOrMergeFlow(items, currentFlow, newFlow, typeShown, mergedFlow);
-  }
-  return mergedFlow;
-};
-const selectivelyOverrideOrMergeFlow = (items, currentFlow, newFlow, typeShown, mergedFlow) => {
-  if (items.name) {
-    mergedFlow.name = newFlow.name;
-  }
-  if (items.description) {
-    mergedFlow.description = newFlow.description;
-  }
-  if (items.tags) {
-    mergedFlow.tags = mergeTags(currentFlow.tags, newFlow.tags);
-  }
-  if (items.requirements) {
-    mergedFlow.requirements = mergeRequirements(currentFlow.requirements, newFlow.requirements);
-  }
-  if (items.isAsync) {
-    mergedFlow.isAsync = newFlow.isAsync ?? currentFlow.isAsync;
-  }
-  if (items.cacheSeed) {
-    mergedFlow.cacheSeed = newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 42;
-  }
-  const itemNodes = [...items.nodes.models, ...items.nodes.tools, ...items.nodes.agents];
-  const itemNodeIds = itemNodes.map((node2) => node2.id);
-  const newFlowNodesToUse = newFlow.nodes.filter((node2) => itemNodeIds.includes(node2.id));
-  const mergedNodes = items.override ? newFlowNodesToUse : mergeNodes(currentFlow.nodes, newFlowNodesToUse, typeShown);
-  mergedFlow.nodes = mergedNodes;
-  mergedFlow.edges = items.override ? newFlow.edges : mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges);
-};
-/* c8 ignore next -- @preserve */
-const isEdgeAnimated = (edge, nodes) => {
-  if (edge.type === "nested") {
-    return true;
-  }
-  const sourceNode = nodes.find((node2) => node2.id === edge.source);
-  const targetNode = nodes.find((node2) => node2.id === edge.target);
-  if (!sourceNode || !targetNode) {
-    return false;
-  }
-  return false;
-};
-const reArrangeModels = (get, set) => {
-  const nodes = reArrangeNodes(get().nodes, get().flowId, "model", get().rfInstance);
-  set({
-    nodes,
-    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-  });
-  return nodes;
-};
-const reArrangeTools = (get, set) => {
-  const nodes = reArrangeNodes(get().nodes, get().flowId, "tool", get().rfInstance);
-  set({
-    nodes,
-    updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-  });
-  return nodes;
-};
-class WaldiezAgentStore {
-  get;
-  set;
-  /**
-   * Constructor for the WaldiezAgentStore class.
-   * @param get - Function to get the current state of the store.
-   * @param set - Function to set the new state of the store.
-   */
-  constructor(get, set) {
-    this.get = get;
-    this.set = set;
-  }
-  /**
-   * Static method to create an instance of WaldiezAgentStore.
-   * @param get - Function to get the current state of the store.
-   * @param set - Function to set the new state of the store.
-   * @returns An instance of WaldiezAgentStore.
-   */
-  static create(get, set) {
-    return new WaldiezAgentStore(get, set);
-  }
-  /**
-   * Retrieves the current state of the agent store.
-   * @returns The current state of the agent store.
-   * @see {@link IWaldiezAgentStore.getAgents}
-   */
-  getAgents = () => {
-    return this.get().nodes.filter((node2) => node2.type === "agent");
-  };
-  /**
-   * Retrieves an agent by its ID.
-   * @param id - The ID of the agent to retrieve.
-   * @returns The agent with the specified ID, or null if not found.
-   * @see {@link IWaldiezAgentStore.getAgentById}
-   */
-  getAgentById = (id) => {
-    const agent = this.get().nodes.find((node2) => node2.id === id);
-    if (!agent || agent.type !== "agent") {
-      return null;
-    }
-    return agent;
-  };
-  /**
-   * Adds a new agent to the store.
-   * @param agentType - The type of the agent to add.
-   * @param position - The position of the agent in the graph.
-   * @param parentId - The ID of the parent agent, if any.
-   * @returns The newly added agent node.
-   * @see {@link IWaldiezAgentStore.addAgent}
-   */
-  addAgent = (agentType, position2, parentId) => {
-    const agentNode = getAgentNode(agentType, position2, parentId);
-    agentNode.style = {
-      width: agentType === "group_manager" ? INITIAL_AGENT_SIZE.group_manager.width : agentType !== "user_proxy" ? INITIAL_AGENT_SIZE.other.width : INITIAL_AGENT_SIZE.user.width
-    };
-    if (agentType === "group_manager") {
-      this.set({
-        nodes: [agentNode, ...this.get().nodes],
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-    } else {
-      this.set({
-        nodes: [...this.get().nodes, agentNode],
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-    }
-    return agentNode;
-  };
-  /**
-   * Clones an existing agent by its ID.
-   * @param id - The ID of the agent to clone.
-   * @returns The cloned agent node, or null if the agent was not found.
-   * @see {@link IWaldiezAgentStore.cloneAgent}
-   */
-  cloneAgent = (id) => {
-    const agent = this.get().nodes.find((node2) => node2.id === id);
-    if (agent) {
-      const newName = agent.data.label + " (copy)";
-      const position2 = {
-        x: agent.position.x + (agent.width ?? 100) + 40,
-        y: agent.position.y + (agent.height ?? 100) + 40
-      };
-      const newAgent = {
-        ...agent,
-        position: position2,
-        id: getId(),
-        data: { ...agent.data, label: newName }
-      };
-      this.set({
-        nodes: [...this.get().nodes, newAgent],
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-      setTimeout(() => {
-        this.set({
-          nodes: this.get().nodes.map((node2) => {
-            if (node2.id === newAgent.id) {
-              return { ...node2, selected: true };
-            }
-            return { ...node2, selected: false };
-          })
-        });
-      }, 10);
-      return newAgent;
-    }
-    return null;
-  };
-  /**
-   * Updates the data of an agent by its ID.
-   * @param id - The ID of the agent to update.
-   * @param data - The new data to set for the agent.
-   * @see {@link IWaldiezAgentStore.updateAgentData}
-   */
-  updateAgentData = (id, data) => {
-    this.set({
-      nodes: this.get().nodes.map((node2) => {
-        if (node2.id === id) {
-          if (data.parentId !== node2.data.parentId) {
-            node2.parentId = data.parentId ?? void 0;
-            node2.extent = data.parentId ? "parent" : void 0;
-          }
-          return {
-            ...node2,
-            data: { ...node2.data, ...data }
-          };
-        }
-        return node2;
-      }),
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    resetEdgeOrdersAndPositions(this.get, this.set);
-  };
-  /**
-   * Deletes an agent by its ID.
-   * @param id - The ID of the agent to delete.
-   * @see {@link IWaldiezAgentStore.deleteAgent}
-   */
-  deleteAgent = (id) => {
-    const agent = this.get().nodes.find((node2) => node2.id === id);
-    if (agent) {
-      const idsToRemove = [id];
-      const idsToResetParent = [];
-      if (agent.data.agentType === "group_manager") {
-        const groupMembers = this.getGroupMembers(id);
-        idsToResetParent.push(...groupMembers.map((member) => member.id));
-      }
-      this.set({
-        nodes: this.get().nodes.filter((node2) => !idsToRemove.includes(node2.id)).map((node2) => {
-          if (idsToResetParent.includes(node2.id)) {
-            node2.parentId = void 0;
-            node2.data.parentId = void 0;
-            node2.extent = void 0;
-          }
-          return node2;
-        }),
-        edges: this.get().edges.filter(
-          (edge) => !idsToRemove.includes(edge.source) && !idsToRemove.includes(edge.target)
-        ).map((edge) => {
-          if (idsToResetParent.includes(edge.source) || idsToResetParent.includes(edge.target)) {
-            return {
-              ...edge,
-              animated: false,
-              type: "chat"
-            };
-          }
-          return edge;
-        }),
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-    } else {
-      this.set({
-        nodes: this.get().nodes.filter((node2) => node2.id !== id),
-        edges: this.get().edges.filter((edge) => edge.source !== id && edge.target !== id),
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-    }
-    resetEdgeOrdersAndPositions(this.get, this.set);
-  };
-  /**
-   * Imports an agent from a JSON object.
-   * @param agent - The agent data to import.
-   * @param agentId - The ID to assign to the imported agent.
-   * @param skipLinks - Whether to skip importing links.
-   * @param position - The position to place the imported agent in the graph.
-   * @param save - Whether to save the imported agent to the store.
-   * @returns The newly imported agent node.
-   * @see {@link IWaldiezAgentStore.importAgent}
-   */
-  importAgent = (agent, agentId, skipLinks, position2, save = true) => {
-    const newAgent = agentMapper.importAgent(agent, agentId);
-    const newAgentNode = agentMapper.asNode(newAgent, position2, skipLinks);
-    if (position2) {
-      newAgentNode.position = position2;
-    }
-    if (save) {
-      this.set({
-        nodes: [...this.get().nodes, { ...newAgentNode }],
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-    }
-    return newAgentNode;
-  };
-  /**
-   * Exports an agent by its ID.
-   * @param agentId - The ID of the agent to export.
-   * @param hideSecrets - Whether to hide sensitive information in the exported data.
-   * @returns The exported agent data.
-   * @see {@link IWaldiezAgentStore.exportAgent}
-   */
-  exportAgent = (agentId, hideSecrets) => {
-    const agent = this.get().nodes.find((node2) => node2.id === agentId);
-    if (!agent) {
-      return {};
-    }
-    return agentMapper.exportAgent(agent, hideSecrets);
-  };
-  /**
-   * Retrieves the connections of an agent by its ID.
-   * @param nodeId - The ID of the agent to get connections for.
-   * @param options - Options to filter connections (sourcesOnly, targetsOnly).
-   * @returns An array of connections for the specified agent.
-   * @see {@link IWaldiezAgentStore.getAgentConnections}
-   */
-  getAgentConnections = (nodeId, options2) => {
-    if (!options2) {
-      options2 = {
-        sourcesOnly: false,
-        targetsOnly: false
-      };
-    }
-    return getAgentConnections(this.get().nodes, this.get().edges, nodeId, options2);
-  };
-  /**
-   * Sets the agent group for a specific agent.
-   * @param agentId - The ID of the agent to set the group for.
-   * @param groupId - The ID of the group to set.
-   * @param position - The position to place the agent in the group.
-   * @see {@link IWaldiezAgentStore.setAgentGroup}
-   */
-  setAgentGroup = (agentId, groupId, position2) => {
-    this.set({
-      nodes: this.get().nodes.map((node2) => {
-        if (node2.id === agentId) {
-          return {
-            ...node2,
-            position: position2 ?? node2.position,
-            parentId: groupId,
-            extent: "parent",
-            data: {
-              ...node2.data,
-              parentId: groupId
-            }
-          };
-        }
-        return node2;
-      }),
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-  };
-  /**
-   * Retrieves the group members of a specific group by its ID.
-   * @param groupId - The ID of the group to get members for.
-   * @returns An array of agents that are members of the specified group.
-   * @see {@link IWaldiezAgentStore.getGroupMembers}
-   */
-  getGroupMembers = (groupId) => {
-    return this.get().nodes.filter(
-      (node2) => node2.type === "agent" && node2.data.parentId === groupId
-    );
-  };
-  /**
-   * Adds a member to a group by its ID.
-   * @param groupId - The ID of the group to add the member to.
-   * @param memberId - The ID of the member to add.
-   * @param position - The position to place the member in the group.
-   * @see {@link IWaldiezAgentStore.addGroupMember}
-   */
-  addGroupMember = (groupId, memberId, position2) => {
-    this.set({
-      nodes: this.get().nodes.map((node2) => {
-        if (node2.id === memberId) {
-          return {
-            ...node2,
-            position: position2 || node2.position,
-            parentId: groupId,
-            extent: "parent",
-            data: { ...node2.data, parentId: groupId }
-          };
-        }
-        return node2;
-      }),
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    resetEdgeOrdersAndPositions(this.get, this.set);
-  };
-  /**
-   * Removes a member from a group by its ID.
-   * @param groupId - The ID of the group to remove the member from.
-   * @param memberId - The ID of the member to remove.
-   * @see {@link IWaldiezAgentStore.removeGroupMember}
-   */
-  removeGroupMember = (groupId, memberId) => {
-    const nodes = [
-      ...this.get().nodes.map((node2) => {
-        if (node2.id === memberId && node2.data.parentId === groupId) {
-          node2.data.parentId = void 0;
-          node2.parentId = void 0;
-          node2.extent = void 0;
-          node2.position = {
-            x: node2.position.x + 50,
-            y: node2.position.y + 50
-          };
-        }
-        return { ...node2 };
-      })
-    ];
-    this.set({
-      nodes,
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    resetEdgeOrdersAndPositions(this.get, this.set);
-  };
-  getGroupManager = () => {
-    const result = this.get().nodes.filter((node2) => node2.type === "agent").find((agent) => agent.data.agentType === "group_manager");
-    if (result) {
-      return result;
-    }
-    return void 0;
-  };
-}
-class WaldiezChatParticipantsStore {
-  get;
-  set;
-  /**
-   * Creates an instance of WaldiezEdgeStore.
-   * @param get - A function to get the current state of the store.
-   * @param set - A function to set the new state of the store.
-   */
-  constructor(get, set) {
-    this.get = get;
-    this.set = set;
-  }
-  /**
-   * Factory method to create a new instance of WaldiezEdgeStore.
-   * @param get - A function to get the current state of the store.
-   * @param set - A function to set the new state of the store.
-   * @returns A new instance of WaldiezEdgeStore.
-   */
-  static create(get, set) {
-    return new WaldiezChatParticipantsStore(get, set);
-  }
-  setActiveParticipants = (sender, recipient) => {
-    const { activeSenderId, activeRecipientId } = this.get();
-    if (activeSenderId === sender && activeRecipientId === recipient) {
-      return;
-    }
-    this.set({ activeSenderId: sender, activeRecipientId: recipient });
-  };
-  resetActiveParticipants = () => {
-    const { activeSenderId, activeRecipientId } = this.get();
-    if (activeSenderId === null && activeRecipientId === null) {
-      return;
-    }
-    this.set({ activeSenderId: null, activeRecipientId: null });
-  };
-  setActiveEventType = (activeEventType) => {
-    this.set({ activeEventType });
-  };
-  resetActiveEventType = () => {
-    this.set({ activeEventType: null });
-  };
-}
-/* c8 ignore file -- @preserve */
-class WaldiezEdgeStore {
-  get;
-  set;
-  /**
-   * Creates an instance of WaldiezEdgeStore.
-   * @param get - A function to get the current state of the store.
-   * @param set - A function to set the new state of the store.
-   */
-  constructor(get, set) {
-    this.get = get;
-    this.set = set;
-  }
-  /**
-   * Factory method to create a new instance of WaldiezEdgeStore.
-   * @param get - A function to get the current state of the store.
-   * @param set - A function to set the new state of the store.
-   * @returns A new instance of WaldiezEdgeStore.
-   */
-  static create(get, set) {
-    return new WaldiezEdgeStore(get, set);
-  }
-  /**
-   * Retrieves all edges from the store.
-   * @returns An array of WaldiezEdge objects.
-   * @see {@link WaldiezEdge}
-   * @see {@link IWaldiezEdgeStore.getEdges}
-   */
-  getEdges = () => this.get().edges;
-  /**
-   * Retrieves an edge by its ID.
-   * @param id - The ID of the edge to retrieve.
-   * @returns The WaldiezEdge object if found, otherwise undefined.
-   * @see {@link WaldiezEdge}
-   * @see {@link IWaldiezEdgeStore.getEdgeById}
-   */
-  getEdgeById = (id) => {
-    const edge = this.get().edges.find((edge2) => edge2.id === id);
-    return edge;
-  };
-  /**
-   * Deletes an edge by its ID.
-   * This method also updates the nested chats of agent nodes to remove messages associated with the deleted edge.
-   * @param id - The ID of the edge to delete.
-   * @see {@link IWaldiezEdgeStore.deleteEdge}
-   */
-  deleteEdge = (id) => {
-    const agents = this.get().nodes.filter((node2) => node2.type === "agent");
-    const notaAgentNodes = this.get().nodes.filter((node2) => node2.type !== "agent");
-    const agentNodes = agents.map((agentNode) => {
-      const nestedChats = agentNode.data.nestedChats ?? [];
-      return {
-        ...agentNode,
-        data: {
-          ...agentNode.data,
-          nestedChats: nestedChats.map((nestedChat) => {
-            return {
-              ...nestedChat,
-              messages: nestedChat.messages.filter((message) => message.id !== id),
-              // also check if the edge sources (agent's triggeredBy) are still valid
-              triggeredBy: nestedChat.triggeredBy
-            };
-          })
-        }
-      };
-    });
-    const nodes = [...notaAgentNodes, ...agentNodes];
-    const newEdges = this.get().edges.filter((edge) => edge.id !== id);
-    this.set({
-      nodes,
-      edges: newEdges.map((edge, index2) => {
-        return {
-          ...edge,
-          data: { ...edge.data, position: index2 + 1 }
-        };
-      }),
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    this.resetEdgeOrdersAndPositions();
-  };
-  /**
-   * Updates the data of an edge by its ID.
-   * @param id - The ID of the edge to update.
-   * @param data - Partial data to update the edge with.
-   * @see {@link IWaldiezEdgeStore.updateEdgeData}
-   */
-  updateEdgeData = (id, data) => {
-    const edge = this.get().edges.find((edge2) => edge2.id === id);
-    if (edge) {
-      const updatedEdge = { ...edge, data: { ...edge.data, ...data } };
-      const edges = this.get().edges.map((edge2) => edge2.id === id ? updatedEdge : edge2);
-      this.set({ edges, updatedAt: (/* @__PURE__ */ new Date()).toISOString() });
-      this.resetEdgeOrdersAndPositions();
-    }
-  };
-  /**
-   * Updates the type of an edge by its ID.
-   * @param id - The ID of the edge to update.
-   * @param edgeType - The new type for the edge.
-   * @see {@link IWaldiezEdgeStore.updateEdgeType}
-   */
-  updateEdgeType = (id, edgeType) => {
-    this.set({
-      edges: this.get().edges.map((edge) => {
-        if (edge.id === id) {
-          const sourceNode = this.get().nodes.find((node2) => node2.id === edge.source);
-          if (!sourceNode) {
-            throw new Error(`Source node not found for edge ${id}`);
-          }
-          const color = AGENT_COLORS[sourceNode.data.agentType];
-          return {
-            ...edge,
-            type: edgeType,
-            hidden: false,
-            data: {
-              ...edge.data,
-              type: edgeType,
-              order: edgeType === "nested" ? -1 : edge.data?.order ?? -1,
-              prerequisites: edgeType === "nested" ? [] : edge.data?.prerequisites ?? []
-            },
-            animated: edgeType === "nested",
-            ...edgeCommonStyle(edgeType, color)
-          };
-        }
-        return edge;
-      }),
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    this.resetEdgeOrdersAndPositions();
-  };
-  /**
-   * Updates the path of an edge by its ID and agent type.
-   * @param id - The ID of the edge to update.
-   * @param agentType - The agent type to determine the edge color and style.
-   * @see {@link IWaldiezEdgeStore.updateEdgePath}
-   */
-  updateEdgePath = (id, agentType) => {
-    const currentEdge = this.get().edges.find((edge) => edge.id === id);
-    if (!currentEdge) {
-      console.error(`Edge with id ${id} not found`);
-      return;
-    }
-    const edgeType = currentEdge.type;
-    const color = AGENT_COLORS[agentType];
-    const { style, markerEnd } = edgeCommonStyle(edgeType, color);
-    this.set({
-      edges: this.get().edges.map((edge) => {
-        if (edge.id === id) {
-          return { ...edge, style, markerEnd };
-        }
-        return { ...edge };
-      }),
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    this.resetEdgeOrdersAndPositions();
-  };
-  /**
-   * Adds a new edge to the store.
-   * @param options - An object containing the flow ID, connection details, and whether the edge is hidden.
-   * @returns The newly added WaldiezEdge object or null if the edge could not be created.
-   * @see {@link IWaldiezEdgeStore.addEdge}
-   */
-  addEdge = (options2) => {
-    const { flowId, connection, hidden } = options2;
-    const nodes = this.get().nodes;
-    const edges = this.get().edges;
-    const positionGetter = (chatType) => edges.filter((edge) => edge.type === chatType).length;
-    const { source, target, sourceHandle, targetHandle } = connection;
-    const { sourceNode, targetNode } = getNewEdgeNodes(nodes, source, target);
-    if (!sourceNode || !targetNode) {
-      return null;
-    }
-    const newEdge = getNewEdge({
-      flowId,
-      hidden,
-      sourceNode,
-      targetNode,
-      positionGetter,
-      edges
-    });
-    if (!newEdge) {
-      return null;
-    }
-    this.set({
-      edges: [...this.get().edges, { ...newEdge, sourceHandle, targetHandle }],
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    this.resetEdgeOrdersAndPositions();
-    const newStoredEdge = this.get().edges.find((edge) => edge.id === newEdge.id);
-    return newStoredEdge ?? newEdge;
-  };
-  /**
-   * Handles the double-click event on an edge.
-   * If a dialog is open, it does nothing. Otherwise, it finds the flow root and triggers the appropriate modal button.
-   * @param _event - The event object.
-   * @param edge - The WaldiezEdge that was double-clicked.
-   * @see {@link IWaldiezEdgeStore.onEdgeDoubleClick}
-   */
-  onEdgeDoubleClick = (_event, edge) => {
-    const openModals = Array.from(document.querySelectorAll(".modal-root .modal")).filter(
-      (el) => el.querySelector(".modal-content").offsetParent !== null
-      // Only visible modals
-    );
-    if (openModals.length > 0) {
-      console.warn("Edge double-click ignored due to open modals");
-      return;
-    }
-    const flowRoot = getFlowRoot(this.get().flowId);
-    if (flowRoot) {
-      const srcModalBtn = flowRoot.querySelector(
-        `[data-edge-node-id="${edge.source}"]`
-      );
-      if (srcModalBtn) {
-        srcModalBtn.setAttribute("data-edge-id", edge.id);
-        srcModalBtn.click();
-      } else {
-        const dstModalBtn = flowRoot.querySelector(
-          `[data-edge-node-id="${edge.target}"]`
-        );
-        if (dstModalBtn) {
-          dstModalBtn.setAttribute("data-edge-id", edge.id);
-          dstModalBtn.click();
-        }
-      }
-    }
-  };
-  /**
-   * Retrieves the source agent of an edge.
-   * @param edge - The WaldiezEdge to get the source agent from.
-   * @returns The WaldiezNodeAgent if found, otherwise undefined.
-   * @see {@link IWaldiezEdgeStore.getEdgeSourceAgent}
-   */
-  getEdgeSourceAgent = (edge) => {
-    const agent = this.get().nodes.find((node2) => node2.id === edge.source);
-    if (agent && agent.type === "agent") {
-      return agent;
-    }
-    return void 0;
-  };
-  /**
-   * Retrieves the target agent of an edge.
-   * @param edge - The WaldiezEdge to get the target agent from.
-   * @returns The WaldiezNodeAgent if found, otherwise undefined.
-   * @see {@link IWaldiezEdgeStore.getEdgeTargetAgent}
-   */
-  getEdgeTargetAgent = (edge) => {
-    const agent = this.get().nodes.find((node2) => node2.id === edge.target);
-    if (agent && agent.type === "agent") {
-      return agent;
-    }
-    return void 0;
-  };
-  /**
-   * Handles the reconnection of an edge when the source or target node changes.
-   * It updates the edge's source and target properties, and adjusts the edge's label if necessary.
-   * @param oldEdge - The original edge that is being reconnected.
-   * @param newConnection - The new connection details for the edge.
-   * @see {@link IWaldiezEdgeStore.onReconnect}
-   */
-  onReconnect = (oldEdge, newConnection) => {
-    const nodes = this.get().nodes;
-    if (!shouldReconnect(newConnection, nodes)) {
-      return;
-    }
-    const { oldSourceNode, oldTargetNode, newSourceNode, newTargetNode, color } = getNewEdgeConnectionProps(oldEdge, newConnection, nodes);
-    if (!oldSourceNode || !oldTargetNode || !newSourceNode || !newTargetNode) {
-      console.error("Not all nodes found");
-      return;
-    }
-    if (!color) {
-      return false;
-    }
-    const oldLabel = oldEdge.data?.label;
-    if (oldEdge.data && oldLabel === `${oldSourceNode.data.agentType} => ${oldTargetNode.data.agentType}`) {
-      oldEdge.data.label = getNewEdgeName(newSourceNode, newTargetNode);
-    }
-    this.set({
-      edges: [
-        ...this.get().edges.map((edge) => {
-          if (edge.id !== oldEdge.id) {
-            return edge;
-          }
-          return {
-            ...oldEdge,
-            source: newConnection.source,
-            target: newConnection.target,
-            sourceHandle: newConnection.sourceHandle,
-            targetHandle: newConnection.targetHandle,
-            ...edgeCommonStyle(oldEdge.type, color),
-            data: {
-              ...edge.data,
-              realSource: newSourceNode.id,
-              realTarget: newTargetNode.id,
-              sourceType: newSourceNode.data.agentType,
-              targetType: newTargetNode.data.agentType
-            }
-          };
-        })
-      ],
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    this.resetEdgeOrdersAndPositions();
-  };
-  /**
-   * Handles changes to edges, applying the changes to the current edges in the store.
-   * @param changes - An array of EdgeChange objects representing the changes to apply.
-   * @see {@link IWaldiezEdgeStore.onEdgesChange}
-   */
-  onEdgesChange = (changes) => {
-    const edges = applyEdgeChanges(changes, this.get().edges);
-    this.set({ edges, updatedAt: (/* @__PURE__ */ new Date()).toISOString() });
-  };
-  /**
-   * Resets the edge orders and positions in the store.
-   * This method is typically called after adding, deleting, or updating edges to ensure the order and positions are consistent.
-   * @see {@link IWaldiezEdgeStore.resetEdgeOrdersAndPositions}
-   */
-  resetEdgeOrdersAndPositions = () => {
-    resetEdgeOrdersAndPositions(this.get, this.set);
-  };
-}
-class WaldiezFlowStore {
-  get;
-  set;
-  /**
-   * Creates an instance of WaldiezFlowStore.
-   * @param get - A function to get the current state.
-   * @param set - A function to set the new state.
-   */
-  constructor(get, set) {
-    this.get = get;
-    this.set = set;
-  }
-  /**
-   * Creates a new instance of WaldiezFlowStore.
-   * @param get - A function to get the current state.
-   * @param set - A function to set the new state.
-   * @returns A new instance of WaldiezFlowStore.
-   */
-  static create(get, set) {
-    return new WaldiezFlowStore(get, set);
-  }
-  /**
-   * Gets the current flow state's viewport.
-   * @returns The current viewport of the flow.
-   * @see {@link IWaldiezFlowStore.viewport}
-   */
-  getViewport = () => this.get().viewport;
-  /**
-   * Gets the current flow state's react flow instance.
-   * @returns The current ReactFlowInstance of the flow.
-   * @see {@link IWaldiezFlowStore.getRfInstance}
-   */
-  getRfInstance = () => this.get().rfInstance;
-  /**
-   * Sets the current flow state's react flow instance.
-   * @param instance - The ReactFlowInstance to set.
-   * @returns void
-   * @see {@link IWaldiezFlowStore.setRfInstance}
-   */
-  setRfInstance = (instance) => {
-    const currentInstance = this.get().rfInstance;
-    this.set({ rfInstance: instance });
-    if (!currentInstance) {
-      reArrangeModels(this.get, this.set);
-      reArrangeTools(this.get, this.set);
-    }
-  };
-  /**
-   * Gets the current flow information.
-   * @returns An object containing the flow's information.
-   * @see {@link IWaldiezFlowStore.getFlowInfo}
-   */
-  getFlowInfo = () => {
-    const {
-      flowId,
-      storageId,
-      name,
-      description,
-      tags,
-      requirements,
-      createdAt,
-      updatedAt,
-      isAsync,
-      cacheSeed
-    } = this.get();
-    return {
-      flowId,
-      storageId: storageId ?? flowId,
-      name: name ?? "Untitled Flow",
-      description: description ?? "A new Waldiez flow",
-      tags: tags ?? [],
-      requirements: requirements ?? [],
-      createdAt,
-      updatedAt,
-      isAsync: isAsync ?? false,
-      cacheSeed: typeof cacheSeed !== "undefined" ? cacheSeed : 42
-    };
-  };
-  /**
-   * Handles changes in the flow.
-   * This method exports the current flow state and calls the onChange callback if provided.
-   * @returns The exported flow state.
-   * @see {@link IWaldiezFlowStore.onFlowChanged}
-   */
-  onFlowChanged = () => {
-    const { onChange: onChange2 } = this.get();
-    const exported = this.exportFlow(false);
-    if (onChange2) {
-      onChange2(JSON.stringify(exported));
-    }
-    return exported;
-  };
-  /**
-   * Gets the flow edges, separating used and remaining edges.
-   * Used edges are those with a defined order, while remaining edges do not have an order.
-   * @returns An object containing used and remaining edges.
-   * @see {@link IWaldiezFlowStore.getFlowEdges}
-   */
-  getFlowEdges = () => {
-    const allEdges = this.get().edges.filter((edge) => edge.type === "chat");
-    const usedEdges = [];
-    const remainingEdges = [];
-    allEdges.forEach((edge) => {
-      let edgeOrder;
-      if (typeof edge.data?.order === "number") {
-        edgeOrder = edge.data.order;
-      } else {
-        edgeOrder = -1;
-      }
-      if (edgeOrder >= 0) {
-        usedEdges.push(edge);
-      } else {
-        remainingEdges.push(edge);
-      }
-    });
-    const sortedEdgesUsed = usedEdges.sort((a, b) => (a.data?.order ?? 0) - (b.data?.order ?? 0));
-    return { used: sortedEdgesUsed, remaining: remainingEdges };
-  };
-  /**
-   * Saves the current flow state.
-   * This method calls the onSave callback with the exported flow data.
-   * @returns void
-   * @see {@link IWaldiezFlowStore.saveFlow}
-   */
-  saveFlow = () => {
-    const { onSave } = this.get();
-    if (typeof onSave === "function") {
-      const exported = this.exportFlow(false);
-      onSave(JSON.stringify(exported));
-    }
-  };
-  /**
-   * Handles changes in the viewport.
-   * If the zoom level has changed, it rearranges nodes and sets the new viewport.
-   * @param viewport - The new viewport object containing x, y, and zoom properties.
-   * @param nodeType - The type of node being viewed (model or tool).
-   * @returns void
-   * @see {@link IWaldiezFlowStore.onViewportChange}
-   */
-  onViewportChange = (viewport, nodeType) => {
-    if (nodeType === "model" || nodeType === "tool") {
-      const zoomChanged = viewport.zoom !== this.get().viewport?.zoom;
-      if (zoomChanged) {
-        const { nodes, rfInstance, flowId } = this.get();
-        this.set({
-          nodes: reArrangeNodes(nodes, flowId, nodeType, rfInstance),
-          updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-        });
-        setTimeout(() => {
-          setViewPortTopLeft(this.get().rfInstance);
-          this.set({
-            viewport
-          });
-        }, 100);
-      }
-    } else {
-      this.set({ viewport });
-    }
-  };
-  /**
-   * Imports a flow from the provided data.
-   * This method loads the flow data, updates the current flow state, and rearranges nodes and edges.
-   * It also fits the view of the React Flow instance after importing.
-   * @param items - The items to import from.
-   * @param flowData - The imported flow data.
-   * @param typeShown - The type of node being shown (model or tool).
-   * @returns void
-   * @see {@link IWaldiezFlowStore.importFlow}
-   */
-  importFlow = (items, flowData, typeShown) => {
-    const {
-      storageId,
-      name: currentName,
-      description: currentDescription,
-      tags: currentTags,
-      requirements: currentRequirements,
-      nodes: currentNodes,
-      edges: currentEdges,
-      isAsync: currentIsAsync,
-      rfInstance
-    } = this.get();
-    const currentFlow = {
-      name: currentName ?? "Untitled Flow",
-      description: currentDescription ?? "A new Waldiez flow",
-      tags: currentTags ?? [],
-      requirements: currentRequirements ?? [],
-      nodes: currentNodes,
-      edges: currentEdges,
-      isAsync: currentIsAsync ?? false
-    };
-    const { name, createdAt, description, tags, requirements, isAsync, nodes, edges } = loadFlow(
-      items,
-      currentFlow,
-      flowData,
-      typeShown
-    );
-    this.set({
-      name,
-      description,
-      tags,
-      requirements,
-      isAsync,
-      storageId: storageId ?? `wf-${getId()}`,
-      createdAt: createdAt ?? (/* @__PURE__ */ new Date()).toISOString(),
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      nodes,
-      edges
-    });
-    resetEdgeOrdersAndPositions(this.get, this.set);
-    reArrangeModels(this.get, this.set);
-    reArrangeTools(this.get, this.set);
-    setTimeout(() => {
-      rfInstance?.fitView({
-        includeHiddenNodes: false,
-        padding: 0.2,
-        duration: 100
-        // maxZoom: rfInstance?.getZoom(),
-        // minZoom: rfInstance?.getZoom(),
-      });
-    }, 200);
-  };
-  /**
-   * Exports the current flow state.
-   * This method creates a flow object with the current state and returns it.
-   * @param hideSecrets - A boolean indicating whether to hide secrets in the exported flow.
-   * @returns The exported flow object.
-   * @see {@link IWaldiezFlowStore.exportFlow}
-   */
-  exportFlow = (hideSecrets) => {
-    const {
-      isAsync,
-      cacheSeed,
-      viewport,
-      rfInstance,
-      name,
-      description,
-      tags,
-      requirements,
-      createdAt,
-      updatedAt,
-      flowId,
-      storageId
-    } = this.get();
-    const flow = {
-      nodes: this.get().nodes,
-      edges: this.get().edges,
-      viewport: rfInstance?.getViewport() ?? viewport ?? { zoom: 1, x: 20, y: 20 },
-      name: name ?? "Untitled Flow",
-      description: description ?? "A new Waldiez flow",
-      tags: tags ?? [],
-      requirements: requirements ?? [],
-      createdAt: createdAt ?? (/* @__PURE__ */ new Date()).toISOString(),
-      updatedAt: updatedAt ?? (/* @__PURE__ */ new Date()).toISOString(),
-      flowId,
-      storageId: storageId ?? flowId,
-      isAsync: isAsync ?? false,
-      cacheSeed
-    };
-    return flowMapper.exportFlow(flow, hideSecrets, false);
-  };
-  /**
-   * Updates the flow's order.
-   * This method updates the order of the edges in the flow based on the provided data.
-   * @param data - An array of objects containing the edge id and its new order.
-   * @returns void
-   * @see {@link IWaldiezFlowStore.updateFlowOrder}
-   */
-  updateFlowOrder = (data) => {
-    const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
-    this.set({
-      edges: this.get().edges.map((edge) => {
-        const order = data.find((d) => d.id === edge.id)?.order ?? edge.data?.order ?? -1;
-        return {
-          ...edge,
-          data: { ...edge.data, order }
-        };
-      }),
-      updatedAt
-    });
-  };
-  /**
-   * Updates the flow edges' prerequisites.
-   * This method resets the prerequisites of the edges based on the provided edges.
-   * @param edges - An array of WaldiezEdge objects to update prerequisites for.
-   * @returns void
-   * @see {@link IWaldiezFlowStore.updateFlowPrerequisites}
-   */
-  updateFlowPrerequisites = (edges) => {
-    resetEdgePrerequisites(edges, this.get, this.set);
-  };
-  /**
-   * Updates the information of the flow.
-   * This method sets the new flow information such as name, description, tags, requirements, and other properties.
-   * @param data - An object containing the new flow information.
-   * @returns void
-   * @see {@link IWaldiezFlowStore.updateFlowInfo}
-   */
-  updateFlowInfo = (data) => {
-    this.set({
-      name: data.name,
-      description: data.description,
-      tags: data.tags,
-      requirements: data.requirements,
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString(),
-      isAsync: data.isAsync,
-      cacheSeed: data.cacheSeed
-    });
-  };
-}
-class WaldiezModelStore {
-  get;
-  set;
-  /**
-   * Creates an instance of WaldiezModelStore.
-   * @param get - A function to get the current state of the store.
-   * @param set - A function to set the new state of the store.
-   */
-  constructor(get, set) {
-    this.get = get;
-    this.set = set;
-  }
-  /**
-   * Creates a new instance of WaldiezModelStore.
-   * @param get - A function to get the current state of the store.
-   * @param set - A function to set the new state of the store.
-   * @returns A new instance of WaldiezModelStore.
-   */
-  static create(get, set) {
-    return new WaldiezModelStore(get, set);
-  }
-  /**
-   * Gets all models from the store.
-   * @returns An array of WaldiezNodeModel objects.
-   * @see {@link WaldiezNodeModel}
-   * @see {@link IWaldiezModelStore.getModels}
-   */
-  getModels = () => {
-    return this.get().nodes.filter((node2) => node2.type === "model");
-  };
-  /**
-   * Gets a model by its ID.
-   * @param id - The ID of the model to retrieve.
-   * @returns The WaldiezNodeModel object if found, otherwise null.
-   * @see {@link WaldiezNodeModel}
-   * @see {@link IWaldiezModelStore.getModelById}
-   */
-  getModelById = (id) => {
-    const model = this.get().nodes.find((node2) => node2.id === id);
-    if (!model || model.type !== "model") {
-      return null;
-    }
-    return model;
-  };
-  /**
-   * Adds a new model to the store.
-   * @returns The newly created WaldiezNodeModel object.
-   * @see {@link WaldiezNodeModel}
-   * @see {@link IWaldiezModelStore.addModel}
-   */
-  addModel = () => {
-    const existingModels = this.get().nodes.filter((node2) => node2.type === "model");
-    const modelCount = existingModels.length;
-    const flowId = this.get().flowId;
-    const rfInstance = this.get().rfInstance;
-    const position2 = getNewNodePosition(modelCount, flowId, rfInstance);
-    const newModel = WaldiezModel.create();
-    const newNode = modelMapper.asNode(newModel, position2);
-    this.set({
-      nodes: [
-        ...this.get().nodes,
-        {
-          ...newNode,
-          type: "model"
-        }
-      ],
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    reArrangeModels(this.get, this.set);
-    setViewPortTopLeft(rfInstance);
-    const model = this.get().nodes.find((node2) => node2.id === newNode.id);
-    return model;
-  };
-  /**
-   * Clones an existing model by its ID.
-   * @param id - The ID of the model to clone.
-   * @returns The cloned WaldiezNodeModel object if successful, otherwise null.
-   * @see {@link WaldiezNodeModel}
-   * @see {@link IWaldiezModelStore.cloneModel}
-   */
-  cloneModel = (id) => {
-    const model = this.get().nodes.find((node2) => node2.id === id);
-    if (!model || model.type !== "model") {
-      return null;
-    }
-    const rfInstance = this.get().rfInstance;
-    reArrangeModels(this.get, this.set);
-    setViewPortTopLeft(rfInstance);
-    const newLabel = model.data.label + " (copy)";
-    const newModel = this.getClonedModel(id, rfInstance);
-    newModel.data.label = newLabel;
-    this.set({
-      nodes: [
-        ...this.get().nodes.map((node2) => {
-          if (node2.id === id) {
-            return { ...node2, selected: false };
-          }
-          return node2;
-        }),
-        {
-          ...newModel,
-          type: "model",
-          selected: true
-        }
-      ],
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    reArrangeModels(this.get, this.set);
-    setViewPortTopLeft(rfInstance);
-    const modelWithNewPosition = this.get().nodes.find((node2) => node2.id === newModel.id);
-    return modelWithNewPosition;
-  };
-  /**
-   * Updates the data of an existing model by its ID.
-   * @param id - The ID of the model to update.
-   * @param data - The partial data to update the model with.
-   * @see {@link WaldiezNodeModelData}
-   * @see {@link IWaldiezModelStore.updateModelData}
-   */
-  updateModelData = (id, data) => {
-    const model = this.get().nodes.find((node2) => node2.id === id);
-    if (!model || model.type !== "model") {
-      return;
-    }
-    const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
-    this.set({
-      nodes: [
-        ...this.get().nodes.map((node2) => {
-          if (node2.id === id) {
-            return {
-              ...node2,
-              data: { ...node2.data, ...data, updatedAt }
-            };
-          }
-          return node2;
-        })
-      ],
-      updatedAt
-    });
-  };
-  /**
-   * Deletes a model by its ID.
-   * @param id - The ID of the model to delete.
-   * @see {@link IWaldiezModelStore.deleteModel}
-   */
-  deleteModel = (id) => {
-    const rfInstance = this.get().rfInstance;
-    const newNodes = this.getNodesAfterModelDeletion(id, rfInstance);
-    this.set({
-      nodes: newNodes,
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    reArrangeModels(this.get, this.set);
-    setViewPortTopLeft(rfInstance);
-  };
-  /**
-   * Imports a model from a given model object.
-   * @param model - The model object to import.
-   * @param modelId - The ID to assign to the imported model.
-   * @param position - The position to place the imported model in the flow.
-   * @param save - Whether to save the imported model immediately (default: true).
-   * @returns The imported WaldiezNodeModel object.
-   * @see {@link WaldiezNodeModel}
-   * @see {@link IWaldiezModelStore.importModel}
-   */
-  importModel = (model, modelId, position2, save = true) => {
-    const newModel = modelMapper.importModel(model);
-    const modelNode = modelMapper.asNode(newModel, position2);
-    modelNode.id = modelId;
-    if (position2) {
-      modelNode.position = position2;
-    }
-    if (save) {
-      this.set({
-        nodes: this.get().nodes.map((node2) => node2.id === modelId ? modelNode : node2)
-      });
-    }
-    return modelNode;
-  };
-  /**
-   * Exports a model by its ID.
-   * @param modelId - The ID of the model to export.
-   * @param hideSecrets - Whether to hide secrets in the exported model (default: true).
-   * @returns The exported model object.
-   * @see {@link IWaldiezModelStore.exportModel}
-   */
-  exportModel = (modelId, hideSecrets) => {
-    const model = this.get().nodes.find((node2) => node2.id === modelId);
-    if (!model || model.type !== "model") {
-      throw new Error(`Model with id ${modelId} not found`);
-    }
-    return modelMapper.exportModel(model, hideSecrets);
-  };
-  getClonedModel = (modelId, rfInstance) => {
-    const model = this.get().nodes.find((node2) => node2.id === modelId);
-    if (!model) {
-      throw new Error(`Model with id ${modelId} not found`);
-    }
-    const existingModels = this.get().nodes.filter((node2) => node2.type === "model");
-    const modelCount = existingModels.length;
-    const flowId = this.get().flowId;
-    const position2 = getNewNodePosition(modelCount, flowId, rfInstance);
-    const newModel = WaldiezModel.create();
-    return modelMapper.asNode(newModel, position2);
-  };
-  /**
-   * Gets the nodes after a model deletion.
-   * This method rearranges the nodes and updates the positions of the remaining model nodes.
-   * It also checks if the deleted model was linked to any agents and updates them accordingly.
-   * @param modelId - The ID of the model that was deleted.
-   * @param rfInstance - The React Flow instance to get the new positions for the nodes.
-   * @returns An array of updated nodes after the model deletion.
-   */
-  getNodesAfterModelDeletion = (modelId, rfInstance) => {
-    const newModelNodes = this.get().nodes.filter((node2) => node2.type === "model" && node2.id !== modelId);
-    const newModelNodesCount = newModelNodes.length;
-    const flowId = this.get().flowId;
-    for (let i = 0; i < newModelNodesCount; i++) {
-      const node2 = newModelNodes[i];
-      const position2 = getNewNodePosition(i, flowId, rfInstance);
-      newModelNodes[i] = { ...node2, id: node2?.id || `wa-${getId()}`, data: node2?.data || {}, position: position2 };
-    }
-    const allNodes = newModelNodes.concat(this.get().nodes.filter((node2) => node2.type !== "model"));
-    const newNodes = [];
-    allNodes.forEach((node2) => {
-      if (node2.type === "agent") {
-        const agent = node2;
-        if (agent.data.modelIds.includes(modelId)) {
-          newNodes.push({
-            ...agent,
-            data: { ...agent.data, modelIds: agent.data.modelIds.filter((id) => id !== modelId) }
-          });
-        } else {
-          newNodes.push(agent);
-        }
-      } else {
-        newNodes.push(node2);
-      }
-    });
-    return newNodes;
-  };
-}
-/* c8 ignore file -- @preserve */
-class WaldiezNodeStore {
-  get;
-  set;
-  /**
-   * Creates an instance of WaldiezNodeStore.
-   * @param get - A function to get the current state.
-   * @param set - A function to set the new state.
-   */
-  constructor(get, set) {
-    this.get = get;
-    this.set = set;
-  }
-  /**
-   * Creates a new instance of WaldiezNodeStore.
-   * @param get - A function to get the current state.
-   * @param set - A function to set the new state.
-   * @returns A new instance of WaldiezNodeStore.
-   */
-  static create(get, set) {
-    return new WaldiezNodeStore(get, set);
-  }
-  /**
-   * Shows nodes of a specific type and hides others.
-   * If the node type is "agent", it restores the previous viewport.
-   * Otherwise, it stores the current viewport before changing the visibility.
-   * @param nodeType - The type of nodes to show.
-   * @see {@link WaldiezNodeType}
-   * @see {@link IWaldiezNodeStore.showNodes}
-   */
-  showNodes = (nodeType) => {
-    if (nodeType !== "agent") {
-      if (this.isShowingAgents()) {
-        this.storePreviousViewport();
-      }
-      setViewPortTopLeft(this.get().rfInstance);
-    } else {
-      this.restorePreviousViewport();
-    }
-    this.set({
-      nodes: this.get().nodes.map((node2) => {
-        if (node2.type === nodeType) {
-          return { ...node2, hidden: false };
-        }
-        return { ...node2, hidden: true };
-      })
-    });
-  };
-  /**
-   * Checks if there are any visible agent nodes in the current state.
-   * @returns True if there are visible agent nodes, false otherwise.
-   * @see {@link IWaldiezNodeStore.isShowingAgents}
-   */
-  isShowingAgents = () => {
-    return this.get().nodes.some((node2) => node2.type === "agent" && node2.hidden === false);
-  };
-  /**
-   * Stores the current viewport before changing visibility of nodes.
-   * @see {@link IWaldiezNodeStore.storePreviousViewport}
-   */
-  storePreviousViewport = () => {
-    const rfInstance = this.get().rfInstance;
-    let previousViewport;
-    if (rfInstance) {
-      previousViewport = {
-        x: rfInstance.getViewport().x,
-        y: rfInstance.getViewport().y,
-        zoom: rfInstance.getViewport().zoom
-      };
-    } else {
-      previousViewport = this.get().viewport;
-    }
-    this.set({
-      previousViewport,
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-  };
-  /**
-   * Restores the previous viewport stored in the state.
-   * If a previous viewport exists, it sets the current viewport to that value
-   * and updates the rfInstance if available.
-   * @see {@link IWaldiezNodeStore.restorePreviousViewport}
-   */
-  restorePreviousViewport = () => {
-    const previousViewport = this.get().previousViewport;
-    if (previousViewport) {
-      this.set({
-        viewport: previousViewport,
-        updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-      });
-      const rfInstance = this.get().rfInstance;
-      if (rfInstance) {
-        rfInstance.setViewport(previousViewport);
-      }
-    }
-  };
-  /**
-   * Handles changes to nodes.
-   * It applies the changes to the current nodes and updates the state.
-   * @param changes - An array of NodeChange objects representing the changes to apply.
-   * @see {@link IWaldiezNodeStore.onNodesChange}
-   */
-  onNodesChange = (changes) => {
-    const nodes = applyNodeChanges(changes, this.get().nodes);
-    this.set({ nodes, updatedAt: (/* @__PURE__ */ new Date()).toISOString() });
-  };
-  /**
-   * Handles double-click events on nodes.
-   * If a dialog is open, it does nothing.
-   * Otherwise, it finds the flow root and triggers a click on the button associated with the node.
-   * @param _event - The event object.
-   * @param node - The node that was double-clicked.
-   * @see {@link IWaldiezNodeStore.onNodeDoubleClick}
-   */
-  onNodeDoubleClick = (_event, node2) => {
-    const openModals = Array.from(document.querySelectorAll(".modal-root .modal")).filter(
-      (el) => el.querySelector(".modal-content").offsetParent !== null
-      // Only visible modals
-    );
-    if (openModals.length > 0) {
-      return;
-    }
-    const flowId = this.get().flowId;
-    const flowRoot = getFlowRoot(flowId);
-    if (flowRoot) {
-      const openModalBtn = flowRoot.querySelector(`[data-node-id="${node2.id}"]`);
-      if (openModalBtn) {
-        openModalBtn.click();
-      }
-    }
-  };
-  /**
-   * Selects a node by its ID.
-   * If the node is already selected, it deselects it.
-   * Otherwise, it selects the node and deselects all others.
-   * @param id - The ID of the node to select.
-   * @see {@link IWaldiezNodeStore.reselectNode}
-   */
-  reselectNode = (id) => {
-    const node2 = this.get().nodes.find((n) => n.id === id);
-    if (!node2) {
-      return;
-    }
-    if (node2.selected) {
-      this.set({
-        nodes: this.get().nodes.map((node22) => {
-          if (node22.id === id) {
-            return { ...node22, selected: false };
-          }
-          return node22;
-        })
-      });
-    }
-    this.set({
-      nodes: this.get().nodes.map((node22) => {
-        if (node22.id === id) {
-          return { ...node22, selected: true };
-        }
-        return { ...node22, selected: false };
-      })
-    });
-  };
-  /**
-   * Highlights a node by its ID.
-   * It sets the className of the node to "highlight" if it matches the ID.
-   * Otherwise, it clears the highlight by setting className to an empty string.
-   * @param nodeId - The ID of the node to highlight.
-   * @see {@link IWaldiezNodeStore.highlightNode}
-   */
-  highlightNode = (nodeId) => {
-    this.set({
-      nodes: this.get().nodes.map((node2) => ({
-        ...node2,
-        className: node2.id === nodeId ? "highlight" : ""
-      }))
-    });
-  };
-  /**
-   * Clears the highlight from all nodes by setting their className to an empty string.
-   * @see {@link IWaldiezNodeStore.clearNodeHighlight}
-   */
-  clearNodeHighlight = () => {
-    this.set({
-      nodes: this.get().nodes.map((node2) => ({
-        ...node2,
-        className: ""
-      }))
-    });
-  };
-}
-class WaldiezToolStore {
-  get;
-  set;
-  /**
-   * Creates an instance of WaldiezToolStore.
-   * @param get - A function to get the current state.
-   * @param set - A function to set the new state.
-   */
-  constructor(get, set) {
-    this.get = get;
-    this.set = set;
-  }
-  /**
-   * Creates a new instance of WaldiezToolStore.
-   * @param get - A function to get the current state.
-   * @param set - A function to set the new state.
-   * @returns A new instance of WaldiezToolStore.
-   */
-  static create(get, set) {
-    return new WaldiezToolStore(get, set);
-  }
-  /**
-   * Returns the type of the store.
-   * @returns The type of the store, which is "tool".
-   * @see {@link IWaldiezToolStore.getTools}
-   */
-  getTools = () => {
-    return this.get().nodes.filter((node2) => node2.type === "tool");
-  };
-  /**
-   * Returns a tool by its ID.
-   * @param id - The ID of the tool to retrieve.
-   * @returns The tool with the specified ID, or null if not found or not a tool.
-   * @see {@link IWaldiezToolStore.getToolById}
-   */
-  getToolById = (id) => {
-    const tool = this.get().nodes.find((node2) => node2.id === id);
-    if (!tool || tool.type !== "tool") {
-      return null;
-    }
-    return tool;
-  };
-  /**
-   * Adds a new tool to the store.
-   * @returns The newly added tool with its position.
-   * @see {@link IWaldiezToolStore.addTool}
-   */
-  addTool = () => {
-    const existingTools = this.get().nodes.filter((node2) => node2.type === "tool");
-    const flowId = this.get().flowId;
-    const rfInstance = this.get().rfInstance;
-    const toolCount = existingTools.length;
-    const position2 = getNewNodePosition(toolCount, flowId, rfInstance);
-    const newTool = WaldiezTool.create();
-    const newNode = toolMapper.asNode(newTool, position2);
-    this.set({
-      nodes: [
-        ...this.get().nodes,
-        {
-          ...newNode,
-          type: "tool"
-        }
-      ],
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    reArrangeTools(this.get, this.set);
-    setViewPortTopLeft(rfInstance);
-    const toolWithNewPosition = this.get().nodes.find((node2) => node2.id === newNode.id);
-    return toolWithNewPosition;
-  };
-  /**
-   * Clones an existing tool by its ID.
-   * @param id - The ID of the tool to clone.
-   * @returns The cloned tool with its new position, or null if the tool is not found or not a tool.
-   * @see {@link IWaldiezToolStore.cloneTool}
-   */
-  cloneTool = (id) => {
-    const tool = this.get().nodes.find((node2) => node2.id === id);
-    if (!tool || tool.type !== "tool") {
-      return null;
-    }
-    const rfInstance = this.get().rfInstance;
-    const newTool = this.getClonedTool(tool, rfInstance);
-    this.set({
-      nodes: [
-        ...this.get().nodes.map((node2) => {
-          if (node2.id === id) {
-            return { ...node2, selected: false };
-          }
-          return node2;
-        }),
-        {
-          ...newTool,
-          type: "tool",
-          selected: true
-        }
-      ],
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    reArrangeTools(this.get, this.set);
-    setViewPortTopLeft(rfInstance);
-    const toolWithNewPosition = this.get().nodes.find((node2) => node2.id === newTool.id);
-    return toolWithNewPosition;
-  };
-  /**
-   * Updates the data of an existing tool by its ID.
-   * @param id - The ID of the tool to update.
-   * @param data - The new data to update the tool with.
-   * @see {@link IWaldiezToolStore.updateToolData}
-   */
-  updateToolData = (id, data) => {
-    const tool = this.get().nodes.find((node2) => node2.id === id);
-    if (!tool || tool.type !== "tool") {
-      return;
-    }
-    const updatedAt = (/* @__PURE__ */ new Date()).toISOString();
-    this.set({
-      nodes: [
-        ...this.get().nodes.map((node2) => {
-          if (node2.type === "tool" && node2.id === id) {
-            return {
-              ...node2,
-              data: { ...tool.data, ...data, updatedAt }
-            };
-          }
-          return node2;
-        })
-      ],
-      updatedAt
-    });
-  };
-  /**
-   * Deletes a tool by its ID.
-   * @param id - The ID of the tool to delete.
-   * @see {@link IWaldiezToolStore.deleteTool}
-   */
-  deleteTool = (id) => {
-    const rfInstance = this.get().rfInstance;
-    const allNodes = this.getAgentsAfterToolDeletion(id, rfInstance);
-    this.set({
-      nodes: allNodes,
-      updatedAt: (/* @__PURE__ */ new Date()).toISOString()
-    });
-    reArrangeTools(this.get, this.set);
-    setViewPortTopLeft(rfInstance);
-  };
-  /**
-   * Imports a tool from an external source.
-   * @param tool - The tool data to import.
-   * @param toolId - The ID to assign to the imported tool.
-   * @param position - The position to place the imported tool, if any.
-   * @param save - Whether to save the imported tool immediately.
-   * @returns The imported tool as a node.
-   * @see {@link IWaldiezToolStore.importTool}
-   */
-  importTool = (tool, toolId, position2, save) => {
-    const newTool = toolMapper.importTool(tool);
-    const toolNode = toolMapper.asNode(newTool, position2);
-    toolNode.id = toolId;
-    if (position2) {
-      toolNode.position = position2;
-    }
-    if (save) {
-      this.set({
-        nodes: this.get().nodes.map((node2) => node2.id === toolId ? toolNode : node2)
-      });
-    }
-    return toolNode;
-  };
-  /**
-   * Exports a tool by its ID.
-   * @param toolId - The ID of the tool to export.
-   * @param hideSecrets - Whether to hide secrets in the exported tool data.
-   * @returns The exported tool data.
-   * @see {@link IWaldiezToolStore.exportTool}
-   */
-  exportTool = (toolId, hideSecrets) => {
-    const tool = this.get().nodes.find((node2) => node2.id === toolId);
-    if (!tool || tool.type !== "tool") {
-      return {};
-    }
-    return toolMapper.exportTool(tool, hideSecrets);
-  };
-  /**
-   * Gets a cloned version of a tool with a new ID and position.
-   * @param tool - The tool to clone.
-   * @param rfInstance - The React Flow instance to use for positioning.
-   * @returns A cloned tool with a new ID, position, and updated timestamps.
-   */
-  getClonedTool = (tool, rfInstance) => {
-    const createdAt = (/* @__PURE__ */ new Date()).toISOString();
-    const updatedAt = createdAt;
-    const toolsCount = this.get().nodes.filter((node2) => node2.type === "tool").length;
-    const flowId = this.get().flowId;
-    const position2 = getNewNodePosition(toolsCount, flowId, rfInstance);
-    const label = tool.data.label + " (copy)";
-    return {
-      ...tool,
-      id: `wt-${getId()}`,
-      data: { ...tool.data, label, createdAt, updatedAt },
-      position: position2
-    };
-  };
-  /**
-   * Gets the agent after a tool has been deleted.
-   * @param toolId - The ID of the tool that was deleted.
-   * @param agent - The agent to update.
-   * @returns The updated agent with the tool removed.
-   */
-  getAgentAfterToolDeletion = (toolId, agent) => {
-    const tools = agent.data.tools;
-    const newTools = tools.filter((tool) => tool.id !== toolId);
-    const codeExecution = agent.data.codeExecutionConfig;
-    if (typeof codeExecution === "boolean") {
-      return {
-        ...agent,
-        data: {
-          ...agent.data,
-          tools: newTools
-        }
-      };
-    }
-    const functions = codeExecution.functions ?? [];
-    const newFunctions = functions.filter((func) => func !== toolId);
-    return {
-      ...agent,
-      data: {
-        ...agent.data,
-        tools: newTools,
-        codeExecutionConfig: {
-          ...codeExecution,
-          functions: newFunctions
-        }
-      }
-    };
-  };
-  /**
-   * Gets all agents after a tool has been deleted.
-   * @param toolId - The ID of the tool that was deleted.
-   * @param rfInstance - The React Flow instance to use for positioning.
-   * @returns An array of updated nodes with agents reflecting the tool deletion.
-   */
-  getAgentsAfterToolDeletion = (toolId, rfInstance) => {
-    const newToolNodes = this.get().nodes.filter((node2) => node2.type === "tool" && node2.id !== toolId);
-    const newToolNodesCount = newToolNodes.length;
-    const flowId = this.get().flowId;
-    for (let i = 0; i < newToolNodesCount; i++) {
-      const node2 = newToolNodes[i];
-      const position2 = getNewNodePosition(i, flowId, rfInstance);
-      newToolNodes[i] = { ...node2, id: node2?.id || `wa-${getId()}`, data: node2?.data || {}, position: position2 };
-    }
-    const allNodes = newToolNodes.concat(this.get().nodes.filter((node2) => node2.type !== "tool"));
-    const newNodes = [];
-    allNodes.forEach((node2) => {
-      if (node2.type === "agent") {
-        const agent = this.getAgentAfterToolDeletion(toolId, node2);
-        newNodes.push(agent);
-      } else {
-        newNodes.push(node2);
-      }
-    });
-    return newNodes;
-  };
-}
-const createWaldiezStore = (props) => {
-  const {
-    flowId = `wf-${getId()}`,
-    isAsync = false,
-    isReadOnly = false,
-    skipExport = false,
-    skipImport = false,
-    edges = [],
-    nodes = [],
-    name = "Untitled Flow",
-    description = "A new Waldiez flow",
-    tags = [],
-    requirements = [],
-    createdAt = (/* @__PURE__ */ new Date()).toISOString(),
-    updatedAt = (/* @__PURE__ */ new Date()).toISOString(),
-    viewport = { zoom: 1, x: 50, y: 50 },
-    onUpload = null,
-    onChange: onChange2 = null,
-    onSave = null,
-    onRun = null,
-    onStepRun = null,
-    onConvert = null,
-    checkpoints = null
-  } = props;
-  const storageId = props.storageId ?? flowId;
-  return createStore()(
-    temporal(
-      (set, get) => ({
-        rfInstance: props?.rfInstance,
-        flowId,
-        isAsync,
-        isReadOnly,
-        skipExport,
-        skipImport,
-        storageId,
-        name,
-        description,
-        tags,
-        requirements,
-        createdAt,
-        updatedAt,
-        viewport,
-        nodes,
-        edges,
-        onUpload,
-        onChange: onChange2,
-        onSave,
-        onRun,
-        onStepRun,
-        onConvert,
-        checkpoints,
-        activeSenderId: null,
-        activeRecipientId: null,
-        activeEventType: null,
-        ...WaldiezChatParticipantsStore.create(get, set),
-        ...WaldiezAgentStore.create(get, set),
-        ...WaldiezModelStore.create(get, set),
-        ...WaldiezToolStore.create(get, set),
-        ...WaldiezNodeStore.create(get, set),
-        ...WaldiezEdgeStore.create(get, set),
-        ...WaldiezFlowStore.create(get, set)
-      }),
-      {
-        equality: zundoEquality,
-        partialize: (state) => {
-          const { flowId: flowId2, nodes: nodes2, edges: edges2, name: name2, description: description2, requirements: requirements2, tags: tags2 } = state;
-          return {
-            flowId: flowId2,
-            nodes: nodes2,
-            edges: edges2,
-            name: name2,
-            description: description2,
-            requirements: requirements2,
-            tags: tags2
-          };
-        }
-      }
-    )
-  );
-};
-const zundoEquality = (pastState, currentState) => {
-  const diffs = diff(pastState, currentState);
-  if (diffs.length === 0) {
-    return true;
-  }
-  return diffs.every((diff2) => {
-    if (diff2.type === "CREATE" && diff2.path.length === 2) {
-      return false;
-    }
-    if (diff2.path.length === 1 && typeof diff2.path[0] === "string" && ["name", "description", "tags", "requirements"].includes(diff2.path[0])) {
-      return false;
-    }
-    if (diff2.path.includes("nodes") && diff2.path.includes("data")) {
-      return false;
-    }
-    return !(diff2.path.includes("edges") && diff2.path.includes("data") && !diff2.path.includes("position"));
-  });
-};
-function WaldiezProvider({ children, ...props }) {
-  const storeRef = useRef(void 0);
-  const isReadOnly = typeof props.isReadOnly === "boolean" ? props.isReadOnly : false;
-  const nodes = props.nodes;
-  const edges = props.edges;
-  const flowId = props.flowId;
-  const name = props.name;
-  const description = props.description;
-  const tags = props.tags;
-  const requirements = props.requirements;
-  const createdAt = props.createdAt;
-  const updatedAt = props.updatedAt;
-  const storageId = props.storageId;
-  const onUpload = props.onUpload ?? null;
-  const onChange2 = props.onChange ?? null;
-  const onSave = props.onSave ?? null;
-  const onRun = props.onRun ?? null;
-  const onStepRun = props.onStepRun ?? null;
-  const onConvert = props.onConvert ?? null;
-  const checkpoints = props.checkpoints ?? null;
-  const rfInstance = props.rfInstance;
-  const isAsync = props.isAsync ?? false;
-  props.cacheSeed ?? 42;
-  const store = useMemo(() => {
-    storeRef.current = createWaldiezStore({
-      flowId,
-      isAsync,
-      isReadOnly,
-      name,
-      description,
-      tags,
-      requirements,
-      storageId,
-      createdAt,
-      updatedAt,
-      nodes,
-      edges,
-      rfInstance,
-      onUpload,
-      onChange: onChange2,
-      onSave,
-      onRun,
-      onStepRun,
-      onConvert,
-      checkpoints
-    });
-    return storeRef.current;
-  }, [flowId]);
-  return /* @__PURE__ */ jsx$1(WaldiezContext.Provider, { value: store, children });
-}
 const eventToActivity = (e) => {
   if (!e) {
     return null;
@@ -28510,6 +28511,372 @@ const useAgentClassUpdates = (stepByStep) => {
     getParticipantIds
   ]);
 };
+const StepByStepView = ({ flowId, stepByStep, isDarkMode, events }) => {
+  useAgentClassUpdates(stepByStep);
+  const [responseText, setResponseText] = useState("");
+  const [detailsViewActive, setDetailsViewActive] = useState(false);
+  const requestId = stepByStep?.activeRequest?.request_id ?? null;
+  const onInputChange = useCallback((e) => {
+    setResponseText(e.target.value);
+  }, []);
+  const onRespond = useCallback(() => {
+    if (!requestId) {
+      return;
+    }
+    stepByStep?.handlers?.respond?.({
+      id: nanoid(),
+      timestamp: Date.now(),
+      data: responseText,
+      request_id: requestId,
+      type: "input_response"
+    });
+    setResponseText("");
+  }, [requestId, responseText, stepByStep?.handlers]);
+  const onInputKeyDown = useCallback(
+    (e) => {
+      if (e.key !== "Enter") {
+        return;
+      }
+      if (e.nativeEvent?.isComposing) {
+        return;
+      }
+      if (!requestId) {
+        return;
+      }
+      stepByStep?.handlers?.respond?.({
+        id: nanoid(),
+        timestamp: Date.now(),
+        data: responseText,
+        request_id: requestId,
+        type: "input_response"
+      });
+      setResponseText("");
+    },
+    [requestId, responseText, stepByStep?.handlers]
+  );
+  const onControl = useCallback(
+    (action) => {
+      if (!stepByStep?.handlers?.sendControl) {
+        return;
+      }
+      const rid = requestId ?? "<unknown>";
+      stepByStep.handlers.sendControl({
+        data: controlToResponse({ kind: action }),
+        request_id: rid
+      });
+    },
+    [requestId, stepByStep?.handlers]
+  );
+  const toggleDetailsView = useCallback(() => {
+    setDetailsViewActive((prev2) => !prev2);
+  }, []);
+  const doContinue = useCallback(() => {
+    onControl("continue");
+    setDetailsViewActive(false);
+  }, [onControl]);
+  const doRun = useCallback(() => {
+    onControl("run");
+    setDetailsViewActive(false);
+  }, [onControl]);
+  const doQuit = useCallback(() => {
+    onControl("quit");
+    setDetailsViewActive(false);
+  }, [onControl]);
+  const currentEvent = stepByStep?.currentEvent;
+  const agents = currentEvent?.agents?.all;
+  const haveAgents = Array.isArray(agents) && agents.length > 0;
+  return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: [
+    /* @__PURE__ */ jsxs("div", { className: "modal-sticky-top", children: [
+      stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            className: "btn btn-primary",
+            type: "button",
+            onClick: doContinue,
+            disabled: !stepByStep?.pendingControlInput,
+            children: [
+              /* @__PURE__ */ jsx$1(FaStepForward, {}),
+              " ",
+              /* @__PURE__ */ jsx$1("span", { children: "Continue" })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            className: "btn btn-secondary",
+            type: "button",
+            onClick: doRun,
+            disabled: !stepByStep?.pendingControlInput,
+            children: [
+              /* @__PURE__ */ jsx$1(FaPlay, {}),
+              " ",
+              /* @__PURE__ */ jsx$1("span", { children: "Run" })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            className: "btn btn-danger",
+            type: "button",
+            onClick: doQuit,
+            disabled: !stepByStep?.pendingControlInput,
+            children: [
+              /* @__PURE__ */ jsx$1(FaStop, {}),
+              " ",
+              /* @__PURE__ */ jsx$1("span", { children: "Quit" })
+            ]
+          }
+        ),
+        haveAgents ? detailsViewActive ? /* @__PURE__ */ jsxs(
+          "button",
+          {
+            className: "btn",
+            type: "button",
+            onClick: toggleDetailsView,
+            disabled: !stepByStep?.pendingControlInput,
+            children: [
+              /* @__PURE__ */ jsx$1(FaCaretLeft, {}),
+              " ",
+              /* @__PURE__ */ jsx$1("span", { children: "Back" })
+            ]
+          }
+        ) : /* @__PURE__ */ jsxs(
+          "button",
+          {
+            className: "btn",
+            type: "button",
+            onClick: toggleDetailsView,
+            disabled: !stepByStep?.pendingControlInput,
+            children: [
+              /* @__PURE__ */ jsx$1(FaInfo, {}),
+              " ",
+              /* @__PURE__ */ jsx$1("span", { children: "Info" })
+            ]
+          }
+        ) : null
+      ] }),
+      stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
+        /* @__PURE__ */ jsx$1("div", { className: "card-title", children: "Waiting for input" }),
+        /* @__PURE__ */ jsx$1("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
+        /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
+          /* @__PURE__ */ jsx$1(
+            "input",
+            {
+              className: "input",
+              placeholder: "Type your response... (Enter to send)",
+              value: responseText,
+              type: stepByStep.activeRequest.password === true ? "password" : "text",
+              onChange: onInputChange,
+              onKeyDown: onInputKeyDown,
+              autoCapitalize: "off",
+              autoCorrect: "off",
+              autoComplete: "off"
+            }
+          ),
+          /* @__PURE__ */ jsx$1("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx$1("div", { className: "content overflow-y-auto modal-body-main", children: haveAgents && detailsViewActive ? /* @__PURE__ */ jsx$1(EventAgentsList, { agents, darkMode: isDarkMode }) : events.length > 0 ? /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events, autoScroll: true }) }) : /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) }) })
+  ] });
+};
+StepByStepView.displayName = "WaldiezStepByStepView";
+const useStringList = (props) => {
+  const [newEntry, setNewEntry] = useState("");
+  const { items, onItemAdded, onItemChange, onItemDeleted } = props;
+  const onAddEntry = useCallback(() => {
+    if (!onItemAdded || !newEntry.trim()) {
+      return;
+    }
+    onItemAdded(newEntry);
+    setNewEntry("");
+  }, [newEntry, onItemAdded]);
+  const onDeleteEntry = useCallback(
+    (event) => {
+      if (!onItemDeleted) {
+        return;
+      }
+      const valueToDelete = event.currentTarget.value;
+      onItemDeleted(valueToDelete);
+    },
+    [onItemDeleted]
+  );
+  const onEntryChange = useCallback(
+    (event) => {
+      if (!onItemChange) {
+        return;
+      }
+      const index2 = parseInt(event.currentTarget.getAttribute("data-index") || "0");
+      const newValue = event.target.value;
+      const originalValue = items[index2];
+      if (originalValue !== void 0 && originalValue !== null) {
+        onItemChange(originalValue, newValue);
+      }
+    },
+    [onItemChange, items]
+  );
+  const onNewEntryChange = useCallback((event) => {
+    setNewEntry(event.target.value);
+  }, []);
+  const onNewEntryKeyDown = useCallback(
+    (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        onAddEntry();
+      }
+    },
+    [onAddEntry]
+  );
+  return {
+    newEntry,
+    onAddEntry,
+    onDeleteEntry,
+    onEntryChange,
+    onNewEntryChange,
+    onNewEntryKeyDown
+  };
+};
+const StringList = memo((props) => {
+  const { viewLabel, viewLabelInfo, items = [], itemsType = "default", placeholder = "..." } = props;
+  const { newEntry, onAddEntry, onDeleteEntry, onEntryChange, onNewEntryChange, onNewEntryKeyDown } = useStringList(props);
+  const labelElement = useMemo(
+    () => typeof viewLabel === "function" ? viewLabel() : viewLabel,
+    [viewLabel]
+  );
+  const renderItems = useMemo(
+    () => items.map((item, index2) => {
+      return /* @__PURE__ */ jsxs("div", { className: "list-entry", children: [
+        /* @__PURE__ */ jsx$1(
+          "input",
+          {
+            placeholder,
+            type: "text",
+            value: item,
+            "data-index": index2,
+            id: `list-entry-item-${itemsType}-${index2}`,
+            onChange: onEntryChange,
+            "data-testid": `list-entry-item-${itemsType}-${index2}`
+          }
+        ),
+        /* @__PURE__ */ jsx$1(
+          "button",
+          {
+            type: "button",
+            onClick: onDeleteEntry,
+            value: item,
+            title: "Delete",
+            className: "trash-button",
+            id: `delete-list-entry-${itemsType}-${index2}`,
+            "aria-label": `Delete item: ${item}`,
+            "data-testid": `delete-list-entry-${itemsType}-${index2}`,
+            children: /* @__PURE__ */ jsx$1(FaTrash, {})
+          }
+        )
+      ] }, `${itemsType}-${index2}`);
+    }),
+    [items, itemsType, placeholder, onEntryChange, onDeleteEntry]
+  );
+  const isAddDisabled = !newEntry.trim();
+  return /* @__PURE__ */ jsxs("div", { className: "list-entries-view", children: [
+    viewLabelInfo ? /* @__PURE__ */ jsx$1(InfoLabel, { label: viewLabel, info: viewLabelInfo, htmlFor: "list-entries" }) : /* @__PURE__ */ jsx$1("label", { className: "list-entries-label", htmlFor: "list-entries", children: labelElement }),
+    items.length > 0 && /* @__PURE__ */ jsx$1("div", { className: "list-entries-list", children: renderItems }),
+    /* @__PURE__ */ jsx$1("div", { className: "list-entries-list", children: /* @__PURE__ */ jsxs("div", { className: "add-list-entry-view", children: [
+      /* @__PURE__ */ jsx$1(
+        "input",
+        {
+          placeholder,
+          type: "text",
+          value: newEntry,
+          onChange: onNewEntryChange,
+          onKeyDown: onNewEntryKeyDown,
+          "data-testid": `new-list-entry-${itemsType}-item`,
+          "aria-label": `New ${itemsType} input`,
+          id: `new-list-entry-${itemsType}`
+        }
+      ),
+      /* @__PURE__ */ jsx$1(
+        "button",
+        {
+          type: "button",
+          onClick: onAddEntry,
+          title: "Add",
+          disabled: isAddDisabled,
+          className: "plus-button",
+          "aria-label": "Add item",
+          id: `add-list-entry-${itemsType}-button`,
+          "data-testid": `add-list-entry-${itemsType}-button`,
+          children: /* @__PURE__ */ jsx$1(FaPlus, {})
+        }
+      )
+    ] }) })
+  ] });
+});
+StringList.displayName = "StringList";
+const TabItem = memo((props) => {
+  const { id, children } = props;
+  return /* @__PURE__ */ jsx$1(
+    "div",
+    {
+      className: "tab-panel",
+      role: "tabpanel",
+      "aria-labelledby": `tab-id-${id}`,
+      "data-testid": `panel-${id}`,
+      id: `panel-${id}`,
+      children
+    }
+  );
+});
+const TabItems = memo((props) => {
+  const { activeTabIndex = 0, children, onTabChange } = props;
+  const [activeTab, setActiveTab] = useState(activeTabIndex);
+  useEffect(() => {
+    setActiveTab(activeTabIndex);
+  }, [activeTabIndex]);
+  const handleTabClick = useCallback(
+    (index2) => {
+      setActiveTab(index2);
+      onTabChange?.(index2);
+    },
+    [onTabChange]
+  );
+  const tabs = useMemo(
+    () => Children.toArray(children).filter(
+      (child) => isValidElement(child) && child.type === TabItem
+    ),
+    [children]
+  );
+  const tabButtons = useMemo(
+    () => tabs.map((tab, index2) => {
+      const isActive = activeTab === index2;
+      const className = isActive ? "tab-btn--active" : "";
+      const tabId = tab.props.id;
+      return /* @__PURE__ */ jsx$1("li", { role: "tab", "aria-selected": isActive, children: /* @__PURE__ */ jsx$1(
+        "div",
+        {
+          role: "button",
+          "data-testid": `tab-id-${tabId}`,
+          id: `tab-id-${tabId}`,
+          "aria-controls": `panel-${tabId}`,
+          onClick: () => handleTabClick(index2),
+          className: `tab-btn ${className}`,
+          tabIndex: isActive ? 0 : -1,
+          children: tab.props.label
+        }
+      ) }, `tab-li-${tabId}-${index2}`);
+    }),
+    [tabs, activeTab, handleTabClick]
+  );
+  const activeTabContent = tabs[activeTab] || null;
+  return /* @__PURE__ */ jsxs("div", { className: "tabs", children: [
+    /* @__PURE__ */ jsx$1("nav", { className: "tab-list-wrapper", children: /* @__PURE__ */ jsx$1("ul", { className: "tab-list", role: "tablist", "aria-orientation": "horizontal", children: tabButtons }) }),
+    activeTabContent
+  ] });
+});
+TabItem.displayName = "TabItem";
+TabItems.displayName = "TabItems";
 var DefaultContext = {
   color: void 0,
   size: void 0,
@@ -28986,10 +29353,13 @@ const Timeline = ({ data, height = 400 }) => {
   useLayoutEffect(() => {
     if (chartRef.current) {
       const svgElement = chartRef.current.querySelector("svg");
+      const rect = chartRef.current.getBoundingClientRect();
       if (svgElement) {
-        const width = parseInt(svgElement.getAttribute("width") || "800");
-        const height2 = parseInt(svgElement.getAttribute("height") || "400");
+        const width = parseInt(svgElement.getAttribute("width") || `${rect.width}`);
+        const height2 = parseInt(svgElement.getAttribute("height") || `${rect.height}`);
         setDimensions({ width, height: height2 });
+      } else {
+        setDimensions({ width: rect.width, height: rect.height });
       }
     }
   }, []);
@@ -29034,7 +29404,7 @@ const Timeline = ({ data, height = 400 }) => {
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "card-content", children: [
-        /* @__PURE__ */ jsx$1("div", { className: "w-full", children: /* @__PURE__ */ jsx$1(ResponsiveContainer, { width: "100%", height, children: /* @__PURE__ */ jsx$1(
+        /* @__PURE__ */ jsx$1("div", { className: "w-full", children: /* @__PURE__ */ jsx$1(ResponsiveContainer, { width: "100%", height, ref: chartRef, children: /* @__PURE__ */ jsx$1(
           TimelineChart,
           {
             width: dimensions.width,
@@ -29068,6 +29438,7 @@ const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
     Modal,
     {
       flowId,
+      dataTestId: "timeline-modal",
       id: "timeline-modal",
       title: "Chat Timeline",
       isOpen,
@@ -29084,7 +29455,7 @@ const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
           "button",
           {
             type: "button",
-            title: "Close preview",
+            title: "Close",
             className: "modal-close",
             onClick: onClose,
             "data-testid": "modal-close",
@@ -29095,462 +29466,6 @@ const TimelineModal = ({ flowId, isOpen, onClose, data }) => {
     }
   );
 };
-const StepByStepView = ({ flowId, stepByStep, isDarkMode }) => {
-  useAgentClassUpdates(stepByStep);
-  const [responseText, setResponseText] = useState("");
-  const [timelineModalOpen, setTimelineModalOpen] = useState(false);
-  const [detailsViewActive, setDetailsViewActive] = useState(false);
-  const openTimelineModal = useCallback(() => {
-    setTimelineModalOpen(true);
-  }, []);
-  const closeTimelineModal = useCallback(() => {
-    setTimelineModalOpen(false);
-  }, []);
-  const requestId = stepByStep?.activeRequest?.request_id ?? null;
-  const canClose = !stepByStep?.active && !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
-  const onInputChange = useCallback((e) => {
-    setResponseText(e.target.value);
-  }, []);
-  const onRespond = useCallback(() => {
-    if (!requestId) {
-      return;
-    }
-    stepByStep?.handlers?.respond?.({
-      id: nanoid(),
-      timestamp: Date.now(),
-      data: responseText,
-      request_id: requestId,
-      type: "input_response"
-    });
-    setResponseText("");
-  }, [requestId, responseText, stepByStep?.handlers]);
-  const onInputKeyDown = useCallback(
-    (e) => {
-      if (e.key !== "Enter") {
-        return;
-      }
-      if (e.nativeEvent?.isComposing) {
-        return;
-      }
-      if (!requestId) {
-        return;
-      }
-      stepByStep?.handlers?.respond?.({
-        id: nanoid(),
-        timestamp: Date.now(),
-        data: responseText,
-        request_id: requestId,
-        type: "input_response"
-      });
-      setResponseText("");
-    },
-    [requestId, responseText, stepByStep?.handlers]
-  );
-  const onControl = useCallback(
-    (action) => {
-      if (!stepByStep?.handlers?.sendControl) {
-        return;
-      }
-      const rid = requestId ?? "<unknown>";
-      stepByStep.handlers.sendControl({
-        data: controlToResponse({ kind: action }),
-        request_id: rid
-      });
-    },
-    [requestId, stepByStep?.handlers]
-  );
-  const reducedHistory = useMemo(() => {
-    const raw = stepByStep?.eventHistory ?? [];
-    const max = 500;
-    const start = Math.max(0, raw.length - max);
-    return raw.slice(start).filter((e) => e && !["debug", "print", "raw", "timeline"].includes(String(e?.type))).map((e) => {
-      const x2 = e;
-      const data = x2.event ?? x2.data ?? x2.message ?? x2;
-      return Array.isArray(data) && data.length === 1 ? data[0] : data;
-    }).reverse();
-  }, [stepByStep?.eventHistory]);
-  const badgeText = useMemo(() => {
-    if (!stepByStep) {
-      return null;
-    }
-    const curType = stepByStep.currentEvent?.type;
-    if (typeof curType === "string" && !["debug", "print", "raw"].includes(curType)) {
-      return curType;
-    }
-    const last = reducedHistory[reducedHistory.length - 1];
-    const lastType = last?.event?.type ?? last?.type;
-    if (typeof lastType === "string" && !["debug", "print", "raw"].includes(lastType)) {
-      return lastType;
-    }
-    if (!stepByStep.active && canClose) {
-      return stepByStep.eventHistory?.length > 0 ? "Finished" : null;
-    }
-    return "Running";
-  }, [stepByStep, reducedHistory, canClose]);
-  const toggleDetailsView = useCallback(() => {
-    setDetailsViewActive((prev2) => !prev2);
-  }, []);
-  const doContinue = useCallback(() => {
-    onControl("continue");
-    setDetailsViewActive(false);
-  }, [onControl]);
-  const doRun = useCallback(() => {
-    onControl("run");
-    setDetailsViewActive(false);
-  }, [onControl]);
-  const doQuit = useCallback(() => {
-    onControl("quit");
-    setDetailsViewActive(false);
-  }, [onControl]);
-  if (!stepByStep?.active && !canClose) {
-    return null;
-  }
-  const currentEvent = stepByStep?.currentEvent;
-  const agents = currentEvent?.agents?.all;
-  const haveAgents = Array.isArray(agents) && agents.length > 0;
-  const headerLeft = /* @__PURE__ */ jsxs("div", { className: "header", children: [
-    /* @__PURE__ */ jsx$1(FaBug, { className: "icon-bug", size: 18 }),
-    stepByStep.timeline && /* @__PURE__ */ jsx$1(
-      "div",
-      {
-        role: "button",
-        className: "clickable",
-        onClick: openTimelineModal,
-        title: "View Timeline",
-        "data-testid": `rf-${flowId}-chat-modal-timeline`,
-        children: /* @__PURE__ */ jsx$1(MdTimeline, { size: 18, className: "timeline-button" })
-      }
-    ),
-    /* @__PURE__ */ jsx$1("div", { className: "title", children: "Step-by-step Run" }),
-    badgeText && /* @__PURE__ */ jsx$1("div", { className: `badge ${badgeText}`, children: badgeText }),
-    !badgeText && !stepByStep?.active && /* @__PURE__ */ jsx$1("div", { className: "badge", children: "Finished" }),
-    !badgeText && stepByStep?.active && /* @__PURE__ */ jsx$1("div", { className: "badge", children: "Running" })
-  ] });
-  const headerRight = stepByStep?.handlers?.close ? /* @__PURE__ */ jsx$1(
-    "button",
-    {
-      title: "Close",
-      type: "button",
-      onClick: stepByStep.handlers.close,
-      className: "header-toggle",
-      "aria-label": "Close panel",
-      children: /* @__PURE__ */ jsx$1(FaX, { size: 14 })
-    }
-  ) : void 0;
-  return /* @__PURE__ */ jsxs("div", { className: "waldiez-step-by-step-view", "data-testid": `step-by-step-${flowId}`, children: [
-    /* @__PURE__ */ jsx$1(
-      FloatingPanel,
-      {
-        flowId,
-        title: "",
-        headerLeft,
-        headerRight,
-        maxHeight: "80vh",
-        minHeight: 320,
-        minWidth: 420,
-        maxWidth: "80vw",
-        children: /* @__PURE__ */ jsxs("div", { className: "content", children: [
-          stepByStep?.pendingControlInput && /* @__PURE__ */ jsxs("div", { className: "controls", children: [
-            /* @__PURE__ */ jsxs(
-              "button",
-              {
-                className: "btn btn-primary",
-                type: "button",
-                onClick: doContinue,
-                disabled: !stepByStep?.pendingControlInput,
-                children: [
-                  /* @__PURE__ */ jsx$1(FaStepForward, {}),
-                  " ",
-                  /* @__PURE__ */ jsx$1("span", { children: "Continue" })
-                ]
-              }
-            ),
-            /* @__PURE__ */ jsxs(
-              "button",
-              {
-                className: "btn btn-secondary",
-                type: "button",
-                onClick: doRun,
-                disabled: !stepByStep?.pendingControlInput,
-                children: [
-                  /* @__PURE__ */ jsx$1(FaPlay, {}),
-                  " ",
-                  /* @__PURE__ */ jsx$1("span", { children: "Run" })
-                ]
-              }
-            ),
-            /* @__PURE__ */ jsxs(
-              "button",
-              {
-                className: "btn btn-danger",
-                type: "button",
-                onClick: doQuit,
-                disabled: !stepByStep?.pendingControlInput,
-                children: [
-                  /* @__PURE__ */ jsx$1(FaStop, {}),
-                  " ",
-                  /* @__PURE__ */ jsx$1("span", { children: "Quit" })
-                ]
-              }
-            ),
-            haveAgents ? detailsViewActive ? /* @__PURE__ */ jsxs(
-              "button",
-              {
-                className: "btn",
-                type: "button",
-                onClick: toggleDetailsView,
-                disabled: !stepByStep?.pendingControlInput,
-                children: [
-                  /* @__PURE__ */ jsx$1(FaCaretLeft, {}),
-                  " ",
-                  /* @__PURE__ */ jsx$1("span", { children: "Back" })
-                ]
-              }
-            ) : /* @__PURE__ */ jsxs(
-              "button",
-              {
-                className: "btn",
-                type: "button",
-                onClick: toggleDetailsView,
-                disabled: !stepByStep?.pendingControlInput,
-                children: [
-                  /* @__PURE__ */ jsx$1(FaInfo, {}),
-                  " ",
-                  /* @__PURE__ */ jsx$1("span", { children: "Info" })
-                ]
-              }
-            ) : null
-          ] }),
-          stepByStep?.activeRequest && /* @__PURE__ */ jsxs("div", { className: "card card--pending", children: [
-            /* @__PURE__ */ jsx$1("div", { className: "card-title", children: "Waiting for input" }),
-            /* @__PURE__ */ jsx$1("div", { className: "codeblock", children: stepByStep.activeRequest.prompt }),
-            /* @__PURE__ */ jsxs("div", { className: "input-row", children: [
-              /* @__PURE__ */ jsx$1(
-                "input",
-                {
-                  className: "input",
-                  placeholder: "Type your response... (Enter to send)",
-                  value: responseText,
-                  type: stepByStep.activeRequest.password === true ? "password" : "text",
-                  onChange: onInputChange,
-                  onKeyDown: onInputKeyDown,
-                  autoCapitalize: "off",
-                  autoCorrect: "off",
-                  autoComplete: "off"
-                }
-              ),
-              /* @__PURE__ */ jsx$1("button", { className: "btn btn-primary", type: "button", onClick: onRespond, children: "Send" })
-            ] })
-          ] }),
-          haveAgents && detailsViewActive ? /* @__PURE__ */ jsx$1(EventAgentsList, { agents, darkMode: isDarkMode }) : reducedHistory.length > 0 ? /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: reducedHistory, autoScroll: true }) }) : /* @__PURE__ */ jsx$1("div", { className: "event-history", children: /* @__PURE__ */ jsx$1(EventConsole, { events: [{ type: "empty", content: "No messages yet..." }] }) })
-        ] })
-      }
-    ),
-    stepByStep.timeline && timelineModalOpen && /* @__PURE__ */ jsx$1(
-      TimelineModal,
-      {
-        flowId,
-        isOpen: timelineModalOpen,
-        onClose: closeTimelineModal,
-        data: stepByStep.timeline
-      }
-    )
-  ] });
-};
-StepByStepView.displayName = "WaldiezStepByStepView";
-const useStringList = (props) => {
-  const [newEntry, setNewEntry] = useState("");
-  const { items, onItemAdded, onItemChange, onItemDeleted } = props;
-  const onAddEntry = useCallback(() => {
-    if (!onItemAdded || !newEntry.trim()) {
-      return;
-    }
-    onItemAdded(newEntry);
-    setNewEntry("");
-  }, [newEntry, onItemAdded]);
-  const onDeleteEntry = useCallback(
-    (event) => {
-      if (!onItemDeleted) {
-        return;
-      }
-      const valueToDelete = event.currentTarget.value;
-      onItemDeleted(valueToDelete);
-    },
-    [onItemDeleted]
-  );
-  const onEntryChange = useCallback(
-    (event) => {
-      if (!onItemChange) {
-        return;
-      }
-      const index2 = parseInt(event.currentTarget.getAttribute("data-index") || "0");
-      const newValue = event.target.value;
-      const originalValue = items[index2];
-      if (originalValue !== void 0 && originalValue !== null) {
-        onItemChange(originalValue, newValue);
-      }
-    },
-    [onItemChange, items]
-  );
-  const onNewEntryChange = useCallback((event) => {
-    setNewEntry(event.target.value);
-  }, []);
-  const onNewEntryKeyDown = useCallback(
-    (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        onAddEntry();
-      }
-    },
-    [onAddEntry]
-  );
-  return {
-    newEntry,
-    onAddEntry,
-    onDeleteEntry,
-    onEntryChange,
-    onNewEntryChange,
-    onNewEntryKeyDown
-  };
-};
-const StringList = memo((props) => {
-  const { viewLabel, viewLabelInfo, items = [], itemsType = "default", placeholder = "..." } = props;
-  const { newEntry, onAddEntry, onDeleteEntry, onEntryChange, onNewEntryChange, onNewEntryKeyDown } = useStringList(props);
-  const labelElement = useMemo(
-    () => typeof viewLabel === "function" ? viewLabel() : viewLabel,
-    [viewLabel]
-  );
-  const renderItems = useMemo(
-    () => items.map((item, index2) => {
-      return /* @__PURE__ */ jsxs("div", { className: "list-entry", children: [
-        /* @__PURE__ */ jsx$1(
-          "input",
-          {
-            placeholder,
-            type: "text",
-            value: item,
-            "data-index": index2,
-            id: `list-entry-item-${itemsType}-${index2}`,
-            onChange: onEntryChange,
-            "data-testid": `list-entry-item-${itemsType}-${index2}`
-          }
-        ),
-        /* @__PURE__ */ jsx$1(
-          "button",
-          {
-            type: "button",
-            onClick: onDeleteEntry,
-            value: item,
-            title: "Delete",
-            className: "trash-button",
-            id: `delete-list-entry-${itemsType}-${index2}`,
-            "aria-label": `Delete item: ${item}`,
-            "data-testid": `delete-list-entry-${itemsType}-${index2}`,
-            children: /* @__PURE__ */ jsx$1(FaTrash, {})
-          }
-        )
-      ] }, `${itemsType}-${index2}`);
-    }),
-    [items, itemsType, placeholder, onEntryChange, onDeleteEntry]
-  );
-  const isAddDisabled = !newEntry.trim();
-  return /* @__PURE__ */ jsxs("div", { className: "list-entries-view", children: [
-    viewLabelInfo ? /* @__PURE__ */ jsx$1(InfoLabel, { label: viewLabel, info: viewLabelInfo, htmlFor: "list-entries" }) : /* @__PURE__ */ jsx$1("label", { className: "list-entries-label", htmlFor: "list-entries", children: labelElement }),
-    items.length > 0 && /* @__PURE__ */ jsx$1("div", { className: "list-entries-list", children: renderItems }),
-    /* @__PURE__ */ jsx$1("div", { className: "list-entries-list", children: /* @__PURE__ */ jsxs("div", { className: "add-list-entry-view", children: [
-      /* @__PURE__ */ jsx$1(
-        "input",
-        {
-          placeholder,
-          type: "text",
-          value: newEntry,
-          onChange: onNewEntryChange,
-          onKeyDown: onNewEntryKeyDown,
-          "data-testid": `new-list-entry-${itemsType}-item`,
-          "aria-label": `New ${itemsType} input`,
-          id: `new-list-entry-${itemsType}`
-        }
-      ),
-      /* @__PURE__ */ jsx$1(
-        "button",
-        {
-          type: "button",
-          onClick: onAddEntry,
-          title: "Add",
-          disabled: isAddDisabled,
-          className: "plus-button",
-          "aria-label": "Add item",
-          id: `add-list-entry-${itemsType}-button`,
-          "data-testid": `add-list-entry-${itemsType}-button`,
-          children: /* @__PURE__ */ jsx$1(FaPlus, {})
-        }
-      )
-    ] }) })
-  ] });
-});
-StringList.displayName = "StringList";
-const TabItem = memo((props) => {
-  const { id, children } = props;
-  return /* @__PURE__ */ jsx$1(
-    "div",
-    {
-      className: "tab-panel",
-      role: "tabpanel",
-      "aria-labelledby": `tab-id-${id}`,
-      "data-testid": `panel-${id}`,
-      id: `panel-${id}`,
-      children
-    }
-  );
-});
-const TabItems = memo((props) => {
-  const { activeTabIndex = 0, children, onTabChange } = props;
-  const [activeTab, setActiveTab] = useState(activeTabIndex);
-  useEffect(() => {
-    setActiveTab(activeTabIndex);
-  }, [activeTabIndex]);
-  const handleTabClick = useCallback(
-    (index2) => {
-      setActiveTab(index2);
-      onTabChange?.(index2);
-    },
-    [onTabChange]
-  );
-  const tabs = useMemo(
-    () => Children.toArray(children).filter(
-      (child) => isValidElement(child) && child.type === TabItem
-    ),
-    [children]
-  );
-  const tabButtons = useMemo(
-    () => tabs.map((tab, index2) => {
-      const isActive = activeTab === index2;
-      const className = isActive ? "tab-btn--active" : "";
-      const tabId = tab.props.id;
-      return /* @__PURE__ */ jsx$1("li", { role: "tab", "aria-selected": isActive, children: /* @__PURE__ */ jsx$1(
-        "div",
-        {
-          role: "button",
-          "data-testid": `tab-id-${tabId}`,
-          id: `tab-id-${tabId}`,
-          "aria-controls": `panel-${tabId}`,
-          onClick: () => handleTabClick(index2),
-          className: `tab-btn ${className}`,
-          tabIndex: isActive ? 0 : -1,
-          children: tab.props.label
-        }
-      ) }, `tab-li-${tabId}-${index2}`);
-    }),
-    [tabs, activeTab, handleTabClick]
-  );
-  const activeTabContent = tabs[activeTab] || null;
-  return /* @__PURE__ */ jsxs("div", { className: "tabs", children: [
-    /* @__PURE__ */ jsx$1("nav", { className: "tab-list-wrapper", children: /* @__PURE__ */ jsx$1("ul", { className: "tab-list", role: "tablist", "aria-orientation": "horizontal", children: tabButtons }) }),
-    activeTabContent
-  ] });
-});
-TabItem.displayName = "TabItem";
-TabItems.displayName = "TabItems";
 const CUSTOM_UPDATE_SYSTEM_MESSAGE_FUNCTION_CONTENT = `"""Custom update system message function."""
 
 # provide the function to define the system message before replying
@@ -29834,283 +29749,6 @@ const Wizard = memo((props) => {
 });
 WizardStep.displayName = "WizardStep";
 Wizard.displayName = "Wizard";
-const useDnD = (onNewAgent) => {
-  const { screenToFlowPosition, getIntersectingNodes } = useReactFlow();
-  const addAgent = useWaldiez((s) => s.addAgent);
-  const setAgentGroup = useWaldiez((s) => s.setAgentGroup);
-  const addGroupMember = useWaldiez((s) => s.addGroupMember);
-  const getRfInstance = useWaldiez((s) => s.getRfInstance);
-  const highlightNode = useWaldiez((s) => s.highlightNode);
-  const clearNodeHighlight = useWaldiez((s) => s.clearNodeHighlight);
-  const getAgentType2 = useCallback((event) => {
-    const nodeTypeData = event.dataTransfer.getData("application/node");
-    if (nodeTypeData !== "agent") {
-      return void 0;
-    }
-    const agentTypeData = event.dataTransfer.getData("application/agent");
-    if (ValidAgentTypes$2.includes(agentTypeData)) {
-      return agentTypeData;
-    }
-    return void 0;
-  }, []);
-  const onDragOver = useCallback((event) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
-    document.body.classList.add("dragging");
-  }, []);
-  const getIntersectingParent = useCallback((intersectingNodes) => {
-    return intersectingNodes.find(
-      (node2) => node2.type === "agent" && node2.data.agentType === "group_manager"
-    );
-  }, []);
-  const getDroppedAgentParent = useCallback(
-    (position2) => {
-      const { x: x2, y } = position2;
-      const nodeRect = { x: x2, y, width: 100, height: 100 };
-      try {
-        const intersectingNodes = getIntersectingNodes(nodeRect);
-        if (intersectingNodes.length > 0) {
-          return getIntersectingParent(intersectingNodes);
-        }
-      } catch (_2) {
-      }
-      return void 0;
-    },
-    [getIntersectingNodes, getIntersectingParent]
-  );
-  const getParentPosition = useCallback(
-    (parent) => {
-      const rfInstance = getRfInstance();
-      if (!rfInstance) {
-        return void 0;
-      }
-      const parentPos = rfInstance.getInternalNode(parent.id);
-      if (parentPos?.internals.positionAbsolute) {
-        return {
-          x: parentPos.internals.positionAbsolute.x,
-          y: parentPos.internals.positionAbsolute.y
-        };
-      }
-      return void 0;
-    },
-    [getRfInstance]
-  );
-  const getAgentPositionAndParent = useCallback(
-    (event, parentNode) => {
-      let position2 = screenToFlowPosition(
-        {
-          x: event.clientX,
-          y: event.clientY
-        },
-        {
-          snapToGrid: false
-        }
-      );
-      const parent = parentNode || getDroppedAgentParent(position2);
-      if (parent) {
-        const parentPos = getParentPosition(parent);
-        if (parentPos) {
-          const screenPos = screenToFlowPosition({
-            x: event.clientX,
-            y: event.clientY
-          });
-          position2 = {
-            x: screenPos.x - parentPos.x - 50,
-            y: screenPos.y - parentPos.y - 50
-          };
-        }
-      }
-      return { position: position2, parent };
-    },
-    [screenToFlowPosition, getDroppedAgentParent, getParentPosition]
-  );
-  const addAgentNode = useCallback(
-    (event, agentType) => {
-      const { position: position2, parent } = getAgentPositionAndParent(event);
-      const newNode = addAgent(agentType, position2, parent?.id);
-      if (parent) {
-        newNode.parentId = parent.id;
-        newNode.data.parentId = parent.id;
-        window.requestAnimationFrame(() => {
-          setAgentGroup(newNode.id, parent.id);
-        });
-      }
-      return newNode;
-    },
-    [getAgentPositionAndParent, addAgent, setAgentGroup]
-  );
-  const onDrop = useCallback(
-    (event) => {
-      document.body.classList.remove("dragging");
-      const agentType = getAgentType2(event);
-      if (agentType) {
-        event.preventDefault();
-        addAgentNode(event, agentType);
-        onNewAgent();
-      }
-    },
-    [getAgentType2, addAgentNode, onNewAgent]
-  );
-  const getIntersectingGroupManager = useCallback(
-    (_event, node2) => {
-      try {
-        const intersectingNodes = getIntersectingNodes(node2);
-        const intersections = intersectingNodes.filter(
-          (node22) => node22.type === "agent" && node22.data.agentType === "group_manager"
-        );
-        if (intersections.length === 1) {
-          return intersections[0];
-        }
-      } catch (_2) {
-      }
-      return void 0;
-    },
-    [getIntersectingNodes]
-  );
-  const onNodeDrag = useCallback(
-    (event, node2) => {
-      if (!node2.parentId && node2.data.agentType !== "group_manager") {
-        const groupManager = getIntersectingGroupManager(event, node2);
-        if (groupManager) {
-          highlightNode(groupManager.id);
-        } else {
-          clearNodeHighlight();
-        }
-      } else {
-        clearNodeHighlight();
-      }
-    },
-    [getIntersectingGroupManager, highlightNode, clearNodeHighlight]
-  );
-  const onNodeDragStop = useCallback(
-    (event, node2) => {
-      if (!node2.parentId && node2.data.agentType !== "group_manager") {
-        const groupManager = getIntersectingGroupManager(event, node2);
-        if (groupManager) {
-          const { position: position2 } = getAgentPositionAndParent(event, groupManager);
-          addGroupMember(groupManager.id, node2.id, position2);
-        }
-      }
-      clearNodeHighlight();
-    },
-    [getIntersectingGroupManager, getAgentPositionAndParent, addGroupMember, clearNodeHighlight]
-  );
-  return useMemo(
-    () => ({
-      onDragOver,
-      onDrop,
-      onNodeDrag,
-      onNodeDragStop
-    }),
-    [onDragOver, onDrop, onNodeDrag, onNodeDragStop]
-  );
-};
-const useKeys = (flowId, onSave) => {
-  const { undo, redo, futureStates, pastStates } = useWaldiezHistory((s) => s);
-  const readOnly = useWaldiez((s) => s.isReadOnly);
-  const isReadOnly = readOnly === true;
-  const deleteAgent = useWaldiez((s) => s.deleteAgent);
-  const deleteEdge = useWaldiez((s) => s.deleteEdge);
-  const deleteModel = useWaldiez((s) => s.deleteModel);
-  const deleteTool = useWaldiez((s) => s.deleteTool);
-  const saveFlow = useWaldiez((s) => s.saveFlow);
-  const listenForSave = typeof onSave === "function" && !isReadOnly;
-  const isFlowVisible = () => {
-    const rootDiv = getFlowRoot(flowId);
-    if (!rootDiv) {
-      return false;
-    }
-    const clientRect = rootDiv.getBoundingClientRect();
-    return clientRect.width > 0 && clientRect.height > 0;
-  };
-  {
-    fe(
-      "mod+z",
-      () => {
-        if (pastStates.length > 0) {
-          if (isFlowVisible()) {
-            undo();
-          }
-        }
-      },
-      { scopes: flowId }
-    );
-    fe(
-      ["shift+mod+z", "mod+y"],
-      () => {
-        if (futureStates.length > 0) {
-          if (isFlowVisible()) {
-            redo();
-          }
-        }
-      },
-      { scopes: flowId }
-    );
-  }
-  if (listenForSave) {
-    fe(
-      "mod+s",
-      (event) => {
-        if (isFlowVisible()) {
-          event.preventDefault();
-          saveFlow();
-        }
-      },
-      { scopes: flowId }
-    );
-  }
-  const onDeleteKey = (event) => {
-    if (isReadOnly) {
-      return;
-    }
-    const target = event.target;
-    const isNode = target instanceof Element && target.classList.contains("react-flow__node");
-    if (isNode) {
-      deleteNode(target);
-    } else {
-      const isEdge = target instanceof Element && (target.classList.contains("react-flow__edge") || target.classList.contains("edge-data-view"));
-      if (isEdge) {
-        onDeleteEdge(target);
-      }
-    }
-  };
-  const onKeyDown = (event) => {
-    if (isReadOnly) {
-      return;
-    }
-    if (event?.key === "Delete" || event?.key === "Backspace") {
-      if (isFlowVisible()) {
-        onDeleteKey(event);
-      }
-    }
-  };
-  const deleteNode = (target) => {
-    const nodeId = target.getAttribute("data-id");
-    if (nodeId) {
-      const isAgent = target.classList.contains("react-flow__node-agent");
-      const isModel = target.classList.contains("react-flow__node-model");
-      const isTool = target.classList.contains("react-flow__node-tool");
-      if (isAgent) {
-        deleteAgent(nodeId);
-      } else {
-        if (isModel) {
-          deleteModel(nodeId);
-        } else {
-          if (isTool) {
-            deleteTool(nodeId);
-          }
-        }
-      }
-    }
-  };
-  const onDeleteEdge = (target) => {
-    const edgeId = target.getAttribute("data-id");
-    if (edgeId) {
-      deleteEdge(edgeId);
-    }
-  };
-  return { onKeyDown };
-};
 const useFlowEvents = (flowId) => {
   const readOnly = useWaldiez((s) => s.isReadOnly);
   const skipImport = useWaldiez((s) => s.skipImport);
@@ -30533,7 +30171,7 @@ const ChatModal = memo((props) => {
       dataTestId: modalTestId,
       hasUnsavedChanges: false,
       preventCloseIfUnsavedChanges: false,
-      children: /* @__PURE__ */ jsxs("div", { className: "modal-body", children: [
+      children: /* @__PURE__ */ jsxs("div", { className: "modal-body min-h-[320px]", children: [
         chat?.messages && chat.messages.length > 0 && /* @__PURE__ */ jsx$1("div", { className: "chat-wrapper", "data-flow-id": flowId, children: /* @__PURE__ */ jsx$1(
           ChatUI,
           {
@@ -31289,7 +30927,7 @@ const LoadFlowStep = (props) => {
           onClick: onClearLoadedFlowData
         }
       )
-    ] }) : /* @__PURE__ */ jsx$1("div", { children: "No flow loaded" }) })
+    ] }) : /* @__PURE__ */ jsx$1("div", { className: "flex items-center justify-center", children: "No flow loaded" }) })
   ] });
 };
 const useFlowAgents = (props) => {
@@ -31866,7 +31504,7 @@ const ImportFlowModal = (props) => {
       onClose,
       title: "Import Flow",
       dataTestId: `import-flow-modal-${flowId}`,
-      children: /* @__PURE__ */ jsx$1("div", { className: "modal-body padding-10", children: /* @__PURE__ */ jsxs(
+      children: /* @__PURE__ */ jsx$1("div", { className: "modal-body", children: /* @__PURE__ */ jsxs(
         Wizard,
         {
           activeStep: 0,
@@ -31896,6 +31534,106 @@ const ImportFlowModal = (props) => {
           ]
         }
       ) })
+    }
+  );
+};
+const StepRunModal = ({ flowId, stepByStep, isDarkMode, className }) => {
+  const modalTestId = `rf-${flowId}-step-run-modal`;
+  const [timelineModalOpen, setTimelineModalOpen] = useState(false);
+  const openTimelineModal = useCallback(() => {
+    setTimelineModalOpen(true);
+  }, []);
+  const closeTimelineModal = useCallback(() => {
+    setTimelineModalOpen(false);
+  }, []);
+  const onClose = useCallback(() => {
+    if (stepByStep?.handlers?.close) {
+      stepByStep.handlers?.close();
+    }
+  }, [stepByStep?.handlers]);
+  const events = useMemo(() => {
+    const raw = stepByStep?.eventHistory ?? [];
+    const max = 500;
+    const start = Math.max(0, raw.length - max);
+    return raw.slice(start).filter((e) => e && !["debug", "print", "raw", "timeline"].includes(String(e?.type))).map((e) => {
+      const x2 = e;
+      const data = x2.event ?? x2.data ?? x2.message ?? x2;
+      return Array.isArray(data) && data.length === 1 ? data[0] : data;
+    }).reverse();
+  }, [stepByStep?.eventHistory]);
+  const canClose = !stepByStep?.active && !!stepByStep?.handlers?.close && (stepByStep?.eventHistory?.length ?? 0) > 0;
+  const badgeText = useMemo(() => {
+    if (!stepByStep) {
+      return null;
+    }
+    const curType = stepByStep.currentEvent?.type;
+    if (typeof curType === "string" && !["debug", "print", "raw"].includes(curType)) {
+      return curType;
+    }
+    const last = events[events.length - 1];
+    const lastType = last?.event?.type ?? last?.type;
+    if (typeof lastType === "string" && !["debug", "print", "raw"].includes(lastType)) {
+      return lastType;
+    }
+    if (!stepByStep.active && canClose) {
+      return stepByStep.eventHistory?.length > 0 ? "Finished" : null;
+    }
+    return "Running";
+  }, [stepByStep, events, canClose]);
+  if (!stepByStep?.active && !canClose) {
+    return null;
+  }
+  const headerLeft = /* @__PURE__ */ jsx$1("div", { className: "header", children: stepByStep.timeline ? /* @__PURE__ */ jsx$1(
+    "div",
+    {
+      role: "button",
+      className: "clickable",
+      onClick: openTimelineModal,
+      title: "View Timeline",
+      "data-testid": `rf-${flowId}-chat-modal-timeline`,
+      children: /* @__PURE__ */ jsx$1(MdTimeline, { size: 18, className: "timeline-button" })
+    }
+  ) : /* @__PURE__ */ jsx$1(FaBug, { className: "icon-bug", color: "#ea580c", size: 18 }) });
+  if (stepByStep.timeline && timelineModalOpen) {
+    return /* @__PURE__ */ jsx$1(
+      TimelineModal,
+      {
+        flowId,
+        isOpen: timelineModalOpen,
+        onClose: closeTimelineModal,
+        data: stepByStep.timeline
+      }
+    );
+  }
+  return /* @__PURE__ */ jsxs(
+    Modal,
+    {
+      flowId,
+      id: modalTestId,
+      title: "Step-by-step Run",
+      isOpen: true,
+      onClose,
+      onCancel: onClose,
+      beforeTitle: headerLeft,
+      className: "step-run-modal",
+      hasMaximizeBtn: true,
+      hasCloseBtn: true,
+      dataTestId: modalTestId,
+      hasUnsavedChanges: false,
+      preventCloseIfUnsavedChanges: false,
+      children: [
+        /* @__PURE__ */ jsx$1("div", { className: "modal-body", children: /* @__PURE__ */ jsx$1(
+          StepByStepView,
+          {
+            flowId,
+            isDarkMode,
+            stepByStep,
+            events,
+            className
+          }
+        ) }),
+        /* @__PURE__ */ jsx$1("div", { className: "modal-sticky-bottom text-sm text-center", children: badgeText })
+      ]
     }
   );
 };
@@ -32688,6 +32426,11 @@ const CheckpointsTabs = (props) => {
   const handleCheckpointSelect = (checkpoint) => {
     setSelectedCheckpoint(checkpoint);
   };
+  const retryGetCheckpoints = async () => {
+    setGotCheckpoints(false);
+    setCheckpointError(null);
+    await loadCheckpoints();
+  };
   useEffect(() => {
     loadCheckpoints();
   }, []);
@@ -32705,7 +32448,14 @@ const CheckpointsTabs = (props) => {
       className: `${isDark ? "bg-red-900/20 border-red-800" : "bg-red-50 border-red-200"} border rounded-lg p-4`,
       children: [
         /* @__PURE__ */ jsx$1("p", { className: `text-sm ${isDark ? "text-red-400" : "text-red-600"}`, children: checkpointError }),
-        /* @__PURE__ */ jsx$1("button", { onClick: loadCheckpoints, className: "mt-2 text-sm underline hover:no-underline", children: "Retry" })
+        /* @__PURE__ */ jsx$1(
+          "button",
+          {
+            onClick: retryGetCheckpoints,
+            className: "mt-2 text-sm underline hover:no-underline",
+            children: "Retry"
+          }
+        )
       ]
     }
   ) : checkpoints.length === 0 ? /* @__PURE__ */ jsxs("div", { className: `text-center py-8 ${isDark ? "text-gray-400" : "text-gray-500"}`, children: [
@@ -32772,6 +32522,7 @@ const CheckpointsTabs = (props) => {
           /* @__PURE__ */ jsx$1(
             "button",
             {
+              "data-testid": "clear-checkpoints",
               onClick: () => {
                 setSelectedCheckpoint(null);
                 setExpandedCheckpoint(null);
@@ -32790,7 +32541,7 @@ const CheckpointsTabs = (props) => {
     )
   ] }) }) });
 };
-const StepRunModal = memo((props) => {
+const PreStepRunModal = memo((props) => {
   const { flowId, onStart, onClose } = props;
   const getAgents2 = useWaldiez((s) => s.getAgents);
   const agents = getAgents2();
@@ -32842,7 +32593,7 @@ const StepRunModal = memo((props) => {
     ] })
   ] });
 });
-StepRunModal.displayName = "StepRunModal";
+PreStepRunModal.displayName = "PreStepRunModal";
 function SiJupyter(props) {
   return GenIcon({ "attr": { "role": "img", "viewBox": "0 0 24 24" }, "child": [{ "tag": "path", "attr": { "d": "M7.157 22.201A1.784 1.799 0 0 1 5.374 24a1.784 1.799 0 0 1-1.784-1.799 1.784 1.799 0 0 1 1.784-1.799 1.784 1.799 0 0 1 1.783 1.799zM20.582 1.427a1.415 1.427 0 0 1-1.415 1.428 1.415 1.427 0 0 1-1.416-1.428A1.415 1.427 0 0 1 19.167 0a1.415 1.427 0 0 1 1.415 1.427zM4.992 3.336A1.047 1.056 0 0 1 3.946 4.39a1.047 1.056 0 0 1-1.047-1.055A1.047 1.056 0 0 1 3.946 2.28a1.047 1.056 0 0 1 1.046 1.056zm7.336 1.517c3.769 0 7.06 1.38 8.768 3.424a9.363 9.363 0 0 0-3.393-4.547 9.238 9.238 0 0 0-5.377-1.728A9.238 9.238 0 0 0 6.95 3.73a9.363 9.363 0 0 0-3.394 4.547c1.713-2.04 5.004-3.424 8.772-3.424zm.001 13.295c-3.768 0-7.06-1.381-8.768-3.425a9.363 9.363 0 0 0 3.394 4.547A9.238 9.238 0 0 0 12.33 21a9.238 9.238 0 0 0 5.377-1.729 9.363 9.363 0 0 0 3.393-4.547c-1.712 2.044-5.003 3.425-8.772 3.425Z" }, "child": [] }] })(props);
 }
@@ -35864,7 +35615,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
     return groupMembers.find((agent) => agent.id === agentId)?.data.label ?? agentId;
   };
   return /* @__PURE__ */ jsxs(TabItems, { activeTabIndex, children: [
-    /* @__PURE__ */ jsx$1(TabItem, { label: "Group", id: `wf-${flowId}-agent-group-manager-config-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "modal-body  agent-panel", children: [
+    /* @__PURE__ */ jsx$1(TabItem, { label: "Group", id: `wf-${flowId}-agent-group-manager-config-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "agent-panel", children: [
       /* @__PURE__ */ jsx$1(
         TextInput,
         {
@@ -35919,7 +35670,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
         }
       )
     ] }) }),
-    /* @__PURE__ */ jsx$1(TabItem, { label: "Group Manager", id: `wf-${flowId}-agent-group-manager-agent-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "modal-body agent-panel", children: [
+    /* @__PURE__ */ jsx$1(TabItem, { label: "Group Manager", id: `wf-${flowId}-agent-group-manager-agent-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "agent-panel", children: [
       /* @__PURE__ */ jsx$1("div", { children: /* @__PURE__ */ jsx$1(
         WaldiezAgentModels,
         {
@@ -35978,7 +35729,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
         }
       )
     ] }) }),
-    /* @__PURE__ */ jsx$1(TabItem, { label: "Speakers", id: `wf-${flowId}-agent-group-manager-speakers-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "modal-body agent-panel", children: [
+    /* @__PURE__ */ jsx$1(TabItem, { label: "Speakers", id: `wf-${flowId}-agent-group-manager-speakers-${id}`, children: /* @__PURE__ */ jsxs("div", { className: "agent-panel", children: [
       /* @__PURE__ */ jsx$1("div", { className: "margin-top-10", children: /* @__PURE__ */ jsxs("div", { className: "info", children: [
         "The method for selecting the next speaker. The default is",
         " ",
@@ -36080,7 +35831,7 @@ const WaldiezNodeGroupManagerTabs = memo((props) => {
         }) })
       ] })
     ] }) }),
-    showAfterwardsTab && /* @__PURE__ */ jsx$1(TabItem, { label: "Afterwards", id: `wf-${flowId}-agent-group-manager-after-work-${id}`, children: /* @__PURE__ */ jsx$1("div", { className: "modal-body agent-panel", children: /* @__PURE__ */ jsx$1(
+    showAfterwardsTab && /* @__PURE__ */ jsx$1(TabItem, { label: "Afterwards", id: `wf-${flowId}-agent-group-manager-after-work-${id}`, children: /* @__PURE__ */ jsx$1("div", { className: "agent-panel", children: /* @__PURE__ */ jsx$1(
       AfterWork,
       {
         target: data.afterWork,
@@ -44201,7 +43952,7 @@ const WaldiezFlowView = memo((props) => {
             }
           ) })
         ] }),
-        /* @__PURE__ */ jsx$1(StepByStepView, { flowId, stepByStep, isDarkMode: isDark }),
+        /* @__PURE__ */ jsx$1(StepRunModal, { flowId, stepByStep, isDarkMode: isDark }),
         /* @__PURE__ */ jsx$1(ChatModal, { flowId, chat, isDarkMode: isDark }),
         isImportModalOpen && /* @__PURE__ */ jsx$1(
           ImportFlowModal,
@@ -44224,7 +43975,7 @@ const WaldiezFlowView = memo((props) => {
           }
         ),
         isStepRunModalOpen && /* @__PURE__ */ jsx$1(
-          StepRunModal,
+          PreStepRunModal,
           {
             flowId,
             onClose: closeStepRunModal,

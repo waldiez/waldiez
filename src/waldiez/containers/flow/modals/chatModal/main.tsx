@@ -217,7 +217,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
             hasUnsavedChanges={false}
             preventCloseIfUnsavedChanges={false}
         >
-            <div className="modal-body">
+            <div className="modal-body min-h-[320px]">
                 {chat?.messages && chat.messages.length > 0 && (
                     <div className="chat-wrapper" data-flow-id={flowId}>
                         <ChatUI

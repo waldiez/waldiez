@@ -2,49 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-.waldiez-step-by-step-view .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 8px 10px;
-}
-
-.waldiez-step-by-step-view .header-left {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.waldiez-step-by-step-view .title {
-  font-weight: 600;
-  font-size: 0.95rem;
-  max-width: 180px;
-  text-overflow: ellipsis;
-}
-
-.waldiez-step-by-step-view .icon-bug {
-  color: #ea580c;
-}
-
-.waldiez-step-by-step-view .header-right {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.waldiez-step-by-step-view .header-toggle {
-  all: unset;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 6px 8px;
-  border-radius: 6px;
-  color: var(--card-text);
-  border: none !important;
-}
-
 .waldiez-step-by-step-view .badge {
   display: inline-block;
   padding: 6px 8px;
@@ -56,7 +13,7 @@
 }
 
 .waldiez-step-by-step-view .content {
-  padding: 12px;
+  padding: 12px 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -70,6 +27,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
+  margin-bottom: 10px;
 }
 
 .waldiez-step-by-step-view .btn {

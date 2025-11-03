@@ -323,7 +323,7 @@ describe("TimelineModal", () => {
 
         const closeButton = screen.getByTestId("modal-close");
         expect(closeButton).toBeInTheDocument();
-        expect(closeButton).toHaveAttribute("title", "Close preview");
+        expect(closeButton).toHaveAttribute("title", "Close");
     });
 
     it("should call onClose when close button is clicked", () => {

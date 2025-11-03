@@ -125,7 +125,7 @@ export const LoadFlowStep = (props: LoadFlowStepProps) => {
                         />
                     </div>
                 ) : (
-                    <div>No flow loaded</div>
+                    <div className="flex items-center justify-center">No flow loaded</div>
                 )}
             </div>
         </>
