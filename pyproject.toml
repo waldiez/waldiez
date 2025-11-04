@@ -382,6 +382,7 @@ managed = true
 # handle conflicts with
 # published extras not yet bumped
 override-dependencies = [
+  "ipywidgets==8.1.8",
   "psutil==7.1.3",
   "python-dotenv==1.2.1",
   "click==8.3.0",
