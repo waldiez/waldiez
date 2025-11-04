@@ -13,6 +13,7 @@ import { EventConsole, type WaldiezEvent } from "@waldiez/components/stepByStep/
 import { EventAgentsList } from "@waldiez/components/stepByStep/eventAgentsList";
 import { useAgentClassUpdates } from "@waldiez/components/stepByStep/hooks";
 import { type WaldiezStepByStep, controlToResponse } from "@waldiez/components/stepByStep/types";
+import { useWaldiez } from "@waldiez/store";
 
 /**
  * Main step-by-step debug view component
@@ -27,6 +28,8 @@ export const StepByStepView: FC<{
     useAgentClassUpdates(stepByStep);
     const [responseText, setResponseText] = useState("");
     const [detailsViewActive, setDetailsViewActive] = useState(false);
+    const resetActiveParticipants = useWaldiez(s => s.resetActiveParticipants);
+    const resetActiveEventType = useWaldiez(s => s.resetActiveEventType);
 
     const requestId = stepByStep?.activeRequest?.request_id ?? null;
     const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -70,6 +73,11 @@ export const StepByStepView: FC<{
         [requestId, responseText, stepByStep?.handlers],
     );
 
+    const reset = useCallback(() => {
+        resetActiveParticipants();
+        resetActiveEventType();
+    }, [resetActiveEventType, resetActiveParticipants]);
+
     const onControl = useCallback(
         (
             action:
@@ -93,8 +101,11 @@ export const StepByStepView: FC<{
                 data: controlToResponse({ kind: action }),
                 request_id: rid,
             });
+            if (action === "quit") {
+                reset();
+            }
         },
-        [requestId, stepByStep?.handlers],
+        [requestId, stepByStep?.handlers, reset],
     );
     const toggleDetailsView = useCallback(() => {
         setDetailsViewActive(prev => !prev);
@@ -110,7 +121,8 @@ export const StepByStepView: FC<{
     const doQuit = useCallback(() => {
         onControl("quit");
         setDetailsViewActive(false);
-    }, [onControl]);
+        reset();
+    }, [onControl, reset]);
     const currentEvent = stepByStep?.currentEvent;
     const agents = (currentEvent?.agents as any)?.all;
     const haveAgents = Array.isArray(agents) && agents.length > 0;

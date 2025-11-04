@@ -28516,6 +28516,8 @@ const StepByStepView = ({ flowId, stepByStep, isDarkMode, events }) => {
   useAgentClassUpdates(stepByStep);
   const [responseText, setResponseText] = useState("");
   const [detailsViewActive, setDetailsViewActive] = useState(false);
+  const resetActiveParticipants = useWaldiez((s) => s.resetActiveParticipants);
+  const resetActiveEventType = useWaldiez((s) => s.resetActiveEventType);
   const requestId = stepByStep?.activeRequest?.request_id ?? null;
   const onInputChange = useCallback((e) => {
     setResponseText(e.target.value);
@@ -28555,6 +28557,10 @@ const StepByStepView = ({ flowId, stepByStep, isDarkMode, events }) => {
     },
     [requestId, responseText, stepByStep?.handlers]
   );
+  const reset = useCallback(() => {
+    resetActiveParticipants();
+    resetActiveEventType();
+  }, [resetActiveEventType, resetActiveParticipants]);
   const onControl = useCallback(
     (action) => {
       if (!stepByStep?.handlers?.sendControl) {
@@ -28565,8 +28571,11 @@ const StepByStepView = ({ flowId, stepByStep, isDarkMode, events }) => {
         data: controlToResponse({ kind: action }),
         request_id: rid
       });
+      if (action === "quit") {
+        reset();
+      }
     },
-    [requestId, stepByStep?.handlers]
+    [requestId, stepByStep?.handlers, reset]
   );
   const toggleDetailsView = useCallback(() => {
     setDetailsViewActive((prev2) => !prev2);
@@ -28582,7 +28591,8 @@ const StepByStepView = ({ flowId, stepByStep, isDarkMode, events }) => {
   const doQuit = useCallback(() => {
     onControl("quit");
     setDetailsViewActive(false);
-  }, [onControl]);
+    reset();
+  }, [onControl, reset]);
   const currentEvent = stepByStep?.currentEvent;
   const agents = currentEvent?.agents?.all;
   const haveAgents = Array.isArray(agents) && agents.length > 0;
@@ -31540,6 +31550,8 @@ const ImportFlowModal = (props) => {
 };
 const StepRunModal = ({ flowId, stepByStep, isDarkMode, className }) => {
   const modalTestId = `rf-${flowId}-step-run-modal`;
+  const resetActiveParticipants = useWaldiez((s) => s.resetActiveParticipants);
+  const resetActiveEventType = useWaldiez((s) => s.resetActiveEventType);
   const [timelineModalOpen, setTimelineModalOpen] = useState(false);
   const openTimelineModal = useCallback(() => {
     setTimelineModalOpen(true);
@@ -31551,7 +31563,9 @@ const StepRunModal = ({ flowId, stepByStep, isDarkMode, className }) => {
     if (stepByStep?.handlers?.close) {
       stepByStep.handlers?.close();
     }
-  }, [stepByStep?.handlers]);
+    resetActiveEventType();
+    resetActiveParticipants();
+  }, [stepByStep?.handlers, resetActiveEventType, resetActiveParticipants]);
   const events = useMemo(() => {
     const raw = stepByStep?.eventHistory ?? [];
     const max = 500;

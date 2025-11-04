@@ -10,6 +10,7 @@ import { Modal } from "@waldiez/components/modal";
 import { StepByStepView } from "@waldiez/components/stepByStep";
 import { type WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
 import { TimelineModal } from "@waldiez/components/timeline";
+import { useWaldiez } from "@waldiez/store";
 
 export const StepRunModal: FC<{
     flowId: string;
@@ -18,6 +19,8 @@ export const StepRunModal: FC<{
     className?: string;
 }> = ({ flowId, stepByStep, isDarkMode, className }) => {
     const modalTestId = `rf-${flowId}-step-run-modal`;
+    const resetActiveParticipants = useWaldiez(s => s.resetActiveParticipants);
+    const resetActiveEventType = useWaldiez(s => s.resetActiveEventType);
     const [timelineModalOpen, setTimelineModalOpen] = useState(false);
     const openTimelineModal = useCallback(() => {
         setTimelineModalOpen(true);
@@ -29,7 +32,9 @@ export const StepRunModal: FC<{
         if (stepByStep?.handlers?.close) {
             stepByStep.handlers?.close();
         }
-    }, [stepByStep?.handlers]);
+        resetActiveEventType();
+        resetActiveParticipants();
+    }, [stepByStep?.handlers, resetActiveEventType, resetActiveParticipants]);
     const events = useMemo(() => {
         const raw = stepByStep?.eventHistory ?? [];
         const max = 500;
