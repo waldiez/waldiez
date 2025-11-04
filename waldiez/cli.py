@@ -188,8 +188,12 @@ def run(
     subprocess_mode = "run"
     if run_mode == "subprocess":
         subprocess_mode = "debug" if step else "run"
+    ckp: str | None = None
     if checkpoint:
-        checkpoint = safe_name(checkpoint, fallback="latest")
+        ckp_parts = checkpoint.split(":")
+        ckp = safe_name(ckp_parts[0])
+        if len(ckp_parts) == 2:
+            ckp = f"{ckp}:{ckp_parts[1]}"
     try:
         runner = create_runner(
             Waldiez.load(file),
@@ -201,7 +205,7 @@ def run(
             subprocess_mode=subprocess_mode,
             waldiez_file=file,
             breakpoints=breakpoints,
-            checkpoint=checkpoint,
+            checkpoint=ckp,
         )
     except FileNotFoundError as error:
         typer.echo(f"File not found: {file}")
