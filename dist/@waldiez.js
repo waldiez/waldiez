@@ -28018,35 +28018,16 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$d = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$d);
+const __iconNode$b = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$b);
 /**
  * @license lucide-react v0.552.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$c = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-const ChevronRight = createLucideIcon("chevron-right", __iconNode$c);
-/**
- * @license lucide-react v0.552.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$b = [
-  ["path", { d: "M21.801 10A10 10 0 1 1 17 3.335", key: "yps3ct" }],
-  ["path", { d: "m9 11 3 3L22 4", key: "1pflzl" }]
-];
-const CircleCheckBig = createLucideIcon("circle-check-big", __iconNode$b);
-/**
- * @license lucide-react v0.552.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */
-const __iconNode$a = [["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }]];
-const Circle = createLucideIcon("circle", __iconNode$a);
+const __iconNode$a = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+const ChevronRight = createLucideIcon("chevron-right", __iconNode$a);
 /**
  * @license lucide-react v0.552.0 - ISC
  *
@@ -32194,19 +32175,24 @@ const BreakpointsTabs = (props) => {
   ] });
 };
 const CheckpointHistory = (props) => {
-  const { isDark, currentHistory, selectedMessages, setSelectedMessages } = props;
-  const toggleMessage = useCallback(
-    (index2) => {
-      const newSelected = new Set(selectedMessages);
-      if (newSelected.has(index2)) {
-        newSelected.delete(index2);
-      } else {
-        newSelected.add(index2);
-      }
-      setSelectedMessages(newSelected);
-    },
-    [selectedMessages, setSelectedMessages]
-  );
+  const { isDark, currentHistory } = props;
+  const hasContextVars = Object.keys(currentHistory.state.context_variables).length > 0;
+  const maxContentLen = 300;
+  const formatValue = (value) => {
+    if (typeof value === "boolean") {
+      return value ? "✓" : "✗";
+    }
+    if (typeof value === "string" && ["true", "false"].includes(value.toLowerCase())) {
+      return value[0] === "t" ? "✓" : "✗";
+    }
+    if (typeof value === "object") {
+      return JSON.stringify(value);
+    }
+    if (typeof value === "string" && value.length > maxContentLen) {
+      return value.substring(0, maxContentLen) + "...";
+    }
+    return String(value);
+  };
   const getMessagePreview = useCallback((message) => {
     if (message.content && message.content !== "None") {
       return message.content.substring(0, 60) + (message.content.length > 60 ? "..." : "");
@@ -32225,87 +32211,67 @@ const CheckpointHistory = (props) => {
           "div",
           {
             className: `${isDark ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"} p-3 border-b`,
-            children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
-              /* @__PURE__ */ jsxs("h4", { className: `font-medium text-sm ${isDark ? "text-white" : "text-gray-900"}`, children: [
-                "Messages (",
-                selectedMessages.size,
-                "/",
-                currentHistory.state.messages.length,
-                ")"
-              ] }),
-              /* @__PURE__ */ jsx$1(
-                "button",
-                {
-                  onClick: () => {
-                    if (selectedMessages.size === currentHistory.state.messages.length) {
-                      setSelectedMessages(/* @__PURE__ */ new Set());
-                    } else {
-                      setSelectedMessages(new Set(currentHistory.state.messages.map((_2, i) => i)));
-                    }
-                  },
-                  className: `text-xs p-2 rounded-sm ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"}`,
-                  children: selectedMessages.size === currentHistory.state.messages.length ? "Deselect All" : "Select All"
-                }
-              )
-            ] })
+            children: /* @__PURE__ */ jsx$1("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ jsx$1("h4", { className: `font-medium text-sm ${isDark ? "text-white" : "text-gray-900"}`, children: "Messages" }) })
           }
         ),
         /* @__PURE__ */ jsx$1("div", { className: "flex-1 overflow-y-auto p-2 space-y-2", children: currentHistory.state.messages.map((message, index2) => /* @__PURE__ */ jsx$1(
-          "button",
+          "div",
           {
-            onClick: () => toggleMessage(index2),
-            className: `w-full p-2 text-left border rounded ${selectedMessages.has(index2) ? isDark ? "border-indigo-400 bg-indigo-900/30" : "border-indigo-300 bg-indigo-50" : isDark ? "border-gray-700 hover:border-gray-600" : "border-gray-200 hover:border-gray-300"} transition-colors`,
-            children: /* @__PURE__ */ jsxs("div", { className: "flex items-start space-x-2", children: [
-              /* @__PURE__ */ jsx$1("div", { className: "mt-0.5", children: selectedMessages.has(index2) ? /* @__PURE__ */ jsx$1(
-                CircleCheckBig,
+            className: `w-full p-2 text-left border rounded ${isDark ? "border-indigo-400 bg-indigo-900/30" : "border-indigo-300 bg-indigo-50"} transition-colors`,
+            children: /* @__PURE__ */ jsx$1("div", { className: "flex items-start space-x-2", children: /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
+              /* @__PURE__ */ jsx$1("div", { className: "flex items-center space-x-2 mb-1", children: /* @__PURE__ */ jsx$1(
+                "span",
                 {
-                  className: `h-4 w-4 ${isDark ? "text-indigo-400" : "text-indigo-600"}`
-                }
-              ) : /* @__PURE__ */ jsx$1(
-                Circle,
-                {
-                  className: `h-4 w-4 ${isDark ? "text-gray-600" : "text-gray-400"}`
+                  className: `px-2 py-0.5 text-xs font-medium rounded ${message.role === "user" ? isDark ? "bg-blue-900 text-blue-200" : "bg-blue-100 text-blue-700" : message.role === "assistant" ? isDark ? "bg-green-900 text-green-200" : "bg-green-100 text-green-700" : isDark ? "bg-purple-900 text-purple-200" : "bg-purple-100 text-purple-700"}`,
+                  children: message.role
                 }
               ) }),
-              /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
-                /* @__PURE__ */ jsx$1("div", { className: "flex items-center space-x-2 mb-1", children: /* @__PURE__ */ jsx$1(
-                  "span",
-                  {
-                    className: `px-2 py-0.5 text-xs font-medium rounded ${message.role === "user" ? isDark ? "bg-blue-900 text-blue-200" : "bg-blue-100 text-blue-700" : message.role === "assistant" ? isDark ? "bg-green-900 text-green-200" : "bg-green-100 text-green-700" : isDark ? "bg-purple-900 text-purple-200" : "bg-purple-100 text-purple-700"}`,
-                    children: message.role
-                  }
-                ) }),
-                /* @__PURE__ */ jsx$1(
-                  "p",
-                  {
-                    className: `text-xs ${isDark ? "text-gray-300" : "text-gray-600"} truncate`,
-                    children: getMessagePreview(message)
-                  }
-                )
-              ] })
-            ] })
+              /* @__PURE__ */ jsx$1(
+                "p",
+                {
+                  className: `text-xs ${isDark ? "text-gray-300" : "text-gray-600"} truncate`,
+                  children: getMessagePreview(message)
+                }
+              )
+            ] }) })
           },
           index2
-        )) })
+        )) }),
+        hasContextVars && /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: `${isDark ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"} p-3 border-b`,
+            children: [
+              /* @__PURE__ */ jsx$1("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ jsx$1("h4", { className: `font-medium text-sm ${isDark ? "text-white" : "text-gray-900"}`, children: "Context Variables" }) }),
+              /* @__PURE__ */ jsx$1(
+                "div",
+                {
+                  className: `text-xs p-2 rounded space-y-1 ${isDark ? "border-indigo-400 bg-indigo-900/30" : "border-indigo-300 bg-indigo-50"}`,
+                  children: Object.entries(currentHistory.state.context_variables).map(([key, value], index2) => /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-2", children: [
+                    /* @__PURE__ */ jsxs("span", { className: `font-mono ${isDark ? "text-blue-400" : "text-blue-600"}`, children: [
+                      key,
+                      ":"
+                    ] }),
+                    /* @__PURE__ */ jsx$1("span", { className: `flex-1 ${isDark ? "text-gray-300" : "text-gray-700"}`, children: formatValue(value) })
+                  ] }, `${key}-${index2}`))
+                }
+              )
+            ]
+          }
+        )
       ]
     }
   );
 };
 const CheckpointView = (props) => {
-  const { isDark, checkpoint, onBack } = props;
-  const [_selectedHistoryIndex, setSelectedHistoryIndex] = useState(null);
+  const { isDark, checkpoint, selectedHistoryIndex, setSelectedHistoryIndex, onBack } = props;
   const [expandedHistoryIndex, setExpandedHistoryIndex] = useState(null);
-  const [selectedMessages, setSelectedMessages] = useState(/* @__PURE__ */ new Set());
   const handleHistorySelect = (index2) => {
     setSelectedHistoryIndex(index2);
     if (expandedHistoryIndex === index2) {
       setExpandedHistoryIndex(null);
     } else {
       setExpandedHistoryIndex(index2);
-    }
-    const history = checkpoint.history?.[index2];
-    if (history?.state?.messages) {
-      setSelectedMessages(new Set(history.state.messages.map((_2, i) => i)));
     }
   };
   return /* @__PURE__ */ jsxs("div", { children: [
@@ -32316,18 +32282,10 @@ const CheckpointView = (props) => {
         /* @__PURE__ */ jsx$1("span", { children: "Back" })
       ] }),
       /* @__PURE__ */ jsx$1("div", { className: "flex-1" }),
-      /* @__PURE__ */ jsxs(
-        "button",
-        {
-          className: "p-2 flex flex-row bg-transparent no-border rounded-sm items-center gap-2",
-          onClick: onBack,
-          children: [
-            /* @__PURE__ */ jsx$1(FaSave, {}),
-            " ",
-            /* @__PURE__ */ jsx$1("span", { children: "Save" })
-          ]
-        }
-      )
+      /* @__PURE__ */ jsxs("div", { className: `p-2 text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`, children: [
+        "Selected entry: #",
+        selectedHistoryIndex + 1
+      ] })
     ] }),
     /* @__PURE__ */ jsx$1("div", { className: "rounded-lg p-3 mb-2 shadow-sm hover:shadow-md transition-shadow", children: /* @__PURE__ */ jsx$1("div", { className: "rounded-lg overflow-hidden flex flex-col", children: /* @__PURE__ */ jsx$1("div", { className: "flex-1 overflow-y-auto", children: checkpoint.history.map((entry, index2) => /* @__PURE__ */ jsxs(
       "div",
@@ -32387,15 +32345,7 @@ const CheckpointView = (props) => {
               ]
             }
           ),
-          expandedHistoryIndex === index2 && /* @__PURE__ */ jsx$1(
-            CheckpointHistory,
-            {
-              isDark,
-              currentHistory: entry,
-              selectedMessages,
-              setSelectedMessages
-            }
-          )
+          expandedHistoryIndex === index2 && /* @__PURE__ */ jsx$1(CheckpointHistory, { isDark, currentHistory: entry })
         ]
       },
       index2
@@ -32403,7 +32353,14 @@ const CheckpointView = (props) => {
   ] });
 };
 const CheckpointsTabs = (props) => {
-  const { getCheckpoints, selectedCheckpoint, setSelectedCheckpoint, darkMode: isDark } = props;
+  const {
+    getCheckpoints,
+    selectedCheckpoint,
+    setSelectedCheckpoint,
+    selectedHistoryIndex,
+    setSelectedHistoryIndex,
+    darkMode: isDark
+  } = props;
   const [gotCheckPoints, setGotCheckpoints] = useState(false);
   const [checkpoints, setCheckpoints] = useState([]);
   const [expandedCheckpoint, setExpandedCheckpoint] = useState(null);
@@ -32426,6 +32383,7 @@ const CheckpointsTabs = (props) => {
         history: [...checkpoints2]
       }));
       setCheckpoints(checkpointArray);
+      setSelectedHistoryIndex(checkpoints.length - 1);
     } catch (err) {
       setCheckpointError(err.message || "Failed to load checkpoints");
       setCheckpoints([]);
@@ -32481,6 +32439,8 @@ const CheckpointsTabs = (props) => {
     {
       checkpoint: expandedCheckpoint,
       isDark,
+      selectedHistoryIndex,
+      setSelectedHistoryIndex,
       onBack: () => setExpandedCheckpoint(null)
     }
   ) : /* @__PURE__ */ jsxs("div", { children: [
@@ -32520,6 +32480,7 @@ const CheckpointsTabs = (props) => {
               onClick: () => {
                 setSelectedCheckpoint(checkpoint);
                 setExpandedCheckpoint(checkpoint);
+                setSelectedHistoryIndex(checkpoint.history.length - 1);
               },
               children: /* @__PURE__ */ jsx$1(ChevronRight, { className: "h-10 w-4" })
             }
@@ -32531,27 +32492,33 @@ const CheckpointsTabs = (props) => {
     /* @__PURE__ */ jsx$1(
       "div",
       {
-        className: `${isDark ? "border-[#444]" : "border-[#ccc]"} mt-2 p-3 rounded-lg border shadow-sm`,
-        children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between min-h-8", children: [
-          selectedCheckpoint ? `Selected checkpoint: ${selectedCheckpoint.id}` : "No checkpoint selected",
-          /* @__PURE__ */ jsx$1(
-            "button",
-            {
-              "data-testid": "clear-checkpoints",
-              onClick: () => {
-                setSelectedCheckpoint(null);
-                setExpandedCheckpoint(null);
-              },
-              className: selectedCheckpoint ? `p-2 hover:${isDark ? "bg-red-900" : "bg-red-50"} rounded-md transition-colors ml-2` : "hidden",
-              children: /* @__PURE__ */ jsx$1(
-                Trash2,
+        className: `${isDark ? "border-[#444]" : "border-[#ccc]"} mt-2 p-2 rounded-lg border shadow-sm`,
+        children: /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: `flex items-center justify-between min-h-8 text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`,
+            children: [
+              selectedCheckpoint ? `Selected checkpoint: ${selectedCheckpoint.id} (entry #${selectedHistoryIndex + 1})` : "No checkpoint selected",
+              /* @__PURE__ */ jsx$1(
+                "button",
                 {
-                  className: `h-3 w-3 ${isDark ? "text-red-400" : "text-red-500"}`
+                  "data-testid": "clear-checkpoints",
+                  onClick: () => {
+                    setSelectedCheckpoint(null);
+                    setExpandedCheckpoint(null);
+                  },
+                  className: selectedCheckpoint ? `p-2 hover:${isDark ? "bg-red-900" : "bg-red-50"} rounded-md transition-colors ml-2` : "hidden",
+                  children: /* @__PURE__ */ jsx$1(
+                    Trash2,
+                    {
+                      className: `h-3 w-3 ${isDark ? "text-red-400" : "text-red-500"}`
+                    }
+                  )
                 }
               )
-            }
-          )
-        ] })
+            ]
+          }
+        )
       }
     )
   ] }) }) });
@@ -32564,13 +32531,18 @@ const PreStepRunModal = memo((props) => {
   const [breakpoints, setBreakpoints] = useState([
     { type: "all", description: "Break on all events (default)" }
   ]);
+  const [selectedHistoryIndex, setSelectedHistoryIndex] = useState(-1);
   const [selectedCheckpoint, setSelectedCheckpoint] = useState(null);
   const doStart = () => {
     const bps = breakpoints.map((bp) => WaldiezBreakpointToString(bp)).filter((item) => item.trim() !== "");
     if (!selectedCheckpoint) {
       onStart(bps);
     } else {
-      onStart(bps, selectedCheckpoint.id);
+      if (selectedHistoryIndex > 0 && selectedHistoryIndex < selectedCheckpoint.history.length && selectedHistoryIndex !== selectedCheckpoint.history.length - 1) {
+        onStart(bps, `${selectedCheckpoint.id}:${selectedHistoryIndex}`);
+      } else {
+        onStart(bps, selectedCheckpoint.id);
+      }
     }
   };
   return /* @__PURE__ */ jsxs(Modal, { isOpen: true, onClose, onCancel: onClose, flowId, title: "Step run", children: [
@@ -32589,7 +32561,9 @@ const PreStepRunModal = memo((props) => {
         {
           ...props,
           selectedCheckpoint,
-          setSelectedCheckpoint
+          setSelectedCheckpoint,
+          selectedHistoryIndex,
+          setSelectedHistoryIndex
         }
       ) })
     ] }) : /* @__PURE__ */ jsx$1(

@@ -14,15 +14,25 @@ export const CheckpointsTabs: FC<
     StepRunModalProps & {
         selectedCheckpoint: Checkpoint | null;
         setSelectedCheckpoint: Dispatch<SetStateAction<Checkpoint | null>>;
+        selectedHistoryIndex: number;
+        setSelectedHistoryIndex: Dispatch<SetStateAction<number>>;
     }
 > = props => {
-    const { getCheckpoints, selectedCheckpoint, setSelectedCheckpoint, darkMode: isDark } = props;
+    const {
+        getCheckpoints,
+        selectedCheckpoint,
+        setSelectedCheckpoint,
+        selectedHistoryIndex,
+        setSelectedHistoryIndex,
+        darkMode: isDark,
+    } = props;
     const [gotCheckPoints, setGotCheckpoints] = useState<boolean>(false);
     const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([]);
     const [expandedCheckpoint, setExpandedCheckpoint] = useState<Checkpoint | null>(null);
     const [loadingCheckpoints, setLoadingCheckpoints] = useState(false);
     const [checkpointError, setCheckpointError] = useState<string | null>(null);
 
+    // eslint-disable-next-line max-statements
     const loadCheckpoints = async () => {
         if (!getCheckpoints || gotCheckPoints) {
             return;
@@ -42,6 +52,7 @@ export const CheckpointsTabs: FC<
                 history: [...checkpoints],
             }));
             setCheckpoints(checkpointArray);
+            setSelectedHistoryIndex(checkpoints.length - 1);
         } catch (err: any) {
             setCheckpointError(err.message || "Failed to load checkpoints");
             setCheckpoints([]);
@@ -98,6 +109,8 @@ export const CheckpointsTabs: FC<
                         <CheckpointView
                             checkpoint={expandedCheckpoint}
                             isDark={isDark}
+                            selectedHistoryIndex={selectedHistoryIndex}
+                            setSelectedHistoryIndex={setSelectedHistoryIndex}
                             onBack={() => setExpandedCheckpoint(null)}
                         />
                     ) : (
@@ -137,6 +150,7 @@ export const CheckpointsTabs: FC<
                                                 onClick={() => {
                                                     setSelectedCheckpoint(checkpoint);
                                                     setExpandedCheckpoint(checkpoint);
+                                                    setSelectedHistoryIndex(checkpoint.history.length - 1);
                                                 }}
                                             >
                                                 <ChevronRight className={"h-10 w-4"} />
@@ -146,11 +160,13 @@ export const CheckpointsTabs: FC<
                                 </div>
                             ))}
                             <div
-                                className={`${isDark ? "border-[#444]" : "border-[#ccc]"} mt-2 p-3 rounded-lg border shadow-sm`}
+                                className={`${isDark ? "border-[#444]" : "border-[#ccc]"} mt-2 p-2 rounded-lg border shadow-sm`}
                             >
-                                <div className="flex items-center justify-between min-h-8">
+                                <div
+                                    className={`flex items-center justify-between min-h-8 text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}
+                                >
                                     {selectedCheckpoint
-                                        ? `Selected checkpoint: ${selectedCheckpoint.id}`
+                                        ? `Selected checkpoint: ${selectedCheckpoint.id} (entry #${selectedHistoryIndex + 1})`
                                         : "No checkpoint selected"}
                                     <button
                                         data-testid="clear-checkpoints"

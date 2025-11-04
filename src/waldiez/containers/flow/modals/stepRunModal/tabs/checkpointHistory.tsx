@@ -2,9 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { CheckCircle, Circle } from "lucide-react";
-
-import { type Dispatch, type SetStateAction, useCallback } from "react";
+import { useCallback } from "react";
 
 export const CheckpointHistory = (props: {
     isDark: boolean;
@@ -15,23 +13,27 @@ export const CheckpointHistory = (props: {
         };
         metadata?: any;
     };
-    selectedMessages: Set<number>;
-    setSelectedMessages: Dispatch<SetStateAction<Set<number>>>;
 }) => {
-    const { isDark, currentHistory, selectedMessages, setSelectedMessages } = props;
-    const toggleMessage = useCallback(
-        (index: number) => {
-            const newSelected = new Set(selectedMessages);
-            if (newSelected.has(index)) {
-                newSelected.delete(index);
-            } else {
-                newSelected.add(index);
-            }
-            setSelectedMessages(newSelected);
-        },
-        [selectedMessages, setSelectedMessages],
-    );
+    const { isDark, currentHistory } = props;
+    const hasContextVars = Object.keys(currentHistory.state.context_variables).length > 0;
+    const maxContentLen = 300;
 
+    // Helper to format context variable values
+    const formatValue = (value: any) => {
+        if (typeof value === "boolean") {
+            return value ? "✓" : "✗";
+        }
+        if (typeof value === "string" && ["true", "false"].includes(value.toLowerCase())) {
+            return value[0] === "t" ? "✓" : "✗";
+        }
+        if (typeof value === "object") {
+            return JSON.stringify(value);
+        }
+        if (typeof value === "string" && value.length > maxContentLen) {
+            return value.substring(0, maxContentLen) + "...";
+        }
+        return String(value);
+    };
     const getMessagePreview = useCallback((message: any) => {
         if (message.content && message.content !== "None") {
             return message.content.substring(0, 60) + (message.content.length > 60 ? "..." : "");
@@ -50,51 +52,19 @@ export const CheckpointHistory = (props: {
             >
                 <div className="flex items-center justify-between">
                     <h4 className={`font-medium text-sm ${isDark ? "text-white" : "text-gray-900"}`}>
-                        Messages ({selectedMessages.size}/{currentHistory.state.messages.length})
+                        Messages
                     </h4>
-                    <button
-                        onClick={() => {
-                            if (selectedMessages.size === currentHistory.state.messages.length) {
-                                setSelectedMessages(new Set());
-                            } else {
-                                setSelectedMessages(new Set(currentHistory.state.messages.map((_, i) => i)));
-                            }
-                        }}
-                        className={`text-xs p-2 rounded-sm ${isDark ? "text-blue-400 hover:text-blue-300" : "text-blue-600 hover:text-blue-700"}`}
-                    >
-                        {selectedMessages.size === currentHistory.state.messages.length
-                            ? "Deselect All"
-                            : "Select All"}
-                    </button>
                 </div>
             </div>
             <div className="flex-1 overflow-y-auto p-2 space-y-2">
                 {currentHistory.state.messages.map((message, index) => (
-                    <button
+                    <div
                         key={index}
-                        onClick={() => toggleMessage(index)}
                         className={`w-full p-2 text-left border rounded ${
-                            selectedMessages.has(index)
-                                ? isDark
-                                    ? "border-indigo-400 bg-indigo-900/30"
-                                    : "border-indigo-300 bg-indigo-50"
-                                : isDark
-                                  ? "border-gray-700 hover:border-gray-600"
-                                  : "border-gray-200 hover:border-gray-300"
+                            isDark ? "border-indigo-400 bg-indigo-900/30" : "border-indigo-300 bg-indigo-50"
                         } transition-colors`}
                     >
                         <div className="flex items-start space-x-2">
-                            <div className="mt-0.5">
-                                {selectedMessages.has(index) ? (
-                                    <CheckCircle
-                                        className={`h-4 w-4 ${isDark ? "text-indigo-400" : "text-indigo-600"}`}
-                                    />
-                                ) : (
-                                    <Circle
-                                        className={`h-4 w-4 ${isDark ? "text-gray-600" : "text-gray-400"}`}
-                                    />
-                                )}
-                            </div>
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center space-x-2 mb-1">
                                     <span
@@ -122,9 +92,34 @@ export const CheckpointHistory = (props: {
                                 </p>
                             </div>
                         </div>
-                    </button>
+                    </div>
                 ))}
             </div>
+            {hasContextVars && (
+                <div
+                    className={`${isDark ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"} p-3 border-b`}
+                >
+                    <div className="flex items-center justify-between">
+                        <h4 className={`font-medium text-sm ${isDark ? "text-white" : "text-gray-900"}`}>
+                            Context Variables
+                        </h4>
+                    </div>
+                    <div
+                        className={`text-xs p-2 rounded space-y-1 ${isDark ? "border-indigo-400 bg-indigo-900/30" : "border-indigo-300 bg-indigo-50"}`}
+                    >
+                        {Object.entries(currentHistory.state.context_variables).map(([key, value], index) => (
+                            <div key={`${key}-${index}`} className="flex items-start gap-2">
+                                <span className={`font-mono ${isDark ? "text-blue-400" : "text-blue-600"}`}>
+                                    {key}:
+                                </span>
+                                <span className={`flex-1 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
+                                    {formatValue(value)}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

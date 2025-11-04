@@ -20,13 +20,22 @@ export const PreStepRunModal = memo((props: StepRunModalProps) => {
     const [breakpoints, setBreakpoints] = useState<WaldiezBreakpoint[]>([
         { type: "all", description: "Break on all events (default)" },
     ]);
+    const [selectedHistoryIndex, setSelectedHistoryIndex] = useState<number>(-1);
     const [selectedCheckpoint, setSelectedCheckpoint] = useState<Checkpoint | null>(null);
     const doStart = () => {
         const bps = breakpoints.map(bp => WaldiezBreakpointToString(bp)).filter(item => item.trim() !== "");
         if (!selectedCheckpoint) {
             onStart(bps);
         } else {
-            onStart(bps, selectedCheckpoint.id);
+            if (
+                selectedHistoryIndex > 0 &&
+                selectedHistoryIndex < selectedCheckpoint.history.length &&
+                selectedHistoryIndex !== selectedCheckpoint.history.length - 1 // default: last index
+            ) {
+                onStart(bps, `${selectedCheckpoint.id}:${selectedHistoryIndex}`);
+            } else {
+                onStart(bps, selectedCheckpoint.id);
+            }
         }
     };
     return (
@@ -47,6 +56,8 @@ export const PreStepRunModal = memo((props: StepRunModalProps) => {
                                 {...props}
                                 selectedCheckpoint={selectedCheckpoint}
                                 setSelectedCheckpoint={setSelectedCheckpoint}
+                                selectedHistoryIndex={selectedHistoryIndex}
+                                setSelectedHistoryIndex={setSelectedHistoryIndex}
                             />
                         </TabItem>
                     </TabItems>

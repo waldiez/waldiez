@@ -4,29 +4,28 @@
  */
 import { ChevronDown, ChevronRight, Clock } from "lucide-react";
 
-import { useState } from "react";
-import { FaSave } from "react-icons/fa";
+import { type Dispatch, type SetStateAction, useState } from "react";
 import { FaCaretLeft } from "react-icons/fa6";
 
 import { CheckpointHistory } from "@waldiez/containers/flow/modals/stepRunModal/tabs/checkpointHistory";
 import type { Checkpoint } from "@waldiez/containers/flow/modals/stepRunModal/types";
 import { formatTimestamp } from "@waldiez/utils";
 
-export const CheckpointView = (props: { isDark: boolean; checkpoint: Checkpoint; onBack: () => void }) => {
-    const { isDark, checkpoint, onBack } = props;
-    const [_selectedHistoryIndex, setSelectedHistoryIndex] = useState<number | null>(null);
+export const CheckpointView = (props: {
+    isDark: boolean;
+    checkpoint: Checkpoint;
+    selectedHistoryIndex: number;
+    setSelectedHistoryIndex: Dispatch<SetStateAction<number>>;
+    onBack: () => void;
+}) => {
+    const { isDark, checkpoint, selectedHistoryIndex, setSelectedHistoryIndex, onBack } = props;
     const [expandedHistoryIndex, setExpandedHistoryIndex] = useState<number | null>(null);
-    const [selectedMessages, setSelectedMessages] = useState<Set<number>>(new Set());
     const handleHistorySelect = (index: number) => {
         setSelectedHistoryIndex(index);
         if (expandedHistoryIndex === index) {
             setExpandedHistoryIndex(null);
         } else {
             setExpandedHistoryIndex(index);
-        }
-        const history = checkpoint.history?.[index];
-        if (history?.state?.messages) {
-            setSelectedMessages(new Set(history.state.messages.map((_, i) => i)));
         }
     };
     return (
@@ -36,12 +35,9 @@ export const CheckpointView = (props: { isDark: boolean; checkpoint: Checkpoint;
                     <FaCaretLeft /> <span>Back</span>
                 </button>
                 <div className="flex-1" />
-                <button
-                    className="p-2 flex flex-row bg-transparent no-border rounded-sm items-center gap-2"
-                    onClick={onBack}
-                >
-                    <FaSave /> <span>Save</span>
-                </button>
+                <div className={`p-2 text-sm ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                    Selected entry: #{selectedHistoryIndex + 1}
+                </div>
             </div>
             <div className={"rounded-lg p-3 mb-2 shadow-sm hover:shadow-md transition-shadow"}>
                 <div className={"rounded-lg overflow-hidden flex flex-col"}>
@@ -88,12 +84,7 @@ export const CheckpointView = (props: { isDark: boolean; checkpoint: Checkpoint;
                                 </div>
 
                                 {expandedHistoryIndex === index && (
-                                    <CheckpointHistory
-                                        isDark={isDark}
-                                        currentHistory={entry}
-                                        selectedMessages={selectedMessages}
-                                        setSelectedMessages={setSelectedMessages}
-                                    />
+                                    <CheckpointHistory isDark={isDark} currentHistory={entry} />
                                 )}
                             </div>
                         ))}
