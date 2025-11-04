@@ -52,6 +52,30 @@ class StorageManager:
             self._storage = storage
 
     @staticmethod
+    def parse_checkpoint_arg(checkpoint_arg: str) -> tuple[str, int | None]:
+        """Parse checkpoint arg.
+
+        Parameters
+        ----------
+        checkpoint_arg : str
+            The arg to parse.
+
+        Returns
+        -------
+        tuple[str, int | None]
+            The checkpoint id and an optional history index.
+        """
+        arg_parts = checkpoint_arg.split(":")
+        history_index: int | None = None
+        if len(arg_parts) == 2:
+            try:
+                history_index = int(arg_parts[1])
+            except BaseException:  # pylint: disable=broad-exception-caught
+                pass
+        checkpoint_id = arg_parts[0]
+        return checkpoint_id, history_index
+
+    @staticmethod
     def default_root() -> Path:
         """Get the default global root.
 
@@ -320,6 +344,7 @@ class StorageManager:
     def load(
         self,
         info: WaldiezCheckpointInfo,
+        history_index: int | None,
     ) -> WaldiezCheckpoint:
         """Load a checkpoint.
 
@@ -327,13 +352,15 @@ class StorageManager:
         ----------
         info: WaldiezCheckpointInfo
             The checkpoint info to load.
+        history_index: int | None
+            Optional history index to use.
 
         Returns
         -------
         dict[str, Any]
             The loaded checkpoint data.
         """
-        return self._storage.load_checkpoint(info)
+        return self._storage.load_checkpoint(info, history_index=history_index)
 
     def link(
         self,

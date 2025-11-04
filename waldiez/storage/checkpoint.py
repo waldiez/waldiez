@@ -69,6 +69,26 @@ class WaldiezCheckpoint:
         """Check if the checkpoint exists on disk."""
         return self.path.is_dir() and self.state_file.is_file()
 
+    def load_state(self, index: int) -> None:
+        """Load a state from history from its index.
+
+        Parameters
+        ----------
+        index : int
+            The history index to use
+        """
+        entries = self.history()
+        if len(entries) < index:
+            return
+        entry = entries[index]
+        state = entry.get("state", {})
+        if not isinstance(state, dict):
+            return
+        if "messages" in state or "context_variables" in state:
+            with open(self.state_file, "w", encoding="utf-8") as f:
+                json.dump(state, f)
+            self.refresh()
+
     def history(self) -> list[dict[str, Any]]:
         """Get the state history.
 

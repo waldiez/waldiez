@@ -107,10 +107,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         checkpoint_arg = kwargs.get("checkpoint", "")
         if checkpoint_arg and isinstance(checkpoint_arg, str):
             WaldiezBaseRunner._checkpoint = WaldiezBaseRunner._init_checkpoint(
-                checkpoint_arg,
-                session_name=WaldiezBaseRunner._flow_name,
+                checkpoint_arg=checkpoint_arg,
             )
-        print(WaldiezBaseRunner._checkpoint)
         self._output_dir = WaldiezBaseRunner._init_output_dir(output_path)
         WaldiezBaseRunner._check_dot_env(self._output_dir)
 
@@ -186,29 +184,34 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     @staticmethod
     def _init_checkpoint(
         checkpoint_arg: str,
-        session_name: str,
     ) -> WaldiezCheckpoint | None:
         checkpoint: WaldiezCheckpoint | None = None
         # pylint: disable=broad-exception-caught,too-many-try-statements
-        if checkpoint_arg == "latest":
+        session_name = WaldiezBaseRunner._flow_name
+        checkpoint_id, history_index = StorageManager.parse_checkpoint_arg(
+            checkpoint_arg
+        )
+        if checkpoint_id == "latest":
             try:
                 info = WaldiezBaseRunner._storage_manager.get_latest_checkpoint(
                     session_name
                 )
                 if info:
-                    checkpoint = WaldiezBaseRunner._storage_manager.load(info)
+                    checkpoint = WaldiezBaseRunner._storage_manager.load(
+                        info, history_index=history_index
+                    )
             except BaseException:
                 pass
         else:
             try:
-                checkpoint_ts = WaldiezCheckpoint.parse_timestamp(
-                    checkpoint_arg
-                )
+                checkpoint_ts = WaldiezCheckpoint.parse_timestamp(checkpoint_id)
                 info = WaldiezBaseRunner._storage_manager.get(
                     session_name, checkpoint_ts
                 )
                 if info:
-                    checkpoint = WaldiezBaseRunner._storage_manager.load(info)
+                    checkpoint = WaldiezBaseRunner._storage_manager.load(
+                        info, history_index=history_index
+                    )
             except BaseException:
                 pass
         return checkpoint

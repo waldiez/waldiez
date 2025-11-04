@@ -157,6 +157,8 @@ def run(
                 "NOTE: use 'latest' to load the latest checkpoint, or "
                 " Unix ms timestamp format: '1410715640579'"
                 " (as listed in the checkpoint's path)"
+                " An optional (history) index can also be passed"
+                " (e.g.: '1410715640579:2'). The latest will be used if not."
             ),
         ),
     ] = None,

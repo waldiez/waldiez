@@ -203,24 +203,31 @@ class FilesystemStorage:
             )
         return WaldiezCheckpointInfo.from_checkpoint(checkpoint)
 
-    def load_checkpoint(self, info: WaldiezCheckpointInfo) -> WaldiezCheckpoint:
+    def load_checkpoint(
+        self, info: WaldiezCheckpointInfo, history_index: int | None
+    ) -> WaldiezCheckpoint:
         """Load a checkpoint.
 
         Parameters
         ----------
         info: WaldiezCheckpointInfo
             The checkpoint info to get the path.
+        history_index: int | None
+            Optional history index to use.
 
         Returns
         -------
         dict[str, Any]
             The loaded checkpoint data.
         """
-        return WaldiezCheckpoint(
+        checkpoint = WaldiezCheckpoint(
             session_name=info.session_name,
             timestamp=info.timestamp,
             path=info.path,
         )
+        if history_index is not None:
+            checkpoint.load_state(history_index)
+        return checkpoint
 
     def link_checkpoint(
         self,
