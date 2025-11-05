@@ -35,8 +35,8 @@ export const CheckpointHistory = (props: {
         return String(value);
     };
     const getMessagePreview = useCallback((message: any) => {
-        if (message.content && message.content !== "None") {
-            return message.content.substring(0, 60) + (message.content.length > 60 ? "..." : "");
+        if (message.content && message.content !== "None" && typeof message.content === "string") {
+            return message.content;
         }
         if (message.tool_calls) {
             return `[Tool Call: ${message.tool_calls[0]?.function?.name || "unknown"}]`;
@@ -86,7 +86,7 @@ export const CheckpointHistory = (props: {
                                     </span>
                                 </div>
                                 <p
-                                    className={`text-xs ${isDark ? "text-gray-300" : "text-gray-600"} truncate`}
+                                    className={`text-xs ${isDark ? "text-gray-300" : "text-gray-600"} line-clamp-2 hover:line-clamp-none`}
                                 >
                                     {getMessagePreview(message)}
                                 </p>

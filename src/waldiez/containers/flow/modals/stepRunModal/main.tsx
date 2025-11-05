@@ -118,7 +118,7 @@ export const StepRunModal: FC<{
             hasUnsavedChanges={false}
             preventCloseIfUnsavedChanges={false}
         >
-            <div className="modal-body">
+            <div className="modal-body min-h-[320px]">
                 <StepByStepView
                     flowId={flowId}
                     isDarkMode={isDarkMode}

@@ -31618,7 +31618,7 @@ const StepRunModal = ({ flowId, stepByStep, isDarkMode, className }) => {
       hasUnsavedChanges: false,
       preventCloseIfUnsavedChanges: false,
       children: [
-        /* @__PURE__ */ jsx$1("div", { className: "modal-body", children: /* @__PURE__ */ jsx$1(
+        /* @__PURE__ */ jsx$1("div", { className: "modal-body min-h-[320px]", children: /* @__PURE__ */ jsx$1(
           StepByStepView,
           {
             flowId,
@@ -32194,8 +32194,8 @@ const CheckpointHistory = (props) => {
     return String(value);
   };
   const getMessagePreview = useCallback((message) => {
-    if (message.content && message.content !== "None") {
-      return message.content.substring(0, 60) + (message.content.length > 60 ? "..." : "");
+    if (message.content && message.content !== "None" && typeof message.content === "string") {
+      return message.content;
     }
     if (message.tool_calls) {
       return `[Tool Call: ${message.tool_calls[0]?.function?.name || "unknown"}]`;
@@ -32229,7 +32229,7 @@ const CheckpointHistory = (props) => {
               /* @__PURE__ */ jsx$1(
                 "p",
                 {
-                  className: `text-xs ${isDark ? "text-gray-300" : "text-gray-600"} truncate`,
+                  className: `text-xs ${isDark ? "text-gray-300" : "text-gray-600"} line-clamp-2 hover:line-clamp-none`,
                   children: getMessagePreview(message)
                 }
               )
@@ -32434,7 +32434,7 @@ const CheckpointsTabs = (props) => {
   ) : checkpoints.length === 0 ? /* @__PURE__ */ jsxs("div", { className: `text-center py-8 ${isDark ? "text-gray-400" : "text-gray-500"}`, children: [
     /* @__PURE__ */ jsx$1(History, { className: "h-12 w-12 mx-auto mb-3 opacity-50" }),
     /* @__PURE__ */ jsx$1("p", { children: "No checkpoints available" })
-  ] }) : /* @__PURE__ */ jsx$1("div", { className: "grid grid-cols gap-4 mb-4 space-y-1 overflow-y-auto", children: expandedCheckpoint ? /* @__PURE__ */ jsx$1(
+  ] }) : /* @__PURE__ */ jsx$1("div", { className: "grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] gap-4 mb-4 space-y-1 overflow-y-auto", children: expandedCheckpoint ? /* @__PURE__ */ jsx$1(
     CheckpointView,
     {
       checkpoint: expandedCheckpoint,

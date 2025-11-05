@@ -103,7 +103,7 @@ export const CheckpointsTabs: FC<
                     <p>No checkpoints available</p>
                 </div>
             ) : (
-                <div className="grid grid-cols gap-4 mb-4 space-y-1 overflow-y-auto">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] gap-4 mb-4 space-y-1 overflow-y-auto">
                     {expandedCheckpoint ? (
                         <CheckpointView
                             checkpoint={expandedCheckpoint}
