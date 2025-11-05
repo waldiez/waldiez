@@ -32,7 +32,6 @@ export const CheckpointsTabs: FC<
     const [loadingCheckpoints, setLoadingCheckpoints] = useState(false);
     const [checkpointError, setCheckpointError] = useState<string | null>(null);
 
-    // eslint-disable-next-line max-statements
     const loadCheckpoints = async () => {
         if (!getCheckpoints || gotCheckPoints) {
             return;
@@ -52,7 +51,6 @@ export const CheckpointsTabs: FC<
                 history: [...checkpoints],
             }));
             setCheckpoints(checkpointArray);
-            setSelectedHistoryIndex(checkpoints.length - 1);
         } catch (err: any) {
             setCheckpointError(err.message || "Failed to load checkpoints");
             setCheckpoints([]);
@@ -67,6 +65,7 @@ export const CheckpointsTabs: FC<
     };
     const handleCheckpointSelect = (checkpoint: Checkpoint) => {
         setSelectedCheckpoint(checkpoint);
+        setSelectedHistoryIndex(checkpoint.history.length - 1);
     };
     const retryGetCheckpoints = async () => {
         setGotCheckpoints(false);

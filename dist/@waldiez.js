@@ -32383,7 +32383,6 @@ const CheckpointsTabs = (props) => {
         history: [...checkpoints2]
       }));
       setCheckpoints(checkpointArray);
-      setSelectedHistoryIndex(checkpoints.length - 1);
     } catch (err) {
       setCheckpointError(err.message || "Failed to load checkpoints");
       setCheckpoints([]);
@@ -32398,6 +32397,7 @@ const CheckpointsTabs = (props) => {
   };
   const handleCheckpointSelect = (checkpoint) => {
     setSelectedCheckpoint(checkpoint);
+    setSelectedHistoryIndex(checkpoint.history.length - 1);
   };
   const retryGetCheckpoints = async () => {
     setGotCheckpoints(false);
