@@ -90,7 +90,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
         onNodeDoubleClick,
         onEdgeDoubleClick,
         onGetCheckpoints,
-        onSubmitCheckpoint,
+        onSetCheckpoint,
     } = useFlowEvents(flowId);
 
     /**
@@ -248,11 +248,11 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
         return await onGetCheckpoints();
     }, [onGetCheckpoints]);
 
-    const handleSubmitCheckpoint = useCallback(
+    const handleSetCheckpoint = useCallback(
         async (checkpoint: Record<string, any>) => {
-            await onSubmitCheckpoint(checkpoint);
+            await onSetCheckpoint(checkpoint);
         },
-        [onSubmitCheckpoint],
+        [onSetCheckpoint],
     );
 
     // Get drag and drop handlers
@@ -356,7 +356,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
                     onStart={doStepRun}
                     darkMode={isDark}
                     getCheckpoints={handleGetCheckpoints}
-                    submitCheckpoint={handleSubmitCheckpoint}
+                    setCheckpoint={handleSetCheckpoint}
                 />
             )}
         </div>

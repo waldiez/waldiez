@@ -41,7 +41,7 @@ export const useWaldiezWrapper = ({
     sendMessage: (message: unknown) => boolean | void;
     checkpoints?: {
         get: (flowName: string) => Promise<Record<string, any> | null>;
-        submit: (flowName: string, checkpoint: Record<string, any> | null) => Promise<void>;
+        set: (flowName: string, checkpoint: Record<string, any> | null) => Promise<void>;
     };
     reset: () => void;
 } => {
@@ -203,7 +203,7 @@ export const useWaldiezWrapper = ({
         },
         [request],
     );
-    const onSubmitCheckpoints = useCallback(
+    const onSetCheckpoint = useCallback(
         async (flowName: string, checkpoint: Record<string, any> | null) => {
             try {
                 await request("set_checkpoint", { flow_name: flowName, checkpoint });
@@ -228,7 +228,7 @@ export const useWaldiezWrapper = ({
         reset,
         checkpoints: {
             get: onGetCheckpoints,
-            submit: onSubmitCheckpoints,
+            set: onSetCheckpoint,
         },
     };
 };

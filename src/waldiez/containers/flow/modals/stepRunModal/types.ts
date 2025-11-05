@@ -8,7 +8,7 @@ export type StepRunModalProps = {
     onClose: () => void;
     onStart: (breakpoints: string[], checkpoint?: string | null) => void;
     getCheckpoints?: () => Promise<Record<string, any> | null>;
-    submitCheckpoint?: (checkpoint: Record<string, any>) => Promise<void>;
+    setCheckpoint?: (checkpoint: Record<string, any>) => Promise<void>;
 };
 
 export type Checkpoint = {

@@ -82,7 +82,7 @@ export type WaldiezStoreProps = {
     onSave?: ((flow: string, path?: string | null) => void | Promise<void>) | null; // handler for saving the flow (send to backend)
     checkpoints?: {
         get: (flowName: string) => Promise<Record<string, any> | null>; // handler for getting previous checkpoints for the flow (send to backend)
-        submit: (flowName: string, checkpoint: Record<string, any>) => Promise<void>; // handler for setting checkpoint for the flow (send to backend)
+        set?: (flowName: string, checkpoint: Record<string, any>) => Promise<void>; // handler for saving checkpoint for the flow (send to backend)
     } | null;
 };
 

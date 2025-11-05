@@ -101,6 +101,6 @@ export type WaldiezProps = WaldiezFlowProps & {
     onSave?: (flow: string, path?: string | null) => void;
     checkpoints?: {
         get: (flowName: string) => Promise<Record<string, any> | null>;
-        submit: (flowName: string, checkpoint: Record<string, any>) => Promise<void>;
+        set?: (flowName: string, checkpoint: Record<string, any>) => Promise<void>;
     };
 };

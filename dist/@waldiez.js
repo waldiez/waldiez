@@ -29923,14 +29923,14 @@ const useFlowEvents = (flowId) => {
       return null;
     }
   }, [isReadOnly, checkpoints, getFlowInfo]);
-  const onSubmitCheckpoint = useCallback(
+  const onSetCheckpoint = useCallback(
     async (checkpoint) => {
-      if (isReadOnly || typeof checkpoints?.submit !== "function") {
+      if (isReadOnly || typeof checkpoints?.set !== "function") {
         return;
       }
       const info = getFlowInfo();
       try {
-        await checkpoints.submit(info.name, checkpoint);
+        await checkpoints.set(info.name, checkpoint);
       } catch {
       }
     },
@@ -29972,7 +29972,7 @@ const useFlowEvents = (flowId) => {
       onNodeDoubleClick,
       onEdgeDoubleClick,
       onGetCheckpoints,
-      onSubmitCheckpoint
+      onSetCheckpoint
     }),
     [
       convertToPy,
@@ -29987,7 +29987,7 @@ const useFlowEvents = (flowId) => {
       onNodeDoubleClick,
       onEdgeDoubleClick,
       onGetCheckpoints,
-      onSubmitCheckpoint
+      onSetCheckpoint
     ]
   );
 };
@@ -43766,7 +43766,7 @@ const WaldiezFlowView = memo((props) => {
     onNodeDoubleClick,
     onEdgeDoubleClick,
     onGetCheckpoints,
-    onSubmitCheckpoint
+    onSetCheckpoint
   } = useFlowEvents(flowId);
   const handleStepRun = useCallback(() => {
     if (stepByStep?.show === true) {
@@ -43859,11 +43859,11 @@ const WaldiezFlowView = memo((props) => {
   const handleGetCheckpoints = useCallback(async () => {
     return await onGetCheckpoints();
   }, [onGetCheckpoints]);
-  const handleSubmitCheckpoint = useCallback(
+  const handleSetCheckpoint = useCallback(
     async (checkpoint) => {
-      await onSubmitCheckpoint(checkpoint);
+      await onSetCheckpoint(checkpoint);
     },
-    [onSubmitCheckpoint]
+    [onSetCheckpoint]
   );
   const { onDragOver, onDrop, onNodeDrag, onNodeDragStop } = useDnD(onNewAgent);
   const flowNodes = useMemo(() => nodes, [nodes]);
@@ -43971,7 +43971,7 @@ const WaldiezFlowView = memo((props) => {
             onStart: doStepRun,
             darkMode: isDark,
             getCheckpoints: handleGetCheckpoints,
-            submitCheckpoint: handleSubmitCheckpoint
+            setCheckpoint: handleSetCheckpoint
           }
         )
       ]

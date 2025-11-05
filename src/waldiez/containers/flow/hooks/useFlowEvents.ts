@@ -260,14 +260,14 @@ export const useFlowEvents = (flowId: string) => {
         }
     }, [isReadOnly, checkpoints, getFlowInfo]);
 
-    const onSubmitCheckpoint: (checkpoint: Record<string, any>) => Promise<void> = useCallback(
+    const onSetCheckpoint: (checkpoint: Record<string, any>) => Promise<void> = useCallback(
         async (checkpoint: Record<string, any>) => {
-            if (isReadOnly || typeof checkpoints?.submit !== "function") {
+            if (isReadOnly || typeof checkpoints?.set !== "function") {
                 return;
             }
             const info = getFlowInfo();
             try {
-                await checkpoints.submit(info.name, checkpoint);
+                await checkpoints.set(info.name, checkpoint);
             } catch {
                 //
             }
@@ -322,7 +322,7 @@ export const useFlowEvents = (flowId: string) => {
             onNodeDoubleClick,
             onEdgeDoubleClick,
             onGetCheckpoints,
-            onSubmitCheckpoint,
+            onSetCheckpoint,
         }),
         [
             convertToPy,
@@ -337,7 +337,7 @@ export const useFlowEvents = (flowId: string) => {
             onNodeDoubleClick,
             onEdgeDoubleClick,
             onGetCheckpoints,
-            onSubmitCheckpoint,
+            onSetCheckpoint,
         ],
     );
 };
