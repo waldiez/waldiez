@@ -32,26 +32,8 @@ jobs:
         with:
           python-version: 3.12
 
-      - name: Cache pip dependencies
-        uses: actions/cache@v4.3.0
-        with:
-          path: ~/.cache/pip
-          key: pip-docs-${{ runner.os }}-${{ hashFiles('requirements/*.txt') }}
-          restore-keys: |
-            pip-docs-${{ runner.os }}-
-
       - name: Setup bun
         uses: oven-sh/setup-bun@v2.0.2
-
-      - name: Cache bun dependencies
-        uses: actions/cache@v4.3.0
-        with:
-          path: |
-            ~/.bun/install/cache
-            node_modules
-          key: bun-docs-${{ runner.os }}-${{ hashFiles('package.json', 'bun.lock') }}
-          restore-keys: |
-            bun-docs-${{ runner.os }}-
 
       - name: Install ts dependencies
         run: bun install
