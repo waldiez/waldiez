@@ -6,6 +6,8 @@
 
 """CLI interface for Waldiez checkpoints."""
 
+import json
+import sys
 from pathlib import Path
 
 import typer
@@ -32,9 +34,8 @@ app = typer.Typer(
 DEFAULT_WORKSPACE = get_root_dir()
 
 
-# pylint: disable=too-many-locals
 @app.command(name="checkpoints", no_args_is_help=True)
-def handle_checkpoints(  # noqa: C901
+def handle_checkpoints(
     workspace: Annotated[
         Path,
         typer.Option(
@@ -82,12 +83,6 @@ def handle_checkpoints(  # noqa: C901
             ),
         ),
     ] = None,
-    details: Annotated[
-        bool,
-        typer.Option(
-            "--details", help="Show the full history of the checkpoint(s)."
-        ),
-    ] = False,
     cleanup: Annotated[
         bool,
         typer.Option(
@@ -103,11 +98,24 @@ def handle_checkpoints(  # noqa: C901
         int | None,
         typer.Option("--keep", help="Keep the latest 'n' checkpoints."),
     ] = None,
+    history: Annotated[
+        bool,
+        typer.Option(
+            "--history",
+            help=(
+                "Get the full history of a session."
+                "Optionally for a specific checkpoint only."
+            ),
+        ),
+    ] = False,
 ) -> None:
     """Handle waldiez checkpoints."""
     manager = StorageManager(workspace_dir=workspace)
     if checkpoint:
         checkpoint = safe_name(checkpoint, fallback="latest")
+    if history:
+        _history(manager, session_name=session, checkpoint=checkpoint)
+        raise typer.Exit(0)
     if list_checkpoints:
         checkpoints = manager.checkpoints(session_name=session)
         pretty_print([checkpoint.to_dict() for checkpoint in checkpoints])
@@ -116,13 +124,43 @@ def handle_checkpoints(  # noqa: C901
         sessions = manager.sessions()
         pretty_print(sessions)
         raise typer.Exit(0)
+    _delete(
+        manager,
+        session_name=session,
+        checkpoint=checkpoint,
+        delete_session=delete_session,
+        delete_checkpoint=delete_checkpoint,
+    )
+    if cleanup:
+        _cleanup(manager, session_name=session, keep=keep)
+        raise typer.Exit(0)
+
+
+def _history(
+    manager: StorageManager, session_name: str | None, checkpoint: str | None
+) -> None:
+    if not session_name:
+        typer.echo("Please provide the session.", err=True)
+        raise typer.Exit(1)
+    entries = manager.history(session_name, checkpoint_name=checkpoint)
+    json.dump(entries, sys.stdout)
+
+
+def _delete(
+    manager: StorageManager,
+    session_name: str | None,
+    checkpoint: str | None,
+    delete_session: bool,
+    delete_checkpoint: bool,
+) -> None:
     if delete_session:
-        if not session:
+        if not session_name:
             typer.echo("Please provide the session.", err=True)
             raise typer.Exit(1)
-        manager.delete_session(session)
+        manager.delete_session(session_name)
+        raise typer.Exit(0)
     if delete_checkpoint:
-        if not session:
+        if not session_name:
             typer.echo("Please provide the session.", err=True)
             raise typer.Exit(1)
         if not checkpoint:
@@ -132,29 +170,24 @@ def handle_checkpoints(  # noqa: C901
             raise typer.Exit(1)
         checkpoint_timestamp = WaldiezCheckpoint.parse_timestamp(checkpoint)
         if checkpoint_timestamp:
-            manager.delete(session_name=session, timestamp=checkpoint_timestamp)
-    if cleanup:
-        if not isinstance(keep, int):
-            keep_count = 0
-        else:
-            keep_count = max(keep, 0)
-        if not session:
-            sessions = manager.sessions()
-        else:
-            sessions = [session]
-        for _session in sessions:
-            manager.cleanup(session_name=_session, keep_count=keep_count)
-    if details:
-        if not session:
-            typer.echo("Please provide the session.", err=True)
-            raise typer.Exit(1)
-        if not checkpoint:
-            typer.echo(
-                "Please provide the checkpoint's timestamp to show.", err=True
+            manager.delete(
+                session_name=session_name, timestamp=checkpoint_timestamp
             )
-            raise typer.Exit(1)
-        data = manager.history(session_name=session, checkpoint_name=checkpoint)
-        pretty_print(data)
+
+
+def _cleanup(
+    manager: StorageManager, session_name: str | None, keep: int | None
+) -> None:
+    if not isinstance(keep, int):
+        keep_count = 0
+    else:
+        keep_count = max(keep, 0)
+    if not session_name:
+        sessions = manager.sessions()
+    else:
+        sessions = [session_name]
+    for _session in sessions:
+        manager.cleanup(session_name=_session, keep_count=keep_count)
 
 
 if __name__ == "__main__":
