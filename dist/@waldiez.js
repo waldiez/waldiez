@@ -1114,7 +1114,7 @@ return w("div",{className:M,"data-testid":`agent-node-${t}-view`,onDragOver:y,on
 /* @__PURE__ */C(Gv,{id:t,data:a,isOpen:u,onClose:k})]})]});var B},model:({id:e,data:t})=>{const{flowId:n,isOpen:a,isDirty:o,logo:r,modelData:i,setLogo:s,onOpen:l,onImport:c,onExport:d,onDataChange:u,onDelete:p,onClone:g,onSave:m,onSaveAndClose:h,onCancel:f,onCheck:b}=iC(e,t),y=Bv(n,e,"model",c,d);/* @__PURE__ */
 return w("div",{className:a?"model-node nodrag nowheel":"model-node nodrag",children:[
 /* @__PURE__ */w("div",{className:"model-header",children:[
-/* @__PURE__ */C("div",{role:"button",title:"Edit",className:"clickable","data-node-id":e,"data-testid":`open-model-node-modal-${e}`,onClick:l,children:/* @__PURE__ */C(Ue,{})}),
+/* @__PURE__ */C("div",{role:"button",title:"Edit Model",className:"clickable","data-node-id":e,"data-testid":`open-model-node-modal-${e}`,onClick:l,children:/* @__PURE__ */C(Ue,{})}),
 /* @__PURE__ */C("div",{id:`node-label-${e}`,className:"node-label","data-testid":`node-label-${e}`,children:t.label}),
 /* @__PURE__ */C("div",{className:`model-logo ${t.apiType}`,children:/* @__PURE__ */C("img",{src:r,alt:"logo"})})]}),
 /* @__PURE__ */w("div",{className:"model-footer","data-testid":`model-footer-${e}`,children:[
@@ -1125,7 +1125,7 @@ return w("div",{className:a?"model-node nodrag nowheel":"model-node nodrag",chil
 /* @__PURE__ */C(pC,{flowId:n,modelId:e,data:i,isOpen:a,isDirty:o,importExportView:y,onLogoChange:s,onDataChange:u,onClose:f,onCancel:f,onSave:m,onTest:b,onSaveAndClose:h})]})},tool:e=>{const{id:t}=e,{flowId:n,isModalOpen:a,isDirty:o,toolData:r,isDark:i,logo:s,onOpen:l,onClone:c,onDelete:d,onCancel:u,onSave:p,onSaveAndClose:g,onChange:m,onExport:h,onImport:f}=gC(e.id,e.data);/* @__PURE__ */
 return w("div",{className:a?"tool-node nodrag nowheel":"tool-node nodrag",children:[
 /* @__PURE__ */w("div",{className:"tool-header",children:[
-/* @__PURE__ */C("div",{role:"button",title:"Edit",className:"clickable","data-node-id":t,"data-testid":`open-tool-node-modal-${t}`,onClick:l,children:/* @__PURE__ */C(Ue,{})}),
+/* @__PURE__ */C("div",{role:"button",title:"Edit Tool",className:"clickable","data-node-id":t,"data-testid":`open-tool-node-modal-${t}`,onClick:l,children:/* @__PURE__ */C(Ue,{})}),
 /* @__PURE__ */C("div",{"data-testid":`node-label-${t}`,className:"node-label",children:r.label}),
 /* @__PURE__ */C("div",{className:`tool-logo ${r.toolType}`,children:s})]}),
 /* @__PURE__ */C("div",{className:"tool-content",children:/* @__PURE__ */C("div",{className:"description","data-test-id":`node-description-${t}`,children:r.description})}),

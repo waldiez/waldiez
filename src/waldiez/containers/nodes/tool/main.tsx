@@ -35,7 +35,7 @@ export const WaldiezNodeToolView: FC<NodeProps<WaldiezNodeTool>> = props => {
             <div className="tool-header">
                 <div
                     role="button"
-                    title="Edit"
+                    title="Edit Tool"
                     className="clickable"
                     // id={`open-tool-node-modal-${id}`}
                     data-node-id={id}

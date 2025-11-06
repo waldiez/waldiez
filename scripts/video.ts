@@ -21,12 +21,14 @@ const main = async () => {
     }
     const videosDir = path.resolve(__dirname, "..", ".local", "recordings");
     if (!fs.existsSync(videosDir)) {
+        console.info("Recordings directory not found.");
         fs.mkdirSync(videosDir, { recursive: true });
         process.exit(0);
     }
     const videoFiles = await fs.promises.readdir(videosDir);
     const videoFile = videoFiles.find(file => file.endsWith(".webm"));
     if (!videoFile) {
+        console.info("No recording found.");
         process.exit(0);
     }
     const videoPath = path.resolve(videosDir, videoFile);

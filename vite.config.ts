@@ -322,21 +322,22 @@ export default defineConfig(({ command }) => ({
         setupFiles: isBrowserTest ? [] : ["./vitest.setup.tsx"],
         // browser setup is in workspace
         browser: {
-            provider: playwright(),
+            provider: playwright({
+                contextOptions: {
+                    recordVideo: {
+                        dir: recordingsDir,
+                        size: viewport,
+                    },
+                    viewport,
+                    reducedMotion: "reduce",
+                },
+            }),
             enabled: isBrowserTest,
             headless: true,
             viewport,
             instances: [
                 {
                     browser: "chromium",
-                    context: {
-                        recordVideo: {
-                            dir: recordingsDir,
-                            size: viewport,
-                        },
-                        viewport,
-                        reducedMotion: "reduce",
-                    },
                 },
             ],
         },

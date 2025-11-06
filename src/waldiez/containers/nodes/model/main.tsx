@@ -38,7 +38,7 @@ export const WaldiezNodeModelView: FC<NodeProps<WaldiezNodeModel>> = ({ id, data
             <div className="model-header">
                 <div
                     role="button"
-                    title="Edit"
+                    title="Edit Model"
                     className="clickable"
                     data-node-id={id}
                     data-testid={`open-model-node-modal-${id}`}
