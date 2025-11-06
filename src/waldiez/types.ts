@@ -102,5 +102,6 @@ export type WaldiezProps = WaldiezFlowProps & {
     checkpoints?: {
         get: (flowName: string) => Promise<Record<string, any> | null>;
         set?: (flowName: string, checkpoint: Record<string, any>) => Promise<void>;
+        delete?: (flowName: string, checkpoint: string, index?: number) => Promise<void>;
     };
 };

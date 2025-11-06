@@ -27,13 +27,10 @@ except ImportError:  # pragma: no cover
 
 from waldiez.models import Waldiez
 from waldiez.running.subprocess_runner.runner import WaldiezSubprocessRunner
-from waldiez.storage import (
-    StorageManager,
-    WaldiezCheckpoint,
-    WaldiezCheckpointInfo,
-)
+from waldiez.storage import StorageManager
 
 from ._file_handler import FileRequestHandler
+from .checkpoints_handler import CheckpointsHandler
 from .errors import (
     ErrorHandler,
     MessageParsingError,
@@ -46,17 +43,16 @@ from .models import (
     BreakpointRequest,
     BreakpointResponse,
     ConvertWorkflowRequest,
+    DeleteCheckpointRequest,
     ExecutionMode,
     GetCheckpointsRequest,
-    GetCheckpointsResponse,
     GetStatusRequest,
     PingRequest,
     PongResponse,
     RunWorkflowRequest,
     RunWorkflowResponse,
-    SaveCheckpointRequest,
-    SaveCheckpointResponse,
     SaveFlowRequest,
+    SetCheckpointRequest,
     StatusResponse,
     StepControlRequest,
     StepControlResponse,
@@ -95,6 +91,9 @@ class ClientManager:
         self.session_manager = session_manager
         self.workspace_dir = workspace_dir
         self.storage_manager = StorageManager()
+        self.checkpoints_handler = CheckpointsHandler(
+            self.storage_manager, self._error_to_response
+        )
         self.is_active = True
 
         # Active runners per session
@@ -302,8 +301,9 @@ class ClientManager:
                 session_id=msg.session_id,
             ).model_dump(mode="json")
 
+        # write to disk
         if isinstance(msg, SaveFlowRequest):
-            return FileRequestHandler.handle_save_request(
+            return await FileRequestHandler.handle_save_request(
                 msg=msg,
                 workspace_dir=self.workspace_dir,
                 client_id=self.client_id,
@@ -311,7 +311,7 @@ class ClientManager:
             )
 
         if isinstance(msg, ConvertWorkflowRequest):
-            return FileRequestHandler.handle_convert_request(
+            return await FileRequestHandler.handle_convert_request(
                 msg=msg,
                 client_id=self.client_id,
                 workspace_dir=self.workspace_dir,
@@ -320,10 +320,13 @@ class ClientManager:
 
         # checkpoints related
         if isinstance(msg, GetCheckpointsRequest):
-            return await self._handle_get_checkpoints(msg)
+            return await self.checkpoints_handler.handle_get_checkpoints(msg)
 
-        if isinstance(msg, SaveCheckpointRequest):
-            return await self._handle_save_checkpoint(msg)
+        if isinstance(msg, SetCheckpointRequest):
+            return await self.checkpoints_handler.handle_save_checkpoint(msg)
+
+        if isinstance(msg, DeleteCheckpointRequest):
+            return await self.checkpoints_handler.handle_delete_checkpoint(msg)
 
         # Start workflow (STANDARD)
         if isinstance(msg, RunWorkflowRequest):
@@ -353,55 +356,6 @@ class ClientManager:
         return self._error_to_response(
             UnsupportedActionError(getattr(msg, "type", "unknown"))
         )
-
-    async def _handle_get_checkpoints(
-        self, msg: GetCheckpointsRequest
-    ) -> dict[str, Any]:
-        flow_name = ""
-        if isinstance(msg.payload, str):
-            flow_name = msg.payload
-        elif isinstance(msg.payload, dict):
-            flow_name = str(
-                msg.payload.get("flow_name", msg.payload.get("flowName", ""))
-            )
-        if not flow_name:
-            return self._error_to_response(
-                error=ValueError("Invalid flow name"),
-                request_id=msg.request_id,
-            )
-        checkpoints = self.storage_manager.history(flow_name)
-        response = GetCheckpointsResponse(
-            checkpoints=checkpoints, request_id=msg.request_id
-        ).model_dump(mode="json")
-        response["payload"] = response["checkpoints"]
-        return response
-
-    async def _handle_save_checkpoint(
-        self, msg: SaveCheckpointRequest
-    ) -> dict[str, Any]:
-        new_checkpoint = _get_checkpoint_info(msg, self.storage_manager)
-        if not new_checkpoint:
-            return self._error_to_response(
-                error=ValueError("Invalid request"),
-                request_id=msg.request_id,
-            )
-        checkpoint_info, new_state = new_checkpoint
-        self.storage_manager.update(
-            checkpoint_info.session_name, checkpoint_info.timestamp, new_state
-        )
-        updated_cp = self.storage_manager.get(
-            checkpoint_info.session_name, checkpoint_info.timestamp
-        )
-        if not updated_cp:  # pragma: no cover
-            cp_dict = new_state
-        else:
-            cp_dict = updated_cp.to_dict()
-        response = SaveCheckpointResponse(
-            checkpoint=cp_dict,
-            request_id=msg.request_id,
-        ).model_dump(mode="json")
-        response["payload"] = response["checkpoint"]
-        return response
 
     async def _handle_run(self, msg: RunWorkflowRequest) -> dict[str, Any]:
         try:
@@ -930,57 +884,3 @@ class ClientManager:
             request_id=request_id,
             details=details.get("details", {}),
         ).model_dump(mode="json")
-
-
-# noinspection PyBroadException,PyUnusedLocal
-def _get_checkpoint_info(
-    msg: SaveCheckpointRequest, storage_manager: StorageManager
-) -> tuple[WaldiezCheckpointInfo, dict[str, Any]] | None:
-    flow_name = ""
-    payload_dict: dict[str, Any] = {}
-    if isinstance(msg.payload, str):
-        try:
-            parsed_payload = json.loads(msg.payload)
-        except BaseException:
-            return None
-        if not isinstance(parsed_payload, dict):
-            return None
-        payload_dict = parsed_payload
-    else:
-        payload_dict = msg.payload
-    flow_name = str(
-        payload_dict.get("flow_name", payload_dict.get("flowName", ""))
-    )
-    if not flow_name:
-        return None
-    checkpoint = payload_dict.get("checkpoint", {})
-    if not checkpoint or not isinstance(checkpoint, dict):
-        return None
-    cp_ts_str = checkpoint.get("timestamp", checkpoint.get("id", "latest"))
-    if cp_ts_str == "latest":
-        cp_info = storage_manager.get_latest_checkpoint(flow_name)
-    else:
-        cp_ts = WaldiezCheckpoint.parse_timestamp(cp_ts_str)
-        if not cp_ts:
-            return None
-        cp_info = storage_manager.get(flow_name, cp_ts)
-    if not cp_info:
-        return None
-    state = payload_dict.get("state", {})
-    if not state or not isinstance(state, dict):
-        return None
-    messages = state.get("messages", [])
-    context_variables = state.get("context_variables", {})
-    have_messages = isinstance(messages, list) and len(messages) > 0
-    have_context_variables = (
-        isinstance(context_variables, dict)
-        and len(list(context_variables.keys())) > 0
-    )
-    if not have_messages and not have_context_variables:
-        return None
-    new_state = cp_info.checkpoint.state
-    if have_messages:
-        new_state["messages"] = messages
-    if have_context_variables:
-        new_state["context_variables"] = messages
-    return cp_info, new_state

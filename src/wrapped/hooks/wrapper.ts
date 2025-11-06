@@ -42,6 +42,7 @@ export const useWaldiezWrapper = ({
     checkpoints?: {
         get: (flowName: string) => Promise<Record<string, any> | null>;
         set: (flowName: string, checkpoint: Record<string, any> | null) => Promise<void>;
+        delete: (flowName: string, checkpoint: string, index?: number) => Promise<void>;
     };
     reset: () => void;
 } => {
@@ -214,6 +215,17 @@ export const useWaldiezWrapper = ({
         [request],
     );
 
+    const onDeleteCheckpoint = useCallback(
+        async (flowName: string, checkpoint: string) => {
+            try {
+                await request("delete_checkpoint", { flow_name: flowName, checkpoint });
+            } catch {
+                //
+            }
+        },
+        [request],
+    );
+
     messageSender.current = sendMessage;
     chatDispatchRef.current = dispatch.chat;
     stepDispatchRef.current = dispatch.step;
@@ -229,6 +241,7 @@ export const useWaldiezWrapper = ({
         checkpoints: {
             get: onGetCheckpoints,
             set: onSetCheckpoint,
+            delete: onDeleteCheckpoint,
         },
     };
 };

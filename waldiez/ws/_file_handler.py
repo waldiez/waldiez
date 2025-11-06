@@ -8,6 +8,8 @@ import logging
 from pathlib import Path
 from typing import Any
 
+import anyio.to_thread
+
 from waldiez.exporter import WaldiezExporter
 from waldiez.models import Waldiez
 
@@ -23,7 +25,7 @@ class FileRequestHandler:
     """Handles file-related requests."""
 
     @staticmethod
-    def handle_save_request(
+    async def handle_save_request(
         msg: SaveFlowRequest,
         workspace_dir: Path,
         client_id: str,
@@ -47,6 +49,21 @@ class FileRequestHandler:
         dict[str, Any]
             The response dictionary.
         """
+        return await anyio.to_thread.run_sync(
+            FileRequestHandler._handle_save_request,
+            msg,
+            workspace_dir,
+            client_id,
+            logger,
+        )
+
+    @staticmethod
+    def _handle_save_request(
+        msg: SaveFlowRequest,
+        workspace_dir: Path,
+        client_id: str,
+        logger: logging.Logger,
+    ) -> dict[str, Any]:
         path = msg.path or f"waldiez_{client_id}.waldiez"
         try:
             output_path = resolve_output_path(
@@ -79,7 +96,40 @@ class FileRequestHandler:
             return SaveFlowResponse.fail(error=str(e)).model_dump(mode="json")
 
     @staticmethod
-    def handle_convert_request(
+    async def handle_convert_request(
+        msg: ConvertWorkflowRequest,
+        client_id: str,
+        workspace_dir: Path,
+        logger: logging.Logger,
+    ) -> dict[str, Any]:
+        """Handle a convert workflow request.
+
+        Parameters
+        ----------
+        msg : ConvertWorkflowRequest
+            The convert workflow request message.
+        client_id : str
+            The client ID.
+        workspace_dir : Path
+            The workspace directory.
+        logger : logging.Logger
+            The logger instance.
+
+        Returns
+        -------
+        dict[str, Any]
+            The response dictionary.
+        """
+        return await anyio.to_thread.run_sync(
+            FileRequestHandler._handle_convert_request,
+            msg,
+            client_id,
+            workspace_dir,
+            logger,
+        )
+
+    @staticmethod
+    def _handle_convert_request(
         msg: ConvertWorkflowRequest,
         client_id: str,
         workspace_dir: Path,

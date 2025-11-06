@@ -83,6 +83,7 @@ export type WaldiezStoreProps = {
     checkpoints?: {
         get: (flowName: string) => Promise<Record<string, any> | null>; // handler for getting previous checkpoints for the flow (send to backend)
         set?: (flowName: string, checkpoint: Record<string, any>) => Promise<void>; // handler for saving checkpoint for the flow (send to backend)
+        delete?: (flowName: string, checkpoint: string, index?: number) => Promise<void>; // handler for deleting a checkpoint (or a checkpoint's history entry, send to backend)
     } | null;
 };
 

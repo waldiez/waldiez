@@ -256,11 +256,19 @@ class GetCheckpointsRequest(BaseRequest):
     payload: str | dict[str, Any]
 
 
-class SaveCheckpointRequest(BaseRequest):
+class SetCheckpointRequest(BaseRequest):
     """Save a checkpoint."""
 
     request_id: str
-    type: Literal["save_checkpoint"] = "save_checkpoint"
+    type: Literal["set_checkpoint"] = "set_checkpoint"
+    payload: str | dict[str, Any]
+
+
+class DeleteCheckpointRequest(BaseRequest):
+    """Delete a checkpoint."""
+
+    request_id: str
+    type: Literal["delete_checkpoint"] = "delete_checkpoint"
     payload: str | dict[str, Any]
 
 
@@ -352,15 +360,22 @@ class StatusResponse(BaseResponse):
 class GetCheckpointsResponse(BaseResponse):
     """Return the checkpoints of a flow."""
 
-    type: Literal["checkpoints"] = "checkpoints"
+    type: Literal["get_checkpoints"] = "get_checkpoints"
     checkpoints: dict[str, Any] = Field(default_factory=dict)
 
 
-class SaveCheckpointResponse(BaseResponse):
-    """Return the checkpoints of a flow."""
+class SetCheckpointResponse(BaseResponse):
+    """Save a checkpoint of a flow."""
 
-    type: Literal["checkpoint"] = "checkpoint"
+    type: Literal["set_checkpoint"] = "set_checkpoint"
     checkpoint: dict[str, Any] = Field(default_factory=dict)
+
+
+class DeleteCheckpointResponse(BaseResponse):
+    """Delete a checkpoint of a flow."""
+
+    type: Literal["delete_checkpoint"] = "delete_checkpoint"
+    checkpoint: str
 
 
 class ErrorResponse(BaseResponse):
@@ -588,7 +603,8 @@ ClientMessage = Annotated[
         PingRequest,
         GetStatusRequest,
         GetCheckpointsRequest,
-        SaveCheckpointRequest,
+        SetCheckpointRequest,
+        DeleteCheckpointRequest,
     ],
     Field(discriminator="type"),
 ]
@@ -609,7 +625,8 @@ ServerMessage = Annotated[
         PongResponse,
         StatusResponse,
         GetCheckpointsResponse,
-        SaveCheckpointResponse,
+        SetCheckpointResponse,
+        DeleteCheckpointResponse,
         ErrorResponse,
         # Notifications
         WorkflowStatusNotification,
