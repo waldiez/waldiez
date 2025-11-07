@@ -13,6 +13,7 @@ BUILTIN_IMPORTS = [
     "import shutil",
     "import sqlite3",
     "import sys",
+    "import threading",
     "import traceback",
     "from dataclasses import asdict",
     "from pathlib import Path",

@@ -51,6 +51,7 @@ class TestExportGroupChats:
             "        pattern=chat_manager_pattern,",
             "        messages=__INITIAL_MSG__,",
             "        max_rounds=10,",
+            "        pause_event=pause_event,",
             "    )",
         ]
 
@@ -79,6 +80,7 @@ class TestExportGroupChats:
             "        pattern=chat_manager_pattern,",
             "        messages=__INITIAL_MSG__,",
             "        max_rounds=5,",
+            "        a_pause_event=a_pause_event,",
             "    )",
         ]
 
@@ -106,6 +108,7 @@ class TestExportGroupChats:
             "        pattern=group_manager_pattern,",
             "        messages=__INITIAL_MSG__",
             "        max_rounds=15,",
+            "        pause_event=pause_event,",
             "    )",
         ]
 
@@ -130,6 +133,7 @@ class TestExportGroupChats:
             "        pattern=async_manager_pattern,",
             "        messages=__INITIAL_MSG__,",
             "        max_rounds=20,",
+            "        a_pause_event=a_pause_event,",
             "    )",
         ]
 
@@ -387,6 +391,7 @@ class TestOutputFormat:
             "            pattern=test_mgr_pattern,\n"
             "            messages=__INITIAL_MSG__,\n"
             "            max_rounds=5,\n"
+            "            pause_event=pause_event,\n"
             "        )\n"
         ) + get_event_handler_string(space=space, is_async=False)
 
@@ -410,6 +415,7 @@ class TestOutputFormat:
             "        pattern=async_mgr_pattern,\n"
             "        messages=__INITIAL_MSG__,\n"
             "        max_rounds=3,\n"
+            "        a_pause_event=a_pause_event,\n"
             "    )\n"
         ) + get_event_handler_string(space=space, is_async=True)
 
@@ -433,6 +439,7 @@ class TestOutputFormat:
             "    pattern=no_tab_mgr_pattern,\n"
             "    messages=__INITIAL_MSG__,\n"
             "    max_rounds=1,\n"
+            "    pause_event=pause_event,\n"
             ")\n"
         ) + get_event_handler_string(space=space, is_async=False)
 

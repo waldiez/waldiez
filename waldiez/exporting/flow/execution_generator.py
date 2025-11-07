@@ -468,6 +468,10 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
         else:
             flow_content += "    results: list[AsyncRunResponseProtocol] | AsyncRunResponseProtocol = []\n"
         flow_content += "    result_dicts: list[dict[str, Any]] = []\n"
+        flow_content += "    a_pause_event = asyncio.Event()\n"
+        flow_content += "    a_pause_event.set()\n"
+        flow_content += "    pause_event = threading.Event()\n"
+        flow_content += "    pause_event.set()\n"
         space = "    "
         if cache_seed is not None:
             # noinspection SqlDialectInspection

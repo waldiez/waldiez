@@ -5,6 +5,9 @@
 import { type FC, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { getContentString } from "@waldiez/components/stepByStep/utils";
+import { WaldiezChatMessageUtils } from "@waldiez/utils/chat/utils";
+
+import { Markdown } from "../markdown";
 
 /**
  * SPDX-License-Identifier: Apache-2.0
@@ -84,6 +87,8 @@ type EventConsoleProps = {
     autoScroll?: boolean;
     /** Optional: className container */
     className?: string;
+    /** theme/dark mode */
+    darkMode: boolean;
 };
 
 const formatArgs = (args: unknown): string => {
@@ -124,11 +129,11 @@ const getParticipants = (ev: WaldiezEvent) => {
 };
 
 // eslint-disable-next-line max-statements, complexity
-const renderEvent = (ev: WaldiezEvent) => {
+const renderEvent = (ev: WaldiezEvent, darkMode: boolean) => {
     if (!ev.type) {
         const nested = ev as any;
         if (nested.event && nested.event.type) {
-            return renderEvent(nested.event);
+            return renderEvent(nested.event, darkMode);
         }
     }
     switch (ev.type) {
@@ -181,6 +186,17 @@ const renderEvent = (ev: WaldiezEvent) => {
             return (
                 <div className="text-gray-700">
                     sender={sender}, recipient={recipient}
+                </div>
+            );
+        }
+
+        case "select_speaker": {
+            return (
+                <div className="text-gray-700">
+                    <Markdown
+                        content={WaldiezChatMessageUtils.generateSpeakerSelectionMarkdown(ev.content.agents)}
+                        isDarkMode={darkMode}
+                    />
                 </div>
             );
         }
@@ -345,7 +361,13 @@ const renderEvent = (ev: WaldiezEvent) => {
     }
 };
 
-export const EventConsole: FC<EventConsoleProps> = ({ events, printRaw, autoScroll, className }) => {
+export const EventConsole: FC<EventConsoleProps> = ({
+    events,
+    printRaw,
+    autoScroll,
+    className,
+    darkMode,
+}) => {
     const listRef = useRef<HTMLDivElement>(null);
     const endRef = useRef<HTMLDivElement>(null);
     const userScrolledUpRef = useRef(false);
@@ -404,7 +426,7 @@ export const EventConsole: FC<EventConsoleProps> = ({ events, printRaw, autoScro
                                     Raw event: {JSON.stringify(ev, null, 2)}
                                 </div>
                             )}
-                            {renderEvent(ev)}
+                            {renderEvent(ev, darkMode)}
                         </div>
                     ))}
                 </div>

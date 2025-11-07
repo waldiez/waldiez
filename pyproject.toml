@@ -221,11 +221,13 @@ allow-direct-references = true
 [tool.hatch.build.targets.sdist]
 exclude = ["**/example.py", ".gitignore"]
 packages = ["waldiez", "waldiez.*"]
+artifacts = ["waldiez/utils/ag2.diff"]
 directory = "out/dist"
 
 [tool.hatch.build.targets.wheel]
 exclude = ["**/example.py"]
 packages = ["waldiez", "waldiez.*"]
+artifacts = ["waldiez/utils/ag2.diff"]
 directory = "out/dist"
 
 [tool.hatch.build.hooks.version]

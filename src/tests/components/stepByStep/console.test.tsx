@@ -21,12 +21,12 @@ describe("EventConsole", () => {
 
     describe("rendering", () => {
         it("should render with default props", () => {
-            const { container } = render(<EventConsole events={[]} />);
+            const { container } = render(<EventConsole events={[]} darkMode />);
             expect(container.firstChild).toHaveClass("flex", "items-center", "flex-col", "h-full", "json");
         });
 
         it("should apply custom className", () => {
-            const { container } = render(<EventConsole events={[]} className="custom" />);
+            const { container } = render(<EventConsole events={[]} className="custom" darkMode />);
             expect(container.firstChild).toHaveClass("custom");
         });
 
@@ -34,7 +34,7 @@ describe("EventConsole", () => {
             const events: WaldiezEvent[] = [
                 { type: "text", content: { sender: "A", recipient: "B", content: "test" } },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
         });
     });
 
@@ -43,6 +43,7 @@ describe("EventConsole", () => {
             render(
                 <EventConsole
                     events={[{ type: "text", content: { sender: "A", recipient: "B", content: "test" } }]}
+                    darkMode
                 />,
             );
             expect(screen.queryByText(/Raw event:/)).not.toBeInTheDocument();
@@ -53,6 +54,7 @@ describe("EventConsole", () => {
                 <EventConsole
                     events={[{ type: "text", content: { sender: "A", recipient: "B", content: "test" } }]}
                     printRaw={true}
+                    darkMode
                 />,
             );
             expect(screen.getByText(/Raw event:/)).toBeInTheDocument();
@@ -64,7 +66,7 @@ describe("EventConsole", () => {
             const events: WaldiezEvent[] = [
                 { type: "text", content: { sender: "Alice", recipient: "Bob", content: "Hello" } },
             ];
-            const { container } = render(<EventConsole events={events} />);
+            const { container } = render(<EventConsole events={events} darkMode />);
 
             expect(container).toHaveTextContent("Alice");
             expect(container).toHaveTextContent("→");
@@ -79,7 +81,7 @@ describe("EventConsole", () => {
                     content: { sender: "A", recipient: "B", message: "done" },
                 },
             ];
-            const { container } = render(<EventConsole events={events} />);
+            const { container } = render(<EventConsole events={events} darkMode />);
 
             expect(container).toHaveTextContent("A");
             expect(container).toHaveTextContent("B");
@@ -88,7 +90,7 @@ describe("EventConsole", () => {
 
         it("should render group_chat_run_chat events", () => {
             const events: WaldiezEvent[] = [{ type: "group_chat_run_chat", content: { speaker: "Alice" } }];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("Next speaker: Alice")).toBeInTheDocument();
         });
 
@@ -96,7 +98,7 @@ describe("EventConsole", () => {
             const events: WaldiezEvent[] = [
                 { type: "using_auto_reply", content: { sender: "A", recipient: "B" } },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText(/sender=A, recipient=B/)).toBeInTheDocument();
         });
 
@@ -111,7 +113,7 @@ describe("EventConsole", () => {
                     },
                 },
             ];
-            const { container } = render(<EventConsole events={events} />);
+            const { container } = render(<EventConsole events={events} darkMode />);
 
             expect(container).toHaveTextContent("Agent");
             expect(container).toHaveTextContent("Tool");
@@ -126,7 +128,7 @@ describe("EventConsole", () => {
                     content: { sender: "A", recipient: "B", tool_calls: [{ function: { name: "test" } }] },
                 },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("args: none")).toBeInTheDocument();
         });
 
@@ -141,7 +143,7 @@ describe("EventConsole", () => {
                     },
                 },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("args: none")).toBeInTheDocument();
         });
 
@@ -152,7 +154,7 @@ describe("EventConsole", () => {
                     content: { func_name: "test", recipient: "target", arguments: { a: 1 } },
                 },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
 
             expect(screen.getByText("⚡ Executing: test")).toBeInTheDocument();
             expect(screen.getByText("→ Target: target")).toBeInTheDocument();
@@ -163,7 +165,7 @@ describe("EventConsole", () => {
             const events: WaldiezEvent[] = [
                 { type: "executed_function", content: { func_name: "test", is_exec_success: true } },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("✅ Success: test")).toBeInTheDocument();
         });
 
@@ -171,7 +173,7 @@ describe("EventConsole", () => {
             const events: WaldiezEvent[] = [
                 { type: "executed_function", content: { func_name: "test", is_exec_success: false } },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("❌ Failed: test")).toBeInTheDocument();
         });
 
@@ -186,13 +188,13 @@ describe("EventConsole", () => {
                     },
                 },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("→ Transferred to: Agent")).toBeInTheDocument();
         });
 
         it("should render input_request events", () => {
             const events: WaldiezEvent[] = [{ type: "input_request", content: { prompt: "Enter name:" } }];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
 
             expect(screen.getByText("👤 Provide your input:")).toBeInTheDocument();
             expect(screen.getByText("Enter name:")).toBeInTheDocument();
@@ -202,7 +204,7 @@ describe("EventConsole", () => {
             const events: WaldiezEvent[] = [
                 { type: "tool_response", content: { content: "Result", sender: "A", recipient: "B" } },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
 
             expect(screen.getByText("🔄 Tool Response:")).toBeInTheDocument();
             expect(screen.getByText("Result")).toBeInTheDocument();
@@ -211,7 +213,7 @@ describe("EventConsole", () => {
 
         it("should render termination events", () => {
             const events: WaldiezEvent[] = [{ type: "termination", content: { termination_reason: "Done" } }];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
 
             expect(screen.getByText("Termination met")).toBeInTheDocument();
             expect(screen.getByText("→ Termination_reason: Done")).toBeInTheDocument();
@@ -219,7 +221,7 @@ describe("EventConsole", () => {
 
         it("should render termination events without reason", () => {
             const events: WaldiezEvent[] = [{ type: "termination", content: {} }];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("Termination met")).toBeInTheDocument();
             expect(screen.queryByText(/→ Termination_reason:/)).not.toBeInTheDocument();
         });
@@ -230,7 +232,7 @@ describe("EventConsole", () => {
                 { type: "generate_code_execution_reply", content: {} },
                 { type: "group_chat_resume", content: {} },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
 
             expect(screen.getByText("🏁 Run completed")).toBeInTheDocument();
             expect(screen.getByText("💻 Code executed")).toBeInTheDocument();
@@ -242,7 +244,7 @@ describe("EventConsole", () => {
                 { type: "info", content: "Info message" },
                 { type: "error", content: "Error message" },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
 
             expect(screen.getByText("Info message")).toBeInTheDocument();
             expect(screen.getByText("Error message")).toBeInTheDocument();
@@ -250,13 +252,13 @@ describe("EventConsole", () => {
 
         it("should handle error events with error property", () => {
             const events: WaldiezEvent[] = [{ type: "error", content: null, error: "Network error" } as any];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("Network error")).toBeInTheDocument();
         });
 
         it("should render unknown event types", () => {
             const events: WaldiezEvent[] = [{ type: "unknown_type", content: {} } as any];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("⚠️ Unknown event type:")).toBeInTheDocument();
             expect(screen.getByText("unknown_type")).toBeInTheDocument();
         });
@@ -267,7 +269,7 @@ describe("EventConsole", () => {
                     event: { type: "text", content: { sender: "A", recipient: "B", content: "nested" } },
                 } as any,
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("nested")).toBeInTheDocument();
         });
     });
@@ -280,7 +282,7 @@ describe("EventConsole", () => {
                     content: { func_name: "test", recipient: "target", arguments: null },
                 },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("→ Args: none")).toBeInTheDocument();
         });
 
@@ -291,7 +293,7 @@ describe("EventConsole", () => {
                     content: { func_name: "test", recipient: "target", arguments: "string arg" },
                 },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("→ Args: string arg")).toBeInTheDocument();
         });
 
@@ -302,7 +304,7 @@ describe("EventConsole", () => {
                     content: { func_name: "test", recipient: "target", arguments: { key: "value" } },
                 },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText(/→ Args:.*"key":"value"/)).toBeInTheDocument();
         });
 
@@ -315,7 +317,7 @@ describe("EventConsole", () => {
                     content: { func_name: "test", recipient: "target", arguments: circular },
                 },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("→ Args: [object Object]")).toBeInTheDocument();
         });
     });
@@ -323,7 +325,7 @@ describe("EventConsole", () => {
     describe("edge cases", () => {
         it("should handle events with missing type", () => {
             const events = [{ content: {} }] as any;
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("⚠️ Unknown event type:")).toBeInTheDocument();
         });
 
@@ -331,7 +333,7 @@ describe("EventConsole", () => {
             const events: WaldiezEvent[] = [
                 { id: "test-id", type: "text", content: { sender: "A", recipient: "B", content: "test" } },
             ];
-            render(<EventConsole events={events} />);
+            render(<EventConsole events={events} darkMode />);
             expect(screen.getByText("test")).toBeInTheDocument();
         });
     });

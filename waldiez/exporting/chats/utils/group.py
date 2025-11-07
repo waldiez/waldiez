@@ -49,6 +49,10 @@ def export_group_chats(
     if message:
         content += f"{space}    {message[0]}={message[1]},\n"
     content += f"{space}    max_rounds={manager.data.max_round},\n"
+    if is_async:
+        content += f"{space}    a_pause_event=a_pause_event,\n"
+    else:
+        content += f"{space}    pause_event=pause_event,\n"
     content += f"{space})\n"
     content += get_event_handler_string(space=space, is_async=is_async)
     return content

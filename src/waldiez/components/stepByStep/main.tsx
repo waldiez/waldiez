@@ -43,7 +43,7 @@ export const StepByStepView: FC<{
         stepByStep?.handlers?.respond?.({
             id: nanoid(),
             timestamp: Date.now(),
-            data: responseText,
+            data: JSON.stringify(responseText),
             request_id: requestId,
             type: "input_response",
         });
@@ -208,11 +208,14 @@ export const StepByStepView: FC<{
                     <EventAgentsList agents={agents} darkMode={isDarkMode} />
                 ) : events.length > 0 ? (
                     <div className="event-history">
-                        <EventConsole events={events} autoScroll />
+                        <EventConsole events={events} autoScroll darkMode={isDarkMode} />
                     </div>
                 ) : (
                     <div className="event-history">
-                        <EventConsole events={[{ type: "empty", content: "No messages yet..." }]} />
+                        <EventConsole
+                            events={[{ type: "empty", content: "No messages yet..." }]}
+                            darkMode={isDarkMode}
+                        />
                     </div>
                 )}
             </div>
