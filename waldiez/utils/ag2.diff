@@ -9,13 +9,13 @@ index 109063cfb7..dafcdafdfa 100644
 +    pause_event: threading.Event | None = None,
  ) -> tuple[ChatResult, ContextVariables, "Agent"]:
      """Initialize and run a group chat using a pattern for configuration.
-
+ 
 @@ -46,12 +47,17 @@ def initiate_group_chat(
          safeguard_policy: Optional safeguard policy dict or path to JSON file.
          safeguard_llm_config: Optional LLM configuration for safeguard checks.
          mask_llm_config: Optional LLM configuration for masking.
 +        pause_event: Optional Event to pause the chat.
-
+ 
      Returns:
          ChatResult:         Conversations chat history.
          ContextVariables:   Updated Context variables.
@@ -31,7 +31,7 @@ index 109063cfb7..dafcdafdfa 100644
 @@ -95,6 +101,8 @@ def initiate_group_chat(
      if last_agent is None:
          raise ValueError("No agent selected to start the conversation")
-
+ 
 +    manager._pause_event = pause_event
 +
      chat_result = last_agent.initiate_chat(
@@ -44,13 +44,13 @@ index 109063cfb7..dafcdafdfa 100644
 +    a_pause_event: asyncio.Event | None = None,
  ) -> tuple[ChatResult, ContextVariables, "Agent"]:
      """Initialize and run a group chat using a pattern for configuration, asynchronously.
-
+ 
 @@ -125,12 +134,16 @@ async def a_initiate_group_chat(
          safeguard_policy: Optional safeguard policy dict or path to JSON file.
          safeguard_llm_config: Optional LLM configuration for safeguard checks.
          mask_llm_config: Optional LLM configuration for masking.
 +        a_pause_event: Optional Event to pause the chat.
-
+ 
      Returns:
          ChatResult:         Conversations chat history.
          ContextVariables:   Updated Context variables.
@@ -65,7 +65,7 @@ index 109063cfb7..dafcdafdfa 100644
 @@ -174,6 +187,8 @@ async def a_initiate_group_chat(
      if last_agent is None:
          raise ValueError("No agent selected to start the conversation")
-
+ 
 +    manager._a_pause_event = a_pause_event
 +
      chat_result = await last_agent.a_initiate_chat(
@@ -80,7 +80,7 @@ index 109063cfb7..dafcdafdfa 100644
      iostream = ThreadIOStream()
      # todo: add agents
      response = RunResponse(iostream, agents=[])
-
+ 
 +    if pause_event is None:
 +        pause_event = threading.Event()
 +        pause_event.set()
@@ -102,16 +102,16 @@ index 109063cfb7..dafcdafdfa 100644
                      mask_llm_config=mask_llm_config,
 +                    pause_event=pause_event,
                  )
-
+ 
                  IOStream.get_default().send(
 @@ -236,6 +258,7 @@ def _initiate_group_chat(
          target=_initiate_group_chat,
      ).start()
-
+ 
 +    response.pause_event = pause_event
      return response
-
-
+ 
+ 
 @@ -247,11 +270,16 @@ async def a_run_group_chat(
      safeguard_policy: dict[str, Any] | str | None = None,
      safeguard_llm_config: LLMConfig | None = None,
@@ -121,7 +121,7 @@ index 109063cfb7..dafcdafdfa 100644
      iostream = AsyncThreadIOStream()
      # todo: add agents
      response = AsyncRunResponse(iostream, agents=[])
-
+ 
 +    if a_pause_event is None:
 +        a_pause_event = asyncio.Event()
 +        a_pause_event.set()
@@ -143,7 +143,7 @@ index 109063cfb7..dafcdafdfa 100644
                      mask_llm_config=mask_llm_config,
 +                    a_pause_event=a_pause_event,
                  )
-
+ 
                  IOStream.get_default().send(
 diff --git a/autogen/agentchat/groupchat.py b/autogen/agentchat/groupchat.py
 index 02f7fd8880..952f7c8067 100644
@@ -175,12 +175,12 @@ index 02f7fd8880..952f7c8067 100644
      ):
          if (
 @@ -1109,6 +1114,8 @@ def __init__(
-
+ 
          self._last_speaker = None
          self._silent = silent
 +        self._pause_event = pause_event
 +        self._a_pause_event = a_pause_event
-
+ 
          # Order of register_reply is important.
          # Allow sync chat if initiated using initiate_chat
 @@ -1221,6 +1228,11 @@ def run_chat(

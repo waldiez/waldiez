@@ -10,9 +10,9 @@ repos:
           - --unsafe
       - id: check-toml
       - id: end-of-file-fixer
-        exclude: '(\.svg$|\.md$|\.snap$|\.waldiez$|\.waldiezTool$|\.waldiezModel$|\.waldiezAgent$)'
+        exclude: '(\.svg$|\.md$|\.snap$|\.diff$|\.waldiez$|\.waldiezTool$|\.waldiezModel$|\.waldiezAgent$)'
       - id: trailing-whitespace
-        exclude: '(\.svg$|\.md$|\.snap$|\.waldiez$|\.waldiezTool$|\.waldiezModel$|\.waldiezAgent$)'
+        exclude: '(\.svg$|\.md$|\.snap$|\.diff$|\.waldiez$|\.waldiezTool$|\.waldiezModel$|\.waldiezAgent$)'
 
   - repo: https://github.com/psf/black-pre-commit-mirror
     rev: 25.1.0
