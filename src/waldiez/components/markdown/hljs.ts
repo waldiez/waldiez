@@ -32,7 +32,4 @@ if (!hljs.getLanguage("typescript")) {
 if (!hljs.getLanguage("xml")) {
     hljs.registerLanguage("xml", xml);
 }
-if (!hljs.getLanguage("html")) {
-    hljs.registerLanguage("html", xml);
-}
 export default hljs;

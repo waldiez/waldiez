@@ -212,6 +212,20 @@ body.waldiez-dark .chat-container::-webkit-scrollbar-thumb:hover {
   box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
   position: relative;
   transition: all 0.2s ease;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  width: fit-content;
+}
+
+@media (width <= 640px) {
+  .message-bubble {
+    max-width: 90%;
+  }
+}
+
+.message-bubble .markdown-content {
+  width: 100%;
+  max-width: 100%;
 }
 
 .message-bubble:hover {

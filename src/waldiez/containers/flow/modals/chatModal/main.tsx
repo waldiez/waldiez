@@ -26,7 +26,7 @@ import { type ChatModalProps } from "@waldiez/containers/flow/modals/chatModal/t
 
 // eslint-disable-next-line complexity
 export const ChatModal = memo((props: ChatModalProps) => {
-    const { flowId, chat } = props;
+    const { flowId, chat, isDarkMode } = props;
 
     // State
     const [textInput, setTextInput] = useState("");
@@ -221,7 +221,7 @@ export const ChatModal = memo((props: ChatModalProps) => {
                 {chat?.messages && chat.messages.length > 0 && (
                     <div className="chat-wrapper" data-flow-id={flowId}>
                         <ChatUI
-                            isDarkMode={false}
+                            isDarkMode={isDarkMode}
                             messages={chat.messages}
                             userParticipants={chat.userParticipants}
                             activeRequest={chat.activeRequest}

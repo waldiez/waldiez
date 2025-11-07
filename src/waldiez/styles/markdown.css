@@ -2,321 +2,164 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-
-body.waldiez-light .markdown-renderer {
-  --md-text: #333;
-  --md-link: #0366d6;
-  --md-code-bg: rgb(0 0 0 / 5%);
-  --md-blockquote-border: #ddd;
-  --md-blockquote-text: #666;
-  --md-table-border: #e1e4e8;
-  --md-table-bg-alt: #f6f8fa;
-  --md-pre-bg: #f5f5f5;
-  --md-code-block-header: #e9ecef;
-  --md-heading-border: #eaecef;
-}
-
-body.waldiez-dark .markdown-renderer {
-  --md-text: #eee;
-  --md-link: #58a6ff;
-  --md-code-bg: rgb(255 255 255 / 10%);
-  --md-blockquote-border: #444;
-  --md-blockquote-text: #aaa;
-  --md-table-border: #444;
-  --md-table-bg-alt: #21262d;
-  --md-pre-bg: #282c34;
-  --md-code-block-header: #21252b;
-  --md-heading-border: #30363d;
-}
-
-.markdown-renderer.markdown-light {
-  --md-text: #333;
-  --md-link: #0366d6;
-  --md-code-bg: rgb(0 0 0 / 5%);
-  --md-blockquote-border: #ddd;
-  --md-blockquote-text: #666;
-  --md-table-border: #e1e4e8;
-  --md-table-bg-alt: #f6f8fa;
-  --md-pre-bg: #f5f5f5;
-  --md-code-block-header: #e9ecef;
-  --md-heading-border: #eaecef;
-}
-
-.markdown-renderer.markdown-dark {
-  --md-text: #eee;
-  --md-link: #58a6ff;
-  --md-code-bg: rgb(255 255 255 / 10%);
-  --md-blockquote-border: #444;
-  --md-blockquote-text: #aaa;
-  --md-table-border: #444;
-  --md-table-bg-alt: #21262d;
-  --md-pre-bg: #282c34;
-  --md-code-block-header: #21252b;
-  --md-heading-border: #30363d;
-}
-
-/* stylelint-disable-next-line no-descending-specificity */
-.markdown-renderer {
+.markdown-content {
+  color: var(--text-color);
   width: 100%;
+  max-width: 100%;
   font-size: inherit;
   line-height: 1.4;
   overflow-wrap: anywhere;
 }
 
-.markdown-h1,
-.markdown-h2,
-.markdown-h3,
-.markdown-h4,
-.markdown-h5,
-.markdown-h6 {
-  margin-top: 1em;
-  margin-bottom: 0.5em;
-  font-weight: 600;
-  line-height: 1.25;
-}
-
-.markdown-h1 {
-  font-size: 1.4em;
-  padding-bottom: 0.2em;
-  border-bottom: 1px solid var(--md-heading-border);
-}
-
-.markdown-h2 {
-  font-size: 1.3em;
-  padding-bottom: 0.2em;
-  border-bottom: 1px solid var(--md-heading-border);
-}
-
-.markdown-h3 {
-  font-size: 1.2em;
-}
-
-.markdown-h4 {
-  font-size: 1.1em;
-}
-
-.markdown-h5 {
-  font-size: 1em;
-}
-
-.markdown-h6 {
-  font-size: 0.9em;
-  color: var(--md-blockquote-text);
-}
-
-.markdown-p {
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-}
-
-.markdown-ul,
-.markdown-ol {
-  padding-left: 1.5em;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
-}
-
-.markdown-li {
-  margin-bottom: 0.25em;
-}
-
-.markdown-li .markdown-p {
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-}
-
-.markdown-blockquote {
-  margin: 0.5em 0;
-  padding-left: 1em;
-  color: var(--md-blockquote-text);
-  border-left: 3px solid var(--md-blockquote-border);
-}
-
-.markdown-pre,
-.markdown-code-block-wrapper {
-  margin: 0.5em 0;
-  border-radius: 6px;
-  overflow: auto;
+.markdown-content img {
   max-width: 100%;
-  width: auto;
-  display: block;
-  color: var(--md-text) !important;
+  height: auto;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
-.markdown-pre {
-  padding: 0.8em;
-  background-color: var(--md-pre-bg);
-  color: var(--md-text) !important;
-}
-
-.markdown-code {
-  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-  white-space: pre;
+.markdown-content pre {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--primary-alt-color);
   overflow-x: auto;
   max-width: 100%;
-  color: var(--md-text) !important;
 }
 
-.markdown-inline-code {
-  background-color: var(--md-code-bg);
-  border-radius: 3px;
-  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-  font-size: 0.9em;
-  padding: 0.2em 0.4em;
-}
-
-.markdown-code-block-header {
-  display: flex;
-  align-items: center;
-  padding: 0.4em 0.8em;
-  background-color: var(--md-code-block-header);
-  color: var(--md-text) !important;
-  font-size: 0.8em;
-  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-}
-
-.markdown-code-language {
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-.message-content .markdown-pre,
-.message-content .markdown-code,
-.message-content .markdown-code-block-wrapper {
-  max-width: 100%;
-  overflow-x: auto;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  word-break: normal;
-}
-
-.markdown-table {
-  border-collapse: collapse;
-  margin: 0.5em 0;
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-.markdown-table th,
-.markdown-table td {
-  border: 1px solid var(--md-table-border);
-  padding: 0.4em 0.6em;
-}
-
-.markdown-table th {
-  font-weight: 600;
-}
-
-.markdown-table tr {
-  background-color: transparent;
-  border-top: 1px solid var(--md-table-border);
-}
-
-.markdown-table tr:nth-child(2n) {
-  background-color: var(--md-table-bg-alt);
-}
-
-.markdown-link {
-  color: var(--md-link);
-  text-decoration: none;
-}
-
-.markdown-link:hover {
-  text-decoration: underline;
-}
-
-.markdown-image {
-  max-width: 100%;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.markdown-hr {
-  height: 1px;
-  margin: 1em 0;
-  background-color: var(--md-table-border);
+.markdown-content pre code {
+  font-size: 0.875rem;
+  background: transparent;
   border: none;
+  padding: 0;
+  white-space: pre;
 }
 
-.user-message .markdown-link {
-  color: #fff;
-  text-decoration: underline;
+.markdown-content code:not(pre code) {
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  background-color: var(--primary-alt-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
 }
 
-.user-message .markdown-blockquote {
-  border-left-color: rgb(255 255 255 / 50%);
-  color: rgb(255 255 255 / 80%);
+.markdown-content h1 {
+  @apply text-xl font-bold mb-3 mt-2;
+
+  color: var(--text-color);
 }
 
-.user-message .markdown-inline-code {
-  background-color: rgb(255 255 255 / 20%);
-  color: #fff;
+.markdown-content h2 {
+  @apply text-lg font-semibold mb-2 mt-3;
+
+  color: var(--text-color);
 }
 
-@media (width <= 768px) {
-  .markdown-table {
-    font-size: 0.9em;
-  }
+.markdown-content h3 {
+  @apply text-base font-medium mb-2 mt-2;
 
-  .markdown-pre {
-    padding: 0.6em;
-  }
-
-  .markdown-h1 {
-    font-size: 1.3em;
-  }
-
-  .markdown-h2 {
-    font-size: 1.2em;
-  }
+  color: var(--text-color);
 }
 
-.language-js .keyword,
-.language-javascript .keyword,
-.language-typescript .keyword,
-.language-jsx .keyword,
-.language-tsx .keyword {
-  color: #569cd6;
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  @apply text-sm font-medium mb-1 mt-2;
+
+  color: var(--text-color);
 }
 
-.language-js .string,
-.language-javascript .string,
-.language-typescript .string,
-.language-jsx .string,
-.language-tsx .string {
-  color: #ce9178;
+.markdown-content p {
+  @apply mb-3 leading-relaxed;
+
+  color: var(--text-color);
 }
 
-.language-js .comment,
-.language-javascript .comment,
-.language-typescript .comment,
-.language-jsx .comment,
-.language-tsx .comment {
-  color: #6a9955;
+.markdown-content blockquote {
+  @apply border-l-4 pl-4 my-3 italic;
+
+  border-color: var(--primary-color);
+  color: var(--text-color);
+  opacity: 0.9;
 }
 
-body.waldiez-dark .language-js .keyword,
-body.waldiez-dark .language-javascript .keyword,
-body.waldiez-dark .language-typescript .keyword,
-body.waldiez-dark .language-jsx .keyword,
-body.waldiez-dark .language-tsx .keyword {
-  color: #569cd6;
+.markdown-content strong {
+  @apply font-semibold;
+
+  color: var(--text-color);
 }
 
-body.waldiez-dark .language-js .string,
-body.waldiez-dark .language-javascript .string,
-body.waldiez-dark .language-typescript .string,
-body.waldiez-dark .language-jsx .string,
-body.waldiez-dark .language-tsx .string {
-  color: #ce9178;
+.markdown-content em {
+  @apply italic;
+
+  color: var(--text-color);
 }
 
-body.waldiez-dark .language-js .comment,
-body.waldiez-dark .language-javascript .comment,
-body.waldiez-dark .language-typescript .comment,
-body.waldiez-dark .language-jsx .comment,
-body.waldiez-dark .language-tsx .comment {
-  color: #6a9955;
+.markdown-content a {
+  @apply underline;
+
+  color: var(--primary-color);
+}
+
+.markdown-content a:hover {
+  color: var(--primary-color-hover);
+}
+
+.markdown-content hr {
+  @apply my-4;
+
+  border-color: var(--border-color);
+}
+
+.markdown-content ul {
+  @apply list-disc list-inside mb-3;
+
+  color: var(--text-color);
+}
+
+.markdown-content ol {
+  @apply list-decimal list-inside mb-3;
+
+  color: var(--text-color);
+}
+
+.markdown-content li {
+  @apply mb-1;
+}
+
+.markdown-content ul ul,
+.markdown-content ol ul {
+  @apply ml-4 mt-1;
+}
+
+.markdown-content ul ol,
+.markdown-content ol ol {
+  @apply ml-4 mt-1;
+}
+
+.markdown-content input[type="checkbox"] {
+  @apply mr-2;
+}
+
+.markdown-content table {
+  @apply w-full border-collapse mb-3;
+}
+
+.markdown-content th,
+.markdown-content td {
+  @apply border px-3 py-2;
+
+  border-color: var(--border-color);
+}
+
+.markdown-content th {
+  @apply font-semibold;
+
+  background-color: var(--primary-alt-color);
+}
+
+.markdown-content .markdown-html {
+  color: var(--text-color);
 }

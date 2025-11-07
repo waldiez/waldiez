@@ -2,266 +2,99 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { Marked } from "marked";
+import DOMPurify from "dompurify";
+import { Marked, Renderer, type Tokens } from "marked";
 import { markedHighlight } from "marked-highlight";
-import Renderer from "marked-react";
 
-import { type FC, type JSX, type ReactNode, useMemo } from "react";
+import { type FC, useCallback, useMemo } from "react";
 
+import { ALLOWED_ATTR, ALLOWED_TAGS, ALLOWED_URI_REGEXP } from "@waldiez/components/markdown/constants";
 import hljs from "@waldiez/components/markdown/hljs";
+import { extractText, preprocessContent } from "@waldiez/components/markdown/utils";
 
 type MarkdownRendererProps = {
     content: any;
     isDarkMode?: boolean;
+    className?: string;
     onImageClick?: (url: string) => void;
 };
-
-/**
- * Detects if text might contain markdown syntax
- * @param text - The text to check
- * @returns boolean - True if the text might be markdown, false otherwise
- */
-const mightBeMarkdown = (text: string): boolean => {
-    // noinspection RegExpRedundantEscape
-    const markdownPatterns = [
-        /\*\*(.*?)\*\*/, // Bold
-        /__(.*?)__/, // Bold
-        /\[(.*?)\]\((.*?)\)/, // Links
-        /```([\s\S]*?)```/, // Code blocks
-        /#+\s+.*/, // Headers
-        />\s+.*/, // Blockquotes
-        /\d+\.\s+.*/, // Ordered lists
-        /[\*\-\+]\s+.*/, // Unordered lists
-        /\|(.*?)\|/, // Tables
-        /!\[(.*?)\]\((.*?)\)/, // Images
-    ];
-
-    return markdownPatterns.some(pattern => pattern.test(text));
-};
-
-/**
- * Pre-processes content to handle special cases
- */
-const preprocessContent = (content: string): string => {
-    // Special handling for code blocks with language indicators
-    // If a code block has "md" language indicator, we should render its content as markdown
-    let processedContent = content;
-
-    // Detect and process ```md code blocks - render their content as markdown
-    const mdCodeBlockRegex = /```md\n([\s\S]*?)```/g;
-    processedContent = processedContent.replace(mdCodeBlockRegex, (_match, codeContent) => {
-        // Just return the inner content without the ```md wrapper
-        return codeContent;
-    });
-
-    // For other code blocks, ensure they have proper formatting
-    const codeBlockRegex = /```([a-z]*)\n([\s\S]*?)```/g;
-    processedContent = processedContent.replace(codeBlockRegex, (_match, language, codeContent) => {
-        // If it's a language indicator we want to preserve, keep it
-        if (language && language !== "md") {
-            return `\`\`\`${language}\n${codeContent}\`\`\``;
-        }
-        // Otherwise, just use a generic code block
-        return `\`\`\`\n${codeContent}\`\`\``;
-    });
-
-    return processedContent;
-};
-
-// eslint-disable-next-line max-statements
-const extractText = (obj: any): string => {
-    if (!obj) {
-        return "";
-    }
-    if (typeof obj === "string") {
-        return obj;
-    }
-    if (typeof obj === "number") {
-        return obj.toString();
-    }
-    // arrays: flatten
-    if (Array.isArray(obj)) {
-        return obj.map(extractText).filter(Boolean).join("");
-    }
-
-    // objects
-    if (typeof obj === "object") {
-        // common shapes
-        if (typeof obj.text === "string") {
-            return obj.text;
-        }
-        if (typeof obj.prompt === "string") {
-            return obj.prompt;
-        }
-
-        // content blocks array
-        if (Array.isArray(obj.content)) {
-            return extractText(obj.content);
-        }
-
-        // shape: { type: "text", text: "..."} already handled; but also { type, [type]: ... }
-        if (typeof obj.type === "string") {
-            const entry = (obj as any)[obj.type];
-            if (entry !== undefined) {
-                return extractText(entry);
-            }
-        }
-
-        // last resort: try a few common keys
-        for (const key of ["message", "value", "data", "content"]) {
-            if (typeof obj[key] === "string") {
-                return obj[key];
-            }
-            if (Array.isArray(obj[key]) || typeof obj[key] === "object") {
-                const s = extractText(obj[key]);
-                if (s) {
-                    return s;
-                }
-            }
-        }
-    }
-
-    // ultimate fallback
-    try {
-        return "```json\n" + JSON.stringify(obj, null, 2) + "\n```";
-    } catch {
-        return "";
-    }
-};
-
 /**
  * Component to render markdown content
  */
-export const Markdown: FC<MarkdownRendererProps> = ({ content, isDarkMode = false, onImageClick }) => {
-    const strContent = useMemo(() => extractText(content), [content]);
-
-    // Skip markdown processing for short texts or if it doesn't look like markdown
-    const shouldRenderMarkdown = useMemo(() => {
-        return strContent.length > 5 && mightBeMarkdown(strContent);
-    }, [strContent]);
-
-    // Pre-process content to handle special cases
-    const processedContent = useMemo(() => {
-        return preprocessContent(strContent);
-    }, [strContent]);
-
-    // Configure marked with extensions
+export const Markdown: FC<MarkdownRendererProps> = ({ content, className, isDarkMode, onImageClick }) => {
+    // CSS class to handle dark/light mode
+    const themeClass = isDarkMode ? "markdown-dark" : "markdown-light";
+    const rawStr = useMemo(() => extractText(content), [content]);
+    const processedStr = useMemo(() => preprocessContent(rawStr), [rawStr]);
     const markedInstance = useMemo(() => {
         const instance = new Marked(
             markedHighlight({
                 langPrefix: "hljs language-",
                 highlight(code, lang) {
-                    const language = hljs.getLanguage(lang) ? lang : "plaintext";
-                    return hljs.highlight(code, { language }).value;
+                    try {
+                        if (lang && hljs.getLanguage(lang)) {
+                            return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
+                        }
+                    } catch {}
+                    return hljs.highlightAuto(code).value;
                 },
             }),
         );
-
-        // Configure marked options
+        const renderer = new Renderer();
+        const esc = (s: string) => s.replace(/"/g, "&quot;");
+        renderer.image = ({ href, title, text }: Tokens.Image) => {
+            const src = href ?? "";
+            const ttl = title ? ` title="${esc(title)}"` : "";
+            const alt = text ? ` alt="${esc(text)}"` : "";
+            return `<img class="markdown-image" src="${esc(src)}" data-src="${esc(src)}"${ttl}${alt} />`;
+        };
+        renderer.link = ({ href, title, tokens }: Tokens.Link) => {
+            const h = href ?? "#";
+            const t = title ? ` title="${esc(title)}"` : "";
+            const text = renderer.parser.parseInline(tokens);
+            return `<a href="${esc(h)}" target="_blank" rel="noopener noreferrer"${t}>${text}</a>`;
+        };
         instance.setOptions({
             gfm: true,
             breaks: false,
             pedantic: false,
+            renderer,
         });
-
         return instance;
     }, []);
-
-    // Custom renderer components
-    const renderer = useMemo(
-        () => ({
-            // Custom rendering for links
-            link: (children: ReactNode, href?: string) => (
-                <a href={href} target="_blank" rel="noopener noreferrer" className="markdown-link">
-                    {children}
-                </a>
-            ),
-
-            // Custom rendering for images with preview capability
-            image: (alt: string, src?: string) => (
-                <img
-                    src={src}
-                    alt={alt || "Image"}
-                    className="chat-image markdown-image"
-                    onClick={() => src && onImageClick && onImageClick(src)}
-                />
-            ),
-
-            // Heading components
-            heading: (children: ReactNode, level: 1 | 2 | 3 | 4 | 5 | 6) => {
-                const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
-                return <HeadingTag className={`markdown-h${level}`}>{children}</HeadingTag>;
-            },
-
-            // List components
-            list: (children: ReactNode, ordered: boolean) => {
-                const ListTag = ordered ? "ol" : "ul";
-                const className = ordered ? "markdown-ol" : "markdown-ul";
-                return <ListTag className={className}>{children}</ListTag>;
-            },
-
-            listitem: (children: ReactNode) => <li className="markdown-li">{children}</li>,
-
-            // Block elements
-            blockquote: (children: ReactNode) => (
-                <blockquote className="markdown-blockquote">{children}</blockquote>
-            ),
-
-            // Table components
-            table: (children: ReactNode) => <table className="markdown-table">{children}</table>,
-            thead: (children: ReactNode) => <thead className="markdown-thead">{children}</thead>,
-            tbody: (children: ReactNode) => <tbody className="markdown-tbody">{children}</tbody>,
-            tablerow: (children: ReactNode) => <tr className="markdown-tr">{children}</tr>,
-            tablecell: (children: ReactNode, header: boolean) => {
-                const CellTag = header ? "th" : "td";
-                const className = header ? "markdown-th" : "markdown-td";
-                return <CellTag className={className}>{children}</CellTag>;
-            },
-
-            // Code components
-            codespan: (children: ReactNode) => <code className="markdown-inline-code">{children}</code>,
-
-            code: (children: ReactNode, lang?: string) => {
-                if (lang) {
-                    return (
-                        <div className="markdown-code-block-wrapper">
-                            <div className="markdown-code-block-header">
-                                <span className="markdown-code-language">{lang}</span>
-                            </div>
-                            <pre className="markdown-pre">
-                                <code className={`markdown-code hljs language-${lang}`}>{children}</code>
-                            </pre>
-                        </div>
-                    );
+    const html = useMemo(() => {
+        const cleaned = processedStr.replace(/<!--[\s\S]*?-->/g, "");
+        const rawHtml = markedInstance.parse(cleaned, { async: false });
+        return DOMPurify.sanitize(rawHtml, {
+            ALLOWED_TAGS,
+            ALLOWED_ATTR,
+            ALLOWED_URI_REGEXP,
+            KEEP_CONTENT: true,
+            RETURN_TRUSTED_TYPE: false,
+        });
+    }, [processedStr, markedInstance]);
+    const onClick = useCallback(
+        (e: React.MouseEvent<HTMLDivElement>) => {
+            if (!onImageClick) {
+                return;
+            }
+            const el = e.target as HTMLElement;
+            if (el.classList.contains("markdown-image")) {
+                const url = el.getAttribute("data-src");
+                if (url) {
+                    onImageClick(url);
                 }
-
-                return (
-                    <pre className="markdown-pre">
-                        <code className="markdown-code">{children}</code>
-                    </pre>
-                );
-            },
-
-            // Paragraph
-            paragraph: (children: ReactNode) => <p className="markdown-p">{children}</p>,
-
-            // Horizontal rule
-            hr: () => <hr className="markdown-hr" />,
-        }),
+            }
+        },
         [onImageClick],
     );
-
-    if (!shouldRenderMarkdown) {
-        return <span>{strContent}</span>;
-    }
-
-    // CSS class to handle dark/light mode
-    const themeClass = isDarkMode ? "markdown-dark" : "markdown-light";
-
     return (
-        <div className={`markdown-renderer ${themeClass}`}>
-            <Renderer value={processedContent} gfm breaks renderer={renderer} instance={markedInstance} />
-        </div>
+        <div
+            className={`markdown-content ${themeClass} ${className ?? ""}`}
+            data-testid="markdown-content"
+            onClick={onClick}
+            dangerouslySetInnerHTML={{ __html: html }}
+        />
     );
 };
 
