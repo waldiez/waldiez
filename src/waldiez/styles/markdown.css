@@ -46,60 +46,67 @@
 }
 
 .markdown-content h1 {
-  @apply text-xl font-bold mb-3 mt-2;
-
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  margin-top: 0.5rem;
   color: var(--text-color);
 }
 
 .markdown-content h2 {
-  @apply text-lg font-semibold mb-2 mt-3;
-
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  margin-top: 0.75rem;
   color: var(--text-color);
 }
 
 .markdown-content h3 {
-  @apply text-base font-medium mb-2 mt-2;
-
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
   color: var(--text-color);
 }
 
 .markdown-content h4,
 .markdown-content h5,
 .markdown-content h6 {
-  @apply text-sm font-medium mb-1 mt-2;
-
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  margin-top: 0.5rem;
   color: var(--text-color);
 }
 
 .markdown-content p {
-  @apply mb-3 leading-relaxed;
-
+  margin-bottom: 0.75rem;
+  line-height: 1.625;
   color: var(--text-color);
 }
 
 .markdown-content blockquote {
-  @apply border-l-4 pl-4 my-3 italic;
-
-  border-color: var(--primary-color);
+  border-left: 4px solid var(--primary-color);
+  padding-left: 1rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-style: italic;
   color: var(--text-color);
   opacity: 0.9;
 }
 
 .markdown-content strong {
-  @apply font-semibold;
-
+  font-weight: 600;
   color: var(--text-color);
 }
 
 .markdown-content em {
-  @apply italic;
-
+  font-style: italic;
   color: var(--text-color);
 }
 
 .markdown-content a {
-  @apply underline;
-
+  text-decoration: underline;
   color: var(--primary-color);
 }
 
@@ -108,55 +115,59 @@
 }
 
 .markdown-content hr {
-  @apply my-4;
-
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   border-color: var(--border-color);
 }
 
 .markdown-content ul {
-  @apply list-disc list-inside mb-3;
-
+  list-style-type: disc;
+  list-style-position: inside;
+  margin-bottom: 0.75rem;
   color: var(--text-color);
 }
 
 .markdown-content ol {
-  @apply list-decimal list-inside mb-3;
-
+  list-style-type: decimal;
+  list-style-position: inside;
+  margin-bottom: 0.75rem;
   color: var(--text-color);
 }
 
 .markdown-content li {
-  @apply mb-1;
+  margin-bottom: 0.25rem;
 }
 
 .markdown-content ul ul,
 .markdown-content ol ul {
-  @apply ml-4 mt-1;
+  margin-left: 1rem;
+  margin-top: 0.25rem;
 }
 
 .markdown-content ul ol,
 .markdown-content ol ol {
-  @apply ml-4 mt-1;
+  margin-left: 1rem;
+  margin-top: 0.25rem;
 }
 
 .markdown-content input[type="checkbox"] {
-  @apply mr-2;
+  margin-right: 0.5rem;
 }
 
 .markdown-content table {
-  @apply w-full border-collapse mb-3;
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.75rem;
 }
 
 .markdown-content th,
 .markdown-content td {
-  @apply border px-3 py-2;
-
-  border-color: var(--border-color);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem;
 }
 
 .markdown-content th {
-  @apply font-semibold;
-
+  font-weight: 600;
   background-color: var(--primary-alt-color);
 }
 
