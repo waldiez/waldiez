@@ -256,6 +256,7 @@
         "REUSEADDR",
         "rjsf",
         "rmtree",
+        "rowspan",
         "rpds",
         "sdist",
         "searxng",
