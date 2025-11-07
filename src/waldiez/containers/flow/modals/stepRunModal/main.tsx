@@ -92,6 +92,14 @@ export const StepRunModal: FC<{
             )}
         </div>
     );
+    const titleView = (
+        <div className="flex items-center w-full gap-4">
+            <div className="mr-2">Step-by-step Run</div>
+            <div className={`text-sm italic ${isDarkMode ? "text-gray-100" : "text-gray-600"}`}>
+                {badgeText}
+            </div>
+        </div>
+    );
     if (stepByStep.timeline && timelineModalOpen) {
         return (
             <TimelineModal
@@ -106,7 +114,7 @@ export const StepRunModal: FC<{
         <Modal
             flowId={flowId}
             id={modalTestId}
-            title={"Step-by-step Run"}
+            title={titleView}
             isOpen
             onClose={onClose}
             onCancel={onClose}
@@ -118,7 +126,7 @@ export const StepRunModal: FC<{
             hasUnsavedChanges={false}
             preventCloseIfUnsavedChanges={false}
         >
-            <div className="modal-body min-h-[320px]">
+            <div className="modal-body min-h-[420px]">
                 <StepByStepView
                     flowId={flowId}
                     isDarkMode={isDarkMode}
@@ -127,7 +135,6 @@ export const StepRunModal: FC<{
                     className={className}
                 />
             </div>
-            <div className="modal-sticky-bottom text-sm text-center">{badgeText}</div>
         </Modal>
     );
 };
