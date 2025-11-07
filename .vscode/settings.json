@@ -8,6 +8,10 @@
         "**/dist": true,
         "**/out": true
     },
+    "files.associations": {
+        ".css": "tailwindcss"
+    },
+    "css.lint.unknownAtRules": "ignore",
     "editor.formatOnSave": true,
     "editor.codeActionsOnSave": {
         "source.organizeImports": "always"
