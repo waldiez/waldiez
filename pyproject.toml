@@ -157,7 +157,7 @@ dev = [
   "pydocstyle==6.3.0",
   "pylint==4.0.2",
   "python-dotenv==1.2.1",
-  "ruff==0.14.3",
+  "ruff==0.14.4",
   "types-aiofiles==25.1.0.20251011",
   "types-jsonschema==4.25.1.20251009",
   "types-pyyaml==6.0.12.20250915",
