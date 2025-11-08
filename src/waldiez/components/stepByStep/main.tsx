@@ -40,10 +40,26 @@ export const StepByStepView: FC<{
         if (!requestId) {
             return;
         }
+        let data = String(responseText);
+        try {
+            const floatValue = parseFloat(data);
+            if (!isNaN(floatValue)) {
+                data = JSON.stringify(floatValue);
+            }
+        } catch {
+            try {
+                const intValue = parseInt(data, 10);
+                if (!isNaN(intValue)) {
+                    data = JSON.stringify(intValue);
+                }
+            } catch {
+                //
+            }
+        }
         stepByStep?.handlers?.respond?.({
             id: nanoid(),
             timestamp: Date.now(),
-            data: JSON.stringify(responseText),
+            data,
             request_id: requestId,
             type: "input_response",
         });

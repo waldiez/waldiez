@@ -304,7 +304,7 @@ describe("StepByStepView", () => {
         expect(mockHandlers.respond).toHaveBeenCalledWith({
             id: "mock-id-123",
             timestamp: expect.any(Number),
-            data: "25",
+            data: JSON.stringify("25"),
             request_id: "req-input-456",
             type: "input_response",
         });

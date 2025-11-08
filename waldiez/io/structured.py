@@ -348,7 +348,7 @@ class StructuredIOStream(IOStream):
                     request_id=request_id,
                     response_type=response_type,
                 )
-            if not data or not isinstance(data, (str, dict)):
+            if not data or not isinstance(data, (str, int, float, bool, dict)):
                 # No / invalid data provided in the response
                 return UserResponse(
                     type=response_type,
