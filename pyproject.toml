@@ -134,7 +134,7 @@ dev = [
   "ag2[redis]==0.10.0",
   "autoflake==2.3.1",
   "bandit==1.8.6",
-  "basedpyright==1.32.1",
+  "basedpyright==1.33.0",
   "black[jupyter]==25.9.0",
   "build==1.3.0",
   "fakeredis==2.32.1",
