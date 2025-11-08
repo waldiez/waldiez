@@ -31,6 +31,7 @@ def get_results_from_json(output_dir: Path) -> list[dict[str, Any]]:
     results_json = output_dir / "results.json"
     if not results_json.is_file():
         return []
+    output_dir.mkdir(parents=True, exist_ok=True)
     try:
         with open(results_json, "r", encoding="utf-8") as file:
             data = json.loads(file.read())
@@ -64,6 +65,7 @@ async def a_get_results_from_json(output_dir: Path) -> list[dict[str, Any]]:
     results_json = output_dir / "results.json"
     if not results_json.is_file():
         return []
+    output_dir.mkdir(parents=True, exist_ok=True)
     try:
         async with aiofiles.open(results_json, "r", encoding="utf-8") as file:
             file_data = await file.read()
@@ -121,6 +123,7 @@ def fill_results_from_logs(run_dir: Path) -> dict[str, list[dict[str, Any]]]:
     run_path = Path(run_dir)
     results_path = run_path / "results.json"
     logs_path = run_path / "logs"
+    logs_path.mkdir(parents=True, exist_ok=True)
     chat_completions_path = logs_path / "chat_completions.json"
     with open(results_path, "r", encoding="utf-8") as f:
         results_data = json.load(f)
@@ -165,6 +168,7 @@ def ensure_error_json(output_dir: Path, error: BaseException) -> None:
     """
     existing = output_dir / "error.json"
     if not existing.exists():
+        output_dir.mkdir(parents=True, exist_ok=True)
         with open(existing, "w", encoding="utf-8", newline="\n") as file:
             file.write(
                 json.dumps({"error": str(error) or "Execution interrupted"})
@@ -184,6 +188,7 @@ async def a_ensure_error_json(output_dir: Path, error: BaseException) -> None:
     """
     existing = output_dir / "error.json"
     if not existing.exists():
+        output_dir.mkdir(parents=True, exist_ok=True)
         async with aiofiles.open(
             existing, "w", encoding="utf-8", newline="\n"
         ) as file:
@@ -204,6 +209,7 @@ def store_full_results(
     output_dir : Path
         The output directory.
     """
+    output_dir.mkdir(parents=True, exist_ok=True)
     results_json = output_dir / "results.json"
     if results_json.exists():
         try:
@@ -239,6 +245,7 @@ async def a_store_full_results(
     output_dir : Path
         The output directory.
     """
+    output_dir.mkdir(parents=True, exist_ok=True)
     results_json = output_dir / "results.json"
     if results_json.exists():
         try:

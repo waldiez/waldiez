@@ -42,15 +42,15 @@ export const StepByStepView: FC<{
         }
         let data = String(responseText);
         try {
-            const floatValue = parseFloat(data);
+            const floatValue = parseFloat(responseText);
             if (!isNaN(floatValue)) {
-                data = JSON.stringify(floatValue);
+                data = JSON.stringify(responseText);
             }
         } catch {
             try {
-                const intValue = parseInt(data, 10);
+                const intValue = parseInt(responseText, 10);
                 if (!isNaN(intValue)) {
-                    data = JSON.stringify(intValue);
+                    data = JSON.stringify(responseText);
                 }
             } catch {
                 //

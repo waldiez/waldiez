@@ -49,13 +49,20 @@ class ResultsMixin:
     RUN_DETAILS = "run.json"
 
     @staticmethod
-    def _cleanup(file_path: Path | None = None) -> None:
+    def _cleanup(
+        file_path: Path | None = None, tmp_dir: Path | None = None
+    ) -> None:
+        if tmp_dir and tmp_dir.is_dir():
+            try:
+                shutil.rmtree(tmp_dir)
+            except BaseException:
+                pass
         if file_path is None:
             file_path = StorageManager.default_root() / ResultsMixin.RUN_DETAILS
         if not file_path.exists():
             return
         try:
-            file_path.unlink(missing_ok=True)
+            file_path.unlink()
         except BaseException:
             pass
 
@@ -216,7 +223,9 @@ class ResultsMixin:
             if output_file
             else (waldiez_file.parent / "waldiez_out")
         )
-        output_hint = output_file or Path.cwd() / waldiez_file.name
+        output_hint = (
+            output_file if output_file else Path.cwd() / waldiez_file.name
+        )
         session_name = safe_name(flow_name)
         to_ignore = list(ignore_names)
         if ResultsMixin.RUN_DETAILS not in to_ignore:
@@ -240,7 +249,7 @@ class ResultsMixin:
                 shutil.copyfile(waldiez_file, dst_waldiez)
         except BaseException:
             pass
-        ResultsMixin._cleanup()
+        ResultsMixin._cleanup(None, None if keep_tmp else temp_dir)
         return public_link_path if output_file else None
 
     @staticmethod

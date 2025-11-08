@@ -213,7 +213,6 @@ class StorageManager:
             else checkpoint_path
         )
         target_dir.mkdir(parents=True, exist_ok=True)
-
         copy_results(
             temp_dir=tmp_dir,
             output_file=output_file,
@@ -221,7 +220,6 @@ class StorageManager:
             promote_to_output=promote_to_output,
             ignore_names=ignore_names,
         )
-
         if link_root is None:
             link_root = Path.cwd() / "waldiez_out"
 
@@ -252,7 +250,7 @@ class StorageManager:
                 if tmp_latest.exists():
                     tmp_latest.unlink(missing_ok=True)
 
-        if not keep_tmp:
+        if keep_tmp is False:
             shutil.rmtree(tmp_dir, ignore_errors=True)
 
         return checkpoint_path, public_link_path

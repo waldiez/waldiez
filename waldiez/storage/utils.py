@@ -332,7 +332,6 @@ def copy_results(
     destination_dir.mkdir(parents=True, exist_ok=True)
 
     output_dir = output_file.parent
-
     for item in temp_dir.iterdir():
         # skip cache files / dirs
         if (
@@ -343,26 +342,22 @@ def copy_results(
             continue
 
         if item.is_file():
-            # promote selected files to output_dir too
             if item.name in promote_to_output:
                 try:
                     shutil.copy2(item, output_dir / item.name)
                 except Exception:
                     pass
-            # normal copy into destination
             try:
                 shutil.copy2(item, destination_dir / item.name)
             except Exception:
                 pass
         else:
-            # merge directories (safe on re-run)
             try:
                 shutil.copytree(
                     item, destination_dir / item.name, dirs_exist_ok=True
                 )
             except Exception:
                 pass
-
     _copy_output_file(
         src_root=temp_dir,
         output_file_path=output_file,
@@ -393,5 +388,5 @@ def _copy_output_file(
                 if dst.exists():
                     dst.unlink()
                 shutil.copyfile(src, output_dir / out_path.name)
-            except Exception:  # pylint: disable=broad-exception-caught
+            except BaseException:  # pylint: disable=broad-exception-caught
                 pass

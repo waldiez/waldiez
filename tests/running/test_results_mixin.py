@@ -8,6 +8,7 @@
 """Tests for results_mixin module."""
 
 import json
+import shutil
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -322,28 +323,34 @@ class TestResultsMixin:
         """Test post_run with error."""
         mock_storage = Mock()
         mock_storage_class.return_value = mock_storage
+        temp_dir = tmp_path / "tmp"
+        temp_dir.mkdir(parents=True, exist_ok=True)
+        run_dir = tmp_path / "run"
+        run_dir.mkdir(parents=True, exist_ok=True)
         mock_storage.finalize.return_value = (
-            tmp_path / "checkpoint",
-            tmp_path / "link",
+            run_dir / "checkpoint",
+            run_dir / "link",
         )
 
         error = RuntimeError("Test error")
-        waldiez_file = tmp_path / "test.waldiez"
+        waldiez_file = run_dir / "test.waldiez"
         waldiez_file.write_text("content")
 
         ResultsMixin.post_run(
             results=[],
             error=error,
-            temp_dir=tmp_path,
-            output_file=None,
+            temp_dir=temp_dir,
+            output_file=run_dir / "test.py",
             flow_name="test_flow",
             waldiez_file=waldiez_file,
             skip_mmd=True,
             skip_timeline=True,
+            keep_tmp=True,
         )
 
         # Should create error.json
-        assert (tmp_path / "error.json").exists()
+        assert (temp_dir / "error.json").exists()
+        shutil.rmtree(tmp_path)
 
     def test_post_run_copy_waldiez_file(self, tmp_path: Path) -> None:
         """Test post_run copies waldiez file."""
@@ -352,31 +359,38 @@ class TestResultsMixin:
         ) as mock_storage_class:
             mock_storage = Mock()
             mock_storage_class.return_value = mock_storage
-
-            link_path = tmp_path / "link"
-            link_path.mkdir()
+            run_path = tmp_path / "run"
+            link_path = run_path / "link"
+            temp_dir = tmp_path / "tmp"
+            temp_dir.mkdir(parents=True, exist_ok=True)
+            link_path.mkdir(exist_ok=True, parents=True)
             mock_storage.finalize.return_value = (
-                tmp_path / "checkpoint",
+                run_path / "checkpoint",
                 link_path,
             )
 
-            waldiez_file = tmp_path / "test.waldiez"
+            waldiez_file = run_path / "test_post_run_copy_waldiez_file.waldiez"
             waldiez_file.write_text("waldiez content")
 
             ResultsMixin.post_run(
                 results=[],
                 error=None,
-                temp_dir=tmp_path,
-                output_file=tmp_path / "out.py",
-                flow_name="test",
+                temp_dir=temp_dir,
+                output_file=temp_dir / "out.py",
+                flow_name="test_post_run_copy_waldiez_file",
                 waldiez_file=waldiez_file,
                 skip_mmd=True,
                 skip_timeline=True,
             )
 
             # Should copy waldiez file to link directory
-            assert (link_path / "test.waldiez").exists()
-            assert (link_path / "test.waldiez").read_text() == "waldiez content"
+            assert (
+                link_path / "test_post_run_copy_waldiez_file.waldiez"
+            ).exists()
+            assert (
+                link_path / "test_post_run_copy_waldiez_file.waldiez"
+            ).read_text() == "waldiez content"
+        shutil.rmtree(tmp_path)
 
 
 class TestAsyncMethods:
