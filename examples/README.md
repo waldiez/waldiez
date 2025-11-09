@@ -9,4 +9,4 @@ Also make sure you do not include any sensitive information (like model api keys
 
 ## License
 
-This project is licensed under the [Apache License, Version 2.0 (Apache-2.0)](https://github.com/waldiez/examples/blob/main/LICENSE).
+This project is licensed under the [Apache License, Version 2.0 (Apache-2.0)](https://github.com/waldiez/waldiez/blob/main/LICENSE).
