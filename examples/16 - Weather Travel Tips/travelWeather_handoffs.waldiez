@@ -1,0 +1,881 @@
+{
+  "id": "id-8a2fe765-8a83-4cc8-ac84-741b8368e30d",
+  "type": "flow",
+  "version": "0.6.1",
+  "storageId": "wf-1750765176648stPd3Agvx5FqouIKo96p2",
+  "name": "Weather sightseeing recommendation",
+  "description": "A group chat workflow checking whether the weather conditions are fine for visiting a specified site at a specified date. It contains an agent using tool to retrieve the temperature at real-time. The communication within the agents is achieved using handoffs.",
+  "tags": [
+    "Weather",
+    "Travel",
+    "Group"
+  ],
+  "requirements": [],
+  "createdAt": "2025-05-19T16:27:28.320Z",
+  "updatedAt": "2025-06-26T12:16:06.277Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-1750939868113HQlXK8cc9PPOtaXnBIpOs",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "selected": false,
+        "hidden": true
+      },
+      {
+        "id": "wt-17509397478638Xgajkin_rBgkwWIVzTI8",
+        "type": "tool",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "selected": false,
+        "hidden": false
+      },
+      {
+        "id": "wt-1750939811519GWjKtiHyjAd0rUOtgK2f8",
+        "type": "tool",
+        "position": {
+          "x": 200,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "selected": false,
+        "hidden": false
+      },
+      {
+        "id": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+        "type": "agent",
+        "style": {
+          "width": 490
+        },
+        "position": {
+          "x": 270,
+          "y": 120
+        },
+        "measured": {
+          "width": 720,
+          "height": 470
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": true,
+        "width": 720,
+        "height": 470,
+        "resizing": false
+      },
+      {
+        "id": "wa-1750867718435GAR8yj-ZKokEdIZXkI235",
+        "type": "agent",
+        "style": {
+          "width": 130
+        },
+        "position": {
+          "x": 30,
+          "y": 315
+        },
+        "measured": {
+          "width": 130,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": true
+      },
+      {
+        "id": "wa-1750765215534eqh-4exE_Bsr9Suy7t8ml",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 150,
+          "y": 300
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "className": "",
+        "selected": false,
+        "hidden": true,
+        "dragging": false,
+        "extent": "parent",
+        "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2"
+      },
+      {
+        "id": "wa-1750769182526RKl73IPAMvERVGPjvgSYB",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 480,
+          "y": 45
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": true,
+        "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2"
+      },
+      {
+        "id": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 150,
+          "y": 45
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": true,
+        "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2"
+      }
+    ],
+    "edges": [
+      {
+        "id": "wc-1750844499709cBOsUNOi0q8Ifqa4VRBdP",
+        "source": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+        "target": "wa-1750769182526RKl73IPAMvERVGPjvgSYB",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+        "targetHandle": "agent-handle-left-target-wa-1750769182526RKl73IPAMvERVGPjvgSYB"
+      },
+      {
+        "id": "wc-17508445836047Vruf5c15-gMGfiovPt-c",
+        "source": "wa-1750769182526RKl73IPAMvERVGPjvgSYB",
+        "target": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-left-source-wa-1750769182526RKl73IPAMvERVGPjvgSYB",
+        "targetHandle": "agent-handle-right-target-1750844459276BwCFNVU3Rs2dGZ1lYhXKA"
+      },
+      {
+        "id": "wc-17508446903163FANMUrxFAbJEro56h9NM",
+        "source": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+        "target": "wa-1750765215534eqh-4exE_Bsr9Suy7t8ml",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-bottom-source-1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+        "targetHandle": "agent-handle-top-target-wa-1750765215534eqh-4exE_Bsr9Suy7t8ml"
+      },
+      {
+        "id": "wc-1750844751545BHloeR13Yvq8Z9kZK0q5a",
+        "source": "wa-1750765215534eqh-4exE_Bsr9Suy7t8ml",
+        "target": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-top-source-wa-1750765215534eqh-4exE_Bsr9Suy7t8ml",
+        "targetHandle": "agent-handle-bottom-target-1750844459276BwCFNVU3Rs2dGZ1lYhXKA"
+      },
+      {
+        "id": "wc-1750867720322Dzz_EuKHrPxsXiG3Bftyc",
+        "source": "wa-1750867718435GAR8yj-ZKokEdIZXkI235",
+        "target": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1750867718435GAR8yj-ZKokEdIZXkI235",
+        "targetHandle": "agent-handle-left-target-wa-1750768072864H674JRW667rbSPKXtaiy2"
+      }
+    ],
+    "viewport": {
+      "x": 20,
+      "y": 40,
+      "zoom": 0.76875
+    },
+    "agents": {
+      "groupManagerAgents": [
+        {
+          "type": "agent",
+          "name": "Manager",
+          "description": "The group manager agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-24T12:27:52.864Z",
+          "updatedAt": "2025-06-24T12:27:52.864Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {
+              "timestamp": "none",
+              "temperature": "none",
+              "city": "none",
+              "definedCity": "False",
+              "date": "none",
+              "definedTime": "False",
+              "definedDate": "False",
+              "time": "none",
+              "retrievedInfo": "False",
+              "definedTemperature": "False"
+            },
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "maxRound": 40,
+            "adminName": null,
+            "speakers": {
+              "selectionMethod": "default",
+              "selectionCustomMethod": "",
+              "maxRetriesForSelecting": 20,
+              "selectionMode": "repeat",
+              "allowRepeat": true,
+              "allowedOrDisallowedTransitions": {},
+              "transitionsType": "allowed",
+              "order": []
+            },
+            "enableClearHistory": false,
+            "sendIntroductions": false,
+            "initialAgentId": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+            "groupName": "Group"
+          },
+          "id": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+          "agentType": "group_manager"
+        }
+      ],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User",
+          "description": "A new User agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-25T16:08:38.435Z",
+          "updatedAt": "2025-06-25T16:08:38.435Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-1750867718435GAR8yj-ZKokEdIZXkI235",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "Weather_Agent",
+          "description": "weather_agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-24T11:40:15.535Z",
+          "updatedAt": "2025-06-24T11:40:15.535Z",
+          "data": {
+            "systemMessage": "",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1750939868113HQlXK8cc9PPOtaXnBIpOs"
+            ],
+            "tools": [
+              {
+                "id": "wt-1750939811519GWjKtiHyjAd0rUOtgK2f8",
+                "executorId": "wa-1750765215534eqh-4exE_Bsr9Suy7t8ml"
+              }
+            ],
+            "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [
+              {
+                "type": "string",
+                "content": "You are a weather agent, get temperature data. Check weather the temperature values are safe for the user.\nReturn to the triage_agent if temp is retrieved. \n"
+              }
+            ],
+            "afterWork": {
+              "targetType": "AgentTarget",
+              "value": [
+                "1750844459276BwCFNVU3Rs2dGZ1lYhXKA"
+              ]
+            },
+            "isMultimodal": false
+          },
+          "id": "wa-1750765215534eqh-4exE_Bsr9Suy7t8ml",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Info_Agent",
+          "description": "A place agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-24T12:46:22.526Z",
+          "updatedAt": "2025-06-24T12:46:22.526Z",
+          "data": {
+            "systemMessage": "",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": {
+              "workDir": "coding",
+              "functions": []
+            },
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1750939868113HQlXK8cc9PPOtaXnBIpOs"
+            ],
+            "tools": [
+              {
+                "id": "wt-17509397478638Xgajkin_rBgkwWIVzTI8",
+                "executorId": "wa-1750769182526RKl73IPAMvERVGPjvgSYB"
+              }
+            ],
+            "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [
+              {
+                "type": "string",
+                "content": "You need to retrieve the city the date and the time"
+              }
+            ],
+            "afterWork": {
+              "targetType": "RevertToUserTarget",
+              "value": []
+            },
+            "isMultimodal": false
+          },
+          "id": "wa-1750769182526RKl73IPAMvERVGPjvgSYB",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Triage_Agent",
+          "description": "triage_agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-24T12:46:22.526Z",
+          "updatedAt": "2025-06-24T12:46:22.526Z",
+          "data": {
+            "systemMessage": "",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1750939868113HQlXK8cc9PPOtaXnBIpOs"
+            ],
+            "tools": [],
+            "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [
+              {
+                "type": "string",
+                "content": "You are an order triage agent, working with a user and a group of agents to provide support for your weather tips.\n Give the speech to Info_Agent if the user hasn't defined a place.\nThe Weather_Agent will retrieve all weather related tasks. \nYou will manage all weather optimization task related tasks. Be sure to the temperature value first. Then if it's valid you can record it in the context.\n\nAsk the user for further information when necessary.\n\nThe current status of this workflow is:\nCity of interest: {city}\nCity defined: {definedCity}\nTime: {time}\nTime defined: {definedTime}\nDate: {date}\nTemperature: {temperature}"
+              }
+            ],
+            "afterWork": {
+              "targetType": "RevertToUserTarget",
+              "value": []
+            },
+            "isMultimodal": false
+          },
+          "id": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "docAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-1750939868113HQlXK8cc9PPOtaXnBIpOs",
+        "type": "model",
+        "name": "gpt-4.1",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-26T12:11:08.113Z",
+        "updatedAt": "2025-06-26T12:11:17.615Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": "REPLACE_ME",
+            "accessKey": "REPLACE_ME",
+            "secretKey": "REPLACE_ME",
+            "sessionToken": "REPLACE_ME",
+            "profileName": "REPLACE_ME"
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [
+      {
+        "id": "wt-17509397478638Xgajkin_rBgkwWIVzTI8",
+        "type": "tool",
+        "name": "record_info",
+        "description": "Record the date, time and city in the workflow",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-26T12:09:07.863Z",
+        "updatedAt": "2025-06-26T12:13:20.181Z",
+        "data": {
+          "content": "from autogen.agentchat.group import ContextVariables, ReplyResult\n\ndef record_info(date: str, time: str, city: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Record the date, time and city in the workflow context\"\"\"\n\n    context_variables[\"date\"] = date\n    context_variables[\"definedDate\"] = True\n    context_variables[\"time\"] = time\n    context_variables[\"definedTime\"] = True\n    context_variables[\"city\"] = city\n    context_variables[\"definedCity\"] = True\n    context_variables[\"retrievedInfo\"] = True\n    \n    return ReplyResult(\n        context_variables=context_variables,\n        message=f\"Info Recorded: {date}, {time} and {city}\",\n    )\n",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1750939811519GWjKtiHyjAd0rUOtgK2f8",
+        "type": "tool",
+        "name": "record_temperature",
+        "description": "Record the place in the workflow context",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-26T12:10:11.519Z",
+        "updatedAt": "2025-06-26T12:14:08.429Z",
+        "data": {
+          "content": "from autogen.agentchat.group import ContextVariables, ReplyResult\nfrom datetime import timedelta\nimport numpy as np\nimport pandas as pd\nimport requests\n\ndef record_temperature(context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Record the place in the workflow context\"\"\"\n\n    place = context_variables[\"city\"]\n    target_time = context_variables[\"time\"]\n    target_date_str = context_variables[\"date\"]\n\n    try:\n        # Use pandas to parse date and time flexibly\n        datetime_str = f\"{target_date_str} {target_time}\"\n        dt = pd.to_datetime(datetime_str, dayfirst=True)  # dayfirst=True handles DD/MM/YYYY\n        hour = dt.hour\n        remainder = hour % 3\n        if remainder < 1.5:\n            rounded_hour = hour - remainder\n        else:\n            rounded_hour = hour + (3 - remainder)\n            if rounded_hour >= 24:\n                dt += timedelta(days=1)\n                rounded_hour = 0\n        dt = dt.replace(hour=rounded_hour, minute=0, second=0, microsecond=0)\n        \n        # Format inputs for API\n        place = place.strip()\n        formatted_date = dt.strftime('%Y-%m-%d')\n        formatted_time = str(dt.hour * 100)\n        \n        print(f\"Searching for weather in {place} on {formatted_date} at {dt.hour:02d}:00...\")\n        \n        # Get weather data\n        response = requests.get(f\"https://wttr.in/{place}?format=j1\")\n        response.raise_for_status()\n        data = response.json()\n        \n        # Search for the target date and time\n        forecast = None\n        for day in data['weather']:\n            if day['date'] == formatted_date:\n                for slot in day['hourly']:\n                    if slot['time'] == formatted_time:\n                        forecast = slot\n                        break\n                break\n        \n        # Output result\n        if forecast:\n            temp_c = forecast['tempC']\n            feels_like = forecast['FeelsLikeC']\n            desc = forecast['weatherDesc'][0]['value']\n            print(f\"\\nWeather in {place} on {formatted_date} at {dt.hour:02d}:00:\")\n            print(f\"Temperature: {temp_c}°C, Feels like: {feels_like}°C\")\n            print(f\"Conditions: {desc}\")\n            context_variables[\"definedTemperature\"] = True\n            context_variables[\"temperature\"] = temp_c\n        else:\n            print(f\"\\nSorry, could not find the forecast for {place} on {formatted_date} at {dt.hour:02d}:00.\")\n            \n    except Exception as e:\n        print(f\"Error: {e}\")\n        print(\"Try formats like: '27/06/2025 2PM', '2025-06-27 14:00', 'June 27, 2025 2:30 PM'\")\n\n    return ReplyResult(\n            context_variables=context_variables,\n            message=f\"Temperature Recorded: {temp_c}\"\n        )\n     \n",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      }
+    ],
+    "chats": [
+      {
+        "id": "wc-1750844499709cBOsUNOi0q8Ifqa4VRBdP",
+        "type": "group",
+        "source": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+        "target": "wa-1750769182526RKl73IPAMvERVGPjvgSYB",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "askInfo",
+          "order": -1,
+          "description": "Triage Agent to Weather Agent",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "The user hasn't defined a city, ask for the place of interest"
+          },
+          "available": {
+            "type": "none",
+            "value": "${definedPlace}"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-17508445836047Vruf5c15-gMGfiovPt-c",
+        "type": "group",
+        "source": "wa-1750769182526RKl73IPAMvERVGPjvgSYB",
+        "target": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "returnInfo",
+          "order": -1,
+          "description": "Weather Agent to Triage Agent",
+          "position": 2,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "The info have been retrieved"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": "wa-1750769182526RKl73IPAMvERVGPjvgSYB",
+          "realTarget": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA"
+        }
+      },
+      {
+        "id": "wc-17508446903163FANMUrxFAbJEro56h9NM",
+        "type": "group",
+        "source": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+        "target": "wa-1750765215534eqh-4exE_Bsr9Suy7t8ml",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "getWeatherInfo",
+          "order": -1,
+          "description": "Triage Agent to Engineer",
+          "position": 3,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Temperature has not been retrieved"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+          "realTarget": "wa-1750765215534eqh-4exE_Bsr9Suy7t8ml"
+        }
+      },
+      {
+        "id": "wc-1750844751545BHloeR13Yvq8Z9kZK0q5a",
+        "type": "group",
+        "source": "wa-1750765215534eqh-4exE_Bsr9Suy7t8ml",
+        "target": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "returnTemp",
+          "order": -1,
+          "description": "Engineer to Triage Agent",
+          "position": 4,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_context",
+            "variable_name": "{definedTemperature}"
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": "wa-1750765215534eqh-4exE_Bsr9Suy7t8ml",
+          "realTarget": "1750844459276BwCFNVU3Rs2dGZ1lYhXKA"
+        }
+      },
+      {
+        "id": "wc-1750867720322Dzz_EuKHrPxsXiG3Bftyc",
+        "type": "group",
+        "source": "wa-1750867718435GAR8yj-ZKokEdIZXkI235",
+        "target": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+        "data": {
+          "sourceType": "user_proxy",
+          "targetType": "group_manager",
+          "name": "User => Manager",
+          "order": -1,
+          "description": "User to Manager",
+          "position": 5,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "string",
+            "content": "Hi I want to visit a place",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": null,
+    "silent": false
+  }
+}

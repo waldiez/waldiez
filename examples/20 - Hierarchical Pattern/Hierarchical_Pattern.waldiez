@@ -1,0 +1,2057 @@
+{
+  "id": "id-4f933fad-20e5-4623-a56d-5f6f99946944",
+  "type": "flow",
+  "version": "0.6.1",
+  "storageId": "wf-1755597746447Ub6dHfqgxA9dUtCnUN-kX",
+  "name": "Hierarchical_Pattern",
+  "description": "A waldiez flow for the AG2 example on hierarchical pattern: https://docs.ag2.ai/latest/docs/user-guide/advanced-concepts/pattern-cookbook/hierarchical/\nThe Hierarchical, or Tree, Orchestration Pattern is a powerful approach to organizing multi-agent workflows, inspired by traditional organizational structures where work and information flow through a well-defined chain of command. This pattern creates a tree-structured arrangement of agents with clear levels of responsibility, specialization, and reporting relationships.",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2025-08-19T10:02:26.447Z",
+  "updatedAt": "2025-08-21T10:09:00.815Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wm-17555987655843HANN0F88EHybEb0Lk_Ls",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-17555984269197mT_CSkEcdLYQgKEas9BU",
+        "type": "tool",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755598526419vNH1-ZxoDdDvtz3q1WH6t",
+        "type": "tool",
+        "position": {
+          "x": 200,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755598586939eyyGEU0B1z0iayJtxAJep",
+        "type": "tool",
+        "position": {
+          "x": 400,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755598649331uFIz10kKXp5rNUVRypHiY",
+        "type": "tool",
+        "position": {
+          "x": 600,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755598711129zHyZE6KvPSoALRaz6P5r9",
+        "type": "tool",
+        "position": {
+          "x": 800,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-17555990998226ayAVFwERPgxLQ8TwgvKT",
+        "type": "tool",
+        "position": {
+          "x": 1000,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755599165752wF49KMjpeNVOoKC63bKW5",
+        "type": "tool",
+        "position": {
+          "x": 0,
+          "y": 135
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755599219760ICRzF3_7q8JzL87DOfcMa",
+        "type": "tool",
+        "position": {
+          "x": 200,
+          "y": 135
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755599414262NMbIOw2n6RyJ4rWdNM0oK",
+        "type": "tool",
+        "position": {
+          "x": 400,
+          "y": 135
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755599439313zFA-YN9Z37VC1rX5g3arC",
+        "type": "tool",
+        "position": {
+          "x": 600,
+          "y": 135
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+        "type": "agent",
+        "style": {
+          "width": 490
+        },
+        "position": {
+          "x": 465,
+          "y": 240
+        },
+        "measured": {
+          "width": 940,
+          "height": 720
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "width": 940,
+        "height": 720,
+        "resizing": false
+      },
+      {
+        "id": "wa-1755598184180sr_bhgzmQEFwpDATq3g9y",
+        "type": "agent",
+        "style": {
+          "width": 130
+        },
+        "position": {
+          "x": 210,
+          "y": 570
+        },
+        "measured": {
+          "width": 130,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false
+      },
+      {
+        "id": "wa-17555988628673vGpgs8mlrPLT0kWFBA2_",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 675,
+          "y": 0
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "className": "",
+        "dragging": false,
+        "hidden": false,
+        "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI"
+      },
+      {
+        "id": "1755598893896mU7NcVhkrxt190ijf7Dic",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 675,
+          "y": 135
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI"
+      },
+      {
+        "id": "1755598958165ksZhb_kWztBpH6l0-9Yif",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 675,
+          "y": 285
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI"
+      },
+      {
+        "id": "1755599018519wGBM43i2kAiV14wkqZaO0",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 675,
+          "y": 420
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI"
+      },
+      {
+        "id": "1755599043471O3YBmPOJsW_-z02JTNIT1",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 675,
+          "y": 600
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI"
+      },
+      {
+        "id": "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 330,
+          "y": 30
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI"
+      },
+      {
+        "id": "17555993226611oQWxKIFtMda-5458VzmM",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 345,
+          "y": 315
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI"
+      },
+      {
+        "id": "1755599353502rDAWmtUx31znCPy99x8iF",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 345,
+          "y": 570
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": true,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "resizing": false,
+        "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI"
+      },
+      {
+        "id": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 45,
+          "y": 315
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI"
+      }
+    ],
+    "edges": [
+      {
+        "id": "wc-17555981952107H_c9kT6lpXBYU0s65zGF",
+        "source": "wa-1755598184180sr_bhgzmQEFwpDATq3g9y",
+        "target": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1755598184180sr_bhgzmQEFwpDATq3g9y",
+        "targetHandle": "agent-handle-left-target-wa-17555981917494HWtsUCkN8_rQ97aO7cHI"
+      },
+      {
+        "id": "wc-1755599822759Fwe0eCIngI27Bz6R1SgsV",
+        "source": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "target": "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-top-source-1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "targetHandle": "agent-handle-left-target-wa-1755599282163v8rm6FbuQHBHvQKBbTZtq"
+      },
+      {
+        "id": "wc-1755599824826e74z_OhdCo1ir-XvpgPmK",
+        "source": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "target": "17555993226611oQWxKIFtMda-5458VzmM",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "targetHandle": "agent-handle-left-target-17555993226611oQWxKIFtMda-5458VzmM"
+      },
+      {
+        "id": "wc-1755599827018b2Zz7bX7xeVmACEIXVx7t",
+        "source": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "target": "1755599353502rDAWmtUx31znCPy99x8iF",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-bottom-source-1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "targetHandle": "agent-handle-left-target-1755599353502rDAWmtUx31znCPy99x8iF"
+      },
+      {
+        "id": "wc-1755600314437xWxCI0oWFO5ETx0vfyCQB",
+        "source": "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+        "target": "wa-17555988628673vGpgs8mlrPLT0kWFBA2_",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+        "targetHandle": "agent-handle-left-target-wa-17555988628673vGpgs8mlrPLT0kWFBA2_"
+      },
+      {
+        "id": "wc-1755600316873pxzYLlQ5eQTaWXHWSCGN5",
+        "source": "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+        "target": "1755598893896mU7NcVhkrxt190ijf7Dic",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+        "targetHandle": "agent-handle-left-target-1755598893896mU7NcVhkrxt190ijf7Dic"
+      },
+      {
+        "id": "wc-1755600447743Q027FAclCBzBs_30Wm6Gb",
+        "source": "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+        "target": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-left-source-wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+        "targetHandle": "agent-handle-top-target-1755599503460Q6QHPF1przxQRk_Mp5MyT"
+      },
+      {
+        "id": "wc-1755600584449UXKCsIsUPrQ6wu5Ik16cQ",
+        "source": "17555993226611oQWxKIFtMda-5458VzmM",
+        "target": "1755598958165ksZhb_kWztBpH6l0-9Yif",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-17555993226611oQWxKIFtMda-5458VzmM",
+        "targetHandle": "agent-handle-left-target-1755598958165ksZhb_kWztBpH6l0-9Yif"
+      },
+      {
+        "id": "wc-1755600587013CNaAoWDo1KUaPQkgVaI0i",
+        "source": "17555993226611oQWxKIFtMda-5458VzmM",
+        "target": "1755599018519wGBM43i2kAiV14wkqZaO0",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-17555993226611oQWxKIFtMda-5458VzmM",
+        "targetHandle": "agent-handle-left-target-1755599018519wGBM43i2kAiV14wkqZaO0"
+      },
+      {
+        "id": "wc-1755600670375hazfeH-TXnDM7y4XdTizH",
+        "source": "17555993226611oQWxKIFtMda-5458VzmM",
+        "target": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-left-source-17555993226611oQWxKIFtMda-5458VzmM",
+        "targetHandle": "agent-handle-right-target-1755599503460Q6QHPF1przxQRk_Mp5MyT"
+      },
+      {
+        "id": "wc-17556007151581Dvb5NI78s7Dxk1HuGbeK",
+        "source": "1755599353502rDAWmtUx31znCPy99x8iF",
+        "target": "1755599043471O3YBmPOJsW_-z02JTNIT1",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-1755599353502rDAWmtUx31znCPy99x8iF",
+        "targetHandle": "agent-handle-left-target-1755599043471O3YBmPOJsW_-z02JTNIT1"
+      },
+      {
+        "id": "wc-1755600720094y1xviJDWpiCxbRtBlU3J8",
+        "source": "1755599353502rDAWmtUx31znCPy99x8iF",
+        "target": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-left-source-1755599353502rDAWmtUx31znCPy99x8iF",
+        "targetHandle": "agent-handle-bottom-target-1755599503460Q6QHPF1przxQRk_Mp5MyT"
+      }
+    ],
+    "viewport": {
+      "x": -87.95397489539751,
+      "y": -66.79707112970718,
+      "zoom": 0.5188284518828452
+    },
+    "agents": {
+      "groupManagerAgents": [
+        {
+          "type": "agent",
+          "name": "Manager",
+          "description": "The group manager agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T10:09:51.749Z",
+          "updatedAt": "2025-08-19T10:09:51.749Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {
+              "task_started": "False",
+              "task_completed": "False",
+              "executive_review_ready": "False",
+              "manager_a_completed": "False",
+              "manager_b_completed": "False",
+              "manager_c_completed": "False",
+              "specialist_a1_completed": "False",
+              "specialist_a2_completed": "False",
+              "specialist_b1_completed": "False",
+              "specialist_c1_completed": "False",
+              "specialist_b2_completed": "False",
+              "solar_research": "",
+              "wind_research": "",
+              "hydro_research": "",
+              "geothermal_research": "",
+              "biofuel_research": "",
+              "report_sections": "{}",
+              "final_report": ""
+            },
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "TerminateTarget",
+              "value": []
+            },
+            "maxRound": 50,
+            "adminName": null,
+            "speakers": {
+              "selectionMethod": "default",
+              "selectionCustomMethod": "",
+              "maxRetriesForSelecting": null,
+              "selectionMode": "repeat",
+              "allowRepeat": true,
+              "allowedOrDisallowedTransitions": {},
+              "transitionsType": "allowed",
+              "order": []
+            },
+            "enableClearHistory": false,
+            "sendIntroductions": false,
+            "initialAgentId": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+            "groupName": "Group"
+          },
+          "id": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+          "agentType": "group_manager"
+        }
+      ],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User",
+          "description": "A new User agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T10:09:44.180Z",
+          "updatedAt": "2025-08-19T10:09:44.180Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-1755598184180sr_bhgzmQEFwpDATq3g9y",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "solar_specialist",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T10:21:02.867Z",
+          "updatedAt": "2025-08-19T10:21:02.867Z",
+          "data": {
+            "systemMessage": "You are a specialist in solar energy technologies.\n        Your task is to research and provide concise information about:\n        1. Current state of solar technology\n        2. Efficiency rates of different types of solar panels\n        3. Cost comparison with fossil fuels\n        4. Major companies and countries leading in solar energy\n\n        Be thorough but concise. Your research will be used as part of a larger report.\n\n        Use your tools only one at a time.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-17555987655843HANN0F88EHybEb0Lk_Ls"
+            ],
+            "tools": [
+              {
+                "id": "wt-17555984269197mT_CSkEcdLYQgKEas9BU",
+                "executorId": "wa-17555988628673vGpgs8mlrPLT0kWFBA2_"
+              }
+            ],
+            "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "AgentTarget",
+              "value": [
+                "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq"
+              ]
+            },
+            "isMultimodal": false
+          },
+          "id": "wa-17555988628673vGpgs8mlrPLT0kWFBA2_",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "wind_specialist",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T10:21:02.867Z",
+          "updatedAt": "2025-08-19T10:21:02.867Z",
+          "data": {
+            "systemMessage": "You are a specialist in wind energy technologies.\n        Your task is to research and provide concise information about:\n        1. Current state of wind technology (onshore/offshore)\n        2. Efficiency rates of modern wind turbines\n        3. Cost comparison with fossil fuels\n        4. Major companies and countries leading in wind energy\n\n        Be thorough but concise. Your research will be used as part of a larger report.\n\n        Use your tools only one at a time.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-17555987655843HANN0F88EHybEb0Lk_Ls"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755598526419vNH1-ZxoDdDvtz3q1WH6t",
+                "executorId": "1755598893896mU7NcVhkrxt190ijf7Dic"
+              }
+            ],
+            "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "AgentTarget",
+              "value": [
+                "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq"
+              ]
+            },
+            "isMultimodal": false
+          },
+          "id": "1755598893896mU7NcVhkrxt190ijf7Dic",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "hydro_specialist",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T10:21:02.867Z",
+          "updatedAt": "2025-08-19T10:21:02.867Z",
+          "data": {
+            "systemMessage": "You are a specialist in hydroelectric energy technologies.\n        Your task is to research and provide concise information about:\n        1. Current state of hydroelectric technology\n        2. Types of hydroelectric generation (dams, run-of-river, pumped storage)\n        3. Cost comparison with fossil fuels\n        4. Major companies and countries leading in hydroelectric energy\n\n        Be thorough but concise. Your research will be used as part of a larger report.\n\n        Use your tools only one at a time.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-17555987655843HANN0F88EHybEb0Lk_Ls"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755598586939eyyGEU0B1z0iayJtxAJep",
+                "executorId": "wa-1755598184180sr_bhgzmQEFwpDATq3g9y"
+              }
+            ],
+            "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "AgentTarget",
+              "value": [
+                "17555993226611oQWxKIFtMda-5458VzmM"
+              ]
+            },
+            "isMultimodal": false
+          },
+          "id": "1755598958165ksZhb_kWztBpH6l0-9Yif",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "geothermal_specialist",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T10:21:02.867Z",
+          "updatedAt": "2025-08-19T10:21:02.867Z",
+          "data": {
+            "systemMessage": "You are a specialist in geothermal energy technologies.\n        Your task is to research and provide concise information about:\n        1. Current state of geothermal technology\n        2. Types of geothermal systems and efficiency rates\n        3. Cost comparison with fossil fuels\n        4. Major companies and countries leading in geothermal energy\n\n        Be thorough but concise. Your research will be used as part of a larger report.\n\n        Use your tools only one at a time.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-17555987655843HANN0F88EHybEb0Lk_Ls"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755598649331uFIz10kKXp5rNUVRypHiY",
+                "executorId": "wa-1755598184180sr_bhgzmQEFwpDATq3g9y"
+              }
+            ],
+            "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "AgentTarget",
+              "value": [
+                "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq"
+              ]
+            },
+            "isMultimodal": false
+          },
+          "id": "1755599018519wGBM43i2kAiV14wkqZaO0",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "biofuel_specialist",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T10:21:02.867Z",
+          "updatedAt": "2025-08-19T10:21:02.867Z",
+          "data": {
+            "systemMessage": "You are a specialist in biofuel technologies.\n        Your task is to research and provide concise information about:\n        1. Current state of biofuel technology\n        2. Types of biofuels and their applications\n        3. Cost comparison with fossil fuels\n        4. Major companies and countries leading in biofuel production\n\n        Be thorough but concise. Your research will be used as part of a larger report.\n\n        Use your tools only one at a time.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-17555987655843HANN0F88EHybEb0Lk_Ls"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755598711129zHyZE6KvPSoALRaz6P5r9",
+                "executorId": "wa-1755598184180sr_bhgzmQEFwpDATq3g9y"
+              }
+            ],
+            "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "AgentTarget",
+              "value": [
+                "1755599353502rDAWmtUx31znCPy99x8iF"
+              ]
+            },
+            "isMultimodal": false
+          },
+          "id": "1755599043471O3YBmPOJsW_-z02JTNIT1",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "renewable_manager",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T10:28:02.164Z",
+          "updatedAt": "2025-08-19T10:28:02.164Z",
+          "data": {
+            "systemMessage": "You are the manager for renewable energy research, specifically overseeing solar and wind energy specialists.\n        Your responsibilities include:\n        1. Reviewing the research from your specialists\n        2. Ensuring the information is accurate and comprehensive\n        3. Synthesizing the information into a cohesive section on renewable energy\n        4. Submitting the compiled research to the executive for final report creation\n\n        You should wait until both specialists have completed their research before compiling your section.\n\n        Use your tools only one at a time.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-17555987655843HANN0F88EHybEb0Lk_Ls"
+            ],
+            "tools": [
+              {
+                "id": "wt-17555990998226ayAVFwERPgxLQ8TwgvKT",
+                "executorId": "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq"
+              }
+            ],
+            "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "AgentTarget",
+              "value": [
+                "1755599503460Q6QHPF1przxQRk_Mp5MyT"
+              ]
+            },
+            "isMultimodal": false
+          },
+          "id": "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "storage_manager",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T10:28:02.164Z",
+          "updatedAt": "2025-08-19T10:28:02.164Z",
+          "data": {
+            "systemMessage": "You are the manager for energy storage and hydroelectric technologies, overseeing hydroelectric and geothermal energy specialists.\n        Your responsibilities include:\n        1. Reviewing the research from your specialists\n        2. Ensuring the information is accurate and comprehensive\n        3. Synthesizing the information into a cohesive section on energy storage and hydroelectric solutions\n        4. Submitting the compiled research to the executive for final report creation\n\n        You should wait until both specialists have completed their research before compiling your section.\n\n        Use your tools only one at a time.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-17555987655843HANN0F88EHybEb0Lk_Ls"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755599165752wF49KMjpeNVOoKC63bKW5",
+                "executorId": "17555993226611oQWxKIFtMda-5458VzmM"
+              }
+            ],
+            "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "AgentTarget",
+              "value": [
+                "1755599503460Q6QHPF1przxQRk_Mp5MyT"
+              ]
+            },
+            "isMultimodal": false
+          },
+          "id": "17555993226611oQWxKIFtMda-5458VzmM",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "alternative_manager",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T10:28:02.164Z",
+          "updatedAt": "2025-08-19T10:28:02.164Z",
+          "data": {
+            "systemMessage": "You are the manager for alternative energy solutions, overseeing biofuel research.\n        Your responsibilities include:\n        1. Reviewing the research from your specialist\n        2. Ensuring the information is accurate and comprehensive\n        3. Synthesizing the information into a cohesive section on alternative energy solutions\n        4. Submitting the compiled research to the executive for final report creation\n\n        Use your tools only one at a time.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-17555987655843HANN0F88EHybEb0Lk_Ls"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755599219760ICRzF3_7q8JzL87DOfcMa",
+                "executorId": "1755599353502rDAWmtUx31znCPy99x8iF"
+              }
+            ],
+            "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1755599353502rDAWmtUx31znCPy99x8iF",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "executive_agent",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T10:28:02.164Z",
+          "updatedAt": "2025-08-19T10:28:02.164Z",
+          "data": {
+            "systemMessage": "You are the executive overseeing the creation of a comprehensive report on renewable energy technologies.\n\n        You have exactly three manager agents reporting to you, each responsible for specific technology domains:\n        1. Renewable Manager - Oversees solar and wind energy research\n        2. Storage Manager - Oversees hydroelectric and geothermal energy research\n        3. Alternative Manager - Oversees biofuel research\n\n        Your responsibilities include:\n        1. Delegating research tasks to these three specific manager agents\n        2. Providing overall direction and ensuring alignment with the project goals\n        3. Reviewing the compiled sections from each manager\n        4. Synthesizing all sections into a cohesive final report with executive summary\n        5. Ensuring the report is comprehensive, balanced, and meets high-quality standards\n\n        Do not create or attempt to delegate to managers that don't exist in this structure.\n\n        The final report should include:\n        - Executive Summary\n        - Introduction to Renewable Energy\n        - Three main sections:\n        * Solar and Wind Energy (from Renewable Manager)\n        * Hydroelectric and Geothermal Energy (from Storage Manager)\n        * Biofuel Technologies (from Alternative Manager)\n        - Comparison of technologies\n        - Future outlook and recommendations",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-17555987655843HANN0F88EHybEb0Lk_Ls"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755599414262NMbIOw2n6RyJ4rWdNM0oK",
+                "executorId": "1755599503460Q6QHPF1przxQRk_Mp5MyT"
+              },
+              {
+                "id": "wt-1755599439313zFA-YN9Z37VC1rX5g3arC",
+                "executorId": "1755599503460Q6QHPF1przxQRk_Mp5MyT"
+              }
+            ],
+            "parentId": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "RevertToUserTarget",
+              "value": []
+            },
+            "isMultimodal": false
+          },
+          "id": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "docAgents": []
+    },
+    "models": [
+      {
+        "id": "wm-17555987655843HANN0F88EHybEb0Lk_Ls",
+        "type": "model",
+        "name": "gpt-4o-mini",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T10:19:25.584Z",
+        "updatedAt": "2025-08-19T10:20:33.530Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [
+      {
+        "id": "wt-17555984269197mT_CSkEcdLYQgKEas9BU",
+        "type": "tool",
+        "name": "complete_solar_research",
+        "description": "A custom tool that submits solar energy research findings",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T10:13:46.919Z",
+        "updatedAt": "2025-08-19T10:15:24.427Z",
+        "data": {
+          "content": "from autogen.agentchat.group import AgentNameTarget, AgentTarget, ContextVariables, ReplyResult\n\ndef complete_solar_research(research_content: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Submit solar energy research findings\"\"\"\n    context_variables[\"solar_research\"] = research_content\n    context_variables[\"specialist_a1_completed\"] = True\n\n    # Check if both specialists under Manager A have completed their tasks\n    if context_variables[\"specialist_a1_completed\"] and context_variables[\"specialist_a2_completed\"]:\n        context_variables[\"manager_a_completed\"] = True\n\n    return ReplyResult(\n        message=\"Solar research completed and stored.\",\n        context_variables=context_variables,\n        target=AgentTarget(renewable_manager),\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755598526419vNH1-ZxoDdDvtz3q1WH6t",
+        "type": "tool",
+        "name": "complete_wind_research",
+        "description": "A custom tool that you submits wind energy research findings",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T10:15:26.419Z",
+        "updatedAt": "2025-08-19T10:16:18.286Z",
+        "data": {
+          "content": "from autogen.agentchat.group import AgentNameTarget, AgentTarget, ContextVariables, ReplyResult\n\ndef complete_wind_research(research_content: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Submit wind energy research findings\"\"\"\n    context_variables[\"wind_research\"] = research_content\n    context_variables[\"specialist_a2_completed\"] = True\n\n    # Check if both specialists under Manager A have completed their tasks\n    if context_variables[\"specialist_a1_completed\"] and context_variables[\"specialist_a2_completed\"]:\n        context_variables[\"manager_a_completed\"] = True\n\n    return ReplyResult(\n        message=\"Wind research completed and stored.\",\n        context_variables=context_variables,\n        target=AgentTarget(renewable_manager),\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755598586939eyyGEU0B1z0iayJtxAJep",
+        "type": "tool",
+        "name": "complete_hydro_research",
+        "description": "A custom tool that submits hydroelectric energy research findings",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T10:16:26.940Z",
+        "updatedAt": "2025-08-19T11:00:08.901Z",
+        "data": {
+          "content": "from autogen.agentchat.group import AgentNameTarget, AgentTarget, ContextVariables, ReplyResult\n\ndef complete_hydro_research(research_content: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Submit hydroelectric energy research findings\"\"\"\n    context_variables[\"hydro_research\"] = research_content\n    context_variables[\"specialist_b1_completed\"] = True\n\n    # Check if both specialists under Manager B have completed their tasks\n    if context_variables[\"specialist_b1_completed\"] and context_variables[\"specialist_b2_completed\"]:\n        context_variables[\"manager_b_completed\"] = True\n\n    return ReplyResult(\n        message=\"Hydroelectric research completed and stored.\",\n        context_variables=context_variables,\n        target=AgentTarget(storage_manager),\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755598649331uFIz10kKXp5rNUVRypHiY",
+        "type": "tool",
+        "name": "complete_geothermal_research",
+        "description": "A custom tool that submits geothermal energy research findings",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T10:17:29.331Z",
+        "updatedAt": "2025-08-19T11:00:15.501Z",
+        "data": {
+          "content": "from autogen.agentchat.group import AgentNameTarget, AgentTarget, ContextVariables, ReplyResult\n\ndef complete_geothermal_research(research_content: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Submit geothermal energy research findings\"\"\"\n    context_variables[\"geothermal_research\"] = research_content\n    context_variables[\"specialist_b2_completed\"] = True\n\n    # Check if both specialists under Manager B have completed their tasks\n    if context_variables[\"specialist_b1_completed\"] and context_variables[\"specialist_b2_completed\"]:\n        context_variables[\"manager_b_completed\"] = True\n\n    return ReplyResult(\n        message=\"Geothermal research completed and stored.\",\n        context_variables=context_variables,\n        target=AgentTarget(storage_manager),\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755598711129zHyZE6KvPSoALRaz6P5r9",
+        "type": "tool",
+        "name": "complete_biofuel_research",
+        "description": "A custom tool that submits biofuel research findings",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T10:18:31.129Z",
+        "updatedAt": "2025-08-19T11:00:22.488Z",
+        "data": {
+          "content": "from autogen.agentchat.group import AgentNameTarget, AgentTarget, ContextVariables, ReplyResult\n\ndef complete_biofuel_research(research_content: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Submit biofuel research findings\"\"\"\n    context_variables[\"biofuel_research\"] = research_content\n    context_variables[\"specialist_c1_completed\"] = True\n    context_variables[\"manager_c_completed\"] = True\n\n    return ReplyResult(\n        message=\"Biofuel research completed and stored.\",\n        context_variables=context_variables,\n        target=AgentTarget(alternative_manager),\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-17555990998226ayAVFwERPgxLQ8TwgvKT",
+        "type": "tool",
+        "name": "compile_renewable_section",
+        "description": "A custom tool that compiles the renewable energy section (solar and wind) for the final report",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T10:24:59.823Z",
+        "updatedAt": "2025-08-19T11:00:30.062Z",
+        "data": {
+          "content": "from autogen.agentchat.group import AgentNameTarget, AgentTarget, ContextVariables, ReplyResult\n\ndef compile_renewable_section(section_content: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Compile the renewable energy section (solar and wind) for the final report\"\"\"\n    context_variables[\"report_sections\"][\"renewable\"] = section_content\n\n    # Check if all managers have submitted their sections\n    if all(key in context_variables[\"report_sections\"] for key in [\"renewable\", \"storage\", \"alternative\"]):\n        context_variables[\"executive_review_ready\"] = True\n        return ReplyResult(\n            message=\"Renewable energy section compiled. All sections are now ready for executive review.\",\n            context_variables=context_variables,\n            target=AgentTarget(executive_agent),\n        )\n    else:\n        return ReplyResult(\n            message=\"Renewable energy section compiled and stored.\",\n            context_variables=context_variables,\n            target=AgentTarget(executive_agent),\n        )\n",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755599165752wF49KMjpeNVOoKC63bKW5",
+        "type": "tool",
+        "name": "compile_storage_section",
+        "description": "A custom tool that compiles the energy storage section (hydro and geothermal) for the final report",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T10:26:05.751Z",
+        "updatedAt": "2025-08-19T11:00:36.641Z",
+        "data": {
+          "content": "from autogen.agentchat.group import AgentNameTarget, AgentTarget, ContextVariables, ReplyResult\n\ndef compile_storage_section(section_content: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Compile the energy storage section (hydro and geothermal) for the final report\"\"\"\n    context_variables[\"report_sections\"][\"storage\"] = section_content\n\n    # Check if all managers have submitted their sections\n    if all(key in context_variables[\"report_sections\"] for key in [\"renewable\", \"storage\", \"alternative\"]):\n        context_variables[\"executive_review_ready\"] = True\n        return ReplyResult(\n            message=\"Energy storage section compiled. All sections are now ready for executive review.\",\n            context_variables=context_variables,\n            target=AgentTarget(executive_agent),\n        )\n    else:\n        return ReplyResult(\n            message=\"Energy storage section compiled and stored.\",\n            context_variables=context_variables,\n            target=AgentTarget(executive_agent),\n        )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755599219760ICRzF3_7q8JzL87DOfcMa",
+        "type": "tool",
+        "name": "compile_alternative_section",
+        "description": "A custom tool that compiles the alternative energy section (biofuels) for the final report",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T10:26:59.760Z",
+        "updatedAt": "2025-08-19T11:00:47.020Z",
+        "data": {
+          "content": "from autogen.agentchat.group import AgentNameTarget, AgentTarget, ContextVariables, ReplyResult\n\ndef compile_alternative_section(section_content: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Compile the alternative energy section (biofuels) for the final report\"\"\"\n    context_variables[\"report_sections\"][\"alternative\"] = section_content\n\n    # Check if all managers have submitted their sections\n    if all(key in context_variables[\"report_sections\"] for key in [\"renewable\", \"storage\", \"alternative\"]):\n        context_variables[\"executive_review_ready\"] = True\n        return ReplyResult(\n            message=\"Alternative energy section compiled. All sections are now ready for executive review.\",\n            context_variables=context_variables,\n            target=AgentTarget(executive_agent),\n        )\n    else:\n        return ReplyResult(\n            message=\"Alternative energy section compiled and stored.\",\n            context_variables=context_variables,\n            target=AgentTarget(executive_agent),\n        )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755599414262NMbIOw2n6RyJ4rWdNM0oK",
+        "type": "tool",
+        "name": "initiate_research",
+        "description": "A custom tool that initiates the research process by delegating to managers",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T10:30:14.262Z",
+        "updatedAt": "2025-08-19T11:00:54.717Z",
+        "data": {
+          "content": "from autogen.agentchat.group import AgentNameTarget, AgentTarget, ContextVariables, ReplyResult\n\ndef initiate_research(context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Initiate the research process by delegating to managers\"\"\"\n    context_variables[\"task_started\"] = True\n\n    return ReplyResult(\n        message=\"Research initiated. Tasks have been delegated to the renewable energy manager, storage manager, and alternative energy manager.\",\n        context_variables=context_variables\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755599439313zFA-YN9Z37VC1rX5g3arC",
+        "type": "tool",
+        "name": "compile_final_report",
+        "description": "A custom tool that compiles the final comprehensive report from all sections",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T10:30:39.313Z",
+        "updatedAt": "2025-08-19T11:01:00.171Z",
+        "data": {
+          "content": "from autogen.agentchat.group import AgentNameTarget, AgentTarget, ContextVariables, ReplyResult\n\ndef compile_final_report(report_content: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Compile the final comprehensive report from all sections\"\"\"\n    context_variables[\"final_report\"] = report_content\n    context_variables[\"task_completed\"] = True\n\n    return ReplyResult(\n        message=\"Final report compiled successfully. The comprehensive renewable energy report is now complete.\",\n        context_variables=context_variables,\n        target=AgentTarget(user)  # Return to user with final report\n    )\n",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      }
+    ],
+    "chats": [
+      {
+        "id": "wc-17555981952107H_c9kT6lpXBYU0s65zGF",
+        "type": "group",
+        "source": "wa-1755598184180sr_bhgzmQEFwpDATq3g9y",
+        "target": "wa-17555981917494HWtsUCkN8_rQ97aO7cHI",
+        "data": {
+          "sourceType": "user_proxy",
+          "targetType": "group_manager",
+          "name": "askReport",
+          "order": -1,
+          "description": "User to Manager",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "string",
+            "content": "We need a comprehensive report on the current state of renewable energy technologies. Please coordinate the research and compilation of this report.",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755599822759Fwe0eCIngI27Bz6R1SgsV",
+        "type": "group",
+        "source": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "target": "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "askRenewableManager",
+          "order": -1,
+          "description": "executive_agent to renewable_manager",
+          "position": 2,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "not(${manager_a_completed})"
+          },
+          "available": {
+            "type": "expression",
+            "value": "${task_started} == True"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+          "realTarget": "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq"
+        }
+      },
+      {
+        "id": "wc-1755599824826e74z_OhdCo1ir-XvpgPmK",
+        "type": "group",
+        "source": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "target": "17555993226611oQWxKIFtMda-5458VzmM",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "askStorageManager",
+          "order": -1,
+          "description": "executive_agent to storage_manager",
+          "position": 3,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "not(${manager_b_completed})"
+          },
+          "available": {
+            "type": "expression",
+            "value": "${task_started} == True"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755599827018b2Zz7bX7xeVmACEIXVx7t",
+        "type": "group",
+        "source": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "target": "1755599353502rDAWmtUx31znCPy99x8iF",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "askAlternative",
+          "order": -1,
+          "description": "executive_agent to alternative_manager",
+          "position": 4,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "not(${manager_c_completed})"
+          },
+          "available": {
+            "type": "expression",
+            "value": "${task_started} == True"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+          "realTarget": "1755599353502rDAWmtUx31znCPy99x8iF"
+        }
+      },
+      {
+        "id": "wc-1755600314437xWxCI0oWFO5ETx0vfyCQB",
+        "type": "group",
+        "source": "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+        "target": "wa-17555988628673vGpgs8mlrPLT0kWFBA2_",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "solarReport",
+          "order": -1,
+          "description": "renewable_manager to solar_specialist",
+          "position": 5,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "not(${specialist_a1_completed})"
+          },
+          "available": {
+            "type": "expression",
+            "value": "${task_started} == True"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755600316873pxzYLlQ5eQTaWXHWSCGN5",
+        "type": "group",
+        "source": "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+        "target": "1755598893896mU7NcVhkrxt190ijf7Dic",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "windReport",
+          "order": -1,
+          "description": "renewable_manager to wind_specialist",
+          "position": 6,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "not(${specialist_a2_completed})"
+          },
+          "available": {
+            "type": "expression",
+            "value": "${task_started} == True"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755600447743Q027FAclCBzBs_30Wm6Gb",
+        "type": "group",
+        "source": "wa-1755599282163v8rm6FbuQHBHvQKBbTZtq",
+        "target": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "returnToExecutive",
+          "order": -1,
+          "description": "renewable_manager to executive_agent",
+          "position": 7,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Return to the executive after your report has been compiled."
+          },
+          "available": {
+            "type": "expression",
+            "value": "${manager_a_completed} == True"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755600584449UXKCsIsUPrQ6wu5Ik16cQ",
+        "type": "group",
+        "source": "17555993226611oQWxKIFtMda-5458VzmM",
+        "target": "1755598958165ksZhb_kWztBpH6l0-9Yif",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "hydroReport",
+          "order": -1,
+          "description": "storage_manager to hydro_specialist",
+          "position": 8,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "not(${specialist_b1_completed})"
+          },
+          "available": {
+            "type": "expression",
+            "value": "${task_started} == True"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755600587013CNaAoWDo1KUaPQkgVaI0i",
+        "type": "group",
+        "source": "17555993226611oQWxKIFtMda-5458VzmM",
+        "target": "1755599018519wGBM43i2kAiV14wkqZaO0",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "geothermalReport",
+          "order": -1,
+          "description": "storage_manager to geothermal_specialist",
+          "position": 9,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "not(${specialist_b2_completed})"
+          },
+          "available": {
+            "type": "expression",
+            "value": "${task_started} == True"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755600670375hazfeH-TXnDM7y4XdTizH",
+        "type": "group",
+        "source": "17555993226611oQWxKIFtMda-5458VzmM",
+        "target": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "returnToExecutive",
+          "order": -1,
+          "description": "storage_manager to executive_agent",
+          "position": 10,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Return to the executive after your report has been compiled."
+          },
+          "available": {
+            "type": "expression",
+            "value": "${manager_b_completed} == True"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-17556007151581Dvb5NI78s7Dxk1HuGbeK",
+        "type": "group",
+        "source": "1755599353502rDAWmtUx31znCPy99x8iF",
+        "target": "1755599043471O3YBmPOJsW_-z02JTNIT1",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "biofuelReport",
+          "order": -1,
+          "description": "alternative_manager to biofuel_specialist",
+          "position": 11,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "not(${specialist_c1_completed})"
+          },
+          "available": {
+            "type": "expression",
+            "value": "${task_started} == True"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755600720094y1xviJDWpiCxbRtBlU3J8",
+        "type": "group",
+        "source": "1755599353502rDAWmtUx31znCPy99x8iF",
+        "target": "1755599503460Q6QHPF1przxQRk_Mp5MyT",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "returnToExecutive",
+          "order": -1,
+          "description": "alternative_manager to executive_agent",
+          "position": 12,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": "Return to the executive with the compiled alternative energy section"
+          },
+          "available": {
+            "type": "expression",
+            "value": "${manager_c_completed} == True"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": 42,
+    "silent": false
+  }
+}

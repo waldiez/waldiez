@@ -1,0 +1,292 @@
+{
+  "id": "id-0148deca-d5fa-4a09-a4ed-04c182ad3024",
+  "type": "flow",
+  "version": "0.6.1",
+  "storageId": "wf-1753178138769BW2qwr4GU5A7CWp_Up_M6",
+  "name": "RAG with Doc Agent",
+  "description": "Retrieval Augmented Generation using a Doc agent. Based on <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/docagent/#example>",
+  "tags": [
+    "RAG",
+    "Doc Agent"
+  ],
+  "requirements": [],
+  "createdAt": "2025-07-22T09:55:38.769Z",
+  "updatedAt": "2025-07-22T10:41:39.452Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wm-17531799212495u6GGVIm-0ymvkppIKFpQ",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "selected": false,
+        "hidden": true
+      },
+      {
+        "id": "wa-17531798467188aNoJWz2qhgTAwO4x4ZFI",
+        "type": "agent",
+        "style": {
+          "width": 130
+        },
+        "position": {
+          "x": 240,
+          "y": 405
+        },
+        "measured": {
+          "width": 130,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false
+      },
+      {
+        "id": "wa-1753179848368A2XuQpE7CgY2F8d66dhLo",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 579,
+          "y": 282
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "className": "",
+        "hidden": false,
+        "selected": false
+      }
+    ],
+    "edges": [
+      {
+        "id": "wc-17531798506658fYyj84nqerduVy9zves4",
+        "source": "wa-17531798467188aNoJWz2qhgTAwO4x4ZFI",
+        "target": "wa-1753179848368A2XuQpE7CgY2F8d66dhLo",
+        "type": "chat",
+        "hidden": false,
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-17531798467188aNoJWz2qhgTAwO4x4ZFI",
+        "targetHandle": "agent-handle-left-target-wa-1753179848368A2XuQpE7CgY2F8d66dhLo"
+      }
+    ],
+    "viewport": {
+      "x": 20,
+      "y": 40,
+      "zoom": 1
+    },
+    "agents": {
+      "groupManagerAgents": [],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User",
+          "description": "A new User agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-07-22T10:24:06.718Z",
+          "updatedAt": "2025-07-22T10:24:06.719Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-17531798467188aNoJWz2qhgTAwO4x4ZFI",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "docAgents": [
+        {
+          "type": "agent",
+          "name": "Doc agent",
+          "description": "A new Doc agent agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-07-22T10:24:08.368Z",
+          "updatedAt": "2025-07-22T10:24:08.368Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-17531799212495u6GGVIm-0ymvkppIKFpQ"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "collectionName": "financial_report",
+            "resetCollection": true,
+            "queryEngine": {
+              "type": "VectorChromaQueryEngine",
+              "dbPath": "chroma",
+              "enableQueryCitations": true,
+              "citationChunkSize": 512
+            },
+            "parsedDocsPath": null
+          },
+          "id": "wa-1753179848368A2XuQpE7CgY2F8d66dhLo",
+          "agentType": "doc_agent"
+        }
+      ]
+    },
+    "models": [
+      {
+        "id": "wm-17531799212495u6GGVIm-0ymvkppIKFpQ",
+        "type": "model",
+        "name": "gpt-4o",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-07-22T10:25:21.249Z",
+        "updatedAt": "2025-07-22T10:25:41.163Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": "REPLACE_ME",
+            "accessKey": "REPLACE_ME",
+            "secretKey": "REPLACE_ME",
+            "sessionToken": "REPLACE_ME",
+            "profileName": "REPLACE_ME"
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [],
+    "chats": [
+      {
+        "id": "wc-17531798506658fYyj84nqerduVy9zves4",
+        "type": "chat",
+        "source": "wa-17531798467188aNoJWz2qhgTAwO4x4ZFI",
+        "target": "wa-1753179848368A2XuQpE7CgY2F8d66dhLo",
+        "data": {
+          "sourceType": "user_proxy",
+          "targetType": "doc_agent",
+          "name": "User => Doc agent",
+          "order": 0,
+          "description": "User to Doc agent",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": 2,
+          "message": {
+            "type": "string",
+            "content": "Can you ingest \"https://raw.githubusercontent.com/ag2ai/ag2/refs/heads/main/test/agentchat/contrib/graph_rag/Toast_financial_report.pdf\"  and tell me the fiscal year 2024 financial summary?\" ",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": 42,
+    "silent": false
+  }
+}

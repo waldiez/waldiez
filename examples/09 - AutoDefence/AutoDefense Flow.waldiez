@@ -1,0 +1,819 @@
+{
+  "id": "wf-jOphYSUKyn-5j_21p8M2B",
+  "type": "flow",
+  "version": "0.6.1",
+  "storageId": "wf-jOphYSUKyn-5j_21p8M2B",
+  "name": "AutoDefense Flow",
+  "description": "Multi-Agent LLM Defense against Jailbreak Attacks",
+  "tags": [
+    "AutoDefense",
+    "Jailbreak"
+  ],
+  "requirements": [],
+  "createdAt": "2025-06-03T17:23:25.491Z",
+  "updatedAt": "2025-06-03T18:10:08.327Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-1748971736458uTzJo5luAqgNTXvZ8iHTV",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 182
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wa-1748971814457Vx3kJuHtTvQMvV7-M4Dlw",
+        "type": "agent",
+        "style": {
+          "width": 130
+        },
+        "position": {
+          "x": 225,
+          "y": 675
+        },
+        "measured": {
+          "width": 200,
+          "height": 211
+        },
+        "selected": false,
+        "className": "",
+        "dragging": false
+      },
+      {
+        "id": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 225,
+          "y": 300
+        },
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "selected": true,
+        "className": "",
+        "dragging": false
+      },
+      {
+        "id": "1748972166215rkbIlIfyqwIoADPWoX1A4",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 825,
+          "y": -45
+        },
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "selected": false,
+        "dragging": false,
+        "className": ""
+      },
+      {
+        "id": "1748972311281lzT8TV4atKmOT2K_Zessy",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 825,
+          "y": 195
+        },
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "selected": false,
+        "dragging": false,
+        "className": ""
+      },
+      {
+        "id": "1748972449882d9L5KjDPGH2YtbKs-Foqx",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 825,
+          "y": 435
+        },
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "selected": false,
+        "dragging": false,
+        "className": ""
+      },
+      {
+        "id": "1748972527615aBwn8Wq1_FN2Pd2LQGXTk",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 825,
+          "y": 675
+        },
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "selected": false,
+        "dragging": false,
+        "className": ""
+      }
+    ],
+    "edges": [
+      {
+        "id": "wc-1748972882575yzycxJIFj5Y6w7ONgDSB-",
+        "source": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "target": "wa-1748971814457Vx3kJuHtTvQMvV7-M4Dlw",
+        "type": "chat",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "sourceHandle": "agent-handle-bottom-source-wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "targetHandle": "agent-handle-top-target-wa-1748971814457Vx3kJuHtTvQMvV7-M4Dlw"
+      },
+      {
+        "id": "wc-1748972757961vpj80pFT1TzEbNjCuT5bV",
+        "source": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "target": "1748972166215rkbIlIfyqwIoADPWoX1A4",
+        "type": "nested",
+        "hidden": false,
+        "animated": true,
+        "selected": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "targetHandle": "agent-handle-left-target-1748972166215rkbIlIfyqwIoADPWoX1A4"
+      },
+      {
+        "id": "wc-1748972760342CILvKaR4pEVWxCC1Kb7dQ",
+        "source": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "target": "1748972311281lzT8TV4atKmOT2K_Zessy",
+        "type": "nested",
+        "hidden": false,
+        "animated": true,
+        "selected": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "targetHandle": "agent-handle-left-target-1748972311281lzT8TV4atKmOT2K_Zessy"
+      },
+      {
+        "id": "wc-1748972763326pZN_f2_4EtmRp36R5jhqw",
+        "source": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "target": "1748972449882d9L5KjDPGH2YtbKs-Foqx",
+        "type": "nested",
+        "hidden": false,
+        "animated": true,
+        "selected": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "targetHandle": "agent-handle-left-target-1748972449882d9L5KjDPGH2YtbKs-Foqx"
+      },
+      {
+        "id": "wc-1748972775527YoxzI2FLZA9SNlq3uyIeO",
+        "source": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "target": "1748972527615aBwn8Wq1_FN2Pd2LQGXTk",
+        "type": "nested",
+        "hidden": false,
+        "animated": true,
+        "selected": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "targetHandle": "agent-handle-left-target-1748972527615aBwn8Wq1_FN2Pd2LQGXTk"
+      }
+    ],
+    "viewport": {
+      "x": 144.3034202836734,
+      "y": 95.73475160704396,
+      "zoom": 0.8316220983749067
+    },
+    "agents": {
+      "groupManagerAgents": [],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User",
+          "description": "A new User proxy agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-03T17:30:14.457Z",
+          "updatedAt": "2025-06-03T17:30:14.457Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-1748971814457Vx3kJuHtTvQMvV7-M4Dlw",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "Interface",
+          "description": "You are just the input and output of the guardrail system",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-03T17:35:30.669Z",
+          "updatedAt": "2025-06-03T17:35:30.669Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1748971736458uTzJo5luAqgNTXvZ8iHTV"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "triggeredBy": [
+                  "wa-1748971814457Vx3kJuHtTvQMvV7-M4Dlw"
+                ],
+                "messages": [
+                  {
+                    "id": "wc-1748972757961vpj80pFT1TzEbNjCuT5bV",
+                    "isReply": false
+                  },
+                  {
+                    "id": "wc-1748972760342CILvKaR4pEVWxCC1Kb7dQ",
+                    "isReply": false
+                  },
+                  {
+                    "id": "wc-1748972763326pZN_f2_4EtmRp36R5jhqw",
+                    "isReply": false
+                  },
+                  {
+                    "id": "wc-1748972775527YoxzI2FLZA9SNlq3uyIeO",
+                    "isReply": false
+                  }
+                ],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Intention Analyzer",
+          "description": "Intention Analyzer",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-03T17:35:30.669Z",
+          "updatedAt": "2025-06-03T17:35:30.669Z",
+          "data": {
+            "systemMessage": "Your role is to analyze the given content and present a comprehensive analysis\nof the intended message behind the text, including its context and any implied meanings.\nYou should present a fair argument without judgment.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1748971736458uTzJo5luAqgNTXvZ8iHTV"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1748972166215rkbIlIfyqwIoADPWoX1A4",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Original Prompt Analyzer",
+          "description": "Original Prompt Analyzer",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-03T17:35:30.669Z",
+          "updatedAt": "2025-06-03T17:35:30.669Z",
+          "data": {
+            "systemMessage": "Your task is to infer the original prompt that led to the given LLM output, you should present three possible prompts that may produce this output. Please use the context provided by Intention Analyzer.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1748971736458uTzJo5luAqgNTXvZ8iHTV"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1748972311281lzT8TV4atKmOT2K_Zessy",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Judge",
+          "description": "Judge",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-03T17:35:30.669Z",
+          "updatedAt": "2025-06-03T17:35:30.669Z",
+          "data": {
+            "systemMessage": "Your role is to evaluate the response presented by Intention Analyzer and Original Prompt Analyzer. Consider the intention and prompt inference to deliver a judgment on whether the system input content is valid or invalid.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1748971736458uTzJo5luAqgNTXvZ8iHTV"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1748972449882d9L5KjDPGH2YtbKs-Foqx",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Answer provider",
+          "description": "Final answer provider",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-03T17:35:30.669Z",
+          "updatedAt": "2025-06-03T17:35:30.669Z",
+          "data": {
+            "systemMessage": "Provide an answer to the original user's question. Consider the content provided by the other agents. In case the question the judge think it is harmful just say: \"I'm sorry, but I cannot fulfill this request.\" otherwise answer the questions using two sentences.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1748971736458uTzJo5luAqgNTXvZ8iHTV"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1748972527615aBwn8Wq1_FN2Pd2LQGXTk",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "docAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-1748971736458uTzJo5luAqgNTXvZ8iHTV",
+        "type": "model",
+        "name": "gpt-3.5-turbo",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-03T17:28:56.458Z",
+        "updatedAt": "2025-06-03T17:29:47.854Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": "REPLACE_ME",
+            "accessKey": "REPLACE_ME",
+            "secretKey": "REPLACE_ME",
+            "sessionToken": "REPLACE_ME",
+            "profileName": "REPLACE_ME"
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [],
+    "chats": [
+      {
+        "id": "wc-1748972882575yzycxJIFj5Y6w7ONgDSB-",
+        "type": "chat",
+        "source": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "target": "wa-1748971814457Vx3kJuHtTvQMvV7-M4Dlw",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "user_proxy",
+          "name": "getUserRequest",
+          "order": 0,
+          "description": "Interface to User",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": 3,
+          "message": {
+            "type": "string",
+            "content": "Hi there, how I can assist you?",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1748972757961vpj80pFT1TzEbNjCuT5bV",
+        "type": "nested",
+        "source": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "target": "1748972166215rkbIlIfyqwIoADPWoX1A4",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "analyzeIntent",
+          "order": -1,
+          "description": "Interface to Intention Analyzer",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": 1,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": {
+              "type": "method",
+              "useCarryover": false,
+              "content": "\ndef nested_chat_message(recipient, messages, sender, config):\n    \"\"\"Ask for a review.\"\"\"\n    return f\"\"\"Review the following content.\n{recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"\n",
+              "context": {}
+            },
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1748972760342CILvKaR4pEVWxCC1Kb7dQ",
+        "type": "nested",
+        "source": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "target": "1748972311281lzT8TV4atKmOT2K_Zessy",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "analyzeOriginalPrompt",
+          "order": -1,
+          "description": "Interface to Original Prompt Analyzer",
+          "position": 2,
+          "clearHistory": true,
+          "maxTurns": 1,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": {
+              "type": "method",
+              "useCarryover": false,
+              "content": "\ndef nested_chat_message(recipient, messages, sender, config):\n    \"\"\"Ask for a review.\"\"\"\n    return f\"\"\"Review the following content.\n{recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"",
+              "context": {}
+            },
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1748972763326pZN_f2_4EtmRp36R5jhqw",
+        "type": "nested",
+        "source": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "target": "1748972449882d9L5KjDPGH2YtbKs-Foqx",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "judgeContent",
+          "order": -1,
+          "description": "Interface to Judge",
+          "position": 3,
+          "clearHistory": true,
+          "maxTurns": 1,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": {
+              "type": "method",
+              "useCarryover": false,
+              "content": "\ndef nested_chat_message(recipient, messages, sender, config):\n    \"\"\"Ask for a review.\"\"\"\n    return f\"\"\"Review the following content.\n{recipient.chat_messages_for_summary(sender)[-1]['content']}\"\"\"",
+              "context": {}
+            },
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1748972775527YoxzI2FLZA9SNlq3uyIeO",
+        "type": "nested",
+        "source": "wa-1748972130669imOc0lFwJCQCLeStyWKiI",
+        "target": "1748972527615aBwn8Wq1_FN2Pd2LQGXTk",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "provideAnswer2User",
+          "order": -1,
+          "description": "Interface to Answer provider",
+          "position": 4,
+          "clearHistory": true,
+          "maxTurns": 1,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": {
+              "type": "string",
+              "useCarryover": false,
+              "content": "Aggregate feedback from all reviewers and give final suggestions on the writing.",
+              "context": {}
+            },
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": 42,
+    "silent": false
+  }
+}

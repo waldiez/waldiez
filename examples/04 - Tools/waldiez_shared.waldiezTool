@@ -1,0 +1,26 @@
+{
+  "id": "wt-1747632719081BF5asRSeurYPJNh2v7J3P",
+  "type": "tool",
+  "name": "waldiez_shared",
+  "description": "Shared code to be placed before other tools.",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2025-01-21T07:43:10.327Z",
+  "updatedAt": "2025-05-19T05:38:14.538Z",
+  "data": {
+    "content": "import chess\nimport chess.svg\n\nBOARD = chess.Board()\nMADE_MOVE = False\n",
+    "toolType": "shared",
+    "secrets": {}
+  },
+  "position": {
+    "x": 0,
+    "y": 10
+  },
+  "measured": {
+    "width": 180,
+    "height": 100
+  },
+  "selected": true,
+  "hidden": false,
+  "className": ""
+}

@@ -1,0 +1,29 @@
+{
+  "id": "wt-17476694116094tvuyiCu3cK_loUxYwbVr",
+  "type": "tool",
+  "name": "get_and_plot_stock_data",
+  "description": "get_and_plot_stock_data",
+  "tags": [],
+  "requirements": [
+    "pandas",
+    "yfinance",
+    "matplotlib"
+  ],
+  "createdAt": "2025-05-19T15:43:31.610Z",
+  "updatedAt": "2025-06-19T18:33:57.414Z",
+  "data": {
+    "content": "def get_and_plot_stock_data(\n    stock_symbols: list[str],\n    start_date: str,\n    end_date: str,\n    filename: str,\n) -> str:\n    # pylint: disable=import-outside-toplevel\n    import pandas as pd\n    import matplotlib.pyplot as plt\n    import yfinance as yf\n\n    data = yf.download(stock_symbols, start=start_date, end=end_date)\n\n    # Get the closing prices\n    closing_prices = data['Close']\n\n    # Normalize the prices to start at 100 for easier comparison\n    normalized_prices = closing_prices.div(closing_prices.iloc[0]) * 100\n\n    # Create the plot\n    plt.figure(figsize=(12, 6))\n    for symbol in stock_symbols:\n        plt.plot(normalized_prices.index, normalized_prices[symbol], label=symbol)\n\n    plt.title('Stock Prices')\n    plt.xlabel('Date')\n    plt.ylabel('Normalized Price (Base 100)')\n    plt.legend()\n    plt.grid(True)\n\n    # Save the figure\n    plt.savefig(filename)\n    plt.close()\n    return \"ok\"\n",
+    "toolType": "custom",
+    "secrets": {}
+  },
+  "position": {
+    "x": 0,
+    "y": 10
+  },
+  "measured": {
+    "width": 180,
+    "height": 100
+  },
+  "selected": true,
+  "hidden": false
+}

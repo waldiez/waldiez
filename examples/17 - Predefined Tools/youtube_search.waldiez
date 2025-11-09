@@ -1,0 +1,323 @@
+{
+  "id": "id-c3a02b47-8eb6-4784-9889-f4f3eeb521c5",
+  "type": "flow",
+  "version": "0.6.1",
+  "storageId": "wf-17513622917494lqGbKY_Q3O1_IQ37hpBi",
+  "name": "YouTube search Waldiez Flow",
+  "description": "A example waldiez flow using YouTube search",
+  "tags": [
+    "youtube"
+  ],
+  "requirements": [],
+  "createdAt": "2025-07-01T09:31:31.749Z",
+  "updatedAt": "2025-07-02T11:39:34.607Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-1751362368037wYD1u2C1FUYhHYBWoWva0",
+        "type": "model",
+        "position": {
+          "x": 20,
+          "y": 20
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1751362383337TrgFMn9yF2OmuJNrKlvlb",
+        "type": "tool",
+        "position": {
+          "x": 20,
+          "y": 20
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wa-1751362407952j-yNVfRLx_5iyB3IEe95g",
+        "type": "agent",
+        "style": {
+          "width": 130
+        },
+        "position": {
+          "x": 181,
+          "y": 315
+        },
+        "measured": {
+          "width": 130,
+          "height": 120
+        },
+        "className": "",
+        "selected": false,
+        "hidden": false
+      },
+      {
+        "id": "wa-17513624018260PK-9dvG-QuraqkE3LMko",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 510,
+          "y": 315
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false
+      }
+    ],
+    "edges": [
+      {
+        "id": "wc-1751362410418jB-5q6rzzd9eGhAcyMRH3",
+        "source": "wa-1751362407952j-yNVfRLx_5iyB3IEe95g",
+        "target": "wa-17513624018260PK-9dvG-QuraqkE3LMko",
+        "type": "chat",
+        "hidden": false,
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1751362407952j-yNVfRLx_5iyB3IEe95g",
+        "targetHandle": "agent-handle-left-target-wa-17513624018260PK-9dvG-QuraqkE3LMko"
+      }
+    ],
+    "viewport": {
+      "x": -106.64047151277015,
+      "y": -57.95677799607074,
+      "zoom": 0.8212180746561886
+    },
+    "agents": {
+      "groupManagerAgents": [],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User",
+          "description": "A new User agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-07-01T09:33:27.952Z",
+          "updatedAt": "2025-07-01T09:33:27.952Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-1751362407952j-yNVfRLx_5iyB3IEe95g",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "Assistant",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-07-01T09:33:21.826Z",
+          "updatedAt": "2025-07-01T09:33:21.826Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1751362368037wYD1u2C1FUYhHYBWoWva0"
+            ],
+            "tools": [
+              {
+                "id": "wt-1751362383337TrgFMn9yF2OmuJNrKlvlb",
+                "executorId": "wa-1751362407952j-yNVfRLx_5iyB3IEe95g"
+              }
+            ],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "wa-17513624018260PK-9dvG-QuraqkE3LMko",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "docAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-1751362368037wYD1u2C1FUYhHYBWoWva0",
+        "type": "model",
+        "name": "gpt-4.1",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-07-01T09:32:48.037Z",
+        "updatedAt": "2025-07-01T09:32:59.907Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": "REPLACE_ME",
+            "accessKey": "REPLACE_ME",
+            "secretKey": "REPLACE_ME",
+            "sessionToken": "REPLACE_ME",
+            "profileName": "REPLACE_ME"
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [
+      {
+        "id": "wt-1751362383337TrgFMn9yF2OmuJNrKlvlb",
+        "type": "tool",
+        "name": "youtube_search",
+        "description": "Search YouTube for a given query.",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-07-01T09:33:03.337Z",
+        "updatedAt": "2025-07-01T09:33:16.930Z",
+        "data": {
+          "content": "",
+          "toolType": "predefined",
+          "secrets": {
+            "YOUTUBE_API_KEY": "REPLACE_ME"
+          },
+          "kwargs": {}
+        }
+      }
+    ],
+    "chats": [
+      {
+        "id": "wc-1751362410418jB-5q6rzzd9eGhAcyMRH3",
+        "type": "chat",
+        "source": "wa-1751362407952j-yNVfRLx_5iyB3IEe95g",
+        "target": "wa-17513624018260PK-9dvG-QuraqkE3LMko",
+        "data": {
+          "sourceType": "user_proxy",
+          "targetType": "assistant",
+          "name": "youTubeSearch",
+          "order": 0,
+          "description": "User to Assistant",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": 5,
+          "message": {
+            "type": "string",
+            "content": "Let's find a video with instructions about creating workflows with waldiez",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": 42,
+    "silent": false
+  }
+}

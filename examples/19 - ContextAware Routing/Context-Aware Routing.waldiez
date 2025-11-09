@@ -1,0 +1,1302 @@
+{
+  "id": "id-6624b24a-c360-4cc1-a686-b463e1ded719",
+  "type": "flow",
+  "version": "0.6.1",
+  "storageId": "wf-1755340923689d4RNztWdAEXCfIGbeEC2i",
+  "name": "Context-Aware Routing",
+  "description": "A waldiez implementation of AG2 example: https://docs.ag2.ai/latest/docs/user-guide/advanced-concepts/pattern-cookbook/context_aware_routing/\nThe Context-Aware Routing Pattern creates a dynamic workflow where tasks are intelligently distributed to specialized agents based on content analysis rather than predetermined paths. Unlike static patterns with fixed routes, this approach analyzes each request in real-time to determine the most appropriate specialist, ensuring queries are handled by agents with the most relevant expertise while maintaining conversation continuity even as topics shift across domains.",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2025-08-16T10:42:03.689Z",
+  "updatedAt": "2025-08-21T10:01:31.530Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wm-1755342668059PSWiSqiASAWiArTbkrD7f",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755341956385bxbAFmdMLtx6IuzIlmXCI",
+        "type": "tool",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-175534205365953LaMMEjWoPFutG0npBmV",
+        "type": "tool",
+        "position": {
+          "x": 200,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755342123506IAviVbRr3mPnj-4Nw_sdc",
+        "type": "tool",
+        "position": {
+          "x": 400,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755342158135ULIiKLCqny1lC88XlEllJ",
+        "type": "tool",
+        "position": {
+          "x": 600,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755342232111TAOtYSErat5eyplaKhD6C",
+        "type": "tool",
+        "position": {
+          "x": 800,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-17553423064385VF2oYesg8mUZZ4WoTbJw",
+        "type": "tool",
+        "position": {
+          "x": 0,
+          "y": 135
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755342352253hTMIreWJYt9mSnP55qNQ6",
+        "type": "tool",
+        "position": {
+          "x": 200,
+          "y": 135
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755342396133MkKiklORGV4UupPjWw2Eb",
+        "type": "tool",
+        "position": {
+          "x": 400,
+          "y": 135
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755342448694Ef18jMuOWUM7Uigq4RExG",
+        "type": "tool",
+        "position": {
+          "x": 600,
+          "y": 135
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755342497147oDXzNrbJGx_nZVg4X6zoP",
+        "type": "tool",
+        "position": {
+          "x": 800,
+          "y": 135
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wa-1755341682370hwoAITot4PIR7mJqBSPAx",
+        "type": "agent",
+        "style": {
+          "width": 490
+        },
+        "position": {
+          "x": 480,
+          "y": 30
+        },
+        "measured": {
+          "width": 745,
+          "height": 635
+        },
+        "selected": true,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "width": 745,
+        "height": 635,
+        "resizing": false
+      },
+      {
+        "id": "wa-1755341680064ZIk2S3Hnbs-OrQpLjMgva",
+        "type": "agent",
+        "style": {
+          "width": 130
+        },
+        "position": {
+          "x": 166,
+          "y": 151
+        },
+        "measured": {
+          "width": 130,
+          "height": 120
+        },
+        "className": "",
+        "hidden": false,
+        "selected": false
+      },
+      {
+        "id": "wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 90,
+          "y": 60
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 255,
+          "height": 210
+        },
+        "selected": false,
+        "hidden": false,
+        "width": 255,
+        "height": 210,
+        "resizing": false,
+        "className": "",
+        "dragging": false,
+        "parentId": "wa-1755341682370hwoAITot4PIR7mJqBSPAx"
+      },
+      {
+        "id": "wa-1755343289549E-IJTp70QVOkE-oqFWjxa",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 435,
+          "y": 45
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-1755341682370hwoAITot4PIR7mJqBSPAx"
+      },
+      {
+        "id": "wa-1755343355946G4x3AqjFvuNQnOlUwi8Vc",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 435,
+          "y": 210
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-1755341682370hwoAITot4PIR7mJqBSPAx"
+      },
+      {
+        "id": "1755343404175mOdCZFxu3CKaS6-hYwZBM",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 435,
+          "y": 375
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-1755341682370hwoAITot4PIR7mJqBSPAx"
+      },
+      {
+        "id": "1755343495199g8XmePFmKbZOSdOXQmwHd",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 120,
+          "y": 360
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-1755341682370hwoAITot4PIR7mJqBSPAx"
+      }
+    ],
+    "edges": [
+      {
+        "id": "wc-1755341684239KSUNQR4-CQKuih00hrafc",
+        "source": "wa-1755341680064ZIk2S3Hnbs-OrQpLjMgva",
+        "target": "wa-1755341682370hwoAITot4PIR7mJqBSPAx",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1755341680064ZIk2S3Hnbs-OrQpLjMgva",
+        "targetHandle": "agent-handle-left-target-wa-1755341682370hwoAITot4PIR7mJqBSPAx"
+      },
+      {
+        "id": "wc-1755343752830pCXbLDjBbxeyztkwnUHru",
+        "source": "wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "target": "wa-1755343289549E-IJTp70QVOkE-oqFWjxa",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "targetHandle": "agent-handle-left-target-wa-1755343289549E-IJTp70QVOkE-oqFWjxa"
+      },
+      {
+        "id": "wc-1755343874555QpVo-Rsffc-Vha56X0orf",
+        "source": "wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "target": "wa-1755343355946G4x3AqjFvuNQnOlUwi8Vc",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "targetHandle": "agent-handle-left-target-wa-1755343355946G4x3AqjFvuNQnOlUwi8Vc"
+      },
+      {
+        "id": "wc-1755343898948LG5_Di7kwAogVOgETSZ2s",
+        "source": "wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "target": "1755343404175mOdCZFxu3CKaS6-hYwZBM",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-bottom-source-wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "targetHandle": "agent-handle-left-target-1755343404175mOdCZFxu3CKaS6-hYwZBM"
+      },
+      {
+        "id": "wc-1755343903179Pgpw0UVaQq8U80osWIqa9",
+        "source": "wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "target": "1755343495199g8XmePFmKbZOSdOXQmwHd",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-bottom-source-wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "targetHandle": "agent-handle-top-target-1755343495199g8XmePFmKbZOSdOXQmwHd"
+      }
+    ],
+    "viewport": {
+      "x": -35.186024551463674,
+      "y": 73.05335221907458,
+      "zoom": 0.5854579792256847
+    },
+    "agents": {
+      "groupManagerAgents": [
+        {
+          "type": "agent",
+          "name": "Manager",
+          "description": "The group manager agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-16T10:54:42.370Z",
+          "updatedAt": "2025-08-16T10:54:42.370Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {
+              "routing_started": "False",
+              "current_domain": "None",
+              "previous_domains": "[]",
+              "domain_confidence": "{}",
+              "request_count": "0",
+              "current_request": "",
+              "domain_history": "{}",
+              "question_responses": "[]",
+              "question_answered": "True",
+              "tech_invocations": "0",
+              "finance_invocations": "0",
+              "healthcare_invocations": "0",
+              "general_invocations": "0",
+              "has_error": "False",
+              "error_message": ""
+            },
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "maxRound": 100,
+            "adminName": null,
+            "speakers": {
+              "selectionMethod": "default",
+              "selectionCustomMethod": "",
+              "maxRetriesForSelecting": null,
+              "selectionMode": "repeat",
+              "allowRepeat": true,
+              "allowedOrDisallowedTransitions": {},
+              "transitionsType": "allowed",
+              "order": []
+            },
+            "enableClearHistory": false,
+            "sendIntroductions": false,
+            "initialAgentId": "wa-17553425783958GbDZVdfqcReqn4VtB963",
+            "groupName": "Group"
+          },
+          "id": "wa-1755341682370hwoAITot4PIR7mJqBSPAx",
+          "agentType": "group_manager"
+        }
+      ],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User",
+          "description": "A new User agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-16T10:54:40.064Z",
+          "updatedAt": "2025-08-16T10:54:40.064Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-1755341680064ZIk2S3Hnbs-OrQpLjMgva",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "router_agent",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-16T11:09:38.395Z",
+          "updatedAt": "2025-08-16T11:09:38.395Z",
+          "data": {
+            "systemMessage": "You are the routing agent responsible for analyzing user requests and directing them to the most appropriate specialist.\n\n    Your task is to carefully analyze each user query and determine which domain specialist would be best equipped to handle it:\n\n    1. Technology Specialist: For questions about computers, software, programming, IT issues, electronics, digital tools, internet, etc. Use route_to_tech_specialist to transfer.\n    2. Finance Specialist: For questions about money, investments, banking, budgeting, financial planning, taxes, economics, etc. Use route_to_finance_specialist to transfer.\n    3. Healthcare Specialist: For questions about health, medicine, fitness, nutrition, diseases, medical conditions, wellness, etc. Use route_to_healthcare_specialist to transfer.\n    4. General Knowledge Specialist: For general questions that don't clearly fit the other categories or span multiple domains. Use route_to_general_specialist to transfer.\n\n    For each query, you must:\n    1. Use the analyze_request tool to process the query and update context\n    2. Determine the correct domain by analyzing keywords, themes, and context\n    3. Consider the conversation history and previous domains if available\n    4. Route to the most appropriate specialist using the corresponding routing tool\n\n    When routing:\n    - Provide a confidence level (1-10) based on how certain you are about the domain\n    - Include detailed reasoning for your routing decision\n    - If a query seems ambiguous or spans multiple domains, route to the specialist who can best handle the primary intent\n\n    Always maintain context awareness by considering:\n    - Current query content and intent\n    - Previously discussed topics\n    - User's possible follow-up patterns\n    - Domain switches that might indicate changing topics\n\n    After a specialist has provided an answer, output the question and answer.\n\n    For ambiguous queries that could belong to multiple domains:\n    - If you are CERTAIN that the query is multi-domain but has a primary focus, route to the specialist for that primary domain\n    - If you are NOT CERTAIN and there is no clear primary domain, use the request_clarification tool to ask the user for more specifics\n    - When a query follows up on a previous topic, consider maintaining consistency by routing to the same specialist unless the domain has clearly changed",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-1755342668059PSWiSqiASAWiArTbkrD7f"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755341956385bxbAFmdMLtx6IuzIlmXCI",
+                "executorId": "wa-17553425783958GbDZVdfqcReqn4VtB963"
+              },
+              {
+                "id": "wt-1755342123506IAviVbRr3mPnj-4Nw_sdc",
+                "executorId": "wa-17553425783958GbDZVdfqcReqn4VtB963"
+              },
+              {
+                "id": "wt-1755342158135ULIiKLCqny1lC88XlEllJ",
+                "executorId": "wa-17553425783958GbDZVdfqcReqn4VtB963"
+              },
+              {
+                "id": "wt-175534205365953LaMMEjWoPFutG0npBmV",
+                "executorId": "wa-17553425783958GbDZVdfqcReqn4VtB963"
+              },
+              {
+                "id": "wt-1755342232111TAOtYSErat5eyplaKhD6C",
+                "executorId": "wa-17553425783958GbDZVdfqcReqn4VtB963"
+              },
+              {
+                "id": "wt-1755342497147oDXzNrbJGx_nZVg4X6zoP",
+                "executorId": "wa-17553425783958GbDZVdfqcReqn4VtB963"
+              }
+            ],
+            "parentId": "wa-1755341682370hwoAITot4PIR7mJqBSPAx",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "RevertToUserTarget",
+              "value": []
+            },
+            "isMultimodal": false
+          },
+          "id": "wa-17553425783958GbDZVdfqcReqn4VtB963",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "tech_specialist",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-16T11:21:29.549Z",
+          "updatedAt": "2025-08-16T11:21:29.549Z",
+          "data": {
+            "systemMessage": "You are the technology specialist with deep expertise in computers, software, programming, IT, electronics, digital tools, and internet technologies.\n\n    When responding to queries in your domain:\n    1. Provide accurate, technical information based on current industry knowledge\n    2. Explain complex concepts in clear terms appropriate for the user's apparent level of technical understanding\n    3. Include practical advice, troubleshooting steps, or implementation guidance when applicable\n    4. Reference relevant technologies, programming languages, frameworks, or tools as appropriate\n    5. For coding questions, provide correct, well-structured code examples when helpful\n\n    Focus on being informative, precise, and helpful. If a query contains elements outside your domain of expertise, focus on the technology aspects while acknowledging the broader context.\n\n    Use the provide_tech_response tool to submit your final response.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-1755342668059PSWiSqiASAWiArTbkrD7f"
+            ],
+            "tools": [
+              {
+                "id": "wt-17553423064385VF2oYesg8mUZZ4WoTbJw",
+                "executorId": "wa-1755343289549E-IJTp70QVOkE-oqFWjxa"
+              }
+            ],
+            "parentId": "wa-1755341682370hwoAITot4PIR7mJqBSPAx",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "AgentTarget",
+              "value": [
+                "wa-17553425783958GbDZVdfqcReqn4VtB963"
+              ]
+            },
+            "isMultimodal": false
+          },
+          "id": "wa-1755343289549E-IJTp70QVOkE-oqFWjxa",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "finance_specialist",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-16T11:22:35.946Z",
+          "updatedAt": "2025-08-16T11:22:35.946Z",
+          "data": {
+            "systemMessage": "You are the finance specialist with deep expertise in personal finance, investments, banking, budgeting, financial planning, taxes, economics, and business finance.\n\n    When responding to queries in your domain:\n    1. Provide accurate financial information and advice based on sound financial principles\n    2. Explain financial concepts clearly without excessive jargon\n    3. Present balanced perspectives on financial decisions, acknowledging risks and benefits\n    4. Avoid making specific investment recommendations but provide educational information about investment types\n    5. Include relevant financial principles, terms, or calculations when appropriate\n\n    Focus on being informative, balanced, and helpful. If a query contains elements outside your domain of expertise, focus on the financial aspects while acknowledging the broader context.\n\n    Use the provide_finance_response tool to submit your final response.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-1755342668059PSWiSqiASAWiArTbkrD7f"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755342352253hTMIreWJYt9mSnP55qNQ6",
+                "executorId": "wa-1755343355946G4x3AqjFvuNQnOlUwi8Vc"
+              }
+            ],
+            "parentId": "wa-1755341682370hwoAITot4PIR7mJqBSPAx",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "AgentTarget",
+              "value": [
+                "wa-17553425783958GbDZVdfqcReqn4VtB963"
+              ]
+            },
+            "isMultimodal": false
+          },
+          "id": "wa-1755343355946G4x3AqjFvuNQnOlUwi8Vc",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "healthcare_specialist",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-16T11:22:35.946Z",
+          "updatedAt": "2025-08-16T11:22:35.946Z",
+          "data": {
+            "systemMessage": "You are the healthcare specialist with deep expertise in health, medicine, fitness, nutrition, diseases, medical conditions, and wellness.\n\n    When responding to queries in your domain:\n    1. Provide accurate health information based on current medical understanding\n    2. Explain medical concepts in clear, accessible language\n    3. Include preventive advice and best practices for health management when appropriate\n    4. Reference relevant health principles, systems, or processes\n    5. Always clarify that you're providing general information, not personalized medical advice\n\n    Focus on being informative, accurate, and helpful. If a query contains elements outside your domain of expertise, focus on the health aspects while acknowledging the broader context.\n\n    Use the provide_healthcare_response tool to submit your final response.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-1755342668059PSWiSqiASAWiArTbkrD7f"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755342396133MkKiklORGV4UupPjWw2Eb",
+                "executorId": "1755343404175mOdCZFxu3CKaS6-hYwZBM"
+              }
+            ],
+            "parentId": "wa-1755341682370hwoAITot4PIR7mJqBSPAx",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "AgentTarget",
+              "value": [
+                "wa-17553425783958GbDZVdfqcReqn4VtB963"
+              ]
+            },
+            "isMultimodal": false
+          },
+          "id": "1755343404175mOdCZFxu3CKaS6-hYwZBM",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "general_specialist",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-16T11:22:35.946Z",
+          "updatedAt": "2025-08-16T11:22:35.946Z",
+          "data": {
+            "systemMessage": "You are the general knowledge specialist with broad expertise across multiple domains and topics.\n\n    When responding to queries in your domain:\n    1. Provide comprehensive information drawing from relevant knowledge domains\n    2. Handle questions that span multiple domains or don't clearly fit into a specialized area\n    3. Synthesize information from different fields when appropriate\n    4. Provide balanced perspectives on complex topics\n    5. Address queries about history, culture, society, ethics, environment, education, arts, and other general topics\n\n    Focus on being informative, balanced, and helpful. For questions that might benefit from deeper domain expertise, acknowledge this while providing the best general information possible.\n\n    Use the provide_general_response tool to submit your final response.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-1755342668059PSWiSqiASAWiArTbkrD7f"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755342448694Ef18jMuOWUM7Uigq4RExG",
+                "executorId": "1755343495199g8XmePFmKbZOSdOXQmwHd"
+              }
+            ],
+            "parentId": "wa-1755341682370hwoAITot4PIR7mJqBSPAx",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "AgentTarget",
+              "value": [
+                "wa-17553425783958GbDZVdfqcReqn4VtB963"
+              ]
+            },
+            "isMultimodal": false
+          },
+          "id": "1755343495199g8XmePFmKbZOSdOXQmwHd",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "docAgents": []
+    },
+    "models": [
+      {
+        "id": "wm-1755342668059PSWiSqiASAWiArTbkrD7f",
+        "type": "model",
+        "name": "gpt-4.1-mini",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-16T11:11:08.059Z",
+        "updatedAt": "2025-08-18T14:35:40.482Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [
+      {
+        "id": "wt-1755341956385bxbAFmdMLtx6IuzIlmXCI",
+        "type": "tool",
+        "name": "analyze_request",
+        "description": "Analyze a user request to determine routing based on content. Updates context variables with routing information",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-16T10:59:16.385Z",
+        "updatedAt": "2025-08-16T11:00:50.830Z",
+        "data": {
+          "content": "from autogen.agentchat.group.targets.transition_target import AgentTarget, AgentNameTarget, RevertToUserTarget\nfrom autogen.agentchat.group import ReplyResult, ContextVariables, ExpressionContextCondition, ExpressionAvailableCondition, ContextExpression, OnContextCondition\n\n\ndef analyze_request(\n    request: Annotated[str, \"The user request text to analyze\"],\n    context_variables: ContextVariables\n) -> ReplyResult:\n    \"\"\"\n    Analyze a user request to determine routing based on content\n    Updates context variables with routing information\n    \"\"\"\n    context_variables[\"question_answered\"] = False\n\n    # Update request tracking\n    context_variables[\"routing_started\"] = True\n    context_variables[\"request_count\"] += 1\n    context_variables[\"current_request\"] = request\n\n    # Previous domain becomes part of history\n    if context_variables[\"current_domain\"]:\n        prev_domain = context_variables[\"current_domain\"]\n        context_variables[\"previous_domains\"].append(prev_domain)\n        if prev_domain in context_variables[\"domain_history\"]:\n            context_variables[\"domain_history\"][prev_domain] += 1\n        else:\n            context_variables[\"domain_history\"][prev_domain] = 1\n\n    # Reset current_domain to be determined by the router\n    context_variables[\"current_domain\"] = None\n\n    return ReplyResult(\n        message=f\"Request analyzed. Will determine the best specialist to handle: '{request}'\",\n        context_variables=context_variables\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-175534205365953LaMMEjWoPFutG0npBmV",
+        "type": "tool",
+        "name": "route_to_tech_specialist",
+        "description": "Route the current request to the technology specialist",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-16T11:00:53.659Z",
+        "updatedAt": "2025-08-16T11:01:48.522Z",
+        "data": {
+          "content": "from autogen.agentchat.group.targets.transition_target import AgentTarget, AgentNameTarget, RevertToUserTarget\nfrom autogen.agentchat.group import ReplyResult, ContextVariables, ExpressionContextCondition, ExpressionAvailableCondition, ContextExpression, OnContextCondition\n\ndef route_to_tech_specialist(\n    confidence: Annotated[int, \"Confidence level for tech domain (1-10)\"],\n    reasoning: Annotated[str, \"Reasoning for routing to tech specialist\"],\n    context_variables: ContextVariables\n) -> ReplyResult:\n    \"\"\"\n    Route the current request to the technology specialist\n    \"\"\"\n    context_variables[\"current_domain\"] = \"technology\"\n    context_variables[\"domain_confidence\"][\"technology\"] = confidence\n    context_variables[\"tech_invocations\"] += 1\n\n    return ReplyResult(\n        target=AgentTarget(agent=tech_specialist),\n        message=f\"Routing to tech specialist with confidence {confidence}/10. Reasoning: {reasoning}\",\n        context_variables=context_variables\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755342123506IAviVbRr3mPnj-4Nw_sdc",
+        "type": "tool",
+        "name": "route_to_finance_specialist",
+        "description": "Route the current request to the finance specialist",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-16T11:02:03.506Z",
+        "updatedAt": "2025-08-16T11:12:43.686Z",
+        "data": {
+          "content": "def route_to_finance_specialist(\n    confidence: Annotated[int, \"Confidence level for finance domain (1-10)\"],\n    reasoning: Annotated[str, \"Reasoning for routing to finance specialist\"],\n    context_variables: ContextVariables\n) -> ReplyResult:\n    \"\"\"\n    Route the current request to the finance specialist\n    \"\"\"\n    context_variables[\"current_domain\"] = \"finance\"\n    context_variables[\"domain_confidence\"][\"finance\"] = confidence\n    context_variables[\"finance_invocations\"] += 1\n\n    return ReplyResult(\n        #target=AgentTarget(finance_specialist),\n        target=AgentNameTarget(agent_name=\"finance_specialist\"),\n        message=f\"Routing to finance specialist with confidence {confidence}/10. Reasoning: {reasoning}\",\n        context_variables=context_variables)\n    ",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755342158135ULIiKLCqny1lC88XlEllJ",
+        "type": "tool",
+        "name": "route_to_healthcare_specialist",
+        "description": "Route the current request to the healthcare specialist",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-16T11:02:38.136Z",
+        "updatedAt": "2025-08-16T11:03:28.642Z",
+        "data": {
+          "content": "def route_to_healthcare_specialist(\n    confidence: Annotated[int, \"Confidence level for healthcare domain (1-10)\"],\n    reasoning: Annotated[str, \"Reasoning for routing to healthcare specialist\"],\n    context_variables: ContextVariables\n) -> ReplyResult:\n    \"\"\"\n    Route the current request to the healthcare specialist\n    \"\"\"\n    context_variables[\"current_domain\"] = \"healthcare\"\n    context_variables[\"domain_confidence\"][\"healthcare\"] = confidence\n    context_variables[\"healthcare_invocations\"] += 1\n\n    return ReplyResult(\n        target=AgentTarget(agent=healthcare_specialist),\n        message=f\"Routing to healthcare specialist with confidence {confidence}/10. Reasoning: {reasoning}\",\n        context_variables=context_variables\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755342232111TAOtYSErat5eyplaKhD6C",
+        "type": "tool",
+        "name": "route_to_general_specialist",
+        "description": "Route the current request to the general knowledge specialist",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-16T11:03:52.111Z",
+        "updatedAt": "2025-08-16T11:04:35.339Z",
+        "data": {
+          "content": "def route_to_general_specialist(\n    confidence: Annotated[int, \"Confidence level for general domain (1-10)\"],\n    reasoning: Annotated[str, \"Reasoning for routing to general knowledge specialist\"],\n    context_variables: ContextVariables\n) -> ReplyResult:\n    \"\"\"\n    Route the current request to the general knowledge specialist\n    \"\"\"\n    context_variables[\"current_domain\"] = \"general\"\n    context_variables[\"domain_confidence\"][\"general\"] = confidence\n    context_variables[\"general_invocations\"] += 1\n\n    return ReplyResult(\n        target=AgentTarget(agent=general_specialist),\n        message=f\"Routing to general knowledge specialist with confidence {confidence}/10. Reasoning: {reasoning}\",\n        context_variables=context_variables\n    )\n",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-17553423064385VF2oYesg8mUZZ4WoTbJw",
+        "type": "tool",
+        "name": "provide_tech_response",
+        "description": "Submit a response from the technology specialist",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-16T11:05:06.438Z",
+        "updatedAt": "2025-08-16T11:05:40.500Z",
+        "data": {
+          "content": "def provide_tech_response(\n    response: Annotated[str, \"The specialist's response to the request\"],\n    context_variables: ContextVariables\n) -> ReplyResult:\n    \"\"\"\n    Submit a response from the technology specialist\n    \"\"\"\n    # Record the question and response\n    context_variables[\"question_responses\"].append({\n        \"domain\": \"technology\",\n        \"question\": context_variables[\"current_request\"],\n        \"response\": response\n    })\n    context_variables[\"question_answered\"] = True\n\n    return ReplyResult(\n        message=\"Technology specialist response provided.\",\n        context_variables=context_variables\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755342352253hTMIreWJYt9mSnP55qNQ6",
+        "type": "tool",
+        "name": "provide_finance_response",
+        "description": "Submit a response from the finance specialist",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-16T11:05:52.253Z",
+        "updatedAt": "2025-08-16T11:06:14.084Z",
+        "data": {
+          "content": "def provide_finance_response(\n    response: Annotated[str, \"The specialist's response to the request\"],\n    context_variables: ContextVariables\n) -> ReplyResult:\n    \"\"\"\n    Submit a response from the finance specialist\n    \"\"\"\n    # Record the question and response\n    context_variables[\"question_responses\"].append({\n        \"domain\": \"finance\",\n        \"question\": context_variables[\"current_request\"],\n        \"response\": response\n    })\n    context_variables[\"question_answered\"] = True\n\n    return ReplyResult(\n        message=\"Finance specialist response provided.\",\n        context_variables=context_variables\n    )\n",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755342396133MkKiklORGV4UupPjWw2Eb",
+        "type": "tool",
+        "name": "provide_healthcare_response",
+        "description": "Submit a response from the healthcare specialist",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-16T11:06:36.133Z",
+        "updatedAt": "2025-08-16T11:07:04.753Z",
+        "data": {
+          "content": "def provide_healthcare_response(\n    response: Annotated[str, \"The specialist's response to the request\"],\n    context_variables: ContextVariables\n) -> ReplyResult:\n    \"\"\"\n    Submit a response from the healthcare specialist\n    \"\"\"\n    # Record the question and response\n    context_variables[\"question_responses\"].append({\n        \"domain\": \"healthcare\",\n        \"question\": context_variables[\"current_request\"],\n        \"response\": response\n    })\n    context_variables[\"question_answered\"] = True\n\n    return ReplyResult(\n        message=\"Healthcare specialist response provided.\",\n        context_variables=context_variables\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755342448694Ef18jMuOWUM7Uigq4RExG",
+        "type": "tool",
+        "name": "provide_general_response",
+        "description": "Submit a response from the general knowledge specialist",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-16T11:07:28.694Z",
+        "updatedAt": "2025-08-16T11:07:57.092Z",
+        "data": {
+          "content": "def provide_general_response(\n    response: Annotated[str, \"The specialist's response to the request\"],\n    context_variables: ContextVariables\n) -> ReplyResult:\n    \"\"\"\n    Submit a response from the general knowledge specialist\n    \"\"\"\n    # Record the question and response\n    context_variables[\"question_responses\"].append({\n        \"domain\": \"general\",\n        \"question\": context_variables[\"current_request\"],\n        \"response\": response\n    })\n    context_variables[\"question_answered\"] = True\n\n    return ReplyResult(\n        message=\"General knowledge specialist response provided.\",\n        context_variables=context_variables\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755342497147oDXzNrbJGx_nZVg4X6zoP",
+        "type": "tool",
+        "name": "request_clarification",
+        "description": "Request clarification from the user when the query is ambiguous",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-16T11:08:17.148Z",
+        "updatedAt": "2025-08-16T11:09:09.096Z",
+        "data": {
+          "content": "# Function for follow-up clarification if needed\ndef request_clarification(\n    clarification_question: Annotated[str, \"Question to ask user for clarification\"],\n    context_variables: ContextVariables\n) -> ReplyResult:\n    \"\"\"\n    Request clarification from the user when the query is ambiguous\n    \"\"\"\n    return ReplyResult(\n        message=f\"Further clarification is required to determine the correct domain: {clarification_question}\",\n        context_variables=context_variables,\n        target=RevertToUserTarget()\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      }
+    ],
+    "chats": [
+      {
+        "id": "wc-1755341684239KSUNQR4-CQKuih00hrafc",
+        "type": "group",
+        "source": "wa-1755341680064ZIk2S3Hnbs-OrQpLjMgva",
+        "target": "wa-1755341682370hwoAITot4PIR7mJqBSPAx",
+        "data": {
+          "sourceType": "user_proxy",
+          "targetType": "group_manager",
+          "name": "askInfo",
+          "order": -1,
+          "description": "User to Manager",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "string",
+            "content": "I have a question. Can you tell me about benefits? I'm trying to understand all my options and make the right decision.",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755343752830pCXbLDjBbxeyztkwnUHru",
+        "type": "group",
+        "source": "wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "target": "wa-1755343289549E-IJTp70QVOkE-oqFWjxa",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": " techResponse",
+          "order": -1,
+          "description": "router_agent to tech_specialist",
+          "position": 2,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "${current_domain} == 'technology'"
+          },
+          "available": {
+            "type": "expression",
+            "value": "!${question_answered}"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755343874555QpVo-Rsffc-Vha56X0orf",
+        "type": "group",
+        "source": "wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "target": "wa-1755343355946G4x3AqjFvuNQnOlUwi8Vc",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "financeResponse",
+          "order": -1,
+          "description": "router_agent to finance_specialist",
+          "position": 3,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "${current_domain} == 'finance'"
+          },
+          "available": {
+            "type": "expression",
+            "value": "!${question_answered}"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755343898948LG5_Di7kwAogVOgETSZ2s",
+        "type": "group",
+        "source": "wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "target": "1755343404175mOdCZFxu3CKaS6-hYwZBM",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "healthResponse",
+          "order": -1,
+          "description": "router_agent to healthcare_specialist",
+          "position": 4,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "${current_domain} == 'healthcare'"
+          },
+          "available": {
+            "type": "expression",
+            "value": "!${question_answered}"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755343903179Pgpw0UVaQq8U80osWIqa9",
+        "type": "group",
+        "source": "wa-17553425783958GbDZVdfqcReqn4VtB963",
+        "target": "1755343495199g8XmePFmKbZOSdOXQmwHd",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "generalResponse",
+          "order": -1,
+          "description": "router_agent to general_specialist",
+          "position": 5,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "${current_domain} == 'general'"
+          },
+          "available": {
+            "type": "expression",
+            "value": "!${question_answered}"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": 42,
+    "silent": false
+  }
+}

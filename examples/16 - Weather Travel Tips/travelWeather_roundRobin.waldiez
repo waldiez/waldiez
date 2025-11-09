@@ -1,0 +1,610 @@
+{
+  "id": "id-a35bab61-b042-40f6-beec-24a2d7cd924e",
+  "type": "flow",
+  "version": "0.6.1",
+  "storageId": "wf-1750765176648stPd3Agvx5FqouIKo96p2",
+  "name": "Weather sightseeing",
+  "description": "A group chat workflow checking whether the weather conditions are fine for visiting a specified site at a specified date. It contains an agent capable of retrieving the temperature at real-time.",
+  "tags": [
+    "Weather",
+    "Travel",
+    "Group"
+  ],
+  "requirements": [],
+  "createdAt": "2025-06-24T11:39:36.648Z",
+  "updatedAt": "2025-06-26T12:24:16.931Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-17509391277268V-GFV52Gv6qubUVDQIFW",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "selected": false,
+        "hidden": true
+      },
+      {
+        "id": "wt-1750939139362dfjV8Df0hfKVSZ-I8babh",
+        "type": "tool",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "hidden": true
+      },
+      {
+        "id": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+        "type": "agent",
+        "style": {
+          "width": 490
+        },
+        "position": {
+          "x": 390,
+          "y": 210
+        },
+        "measured": {
+          "width": 550,
+          "height": 335
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "width": 550,
+        "height": 335,
+        "resizing": false
+      },
+      {
+        "id": "wa-17507652140771vZQyMQXODpP0Az2wIUEM",
+        "type": "agent",
+        "style": {
+          "width": 130
+        },
+        "position": {
+          "x": 150,
+          "y": 330
+        },
+        "measured": {
+          "width": 130,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false
+      },
+      {
+        "id": "wa-1750765215534eqh-4exE_Bsr9Suy7t8ml",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 330,
+          "y": 30
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "className": "",
+        "selected": false,
+        "hidden": false,
+        "dragging": false,
+        "extent": "parent",
+        "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2"
+      },
+      {
+        "id": "wa-1750768105453ow37ZwTe1Alg8y1A54jd5",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 100,
+          "y": 190
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2"
+      },
+      {
+        "id": "wa-1750769182526RKl73IPAMvERVGPjvgSYB",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 105,
+          "y": 30
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2"
+      },
+      {
+        "id": "1750781203884xse05ojy5UTB9SRQTqnRT",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 330,
+          "y": 195
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": true,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2"
+      }
+    ],
+    "edges": [
+      {
+        "id": "wc-1750768798196-w1Jg4C8CxWJ-5O8beM-c",
+        "source": "wa-17507652140771vZQyMQXODpP0Az2wIUEM",
+        "target": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-17507652140771vZQyMQXODpP0Az2wIUEM",
+        "targetHandle": "agent-handle-left-target-wa-1750768072864H674JRW667rbSPKXtaiy2"
+      }
+    ],
+    "viewport": {
+      "x": -28.86835443037978,
+      "y": -172.56202531645567,
+      "zoom": 0.9964556962025316
+    },
+    "agents": {
+      "groupManagerAgents": [
+        {
+          "type": "agent",
+          "name": "Manager",
+          "description": "The group manager agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-24T12:27:52.864Z",
+          "updatedAt": "2025-06-24T12:27:52.864Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "maxRound": 20,
+            "adminName": null,
+            "speakers": {
+              "selectionMethod": "round_robin",
+              "selectionCustomMethod": "",
+              "maxRetriesForSelecting": 2,
+              "selectionMode": "repeat",
+              "allowRepeat": true,
+              "allowedOrDisallowedTransitions": {},
+              "transitionsType": "allowed",
+              "order": []
+            },
+            "enableClearHistory": false,
+            "sendIntroductions": false,
+            "initialAgentId": "wa-1750769182526RKl73IPAMvERVGPjvgSYB",
+            "groupName": "Group"
+          },
+          "id": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+          "agentType": "group_manager"
+        }
+      ],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User",
+          "description": "A new User agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-24T11:40:14.077Z",
+          "updatedAt": "2025-06-24T11:40:14.077Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-17507652140771vZQyMQXODpP0Az2wIUEM",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "Engineer_Agent",
+          "description": "An engineer agent, capable of writing code\n",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-24T11:40:15.535Z",
+          "updatedAt": "2025-06-24T11:40:15.535Z",
+          "data": {
+            "systemMessage": "You are a software engineer, write some python code to fulfil the requests. Do not use code that wants API keys to be executed, use only requests lib.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-17509391277268V-GFV52Gv6qubUVDQIFW"
+            ],
+            "tools": [],
+            "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "wa-1750765215534eqh-4exE_Bsr9Suy7t8ml",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Executor",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-24T12:28:25.453Z",
+          "updatedAt": "2025-06-24T12:28:25.453Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": {
+              "workDir": "coding",
+              "timeout": 44,
+              "functions": []
+            },
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "wa-1750768105453ow37ZwTe1Alg8y1A54jd5",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Weather_Agent",
+          "description": "A weather agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-24T12:46:22.526Z",
+          "updatedAt": "2025-06-24T12:46:22.526Z",
+          "data": {
+            "systemMessage": "Ask the rest of the group to get the weather conditions of the time and place of interest.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-17509391277268V-GFV52Gv6qubUVDQIFW"
+            ],
+            "tools": [],
+            "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": true
+          },
+          "id": "wa-1750769182526RKl73IPAMvERVGPjvgSYB",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Safety_Agent",
+          "description": "A weather safety agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-24T12:46:22.526Z",
+          "updatedAt": "2025-06-24T12:46:22.526Z",
+          "data": {
+            "systemMessage": "Check if the weather it is safe in terms of high temperatures for someone to visit a place.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-17509391277268V-GFV52Gv6qubUVDQIFW"
+            ],
+            "tools": [],
+            "parentId": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1750781203884xse05ojy5UTB9SRQTqnRT",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "docAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-17509391277268V-GFV52Gv6qubUVDQIFW",
+        "type": "model",
+        "name": "gpt-4.1",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-26T11:58:47.726Z",
+        "updatedAt": "2025-06-26T12:23:52.055Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": "REPLACE_ME",
+            "accessKey": "REPLACE_ME",
+            "secretKey": "REPLACE_ME",
+            "sessionToken": "REPLACE_ME",
+            "profileName": "REPLACE_ME"
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [
+      {
+        "id": "wt-1750939139362dfjV8Df0hfKVSZ-I8babh",
+        "type": "tool",
+        "name": "new_tool",
+        "description": "A new tool",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-26T11:58:59.362Z",
+        "updatedAt": "2025-06-26T11:58:59.362Z",
+        "data": {
+          "content": "\n\"\"\"Replace this with your code.\n\nmake sure a function with the same name\nas the tool is defined in the code.\n\"\"\"\n\n# Example:\n# tool name: 'new_tool'\n#\n# def new_tool() -> str:\n#     \"\"\"Tool entry point.\"\"\"\n#     return \"Hello, world!\"\n#\n# Add your code below\n\ndef new_tool() -> None:\n    \"\"\"Tool entry point.\"\"\"\n    ...\n",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      }
+    ],
+    "chats": [
+      {
+        "id": "wc-1750768798196-w1Jg4C8CxWJ-5O8beM-c",
+        "type": "group",
+        "source": "wa-17507652140771vZQyMQXODpP0Az2wIUEM",
+        "target": "wa-1750768072864H674JRW667rbSPKXtaiy2",
+        "data": {
+          "sourceType": "user_proxy",
+          "targetType": "group_manager",
+          "name": "travelInfo",
+          "order": -1,
+          "description": "User to Manager",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "string",
+            "content": "I want to go to Acropolis tomorrow at 3PM",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": null,
+    "silent": false
+  }
+}

@@ -1,0 +1,323 @@
+{
+  "id": "id-081f43b0-f5c7-4b74-9dd7-2c6a8f4bde81",
+  "type": "flow",
+  "version": "0.6.1",
+  "storageId": "wf-17513622917494lqGbKY_Q3O1_IQ37hpBi",
+  "name": "A example waldiez flow using tavily search",
+  "description": "A example waldiez flow using tavily search",
+  "tags": [
+    "websearch"
+  ],
+  "requirements": [],
+  "createdAt": "2025-07-01T09:31:31.749Z",
+  "updatedAt": "2025-07-02T11:38:33.288Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-1751363152961A6hsXaYhaxbaXIeB8tJUg",
+        "type": "model",
+        "position": {
+          "x": 20,
+          "y": 20
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1751363184180UJCsY4IXqZu4Vud6FRELG",
+        "type": "tool",
+        "position": {
+          "x": 20,
+          "y": 20
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wa-1751363205470KFUqHtpFaihaFhde0aIQZ",
+        "type": "agent",
+        "style": {
+          "width": 130
+        },
+        "position": {
+          "x": 41,
+          "y": 280
+        },
+        "measured": {
+          "width": 130,
+          "height": 120
+        },
+        "selected": true,
+        "hidden": false,
+        "className": ""
+      },
+      {
+        "id": "wa-1751363204181iSk2446X3Bm4AAtC--yw5",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 360,
+          "y": 285
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": false,
+        "dragging": false,
+        "className": ""
+      }
+    ],
+    "edges": [
+      {
+        "id": "wc-1751363207185nqntC5N2Qdz8Z4qvAwLzr",
+        "source": "wa-1751363205470KFUqHtpFaihaFhde0aIQZ",
+        "target": "wa-1751363204181iSk2446X3Bm4AAtC--yw5",
+        "type": "chat",
+        "hidden": false,
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1751363205470KFUqHtpFaihaFhde0aIQZ",
+        "targetHandle": "agent-handle-left-target-wa-1751363204181iSk2446X3Bm4AAtC--yw5"
+      }
+    ],
+    "viewport": {
+      "x": 6.655310621242506,
+      "y": -36.90380761523045,
+      "zoom": 0.8376753507014028
+    },
+    "agents": {
+      "groupManagerAgents": [],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User",
+          "description": "A new User agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-07-01T09:46:45.470Z",
+          "updatedAt": "2025-07-01T09:46:45.470Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-1751363205470KFUqHtpFaihaFhde0aIQZ",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "Assistant",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-07-01T09:46:44.181Z",
+          "updatedAt": "2025-07-01T09:46:44.181Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1751363152961A6hsXaYhaxbaXIeB8tJUg"
+            ],
+            "tools": [
+              {
+                "id": "wt-1751363184180UJCsY4IXqZu4Vud6FRELG",
+                "executorId": "wa-1751363205470KFUqHtpFaihaFhde0aIQZ"
+              }
+            ],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "wa-1751363204181iSk2446X3Bm4AAtC--yw5",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "docAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-1751363152961A6hsXaYhaxbaXIeB8tJUg",
+        "type": "model",
+        "name": "gpt-4.1",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-07-01T09:45:52.961Z",
+        "updatedAt": "2025-07-01T09:46:21.113Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": "REPLACE_ME",
+            "accessKey": "REPLACE_ME",
+            "secretKey": "REPLACE_ME",
+            "sessionToken": "REPLACE_ME",
+            "profileName": "REPLACE_ME"
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [
+      {
+        "id": "wt-1751363184180UJCsY4IXqZu4Vud6FRELG",
+        "type": "tool",
+        "name": "tavily_search",
+        "description": "Search Tavily for a given query.",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-07-01T09:46:24.180Z",
+        "updatedAt": "2025-07-01T09:46:39.407Z",
+        "data": {
+          "content": "",
+          "toolType": "predefined",
+          "secrets": {
+            "TAVILY_API_KEY": "REPLACE_ME"
+          },
+          "kwargs": {}
+        }
+      }
+    ],
+    "chats": [
+      {
+        "id": "wc-1751363207185nqntC5N2Qdz8Z4qvAwLzr",
+        "type": "chat",
+        "source": "wa-1751363205470KFUqHtpFaihaFhde0aIQZ",
+        "target": "wa-1751363204181iSk2446X3Bm4AAtC--yw5",
+        "data": {
+          "sourceType": "user_proxy",
+          "targetType": "assistant",
+          "name": "webSearch",
+          "order": 0,
+          "description": "User to Assistant",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": 4,
+          "message": {
+            "type": "string",
+            "content": "Who won the nba title in 2025?",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": 42,
+    "silent": false
+  }
+}

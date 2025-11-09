@@ -1,0 +1,556 @@
+{
+  "id": "wf-LK_YLIqsyKHjbVTa0G_9-",
+  "type": "flow",
+  "version": "0.6.1",
+  "storageId": "wf-LK_YLIqsyKHjbVTa0G_9-",
+  "name": "RAG",
+  "description": "Group Chat with Retrieval Augmented Generation.",
+  "tags": [
+    "RAG",
+    "FLAML"
+  ],
+  "requirements": [],
+  "createdAt": "2025-06-03T18:14:19.410Z",
+  "updatedAt": "2025-06-03T18:24:04.247Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wt-1748974473511WL8YJcqpK5uk8Ut5aqnKR",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 182,
+          "height": 182
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wa-1748974470241e79x9npCaUSvNc6cDUhLM",
+        "type": "agent",
+        "style": {
+          "width": 490
+        },
+        "position": {
+          "x": 465,
+          "y": 120
+        },
+        "measured": {
+          "width": 720,
+          "height": 620
+        },
+        "selected": true,
+        "dragging": false,
+        "className": "",
+        "hidden": false,
+        "width": 720,
+        "height": 620,
+        "resizing": false
+      },
+      {
+        "id": "wa-1748974502257qBQggiOR_efpn4OVbGX1F",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 100,
+          "y": 40
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "className": "",
+        "selected": false,
+        "parentId": "wa-1748974470241e79x9npCaUSvNc6cDUhLM"
+      },
+      {
+        "id": "1748974593259gYCLzPhPL5MQ9ptBXEh7m",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 255,
+          "y": 345
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "className": "",
+        "selected": false,
+        "dragging": false,
+        "parentId": "wa-1748974470241e79x9npCaUSvNc6cDUhLM"
+      },
+      {
+        "id": "1748974648206t4VXaV1-dgVvMSnZ7nP-G",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 450,
+          "y": 45
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 200,
+          "height": 215
+        },
+        "className": "",
+        "selected": false,
+        "dragging": false,
+        "parentId": "wa-1748974470241e79x9npCaUSvNc6cDUhLM"
+      },
+      {
+        "id": "wa-1748974492490Nqw4k9MROZDZ-eOf20Kfq",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 60,
+          "y": 420
+        },
+        "measured": {
+          "width": 204,
+          "height": 211
+        },
+        "selected": false,
+        "dragging": false,
+        "className": ""
+      }
+    ],
+    "edges": [
+      {
+        "id": "wc-1748974497653sb-z07KDe0ZZGD5zu1Ctj",
+        "source": "wa-1748974492490Nqw4k9MROZDZ-eOf20Kfq",
+        "target": "wa-1748974470241e79x9npCaUSvNc6cDUhLM",
+        "type": "group",
+        "hidden": false,
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#e34561",
+          "width": 10,
+          "height": 10
+        },
+        "style": {
+          "stroke": "#e34561",
+          "strokeWidth": 1
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1748974492490Nqw4k9MROZDZ-eOf20Kfq",
+        "targetHandle": "agent-handle-left-target-wa-1748974470241e79x9npCaUSvNc6cDUhLM"
+      }
+    ],
+    "viewport": {
+      "x": 20,
+      "y": 40,
+      "zoom": 1
+    },
+    "agents": {
+      "groupManagerAgents": [
+        {
+          "type": "agent",
+          "name": "Manager",
+          "description": "The group manager agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-03T18:14:30.241Z",
+          "updatedAt": "2025-06-03T18:14:30.241Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wt-1748974473511WL8YJcqpK5uk8Ut5aqnKR"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "maxRound": 20,
+            "adminName": null,
+            "speakers": {
+              "selectionMethod": "round_robin",
+              "selectionCustomMethod": "",
+              "maxRetriesForSelecting": null,
+              "selectionMode": "repeat",
+              "allowRepeat": true,
+              "allowedOrDisallowedTransitions": {},
+              "transitionsType": "allowed",
+              "order": []
+            },
+            "enableClearHistory": false,
+            "sendIntroductions": false,
+            "initialAgentId": "1748974593259gYCLzPhPL5MQ9ptBXEh7m",
+            "groupName": "Group"
+          },
+          "id": "wa-1748974470241e79x9npCaUSvNc6cDUhLM",
+          "agentType": "group_manager"
+        }
+      ],
+      "userProxyAgents": [],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "Senior Python Engineer",
+          "description": "Senior Python Engineer",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-03T18:15:02.257Z",
+          "updatedAt": "2025-06-03T18:15:02.257Z",
+          "data": {
+            "systemMessage": "You are a senior python engineer, you provide python code to answer questions. Reply 'TERMINATE' in the end when everything is done.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "keyword",
+              "keywords": [
+                "TERMINATE"
+              ],
+              "criterion": "ending",
+              "methodContent": ""
+            },
+            "modelIds": [
+              "wt-1748974473511WL8YJcqpK5uk8Ut5aqnKR"
+            ],
+            "tools": [],
+            "parentId": "wa-1748974470241e79x9npCaUSvNc6cDUhLM",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "wa-1748974502257qBQggiOR_efpn4OVbGX1F",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Product Manager",
+          "description": "Product Manager who can design and plan the project.",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-03T18:15:02.257Z",
+          "updatedAt": "2025-06-03T18:15:02.257Z",
+          "data": {
+            "systemMessage": "You are a product manager. Reply 'TERMINATE' in the end when everything is done.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "keyword",
+              "keywords": [
+                "TERMINATE"
+              ],
+              "criterion": "ending",
+              "methodContent": ""
+            },
+            "modelIds": [
+              "wt-1748974473511WL8YJcqpK5uk8Ut5aqnKR"
+            ],
+            "tools": [],
+            "parentId": "wa-1748974470241e79x9npCaUSvNc6cDUhLM",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1748974593259gYCLzPhPL5MQ9ptBXEh7m",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "Code Reviewer",
+          "description": "Code Reviewer who can review the code.",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-03T18:15:02.257Z",
+          "updatedAt": "2025-06-03T18:15:02.257Z",
+          "data": {
+            "systemMessage": "You are a code reviewer. Reply 'TERMINATE' in the end when everything is done.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "keyword",
+              "keywords": [
+                "TERMINATE"
+              ],
+              "criterion": "ending",
+              "methodContent": ""
+            },
+            "modelIds": [
+              "wt-1748974473511WL8YJcqpK5uk8Ut5aqnKR"
+            ],
+            "tools": [],
+            "parentId": "wa-1748974470241e79x9npCaUSvNc6cDUhLM",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1748974648206t4VXaV1-dgVvMSnZ7nP-G",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [
+        {
+          "type": "agent",
+          "name": "Boss Assistant",
+          "description": "Assistant who has extra content retrieval power for solving difficult problems.",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-06-03T18:14:52.490Z",
+          "updatedAt": "2025-06-03T18:14:52.490Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": "Reply 'TERMINATE' if the task is done.",
+            "maxConsecutiveAutoReply": 3,
+            "termination": {
+              "type": "keyword",
+              "keywords": [
+                "TERMINATE"
+              ],
+              "criterion": "ending",
+              "methodContent": ""
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "retrieveConfig": {
+              "task": "default",
+              "vectorDb": "chroma",
+              "dbConfig": {
+                "model": "all-MiniLM-L6-v2",
+                "useMemory": false,
+                "useLocalStorage": false,
+                "localStoragePath": null,
+                "connectionUrl": null,
+                "waitUntilIndexReady": null,
+                "waitUntilDocumentReady": null,
+                "metadata": null
+              },
+              "docsPath": [
+                "https://raw.githubusercontent.com/microsoft/FLAML/main/website/docs/Examples/Integrate%20-%20Spark.md"
+              ],
+              "newDocs": true,
+              "model": null,
+              "chunkTokenSize": null,
+              "contextMaxTokens": null,
+              "chunkMode": "multi_lines",
+              "mustBreakAtEmptyLine": true,
+              "useCustomEmbedding": false,
+              "embeddingFunction": null,
+              "customizedPrompt": null,
+              "customizedAnswerPrefix": null,
+              "updateContext": true,
+              "collectionName": "autogen-docs",
+              "getOrCreate": true,
+              "overwrite": false,
+              "useCustomTokenCount": false,
+              "customTokenCountFunction": null,
+              "useCustomTextSplit": false,
+              "customTextSplitFunction": null,
+              "customTextTypes": [],
+              "recursive": true,
+              "distanceThreshold": -1,
+              "nResults": null
+            }
+          },
+          "id": "wa-1748974492490Nqw4k9MROZDZ-eOf20Kfq",
+          "agentType": "rag_user_proxy"
+        }
+      ],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "docAgents": []
+    },
+    "models": [
+      {
+        "id": "wt-1748974473511WL8YJcqpK5uk8Ut5aqnKR",
+        "type": "model",
+        "name": "gpt-4.1",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-06-03T18:14:33.511Z",
+        "updatedAt": "2025-06-03T18:14:49.259Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": "REPLACE_ME",
+            "accessKey": "REPLACE_ME",
+            "secretKey": "REPLACE_ME",
+            "sessionToken": "REPLACE_ME",
+            "profileName": "REPLACE_ME"
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [],
+    "chats": [
+      {
+        "id": "wc-1748974497653sb-z07KDe0ZZGD5zu1Ctj",
+        "type": "group",
+        "source": "wa-1748974492490Nqw4k9MROZDZ-eOf20Kfq",
+        "target": "wa-1748974470241e79x9npCaUSvNc6cDUhLM",
+        "data": {
+          "sourceType": "user_proxy",
+          "targetType": "group_manager",
+          "name": "Boss Assistant => Manager",
+          "order": -1,
+          "description": "The boss asks the manager about parallel training in FLAML.",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "rag_message_generator",
+            "content": null,
+            "context": {
+              "problem": "How to use spark for parallel training in FLAML? Give me sample code."
+            },
+            "useCarryover": true
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {}
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": 42,
+    "silent": false
+  }
+}
