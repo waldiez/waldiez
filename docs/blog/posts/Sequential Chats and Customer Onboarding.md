@@ -128,5 +128,5 @@ Before running the flow, make sure the execution order is configured:
 
 Files used in this example:
 
-- Waldiez flow: [On-boarding.waldiez](https://github.com/waldiez/blob/main/examples/02%20-%20On-boarding/On-boarding.waldiez)
-- Generated notebook: [On-boarding.ipynb](https://github.com/waldiez/blob/main/examples/02%20-%20On-boarding/On-boarding.ipynb)
+- Waldiez flow: [On-boarding.waldiez](https://github.com/waldiez/waldiez/blob/main/examples/02%20-%20On-boarding/On-boarding.waldiez)
+- Generated notebook: [On-boarding.ipynb](https://github.com/waldiez/waldiez/blob/main/examples/02%20-%20On-boarding/On-boarding.ipynb)

@@ -439,7 +439,7 @@ If you would like to contribute code changes, please follow these steps:
 
 ## Contributor License Agreement (CLA)
 
-By submitting code changes, you agree to the terms of our [Contributor License Agreement (CLA)](https://github.com/waldiez/waldiez/blob/main//governance/CLA.md). Please read the CLA carefully before submitting your changes. If you have any questions or concerns about the CLA, please contact us, and we will be happy to help you.
+By submitting code changes, you agree to the terms of our [Contributor License Agreement (CLA)](https://github.com/waldiez/waldiez/blob/main/governance/CLA.md). Please read the CLA carefully before submitting your changes. If you have any questions or concerns about the CLA, please contact us, and we will be happy to help you.
 
 ## Developer Certificate of Origin (DCO)
 
