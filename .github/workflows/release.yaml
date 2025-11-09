@@ -46,7 +46,7 @@ jobs:
           mv docs/reference/react dist/react/docs
 
       - name: Store the distribution packages
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: waldiez-react
           path: dist/react
@@ -79,7 +79,7 @@ jobs:
           python -m twine check dist/python/*
 
       - name: Download the react docs artifact
-        uses: actions/download-artifact@v5.0.0
+        uses: actions/download-artifact@v6.0.0
         with:
           name: waldiez-react
           path: dist/react
@@ -93,7 +93,7 @@ jobs:
           mv site dist/python/docs
 
       - name: Store the distribution packages
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: waldiez-python
           path: |
@@ -113,13 +113,13 @@ jobs:
         uses: oven-sh/setup-bun@v2.0.2
 
       - name: Download artifact from react package
-        uses: actions/download-artifact@v5.0.0
+        uses: actions/download-artifact@v6.0.0
         with:
           name: waldiez-react
           path: dist/react
 
       - name: Download artifact from python package
-        uses: actions/download-artifact@v5.0.0
+        uses: actions/download-artifact@v6.0.0
         with:
           name: waldiez-python
           path: dist/python
@@ -134,7 +134,7 @@ jobs:
           mv dist/python/* dist/waldiez
 
       - name: Sign with Sigstore
-        uses: sigstore/gh-action-sigstore-python@v3.0.1
+        uses: sigstore/gh-action-sigstore-python@v3.1.0
         with:
           inputs: >-
             dist/waldiez/*.whl
@@ -215,7 +215,7 @@ jobs:
 
       - name: Store artifacts (Dry Run Mode)
         if: github.event.inputs.dry_run == 'true'
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v5.0.0
         with:
           name: waldiez
           path: dist
