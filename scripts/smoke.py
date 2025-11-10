@@ -365,6 +365,9 @@ def diff_has_path_changes(file_path: str) -> bool:
             return False
         if remaining.startswith('"."') or remaining.startswith("'."):
             return False  # relative
+        if remaining.startswith('\\"chroma\\",\\n"'):
+            return False
+        print(remaining[:100])
         return True
     return False
 
@@ -495,10 +498,10 @@ def check_diffs(output_ipynb_path: str, output_py_path: str) -> None:
             pass
     if diff_has_path_changes(output_ipynb_path):
         LOG.warning("The converted .ipynb file has path changes.")
-        try:
-            git_restore(output_ipynb_path)
-        except BaseException:
-            pass
+        # try:
+        #     git_restore(output_ipynb_path)
+        # except BaseException:
+        #     pass
     if diff_has_path_changes(output_py_path):
         LOG.warning("The converted .py file has path changes.")
         try:
