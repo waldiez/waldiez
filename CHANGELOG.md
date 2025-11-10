@@ -5,9 +5,9 @@ The contents of each release will be used in
 "gh release create"
  -->
 
-## Unreleased
+## v0.6.2
 
-- Updated ag2 dependency to 0.10.0
+- Added checkpoints support in the step-by-step runner for group chats
 - Updated jupyter dependencies to 4.4.10
 - UI minor enhancements
 - Bug fixes and enhancements
