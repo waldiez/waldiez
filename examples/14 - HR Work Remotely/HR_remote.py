@@ -81,7 +81,10 @@ from autogen.agentchat.group import (
 from autogen.agentchat.group.patterns import DefaultPattern
 from autogen.agentchat.group.patterns.pattern import Pattern
 from autogen.events import BaseEvent
-from autogen.io.run_response import AsyncRunResponseProtocol, RunResponseProtocol
+from autogen.io.run_response import (
+    AsyncRunResponseProtocol,
+    RunResponseProtocol,
+)
 import numpy as np
 from dotenv import load_dotenv
 from google.auth.transport.requests import Request
@@ -243,8 +246,8 @@ def login_by_username(
         context_variables["logged_in"] = True
         context_variables["requires_login"] = False
         context_variables["defined_department"] = True
-        context_variables["manager_name"] = department["manager"]
-        context_variables["manager_email"] = department["manager_email"]
+        context_variables["manager_name"] = department['manager']
+        context_variables["manager_email"] = department['manager_email']
         context_variables["max_remote_days"] = department["max_remote_days"]
         return ReplyResult(
             context_variables=context_variables,
@@ -316,19 +319,21 @@ def gmail_send_function(
     try:
         # Gmail API setup directly within the function
         SCOPES = [
-            "https://mail.google.com/",  # Full access to Gmail account
-            "https://www.googleapis.com/auth/gmail.send",  # Send-only access\
+            'https://mail.google.com/',  # Full access to Gmail account
+            'https://www.googleapis.com/auth/gmail.send',  # Send-only access\
         ]
 
         creds = None
         # Try to load existing credentials if available
-        token_path = "token.json"
+        token_path = 'token.json'
         # Check if token.json exists and contains valid credentials
         if os.path.exists(token_path):
             try:
-                with open(token_path, "r") as token_file:
+                with open(token_path, 'r') as token_file:
                     token_data = json.load(token_file)
-                creds = Credentials.from_authorized_user_info(token_data, SCOPES)
+                creds = Credentials.from_authorized_user_info(
+                    token_data, SCOPES
+                )
             except Exception as e:
                 print(f"Error loading token file: {str(e)}")
 
@@ -342,31 +347,31 @@ def gmail_send_function(
                 # Only trigger OAuth flow if we have no valid credentials
                 print("No valid credentials found, starting OAuth flow...")
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    "C:/Users/pathToFile/credentials.json", SCOPES
+                    'C:/Users/pathToFile/credentials.json', SCOPES
                 )
                 creds = flow.run_local_server(port=0)
                 print("Successfully authenticated with Gmail API")
 
             # Save the credentials for future runs
-            with open(token_path, "w") as token:
+            with open(token_path, 'w') as token:
                 token.write(creds.to_json())
                 print(f"Saved credentials to {token_path}")
         else:
             print("Using existing valid credentials")
 
         # Build the service
-        service = build("gmail", "v1", credentials=creds)
+        service = build('gmail', 'v1', credentials=creds)
 
         # Create a more complete message
         message = MIMEText(message_text)
-        message["to"] = recipient_email
-        message["subject"] = subject
+        message['to'] = recipient_email
+        message['subject'] = subject
 
         # Encode the message
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
 
         # Create the message body
-        create_message = {"raw": encoded_message}
+        create_message = {'raw': encoded_message}
 
         # Send the message
         send_message = (
@@ -375,7 +380,7 @@ def gmail_send_function(
             .send(userId=sender_email, body=create_message)
             .execute()
         )
-        context_variables["email_sent"] = True
+        context_variables['email_sent'] = True
         return ReplyResult(
             context_variables=context_variables,
             message=f"Email sent successfully to {recipient_email} with message ID: {send_message['id']}",
@@ -573,7 +578,12 @@ __INITIAL_MSG__ = "I would like to work remotely for a few days."
 
 manager_pattern = DefaultPattern(
     initial_agent=hr_triage_agent,
-    agents=[hr_triage_agent, authentication_agent, remote_policy_agent, email_agent],
+    agents=[
+        hr_triage_agent,
+        authentication_agent,
+        remote_policy_agent,
+        email_agent,
+    ],
     user_agent=user_proxy,
     group_manager_args={
         "llm_config": autogen.LLMConfig(
@@ -768,7 +778,11 @@ def store_error(exc: BaseException | None = None) -> None:
     exc : BaseException | None
         The exception we got if any.
     """
-    reason = "Event handler stopped processing" if not exc else traceback.format_exc()
+    reason = (
+        "Event handler stopped processing"
+        if not exc
+        else traceback.format_exc()
+    )
     try:
         with open("error.json", "w", encoding="utf-8", newline="\n") as file:
             file.write(json.dumps({"error": reason}))
@@ -784,7 +798,9 @@ def store_results(result_dicts: list[dict[str, Any]]) -> None:
         The list of the results.
     """
     with open("results.json", "w", encoding="utf-8", newline="\n") as file:
-        file.write(json.dumps({"results": result_dicts}, indent=4, ensure_ascii=False))
+        file.write(
+            json.dumps({'results': result_dicts}, indent=4, ensure_ascii=False)
+        )
 
 
 def _get_agent_by_name(
@@ -819,7 +835,9 @@ def _handle_resume_group_pattern(
             )
             if last_agent and len(detected_pattern.agents) >= (idx + 1):
                 detected_pattern.agents.append(detected_pattern.user_agent)
-                detected_pattern.initial_agent = detected_pattern.agents[idx + 1]
+                detected_pattern.initial_agent = detected_pattern.agents[
+                    idx + 1
+                ]
                 detected_pattern.user_agent = detected_pattern.agents[idx]
                 # fmt: off
                 new_agent_order_list = detected_pattern.agents[idx+1:] + detected_pattern.agents[:idx]
@@ -887,10 +905,14 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
     _state_messages = _state_dict.get("messages", [])
     _detected_pattern = None
     if _state_group_pattern and isinstance(_state_group_pattern, str):
-        _detected_pattern = __GROUP__["patterns"].get(_state_group_pattern, None)
+        _detected_pattern = __GROUP__["patterns"].get(
+            _state_group_pattern, None
+        )
         if _detected_pattern:
             _state_context_variables = _state_dict.get("context_variables", {})
-            if _state_context_variables and isinstance(_state_context_variables, dict):
+            if _state_context_variables and isinstance(
+                _state_context_variables, dict
+            ):
                 _detected_pattern.context_variables = ContextVariables(
                     data=_state_context_variables
                 )
@@ -906,7 +928,9 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                 f"{_state_group_manager}_pattern"
             )
             if _detected_pattern:
-                _state_context_variables = _state_dict.get("context_variables", {})
+                _state_context_variables = _state_dict.get(
+                    "context_variables", {}
+                )
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
@@ -915,7 +939,11 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages
-    if _detected_pattern and _state_messages and isinstance(_state_messages, list):
+    if (
+        _detected_pattern
+        and _state_messages
+        and isinstance(_state_messages, list)
+    ):
         _handle_resume_group_pattern(_detected_pattern, _state_messages)
 
 
@@ -964,7 +992,9 @@ def main(
             result_events = []
             for event in result.events:
                 try:
-                    result_events.append(event.model_dump(mode="json", fallback=str))
+                    result_events.append(
+                        event.model_dump(mode="json", fallback=str)
+                    )
                 except BaseException:  # pylint: disable=broad-exception-caught
                     pass
                 if not got_agents:
@@ -998,7 +1028,9 @@ def main(
                     else None
                 ),
                 "context_variables": (
-                    result_context_variables.model_dump(mode="json", fallback=str)
+                    result_context_variables.model_dump(
+                        mode="json", fallback=str
+                    )
                     if result_context_variables
                     else None
                 ),
@@ -1011,7 +1043,9 @@ def main(
             result.process()
             for event in result.events:
                 try:
-                    result_events.append(event.model_dump(mode="json", fallback=str))
+                    result_events.append(
+                        event.model_dump(mode="json", fallback=str)
+                    )
                 except BaseException:  # pylint: disable=broad-exception-caught
                     pass
             result_cost = result.cost
@@ -1028,7 +1062,9 @@ def main(
                     else None
                 ),
                 "context_variables": (
-                    result_context_variables.model_dump(mode="json", fallback=str)
+                    result_context_variables.model_dump(
+                        mode="json", fallback=str
+                    )
                     if result_context_variables
                     else None
                 ),

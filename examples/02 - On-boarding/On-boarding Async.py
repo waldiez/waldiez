@@ -73,7 +73,10 @@ from autogen import (
 from autogen.agentchat.group import ContextVariables
 from autogen.agentchat.group.patterns.pattern import Pattern
 from autogen.events import BaseEvent
-from autogen.io.run_response import AsyncRunResponseProtocol, RunResponseProtocol
+from autogen.io.run_response import (
+    AsyncRunResponseProtocol,
+    RunResponseProtocol,
+)
 import numpy as np
 from dotenv import load_dotenv
 
@@ -195,7 +198,9 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 claude_3_7_sonnet_20250219_llm_config: dict[str, Any] = {
     "model": "claude-3-7-sonnet-20250219",
     "api_type": "anthropic",
-    "api_key": get_on_boarding_async_model_api_key("claude_3_7_sonnet_20250219"),
+    "api_key": get_on_boarding_async_model_api_key(
+        "claude_3_7_sonnet_20250219"
+    ),
 }
 
 gpt_3_5_turbo_llm_config: dict[str, Any] = {
@@ -371,7 +376,9 @@ async def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
             pass
         return
     try:
-        async with aiofiles.open(csv_file, "w", newline="", encoding="utf-8") as file:
+        async with aiofiles.open(
+            csv_file, "w", newline="", encoding="utf-8"
+        ) as file:
             csv_writer = AsyncDictWriter(file, fieldnames=column_names)
             await csv_writer.writeheader()
             await csv_writer.writerows(data)
@@ -486,7 +493,11 @@ async def store_error(exc: BaseException | None = None) -> None:
     exc : BaseException | None
         The exception we got if any.
     """
-    reason = "Event handler stopped processing" if not exc else traceback.format_exc()
+    reason = (
+        "Event handler stopped processing"
+        if not exc
+        else traceback.format_exc()
+    )
     try:
         async with aiofiles.open(
             "error.json", "w", encoding="utf-8", newline="\n"
@@ -507,7 +518,7 @@ async def store_results(result_dicts: list[dict[str, Any]]) -> None:
         "results.json", "w", encoding="utf-8", newline="\n"
     ) as file:
         await file.write(
-            json.dumps({"results": result_dicts}, indent=4, ensure_ascii=False)
+            json.dumps({'results': result_dicts}, indent=4, ensure_ascii=False)
         )
 
 
@@ -543,7 +554,9 @@ def _handle_resume_group_pattern(
             )
             if last_agent and len(detected_pattern.agents) >= (idx + 1):
                 detected_pattern.agents.append(detected_pattern.user_agent)
-                detected_pattern.initial_agent = detected_pattern.agents[idx + 1]
+                detected_pattern.initial_agent = detected_pattern.agents[
+                    idx + 1
+                ]
                 detected_pattern.user_agent = detected_pattern.agents[idx]
                 # fmt: off
                 new_agent_order_list = detected_pattern.agents[idx+1:] + detected_pattern.agents[:idx]
@@ -613,10 +626,14 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
     _state_messages = _state_dict.get("context_variables", [])
     _detected_pattern = None
     if _state_group_pattern and isinstance(_state_group_pattern, str):
-        _detected_pattern = __GROUP__["patterns"].get(_state_group_pattern, None)
+        _detected_pattern = __GROUP__["patterns"].get(
+            _state_group_pattern, None
+        )
         if _detected_pattern:
             _state_context_variables = _state_dict.get("context_variables", {})
-            if _state_context_variables and isinstance(_state_context_variables, dict):
+            if _state_context_variables and isinstance(
+                _state_context_variables, dict
+            ):
                 _detected_pattern.context_variables = ContextVariables(
                     data=_state_context_variables
                 )
@@ -632,7 +649,9 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
                 f"{_state_group_manager}_pattern"
             )
             if _detected_pattern:
-                _state_context_variables = _state_dict.get("context_variables", {})
+                _state_context_variables = _state_dict.get(
+                    "context_variables", {}
+                )
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
@@ -641,7 +660,11 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages
-    if _detected_pattern and _state_messages and isinstance(_state_messages, list):
+    if (
+        _detected_pattern
+        and _state_messages
+        and isinstance(_state_messages, list)
+    ):
         _handle_resume_group_pattern(_detected_pattern, _state_messages)
 
 
@@ -650,7 +673,9 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
 
 async def main(
     on_event: (
-        Callable[[BaseEvent, list[ConversableAgent]], Coroutine[None, None, bool]]
+        Callable[
+            [BaseEvent, list[ConversableAgent]], Coroutine[None, None, bool]
+        ]
         | None
     ) = None,
     state_json: str | Path | None = None,
@@ -688,7 +713,9 @@ async def main(
             result_events = []
             async for event in result.events:
                 try:
-                    result_events.append(event.model_dump(mode="json", fallback=str))
+                    result_events.append(
+                        event.model_dump(mode="json", fallback=str)
+                    )
                 except BaseException:  # pylint: disable=broad-exception-caught
                     pass
                 if not got_agents:
@@ -722,7 +749,9 @@ async def main(
                     else None
                 ),
                 "context_variables": (
-                    result_context_variables.model_dump(mode="json", fallback=str)
+                    result_context_variables.model_dump(
+                        mode="json", fallback=str
+                    )
                     if result_context_variables
                     else None
                 ),
@@ -735,7 +764,9 @@ async def main(
             await result.process()
             async for event in result.events:
                 try:
-                    result_events.append(event.model_dump(mode="json", fallback=str))
+                    result_events.append(
+                        event.model_dump(mode="json", fallback=str)
+                    )
                 except BaseException:  # pylint: disable=broad-exception-caught
                     pass
             result_cost = await result.cost
@@ -752,7 +783,9 @@ async def main(
                     else None
                 ),
                 "context_variables": (
-                    result_context_variables.model_dump(mode="json", fallback=str)
+                    result_context_variables.model_dump(
+                        mode="json", fallback=str
+                    )
                     if result_context_variables
                     else None
                 ),

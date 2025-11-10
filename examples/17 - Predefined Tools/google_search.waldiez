@@ -1,7 +1,7 @@
 {
   "id": "id-5be55754-2f2d-49e3-a62d-3aac1c00c643",
   "type": "flow",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "storageId": "wf-17513622917494lqGbKY_Q3O1_IQ37hpBi",
   "name": "google search flow",
   "description": "A example waldiez flow using google search",

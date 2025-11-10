@@ -84,7 +84,10 @@ from autogen.agentchat.group.targets.transition_target import (
     RevertToUserTarget,
 )
 from autogen.events import BaseEvent
-from autogen.io.run_response import AsyncRunResponseProtocol, RunResponseProtocol
+from autogen.io.run_response import (
+    AsyncRunResponseProtocol,
+    RunResponseProtocol,
+)
 import numpy as np
 from dotenv import load_dotenv
 
@@ -286,7 +289,9 @@ def route_to_healthcare_specialist(
 
 def route_to_general_specialist(
     confidence: Annotated[int, "Confidence level for general domain (1-10)"],
-    reasoning: Annotated[str, "Reasoning for routing to general knowledge specialist"],
+    reasoning: Annotated[
+        str, "Reasoning for routing to general knowledge specialist"
+    ],
     context_variables: ContextVariables,
 ) -> ReplyResult:
     """
@@ -397,7 +402,9 @@ def provide_general_response(
 
 # Function for follow-up clarification if needed
 def request_clarification(
-    clarification_question: Annotated[str, "Question to ask user for clarification"],
+    clarification_question: Annotated[
+        str, "Question to ask user for clarification"
+    ],
     context_variables: ContextVariables,
 ) -> ReplyResult:
     """
@@ -817,7 +824,11 @@ def store_error(exc: BaseException | None = None) -> None:
     exc : BaseException | None
         The exception we got if any.
     """
-    reason = "Event handler stopped processing" if not exc else traceback.format_exc()
+    reason = (
+        "Event handler stopped processing"
+        if not exc
+        else traceback.format_exc()
+    )
     try:
         with open("error.json", "w", encoding="utf-8", newline="\n") as file:
             file.write(json.dumps({"error": reason}))
@@ -833,7 +844,9 @@ def store_results(result_dicts: list[dict[str, Any]]) -> None:
         The list of the results.
     """
     with open("results.json", "w", encoding="utf-8", newline="\n") as file:
-        file.write(json.dumps({"results": result_dicts}, indent=4, ensure_ascii=False))
+        file.write(
+            json.dumps({'results': result_dicts}, indent=4, ensure_ascii=False)
+        )
 
 
 def _get_agent_by_name(
@@ -868,7 +881,9 @@ def _handle_resume_group_pattern(
             )
             if last_agent and len(detected_pattern.agents) >= (idx + 1):
                 detected_pattern.agents.append(detected_pattern.user_agent)
-                detected_pattern.initial_agent = detected_pattern.agents[idx + 1]
+                detected_pattern.initial_agent = detected_pattern.agents[
+                    idx + 1
+                ]
                 detected_pattern.user_agent = detected_pattern.agents[idx]
                 # fmt: off
                 new_agent_order_list = detected_pattern.agents[idx+1:] + detected_pattern.agents[:idx]
@@ -936,10 +951,14 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
     _state_messages = _state_dict.get("messages", [])
     _detected_pattern = None
     if _state_group_pattern and isinstance(_state_group_pattern, str):
-        _detected_pattern = __GROUP__["patterns"].get(_state_group_pattern, None)
+        _detected_pattern = __GROUP__["patterns"].get(
+            _state_group_pattern, None
+        )
         if _detected_pattern:
             _state_context_variables = _state_dict.get("context_variables", {})
-            if _state_context_variables and isinstance(_state_context_variables, dict):
+            if _state_context_variables and isinstance(
+                _state_context_variables, dict
+            ):
                 _detected_pattern.context_variables = ContextVariables(
                     data=_state_context_variables
                 )
@@ -955,7 +974,9 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                 f"{_state_group_manager}_pattern"
             )
             if _detected_pattern:
-                _state_context_variables = _state_dict.get("context_variables", {})
+                _state_context_variables = _state_dict.get(
+                    "context_variables", {}
+                )
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
@@ -964,7 +985,11 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages
-    if _detected_pattern and _state_messages and isinstance(_state_messages, list):
+    if (
+        _detected_pattern
+        and _state_messages
+        and isinstance(_state_messages, list)
+    ):
         _handle_resume_group_pattern(_detected_pattern, _state_messages)
 
 
@@ -1015,7 +1040,9 @@ def main(
                         result_events.append(
                             event.model_dump(mode="json", fallback=str)
                         )
-                    except BaseException:  # pylint: disable=broad-exception-caught
+                    except (
+                        BaseException
+                    ):  # pylint: disable=broad-exception-caught
                         pass
                     if not got_agents:
                         known_agents = _get_known_agents()
@@ -1027,7 +1054,9 @@ def main(
                     except BaseException as e:
                         stop_logging()
                         store_error(e)
-                        raise SystemExit("Error in event handler: " + str(e)) from e
+                        raise SystemExit(
+                            "Error in event handler: " + str(e)
+                        ) from e
                     if getattr(event, "type") == "run_completion":
                         break
                     if not should_continue:
@@ -1048,7 +1077,9 @@ def main(
                         else None
                     ),
                     "context_variables": (
-                        result_context_variables.model_dump(mode="json", fallback=str)
+                        result_context_variables.model_dump(
+                            mode="json", fallback=str
+                        )
                         if result_context_variables
                         else None
                     ),
@@ -1064,7 +1095,9 @@ def main(
                         result_events.append(
                             event.model_dump(mode="json", fallback=str)
                         )
-                    except BaseException:  # pylint: disable=broad-exception-caught
+                    except (
+                        BaseException
+                    ):  # pylint: disable=broad-exception-caught
                         pass
                 result_cost = result.cost
                 result_context_variables = result.context_variables
@@ -1080,7 +1113,9 @@ def main(
                         else None
                     ),
                     "context_variables": (
-                        result_context_variables.model_dump(mode="json", fallback=str)
+                        result_context_variables.model_dump(
+                            mode="json", fallback=str
+                        )
                         if result_context_variables
                         else None
                     ),
