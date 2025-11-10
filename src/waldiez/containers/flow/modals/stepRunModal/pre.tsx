@@ -28,7 +28,7 @@ export const PreStepRunModal = memo((props: StepRunModalProps) => {
             onStart(bps);
         } else {
             if (
-                selectedHistoryIndex > 0 &&
+                selectedHistoryIndex >= 0 &&
                 selectedHistoryIndex < selectedCheckpoint.history.length &&
                 selectedHistoryIndex !== selectedCheckpoint.history.length - 1 // default: last index
             ) {
