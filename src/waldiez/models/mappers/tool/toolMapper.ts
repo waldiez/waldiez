@@ -3,6 +3,9 @@
  * Copyright 2024 - 2025 Waldiez & contributors
  */
 import {
+    DEFAULT_CREWAI_TOOL_CONTENT,
+    DEFAULT_CUSTOM_TOOL_CONTENT,
+    DEFAULT_LANGCHAIN_TOOL_CONTENT,
     DEFAULT_SHARED_TOOL_CONTENT,
     PREDEFINED_TOOL_REQUIRED_ENVS,
     PREDEFINED_TOOL_REQUIRED_KWARGS,
@@ -66,7 +69,7 @@ export const toolMapper = {
             "data",
         ]);
         const toolType = getToolDataType(jsonObject.data || (jsonObject as any), name);
-        const content = getToolDataContent(jsonObject.data || (jsonObject as any));
+        const content = getToolDataContent(toolType, jsonObject.data || (jsonObject as any));
         const secrets = getToolDataSecrets(jsonObject.data || (jsonObject as any));
         const kwargs = getToolDataKwargs(jsonObject.data || (jsonObject as any));
         const data = new WaldiezToolData({
@@ -168,13 +171,33 @@ export const toolMapper = {
 };
 
 /**
+ * Gets the default content of the tool based on the tool type.
+ * @param toolType - The toolType
+ * @returns The content of the tool data.
+ */
+const getDefaultContent = (toolType: WaldiezToolType): string => {
+    switch (toolType) {
+        case "custom":
+            return DEFAULT_CUSTOM_TOOL_CONTENT;
+        case "shared":
+            return DEFAULT_SHARED_TOOL_CONTENT;
+        case "crewai":
+            return DEFAULT_CREWAI_TOOL_CONTENT;
+        case "langchain":
+            return DEFAULT_LANGCHAIN_TOOL_CONTENT;
+        default:
+            return DEFAULT_CUSTOM_TOOL_CONTENT;
+    }
+};
+
+/**
  * Gets the content of the tool data from the JSON object.
  * If the content is not present or not a string, it returns the default custom tool content.
  * @param json - The JSON object containing tool data.
  * @returns The content of the tool data.
  */
-const getToolDataContent = (json: Record<string, unknown>): string => {
-    let content = DEFAULT_SHARED_TOOL_CONTENT;
+const getToolDataContent = (toolType: WaldiezToolType, json: Record<string, unknown>): string => {
+    let content = getDefaultContent(toolType);
     if ("content" in json && typeof json.content === "string") {
         content = json.content;
     }
@@ -266,7 +289,7 @@ const getNodeMeta = (
  * @returns The tool type as a WaldiezToolType.
  */
 const getToolDataType = (json: Record<string, unknown>, toolName: string): WaldiezToolType => {
-    let toolType: WaldiezToolType = "shared";
+    let toolType: WaldiezToolType = "custom";
     if (
         "toolType" in json &&
         typeof json.toolType === "string" &&

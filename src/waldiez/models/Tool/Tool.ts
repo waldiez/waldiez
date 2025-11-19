@@ -61,8 +61,8 @@ export class WaldiezTool {
     static create(): WaldiezTool {
         return new WaldiezTool({
             id: `wt-${getId()}`,
-            name: "waldiez_shared",
-            description: "Shared code available to all agents.",
+            name: "new_tool",
+            description: "New tool.",
             tags: [],
             requirements: [],
             createdAt: new Date().toISOString(),

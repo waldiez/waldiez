@@ -5,7 +5,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
-    DEFAULT_SHARED_TOOL_CONTENT,
+    DEFAULT_CUSTOM_TOOL_CONTENT,
     PREDEFINED_TOOL_REQUIRED_KWARGS,
     PREDEFINED_TOOL_TYPES,
     type WaldiezNodeTool,
@@ -47,7 +47,7 @@ describe("toolMapper", () => {
         expect(tool).toBeTruthy();
         expect(tool.id).toBeTypeOf("string");
         expect(tool.name).toBe("new_tool");
-        expect(tool.data.content).toBe(DEFAULT_SHARED_TOOL_CONTENT);
+        expect(tool.data.content).toBe(DEFAULT_CUSTOM_TOOL_CONTENT);
     });
     it("should import a tool with no data in json", () => {
         const tool = toolMapper.importTool({
@@ -57,7 +57,7 @@ describe("toolMapper", () => {
         expect(tool).toBeTruthy();
         expect(tool.id).toBe("1");
         expect(tool.name).toBe("new_tool");
-        expect(tool.data.content).toBe(DEFAULT_SHARED_TOOL_CONTENT);
+        expect(tool.data.content).toBe(DEFAULT_CUSTOM_TOOL_CONTENT);
     });
     it("should use the label when no name is provided", () => {
         const tool = toolMapper.importTool({
@@ -68,7 +68,7 @@ describe("toolMapper", () => {
         expect(tool).toBeTruthy();
         expect(tool.id).toBe("1");
         expect(tool.name).toBe("custom_label");
-        expect(tool.data.content).toBe(DEFAULT_SHARED_TOOL_CONTENT);
+        expect(tool.data.content).toBe(DEFAULT_CUSTOM_TOOL_CONTENT);
     });
     it("should export a tool node", () => {
         const toolData = new WaldiezToolData();
@@ -108,7 +108,7 @@ describe("toolMapper", () => {
         const allPredefinedTools = Object.values(PREDEFINED_TOOL_TYPES);
         allPredefinedTools.forEach(toolType => {
             const toolData = new WaldiezToolData();
-            toolData.content = DEFAULT_SHARED_TOOL_CONTENT;
+            toolData.content = DEFAULT_CUSTOM_TOOL_CONTENT;
             toolData.secrets = { secret: "value" };
             const toolNode = {
                 id: "1",

@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_SHARED_TOOL_CONTENT, WaldiezTool, WaldiezToolData } from "@waldiez/models/Tool";
+import { DEFAULT_CUSTOM_TOOL_CONTENT, WaldiezTool, WaldiezToolData } from "@waldiez/models/Tool";
 
 describe("WaldiezTool", () => {
     it("should create an instance", () => {
@@ -23,10 +23,10 @@ describe("WaldiezTool", () => {
         });
         expect(tool).toBeTruthy();
         expect(tool.id).toBe("1");
-        expect(tool.data.content).toBe(DEFAULT_SHARED_TOOL_CONTENT);
+        expect(tool.data.content).toBe(DEFAULT_CUSTOM_TOOL_CONTENT);
         const tool2 = WaldiezTool.create();
         expect(tool2).toBeTruthy();
-        expect(tool2.data.content).toBe(DEFAULT_SHARED_TOOL_CONTENT);
+        expect(tool2.data.content).toBe(DEFAULT_CUSTOM_TOOL_CONTENT);
     });
     it("should create an instance with custom data", () => {
         const createdAt = new Date().toISOString();

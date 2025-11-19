@@ -22,8 +22,8 @@ export class WaldiezToolData {
             secrets: { [key: string]: unknown };
             kwargs?: { [key: string]: unknown };
         } = {
-            content: DEFAULT_SHARED_TOOL_CONTENT,
-            toolType: "shared",
+            content: DEFAULT_CUSTOM_TOOL_CONTENT,
+            toolType: "custom",
             secrets: {},
             kwargs: {},
         },
