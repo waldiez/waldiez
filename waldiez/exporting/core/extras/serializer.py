@@ -97,7 +97,7 @@ def serialize_item(
     if isinstance(item, (dict, list, tuple, set)) and id(item) in visited:
         return '"<circular reference>"'
 
-    next_indent = " " * 4 * (tabs + 1)
+    next_indent = "    " * (tabs + 1)
     visited.add(id(item))
 
     if isinstance(item, dict):
