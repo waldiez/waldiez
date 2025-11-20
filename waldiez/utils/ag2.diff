@@ -146,7 +146,7 @@ index 109063cfb7..dafcdafdfa 100644
  
                  IOStream.get_default().send(
 diff --git a/autogen/agentchat/groupchat.py b/autogen/agentchat/groupchat.py
-index 02f7fd8880..952f7c8067 100644
+index 707d529806..41003180c6 100644
 --- a/autogen/agentchat/groupchat.py
 +++ b/autogen/agentchat/groupchat.py
 @@ -4,12 +4,15 @@
@@ -165,7 +165,7 @@ index 02f7fd8880..952f7c8067 100644
  from collections.abc import Callable
  from dataclasses import dataclass, field
  from typing import Any, Literal
-@@ -1084,6 +1087,8 @@ def __init__(
+@@ -1085,6 +1088,8 @@ def __init__(
          human_input_mode: Literal["ALWAYS", "NEVER", "TERMINATE"] = "NEVER",
          system_message: str | list | None = "Group chat manager.",
          silent: bool = False,
@@ -174,7 +174,7 @@ index 02f7fd8880..952f7c8067 100644
          **kwargs: Any,
      ):
          if (
-@@ -1109,6 +1114,8 @@ def __init__(
+@@ -1110,6 +1115,8 @@ def __init__(
  
          self._last_speaker = None
          self._silent = silent
@@ -183,7 +183,7 @@ index 02f7fd8880..952f7c8067 100644
  
          # Order of register_reply is important.
          # Allow sync chat if initiated using initiate_chat
-@@ -1221,6 +1228,11 @@ def run_chat(
+@@ -1222,6 +1229,11 @@ def run_chat(
                  a.previous_cache = a.client_cache
                  a.client_cache = self.client_cache
          for i in range(groupchat.max_round):
@@ -195,7 +195,7 @@ index 02f7fd8880..952f7c8067 100644
              self._last_speaker = speaker
              groupchat.append(message, speaker)
              # broadcast the message to all agents except the speaker
-@@ -1354,6 +1366,10 @@ async def a_run_chat(
+@@ -1355,6 +1367,10 @@ async def a_run_chat(
                  a.previous_cache = a.client_cache
                  a.client_cache = self.client_cache
          for i in range(groupchat.max_round):
@@ -205,3 +205,4 @@ index 02f7fd8880..952f7c8067 100644
 +
              groupchat.append(message, speaker)
              self._last_speaker = speaker
+ 

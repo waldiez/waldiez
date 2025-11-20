@@ -2,7 +2,7 @@ ag2[openai]==0.10.1
 aiocsv==1.4.0
 aiofiles==25.1.0
 aiosqlite==0.21.0
-click==8.3.0
+click==8.3.1
 graphviz<=0.21
 httpx<1
 jupytext

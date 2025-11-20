@@ -30,7 +30,7 @@ toml==0.10.2; python_version <= '3.10'
 tox==4.32.0
 types-aiofiles==25.1.0.20251011
 types-jsonschema==4.25.1.20251009
-types-psutil==7.0.0.20251001
+types-psutil==7.0.0.20251116
 types-pyyaml==6.0.12.20250915
 types-redis==4.6.0.20241004
 types-requests==2.32.4.20250913
