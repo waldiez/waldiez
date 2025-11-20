@@ -2560,9 +2560,10 @@ export declare type WaldiezChatInputRequestData = WaldiezChatBaseMessageData & {
  * @param reflectionWithLlm - Reflection with LLM (Language Model)
  * @param lastMsg - Last message
  * @param null - No method
+ * @param custom - Custom user-defined method
  * @see {@link WaldiezMessage}
  */
-export declare type WaldiezChatLlmSummaryMethod = "reflectionWithLlm" | "lastMsg" | null;
+export declare type WaldiezChatLlmSummaryMethod = "reflectionWithLlm" | "lastMsg" | "custom" | null;
 
 /**
  * WaldiezChatMessage structure
@@ -2772,6 +2773,7 @@ export declare type WaldiezChatSpeakerSelectionData = WaldiezChatBaseMessageData
  * @param method - The method used to summarize the chat
  * @param prompt - The prompt used to summarize the chat
  * @param args - The arguments used to summarize the chat
+ * @param content - The content of the custom method if applicable
  * @see {@link WaldiezChatLlmSummaryMethod}
  * @see {@link WaldiezMessage}
  */
@@ -2781,6 +2783,7 @@ export declare type WaldiezChatSummary = {
     args: {
         [key: string]: any;
     };
+    content?: string;
 };
 
 /**

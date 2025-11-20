@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+# pylint: disable=too-many-public-methods
 # pyright: reportDeprecated=false,reportUnknownMemberType=false
 # pyright: reportAttributeAccessIssue=false,reportUnknownVariableType=false
 
@@ -10,6 +11,8 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field, model_validator
 from typing_extensions import Annotated, Literal, Self
+
+from waldiez.models.chat.chat_summary import WaldiezChatSummary
 
 from ..common import (
     WaldiezAgentTarget,
@@ -35,6 +38,11 @@ from .chat_nested import (
     NESTED_CHAT_REPLY,
     NESTED_CHAT_TYPES,
     WaldiezChatNested,
+)
+from .chat_summary import (
+    CALLABLE_SUMMARY,
+    CALLABLE_SUMMARY_ARGS,
+    CALLABLE_SUMMARY_TYPES,
 )
 
 if TYPE_CHECKING:
@@ -152,9 +160,19 @@ class WaldiezChat(WaldiezBase):
         return self.data.message
 
     @property
+    def summary(self) -> WaldiezChatSummary:
+        """Get the summary."""
+        return self.data.summary
+
+    @property
     def message_content(self) -> str | None:
         """Get the message content."""
         return self.data.message_content
+
+    @property
+    def summary_content(self) -> str | None:
+        """Get the summary content."""
+        return self.data.summary_content
 
     @property
     def max_turns(self) -> int | None:
@@ -281,6 +299,43 @@ class WaldiezChat(WaldiezBase):
                 function_args=CALLABLE_MESSAGE_ARGS,
                 function_types=function_types,
                 function_body=self.message_content or "",
+            ),
+            function_name,
+        )
+
+    def get_summary_function(
+        self,
+        name_prefix: str | None = None,
+        name_suffix: str | None = None,
+    ) -> tuple[str, str]:
+        """Get the summary function.
+
+        Parameters
+        ----------
+        name_prefix : str
+            The function name prefix.
+        name_suffix : str
+            The function name suffix.
+
+        Returns
+        -------
+        tuple[str, str]
+            The message function and the function name.
+        """
+        if self.summary.method != "custom":
+            return "", ""
+        function_types = CALLABLE_SUMMARY_TYPES
+        function_name = CALLABLE_SUMMARY
+        if name_prefix:
+            function_name = f"{name_prefix}_{function_name}"
+        if name_suffix:
+            function_name = f"{function_name}_{name_suffix}"
+        return (
+            generate_function(
+                function_name=function_name,
+                function_args=CALLABLE_SUMMARY_ARGS,
+                function_types=function_types,
+                function_body=self.summary_content or "",
             ),
             function_name,
         )
@@ -449,4 +504,6 @@ class WaldiezChat(WaldiezBase):
         dump["message"] = self.message.model_dump()
         dump["message_content"] = self.message_content
         dump["max_turns"] = self.max_turns
+        dump["summary"] = self.summary.model_dump()
+        dump["summary_content"] = self.summary_content
         return dump

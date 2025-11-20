@@ -95,6 +95,7 @@ export class WaldiezChatData {
                 method: "lastMsg",
                 prompt: "",
                 args: {},
+                content: "",
             },
             position: 1,
             order: -1,
@@ -163,3 +164,19 @@ export class WaldiezChatData {
         this.silent = silent;
     }
 }
+
+export const DEFAULT_CUSTOM_SUMMARY_CONTENT = `
+"""Custom chat summary function."""
+# provide the method body to get a chat's summary.
+# complete the \`callable_summary\` below. Do not change the name or the arguments of the function.
+# only complete the function body and the docstring and return the final message.
+# example:
+# def callable_summary(sender, recipient, summary_args):
+#    # type: (ConversableAgent, ConversableAgent, dict) -> str\
+#    """Get the last message this recipient got from the sender."""
+#    return recipient.last_message(sender)["content"]
+#
+def callable_summary(sender, recipient, summary_args):
+    """Complete the custom summary function"""
+    ...
+`;

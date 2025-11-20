@@ -34,15 +34,17 @@ export type WaldiezMessageType = "string" | "method" | "rag_message_generator" |
  * @param reflectionWithLlm - Reflection with LLM (Language Model)
  * @param lastMsg - Last message
  * @param null - No method
+ * @param custom - Custom user-defined method
  * @see {@link WaldiezMessage}
  */
-export type WaldiezChatLlmSummaryMethod = "reflectionWithLlm" | "lastMsg" | null;
+export type WaldiezChatLlmSummaryMethod = "reflectionWithLlm" | "lastMsg" | "custom" | null;
 
 /**
  * Waldiez Chat Summary
  * @param method - The method used to summarize the chat
  * @param prompt - The prompt used to summarize the chat
  * @param args - The arguments used to summarize the chat
+ * @param content - The content of the custom method if applicable
  * @see {@link WaldiezChatLlmSummaryMethod}
  * @see {@link WaldiezMessage}
  */
@@ -50,6 +52,7 @@ export type WaldiezChatSummary = {
     method: WaldiezChatLlmSummaryMethod;
     prompt: string;
     args: { [key: string]: any };
+    content?: string;
 };
 
 /**

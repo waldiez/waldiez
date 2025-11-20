@@ -150,6 +150,14 @@ def _get_chat_dict_string(
             chat_string += "\n" + f'{tab}    "message": {message},'
         elif chat.data.message.type == "string" and chat.data.message.content:
             chat_string += "\n" + f'{tab}    "message": {message},'
+    if chat.summary.method == "custom":
+        chat_name = chat_names[chat.id]
+        function_content, function_name = chat.get_summary_function(
+            name_suffix=chat_name,
+        )
+        if function_content:
+            additional_methods_string += "\n" + function_content
+            chat_string += "\n" + f'{tab}    "summary_method": {function_name},'
     chat_string += "\n" + tab + "},"
     return chat_string, additional_methods_string
 
@@ -167,7 +175,6 @@ def _get_chat_string_start(
     sender = connection["source"]
     recipient = connection["target"]
     chat_args = chat.get_chat_args(for_queue=True, sender=sender)
-    # chat_args = update_summary_chat_args(chat_args)
     chat_string = "{"
     if not is_first:
         chat_string += "\n" + f'{tab}    "sender": {agent_names[sender.id]},'

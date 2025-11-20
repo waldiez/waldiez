@@ -26,6 +26,7 @@ describe("getChats", () => {
                             method: "lastMsg",
                             prompt: "",
                             args: {},
+                            content: "",
                         },
                         message: {
                             type: "none",
@@ -106,6 +107,7 @@ describe("getChats", () => {
                         method: "lastMsg",
                         prompt: "",
                         args: {},
+                        content: "",
                     },
                     message: {
                         type: "none",

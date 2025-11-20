@@ -25,6 +25,7 @@ export const summaryMapper = {
         return {
             method: null,
             prompt: "",
+            content: "",
             args: {},
         };
     },
@@ -39,6 +40,7 @@ export const summaryMapper = {
             method: summary.method,
             prompt: summary.prompt,
             args: summary.args,
+            content: summary.content,
         };
     },
 };
@@ -53,16 +55,19 @@ const getEdgeSummary: (data: { [key: string]: any }) => {
     method: WaldiezChatLlmSummaryMethod;
     prompt: string;
     args: { [key: string]: any };
+    content?: string;
 } = data => {
     const summary = {
         method: null as WaldiezChatLlmSummaryMethod,
         prompt: "",
         args: {},
+        content: "",
     } as WaldiezChatSummary;
     if ("summary" in data && data.summary) {
         summary.method = getEdgeSummaryMethod(data);
         summary.prompt = getEdgeSummaryPrompt(data);
         summary.args = getEdgeSummaryArgs(data);
+        summary.content = getEdgeSummaryContent(data, summary.method);
     }
     return summary;
 };
@@ -85,6 +90,14 @@ const getEdgeSummaryPrompt = (data: { [key: string]: any }) => {
         prompt = data.summary.prompt;
     }
     return prompt;
+};
+
+const getEdgeSummaryContent = (data: { [key: string]: any }, method: WaldiezChatLlmSummaryMethod) => {
+    let content = "";
+    if (method === "custom" && "content" in data.summary && typeof data.summary.content === "string") {
+        content = data.summary.content;
+    }
+    return content;
 };
 
 const getEdgeSummaryArgs = (data: { [key: string]: any }) => {

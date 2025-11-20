@@ -70,6 +70,7 @@ def export_single_chat(
             recipient=recipient,
             message_kwarg=message_kwarg,
             agent_names=agent_names,
+            chat_names=chat_names,
             tab=tab,
             is_async=is_async,
             skip_cache=skip_cache,
@@ -159,7 +160,7 @@ def get_simple_chat_string(
             )
         else:
             chat_string += "\n" + f"{tab}    {key}={value},"
-    message_arg, before_chat = get_chat_message(
+    message_arg, before_chat = _get_chat_message(
         tab=tab,
         chat=chat,
         chat_names=chat_names,
@@ -168,8 +169,16 @@ def get_simple_chat_string(
         message_kwarg=message_kwarg,
     )
     chat_string += message_arg
+    summary_arg, before_summary = _get_chat_summary(
+        tab=tab,
+        chat=chat,
+        chat_names=chat_names,
+    )
+    chat_string += summary_arg
     chat_string += "\n" + f"{tab})" + "\n"
     chat_string += get_event_handler_string(space=tab, is_async=is_async)
+    if before_summary:
+        before_chat += "\n" + before_summary
     return chat_string, before_chat
 
 
@@ -179,6 +188,7 @@ def get_empty_simple_chat_string(
     recipient: WaldiezAgent,
     message_kwarg: tuple[str, str],
     agent_names: dict[str, str],
+    chat_names: dict[str, str],
     tab: str,
     is_async: bool,
     skip_cache: bool,
@@ -197,6 +207,8 @@ def get_empty_simple_chat_string(
         The message kwarg and the var to use for it.
     agent_names : dict[str, str]
         A mapping of agent id to agent name.
+    chat_names : dict[str, str]
+        A mapping of chat id to chat name.
     tab : str
         The tab string.
     is_async : bool
@@ -218,21 +230,28 @@ def get_empty_simple_chat_string(
     content += f"{tab}    {recipient_name}," + "\n"
     if not skip_cache:
         content += f"{tab}    cache=cache," + "\n"
-    message_arg, before_chat = get_chat_message(
+    message_arg, before_message = _get_chat_message(
         tab=tab,
         chat=chat,
-        chat_names={},
+        chat_names=chat_names,
         sender=sender,
         sender_name=sender_name,
         message_kwarg=message_kwarg,
     )
     content += message_arg
+    summary_arg, before_summary = _get_chat_summary(
+        tab=tab,
+        chat=chat,
+        chat_names=chat_names,
+    )
+    content += summary_arg
     content += f"{tab})" + "\n"
     content += get_event_handler_string(space=tab, is_async=is_async)
+    before_chat = before_message + before_summary
     return content, before_chat
 
 
-def get_chat_message(
+def _get_chat_message(
     tab: str,
     chat: WaldiezChat,
     chat_names: dict[str, str],
@@ -291,3 +310,38 @@ def get_chat_message(
             before_chat += f"{message_var}=None"
             return message_arg_var, before_chat
     return "", before_chat  # pragma: no cover
+
+
+def _get_chat_summary(
+    tab: str,
+    chat: WaldiezChat,
+    chat_names: dict[str, str],
+) -> tuple[str, str]:
+    """Get the chat summary string.
+
+    Parameters
+    ----------
+    tab : str
+        The tab string.
+    chat : WaldiezChat
+        The chat.
+    chat_names : dict[str, str]
+        A mapping of chat id to chat name.
+
+    Returns
+    -------
+    tuple[str, str]
+        The message argument and additional methods string if any.
+    """
+    before_summary = ""
+    summary_arg = ""
+    if chat.summary.method == "custom":
+        chat_name = chat_names[chat.id]
+        summary_source, summary_value = chat.get_summary_function(
+            name_suffix=chat_name,
+        )
+        if summary_value and summary_source:
+            summary_arg = "\n" + f"{tab}    summary_method={summary_value},"
+            before_summary = summary_source
+
+    return summary_arg, before_summary  # pragma: no cover

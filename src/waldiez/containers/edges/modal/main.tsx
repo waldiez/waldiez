@@ -20,6 +20,7 @@ import {
     DEFAULT_NESTED_CHAT_MESSAGE_METHOD_CONTENT,
     WaldiezEdgeNestedTab,
 } from "@waldiez/containers/edges/modal/tabs/nested";
+import { WaldiezEdgeSummaryTab } from "@waldiez/containers/edges/modal/tabs/summary";
 import type { WaldiezEdgeModalProps } from "@waldiez/containers/edges/modal/types";
 import type {
     WaldiezGroupChatType,
@@ -32,6 +33,7 @@ import type {
 /**
  * Modal component for editing edge properties
  */
+// eslint-disable-next-line max-lines-per-function
 export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
     const { edgeId, isOpen, onClose } = props;
 
@@ -129,6 +131,7 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
             properties: `wc-${flowId}-edge-properties-${edgeId}`,
             message: `wc-${flowId}-edge-message-${edgeId}`,
             nested: `wc-${flowId}-edge-nested-${edgeId}`,
+            summary: `wc-${flowId}-edge-summary-${edgeId}`,
             condition: `wc-${flowId}-edge-condition-${edgeId}`,
             availability: `wc-${flowId}-edge-availability-${edgeId}`,
         }),
@@ -322,6 +325,14 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                                 />
                             </TabItem>
                         )}
+                        <TabItem label="Summary" id={tabIds.summary}>
+                            <WaldiezEdgeSummaryTab
+                                edgeId={edgeId}
+                                darkMode={isDark}
+                                data={edgeData}
+                                onDataChange={onDataChange}
+                            />
+                        </TabItem>
                     </TabItems>
                 )}
 

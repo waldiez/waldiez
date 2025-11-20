@@ -2417,6 +2417,9 @@
                 },
                 "args": {
                     "type": "object"
+                },
+                "content": {
+                    "type": "string"
                 }
             },
             "required": ["method", "prompt", "args"],
@@ -2425,7 +2428,7 @@
         },
         "WaldiezChatLlmSummaryMethod": {
             "type": ["string", "null"],
-            "enum": ["reflectionWithLlm", "lastMsg", null],
+            "enum": ["reflectionWithLlm", "lastMsg", "custom", null],
             "description": "WaldiezChatLlmSummaryMethod Represents the method used to summarize the chat."
         }
     },

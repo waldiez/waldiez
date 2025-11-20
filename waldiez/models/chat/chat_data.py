@@ -26,7 +26,11 @@ from .chat_message import (
     WaldiezChatMessage,
 )
 from .chat_nested import WaldiezChatNested
-from .chat_summary import WaldiezChatSummary
+from .chat_summary import (
+    CALLABLE_SUMMARY,
+    CALLABLE_SUMMARY_ARGS,
+    WaldiezChatSummary,
+)
 
 
 class WaldiezChatData(WaldiezBase):
@@ -216,6 +220,7 @@ class WaldiezChatData(WaldiezBase):
         ),
     ]
     _message_content: str | None = None
+    _summary_content: str | None = None
     _chat_id: int = 0
     _prerequisites: list[int] = []
 
@@ -223,6 +228,11 @@ class WaldiezChatData(WaldiezBase):
     def message_content(self) -> str | None:
         """Get the message content."""
         return self._message_content
+
+    @property
+    def summary_content(self) -> str | None:
+        """Get the message content."""
+        return self._summary_content
 
     def get_chat_id(self) -> int:
         """Get the chat id.
@@ -294,6 +304,23 @@ class WaldiezChatData(WaldiezBase):
             if not valid:
                 raise ValueError(error_or_body)
             self._message_content = error_or_body
+        self._summary_content = self.summary.content
+        if self.summary.method == "custom":
+            valid, error_or_body = check_function(
+                self.summary.content or "",
+                CALLABLE_SUMMARY,
+                CALLABLE_SUMMARY_ARGS,
+            )
+            if not valid:
+                raise ValueError(error_or_body)
+            self._summary_content = error_or_body
+        elif self.summary.method in ("last_msg", "lastMsg"):
+            self._summary_content = "last_msg"
+        elif self.summary.method in (
+            "reflectionWithLlm",
+            "reflection_with_llm",
+        ):
+            self._summary_content = "reflection_with_llm"
         return self
 
     # noinspection PyNestedDecorators
@@ -342,10 +369,13 @@ class WaldiezChatData(WaldiezBase):
         if self.summary.method not in (
             "reflection_with_llm",
             "reflectionWithLlm",
+            "custom",
         ):
             return None
         args: dict[str, Any] = {}
-        if self.summary.prompt:  # pragma: no branch
+        if (
+            self.summary.prompt and self.summary.method != "custom"
+        ):  # pragma: no branch
             args["summary_prompt"] = self.summary.prompt
         if self.summary.args:  # pragma: no branch
             args.update(self.summary.args)
@@ -381,7 +411,9 @@ class WaldiezChatData(WaldiezBase):
             The dictionary to pass as kwargs.
         """
         args: dict[str, Any] = {}
-        if self.summary.method:  # pragma: no branch
+        if (
+            self.summary.method and self.summary.method != "custom"
+        ):  # pragma: no branch
             args["summary_method"] = str(self.summary.method)
         if self.summary_args:
             args["summary_args"] = self.summary_args

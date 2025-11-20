@@ -41,6 +41,7 @@ describe("chatMapper.importChat", () => {
             args: {
                 summary_role: "user",
             },
+            content: "",
         });
         expect(chat.data.maxTurns).toBe(0);
     });
@@ -204,6 +205,7 @@ describe("chatMapper.importChat", () => {
                     args: {
                         summary_role: "user",
                     },
+                    content: "",
                 },
             },
         };

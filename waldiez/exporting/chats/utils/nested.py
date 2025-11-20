@@ -12,8 +12,6 @@ from waldiez.models import (
     WaldiezChat,
 )
 
-# from .common import update_summary_chat_args
-
 
 def export_nested_chat_registration(
     agent: WaldiezAgent,
@@ -146,9 +144,10 @@ def get_nested_chat_message_string(
     Returns
     -------
     tuple[str, str | None]
-        The message string and the method name if the message is a method.
+        The message string and any content before that if any.
     """
     sender_name: str | None = None
+    before_content: str | None = None
     sender_id = waldiez_chat.target if message.is_reply else waldiez_chat.source
     recipient_id = (
         waldiez_chat.source if message.is_reply else waldiez_chat.target
@@ -157,7 +156,6 @@ def get_nested_chat_message_string(
         sender_name = agent_names[sender_id]
     recipient_name = agent_names[recipient_id]
     chat_dict: dict[str, Any] = waldiez_chat.get_chat_args(for_queue=True)
-    # chat_dict = update_summary_chat_args(chat_dict)
     chat_dict["recipient"] = recipient_name
     if sender_name:
         chat_dict["sender"] = sender_name
@@ -167,12 +165,32 @@ def get_nested_chat_message_string(
         chat_names=chat_names,
     )
     chat_dict["message"] = message_value
+    summary_source: str | None = None
+    summary_value: str = ""
+    if waldiez_chat.summary.method == "custom":
+        chat_name = chat_names[waldiez_chat.id]
+        summary_source, summary_value = waldiez_chat.get_summary_function(
+            name_suffix=chat_name,
+        )
+        if summary_source and summary_value:
+            chat_dict["summary_method"] = summary_value
     message_dict_str = serializer(chat_dict, tabs=1)
     if message_source:
         # it's not a string, its the name of the function
         message_dict_str = message_dict_str.replace(
             f': "{message_value}"', f": {message_value}"
         ).replace(f'"{message_value}"', f"{message_value}")
+        before_content = message_source
+    if summary_source:
+        # it's not a string, its the name of the function
+        message_dict_str = message_dict_str.replace(
+            f': "{summary_value}"', f": {summary_value}"
+        ).replace(f'"{summary_value}"', f"{summary_value}")
+        if before_content:
+            before_content += "\n" + summary_source
+        else:
+            before_content = summary_source
+
     if sender_name:
         message_dict_str = message_dict_str.replace(
             f': "{sender_name}"', f": {sender_name}"
@@ -181,7 +199,8 @@ def get_nested_chat_message_string(
         message_dict_str = message_dict_str.replace(
             f': "{recipient_name}"', f": {recipient_name}"
         )
-    return message_dict_str, message_source
+
+    return message_dict_str, before_content
 
 
 def get_nested_chat_queue(

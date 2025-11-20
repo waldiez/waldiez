@@ -11,20 +11,12 @@ import { type WaldiezEdgeBasicTabProps } from "@waldiez/containers/edges/modal/t
 export const WaldiezEdgeBasicTab: FC<WaldiezEdgeBasicTabProps> = (props: WaldiezEdgeBasicTabProps) => {
     const { data, edgeId, onTypeChange, skipDescription = false } = props;
     const {
-        summaryRoleOptions,
-        summaryOptions,
         edgeTypeOptions,
-        summaryMethodLabel,
-        summaryRoleValue,
-        summaryRoleLabel,
         currentSelectedChatType,
         onLabelChange,
         onDescriptionChange,
         onClearHistoryChange,
         onMaxTurnsChange,
-        onSummaryMethodChange,
-        onLlmPromptChange,
-        onLlmSummaryRoleChange,
     } = useWaldiezEdgeBasicTab(props);
     return (
         <div className="flex flex-col">
@@ -108,45 +100,6 @@ export const WaldiezEdgeBasicTab: FC<WaldiezEdgeBasicTabProps> = (props: Waldiez
                     </div>
                 )}
             />
-            {/* for tests */}
-            <label className="hidden" htmlFor={`select-summary-method-${edgeId}`}>
-                Summary Method:
-            </label>
-            <Select
-                options={summaryOptions}
-                value={{
-                    label: summaryMethodLabel,
-                    value: data.summary.method,
-                }}
-                onChange={onSummaryMethodChange}
-                inputId={`select-summary-method-${edgeId}`}
-            />
-            {data.summary.method === "reflectionWithLlm" && (
-                <>
-                    <InfoLabel
-                        htmlFor={`edge-${edgeId}-llm-prompt-input`}
-                        label="Summary Prompt:"
-                        info="The prompt to be used for the summary generation."
-                    />
-                    <TextareaInput
-                        placeholder="Enter the summary prompt"
-                        rows={2}
-                        value={data.summary.prompt}
-                        onChange={onLlmPromptChange}
-                        data-testid={`edge-${edgeId}-llm-prompt-input`}
-                    />
-                    <label htmlFor={`select-summary-role-${edgeId}`}>Summary Role:</label>
-                    <Select
-                        options={summaryRoleOptions}
-                        value={{
-                            label: summaryRoleLabel,
-                            value: summaryRoleValue,
-                        }}
-                        onChange={onLlmSummaryRoleChange}
-                        inputId={`select-summary-role-${edgeId}`}
-                    />
-                </>
-            )}
         </div>
     );
 };
