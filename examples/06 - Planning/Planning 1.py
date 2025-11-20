@@ -17,7 +17,7 @@
 
 Planning and Stock Report Generation
 
-Requirements: ag2[openai]==0.10.0
+Requirements: ag2[openai]==0.10.1
 Tags: Planning, Stock report, Group
 🧩 generated with ❤️ by Waldiez.
 """

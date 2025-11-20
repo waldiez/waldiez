@@ -17,7 +17,7 @@
 
 Async version of Sequential Chats and Customer Onboarding
 
-Requirements: ag2[anthropic]==0.10.0, ag2[openai]==0.10.0
+Requirements: ag2[anthropic]==0.10.1, ag2[openai]==0.10.1
 Tags: Sequential, Customer, On-boarding, Onboarding
 🧩 generated with ❤️ by Waldiez.
 """
