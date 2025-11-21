@@ -2,9 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import type { editor } from "monaco-editor";
-
-import { type FC, useCallback, useRef } from "react";
+import { type FC, useCallback, useMemo, useRef } from "react";
 
 import { Editor } from "@monaco-editor/react";
 
@@ -52,37 +50,40 @@ export const CodeEditor: FC<{
     darkMode: boolean;
 }> = (props: { value: string; onChange: (value: string | undefined) => void; darkMode: boolean }) => {
     const { value, onChange, darkMode } = props;
-    const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+    const editorRef = useRef<any>(null);
+    const chromiumBased = useMemo(isChromiumBased, []);
 
-    const handleEditorDidMount = useCallback((editor: editor.IStandaloneCodeEditor) => {
-        editorRef.current = editor;
-        editor.onKeyDown(e => {
-            if (!isChromiumBased()) {
-                return;
-            }
-            if (e.keyCode === 10 && !e.shiftKey) {
-                e.preventDefault();
-                e.stopPropagation();
+    const handleEditorDidMount = useCallback(
+        (editor: any) => {
+            editorRef.current = editor;
+            if (chromiumBased) {
+                editor.onKeyDown((e: KeyboardEvent) => {
+                    if (e.key === "Space" && !e.shiftKey) {
+                        e.preventDefault();
+                        e.stopPropagation();
 
-                const position = editor.getPosition();
-                const model = editor.getModel();
-                if (position && model) {
-                    editor.executeEdits("keyboard", [
-                        {
-                            range: {
-                                startLineNumber: position.lineNumber,
-                                startColumn: position.column,
-                                endLineNumber: position.lineNumber,
-                                endColumn: position.column,
-                            },
-                            text: " ",
-                            forceMoveMarkers: true,
-                        },
-                    ]);
-                }
+                        const position = editor.getPosition();
+                        const model = editor.getModel();
+                        if (position && model) {
+                            editor.executeEdits("keyboard", [
+                                {
+                                    range: {
+                                        startLineNumber: position.lineNumber,
+                                        startColumn: position.column,
+                                        endLineNumber: position.lineNumber,
+                                        endColumn: position.column,
+                                    },
+                                    text: " ",
+                                    forceMoveMarkers: true,
+                                },
+                            ]);
+                        }
+                    }
+                });
             }
-        });
-    }, []);
+        },
+        [chromiumBased],
+    );
 
     const theme = darkMode ? "vs-dark" : "vs-light";
 
@@ -102,13 +103,15 @@ export const CodeEditor: FC<{
                     wordWrap: "on",
                     automaticLayout: true,
                     fontSize: 13,
-                    fontLigatures: true,
-                    formatOnType: true,
-                    renderWhitespace: "selection",
+                    fontLigatures: false,
+                    formatOnType: false,
+                    renderWhitespace: "none",
                     smoothScrolling: true,
                     autoClosingBrackets: "always",
                     tabSize: 4,
                     minimap: { enabled: false },
+                    editContext: false,
+                    useShadowDOM: true,
                     cursorBlinking: "smooth",
                 }}
             />

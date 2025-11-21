@@ -22,9 +22,7 @@ const PUBLIC_PATH = path.resolve(__dirname, "..", "public");
 const MONACO_JSON = path.join(PUBLIC_PATH, "monaco.json");
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 const FORCE = process.argv.includes("--force");
-// 0.53.0 does not seem to play well with @monaco-editor/react
-// let's check periodically and make it undefined when we are good.
-const PINNED_VERSION: string | undefined = "0.54.0";
+const PINNED_VERSION: string | undefined = "0.55.1";
 
 interface IPackageDetails {
     version: string;

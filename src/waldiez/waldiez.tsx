@@ -102,7 +102,7 @@ export const Waldiez: FC<Partial<WaldiezProps>> = (props: Partial<WaldiezProps>)
     const nodes = props.nodes ?? [];
     const edges = props.edges ?? [];
     const readOnly = props.readOnly ?? false;
-    const { chat, stepByStep } = props;
+    const { chat, monacoVsPath, stepByStep } = props;
     useEffect(() => {
         checkInitialBodyThemeClass();
         checkInitialBodySidebarClass();
@@ -110,15 +110,12 @@ export const Waldiez: FC<Partial<WaldiezProps>> = (props: Partial<WaldiezProps>)
         window.localStorage.removeItem(`snackbar-${flowId}.lock`);
     }, [flowId]);
     useEffect(() => {
-        if (typeof window === "undefined") {
-            return;
+        if (monacoVsPath) {
+            loader.config({ paths: { vs: monacoVsPath } });
+        } else {
+            loader.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs" } });
         }
-        (async () => {
-            await import("@waldiez/utils/monacoEnv");
-            const monaco = await import("monaco-editor");
-            loader.config({ monaco });
-        })();
-    }, []);
+    }, [monacoVsPath]);
     return (
         <SnackbarProvider>
             <WaldiezThemeProvider>
