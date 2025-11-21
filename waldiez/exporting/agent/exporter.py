@@ -195,7 +195,7 @@ class AgentExporter(Exporter[StandardExtras]):
             tool_names=self.tool_names,
             chat_names=self.chat_names,
             all_chats=self.all_chats,
-            serializer=self.context.get_serializer().serialize,
+            context=self.context,
         )
         group_member_results = group_member_processor.process()
         if group_member_results.before_agent:

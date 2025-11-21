@@ -5,7 +5,6 @@
 """Group member agent configuration processor."""
 
 from dataclasses import dataclass, field
-from typing import Callable
 
 from waldiez.models import (
     WaldiezAgent,
@@ -14,6 +13,7 @@ from waldiez.models import (
 )
 
 from ...core import (
+    ExporterContext,
     ImportStatement,
     InstanceArgument,
 )
@@ -46,14 +46,15 @@ class GroupMemberAgentProcessor:
         tool_names: dict[str, str],
         all_chats: list[WaldiezChat],
         chat_names: dict[str, str],
-        serializer: Callable[..., str],
+        context: ExporterContext,
     ) -> None:
         self.agent = agent
         self.agent_names = agent_names
         self.tool_names = tool_names
         self.all_chats = all_chats
         self.chat_names = chat_names
-        self.serializer = serializer
+        self.context = context
+        self.serializer = context.get_serializer().serialize
 
     def process(
         self,
@@ -176,7 +177,7 @@ class GroupMemberAgentProcessor:
             agent_names=self.agent_names,
             chat_names=self.chat_names,
             all_chats=self.all_chats,
-            serializer=self.serializer,
+            context=self.context,
         ).process()
         for extra_import in result.extra_imports:
             self.result.extra_imports.add(ImportStatement(extra_import))

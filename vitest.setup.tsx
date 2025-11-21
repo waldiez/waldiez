@@ -143,6 +143,9 @@ vi.mock("@monaco-editor/loader", () => ({
 
 globalThis.Blob = Blob;
 globalThis.FormData = FormData;
+if (!document.queryCommandSupported) {
+    document.queryCommandSupported = () => true;
+}
 const mockWebCrypto = async () => {
     // Mock Web Crypto API for Vitest on Windows
     if (!globalThis.crypto || !globalThis.crypto.subtle) {

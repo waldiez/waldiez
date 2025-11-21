@@ -4,8 +4,8 @@
 """Handoff processor for Waldiez agents."""
 
 from dataclasses import dataclass, field
-from typing import Callable
 
+from waldiez.exporting.core import ExporterContext
 from waldiez.models import (
     WaldiezAgent,
     WaldiezChat,
@@ -50,14 +50,15 @@ class HandoffProcessor:
         agent_names: dict[str, str],
         chat_names: dict[str, str],
         all_chats: list[WaldiezChat],
-        serializer: Callable[..., str],
+        context: ExporterContext,
     ) -> None:
         self.agent = agent
         self.agent_names = agent_names
         self.agent_name = agent_names[agent.id]
         self.chat_names = chat_names
         self.all_chats = all_chats
-        self.serializer = serializer
+        self.serializer = context.get_serializer().serialize
+        self.logger = context.get_logger()
         self.result = HandoffResult()
 
     def process(self) -> HandoffResult:
@@ -126,6 +127,7 @@ class HandoffProcessor:
     ) -> str:
         """Create the handoff registration string."""
         if handoff.is_empty():
+            self.logger.warning("Empty handoff: ", handoff.model_dump())
             return ""
         reg_string = ""
         if handoff.is_llm_based():

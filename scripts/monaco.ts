@@ -19,7 +19,7 @@ const __dirname = path.dirname(__filename);
 const REGISTRY_BASE_URL = "https://registry.npmjs.org";
 const PACKAGE_NAME = "monaco-editor";
 const PUBLIC_PATH = path.resolve(__dirname, "..", "public");
-const MONACO_DETAILS_PATH = path.join(PUBLIC_PATH, "monaco.json");
+const MONACO_JSON = path.join(PUBLIC_PATH, "monaco.json");
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 const FORCE = process.argv.includes("--force");
 // 0.53.0 does not seem to play well with @monaco-editor/react
@@ -35,10 +35,10 @@ interface IPackageDetails {
 
 const readMonacoDetails = (): IPackageDetails | null => {
     try {
-        if (!fs.existsSync(MONACO_DETAILS_PATH)) {
+        if (!fs.existsSync(MONACO_JSON)) {
             return null;
         }
-        const data = JSON.parse(fs.readFileSync(MONACO_DETAILS_PATH, "utf-8"));
+        const data = JSON.parse(fs.readFileSync(MONACO_JSON, "utf-8"));
         const lastCheck = new Date(data.last_check);
         if (Date.now() - lastCheck.getTime() >= ONE_DAY_MS) {
             return null;
@@ -85,7 +85,7 @@ const fetchPackageDetails = async (): Promise<IPackageDetails> => {
                             last_check: new Date().toISOString(),
                         };
 
-                        fs.writeFileSync(MONACO_DETAILS_PATH, JSON.stringify(details, null, 2));
+                        fs.writeFileSync(MONACO_JSON, JSON.stringify(details, null, 2));
                         resolve(details);
                     } catch (err) {
                         console.error("Failed to parse package metadata:", err);

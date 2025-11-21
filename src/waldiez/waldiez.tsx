@@ -102,18 +102,23 @@ export const Waldiez: FC<Partial<WaldiezProps>> = (props: Partial<WaldiezProps>)
     const nodes = props.nodes ?? [];
     const edges = props.edges ?? [];
     const readOnly = props.readOnly ?? false;
-    const { monacoVsPath, chat, stepByStep } = props;
+    const { chat, stepByStep } = props;
     useEffect(() => {
         checkInitialBodyThemeClass();
         checkInitialBodySidebarClass();
-        // make sure no leftover lock
+        // check for leftover lock
         window.localStorage.removeItem(`snackbar-${flowId}.lock`);
     }, [flowId]);
     useEffect(() => {
-        if (monacoVsPath) {
-            loader.config({ paths: { vs: monacoVsPath } });
+        if (typeof window === "undefined") {
+            return;
         }
-    }, [monacoVsPath]);
+        (async () => {
+            await import("@waldiez/utils/monacoEnv");
+            const monaco = await import("monaco-editor");
+            loader.config({ monaco });
+        })();
+    }, []);
     return (
         <SnackbarProvider>
             <WaldiezThemeProvider>
@@ -163,7 +168,6 @@ const checkInitialBodyThemeClass = () => {
     const isDark = isInitiallyDark();
     setIsDarkMode(isDark);
 };
-
 const checkInitialBodySidebarClass = () => {
     // if the initial body class is not set,
     // set it based on the user's preference

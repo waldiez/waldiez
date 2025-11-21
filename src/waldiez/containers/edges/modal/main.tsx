@@ -33,7 +33,7 @@ import type {
 /**
  * Modal component for editing edge properties
  */
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, complexity
 export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
     const { edgeId, isOpen, onClose } = props;
 
@@ -272,7 +272,16 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                                 </div>
                             </TabItem>
                         )}
-
+                        {groupChatType === "nested" && (
+                            <TabItem label="Summary" id={tabIds.summary}>
+                                <WaldiezEdgeSummaryTab
+                                    edgeId={edgeId}
+                                    darkMode={isDark}
+                                    data={edgeData}
+                                    onDataChange={onDataChange}
+                                />
+                            </TabItem>
+                        )}
                         {groupChatType === "handoff" && (
                             <TabItem label="Condition" id={tabIds.condition}>
                                 <HandoffCondition
