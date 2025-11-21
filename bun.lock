@@ -84,7 +84,6 @@
         "jsdom": "^27.2.0",
         "lint-staged": "^16.2.7",
         "lookpath": "^1.2.3",
-        "monaco-editor": "^0.55.1",
         "playwright": "^1.56.1",
         "prettier": "^3.6.2",
         "react": "^19.2.0",

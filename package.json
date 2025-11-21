@@ -194,7 +194,6 @@
         "jsdom": "^27.2.0",
         "lint-staged": "^16.2.7",
         "lookpath": "^1.2.3",
-        "monaco-editor": "^0.55.1",
         "playwright": "^1.56.1",
         "prettier": "^3.6.2",
         "react": "^19.2.0",
@@ -274,7 +273,7 @@
         "cross-spawn": "^7.0.6",
         "ws": "^8.18.3",
         "got": "^14.6.2",
-        "marked": "17.0.0",
+        "marked": "17.0.1",
         "tmp": "0.2.5",
         "ajv-draft-04": "npm:ajv@^6.12.4"
     },

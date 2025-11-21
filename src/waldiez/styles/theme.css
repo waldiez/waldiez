@@ -22,7 +22,6 @@
 .flow-wrapper textarea,
 .modal-root input,
 .modal-root textarea {
-  all: unset;
   width: 100%;
   padding: 8px 16px;
   border: 1px solid color-mix(in srgb, var(--text-color) 20%, var(--background-color));
