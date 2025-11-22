@@ -5,6 +5,11 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## v0.6.4
+
+- Fixed an issue with custom summary method not being imported correctly
+- Updated waldiez-studio base url handling
+
 ## v0.6.3
 
 - Updated ag2 dependency to 0.10.1

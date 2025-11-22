@@ -2,7 +2,7 @@
     "name": "@waldiez/react",
     "description": "Make AG2 Agents Collaborate: Drag, Drop, and Orchestrate with Waldiez.",
     "license": "Apache-2.0",
-    "version": "0.6.3",
+    "version": "0.6.4",
     "type": "module",
     "main": "./dist/@waldiez.umd.cjs",
     "module": "./dist/@waldiez.js",
