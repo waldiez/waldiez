@@ -1,0 +1,1060 @@
+{
+  "id": "id-7ae97e1b-1f18-40e7-86a5-df2b12deb4f0",
+  "type": "flow",
+  "version": "0.6.3",
+  "storageId": "wf-1755613189845gnYgPAW3heErrjyL9InOa",
+  "name": "Waldiez Flow",
+  "description": "A waldiez flow",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2025-08-19T14:19:49.845Z",
+  "updatedAt": "2025-11-21T10:28:03.385Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wm-1755613838307yYtFIcfc-OMMmDoJH8crY",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "selected": false,
+        "hidden": true,
+        "className": ""
+      },
+      {
+        "id": "wt-1755613872322FDltdWCMqKkbPJLKDJvjf",
+        "type": "tool",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": false,
+        "className": ""
+      },
+      {
+        "id": "wt-1755613944329H-Ovxvk1_Se_K6Knn2meH",
+        "type": "tool",
+        "position": {
+          "x": 200,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": false,
+        "className": ""
+      },
+      {
+        "id": "wt-1763720868897PljMTwe1ZvNXioeHyNOqc",
+        "type": "tool",
+        "position": {
+          "x": 400,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false
+      },
+      {
+        "id": "wa-1755613649229j-mHDWLQvxz7YWM2ObzhB",
+        "type": "agent",
+        "style": {
+          "width": 490
+        },
+        "position": {
+          "x": 330,
+          "y": 60
+        },
+        "measured": {
+          "width": 505,
+          "height": 425
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": true,
+        "width": 505,
+        "height": 425,
+        "resizing": false
+      },
+      {
+        "id": "wa-1755613619097KJa7znsMUEx8IX6HLpcdI",
+        "type": "agent",
+        "style": {
+          "width": 130
+        },
+        "position": {
+          "x": 90,
+          "y": 135
+        },
+        "measured": {
+          "width": 130,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": true
+      },
+      {
+        "id": "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 195,
+          "y": 30
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "className": "",
+        "dragging": false,
+        "hidden": true,
+        "parentId": "wa-1755613649229j-mHDWLQvxz7YWM2ObzhB"
+      },
+      {
+        "id": "17556141067039oCLz7BUvUOZDVLIWI0jN",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 195,
+          "y": 255
+        },
+        "extent": "parent",
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": true,
+        "parentId": "wa-1755613649229j-mHDWLQvxz7YWM2ObzhB"
+      },
+      {
+        "id": "wa-1755614171544GZlcnbrq3F26uybJCt5zW",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 930,
+          "y": 30
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": true
+      },
+      {
+        "id": "1755614214229w2DjJ1pv3c28zcgjaxLKn",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 915,
+          "y": 210
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": true
+      },
+      {
+        "id": "1755614218359vShse-iOYGBf0Td_e7wjU",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 915,
+          "y": 390
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "dragging": false,
+        "className": "",
+        "hidden": true
+      }
+    ],
+    "edges": [
+      {
+        "id": "wc-17556145860742WAYHy6P-HmaONgP4LCHG",
+        "source": "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "target": "wa-1755614171544GZlcnbrq3F26uybJCt5zW",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": true,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "targetHandle": "agent-handle-left-target-wa-1755614171544GZlcnbrq3F26uybJCt5zW"
+      },
+      {
+        "id": "wc-1755614587849wBLq8ZSBIiwljzC2nUMbG",
+        "source": "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "target": "1755614214229w2DjJ1pv3c28zcgjaxLKn",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": true,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "targetHandle": "agent-handle-left-target-1755614214229w2DjJ1pv3c28zcgjaxLKn"
+      },
+      {
+        "id": "wc-1755614591393NexuxOFS9nVipFgya_-z-",
+        "source": "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "target": "1755614218359vShse-iOYGBf0Td_e7wjU",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": true,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "targetHandle": "agent-handle-left-target-1755614218359vShse-iOYGBf0Td_e7wjU"
+      },
+      {
+        "id": "wc-17556146495631ac2Zhf1Srd_T8BTn0AFb",
+        "source": "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "target": "17556141067039oCLz7BUvUOZDVLIWI0jN",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#66bc57",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#66bc57",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-bottom-source-wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "targetHandle": "agent-handle-top-target-17556141067039oCLz7BUvUOZDVLIWI0jN"
+      },
+      {
+        "id": "wc-1755614991819TB3dEfGQCBsLiy2Ix3BsI",
+        "source": "wa-1755613619097KJa7znsMUEx8IX6HLpcdI",
+        "target": "wa-1755613649229j-mHDWLQvxz7YWM2ObzhB",
+        "type": "group",
+        "hidden": false,
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1755613619097KJa7znsMUEx8IX6HLpcdI",
+        "targetHandle": "agent-handle-left-target-wa-1755613649229j-mHDWLQvxz7YWM2ObzhB"
+      }
+    ],
+    "viewport": {
+      "x": 20,
+      "y": 40,
+      "zoom": 0.6169154228855721
+    },
+    "agents": {
+      "groupManagerAgents": [
+        {
+          "type": "agent",
+          "name": "Manager",
+          "description": "The group manager agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T14:27:29.230Z",
+          "updatedAt": "2025-08-19T14:27:29.230Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-1755613838307yYtFIcfc-OMMmDoJH8crY"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {
+              "task_initiated": "False",
+              "task_completed": "False",
+              "evaluation_complete": "False",
+              "current_task": "",
+              "task_type": "None",
+              "approach_count": "0",
+              "agent_a_result": "None",
+              "agent_b_result": "None",
+              "agent_c_result": "None",
+              "evaluation_scores": "{}",
+              "final_result": "None",
+              "selected_approach": "None",
+              "has_error": "False",
+              "error_message": "",
+              "error_source": ""
+            },
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "maxRound": 30,
+            "adminName": null,
+            "speakers": {
+              "selectionMethod": "default",
+              "selectionCustomMethod": "",
+              "maxRetriesForSelecting": null,
+              "selectionMode": "repeat",
+              "allowRepeat": true,
+              "allowedOrDisallowedTransitions": {},
+              "transitionsType": "allowed",
+              "order": []
+            },
+            "enableClearHistory": false,
+            "sendIntroductions": false,
+            "initialAgentId": "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+            "groupName": "Group"
+          },
+          "id": "wa-1755613649229j-mHDWLQvxz7YWM2ObzhB",
+          "agentType": "group_manager"
+        }
+      ],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User",
+          "description": "A new User agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T14:26:59.098Z",
+          "updatedAt": "2025-08-19T14:26:59.098Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-1755613619097KJa7znsMUEx8IX6HLpcdI",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "taskmaster_agent",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T14:34:39.947Z",
+          "updatedAt": "2025-08-19T14:34:39.947Z",
+          "data": {
+            "systemMessage": "You are the Task Manager responsible for initiating tasks and coordinating the redundant pattern workflow.\n\n        Your role is to:\n        1. Understand the user's request and frame it as a clear task\n        2. Determine the appropriate task type (creative, problem_solving, factual)\n        3. Initiate the task to be processed by multiple independent agents\n        4. Return to the user with the final selected or synthesized result\n\n        For each request:\n        1. Use the initiate_task tool to start the process\n        2. After all agents have submitted their results and evaluation is complete, present the final result to the user\n\n        Always explain to the user that their task is being processed by multiple approaches to ensure the best possible outcome.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-1755613838307yYtFIcfc-OMMmDoJH8crY"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755613872322FDltdWCMqKkbPJLKDJvjf",
+                "executorId": "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2"
+              }
+            ],
+            "parentId": "wa-1755613649229j-mHDWLQvxz7YWM2ObzhB",
+            "nestedChats": [
+              {
+                "triggeredBy": [
+                  "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2"
+                ],
+                "messages": [
+                  {
+                    "id": "wc-17556145860742WAYHy6P-HmaONgP4LCHG",
+                    "isReply": false
+                  },
+                  {
+                    "id": "wc-1755614587849wBLq8ZSBIiwljzC2nUMbG",
+                    "isReply": false
+                  },
+                  {
+                    "id": "wc-1755614591393NexuxOFS9nVipFgya_-z-",
+                    "isReply": false
+                  }
+                ],
+                "condition": {
+                  "conditionType": "expression_context",
+                  "expression": "len(${agent_a_result}) == 0 or len(${agent_b_result}) == 0 or len(${agent_c_result}) == 0"
+                },
+                "available": {
+                  "type": "expression",
+                  "value": "${task_initiated} == True and len(${current_task}) > 0 and ${task_completed} == False"
+                }
+              }
+            ],
+            "handoffs": [
+              "nested-chat",
+              "wc-17556146495631ac2Zhf1Srd_T8BTn0AFb"
+            ],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "RevertToUserTarget",
+              "value": []
+            },
+            "isMultimodal": false
+          },
+          "id": "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "evaluator_agent",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T14:34:39.947Z",
+          "updatedAt": "2025-08-19T14:34:39.947Z",
+          "data": {
+            "systemMessage": "You are the Evaluator Agent responsible for assessing multiple approaches to the same task and selecting or synthesizing the best result.\n\n        Your role is to:\n        1. Carefully review each approach and result\n        2. Evaluate each solution based on criteria appropriate to the task type\n        3. Assign scores to each approach on a scale of 1-10\n        4. Either select the best approach or synthesize a superior solution by combining strengths\n\n        For creative tasks, evaluate based on:\n        - Originality and uniqueness\n        - Effectiveness in addressing the creative brief\n        - Quality of execution and coherence\n\n        For problem-solving tasks, evaluate based on:\n        - Correctness and accuracy\n        - Efficiency and elegance\n        - Comprehensiveness and robustness\n\n        For factual tasks, evaluate based on:\n        - Accuracy and correctness\n        - Comprehensiveness and depth\n        - Clarity and organization\n\n        When appropriate, rather than just selecting a single approach, synthesize a superior solution by combining the strengths of multiple approaches.\n\n        Use the evaluate_and_select tool to submit your final evaluation, including detailed scoring and rationale.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-1755613838307yYtFIcfc-OMMmDoJH8crY"
+            ],
+            "tools": [
+              {
+                "id": "wt-1755613944329H-Ovxvk1_Se_K6Knn2meH",
+                "executorId": "17556141067039oCLz7BUvUOZDVLIWI0jN"
+              }
+            ],
+            "parentId": "wa-1755613649229j-mHDWLQvxz7YWM2ObzhB",
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": {
+              "targetType": "RevertToUserTarget",
+              "value": []
+            },
+            "isMultimodal": false
+          },
+          "id": "17556141067039oCLz7BUvUOZDVLIWI0jN",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "agent_a",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T14:36:11.544Z",
+          "updatedAt": "2025-08-19T14:36:11.544Z",
+          "data": {
+            "systemMessage": "You are Agent A, specializing in a structured, analytical approach to tasks.\n\n        For creative tasks:\n        - Use structured frameworks and established patterns\n        - Follow proven methodologies and best practices\n        - Focus on clarity, organization, and logical progression\n\n        For problem-solving tasks:\n        - Use first principles thinking and systematic analysis\n        - Break down problems into component parts\n        - Consider established solutions and scientific approaches\n\n        For factual information:\n        - Prioritize objective, verifiable data\n        - Present information in a structured, hierarchical manner\n        - Focus on accuracy and comprehensiveness\n\n        Always identify your approach clearly and explain your methodology as part of your response.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-1755613838307yYtFIcfc-OMMmDoJH8crY"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "wa-1755614171544GZlcnbrq3F26uybJCt5zW",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "agent_b",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T14:36:11.544Z",
+          "updatedAt": "2025-08-19T14:36:11.544Z",
+          "data": {
+            "systemMessage": "You are Agent B, specializing in a creative, lateral-thinking approach to tasks.\n\n        For creative tasks:\n        - Use metaphors, analogies, and unexpected connections\n        - Think outside conventional frameworks\n        - Explore unique perspectives and novel combinations\n\n        For problem-solving tasks:\n        - Use creative ideation and divergent thinking\n        - Look for non-obvious connections and innovative approaches\n        - Consider unconventional solutions outside the mainstream\n\n        For factual information:\n        - Present information through narratives and examples\n        - Use contextual understanding and practical applications\n        - Focus on making information relatable and engaging\n\n        Always identify your approach clearly and explain your methodology as part of your response.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-1755613838307yYtFIcfc-OMMmDoJH8crY"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1755614214229w2DjJ1pv3c28zcgjaxLKn",
+          "agentType": "assistant"
+        },
+        {
+          "type": "agent",
+          "name": "agent_c",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-08-19T14:36:11.544Z",
+          "updatedAt": "2025-08-19T14:36:11.544Z",
+          "data": {
+            "systemMessage": "You are Agent C, specializing in a thorough, comprehensive approach to tasks.\n\n        For creative tasks:\n        - Combine multiple perspectives and diverse inputs\n        - Draw from cross-disciplinary knowledge and varied examples\n        - Focus on thoroughness and covering all possible angles\n\n        For problem-solving tasks:\n        - Consider multiple solution pathways simultaneously\n        - Evaluate trade-offs and present alternative approaches\n        - Focus on robustness and addressing edge cases\n\n        For factual information:\n        - Present multiple perspectives and nuanced views\n        - Include historical context and future implications\n        - Focus on depth and breadth of coverage\n\n        Always identify your approach clearly and explain your methodology as part of your response.",
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-1755613838307yYtFIcfc-OMMmDoJH8crY"
+            ],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "1755614218359vShse-iOYGBf0Td_e7wjU",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "docAgents": []
+    },
+    "models": [
+      {
+        "id": "wm-1755613838307yYtFIcfc-OMMmDoJH8crY",
+        "type": "model",
+        "name": "gpt-4.1-mini",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T14:30:38.307Z",
+        "updatedAt": "2025-08-19T14:30:52.026Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [
+      {
+        "id": "wt-1755613872322FDltdWCMqKkbPJLKDJvjf",
+        "type": "tool",
+        "name": "initiate_task",
+        "description": "Initiate processing of a task across multiple redundant agents with different approaches",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T14:31:12.322Z",
+        "updatedAt": "2025-08-19T14:32:21.934Z",
+        "data": {
+          "content": "from autogen.agentchat.group import ContextVariables, ReplyResult, AgentTarget\n\ndef initiate_task(\n    task: Annotated[str, \"The task to be processed by multiple agents\"],\n    task_type: Annotated[str, \"Type of task: 'creative', 'problem_solving', 'factual', etc.\"],\n    context_variables: ContextVariables\n) -> ReplyResult:\n    \"\"\"\n    Initiate processing of a task across multiple redundant agents with different approaches\n    \"\"\"\n    context_variables[\"task_initiated\"] = True\n    context_variables[\"task_completed\"] = False\n    context_variables[\"evaluation_complete\"] = False\n    context_variables[\"current_task\"] = task\n    context_variables[\"task_type\"] = task_type\n\n    # Reset previous results\n    context_variables[\"agent_a_result\"] = None\n    context_variables[\"agent_b_result\"] = None\n    context_variables[\"agent_c_result\"] = None\n    context_variables[\"evaluation_scores\"] = {}\n    context_variables[\"final_result\"] = None\n    context_variables[\"selected_approach\"] = None\n\n    return ReplyResult(\n        message=f\"Task initiated: '{task}' (Type: {task_type}). Will process with multiple independent approaches.\",\n        context_variables=context_variables\n    )",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1755613944329H-Ovxvk1_Se_K6Knn2meH",
+        "type": "tool",
+        "name": "evaluate_and_select",
+        "description": "Evaluate the different approaches and select or synthesize the best result",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-08-19T14:32:24.329Z",
+        "updatedAt": "2025-08-19T14:33:05.097Z",
+        "data": {
+          "content": "from autogen.agentchat.group import ContextVariables, ReplyResult, AgentTarget\n\ndef evaluate_and_select(\n    evaluation_notes: Annotated[str, \"Detailed evaluation of each agent's result\"],\n    score_a: Annotated[int, \"Score for Agent A's approach (1-10 scale)\"],\n    score_b: Annotated[int, \"Score for Agent B's approach (1-10 scale)\"],\n    score_c: Annotated[int, \"Score for Agent C's approach (1-10 scale)\"],\n    selected_result: Annotated[str, \"The selected or synthesized final result\"],\n    selection_rationale: Annotated[str, \"Explanation for why this result was selected or how it was synthesized\"],\n    context_variables: ContextVariables\n) -> ReplyResult:\n    \"\"\"\n    Evaluate the different approaches and select or synthesize the best result\n    \"\"\"\n    # Create scores dictionary from individual parameters\n    scores = {\n        \"agent_a\": score_a,\n        \"agent_b\": score_b,\n        \"agent_c\": score_c\n    }\n\n    context_variables[\"evaluation_notes\"] = evaluation_notes\n    context_variables[\"evaluation_scores\"] = scores\n    context_variables[\"final_result\"] = selected_result\n    context_variables[\"evaluation_complete\"] = True\n\n    # Determine which approach was selected (highest score)\n    max_score = 0\n    selected_approach = None\n    for agent, score in scores.items():\n        if score > max_score:\n            max_score = score\n            selected_approach = agent\n    context_variables[\"selected_approach\"] = selected_approach\n\n    return ReplyResult(\n        message=f\"Evaluation complete. Selected result: {selection_rationale[:100]}...\",\n        context_variables=context_variables,\n        target=RevertToUserTarget()\n    )\n",
+          "toolType": "custom",
+          "secrets": {},
+          "kwargs": {}
+        }
+      },
+      {
+        "id": "wt-1763720868897PljMTwe1ZvNXioeHyNOqc",
+        "type": "tool",
+        "name": "waldiez_shared",
+        "description": "Shared code available to all agents.",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-11-21T10:27:48.897Z",
+        "updatedAt": "2025-11-21T10:28:00.938Z",
+        "data": {
+          "content": "\n\"\"\"Replace this with your code.\n\nAdd any code here that will be placed at the top of the whole flow.\n\"\"\"\n\n# Example:\n# global variable\n# DATABASE = {\n#     \"users\": [\n#         {\"id\": 1, \"name\": \"Alice\"},\n#         {\"id\": 2, \"name\": \"Bob\"},\n#     ],\n#     \"posts\": [\n#         {\"id\": 1, \"title\": \"Hello, world!\", \"author_id\": 1},\n#         {\"id\": 2, \"title\": \"Another post\", \"author_id\": 2},\n#     ],\n# }\n#\n# Add your code below\n\nredundant_agent_names = [\"agent_a\", \"agent_b\", \"agent_c\"]",
+          "toolType": "shared",
+          "secrets": {},
+          "kwargs": {}
+        }
+      }
+    ],
+    "chats": [
+      {
+        "id": "wc-17556145860742WAYHy6P-HmaONgP4LCHG",
+        "type": "group",
+        "source": "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "target": "wa-1755614171544GZlcnbrq3F26uybJCt5zW",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "taskmaster_agen => agent_a",
+          "order": -1,
+          "description": "taskmaster_agent to agent_a",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": 1,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": null,
+            "prompt": "",
+            "args": {},
+            "content": ""
+          },
+          "nestedChat": {
+            "message": {
+              "type": "method",
+              "useCarryover": false,
+              "content": "def nested_chat_message(recipient: ConversableAgent, messages: list[dict[str, Any]], sender: ConversableAgent, config) -> str:\r\n    \"\"\"Extracts the task to give to an agent as the task\"\"\"\r\n    return sender.context_variables.get(\"current_task\", \"There's no task, return UNKNOWN.\")",
+              "context": {}
+            },
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755614587849wBLq8ZSBIiwljzC2nUMbG",
+        "type": "group",
+        "source": "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "target": "1755614214229w2DjJ1pv3c28zcgjaxLKn",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "taskmaster_agen => agent_b",
+          "order": -1,
+          "description": "taskmaster_agent to agent_b",
+          "position": 2,
+          "clearHistory": true,
+          "maxTurns": 1,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": null,
+            "prompt": "",
+            "args": {},
+            "content": ""
+          },
+          "nestedChat": {
+            "message": {
+              "type": "method",
+              "useCarryover": false,
+              "content": "def nested_chat_message(recipient: ConversableAgent, messages: list[dict[str, Any]], sender: ConversableAgent, config) -> str:\r\n    \"\"\"Extracts the task to give to an agent as the task\"\"\"\r\n    return sender.context_variables.get(\"current_task\", \"There's no task, return UNKNOWN.\")",
+              "context": {}
+            },
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755614591393NexuxOFS9nVipFgya_-z-",
+        "type": "group",
+        "source": "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "target": "1755614218359vShse-iOYGBf0Td_e7wjU",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "taskmaster_agen => agent_c",
+          "order": -1,
+          "description": "taskmaster_agent to agent_c",
+          "position": 3,
+          "clearHistory": true,
+          "maxTurns": 1,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": null,
+            "prompt": "",
+            "args": {},
+            "content": ""
+          },
+          "nestedChat": {
+            "message": {
+              "type": "method",
+              "useCarryover": false,
+              "content": "def nested_chat_message(recipient: ConversableAgent, messages: list[dict[str, Any]], sender: ConversableAgent, config) -> str:\n    \"\"\"Extracts the task to give to an agent as the task\"\"\"\n    return sender.context_variables.get(\"current_task\", \"There's no task, return UNKNOWN.\")",
+              "context": {}
+            },
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-17556146495631ac2Zhf1Srd_T8BTn0AFb",
+        "type": "group",
+        "source": "wa-1755614079947AOnwKZRxfJNMWGb0GrsW2",
+        "target": "17556141067039oCLz7BUvUOZDVLIWI0jN",
+        "data": {
+          "sourceType": "assistant",
+          "targetType": "assistant",
+          "name": "taskmaster_agen => agent_a",
+          "order": -1,
+          "description": "taskmaster_agent to agent_a",
+          "position": 4,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "none",
+            "content": null,
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {},
+            "content": ""
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "expression_context",
+            "expression": "${evaluation_complete} == False"
+          },
+          "available": {
+            "type": "expression",
+            "value": "${task_completed} == True"
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      },
+      {
+        "id": "wc-1755614991819TB3dEfGQCBsLiy2Ix3BsI",
+        "type": "group",
+        "source": "wa-1755613619097KJa7znsMUEx8IX6HLpcdI",
+        "target": "wa-1755613649229j-mHDWLQvxz7YWM2ObzhB",
+        "data": {
+          "sourceType": "user_proxy",
+          "targetType": "group_manager",
+          "name": "User => Manager",
+          "order": -1,
+          "description": "User to Manager",
+          "position": 5,
+          "clearHistory": true,
+          "maxTurns": null,
+          "message": {
+            "type": "string",
+            "content": "I need help with this task: Write a short story about a robot learning to understand emotions.",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {},
+            "content": ""
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "cacheSeed": null,
+    "silent": false
+  }
+}
