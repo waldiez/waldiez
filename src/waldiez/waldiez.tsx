@@ -112,8 +112,6 @@ export const Waldiez: FC<Partial<WaldiezProps>> = (props: Partial<WaldiezProps>)
     useEffect(() => {
         if (monacoVsPath) {
             loader.config({ paths: { vs: monacoVsPath } });
-        } else {
-            loader.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@latest/min/vs" } });
         }
     }, [monacoVsPath]);
     return (
