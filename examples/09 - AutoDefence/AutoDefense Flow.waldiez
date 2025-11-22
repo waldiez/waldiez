@@ -1,7 +1,7 @@
 {
   "id": "wf-jOphYSUKyn-5j_21p8M2B",
   "type": "flow",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "storageId": "wf-jOphYSUKyn-5j_21p8M2B",
   "name": "AutoDefense Flow",
   "description": "Multi-Agent LLM Defense against Jailbreak Attacks",
@@ -594,7 +594,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,
@@ -638,7 +639,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": {
@@ -687,7 +689,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": {
@@ -736,7 +739,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": {
@@ -785,7 +789,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": {

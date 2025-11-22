@@ -1,7 +1,7 @@
 {
   "id": "id-4393da83-9299-4713-8318-7f826a44d26e",
   "type": "flow",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "storageId": "wf-1749917363618dDBjyGH51ZF39JzT7zyq7",
   "name": "Swarm",
   "description": "Enhanced Swarm Orchestration with AG2. Based on <https://docs.ag2.ai/latest/docs/use-cases/notebooks/notebooks/agentchat_swarm_enhanced>",
@@ -949,7 +949,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,
@@ -993,7 +994,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,
@@ -1037,7 +1039,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,
@@ -1081,7 +1084,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,
@@ -1125,7 +1129,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,
@@ -1169,7 +1174,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": {
@@ -1218,7 +1224,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": {
@@ -1267,7 +1274,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,

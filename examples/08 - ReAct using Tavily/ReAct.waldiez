@@ -1,7 +1,7 @@
 {
   "id": "wf-1olHWN_NvlfwsHwhc5PwK",
   "type": "flow",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "storageId": "wf-1olHWN_NvlfwsHwhc5PwK",
   "name": "ReAct",
   "description": "ReAct using Tavily",
@@ -301,7 +301,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,

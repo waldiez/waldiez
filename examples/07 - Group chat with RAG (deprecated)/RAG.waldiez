@@ -1,7 +1,7 @@
 {
   "id": "wf-LK_YLIqsyKHjbVTa0G_9-",
   "type": "flow",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "storageId": "wf-LK_YLIqsyKHjbVTa0G_9-",
   "name": "RAG",
   "description": "Group Chat with Retrieval Augmented Generation.",
@@ -527,7 +527,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,

@@ -1,7 +1,7 @@
 {
   "id": "wf-VPaQuXoUTpkYgCASMrybk",
   "type": "flow",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "storageId": "wf-VPaQuXoUTpkYgCASMrybk",
   "name": "innovator",
   "description": "A waldiez flow that provides innovative ideas based on recent arxiv papers.",
@@ -463,7 +463,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,

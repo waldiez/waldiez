@@ -1,7 +1,7 @@
 {
   "id": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "type": "flow",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "storageId": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "name": "On-boarding",
   "description": "Sequential Chats and Customer Onboarding",
@@ -488,7 +488,8 @@
             "prompt": "Return the customer information into as JSON object only: {'name': '', 'location': ''}",
             "args": {
               "summary_role": "user"
-            }
+            },
+            "content": ""
           },
           "nestedChat": {
             "message": null,
@@ -534,7 +535,8 @@
             "prompt": "Return the customer information into as JSON object only: {'topic_of_interest': ''}",
             "args": {
               "summary_role": "user"
-            }
+            },
+            "content": ""
           },
           "nestedChat": {
             "message": null,
@@ -578,7 +580,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,

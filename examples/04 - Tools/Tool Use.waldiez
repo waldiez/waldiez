@@ -1,7 +1,7 @@
 {
   "id": "KYd3gDaGM1jXMYVYA03u6OcQzVVZNpUn",
   "type": "flow",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "storageId": "wf-afhmSNzq3QHTSjqYUhtAF",
   "name": "Tool Use",
   "description": "Tool Use and Conversational Chess",
@@ -484,7 +484,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,
@@ -528,7 +529,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,
@@ -572,7 +574,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,

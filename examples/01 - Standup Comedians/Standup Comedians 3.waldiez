@@ -1,7 +1,7 @@
 {
   "id": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "type": "flow",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "storageId": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "name": "Standup comedians 3",
   "description": "Standup comedians without user input, with termination keywords.",
@@ -263,7 +263,8 @@
           "summary": {
             "method": "lastMsg",
             "prompt": "",
-            "args": {}
+            "args": {},
+            "content": ""
           },
           "nestedChat": {
             "message": null,
