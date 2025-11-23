@@ -20,14 +20,10 @@ export const CodeEditor: FC<{
             <Editor
                 defaultLanguage="python"
                 language="python"
-                // cspell: disable-next-line
-                path="inmemory://file.py"
                 theme={theme}
                 value={value}
                 className={theme}
                 onChange={onChange}
-                keepCurrentModel
-                saveViewState={false}
                 options={{
                     wordWrap: "on",
                     automaticLayout: true,
@@ -38,14 +34,7 @@ export const CodeEditor: FC<{
                     autoClosingBrackets: "always",
                     tabSize: 4,
                     minimap: { enabled: false },
-                    editContext: false,
-                    useShadowDOM: false,
                     cursorBlinking: "blink",
-                    acceptSuggestionOnCommitCharacter: false,
-                    quickSuggestions: false,
-                    suggestOnTriggerCharacters: false,
-                    wordBasedSuggestions: "off",
-                    autoIndent: "none",
                     formatOnType: false,
                     formatOnPaste: false,
                 }}
