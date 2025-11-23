@@ -133,7 +133,7 @@
         "react-hotkeys-hook": "^5.2.1",
         "react-icons": "^5.5.0",
         "react-select": "^5.10.2",
-        "recharts": "^3.4.1",
+        "recharts": "^3.5.0",
         "strip-ansi": "^7.1.2",
         "zundo": "^2.3.0",
         "zustand": "^5.0.8"
@@ -187,7 +187,7 @@
         "eslint-plugin-tsdoc": "^0.5.0",
         "formdata-node": "^6.0.3",
         "fs-extra": "^11.3.2",
-        "got": "^14.6.4",
+        "got": "^14.6.5",
         "gunzip-maybe": "^1.4.2",
         "hint": "^7.1.13",
         "husky": "^9.1.7",
