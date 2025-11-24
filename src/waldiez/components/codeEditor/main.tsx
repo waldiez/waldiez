@@ -37,6 +37,7 @@ export const CodeEditor: FC<{
                     cursorBlinking: "blink",
                     formatOnType: false,
                     formatOnPaste: false,
+                    editContext: false,
                 }}
             />
         </div>
