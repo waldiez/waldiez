@@ -1,7 +1,7 @@
 {
   "id": "id-c3a02b47-8eb6-4784-9889-f4f3eeb521c5",
   "type": "flow",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "storageId": "wf-17513622917494lqGbKY_Q3O1_IQ37hpBi",
   "name": "YouTube search Waldiez Flow",
   "description": "A example waldiez flow using YouTube search",

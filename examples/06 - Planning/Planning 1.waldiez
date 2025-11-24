@@ -1,7 +1,7 @@
 {
   "id": "wf-QGa7BsMVh9p7J3AJJkwM_",
   "type": "flow",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "storageId": "wf-QGa7BsMVh9p7J3AJJkwM_",
   "name": "Planning 1",
   "description": "Planning and Stock Report Generation",

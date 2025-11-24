@@ -5,6 +5,12 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## v0.6.6
+
+- Updated monaco-editor options
+- Minor bug fixes
+- Dependency updates
+
 ## v0.6.5
 
 - Fixed an issue with monaco editor content being shared across multiple editor instances
