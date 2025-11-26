@@ -1,7 +1,7 @@
 {
   "id": "id-0148deca-d5fa-4a09-a4ed-04c182ad3024",
   "type": "flow",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "storageId": "wf-1753178138769BW2qwr4GU5A7CWp_Up_M6",
   "name": "RAG with Doc Agent",
   "description": "Retrieval Augmented Generation using a Doc agent. Based on <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/docagent/#example>",

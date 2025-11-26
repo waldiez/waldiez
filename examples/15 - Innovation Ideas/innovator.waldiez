@@ -1,7 +1,7 @@
 {
   "id": "wf-VPaQuXoUTpkYgCASMrybk",
   "type": "flow",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "storageId": "wf-VPaQuXoUTpkYgCASMrybk",
   "name": "innovator",
   "description": "A waldiez flow that provides innovative ideas based on recent arxiv papers.",
