@@ -5,6 +5,12 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## v0.6.7
+
+- Minor bug fixes
+- Minor UI enhancements
+- Dependency updates
+
 ## v0.6.6
 
 - Updated monaco-editor options
