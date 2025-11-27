@@ -68,16 +68,16 @@ mqtt = [
 ]
 # jupyterlab extension
 jupyter = [
-  "waldiez_jupyter==0.6.6",
+  "waldiez_jupyter==0.6.7",
   "jupyterlab==4.5.0",
   "ipywidgets==8.1.8",
   "jupyter_server==2.17.0",
 ]
 runner = [
-  "waldiez_runner==0.6.6; python_version >= '3.11'",
+  "waldiez_runner==0.6.7; python_version >= '3.11'",
 ]
 studio = [
-  "waldiez_studio==0.6.6",
+  "waldiez_studio==0.6.7",
 ]
 reload = [
   "watchdog>=5.0.0",
