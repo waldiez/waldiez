@@ -21,17 +21,17 @@ export class WaldiezChatTimelineDataHandler implements WaldiezChatMessageHandler
     static isTimelineMessage(data: any): boolean {
         return Boolean(
             (data && data.type === "timeline") ||
-                /* c8 ignore next 9 -- @preserve */
-                (data &&
-                    data.type === "print" &&
-                    "data" in data &&
-                    data.data &&
-                    typeof data.data === "object" &&
-                    "type" in data.data &&
-                    data.data.type === "timeline" &&
-                    "content" in data.data &&
-                    data.data.content &&
-                    typeof data.data.content === "object"),
+            /* c8 ignore next 9 -- @preserve */
+            (data &&
+                data.type === "print" &&
+                "data" in data &&
+                data.data &&
+                typeof data.data === "object" &&
+                "type" in data.data &&
+                data.data.type === "timeline" &&
+                "content" in data.data &&
+                data.data.content &&
+                typeof data.data.content === "object"),
         );
     }
 

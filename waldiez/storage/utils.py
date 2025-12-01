@@ -240,7 +240,7 @@ def _is_windows_junction(p: Path) -> bool:
         st = os.stat(p, follow_symlinks=False)
         return bool(
             getattr(st, "st_file_attributes", 0)
-            & stat.FILE_ATTRIBUTE_REPARSE_POINT  # type: ignore
+            & stat.FILE_ATTRIBUTE_REPARSE_POINT
         )
     except OSError:
         return False

@@ -67,8 +67,8 @@ export class WaldiezChatPrintMessageHandler implements WaldiezChatMessageHandler
         }
         return Boolean(
             typeof message.content.data === "string" ||
-                Array.isArray(message.content.data) ||
-                typeof message.content.data === "object",
+            Array.isArray(message.content.data) ||
+            typeof message.content.data === "object",
         );
     }
 

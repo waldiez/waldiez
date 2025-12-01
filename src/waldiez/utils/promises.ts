@@ -10,7 +10,7 @@
 export const isPromise = <T = unknown>(value: unknown): value is Promise<T> => {
     return Boolean(
         value !== null &&
-            (typeof value === "object" || typeof value === "function") &&
-            typeof (value as any).then === "function",
+        (typeof value === "object" || typeof value === "function") &&
+        typeof (value as any).then === "function",
     );
 };

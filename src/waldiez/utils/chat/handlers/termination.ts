@@ -38,7 +38,7 @@ export class WaldiezChatTerminationHandler implements WaldiezChatMessageHandler 
                 data.content &&
                 typeof data.content === "object" &&
                 typeof data.content.termination_reason === "string") ||
-                (data.termination_reason && typeof data.termination_reason === "string"),
+            (data.termination_reason && typeof data.termination_reason === "string"),
         );
     }
 

@@ -39,12 +39,12 @@ export class WaldiezChatGroupChatRunHandler implements WaldiezChatMessageHandler
     static isValidGroupChatRun(data: any): data is WaldiezChatGroupChatRunData {
         return Boolean(
             data &&
-                typeof data === "object" &&
-                data.type === "group_chat_run_chat" &&
-                data.content &&
-                typeof data.content === "object" &&
-                typeof data.content.uuid === "string" &&
-                typeof data.content.speaker === "string",
+            typeof data === "object" &&
+            data.type === "group_chat_run_chat" &&
+            data.content &&
+            typeof data.content === "object" &&
+            typeof data.content.uuid === "string" &&
+            typeof data.content.speaker === "string",
         );
     }
 
@@ -99,13 +99,13 @@ export class WaldiezChatSpeakerSelectionHandler implements WaldiezChatMessageHan
     static isValidSpeakerSelection(data: any): data is WaldiezChatSpeakerSelectionData {
         return Boolean(
             data &&
-                typeof data === "object" &&
-                (data.type === "select_speaker" || data.type === "select_speaker_invalid_input") &&
-                data.content &&
-                typeof data.content === "object" &&
-                typeof data.content.uuid === "string" &&
-                Array.isArray(data.content.agents) &&
-                data.content.agents.every((agent: any) => typeof agent === "string"),
+            typeof data === "object" &&
+            (data.type === "select_speaker" || data.type === "select_speaker_invalid_input") &&
+            data.content &&
+            typeof data.content === "object" &&
+            typeof data.content.uuid === "string" &&
+            Array.isArray(data.content.agents) &&
+            data.content.agents.every((agent: any) => typeof agent === "string"),
         );
     }
 

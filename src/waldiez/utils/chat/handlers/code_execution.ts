@@ -44,8 +44,8 @@ export class WaldiezChatCodeExecutionReplyHandler implements WaldiezChatMessageH
         }
         return Boolean(
             typeof data.content.uuid === "string" &&
-                typeof data.content.sender === "string" &&
-                typeof data.content.recipient === "string",
+            typeof data.content.sender === "string" &&
+            typeof data.content.recipient === "string",
         );
     }
     /**

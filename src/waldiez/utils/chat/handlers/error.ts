@@ -36,10 +36,10 @@ export class WaldiezChatErrorHandler implements WaldiezChatMessageHandler {
     static isValidError(data: any): boolean {
         return Boolean(
             data &&
-                typeof data === "object" &&
-                data.type === "error" &&
-                ((data.content && typeof data.content === "object") ||
-                    (data.error && (typeof data.error === "object" || typeof data.error === "string"))),
+            typeof data === "object" &&
+            data.type === "error" &&
+            ((data.content && typeof data.content === "object") ||
+                (data.error && (typeof data.error === "object" || typeof data.error === "string"))),
         );
     }
 
