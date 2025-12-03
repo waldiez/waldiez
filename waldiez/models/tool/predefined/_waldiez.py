@@ -121,21 +121,32 @@ class WaldiezFlowToolImpl(PredefinedTool):
         is_async = str(is_async_flow).lower().strip() == "true"
         the_def = "async def" if is_async else "def"
         content = f'''
-{the_def} {self.name}(flow: str | Path, env_path: str | None = None) -> list[str] | list[dict[str, Any]] | str:
+{the_def} {self.name}(flow: str | Path | None = None, env_path: str | None = None) -> list[str] | list[dict[str, Any]] | str:
     """Run a waldiez flow and return its results.
 
     Args:
         flow: The path of te flow to run.
         env_path: Optional path to file with environment variables to use for the flow.
 
-    Returns
-    -------
+    Returns:
         list[str] | list[dict[str, Any]] | str: The flow results.
+
+    Raises:
+        FileNotFoundError: If the flow path cannot be resolved.
+        RuntimeError: If running the flow fails.
     """
     from waldiez import WaldiezRunner
+    import os
+
+    if not flow:
+        flow = "{self.kwargs.get("flow")}"
+    if not flow or not os.path.exists(flow):
+        raise FileNotFoundError("Invalid flow path")
+'''
+        content += """
     try:
         runner = WaldiezRunner.load(flow, dot_env=env_path)
-'''
+"""
         if is_async:
             content += """
         results = await runner.a_run()
