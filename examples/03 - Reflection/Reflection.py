@@ -118,7 +118,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "blog_post_writing_wi_api_keys.py"
+# "Blog_post_Writing_wi_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -145,10 +145,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("blog_post_writing_wi")
+__MODELS_MODULE__ = load_api_key_module("Blog_post_Writing_wi")
 
 
-def get_blog_post_writing_wi_model_api_key(model_name: str) -> str:
+def get_Blog_post_Writing_wi_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -160,7 +160,7 @@ def get_blog_post_writing_wi_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_blog_post_writing_wi_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Blog_post_Writing_wi_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -180,13 +180,13 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 gpt_3_5_turbo_llm_config: dict[str, Any] = {
     "model": "gpt-3.5-turbo",
     "api_type": "openai",
-    "api_key": get_blog_post_writing_wi_model_api_key("gpt_3_5_turbo"),
+    "api_key": get_Blog_post_Writing_wi_model_api_key("gpt_3_5_turbo"),
 }
 
 # Agents
 
-critic = AssistantAgent(
-    name="critic",
+Critic = AssistantAgent(
+    name="Critic",
     description="Critic",
     system_message="You are a critic. You review the work of the writer and provide constructive feedback to help improve the quality of the content.",
     human_input_mode="NEVER",
@@ -202,10 +202,10 @@ critic = AssistantAgent(
     ),
 )
 
-__AGENTS__["critic"] = critic
+__AGENTS__["Critic"] = Critic
 
-ethics_reviewer = AssistantAgent(
-    name="ethics_reviewer",
+Ethics_Reviewer = AssistantAgent(
+    name="Ethics_Reviewer",
     description="Ethics Reviewer",
     system_message="You are an ethics reviewer, known for your ability to ensure that content is ethically sound and free from any potential ethical issues. Make sure your suggestion is concise (within 3 bullet points), concrete and to the point. Begin the review by stating your role.",
     human_input_mode="NEVER",
@@ -221,10 +221,10 @@ ethics_reviewer = AssistantAgent(
     ),
 )
 
-__AGENTS__["ethics_reviewer"] = ethics_reviewer
+__AGENTS__["Ethics_Reviewer"] = Ethics_Reviewer
 
-legal_reviewer = AssistantAgent(
-    name="legal_reviewer",
+Legal_Reviewer = AssistantAgent(
+    name="Legal_Reviewer",
     description="Legal Reviewer",
     system_message="You are a legal reviewer, known for your ability to ensure that content is legally compliant and free from any potential legal issues. Make sure your suggestion is concise (within 3 bullet points), concrete and to the point. Begin the review by stating your role.",
     human_input_mode="NEVER",
@@ -240,10 +240,10 @@ legal_reviewer = AssistantAgent(
     ),
 )
 
-__AGENTS__["legal_reviewer"] = legal_reviewer
+__AGENTS__["Legal_Reviewer"] = Legal_Reviewer
 
-meta_reviewer = AssistantAgent(
-    name="meta_reviewer",
+Meta_Reviewer = AssistantAgent(
+    name="Meta_Reviewer",
     description="Meta Reviewer",
     system_message="You are a meta reviewer, you aggregate and review the work of other reviewers and give a final suggestion on the content.",
     human_input_mode="NEVER",
@@ -259,10 +259,10 @@ meta_reviewer = AssistantAgent(
     ),
 )
 
-__AGENTS__["meta_reviewer"] = meta_reviewer
+__AGENTS__["Meta_Reviewer"] = Meta_Reviewer
 
-seo_reviewer = AssistantAgent(
-    name="seo_reviewer",
+SEO_reviewer = AssistantAgent(
+    name="SEO_reviewer",
     description="SEO reviewer",
     system_message="You are an SEO reviewer, known for your ability to optimize content for search engines, ensuring that it ranks well and attracts organic traffic. Make sure your suggestion is concise (within 3 bullet points), concrete and to the point. Begin the review by stating your role.",
     human_input_mode="NEVER",
@@ -278,10 +278,10 @@ seo_reviewer = AssistantAgent(
     ),
 )
 
-__AGENTS__["seo_reviewer"] = seo_reviewer
+__AGENTS__["SEO_reviewer"] = SEO_reviewer
 
-writer = AssistantAgent(
-    name="writer",
+Writer = AssistantAgent(
+    name="Writer",
     description="Writer",
     system_message="You are a writer. You write engaging and concise blog posts (with title) on given topics. You must polish your writing based on the feedback you receive and give a refined version. Only return your final work without additional comments.",
     human_input_mode="NEVER",
@@ -297,10 +297,10 @@ writer = AssistantAgent(
     ),
 )
 
-__AGENTS__["writer"] = writer
+__AGENTS__["Writer"] = Writer
 
 
-def nested_chat_message_writer_to_ethics_reviewer(
+def nested_chat_message_Writer_to_Ethics_Reviewer(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -311,7 +311,7 @@ def nested_chat_message_writer_to_ethics_reviewer(
         \n\n {recipient.chat_messages_for_summary(sender)[-1]['content']}"""
 
 
-def nested_chat_message_writer_to_legal_reviewer(
+def nested_chat_message_Writer_to_Legal_Reviewer(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -322,7 +322,7 @@ def nested_chat_message_writer_to_legal_reviewer(
         \n\n {recipient.chat_messages_for_summary(sender)[-1]['content']}"""
 
 
-def nested_chat_message_writer_to_seo_reviewer(
+def nested_chat_message_Writer_to_SEO_reviewer(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -333,44 +333,44 @@ def nested_chat_message_writer_to_seo_reviewer(
         \n\n {recipient.chat_messages_for_summary(sender)[-1]['content']}"""
 
 
-critic_chat_queue: list[dict[str, Any]] = [
+Critic_chat_queue: list[dict[str, Any]] = [
     {
         "summary_method": "last_msg",
         "max_turns": 1,
         "clear_history": True,
         "chat_id": 0,
-        "recipient": ethics_reviewer,
-        "message": nested_chat_message_writer_to_ethics_reviewer,
+        "recipient": Ethics_Reviewer,
+        "message": nested_chat_message_Writer_to_Ethics_Reviewer,
     },
     {
         "summary_method": "last_msg",
         "max_turns": 1,
         "clear_history": True,
         "chat_id": 1,
-        "recipient": legal_reviewer,
-        "message": nested_chat_message_writer_to_legal_reviewer,
+        "recipient": Legal_Reviewer,
+        "message": nested_chat_message_Writer_to_Legal_Reviewer,
     },
     {
         "summary_method": "last_msg",
         "max_turns": 1,
         "clear_history": True,
         "chat_id": 2,
-        "recipient": seo_reviewer,
-        "message": nested_chat_message_writer_to_seo_reviewer,
+        "recipient": SEO_reviewer,
+        "message": nested_chat_message_Writer_to_SEO_reviewer,
     },
     {
         "summary_method": "last_msg",
         "max_turns": 1,
         "clear_history": True,
         "chat_id": 3,
-        "recipient": meta_reviewer,
+        "recipient": Meta_Reviewer,
         "message": "Aggregate feedback from all reviewers and give final suggestions on the writing.",
     },
 ]
 
-critic.register_nested_chats(
-    trigger=["writer"],
-    chat_queue=critic_chat_queue,
+Critic.register_nested_chats(
+    trigger=["Writer"],
+    chat_queue=Critic_chat_queue,
     use_async=False,
     ignore_async_in_sync_chat=True,
 )
@@ -478,63 +478,63 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if seo_reviewer not in _known_agents:
-        _known_agents.append(seo_reviewer)
-    _known_agents.append(seo_reviewer)
-    for _group_member in _check_for_group_members(seo_reviewer):
+    if SEO_reviewer not in _known_agents:
+        _known_agents.append(SEO_reviewer)
+    _known_agents.append(SEO_reviewer)
+    for _group_member in _check_for_group_members(SEO_reviewer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(seo_reviewer):
+    for _extra_agent in _check_for_extra_agents(SEO_reviewer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if legal_reviewer not in _known_agents:
-        _known_agents.append(legal_reviewer)
-    _known_agents.append(legal_reviewer)
-    for _group_member in _check_for_group_members(legal_reviewer):
+    if Legal_Reviewer not in _known_agents:
+        _known_agents.append(Legal_Reviewer)
+    _known_agents.append(Legal_Reviewer)
+    for _group_member in _check_for_group_members(Legal_Reviewer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(legal_reviewer):
+    for _extra_agent in _check_for_extra_agents(Legal_Reviewer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if ethics_reviewer not in _known_agents:
-        _known_agents.append(ethics_reviewer)
-    _known_agents.append(ethics_reviewer)
-    for _group_member in _check_for_group_members(ethics_reviewer):
+    if Ethics_Reviewer not in _known_agents:
+        _known_agents.append(Ethics_Reviewer)
+    _known_agents.append(Ethics_Reviewer)
+    for _group_member in _check_for_group_members(Ethics_Reviewer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(ethics_reviewer):
+    for _extra_agent in _check_for_extra_agents(Ethics_Reviewer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if meta_reviewer not in _known_agents:
-        _known_agents.append(meta_reviewer)
-    _known_agents.append(meta_reviewer)
-    for _group_member in _check_for_group_members(meta_reviewer):
+    if Meta_Reviewer not in _known_agents:
+        _known_agents.append(Meta_Reviewer)
+    _known_agents.append(Meta_Reviewer)
+    for _group_member in _check_for_group_members(Meta_Reviewer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(meta_reviewer):
+    for _extra_agent in _check_for_extra_agents(Meta_Reviewer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if writer not in _known_agents:
-        _known_agents.append(writer)
-    _known_agents.append(writer)
-    for _group_member in _check_for_group_members(writer):
+    if Writer not in _known_agents:
+        _known_agents.append(Writer)
+    _known_agents.append(Writer)
+    for _group_member in _check_for_group_members(Writer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(writer):
+    for _extra_agent in _check_for_extra_agents(Writer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if critic not in _known_agents:
-        _known_agents.append(critic)
-    _known_agents.append(critic)
-    for _group_member in _check_for_group_members(critic):
+    if Critic not in _known_agents:
+        _known_agents.append(Critic)
+    _known_agents.append(Critic)
+    for _group_member in _check_for_group_members(Critic):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(critic):
+    for _extra_agent in _check_for_extra_agents(Critic):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -746,8 +746,8 @@ def main(
     pause_event.set()
     if Path(".cache").is_dir():
         shutil.rmtree(".cache", ignore_errors=True)
-    results = critic.run(
-        writer,
+    results = Critic.run(
+        Writer,
         summary_method="last_msg",
         max_turns=2,
         clear_history=True,

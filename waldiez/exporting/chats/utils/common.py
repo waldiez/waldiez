@@ -134,12 +134,12 @@ def get_event_handler_string(
     )
     if is_async:
         content += (
-            f"{space}{tab}{tab}await result.process()\n"
+            f"{space}{tab}{tab}# await result.process()\n"
             f"{space}{tab}{tab}async for event in result.events:\n"
         )
     else:
         content += (
-            f"{space}{tab}{tab}result.process()\n"
+            f"{space}{tab}{tab}# result.process()\n"
             f"{space}{tab}{tab}for event in result.events:\n"
         )
     content += _add_event_dump(space, tab)

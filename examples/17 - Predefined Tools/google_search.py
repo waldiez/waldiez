@@ -257,8 +257,8 @@ gpt_4_1_llm_config: dict[str, Any] = {
 
 # Agents
 
-assistant = AssistantAgent(
-    name="assistant",
+Assistant = AssistantAgent(
+    name="Assistant",
     description="A new Assistant agent",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
@@ -273,10 +273,10 @@ assistant = AssistantAgent(
     ),
 )
 
-__AGENTS__["assistant"] = assistant
+__AGENTS__["Assistant"] = Assistant
 
-user = UserProxyAgent(
-    name="user",
+User = UserProxyAgent(
+    name="User",
     description="A new User agent",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=None,
@@ -286,12 +286,12 @@ user = UserProxyAgent(
     llm_config=False,
 )
 
-__AGENTS__["user"] = user
+__AGENTS__["User"] = User
 
 register_function(
     google_search,
-    caller=assistant,
-    executor=user,
+    caller=Assistant,
+    executor=User,
     name="google_search",
     description="Search Google for a given query.",
 )
@@ -401,23 +401,23 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user not in _known_agents:
-        _known_agents.append(user)
-    _known_agents.append(user)
-    for _group_member in _check_for_group_members(user):
+    if User not in _known_agents:
+        _known_agents.append(User)
+    _known_agents.append(User)
+    for _group_member in _check_for_group_members(User):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user):
+    for _extra_agent in _check_for_extra_agents(User):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if assistant not in _known_agents:
-        _known_agents.append(assistant)
-    _known_agents.append(assistant)
-    for _group_member in _check_for_group_members(assistant):
+    if Assistant not in _known_agents:
+        _known_agents.append(Assistant)
+    _known_agents.append(Assistant)
+    for _group_member in _check_for_group_members(Assistant):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(assistant):
+    for _extra_agent in _check_for_extra_agents(Assistant):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -628,8 +628,8 @@ def main(
     pause_event = threading.Event()
     pause_event.set()
     with Cache.disk(cache_seed=42) as cache:
-        results = user.run(
-            assistant,
+        results = User.run(
+            Assistant,
             cache=cache,
             summary_method="last_msg",
             max_turns=5,

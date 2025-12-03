@@ -4,6 +4,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,line-too-long
 # pylint: disable=missing-function-docstring,missing-param-doc,missing-return-doc
 # pylint: disable=no-self-use
+# cspell: disable
 """Test waldiez.models.common.naming.*."""
 
 from unittest.mock import Mock
@@ -62,7 +63,7 @@ class TestGetValidPythonVariableName:
         """Test with already valid Python variable names."""
         assert get_valid_python_variable_name("hello") == "hello"
         assert get_valid_python_variable_name("agent_1") == "agent_1"
-        assert get_valid_python_variable_name("myVariable") == "myvariable"
+        assert get_valid_python_variable_name("myVariable") == "myVariable"
 
     def test_name_with_spaces(self) -> None:
         """Test names with spaces are converted to underscores."""
@@ -80,24 +81,19 @@ class TestGetValidPythonVariableName:
 
     def test_arrow_operators(self) -> None:
         """Test arrow operators are converted to meaningful words."""
-        assert get_valid_python_variable_name("agent->model") == "agenttomodel"
-        assert get_valid_python_variable_name("model=>agent") == "modeltoagent"
+        assert get_valid_python_variable_name("agent->model") == "agentTomodel"
+        assert get_valid_python_variable_name("model=>agent") == "modelToagent"
         assert (
-            get_valid_python_variable_name("agent<-model") == "agentfrommodel"
+            get_valid_python_variable_name("agent<-model") == "agentFrommodel"
         )
         assert (
-            get_valid_python_variable_name("model<=agent") == "modelfromagent"
+            get_valid_python_variable_name("model<=agent") == "modelFromagent"
         )
 
     def test_name_starting_with_digit(self) -> None:
         """Test names starting with digits."""
         assert get_valid_python_variable_name("123agent") == "w_123agent"
         assert get_valid_python_variable_name("456test") == "w_456test"
-
-    def test_name_starting_with_underscore(self) -> None:
-        """Test names starting with underscore get prefix."""
-        assert get_valid_python_variable_name("_private") == "w_private"
-        assert get_valid_python_variable_name("__dunder") == "w__dunder"
 
     def test_empty_name(self) -> None:
         """Test empty names get default prefix."""
@@ -112,7 +108,7 @@ class TestGetValidPythonVariableName:
         )
         assert (
             get_valid_python_variable_name("_private", prefix="my")
-            == "my_private"
+            == "_private"
         )
         assert get_valid_python_variable_name("", prefix="empty") == "empty_"
 
@@ -136,25 +132,19 @@ class TestGetValidPythonVariableName:
         result = get_valid_python_variable_name(long_name)
         assert len(result) == MAX_VARIABLE_LENGTH
 
-    def test_case_conversion(self) -> None:
-        """Test that names are converted to lowercase."""
-        assert get_valid_python_variable_name("HelloWorld") == "helloworld"
-        assert get_valid_python_variable_name("AGENT_NAME") == "agent_name"
-        assert get_valid_python_variable_name("CamelCase") == "camelcase"
-
     def test_complex_combinations(self) -> None:
         """Test complex combinations of transformations."""
         assert (
             get_valid_python_variable_name("Agent->Model@123")
-            == "agenttomodel_123"
+            == "AgentToModel_123"
         )
         assert (
             get_valid_python_variable_name("123_Agent=>Test")
-            == "w_123_agenttotest"
+            == "w_123_AgentToTest"
         )
         assert (
             get_valid_python_variable_name("  Special@Name#123  ")
-            == "w__special_name_123"
+            == "__Special_Name_123"
         )
 
 

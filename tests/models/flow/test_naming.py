@@ -90,7 +90,7 @@ class TestEnsureWaldiezUniqueNames:
         assert not result["models"]
         assert not result["tools"]
         assert not result["chats"]
-        assert result["flow_name"] == "test_flow"
+        assert result["flow_name"] == "Test_Flow"
 
     def test_single_agent(self) -> None:
         """Test with single agent."""
@@ -99,9 +99,9 @@ class TestEnsureWaldiezUniqueNames:
 
         result = _get_unique_names(waldiez)
 
-        assert result["agent_names"] == {"agent1": "test_agent"}
+        assert result["agent_names"] == {"agent1": "Test_Agent"}
         assert result["agents"] == [agent]
-        assert result["flow_name"] == "test_flow"
+        assert result["flow_name"] == "Test_Flow"
 
     def test_single_model(self) -> None:
         """Test with single model."""
@@ -110,7 +110,7 @@ class TestEnsureWaldiezUniqueNames:
 
         result = _get_unique_names(waldiez)
 
-        assert result["model_names"] == {"model1": "gpt_4"}
+        assert result["model_names"] == {"model1": "GPT_4"}
         assert result["models"] == [model]
 
     def test_single_tool(self) -> None:
@@ -120,7 +120,7 @@ class TestEnsureWaldiezUniqueNames:
 
         result = _get_unique_names(waldiez)
 
-        assert result["tool_names"] == {"tool1": "calculator"}
+        assert result["tool_names"] == {"tool1": "Calculator"}
         assert result["tools"] == [tool]
 
     def test_single_chat(self) -> None:
@@ -130,7 +130,7 @@ class TestEnsureWaldiezUniqueNames:
 
         result = _get_unique_names(waldiez)
 
-        assert result["chat_names"] == {"chat1": "main_chat"}
+        assert result["chat_names"] == {"chat1": "Main_Chat"}
         assert result["chats"] == [chat]
 
     def test_name_conflicts_across_types(self) -> None:
@@ -169,9 +169,9 @@ class TestEnsureWaldiezUniqueNames:
 
         result = _get_unique_names(waldiez)
 
-        assert result["agent_names"]["agent1"] == "assistant"
-        assert result["agent_names"]["agent2"] == "wa_assistant"
-        assert result["agent_names"]["agent3"] == "wa_assistant_1"
+        assert result["agent_names"]["agent1"] == "Assistant"
+        assert result["agent_names"]["agent2"] == "wa_Assistant"
+        assert result["agent_names"]["agent3"] == "wa_Assistant_1"
 
     def test_complex_scenario_all_types(self) -> None:
         """Test complex scenario with all types and conflicts."""
@@ -207,17 +207,17 @@ class TestEnsureWaldiezUniqueNames:
         assert len(result["model_names"]) == 2
         assert len(result["tool_names"]) == 2
         assert len(result["chat_names"]) == 2
-        assert result["flow_name"] == "complex_flow"
+        assert result["flow_name"] == "Complex_Flow"
 
         # Check specific mappings
-        assert result["agent_names"]["a1"] == "main_agent"
-        assert result["agent_names"]["a2"] == "helper_agent"
-        assert result["model_names"]["m1"] == "gpt_4"
-        assert result["model_names"]["m2"] == "claude"
-        assert result["tool_names"]["t1"] == "calculator"
-        assert result["tool_names"]["t2"] == "web_search"
-        assert result["chat_names"]["c1"] == "primary_chat"
-        assert result["chat_names"]["c2"] == "secondary_chat"
+        assert result["agent_names"]["a1"] == "Main_Agent"
+        assert result["agent_names"]["a2"] == "Helper_Agent"
+        assert result["model_names"]["m1"] == "GPT_4"
+        assert result["model_names"]["m2"] == "Claude"
+        assert result["tool_names"]["t1"] == "Calculator"
+        assert result["tool_names"]["t2"] == "Web_Search"
+        assert result["chat_names"]["c1"] == "Primary_Chat"
+        assert result["chat_names"]["c2"] == "Secondary_Chat"
 
     def test_custom_max_length(self) -> None:
         """Test custom max_length parameter."""
@@ -230,7 +230,7 @@ class TestEnsureWaldiezUniqueNames:
 
         # Name should be truncated to 10 characters
         assert len(result["agent_names"]["agent1"]) == 9
-        assert result["agent_names"]["agent1"] == "very_long"
+        assert result["agent_names"]["agent1"] == "Very_Long"
 
     def test_custom_flow_name_max_length(self) -> None:
         """Test custom flow_name_max_length parameter."""
@@ -242,7 +242,7 @@ class TestEnsureWaldiezUniqueNames:
 
         # Flow name should be truncated to 8 characters
         assert len(result["flow_name"]) == 8
-        assert result["flow_name"] == "very_lon"
+        assert result["flow_name"] == "Very_Lon"
 
     def test_invalid_python_names_get_cleaned(self) -> None:
         """Test that invalid Python names get properly cleaned."""
@@ -253,8 +253,8 @@ class TestEnsureWaldiezUniqueNames:
 
         result = _get_unique_names(waldiez)
 
-        assert result["agent_names"]["agent1"] == "wa_123_invalid_name"
-        assert result["model_names"]["model1"] == "modeltoagent"
+        assert result["agent_names"]["agent1"] == "wa_123_Invalid_Name"
+        assert result["model_names"]["model1"] == "ModelToAgent"
 
     def test_result_type_structure(self) -> None:
         """Test that result has correct structure and types."""
@@ -321,13 +321,14 @@ class TestEdgeCases:
 
     def test_unicode_characters(self) -> None:
         """Test with unicode characters."""
+        # cspell: disable-next-line
         agent = create_mock_agent("agent1", "Agënt Tést 🤖")
         waldiez = create_mock_waldiez(agents=[agent])
 
         result = _get_unique_names(waldiez)
 
         # Unicode should be replaced with underscores
-        assert result["agent_names"]["agent1"] == "ag_nt_t_st"
+        assert result["agent_names"]["agent1"] == "Ag_nt_T_st"
 
     def test_all_special_characters(self) -> None:
         """Test name with only special characters."""
@@ -384,20 +385,20 @@ class TestIntegration:
         result = _get_unique_names(waldiez)
 
         # Verify realistic output
-        assert result["agent_names"]["user_proxy_1"] == "user_proxy"
-        assert result["agent_names"]["assistant_1"] == "ai_assistant"
-        assert result["agent_names"]["code_reviewer"] == "code_reviewer"
+        assert result["agent_names"]["user_proxy_1"] == "User_Proxy"
+        assert result["agent_names"]["assistant_1"] == "AI_Assistant"
+        assert result["agent_names"]["code_reviewer"] == "Code_Reviewer"
 
-        assert result["model_names"]["gpt4_model"] == "gpt_4"
-        assert result["model_names"]["claude_model"] == "claude_3"
+        assert result["model_names"]["gpt4_model"] == "GPT_4"
+        assert result["model_names"]["claude_model"] == "Claude_3"
 
-        assert result["tool_names"]["python_tool"] == "python_executor"
-        assert result["tool_names"]["web_tool"] == "web_search"
+        assert result["tool_names"]["python_tool"] == "Python_Executor"
+        assert result["tool_names"]["web_tool"] == "Web_Search"
 
-        assert result["chat_names"]["main_chat"] == "main_discussion"
-        assert result["chat_names"]["review_chat"] == "code_review"
+        assert result["chat_names"]["main_chat"] == "Main_Discussion"
+        assert result["chat_names"]["review_chat"] == "Code_Review"
 
-        assert result["flow_name"] == "ai_coding_assistant"
+        assert result["flow_name"] == "AI_Coding_Assistant"
 
     def test_massive_name_conflicts(self) -> None:
         """Test scenario with many identical names."""
@@ -408,10 +409,10 @@ class TestIntegration:
         result = _get_unique_names(waldiez)
 
         # First should get the base name, others should get prefixes/indices
-        assert result["agent_names"]["agent_0"] == "agent"
-        assert result["agent_names"]["agent_1"] == "wa_agent"
-        assert result["agent_names"]["agent_2"] == "wa_agent_1"
-        assert result["agent_names"]["agent_3"] == "wa_agent_2"
+        assert result["agent_names"]["agent_0"] == "Agent"
+        assert result["agent_names"]["agent_1"] == "wa_Agent"
+        assert result["agent_names"]["agent_2"] == "wa_Agent_1"
+        assert result["agent_names"]["agent_3"] == "wa_Agent_2"
         # ... and so on
 
         # All names should be unique

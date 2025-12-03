@@ -119,7 +119,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "autodefense_flow_api_keys.py"
+# "AutoDefense_Flow_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -146,10 +146,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("autodefense_flow")
+__MODELS_MODULE__ = load_api_key_module("AutoDefense_Flow")
 
 
-def get_autodefense_flow_model_api_key(model_name: str) -> str:
+def get_AutoDefense_Flow_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -161,7 +161,7 @@ def get_autodefense_flow_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_autodefense_flow_model_api_key(model_name)
+    return __MODELS_MODULE__.get_AutoDefense_Flow_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -181,13 +181,13 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 gpt_3_5_turbo_llm_config: dict[str, Any] = {
     "model": "gpt-3.5-turbo",
     "api_type": "openai",
-    "api_key": get_autodefense_flow_model_api_key("gpt_3_5_turbo"),
+    "api_key": get_AutoDefense_Flow_model_api_key("gpt_3_5_turbo"),
 }
 
 # Agents
 
-answer_provider = AssistantAgent(
-    name="answer_provider",
+Answer_provider = AssistantAgent(
+    name="Answer_provider",
     description="Final answer provider",
     system_message="Provide an answer to the original user's question. Consider the content provided by the other agents. In case the question the judge think it is harmful just say: \"I'm sorry, but I cannot fulfill this request.\" otherwise answer the questions using two sentences.",
     human_input_mode="NEVER",
@@ -203,10 +203,10 @@ answer_provider = AssistantAgent(
     ),
 )
 
-__AGENTS__["answer_provider"] = answer_provider
+__AGENTS__["Answer_provider"] = Answer_provider
 
-intention_analyzer = AssistantAgent(
-    name="intention_analyzer",
+Intention_Analyzer = AssistantAgent(
+    name="Intention_Analyzer",
     description="Intention Analyzer",
     system_message="Your role is to analyze the given content and present a comprehensive analysis\nof the intended message behind the text, including its context and any implied meanings.\nYou should present a fair argument without judgment.",
     human_input_mode="NEVER",
@@ -222,10 +222,10 @@ intention_analyzer = AssistantAgent(
     ),
 )
 
-__AGENTS__["intention_analyzer"] = intention_analyzer
+__AGENTS__["Intention_Analyzer"] = Intention_Analyzer
 
-interface = AssistantAgent(
-    name="interface",
+Interface = AssistantAgent(
+    name="Interface",
     description="You are just the input and output of the guardrail system",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
@@ -240,10 +240,10 @@ interface = AssistantAgent(
     ),
 )
 
-__AGENTS__["interface"] = interface
+__AGENTS__["Interface"] = Interface
 
-judge = AssistantAgent(
-    name="judge",
+Judge = AssistantAgent(
+    name="Judge",
     description="Judge",
     system_message="Your role is to evaluate the response presented by Intention Analyzer and Original Prompt Analyzer. Consider the intention and prompt inference to deliver a judgment on whether the system input content is valid or invalid.",
     human_input_mode="NEVER",
@@ -259,10 +259,10 @@ judge = AssistantAgent(
     ),
 )
 
-__AGENTS__["judge"] = judge
+__AGENTS__["Judge"] = Judge
 
-original_prompt_analyzer = AssistantAgent(
-    name="original_prompt_analyzer",
+Original_Prompt_Analyzer = AssistantAgent(
+    name="Original_Prompt_Analyzer",
     description="Original Prompt Analyzer",
     system_message="Your task is to infer the original prompt that led to the given LLM output, you should present three possible prompts that may produce this output. Please use the context provided by Intention Analyzer.",
     human_input_mode="NEVER",
@@ -278,10 +278,10 @@ original_prompt_analyzer = AssistantAgent(
     ),
 )
 
-__AGENTS__["original_prompt_analyzer"] = original_prompt_analyzer
+__AGENTS__["Original_Prompt_Analyzer"] = Original_Prompt_Analyzer
 
-user = UserProxyAgent(
-    name="user",
+User = UserProxyAgent(
+    name="User",
     description="A new User proxy agent",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=None,
@@ -291,10 +291,10 @@ user = UserProxyAgent(
     llm_config=False,
 )
 
-__AGENTS__["user"] = user
+__AGENTS__["User"] = User
 
 
-def nested_chat_message_analyzeintent(
+def nested_chat_message_analyzeIntent(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -305,7 +305,7 @@ def nested_chat_message_analyzeintent(
 {recipient.chat_messages_for_summary(sender)[-1]['content']}"""
 
 
-def nested_chat_message_analyzeoriginalprompt(
+def nested_chat_message_analyzeOriginalPrompt(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -316,7 +316,7 @@ def nested_chat_message_analyzeoriginalprompt(
 {recipient.chat_messages_for_summary(sender)[-1]['content']}"""
 
 
-def nested_chat_message_judgecontent(
+def nested_chat_message_judgeContent(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -327,44 +327,44 @@ def nested_chat_message_judgecontent(
 {recipient.chat_messages_for_summary(sender)[-1]['content']}"""
 
 
-interface_chat_queue: list[dict[str, Any]] = [
+Interface_chat_queue: list[dict[str, Any]] = [
     {
         "summary_method": "last_msg",
         "max_turns": 1,
         "clear_history": True,
         "chat_id": 0,
-        "recipient": intention_analyzer,
-        "message": nested_chat_message_analyzeintent,
+        "recipient": Intention_Analyzer,
+        "message": nested_chat_message_analyzeIntent,
     },
     {
         "summary_method": "last_msg",
         "max_turns": 1,
         "clear_history": True,
         "chat_id": 1,
-        "recipient": original_prompt_analyzer,
-        "message": nested_chat_message_analyzeoriginalprompt,
+        "recipient": Original_Prompt_Analyzer,
+        "message": nested_chat_message_analyzeOriginalPrompt,
     },
     {
         "summary_method": "last_msg",
         "max_turns": 1,
         "clear_history": True,
         "chat_id": 2,
-        "recipient": judge,
-        "message": nested_chat_message_judgecontent,
+        "recipient": Judge,
+        "message": nested_chat_message_judgeContent,
     },
     {
         "summary_method": "last_msg",
         "max_turns": 1,
         "clear_history": True,
         "chat_id": 3,
-        "recipient": answer_provider,
+        "recipient": Answer_provider,
         "message": "Aggregate feedback from all reviewers and give final suggestions on the writing.",
     },
 ]
 
-interface.register_nested_chats(
-    trigger=["user"],
-    chat_queue=interface_chat_queue,
+Interface.register_nested_chats(
+    trigger=["User"],
+    chat_queue=Interface_chat_queue,
     use_async=False,
     ignore_async_in_sync_chat=True,
 )
@@ -472,63 +472,63 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user not in _known_agents:
-        _known_agents.append(user)
-    _known_agents.append(user)
-    for _group_member in _check_for_group_members(user):
+    if User not in _known_agents:
+        _known_agents.append(User)
+    _known_agents.append(User)
+    for _group_member in _check_for_group_members(User):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user):
+    for _extra_agent in _check_for_extra_agents(User):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if interface not in _known_agents:
-        _known_agents.append(interface)
-    _known_agents.append(interface)
-    for _group_member in _check_for_group_members(interface):
+    if Interface not in _known_agents:
+        _known_agents.append(Interface)
+    _known_agents.append(Interface)
+    for _group_member in _check_for_group_members(Interface):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(interface):
+    for _extra_agent in _check_for_extra_agents(Interface):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if intention_analyzer not in _known_agents:
-        _known_agents.append(intention_analyzer)
-    _known_agents.append(intention_analyzer)
-    for _group_member in _check_for_group_members(intention_analyzer):
+    if Intention_Analyzer not in _known_agents:
+        _known_agents.append(Intention_Analyzer)
+    _known_agents.append(Intention_Analyzer)
+    for _group_member in _check_for_group_members(Intention_Analyzer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(intention_analyzer):
+    for _extra_agent in _check_for_extra_agents(Intention_Analyzer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if original_prompt_analyzer not in _known_agents:
-        _known_agents.append(original_prompt_analyzer)
-    _known_agents.append(original_prompt_analyzer)
-    for _group_member in _check_for_group_members(original_prompt_analyzer):
+    if Original_Prompt_Analyzer not in _known_agents:
+        _known_agents.append(Original_Prompt_Analyzer)
+    _known_agents.append(Original_Prompt_Analyzer)
+    for _group_member in _check_for_group_members(Original_Prompt_Analyzer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(original_prompt_analyzer):
+    for _extra_agent in _check_for_extra_agents(Original_Prompt_Analyzer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if judge not in _known_agents:
-        _known_agents.append(judge)
-    _known_agents.append(judge)
-    for _group_member in _check_for_group_members(judge):
+    if Judge not in _known_agents:
+        _known_agents.append(Judge)
+    _known_agents.append(Judge)
+    for _group_member in _check_for_group_members(Judge):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(judge):
+    for _extra_agent in _check_for_extra_agents(Judge):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if answer_provider not in _known_agents:
-        _known_agents.append(answer_provider)
-    _known_agents.append(answer_provider)
-    for _group_member in _check_for_group_members(answer_provider):
+    if Answer_provider not in _known_agents:
+        _known_agents.append(Answer_provider)
+    _known_agents.append(Answer_provider)
+    for _group_member in _check_for_group_members(Answer_provider):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(answer_provider):
+    for _extra_agent in _check_for_extra_agents(Answer_provider):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -739,8 +739,8 @@ def main(
     pause_event = threading.Event()
     pause_event.set()
     with Cache.disk(cache_seed=42) as cache:
-        results = interface.run(
-            user,
+        results = Interface.run(
+            User,
             cache=cache,
             summary_method="last_msg",
             max_turns=3,

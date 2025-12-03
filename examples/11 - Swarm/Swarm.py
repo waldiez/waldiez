@@ -138,7 +138,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "swarm_api_keys.py"
+# "Swarm_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -165,10 +165,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("swarm")
+__MODELS_MODULE__ = load_api_key_module("Swarm")
 
 
-def get_swarm_model_api_key(model_name: str) -> str:
+def get_Swarm_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -180,7 +180,7 @@ def get_swarm_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_swarm_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Swarm_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -312,7 +312,7 @@ def login_customer_by_username(
 gpt_4_1_llm_config: dict[str, Any] = {
     "model": "gpt-4.1",
     "api_type": "openai",
-    "api_key": get_swarm_model_api_key("gpt_4_1"),
+    "api_key": get_Swarm_model_api_key("gpt_4_1"),
 }
 
 # Agents
@@ -321,6 +321,19 @@ authentication_agent_executor = LocalCommandLineCodeExecutor(
     work_dir="coding",
     timeout=60,
 )
+
+Customer = UserProxyAgent(
+    name="Customer",
+    description="The customer user proxy agent.",
+    human_input_mode="ALWAYS",
+    max_consecutive_auto_reply=None,
+    default_auto_reply="",
+    code_execution_config=False,
+    is_termination_msg=None,
+    llm_config=False,
+)
+
+__AGENTS__["Customer"] = Customer
 
 authentication_agent = ConversableAgent(
     name="authentication_agent",
@@ -344,19 +357,6 @@ authentication_agent = ConversableAgent(
 )
 
 __AGENTS__["authentication_agent"] = authentication_agent
-
-customer = UserProxyAgent(
-    name="customer",
-    description="The customer user proxy agent.",
-    human_input_mode="ALWAYS",
-    max_consecutive_auto_reply=None,
-    default_auto_reply="",
-    code_execution_config=False,
-    is_termination_msg=None,
-    llm_config=False,
-)
-
-__AGENTS__["customer"] = customer
 
 order_mgmt_agent = ConversableAgent(
     name="order_mgmt_agent",
@@ -476,7 +476,7 @@ order_mgmt_agent.handoffs.add_llm_condition(
 )
 
 
-def nested_chat_message_wc_getorderstatus(
+def nested_chat_message_wc_GetOrderStatus(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -501,7 +501,7 @@ order_mgmt_agent_handoff_nested_chat_queue: list[dict[str, Any]] = [
         "clear_history": True,
         "chat_id": 6,
         "recipient": order_retrieval_agent,
-        "message": nested_chat_message_wc_getorderstatus,
+        "message": nested_chat_message_wc_GetOrderStatus,
     },
     {
         "summary_method": "last_msg",
@@ -547,12 +547,10 @@ order_triage_agent.handoffs.add_llm_condition(
 )
 order_triage_agent.handoffs.set_after_work(target=RevertToUserTarget())
 
-__INITIAL_MSG__ = "Help me with my order"
-
-manager_pattern = DefaultPattern(
+Manager_pattern = DefaultPattern(
     initial_agent=order_triage_agent,
     agents=[order_triage_agent, order_mgmt_agent, authentication_agent],
-    user_agent=customer,
+    user_agent=Customer,
     group_manager_args={
         "llm_config": autogen.LLMConfig(
             config_list=[
@@ -560,7 +558,7 @@ manager_pattern = DefaultPattern(
             ],
             cache_seed=None,
         ),
-        "name": "manager",
+        "name": "Manager",
     },
     context_variables=ContextVariables(
         data={
@@ -574,7 +572,9 @@ manager_pattern = DefaultPattern(
     ),
 )
 
-__GROUP__["patterns"]["manager_pattern"] = manager_pattern
+__INITIAL_MSG__ = "Help me with my order"
+
+__GROUP__["patterns"]["Manager_pattern"] = Manager_pattern
 
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
@@ -677,13 +677,13 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if customer not in _known_agents:
-        _known_agents.append(customer)
-    _known_agents.append(customer)
-    for _group_member in _check_for_group_members(customer):
+    if Customer not in _known_agents:
+        _known_agents.append(Customer)
+    _known_agents.append(Customer)
+    for _group_member in _check_for_group_members(Customer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(customer):
+    for _extra_agent in _check_for_extra_agents(Customer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
@@ -946,7 +946,7 @@ def main(
     if Path(".cache").is_dir():
         shutil.rmtree(".cache", ignore_errors=True)
     results = run_group_chat(
-        pattern=manager_pattern,
+        pattern=Manager_pattern,
         messages=__INITIAL_MSG__,
         max_rounds=40,
         pause_event=pause_event,

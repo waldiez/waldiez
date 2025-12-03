@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
-# pylint: disable=line-too-long,duplicate-code
+# pylint: disable=line-too-long
 # flake8: noqa: E501
-"""Predefined SearxNG search tool for Waldiez."""
+"""Predefined Waldiez tool for Waldiez (like inception or sth)."""
 
 from typing import Any
 
@@ -10,47 +10,45 @@ from ._config import PredefinedToolConfig
 from .protocol import PredefinedTool
 
 
-class SearxNGSearchToolImpl(PredefinedTool):
-    """SearxNG search tool for Waldiez."""
+class WaldiezFlowToolImpl(PredefinedTool):
+    """Perplexity AI search tool for Waldiez."""
 
     required_secrets: list[str] = []
     required_kwargs: dict[str, type] = {}
     kwarg_types: dict[str, type] = {
-        "base_url": str,
+        "flow": str,
     }
 
     @property
     def name(self) -> str:
         """Tool name."""
-        return "searxng_search"
+        return "waldiez_flow"
 
     @property
     def description(self) -> str:
         """Tool description."""
-        return "Search SearxNG for a given query."
+        return "Run a complete waldiez flow as tool."
 
     @property
     def kwargs(self) -> dict[str, Any]:
         """Keyword arguments for the tool, used for initialization."""
-        return {
-            "base_url": "https://searxng.site/search",
-        }
+        return {}
 
     @property
     def requirements(self) -> list[str]:
         """Python requirements for the tool."""
-        return []
+        return ["waldiez"]
 
     @property
     def tags(self) -> list[str]:
         """Tags for the tool, used for categorization."""
-        return ["searxng", "search", "web"]
+        return ["waldiez"]
 
     @property
     def tool_imports(self) -> list[str]:
         """Imports required for the tool implementation."""
         return [
-            "from autogen.tools.experimental import SearxngSearchTool",
+            "from waldiez import WaldiezRunner",
         ]
 
     def validate_secrets(self, secrets: dict[str, str]) -> list[str]:
@@ -59,14 +57,14 @@ class SearxNGSearchToolImpl(PredefinedTool):
         Parameters
         ----------
         secrets : dict[str, str]
-            Dictionary of secrets to validate.
+            Dictionary of secrets/environment variables.
 
         Returns
         -------
         list[str]
             List of missing required secrets.
         """
-        return []  # No secrets required for this tool.
+        return []
 
     # noinspection DuplicatedCode
     def validate_kwargs(self, kwargs: dict[str, Any]) -> list[str]:
@@ -75,7 +73,7 @@ class SearxNGSearchToolImpl(PredefinedTool):
         Parameters
         ----------
         kwargs : dict[str, Any]
-            Dictionary of keyword arguments to validate.
+            Dictionary of keyword arguments.
 
         Returns
         -------
@@ -83,24 +81,25 @@ class SearxNGSearchToolImpl(PredefinedTool):
             List of missing required keyword arguments.
         """
         for key, value in self.kwargs.items():
-            if key in kwargs:  # pragma: no branch
+            if key in kwargs:
                 type_of = self.kwarg_types.get(key, str)
                 # pylint: disable=broad-exception-caught
                 # noinspection PyBroadException,TryExceptPass
                 try:
                     casted = type_of(value)
-                    if key in self.kwargs:  # pragma: no branch
+                    if key in self.kwargs:
                         self.kwargs[key] = casted
                 except Exception:
                     pass
         return []
 
+    # pylint: disable=unused-argument
     def get_content(
         self,
         secrets: dict[str, str],
         runtime_kwargs: dict[str, Any] | None = None,
     ) -> str:
-        """Get content for the tool.
+        """Get the content of the tool.
 
         Parameters
         ----------
@@ -112,48 +111,56 @@ class SearxNGSearchToolImpl(PredefinedTool):
         Returns
         -------
         str
-            Content retrieved by the tool.
+            Content of the tool.
         """
+        is_async_flow = (
+            runtime_kwargs.get("is_async", "False")
+            if runtime_kwargs
+            else "False"
+        )
+        is_async = str(is_async_flow).lower().strip() == "true"
+        the_def = "async def" if is_async else "def"
         content = f'''
-def {self.name}(
-        query: str,
-        max_results: int = 5,
-        categories: list[str] | None = None,
-        language: str | None = None,
-    ) -> list[dict[str, Any]]:
-    """Perform a SearxNG search and return formatted results.
+{the_def} {self.name}(flow: str | Path, env_path: str | None = None) -> list[str] | list[dict[str, Any]] | str:
+    """Run a waldiez flow and return its results.
 
     Args:
-        query: The search query string.
-        max_results: The maximum number of results to return. Defaults to 5.
-        categories: List of categories to search in.
-        language: Language code (e.g., 'en-US').
-        base_url: SearxNG instance URL.
+        flow: The path of te flow to run.
+        env_path: Optional path to file with environment variables to use for the flow.
 
-    Returns:
-        A list of dictionaries, each containing 'title', 'link', and 'snippet' of a search result.
+    Returns
+    -------
+        list[str] | list[dict[str, Any]] | str: The flow results.
     """
-    tool = SearxngSearchTool(
-        base_url="{self.kwargs["base_url"]}",
-    )
-    return tool(
-        query=query,
-        max_results=max_results,
-        categories=categories,
-        language=language,
-    )
+    from waldiez import WaldiezRunner
+    try:
+        runner = WaldiezRunner.load(flow, dot_env=env_path)
 '''
+        if is_async:
+            content += """
+        results = await runner.a_run()
+"""
+        else:
+            content += """
+        results = runner.run()
+"""
+        content += """
+        return results
+    except BaseException as error:
+        print(error)
+        raise RuntimeError(str(error)) from error
+"""
         return content
 
 
 # pylint: disable=invalid-name
-SearxNGSearchTool = SearxNGSearchToolImpl()
-SearxNGSearchConfig = PredefinedToolConfig(
-    name=SearxNGSearchTool.name,
-    description=SearxNGSearchTool.description,
-    tags=SearxNGSearchTool.tags,
-    requirements=SearxNGSearchTool.requirements,
-    required_kwargs=SearxNGSearchTool.required_kwargs,
-    required_secrets=SearxNGSearchTool.required_secrets,
-    implementation=SearxNGSearchTool,
+WaldiezFlowTool = WaldiezFlowToolImpl()
+WaldiezFlowConfig = PredefinedToolConfig(
+    name=WaldiezFlowTool.name,
+    description=WaldiezFlowTool.description,
+    required_secrets=WaldiezFlowTool.required_secrets,
+    required_kwargs=WaldiezFlowTool.required_kwargs,
+    requirements=WaldiezFlowTool.requirements,
+    tags=WaldiezFlowTool.tags,
+    implementation=WaldiezFlowTool,
 )

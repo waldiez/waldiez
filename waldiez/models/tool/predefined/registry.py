@@ -8,6 +8,7 @@ from ._google import GoogleSearchConfig
 from ._perplexity import PerplexitySearchConfig
 from ._searxng import SearxNGSearchConfig
 from ._tavily import TavilySearchConfig
+from ._waldiez import WaldiezFlowConfig
 from ._wikipedia import WikipediaSearchConfig
 from ._youtube import YouTubeSearchConfig
 
@@ -19,6 +20,7 @@ PREDEFINED_TOOLS: dict[str, PredefinedToolConfig] = {
     DuckDuckGoSearchConfig.name: DuckDuckGoSearchConfig,
     PerplexitySearchConfig.name: PerplexitySearchConfig,
     SearxNGSearchConfig.name: SearxNGSearchConfig,
+    WaldiezFlowConfig.name: WaldiezFlowConfig,
 }
 
 

@@ -223,19 +223,19 @@ gpt_4_1_llm_config: dict[str, Any] = {
 
 # Agents
 
-executor_executor = LocalCommandLineCodeExecutor(
+Executor_executor = LocalCommandLineCodeExecutor(
     work_dir="coding",
     timeout=30,
     functions=[get_papers],
 )
 
-executor = ConversableAgent(
-    name="executor",
+Executor = ConversableAgent(
+    name="Executor",
     description="A new Assistant agent that executes code.",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
     default_auto_reply="",
-    code_execution_config={"executor": executor_executor},
+    code_execution_config={"executor": Executor_executor},
     is_termination_msg=None,
     functions=[
         get_papers,
@@ -249,10 +249,10 @@ executor = ConversableAgent(
     ),
 )
 
-__AGENTS__["executor"] = executor
+__AGENTS__["Executor"] = Executor
 
-researcher = ConversableAgent(
-    name="researcher",
+Researcher = ConversableAgent(
+    name="Researcher",
     description="A researcher agent, capable of retrieving data using tools.",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
@@ -271,10 +271,10 @@ researcher = ConversableAgent(
     ),
 )
 
-__AGENTS__["researcher"] = researcher
+__AGENTS__["Researcher"] = Researcher
 
-user = UserProxyAgent(
-    name="user",
+User = UserProxyAgent(
+    name="User",
     description="A new User agent",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=None,
@@ -284,14 +284,12 @@ user = UserProxyAgent(
     llm_config=False,
 )
 
-__AGENTS__["user"] = user
+__AGENTS__["User"] = User
 
-__INITIAL_MSG__ = "Please retrieve 2 recent papers on agentic AI from arxiv. After retrieving them write down a solid idea for research."
-
-manager_pattern = AutoPattern(
-    initial_agent=researcher,
-    agents=[researcher, executor],
-    user_agent=user,
+Manager_pattern = AutoPattern(
+    initial_agent=Researcher,
+    agents=[Researcher, Executor],
+    user_agent=User,
     group_manager_args={
         "llm_config": autogen.LLMConfig(
             config_list=[
@@ -299,11 +297,13 @@ manager_pattern = AutoPattern(
             ],
             cache_seed=None,
         ),
-        "name": "manager",
+        "name": "Manager",
     },
 )
 
-__GROUP__["patterns"]["manager_pattern"] = manager_pattern
+__INITIAL_MSG__ = "Please retrieve 2 recent papers on agentic AI from arxiv. After retrieving them write down a solid idea for research."
+
+__GROUP__["patterns"]["Manager_pattern"] = Manager_pattern
 
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
@@ -406,33 +406,33 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user not in _known_agents:
-        _known_agents.append(user)
-    _known_agents.append(user)
-    for _group_member in _check_for_group_members(user):
+    if User not in _known_agents:
+        _known_agents.append(User)
+    _known_agents.append(User)
+    for _group_member in _check_for_group_members(User):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user):
+    for _extra_agent in _check_for_extra_agents(User):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if researcher not in _known_agents:
-        _known_agents.append(researcher)
-    _known_agents.append(researcher)
-    for _group_member in _check_for_group_members(researcher):
+    if Researcher not in _known_agents:
+        _known_agents.append(Researcher)
+    _known_agents.append(Researcher)
+    for _group_member in _check_for_group_members(Researcher):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(researcher):
+    for _extra_agent in _check_for_extra_agents(Researcher):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if executor not in _known_agents:
-        _known_agents.append(executor)
-    _known_agents.append(executor)
-    for _group_member in _check_for_group_members(executor):
+    if Executor not in _known_agents:
+        _known_agents.append(Executor)
+    _known_agents.append(Executor)
+    for _group_member in _check_for_group_members(Executor):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(executor):
+    for _extra_agent in _check_for_extra_agents(Executor):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -645,7 +645,7 @@ def main(
     if Path(".cache").is_dir():
         shutil.rmtree(".cache", ignore_errors=True)
     results = run_group_chat(
-        pattern=manager_pattern,
+        pattern=Manager_pattern,
         messages=__INITIAL_MSG__,
         max_rounds=20,
         pause_event=pause_event,

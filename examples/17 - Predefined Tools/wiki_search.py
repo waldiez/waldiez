@@ -124,7 +124,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "wikipedia_search_flo_api_keys.py"
+# "Wikipedia_search_Flo_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -151,10 +151,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("wikipedia_search_flo")
+__MODELS_MODULE__ = load_api_key_module("Wikipedia_search_Flo")
 
 
-def get_wikipedia_search_flo_model_api_key(model_name: str) -> str:
+def get_Wikipedia_search_Flo_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -166,7 +166,7 @@ def get_wikipedia_search_flo_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_wikipedia_search_flo_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Wikipedia_search_Flo_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -213,13 +213,13 @@ def wikipedia_search(
 gpt_4_1_llm_config: dict[str, Any] = {
     "model": "gpt-4.1",
     "api_type": "openai",
-    "api_key": get_wikipedia_search_flo_model_api_key("gpt_4_1"),
+    "api_key": get_Wikipedia_search_Flo_model_api_key("gpt_4_1"),
 }
 
 # Agents
 
-assistant = AssistantAgent(
-    name="assistant",
+Assistant = AssistantAgent(
+    name="Assistant",
     description="A new Assistant agent",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
@@ -234,10 +234,10 @@ assistant = AssistantAgent(
     ),
 )
 
-__AGENTS__["assistant"] = assistant
+__AGENTS__["Assistant"] = Assistant
 
-user = UserProxyAgent(
-    name="user",
+User = UserProxyAgent(
+    name="User",
     description="A new User agent",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=None,
@@ -247,12 +247,12 @@ user = UserProxyAgent(
     llm_config=False,
 )
 
-__AGENTS__["user"] = user
+__AGENTS__["User"] = User
 
 register_function(
     wikipedia_search,
-    caller=assistant,
-    executor=user,
+    caller=Assistant,
+    executor=User,
     name="wikipedia_search",
     description="Search Wikipedia for a given query.",
 )
@@ -360,23 +360,23 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user not in _known_agents:
-        _known_agents.append(user)
-    _known_agents.append(user)
-    for _group_member in _check_for_group_members(user):
+    if User not in _known_agents:
+        _known_agents.append(User)
+    _known_agents.append(User)
+    for _group_member in _check_for_group_members(User):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user):
+    for _extra_agent in _check_for_extra_agents(User):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if assistant not in _known_agents:
-        _known_agents.append(assistant)
-    _known_agents.append(assistant)
-    for _group_member in _check_for_group_members(assistant):
+    if Assistant not in _known_agents:
+        _known_agents.append(Assistant)
+    _known_agents.append(Assistant)
+    for _group_member in _check_for_group_members(Assistant):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(assistant):
+    for _extra_agent in _check_for_extra_agents(Assistant):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -587,8 +587,8 @@ def main(
     pause_event = threading.Event()
     pause_event.set()
     with Cache.disk(cache_seed=42) as cache:
-        results = user.run(
-            assistant,
+        results = User.run(
+            Assistant,
             cache=cache,
             summary_method="last_msg",
             clear_history=True,

@@ -135,7 +135,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "weather_sightseeing_api_keys.py"
+# "Weather_sightseeing_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -162,10 +162,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("weather_sightseeing")
+__MODELS_MODULE__ = load_api_key_module("Weather_sightseeing")
 
 
-def get_weather_sightseeing_model_api_key(model_name: str) -> str:
+def get_Weather_sightseeing_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -177,7 +177,7 @@ def get_weather_sightseeing_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_weather_sightseeing_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Weather_sightseeing_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -296,22 +296,22 @@ def record_temperature(context_variables: ContextVariables) -> ReplyResult:
 gpt_4_1_llm_config: dict[str, Any] = {
     "model": "gpt-4.1",
     "api_type": "openai",
-    "api_key": get_weather_sightseeing_model_api_key("gpt_4_1"),
+    "api_key": get_Weather_sightseeing_model_api_key("gpt_4_1"),
 }
 
 # Agents
 
-info_agent_executor = LocalCommandLineCodeExecutor(
+Info_Agent_executor = LocalCommandLineCodeExecutor(
     work_dir="coding",
 )
 
-info_agent = ConversableAgent(
-    name="info_agent",
+Info_Agent = ConversableAgent(
+    name="Info_Agent",
     description="A place agent",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
     default_auto_reply="",
-    code_execution_config={"executor": info_agent_executor},
+    code_execution_config={"executor": Info_Agent_executor},
     is_termination_msg=None,
     functions=[
         record_info,
@@ -329,10 +329,10 @@ info_agent = ConversableAgent(
     ),
 )
 
-__AGENTS__["info_agent"] = info_agent
+__AGENTS__["Info_Agent"] = Info_Agent
 
-triage_agent = ConversableAgent(
-    name="triage_agent",
+Triage_Agent = ConversableAgent(
+    name="Triage_Agent",
     description="triage_agent",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
@@ -353,10 +353,10 @@ triage_agent = ConversableAgent(
     ),
 )
 
-__AGENTS__["triage_agent"] = triage_agent
+__AGENTS__["Triage_Agent"] = Triage_Agent
 
-user = UserProxyAgent(
-    name="user",
+User = UserProxyAgent(
+    name="User",
     description="A new User agent",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=None,
@@ -366,10 +366,10 @@ user = UserProxyAgent(
     llm_config=False,
 )
 
-__AGENTS__["user"] = user
+__AGENTS__["User"] = User
 
-weather_agent = ConversableAgent(
-    name="weather_agent",
+Weather_Agent = ConversableAgent(
+    name="Weather_Agent",
     description="weather_agent",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
@@ -392,51 +392,49 @@ weather_agent = ConversableAgent(
     ),
 )
 
-__AGENTS__["weather_agent"] = weather_agent
+__AGENTS__["Weather_Agent"] = Weather_Agent
 
-info_agent.handoffs.add_llm_condition(
+Info_Agent.handoffs.add_llm_condition(
     condition=OnCondition(
-        target=AgentTarget(triage_agent),
+        target=AgentTarget(Triage_Agent),
         condition=StringLLMCondition(prompt="The info have been retrieved"),
     )
 )
-info_agent.handoffs.set_after_work(target=RevertToUserTarget())
+Info_Agent.handoffs.set_after_work(target=RevertToUserTarget())
 
-triage_agent.handoffs.add_llm_condition(
+Triage_Agent.handoffs.add_llm_condition(
     condition=OnCondition(
-        target=AgentTarget(info_agent),
+        target=AgentTarget(Info_Agent),
         condition=StringLLMCondition(
             prompt="The user hasn't defined a city, ask for the place of interest"
         ),
     )
 )
-triage_agent.handoffs.add_llm_condition(
+Triage_Agent.handoffs.add_llm_condition(
     condition=OnCondition(
-        target=AgentTarget(weather_agent),
+        target=AgentTarget(Weather_Agent),
         condition=StringLLMCondition(
             prompt="Temperature has not been retrieved"
         ),
     )
 )
-triage_agent.handoffs.set_after_work(target=RevertToUserTarget())
+Triage_Agent.handoffs.set_after_work(target=RevertToUserTarget())
 
-weather_agent.handoffs.add_context_condition(
+Weather_Agent.handoffs.add_context_condition(
     condition=OnContextCondition(
-        target=AgentTarget(triage_agent),
+        target=AgentTarget(Triage_Agent),
         condition=StringContextCondition(variable_name="{definedTemperature}"),
     )
 )
-weather_agent.handoffs.set_after_work(target=AgentTarget(triage_agent))
+Weather_Agent.handoffs.set_after_work(target=AgentTarget(Triage_Agent))
 
-__INITIAL_MSG__ = "Hi I want to visit a place"
-
-manager_pattern = DefaultPattern(
-    initial_agent=triage_agent,
-    agents=[weather_agent, info_agent, triage_agent],
-    user_agent=user,
+Manager_pattern = DefaultPattern(
+    initial_agent=Triage_Agent,
+    agents=[Weather_Agent, Info_Agent, Triage_Agent],
+    user_agent=User,
     group_manager_args={
         "llm_config": False,
-        "name": "manager",
+        "name": "Manager",
     },
     context_variables=ContextVariables(
         data={
@@ -454,7 +452,9 @@ manager_pattern = DefaultPattern(
     ),
 )
 
-__GROUP__["patterns"]["manager_pattern"] = manager_pattern
+__INITIAL_MSG__ = "Hi I want to visit a place"
+
+__GROUP__["patterns"]["Manager_pattern"] = Manager_pattern
 
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
@@ -557,43 +557,43 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user not in _known_agents:
-        _known_agents.append(user)
-    _known_agents.append(user)
-    for _group_member in _check_for_group_members(user):
+    if User not in _known_agents:
+        _known_agents.append(User)
+    _known_agents.append(User)
+    for _group_member in _check_for_group_members(User):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user):
+    for _extra_agent in _check_for_extra_agents(User):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if weather_agent not in _known_agents:
-        _known_agents.append(weather_agent)
-    _known_agents.append(weather_agent)
-    for _group_member in _check_for_group_members(weather_agent):
+    if Weather_Agent not in _known_agents:
+        _known_agents.append(Weather_Agent)
+    _known_agents.append(Weather_Agent)
+    for _group_member in _check_for_group_members(Weather_Agent):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(weather_agent):
+    for _extra_agent in _check_for_extra_agents(Weather_Agent):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if info_agent not in _known_agents:
-        _known_agents.append(info_agent)
-    _known_agents.append(info_agent)
-    for _group_member in _check_for_group_members(info_agent):
+    if Info_Agent not in _known_agents:
+        _known_agents.append(Info_Agent)
+    _known_agents.append(Info_Agent)
+    for _group_member in _check_for_group_members(Info_Agent):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(info_agent):
+    for _extra_agent in _check_for_extra_agents(Info_Agent):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if triage_agent not in _known_agents:
-        _known_agents.append(triage_agent)
-    _known_agents.append(triage_agent)
-    for _group_member in _check_for_group_members(triage_agent):
+    if Triage_Agent not in _known_agents:
+        _known_agents.append(Triage_Agent)
+    _known_agents.append(Triage_Agent)
+    for _group_member in _check_for_group_members(Triage_Agent):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(triage_agent):
+    for _extra_agent in _check_for_extra_agents(Triage_Agent):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -806,7 +806,7 @@ def main(
     if Path(".cache").is_dir():
         shutil.rmtree(".cache", ignore_errors=True)
     results = run_group_chat(
-        pattern=manager_pattern,
+        pattern=Manager_pattern,
         messages=__INITIAL_MSG__,
         max_rounds=40,
         pause_event=pause_event,

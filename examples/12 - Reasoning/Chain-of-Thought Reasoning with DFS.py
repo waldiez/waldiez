@@ -119,7 +119,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "chain_of_thought_rea_api_keys.py"
+# "Chain_of_Thought_Rea_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -146,10 +146,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("chain_of_thought_rea")
+__MODELS_MODULE__ = load_api_key_module("Chain_of_Thought_Rea")
 
 
-def get_chain_of_thought_rea_model_api_key(model_name: str) -> str:
+def get_Chain_of_Thought_Rea_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -161,7 +161,7 @@ def get_chain_of_thought_rea_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_chain_of_thought_rea_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Chain_of_Thought_Rea_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -181,13 +181,13 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 gemini_2_0_flash_llm_config: dict[str, Any] = {
     "model": "gemini-2.0-flash",
     "api_type": "google",
-    "api_key": get_chain_of_thought_rea_model_api_key("gemini_2_0_flash"),
+    "api_key": get_Chain_of_Thought_Rea_model_api_key("gemini_2_0_flash"),
 }
 
 # Agents
 
-reasoning = ReasoningAgent(
-    name="reasoning",
+Reasoning = ReasoningAgent(
+    name="Reasoning",
     description="A new Reasoning agent",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
@@ -211,10 +211,10 @@ reasoning = ReasoningAgent(
     ),
 )
 
-__AGENTS__["reasoning"] = reasoning
+__AGENTS__["Reasoning"] = Reasoning
 
-user_proxy = UserProxyAgent(
-    name="user_proxy",
+User_proxy = UserProxyAgent(
+    name="User_proxy",
     description="A new User proxy agent",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=None,
@@ -224,7 +224,7 @@ user_proxy = UserProxyAgent(
     llm_config=False,
 )
 
-__AGENTS__["user_proxy"] = user_proxy
+__AGENTS__["User_proxy"] = User_proxy
 
 __INITIAL_MSG__ = "What is the expected maximum dice value if you can roll a 6-sided dice three times?"
 
@@ -329,23 +329,23 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user_proxy not in _known_agents:
-        _known_agents.append(user_proxy)
-    _known_agents.append(user_proxy)
-    for _group_member in _check_for_group_members(user_proxy):
+    if User_proxy not in _known_agents:
+        _known_agents.append(User_proxy)
+    _known_agents.append(User_proxy)
+    for _group_member in _check_for_group_members(User_proxy):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user_proxy):
+    for _extra_agent in _check_for_extra_agents(User_proxy):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if reasoning not in _known_agents:
-        _known_agents.append(reasoning)
-    _known_agents.append(reasoning)
-    for _group_member in _check_for_group_members(reasoning):
+    if Reasoning not in _known_agents:
+        _known_agents.append(Reasoning)
+    _known_agents.append(Reasoning)
+    for _group_member in _check_for_group_members(Reasoning):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(reasoning):
+    for _extra_agent in _check_for_extra_agents(Reasoning):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -557,8 +557,8 @@ def main(
     pause_event.set()
     if Path(".cache").is_dir():
         shutil.rmtree(".cache", ignore_errors=True)
-    results = user_proxy.run(
-        reasoning,
+    results = User_proxy.run(
+        Reasoning,
         summary_method="last_msg",
         clear_history=True,
         message=__INITIAL_MSG__,
@@ -657,18 +657,18 @@ def main(
 
     # pylint: disable=broad-exception-caught,too-many-try-statements
     try:
-        reasoning.visualize_tree()
+        Reasoning.visualize_tree()
         if os.path.exists("tree_of_thoughts.png"):
-            new_name = "reasoning_tree_of_thoughts.png"
+            new_name = "Reasoning_tree_of_thoughts.png"
             os.rename("tree_of_thoughts.png", new_name)
     except BaseException:
         pass
     # save the tree to json
     # pylint: disable=protected-access
     try:
-        data = reasoning._root.to_dict()  # pyright: ignore[reportPrivateUsage]
+        data = Reasoning._root.to_dict()  # pyright: ignore[reportPrivateUsage]
         with open(
-            "reasoning_reasoning_tree.json", "w", encoding="utf-8", newline="\n"
+            "Reasoning_reasoning_tree.json", "w", encoding="utf-8", newline="\n"
         ) as f:
             json.dump(data, f)
     except BaseException:

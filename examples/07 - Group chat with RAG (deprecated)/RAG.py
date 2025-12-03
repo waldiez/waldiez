@@ -127,7 +127,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "rag_api_keys.py"
+# "RAG_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -154,10 +154,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("rag")
+__MODELS_MODULE__ = load_api_key_module("RAG")
 
 
-def get_rag_model_api_key(model_name: str) -> str:
+def get_RAG_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -169,7 +169,7 @@ def get_rag_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_rag_model_api_key(model_name)
+    return __MODELS_MODULE__.get_RAG_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -189,22 +189,22 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 gpt_4_1_llm_config: dict[str, Any] = {
     "model": "gpt-4.1",
     "api_type": "openai",
-    "api_key": get_rag_model_api_key("gpt_4_1"),
+    "api_key": get_RAG_model_api_key("gpt_4_1"),
 }
 
 # Agents
 
-boss_assistant_client = chromadb.Client(Settings(anonymized_telemetry=False))
-boss_assistant_embedding_function = SentenceTransformerEmbeddingFunction(
+Boss_Assistant_client = chromadb.Client(Settings(anonymized_telemetry=False))
+Boss_Assistant_embedding_function = SentenceTransformerEmbeddingFunction(
     model_name="all-MiniLM-L6-v2",
 )
-boss_assistant_client.get_or_create_collection(
+Boss_Assistant_client.get_or_create_collection(
     "autogen-docs",
-    embedding_function=boss_assistant_embedding_function,
+    embedding_function=Boss_Assistant_embedding_function,
 )
 
-boss_assistant = RetrieveUserProxyAgent(
-    name="boss_assistant",
+Boss_Assistant = RetrieveUserProxyAgent(
+    name="Boss_Assistant",
     description="Assistant who has extra content retrieval power for solving difficult problems.",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=3,
@@ -233,18 +233,18 @@ boss_assistant = RetrieveUserProxyAgent(
         "collection_name": "autogen-docs",
         "distance_threshold": -1.0,
         "vector_db": ChromaVectorDB(
-            client=boss_assistant_client,
-            embedding_function=boss_assistant_embedding_function,
+            client=Boss_Assistant_client,
+            embedding_function=Boss_Assistant_embedding_function,
         ),
-        "client": boss_assistant_client,
+        "client": Boss_Assistant_client,
     },
     llm_config=False,
 )
 
-__AGENTS__["boss_assistant"] = boss_assistant
+__AGENTS__["Boss_Assistant"] = Boss_Assistant
 
-code_reviewer = ConversableAgent(
-    name="code_reviewer",
+Code_Reviewer = ConversableAgent(
+    name="Code_Reviewer",
     description="Code Reviewer who can review the code.",
     system_message="You are a code reviewer. Reply 'TERMINATE' in the end when everything is done.",
     human_input_mode="NEVER",
@@ -268,10 +268,10 @@ code_reviewer = ConversableAgent(
     ),
 )
 
-__AGENTS__["code_reviewer"] = code_reviewer
+__AGENTS__["Code_Reviewer"] = Code_Reviewer
 
-product_manager = ConversableAgent(
-    name="product_manager",
+Product_Manager = ConversableAgent(
+    name="Product_Manager",
     description="Product Manager who can design and plan the project.",
     system_message="You are a product manager. Reply 'TERMINATE' in the end when everything is done.",
     human_input_mode="NEVER",
@@ -295,10 +295,10 @@ product_manager = ConversableAgent(
     ),
 )
 
-__AGENTS__["product_manager"] = product_manager
+__AGENTS__["Product_Manager"] = Product_Manager
 
-senior_python_engineer = ConversableAgent(
-    name="senior_python_engineer",
+Senior_Python_Engineer = ConversableAgent(
+    name="Senior_Python_Engineer",
     description="Senior Python Engineer",
     system_message="You are a senior python engineer, you provide python code to answer questions. Reply 'TERMINATE' in the end when everything is done.",
     human_input_mode="NEVER",
@@ -322,26 +322,45 @@ senior_python_engineer = ConversableAgent(
     ),
 )
 
-__AGENTS__["senior_python_engineer"] = senior_python_engineer
+__AGENTS__["Senior_Python_Engineer"] = Senior_Python_Engineer
 
-manager_group_chat = GroupChat(
+Manager_group_chat = GroupChat(
     agents=[
-        product_manager,
-        senior_python_engineer,
-        code_reviewer,
-        boss_assistant,
+        Product_Manager,
+        Senior_Python_Engineer,
+        Code_Reviewer,
+        Boss_Assistant,
     ],
     enable_clear_history=False,
     send_introductions=False,
     messages=[],
     max_round=20,
-    admin_name="boss_assistant",
+    admin_name="Boss_Assistant",
     speaker_selection_method="round_robin",
     allow_repeat_speaker=True,
 )
 
+Manager = GroupChatManager(
+    name="Manager",
+    description="The group manager agent",
+    human_input_mode="NEVER",
+    max_consecutive_auto_reply=None,
+    default_auto_reply="",
+    code_execution_config=False,
+    is_termination_msg=None,
+    groupchat=Manager_group_chat,
+    llm_config=autogen.LLMConfig(
+        config_list=[
+            gpt_4_1_llm_config,
+        ],
+        cache_seed=42,
+    ),
+)
 
-def callable_message_boss_assistant_to_manager(
+__AGENTS__["Manager"] = Manager
+
+
+def callable_message_Boss_Assistant_to_Manager(
     sender: RetrieveUserProxyAgent,
     recipient: ConversableAgent,
     context: dict[str, Any],
@@ -378,28 +397,9 @@ def callable_message_boss_assistant_to_manager(
     return message
 
 
-__INITIAL_MSG__ = callable_message_boss_assistant_to_manager
+__INITIAL_MSG__ = callable_message_Boss_Assistant_to_Manager
 
-manager = GroupChatManager(
-    name="manager",
-    description="The group manager agent",
-    human_input_mode="NEVER",
-    max_consecutive_auto_reply=None,
-    default_auto_reply="",
-    code_execution_config=False,
-    is_termination_msg=None,
-    groupchat=manager_group_chat,
-    llm_config=autogen.LLMConfig(
-        config_list=[
-            gpt_4_1_llm_config,
-        ],
-        cache_seed=42,
-    ),
-)
-
-__AGENTS__["manager"] = manager
-
-__GROUP__["chats"]["manager_group_chat"] = manager_group_chat
+__GROUP__["chats"]["Manager_group_chat"] = Manager_group_chat
 
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
@@ -502,53 +502,53 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if senior_python_engineer not in _known_agents:
-        _known_agents.append(senior_python_engineer)
-    _known_agents.append(senior_python_engineer)
-    for _group_member in _check_for_group_members(senior_python_engineer):
+    if Senior_Python_Engineer not in _known_agents:
+        _known_agents.append(Senior_Python_Engineer)
+    _known_agents.append(Senior_Python_Engineer)
+    for _group_member in _check_for_group_members(Senior_Python_Engineer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(senior_python_engineer):
+    for _extra_agent in _check_for_extra_agents(Senior_Python_Engineer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if product_manager not in _known_agents:
-        _known_agents.append(product_manager)
-    _known_agents.append(product_manager)
-    for _group_member in _check_for_group_members(product_manager):
+    if Product_Manager not in _known_agents:
+        _known_agents.append(Product_Manager)
+    _known_agents.append(Product_Manager)
+    for _group_member in _check_for_group_members(Product_Manager):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(product_manager):
+    for _extra_agent in _check_for_extra_agents(Product_Manager):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if code_reviewer not in _known_agents:
-        _known_agents.append(code_reviewer)
-    _known_agents.append(code_reviewer)
-    for _group_member in _check_for_group_members(code_reviewer):
+    if Code_Reviewer not in _known_agents:
+        _known_agents.append(Code_Reviewer)
+    _known_agents.append(Code_Reviewer)
+    for _group_member in _check_for_group_members(Code_Reviewer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(code_reviewer):
+    for _extra_agent in _check_for_extra_agents(Code_Reviewer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if boss_assistant not in _known_agents:
-        _known_agents.append(boss_assistant)
-    _known_agents.append(boss_assistant)
-    for _group_member in _check_for_group_members(boss_assistant):
+    if Boss_Assistant not in _known_agents:
+        _known_agents.append(Boss_Assistant)
+    _known_agents.append(Boss_Assistant)
+    for _group_member in _check_for_group_members(Boss_Assistant):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(boss_assistant):
+    for _extra_agent in _check_for_extra_agents(Boss_Assistant):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if manager not in _known_agents:
-        _known_agents.append(manager)
-    _known_agents.append(manager)
-    for _group_member in _check_for_group_members(manager):
+    if Manager not in _known_agents:
+        _known_agents.append(Manager)
+    _known_agents.append(Manager)
+    for _group_member in _check_for_group_members(Manager):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(manager):
+    for _extra_agent in _check_for_extra_agents(Manager):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -759,8 +759,8 @@ def main(
     pause_event = threading.Event()
     pause_event.set()
     with Cache.disk(cache_seed=42) as cache:
-        results = boss_assistant.run(
-            manager,
+        results = Boss_Assistant.run(
+            Manager,
             cache=cache,
             summary_method="last_msg",
             clear_history=True,

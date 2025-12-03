@@ -136,7 +136,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "on_boarding_async_api_keys.py"
+# "On_boarding_Async_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -163,10 +163,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("on_boarding_async")
+__MODELS_MODULE__ = load_api_key_module("On_boarding_Async")
 
 
-def get_on_boarding_async_model_api_key(model_name: str) -> str:
+def get_On_boarding_Async_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -178,7 +178,7 @@ def get_on_boarding_async_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_on_boarding_async_model_api_key(model_name)
+    return __MODELS_MODULE__.get_On_boarding_Async_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -198,7 +198,7 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 claude_3_7_sonnet_20250219_llm_config: dict[str, Any] = {
     "model": "claude-3-7-sonnet-20250219",
     "api_type": "anthropic",
-    "api_key": get_on_boarding_async_model_api_key(
+    "api_key": get_On_boarding_Async_model_api_key(
         "claude_3_7_sonnet_20250219"
     ),
 }
@@ -206,7 +206,7 @@ claude_3_7_sonnet_20250219_llm_config: dict[str, Any] = {
 gpt_3_5_turbo_llm_config: dict[str, Any] = {
     "model": "gpt-3.5-turbo",
     "api_type": "openai",
-    "api_key": get_on_boarding_async_model_api_key("gpt_3_5_turbo"),
+    "api_key": get_On_boarding_Async_model_api_key("gpt_3_5_turbo"),
 }
 
 # Agents

@@ -122,7 +122,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "tool_use_api_keys.py"
+# "Tool_Use_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -149,10 +149,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("tool_use")
+__MODELS_MODULE__ = load_api_key_module("Tool_Use")
 
 
-def get_tool_use_model_api_key(model_name: str) -> str:
+def get_Tool_Use_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -164,7 +164,7 @@ def get_tool_use_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_tool_use_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Tool_Use_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -231,13 +231,13 @@ def make_move(
 gpt_3_5_turbo_llm_config: dict[str, Any] = {
     "model": "gpt-3.5-turbo",
     "api_type": "openai",
-    "api_key": get_tool_use_model_api_key("gpt_3_5_turbo"),
+    "api_key": get_Tool_Use_model_api_key("gpt_3_5_turbo"),
 }
 
 # Agents
 
 
-def is_termination_message_board_proxy(
+def is_termination_message_Board_Proxy(
     message: dict[str, Any],
 ) -> bool:
     """Complete the termination message function"""
@@ -251,21 +251,21 @@ def is_termination_message_board_proxy(
     return False
 
 
-board_proxy = AssistantAgent(
-    name="board_proxy",
+Board_Proxy = AssistantAgent(
+    name="Board_Proxy",
     description="Board Proxy",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
     default_auto_reply="",
     code_execution_config=False,
-    is_termination_msg=is_termination_message_board_proxy,
+    is_termination_msg=is_termination_message_Board_Proxy,
     llm_config=False,
 )
 
-__AGENTS__["board_proxy"] = board_proxy
+__AGENTS__["Board_Proxy"] = Board_Proxy
 
-player_black = AssistantAgent(
-    name="player_black",
+Player_Black = AssistantAgent(
+    name="Player_Black",
     description="Player Black",
     system_message="You are a chess player and you play as black. First call get_legal_moves(), to get a list of legal moves. Then call make_move(move) to make a move.",
     human_input_mode="NEVER",
@@ -281,10 +281,10 @@ player_black = AssistantAgent(
     ),
 )
 
-__AGENTS__["player_black"] = player_black
+__AGENTS__["Player_Black"] = Player_Black
 
-player_white = AssistantAgent(
-    name="player_white",
+Player_White = AssistantAgent(
+    name="Player_White",
     description="Player White",
     system_message="You are a chess player and you play as white. First call get_legal_moves(), to get a list of legal moves. Then call make_move(move) to make a move.",
     human_input_mode="NEVER",
@@ -300,70 +300,70 @@ player_white = AssistantAgent(
     ),
 )
 
-__AGENTS__["player_white"] = player_white
+__AGENTS__["Player_White"] = Player_White
 
-player_white_chat_queue: list[dict[str, Any]] = [
+Player_White_chat_queue: list[dict[str, Any]] = [
     {
         "summary_method": "last_msg",
         "clear_history": True,
         "chat_id": 0,
-        "recipient": player_white,
-        "sender": board_proxy,
+        "recipient": Player_White,
+        "sender": Board_Proxy,
         "message": None,
     },
 ]
 
-player_white.register_nested_chats(
-    trigger=["player_black"],
-    chat_queue=player_white_chat_queue,
+Player_White.register_nested_chats(
+    trigger=["Player_Black"],
+    chat_queue=Player_White_chat_queue,
     use_async=False,
     ignore_async_in_sync_chat=True,
 )
 
-player_black_chat_queue: list[dict[str, Any]] = [
+Player_Black_chat_queue: list[dict[str, Any]] = [
     {
         "summary_method": "last_msg",
         "clear_history": True,
         "chat_id": 1,
-        "recipient": player_black,
-        "sender": board_proxy,
+        "recipient": Player_Black,
+        "sender": Board_Proxy,
         "message": None,
     },
 ]
 
-player_black.register_nested_chats(
-    trigger=["player_white"],
-    chat_queue=player_black_chat_queue,
+Player_Black.register_nested_chats(
+    trigger=["Player_White"],
+    chat_queue=Player_Black_chat_queue,
     use_async=False,
     ignore_async_in_sync_chat=True,
 )
 
 register_function(
     get_legal_moves,
-    caller=player_white,
-    executor=board_proxy,
+    caller=Player_White,
+    executor=Board_Proxy,
     name="get_legal_moves",
     description="Get a list of legal chess moves.",
 )
 register_function(
     make_move,
-    caller=player_white,
-    executor=board_proxy,
+    caller=Player_White,
+    executor=Board_Proxy,
     name="make_move",
     description="Make a move on the board.",
 )
 
 register_function(
     get_legal_moves,
-    caller=player_black,
-    executor=board_proxy,
+    caller=Player_Black,
+    executor=Board_Proxy,
     name="get_legal_moves",
     description="Get a list of legal chess moves.",
 )
 register_function(
     make_move,
-    caller=player_black,
-    executor=board_proxy,
+    caller=Player_Black,
+    executor=Board_Proxy,
     name="make_move",
     description="Make a move on the board.",
 )
@@ -471,33 +471,33 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if player_white not in _known_agents:
-        _known_agents.append(player_white)
-    _known_agents.append(player_white)
-    for _group_member in _check_for_group_members(player_white):
+    if Player_White not in _known_agents:
+        _known_agents.append(Player_White)
+    _known_agents.append(Player_White)
+    for _group_member in _check_for_group_members(Player_White):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(player_white):
+    for _extra_agent in _check_for_extra_agents(Player_White):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if player_black not in _known_agents:
-        _known_agents.append(player_black)
-    _known_agents.append(player_black)
-    for _group_member in _check_for_group_members(player_black):
+    if Player_Black not in _known_agents:
+        _known_agents.append(Player_Black)
+    _known_agents.append(Player_Black)
+    for _group_member in _check_for_group_members(Player_Black):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(player_black):
+    for _extra_agent in _check_for_extra_agents(Player_Black):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if board_proxy not in _known_agents:
-        _known_agents.append(board_proxy)
-    _known_agents.append(board_proxy)
-    for _group_member in _check_for_group_members(board_proxy):
+    if Board_Proxy not in _known_agents:
+        _known_agents.append(Board_Proxy)
+    _known_agents.append(Board_Proxy)
+    for _group_member in _check_for_group_members(Board_Proxy):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(board_proxy):
+    for _extra_agent in _check_for_extra_agents(Board_Proxy):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -709,8 +709,8 @@ def main(
     pause_event.set()
     if Path(".cache").is_dir():
         shutil.rmtree(".cache", ignore_errors=True)
-    results = player_black.run(
-        player_white,
+    results = Player_Black.run(
+        Player_White,
         summary_method="last_msg",
         max_turns=2,
         clear_history=False,

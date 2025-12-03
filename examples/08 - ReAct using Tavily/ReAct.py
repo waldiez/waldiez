@@ -121,7 +121,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "react_api_keys.py"
+# "ReAct_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -148,10 +148,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("react")
+__MODELS_MODULE__ = load_api_key_module("ReAct")
 
 
-def get_react_model_api_key(model_name: str) -> str:
+def get_ReAct_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -163,7 +163,7 @@ def get_react_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_react_model_api_key(model_name)
+    return __MODELS_MODULE__.get_ReAct_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -183,7 +183,7 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 # Load tool secrets module if needed
 # NOTE:
 # This section assumes that a file named:
-# "react_search_tool_secrets.py"
+# "ReAct_search_tool_secrets.py"
 # exists in the same directory as this file.
 # This file contains the secrets for the tool used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -210,7 +210,7 @@ def load_tool_secrets_module(flow_name: str, tool_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-load_tool_secrets_module("react", "search_tool")
+load_tool_secrets_module("ReAct", "search_tool")
 
 
 def search_tool(query: str) -> str:
@@ -233,13 +233,13 @@ def search_tool(query: str) -> str:
 claude_3_7_sonnet_20250219_llm_config: dict[str, Any] = {
     "model": "claude-3-7-sonnet-20250219",
     "api_type": "anthropic",
-    "api_key": get_react_model_api_key("claude_3_7_sonnet_20250219"),
+    "api_key": get_ReAct_model_api_key("claude_3_7_sonnet_20250219"),
 }
 
 # Agents
 
-assistant = AssistantAgent(
-    name="assistant",
+Assistant = AssistantAgent(
+    name="Assistant",
     description="A new Assistant agent",
     system_message="Only use the tools you have been provided with. Reply TERMINATE at the end when the task is done.",
     human_input_mode="NEVER",
@@ -255,10 +255,10 @@ assistant = AssistantAgent(
     ),
 )
 
-__AGENTS__["assistant"] = assistant
+__AGENTS__["Assistant"] = Assistant
 
-user_proxy = UserProxyAgent(
-    name="user_proxy",
+User_proxy = UserProxyAgent(
+    name="User_proxy",
     description="A new User proxy agent",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=None,
@@ -268,18 +268,18 @@ user_proxy = UserProxyAgent(
     llm_config=False,
 )
 
-__AGENTS__["user_proxy"] = user_proxy
+__AGENTS__["User_proxy"] = User_proxy
 
 register_function(
     search_tool,
-    caller=assistant,
-    executor=user_proxy,
+    caller=Assistant,
+    executor=User_proxy,
     name="search_tool",
     description="Search tool using Tavily AI",
 )
 
 
-def callable_message_user_proxy_to_assistant(
+def callable_message_User_proxy_to_Assistant(
     sender: ConversableAgent,
     recipient: ConversableAgent,
     context: dict[str, Any],
@@ -305,7 +305,7 @@ Question: {input}
     return ReAct_prompt.format(input=context["question"])
 
 
-__INITIAL_MSG__ = callable_message_user_proxy_to_assistant
+__INITIAL_MSG__ = callable_message_User_proxy_to_Assistant
 
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
@@ -408,23 +408,23 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user_proxy not in _known_agents:
-        _known_agents.append(user_proxy)
-    _known_agents.append(user_proxy)
-    for _group_member in _check_for_group_members(user_proxy):
+    if User_proxy not in _known_agents:
+        _known_agents.append(User_proxy)
+    _known_agents.append(User_proxy)
+    for _group_member in _check_for_group_members(User_proxy):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user_proxy):
+    for _extra_agent in _check_for_extra_agents(User_proxy):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if assistant not in _known_agents:
-        _known_agents.append(assistant)
-    _known_agents.append(assistant)
-    for _group_member in _check_for_group_members(assistant):
+    if Assistant not in _known_agents:
+        _known_agents.append(Assistant)
+    _known_agents.append(Assistant)
+    for _group_member in _check_for_group_members(Assistant):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(assistant):
+    for _extra_agent in _check_for_extra_agents(Assistant):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -636,8 +636,8 @@ def main(
     pause_event.set()
     if Path(".cache").is_dir():
         shutil.rmtree(".cache", ignore_errors=True)
-    results = user_proxy.run(
-        assistant,
+    results = User_proxy.run(
+        Assistant,
         summary_method="last_msg",
         clear_history=True,
         question="What is the result of super bowl 2024?",

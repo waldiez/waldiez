@@ -120,7 +120,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "wf_1___simple_api_keys.py"
+# "wf_1___Simple_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -147,10 +147,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("wf_1___simple")
+__MODELS_MODULE__ = load_api_key_module("wf_1___Simple")
 
 
-def get_wf_1___simple_model_api_key(model_name: str) -> str:
+def get_wf_1___Simple_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -162,7 +162,7 @@ def get_wf_1___simple_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_wf_1___simple_model_api_key(model_name)
+    return __MODELS_MODULE__.get_wf_1___Simple_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -182,12 +182,12 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 gpt_4o_llm_config: dict[str, Any] = {
     "model": "gpt-4o",
     "api_type": "openai",
-    "api_key": get_wf_1___simple_model_api_key("gpt_4o"),
+    "api_key": get_wf_1___Simple_model_api_key("gpt_4o"),
 }
 
 # Agents
 
-captain_executor = LocalCommandLineCodeExecutor(
+Captain_executor = LocalCommandLineCodeExecutor(
     work_dir="groupchat",
 )
 
@@ -201,18 +201,18 @@ try:
 except Exception as e:
     print(f"Error occurred while patching default nested config: {e}")
 
-captain = CaptainAgent(
-    name="captain",
+Captain = CaptainAgent(
+    name="Captain",
     description="A new Captain agent",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
     default_auto_reply="",
-    code_execution_config={"executor": captain_executor},
+    code_execution_config={"executor": Captain_executor},
     is_termination_msg=None,
     agent_config_save_path=os.getcwd(),
     nested_config={
         "autobuild_init_config": {
-            "config_file_or_env": "captain_llm_config.json",
+            "config_file_or_env": "Captain_llm_config.json",
             "builder_model": "gpt-4o",
             "agent_model": "gpt-4o",
         },
@@ -238,10 +238,10 @@ captain = CaptainAgent(
     ),
 )
 
-__AGENTS__["captain"] = captain
+__AGENTS__["Captain"] = Captain
 
-user_proxy = UserProxyAgent(
-    name="user_proxy",
+User_proxy = UserProxyAgent(
+    name="User_proxy",
     description="A new User proxy agent",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=None,
@@ -251,7 +251,7 @@ user_proxy = UserProxyAgent(
     llm_config=False,
 )
 
-__AGENTS__["user_proxy"] = user_proxy
+__AGENTS__["User_proxy"] = User_proxy
 
 __INITIAL_MSG__ = "Find a recent paper about large language models on arxiv and find its potential applications in software."
 
@@ -356,23 +356,23 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user_proxy not in _known_agents:
-        _known_agents.append(user_proxy)
-    _known_agents.append(user_proxy)
-    for _group_member in _check_for_group_members(user_proxy):
+    if User_proxy not in _known_agents:
+        _known_agents.append(User_proxy)
+    _known_agents.append(User_proxy)
+    for _group_member in _check_for_group_members(User_proxy):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user_proxy):
+    for _extra_agent in _check_for_extra_agents(User_proxy):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if captain not in _known_agents:
-        _known_agents.append(captain)
-    _known_agents.append(captain)
-    for _group_member in _check_for_group_members(captain):
+    if Captain not in _known_agents:
+        _known_agents.append(Captain)
+    _known_agents.append(Captain)
+    for _group_member in _check_for_group_members(Captain):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(captain):
+    for _extra_agent in _check_for_extra_agents(Captain):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -584,8 +584,8 @@ def main(
     pause_event.set()
     if Path(".cache").is_dir():
         shutil.rmtree(".cache", ignore_errors=True)
-    results = user_proxy.run(
-        captain,
+    results = User_proxy.run(
+        Captain,
         summary_method="last_msg",
         max_turns=1,
         clear_history=True,

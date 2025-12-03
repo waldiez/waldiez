@@ -32,10 +32,10 @@ def get_valid_python_variable_name(
         return prefix + "_"
 
     # First handle arrow operators specifically
-    possible = possible.replace("->", "to")
-    possible = possible.replace("=>", "to")
-    possible = possible.replace("<-", "from")
-    possible = possible.replace("<=", "from")
+    possible = possible.replace("->", "To")
+    possible = possible.replace("=>", "To")
+    possible = possible.replace("<-", "From")
+    possible = possible.replace("<=", "From")
 
     # Replace non-ASCII characters and non-word characters with underscores
     # \W matches any non-word character, but in Python's re module,
@@ -45,8 +45,8 @@ def get_valid_python_variable_name(
     possible = re.sub(r"[^\w]", "_", possible)  # Replace non-word chars
     possible = re.sub(r"[^\x00-\x7F]", "_", possible)  # Replace non-ASCII chars
 
-    # Convert to lowercase and truncate
-    possible = possible.lower()[:max_length]
+    # possible = possible.lower()[:max_length]
+    possible = possible[:max_length]
 
     # Remove trailing underscores from truncation
     possible = possible.rstrip("_")
@@ -55,8 +55,8 @@ def get_valid_python_variable_name(
         return prefix + "_"
 
     # Handle names starting with underscore
-    if possible.startswith("_"):
-        return f"{prefix}{possible}"
+    # if possible.startswith("_"):
+    #     return f"{prefix}{possible}"
 
     # Handle names starting with digit
     if possible[0].isdigit():

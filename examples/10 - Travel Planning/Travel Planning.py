@@ -120,7 +120,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "travel_planning_api_keys.py"
+# "Travel_Planning_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -147,10 +147,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("travel_planning")
+__MODELS_MODULE__ = load_api_key_module("Travel_Planning")
 
 
-def get_travel_planning_model_api_key(model_name: str) -> str:
+def get_Travel_Planning_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -162,7 +162,7 @@ def get_travel_planning_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_travel_planning_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Travel_Planning_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -182,10 +182,29 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 gpt_4_turbo_llm_config: dict[str, Any] = {
     "model": "gpt-4-turbo",
     "api_type": "openai",
-    "api_key": get_travel_planning_model_api_key("gpt_4_turbo"),
+    "api_key": get_Travel_Planning_model_api_key("gpt_4_turbo"),
 }
 
 # Agents
+
+User_proxy = UserProxyAgent(
+    name="User_proxy",
+    description="A new User proxy agent",
+    human_input_mode="ALWAYS",
+    max_consecutive_auto_reply=None,
+    default_auto_reply="",
+    code_execution_config=False,
+    is_termination_msg=lambda x: any(
+        isinstance(x, dict)
+        and x.get("content", "")
+        and isinstance(x.get("content", ""), str)
+        and x.get("content", "").endswith(keyword)
+        for keyword in ["TERMINATION"]
+    ),
+    llm_config=False,
+)
+
+__AGENTS__["User_proxy"] = User_proxy
 
 language_agent = ConversableAgent(
     name="language_agent",
@@ -295,31 +314,10 @@ travel_summary_agent = ConversableAgent(
 
 __AGENTS__["travel_summary_agent"] = travel_summary_agent
 
-user_proxy = UserProxyAgent(
-    name="user_proxy",
-    description="A new User proxy agent",
-    human_input_mode="ALWAYS",
-    max_consecutive_auto_reply=None,
-    default_auto_reply="",
-    code_execution_config=False,
-    is_termination_msg=lambda x: any(
-        isinstance(x, dict)
-        and x.get("content", "")
-        and isinstance(x.get("content", ""), str)
-        and x.get("content", "").endswith(keyword)
-        for keyword in ["TERMINATION"]
-    ),
-    llm_config=False,
-)
-
-__AGENTS__["user_proxy"] = user_proxy
-
-__INITIAL_MSG__ = "Plan a 3 day trip to Athens."
-
-manager_pattern = RoundRobinPattern(
+Manager_pattern = RoundRobinPattern(
     initial_agent=planner_agent,
     agents=[planner_agent, local_agent, language_agent, travel_summary_agent],
-    user_agent=user_proxy,
+    user_agent=User_proxy,
     group_manager_args={
         "llm_config": autogen.LLMConfig(
             config_list=[
@@ -327,11 +325,13 @@ manager_pattern = RoundRobinPattern(
             ],
             cache_seed=None,
         ),
-        "name": "manager",
+        "name": "Manager",
     },
 )
 
-__GROUP__["patterns"]["manager_pattern"] = manager_pattern
+__INITIAL_MSG__ = "Plan a 3 day trip to Athens."
+
+__GROUP__["patterns"]["Manager_pattern"] = Manager_pattern
 
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
@@ -434,13 +434,13 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user_proxy not in _known_agents:
-        _known_agents.append(user_proxy)
-    _known_agents.append(user_proxy)
-    for _group_member in _check_for_group_members(user_proxy):
+    if User_proxy not in _known_agents:
+        _known_agents.append(User_proxy)
+    _known_agents.append(User_proxy)
+    for _group_member in _check_for_group_members(User_proxy):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user_proxy):
+    for _extra_agent in _check_for_extra_agents(User_proxy):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
@@ -692,7 +692,7 @@ def main(
     pause_event.set()
     with Cache.disk(cache_seed=42) as cache:
         results = run_group_chat(
-            pattern=manager_pattern,
+            pattern=Manager_pattern,
             messages=__INITIAL_MSG__,
             max_rounds=12,
             pause_event=pause_event,

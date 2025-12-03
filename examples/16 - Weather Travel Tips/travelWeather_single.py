@@ -122,7 +122,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "weather_tips_agent_api_keys.py"
+# "Weather_tips_agent_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -149,10 +149,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("weather_tips_agent")
+__MODELS_MODULE__ = load_api_key_module("Weather_tips_agent")
 
 
-def get_weather_tips_agent_model_api_key(model_name: str) -> str:
+def get_Weather_tips_agent_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -164,7 +164,7 @@ def get_weather_tips_agent_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_weather_tips_agent_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Weather_tips_agent_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -184,17 +184,17 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 gpt_4_1_llm_config: dict[str, Any] = {
     "model": "gpt-4.1",
     "api_type": "openai",
-    "api_key": get_weather_tips_agent_model_api_key("gpt_4_1"),
+    "api_key": get_Weather_tips_agent_model_api_key("gpt_4_1"),
 }
 
 # Agents
 
-user_executor = LocalCommandLineCodeExecutor(
+User_executor = LocalCommandLineCodeExecutor(
     work_dir="coding",
 )
 
-assistant = MultimodalConversableAgent(
-    name="assistant",
+Assistant = MultimodalConversableAgent(
+    name="Assistant",
     description="A new Assistant agent",
     system_message="You are a software engineer, write some python code to fulfil the requests. Do not use code that wants API keys to be executed, use only requests lib.",
     human_input_mode="NEVER",
@@ -210,20 +210,20 @@ assistant = MultimodalConversableAgent(
     ),
 )
 
-__AGENTS__["assistant"] = assistant
+__AGENTS__["Assistant"] = Assistant
 
-user = UserProxyAgent(
-    name="user",
+User = UserProxyAgent(
+    name="User",
     description="A new User agent",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=None,
     default_auto_reply="",
-    code_execution_config={"executor": user_executor},
+    code_execution_config={"executor": User_executor},
     is_termination_msg=None,
     llm_config=False,
 )
 
-__AGENTS__["user"] = user
+__AGENTS__["User"] = User
 
 __INITIAL_MSG__ = None
 
@@ -328,23 +328,23 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user not in _known_agents:
-        _known_agents.append(user)
-    _known_agents.append(user)
-    for _group_member in _check_for_group_members(user):
+    if User not in _known_agents:
+        _known_agents.append(User)
+    _known_agents.append(User)
+    for _group_member in _check_for_group_members(User):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user):
+    for _extra_agent in _check_for_extra_agents(User):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if assistant not in _known_agents:
-        _known_agents.append(assistant)
-    _known_agents.append(assistant)
-    for _group_member in _check_for_group_members(assistant):
+    if Assistant not in _known_agents:
+        _known_agents.append(Assistant)
+    _known_agents.append(Assistant)
+    for _group_member in _check_for_group_members(Assistant):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(assistant):
+    for _extra_agent in _check_for_extra_agents(Assistant):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -556,8 +556,8 @@ def main(
     pause_event.set()
     if Path(".cache").is_dir():
         shutil.rmtree(".cache", ignore_errors=True)
-    results = user.run(
-        assistant,
+    results = User.run(
+        Assistant,
         summary_method="last_msg",
         clear_history=True,
         message=__INITIAL_MSG__,

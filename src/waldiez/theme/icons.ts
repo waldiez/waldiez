@@ -22,6 +22,7 @@ import perplexity from "@waldiez/assets/logos/perplexity.svg";
 import searxng from "@waldiez/assets/logos/searxng.svg";
 import tavily from "@waldiez/assets/logos/tavily.svg";
 import together from "@waldiez/assets/logos/together.svg";
+import waldiez_icon from "@waldiez/assets/logos/waldiez.svg";
 import wikipediaSearchTool from "@waldiez/assets/logos/wikipedia.svg";
 import youtubeSearchTool from "@waldiez/assets/logos/youtube.svg";
 import managerWebp from "@waldiez/assets/manager.webp";
@@ -70,6 +71,7 @@ export const TOOL_ICONS = {
     perplexity_search: perplexity,
     duckduckgo_search: duckduckgo,
     searxng_search: searxng,
+    waldiez_flow: waldiez_icon,
 };
 
 export const WALDIEZ_ICON = generic;

@@ -10,6 +10,7 @@ export const PREDEFINED_TOOL_TYPES = [
     "duckduckgo_search",
     "perplexity_search",
     "searxng_search",
+    "waldiez_flow",
 ];
 
 export const DEFAULT_PREDEFINED_TOOL_DESCRIPTION: { [key: string]: string } = {
@@ -20,6 +21,7 @@ export const DEFAULT_PREDEFINED_TOOL_DESCRIPTION: { [key: string]: string } = {
     duckduckgo_search: "Search DuckDuckGo for a given query.",
     perplexity_search: "Search Perplexity AI for a given query.",
     searxng_search: "Search SearxNG for a given query.",
+    waldiez_flow: "Run a waldiez flow as tool",
     shared: "Shared code available to all agents.",
     custom: "A custom tool that you define.",
 };
@@ -32,6 +34,7 @@ export const DEFAULT_PREDEFINED_TOOL_NAME: { [key: string]: string } = {
     duckduckgo_search: "DuckDuckGo Search",
     perplexity_search: "Perplexity AI Search",
     searxng_search: "SearxNG Search",
+    waldiez_flow: "waldiez_flow",
     shared: "waldiez_shared",
     custom: "new_tool",
 };
@@ -47,6 +50,7 @@ export const PREDEFINED_TOOL_REQUIRED_ENVS: { [key: string]: { label: string; ke
     duckduckgo_search: [],
     perplexity_search: [{ label: "Perplexity API Key", key: "PERPLEXITY_API_KEY" }],
     searxng_search: [],
+    waldiez_flow: [],
 };
 export const PREDEFINED_TOOL_REQUIRED_KWARGS: { [key: string]: { label: string; key: string }[] } = {
     wikipedia_search: [],
@@ -56,4 +60,5 @@ export const PREDEFINED_TOOL_REQUIRED_KWARGS: { [key: string]: { label: string; 
     duckduckgo_search: [],
     perplexity_search: [],
     searxng_search: [],
+    waldiez_flow: [{ label: "Flow path", key: "flow" }],
 };

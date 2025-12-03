@@ -135,7 +135,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "hierarchical_pattern_api_keys.py"
+# "Hierarchical_Pattern_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -162,10 +162,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("hierarchical_pattern")
+__MODELS_MODULE__ = load_api_key_module("Hierarchical_Pattern")
 
 
-def get_hierarchical_pattern_model_api_key(model_name: str) -> str:
+def get_Hierarchical_Pattern_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -177,7 +177,7 @@ def get_hierarchical_pattern_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_hierarchical_pattern_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Hierarchical_Pattern_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -398,10 +398,23 @@ def compile_final_report(
 gpt_4o_mini_llm_config: dict[str, Any] = {
     "model": "gpt-4o-mini",
     "api_type": "openai",
-    "api_key": get_hierarchical_pattern_model_api_key("gpt_4o_mini"),
+    "api_key": get_Hierarchical_Pattern_model_api_key("gpt_4o_mini"),
 }
 
 # Agents
+
+User = UserProxyAgent(
+    name="User",
+    description="A new User agent",
+    human_input_mode="ALWAYS",
+    max_consecutive_auto_reply=None,
+    default_auto_reply="",
+    code_execution_config=False,
+    is_termination_msg=None,
+    llm_config=False,
+)
+
+__AGENTS__["User"] = User
 
 alternative_manager = ConversableAgent(
     name="alternative_manager",
@@ -588,19 +601,6 @@ storage_manager = ConversableAgent(
 
 __AGENTS__["storage_manager"] = storage_manager
 
-user = UserProxyAgent(
-    name="user",
-    description="A new User agent",
-    human_input_mode="ALWAYS",
-    max_consecutive_auto_reply=None,
-    default_auto_reply="",
-    code_execution_config=False,
-    is_termination_msg=None,
-    llm_config=False,
-)
-
-__AGENTS__["user"] = user
-
 wind_specialist = ConversableAgent(
     name="wind_specialist",
     description="A new Assistant agent",
@@ -766,9 +766,7 @@ storage_manager.handoffs.set_after_work(target=AgentTarget(executive_agent))
 
 wind_specialist.handoffs.set_after_work(target=AgentTarget(renewable_manager))
 
-__INITIAL_MSG__ = "We need a comprehensive report on the current state of renewable energy technologies. Please coordinate the research and compilation of this report."
-
-manager_pattern = DefaultPattern(
+Manager_pattern = DefaultPattern(
     initial_agent=executive_agent,
     agents=[
         solar_specialist,
@@ -781,10 +779,10 @@ manager_pattern = DefaultPattern(
         alternative_manager,
         executive_agent,
     ],
-    user_agent=user,
+    user_agent=User,
     group_manager_args={
         "llm_config": False,
-        "name": "manager",
+        "name": "Manager",
     },
     context_variables=ContextVariables(
         data={
@@ -811,7 +809,9 @@ manager_pattern = DefaultPattern(
     group_after_work=TerminateTarget(),
 )
 
-__GROUP__["patterns"]["manager_pattern"] = manager_pattern
+__INITIAL_MSG__ = "We need a comprehensive report on the current state of renewable energy technologies. Please coordinate the research and compilation of this report."
+
+__GROUP__["patterns"]["Manager_pattern"] = Manager_pattern
 
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
@@ -914,13 +914,13 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user not in _known_agents:
-        _known_agents.append(user)
-    _known_agents.append(user)
-    for _group_member in _check_for_group_members(user):
+    if User not in _known_agents:
+        _known_agents.append(User)
+    _known_agents.append(User)
+    for _group_member in _check_for_group_members(User):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user):
+    for _extra_agent in _check_for_extra_agents(User):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
@@ -1222,7 +1222,7 @@ def main(
     pause_event.set()
     with Cache.disk(cache_seed=42) as cache:
         results = run_group_chat(
-            pattern=manager_pattern,
+            pattern=Manager_pattern,
             messages=__INITIAL_MSG__,
             max_rounds=50,
             pause_event=pause_event,

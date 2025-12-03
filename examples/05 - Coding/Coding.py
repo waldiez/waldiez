@@ -124,7 +124,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "coding_api_keys.py"
+# "Coding_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -151,10 +151,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("coding")
+__MODELS_MODULE__ = load_api_key_module("Coding")
 
 
-def get_coding_model_api_key(model_name: str) -> str:
+def get_Coding_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -166,7 +166,7 @@ def get_coding_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_coding_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Coding_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -227,32 +227,32 @@ def get_and_plot_stock_data(
 claude_3_7_sonnet_20250219_llm_config: dict[str, Any] = {
     "model": "claude-3-7-sonnet-20250219",
     "api_type": "anthropic",
-    "api_key": get_coding_model_api_key("claude_3_7_sonnet_20250219"),
+    "api_key": get_Coding_model_api_key("claude_3_7_sonnet_20250219"),
 }
 
 # Agents
 
-code_executor_executor = LocalCommandLineCodeExecutor(
+Code_Executor_executor = LocalCommandLineCodeExecutor(
     work_dir="coding",
     timeout=60,
     functions=[get_and_plot_stock_data],
 )
 
-code_executor = UserProxyAgent(
-    name="code_executor",
+Code_Executor = UserProxyAgent(
+    name="Code_Executor",
     description="Code Executor Agent",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=10,
     default_auto_reply="Please continue. If everything is done, reply 'TERMINATE'.",
-    code_execution_config={"executor": code_executor_executor},
+    code_execution_config={"executor": Code_Executor_executor},
     is_termination_msg=None,
     llm_config=False,
 )
 
-__AGENTS__["code_executor"] = code_executor
+__AGENTS__["Code_Executor"] = Code_Executor
 
-code_writer = AssistantAgent(
-    name="code_writer",
+Code_Writer = AssistantAgent(
+    name="Code_Writer",
     description="Code Writer Agent",
     system_message="You are a helpful AI assistant.\nSolve tasks using your coding and language tools.\nReply \"TERMINATE\" in the end when everything is done.",
     human_input_mode="NEVER",
@@ -268,18 +268,18 @@ code_writer = AssistantAgent(
     ),
 )
 
-__AGENTS__["code_writer"] = code_writer
+__AGENTS__["Code_Writer"] = Code_Writer
 
 register_function(
     get_and_plot_stock_data,
-    caller=code_writer,
-    executor=code_executor,
+    caller=Code_Writer,
+    executor=Code_Executor,
     name="get_and_plot_stock_data",
     description="get_and_plot_stock_data",
 )
 
 
-def callable_message_code_executor_to_code_writer(
+def callable_message_Code_Executor_to_Code_Writer(
     sender: ConversableAgent,
     recipient: ConversableAgent,
     context: dict[str, Any],
@@ -298,7 +298,7 @@ def callable_message_code_executor_to_code_writer(
     return message
 
 
-__INITIAL_MSG__ = callable_message_code_executor_to_code_writer
+__INITIAL_MSG__ = callable_message_Code_Executor_to_Code_Writer
 
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
@@ -401,23 +401,23 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if code_executor not in _known_agents:
-        _known_agents.append(code_executor)
-    _known_agents.append(code_executor)
-    for _group_member in _check_for_group_members(code_executor):
+    if Code_Executor not in _known_agents:
+        _known_agents.append(Code_Executor)
+    _known_agents.append(Code_Executor)
+    for _group_member in _check_for_group_members(Code_Executor):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(code_executor):
+    for _extra_agent in _check_for_extra_agents(Code_Executor):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if code_writer not in _known_agents:
-        _known_agents.append(code_writer)
-    _known_agents.append(code_writer)
-    for _group_member in _check_for_group_members(code_writer):
+    if Code_Writer not in _known_agents:
+        _known_agents.append(Code_Writer)
+    _known_agents.append(Code_Writer)
+    for _group_member in _check_for_group_members(Code_Writer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(code_writer):
+    for _extra_agent in _check_for_extra_agents(Code_Writer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -629,8 +629,8 @@ def main(
     pause_event.set()
     if Path(".cache").is_dir():
         shutil.rmtree(".cache", ignore_errors=True)
-    results = code_executor.run(
-        code_writer,
+    results = Code_Executor.run(
+        Code_Writer,
         summary_method="last_msg",
         clear_history=False,
         message=__INITIAL_MSG__,

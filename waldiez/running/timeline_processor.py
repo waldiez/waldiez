@@ -3,6 +3,7 @@
 # pylint: skip-file
 # pyright: reportArgumentType=false,reportUnknownVariableType=false
 # pyright: reportUnknownMemberType=false,reportUnknownArgumentType=false
+# pyright: reportMissingImports=false
 # flake8: noqa: C901
 """
 Timeline Analysis Data Processor.
@@ -772,7 +773,8 @@ class TimelineProcessor:
         chat_sorted["end_time"] = pd.to_datetime(chat_sorted["end_time"])
         chat_sorted = chat_sorted.sort_values("start_time")
         chat_sorted["duration"] = (
-            chat_sorted["end_time"] - chat_sorted["start_time"]
+            pd.to_datetime(chat_sorted["end_time"])
+            - pd.to_datetime(chat_sorted["start_time"])
         ).dt.total_seconds()
 
         LOG.info(

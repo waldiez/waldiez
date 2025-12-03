@@ -121,7 +121,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "planning_2_api_keys.py"
+# "Planning_2_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -148,10 +148,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("planning_2")
+__MODELS_MODULE__ = load_api_key_module("Planning_2")
 
 
-def get_planning_2_model_api_key(model_name: str) -> str:
+def get_Planning_2_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -163,7 +163,7 @@ def get_planning_2_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_planning_2_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Planning_2_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -183,18 +183,18 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 gpt_4_turbo_llm_config: dict[str, Any] = {
     "model": "gpt-4-turbo",
     "api_type": "openai",
-    "api_key": get_planning_2_model_api_key("gpt_4_turbo"),
+    "api_key": get_Planning_2_model_api_key("gpt_4_turbo"),
 }
 
 # Agents
 
-executor_executor = LocalCommandLineCodeExecutor(
+Executor_executor = LocalCommandLineCodeExecutor(
     work_dir="coding",
     timeout=60,
 )
 
-engineer = ConversableAgent(
-    name="engineer",
+Engineer = ConversableAgent(
+    name="Engineer",
     description="An engineer that writes code based on the plan provided by the planner.",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
@@ -211,26 +211,26 @@ engineer = ConversableAgent(
     ),
 )
 
-__AGENTS__["engineer"] = engineer
+__AGENTS__["Engineer"] = Engineer
 
-executor = ConversableAgent(
-    name="executor",
+Executor = ConversableAgent(
+    name="Executor",
     description="Executor agent",
     system_message="Execute the code written by the engineer and report the result.",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
     default_auto_reply="",
-    code_execution_config={"executor": executor_executor},
+    code_execution_config={"executor": Executor_executor},
     is_termination_msg=None,
     functions=[],
     update_agent_state_before_reply=[],
     llm_config=False,
 )
 
-__AGENTS__["executor"] = executor
+__AGENTS__["Executor"] = Executor
 
-planner = ConversableAgent(
-    name="planner",
+Planner = ConversableAgent(
+    name="Planner",
     description="Planner agent",
     system_message="Given a task, please determine what information is needed to complete the task. Please note that the information will all be retrieved using Python code. Please only suggest information that can be retrieved using Python code. After each step is done by others, check the progress and instruct the remaining steps. If a step fails, try to workaround.",
     human_input_mode="NEVER",
@@ -248,10 +248,10 @@ planner = ConversableAgent(
     ),
 )
 
-__AGENTS__["planner"] = planner
+__AGENTS__["Planner"] = Planner
 
-user_proxy = UserProxyAgent(
-    name="user_proxy",
+User_proxy = UserProxyAgent(
+    name="User_proxy",
     description="A new User proxy agent",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=None,
@@ -261,10 +261,10 @@ user_proxy = UserProxyAgent(
     llm_config=False,
 )
 
-__AGENTS__["user_proxy"] = user_proxy
+__AGENTS__["User_proxy"] = User_proxy
 
-writer = ConversableAgent(
-    name="writer",
+Writer = ConversableAgent(
+    name="Writer",
     description="Writer agent",
     system_message="Writer. Please write blogs in markdown format (with relevant titles) and put the content in pseudo ```md``` code block. You take feedback from the admin and refine your blog.",
     human_input_mode="NEVER",
@@ -282,14 +282,12 @@ writer = ConversableAgent(
     ),
 )
 
-__AGENTS__["writer"] = writer
+__AGENTS__["Writer"] = Writer
 
-__INITIAL_MSG__ = "Write a blogpost about the stock price performance of Nvidia in the past month."
-
-manager_pattern = AutoPattern(
-    initial_agent=planner,
-    agents=[planner, engineer, executor, writer],
-    user_agent=user_proxy,
+Manager_pattern = AutoPattern(
+    initial_agent=Planner,
+    agents=[Planner, Engineer, Executor, Writer],
+    user_agent=User_proxy,
     group_manager_args={
         "llm_config": autogen.LLMConfig(
             config_list=[
@@ -297,11 +295,13 @@ manager_pattern = AutoPattern(
             ],
             cache_seed=None,
         ),
-        "name": "manager",
+        "name": "Manager",
     },
 )
 
-__GROUP__["patterns"]["manager_pattern"] = manager_pattern
+__INITIAL_MSG__ = "Write a blogpost about the stock price performance of Nvidia in the past month."
+
+__GROUP__["patterns"]["Manager_pattern"] = Manager_pattern
 
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
@@ -404,53 +404,53 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user_proxy not in _known_agents:
-        _known_agents.append(user_proxy)
-    _known_agents.append(user_proxy)
-    for _group_member in _check_for_group_members(user_proxy):
+    if User_proxy not in _known_agents:
+        _known_agents.append(User_proxy)
+    _known_agents.append(User_proxy)
+    for _group_member in _check_for_group_members(User_proxy):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user_proxy):
+    for _extra_agent in _check_for_extra_agents(User_proxy):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if planner not in _known_agents:
-        _known_agents.append(planner)
-    _known_agents.append(planner)
-    for _group_member in _check_for_group_members(planner):
+    if Planner not in _known_agents:
+        _known_agents.append(Planner)
+    _known_agents.append(Planner)
+    for _group_member in _check_for_group_members(Planner):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(planner):
+    for _extra_agent in _check_for_extra_agents(Planner):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if engineer not in _known_agents:
-        _known_agents.append(engineer)
-    _known_agents.append(engineer)
-    for _group_member in _check_for_group_members(engineer):
+    if Engineer not in _known_agents:
+        _known_agents.append(Engineer)
+    _known_agents.append(Engineer)
+    for _group_member in _check_for_group_members(Engineer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(engineer):
+    for _extra_agent in _check_for_extra_agents(Engineer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if executor not in _known_agents:
-        _known_agents.append(executor)
-    _known_agents.append(executor)
-    for _group_member in _check_for_group_members(executor):
+    if Executor not in _known_agents:
+        _known_agents.append(Executor)
+    _known_agents.append(Executor)
+    for _group_member in _check_for_group_members(Executor):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(executor):
+    for _extra_agent in _check_for_extra_agents(Executor):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if writer not in _known_agents:
-        _known_agents.append(writer)
-    _known_agents.append(writer)
-    for _group_member in _check_for_group_members(writer):
+    if Writer not in _known_agents:
+        _known_agents.append(Writer)
+    _known_agents.append(Writer)
+    for _group_member in _check_for_group_members(Writer):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(writer):
+    for _extra_agent in _check_for_extra_agents(Writer):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -662,7 +662,7 @@ def main(
     pause_event.set()
     with Cache.disk(cache_seed=42) as cache:
         results = run_group_chat(
-            pattern=manager_pattern,
+            pattern=Manager_pattern,
             messages=__INITIAL_MSG__,
             max_rounds=20,
             pause_event=pause_event,
