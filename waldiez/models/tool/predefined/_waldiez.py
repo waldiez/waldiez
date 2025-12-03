@@ -138,10 +138,10 @@ class WaldiezFlowToolImpl(PredefinedTool):
     from waldiez import WaldiezRunner
     import os
 
-    if not flow:
+    if not flow or not os.path.exists(flow):
         flow = "{self.kwargs.get("flow")}"
     if not flow or not os.path.exists(flow):
-        raise FileNotFoundError("Invalid flow path")
+        raise FileNotFoundError(f"Invalid flow path:{{flow}}")
 '''
         content += """
     try:
