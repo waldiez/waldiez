@@ -14,10 +14,8 @@ class WaldiezFlowToolImpl(PredefinedTool):
     """Perplexity AI search tool for Waldiez."""
 
     required_secrets: list[str] = []
-    required_kwargs: dict[str, type] = {}
-    kwarg_types: dict[str, type] = {
-        "flow": str,
-    }
+    required_kwargs: dict[str, type] = {"flow": str}
+    _kwargs: dict[str, Any] = {}
 
     @property
     def name(self) -> str:
@@ -32,7 +30,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
     @property
     def kwargs(self) -> dict[str, Any]:
         """Keyword arguments for the tool, used for initialization."""
-        return {}
+        return self._kwargs
 
     @property
     def requirements(self) -> list[str]:
@@ -80,18 +78,17 @@ class WaldiezFlowToolImpl(PredefinedTool):
         list[str]
             List of missing required keyword arguments.
         """
-        for key, value in self.kwargs.items():
-            if key in kwargs:
-                type_of = self.kwarg_types.get(key, str)
-                # pylint: disable=broad-exception-caught
-                # noinspection PyBroadException,TryExceptPass
-                try:
-                    casted = type_of(value)
-                    if key in self.kwargs:
-                        self.kwargs[key] = casted
-                except Exception:
-                    pass
-        return []
+        missing: list[str] = []
+        for key, type_of in self.required_kwargs.items():
+            if key not in kwargs:
+                missing.append(key)
+                continue
+            try:
+                casted = type_of(kwargs[key])
+                self._kwargs[key] = casted
+            except Exception:  # pylint: disable=broad-exception-caught
+                pass
+        return missing
 
     # pylint: disable=unused-argument
     def get_content(
@@ -119,6 +116,12 @@ class WaldiezFlowToolImpl(PredefinedTool):
             else "False"
         )
         is_async = str(is_async_flow).lower().strip() == "true"
+        use_structured_io = (
+            runtime_kwargs.get("structured_io", True)
+            if runtime_kwargs
+            else "True"
+        )
+        structured_io = str(use_structured_io).lower() == "false"
         the_def = "async def" if is_async else "def"
         content = f'''
 {the_def} {self.name}(flow: str | Path | None = None, env_path: str | None = None) -> list[str] | list[dict[str, Any]] | str:
@@ -137,7 +140,6 @@ class WaldiezFlowToolImpl(PredefinedTool):
     """
     from waldiez import WaldiezRunner
     import os
-    import json
 
     if not flow or not os.path.exists(flow):
         flow = "{self.kwargs.get("flow")}"
@@ -149,12 +151,12 @@ class WaldiezFlowToolImpl(PredefinedTool):
         runner = WaldiezRunner.load(flow, dot_env=env_path)
 """
         if is_async:
-            content += """
-        results = await runner.a_run(output_path=os.path.join("inner", "flow.py"), structured_io=True, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
+            content += f"""
+        results = await runner.a_run(output_path=os.path.join("inner", "flow.py"), structured_io={structured_io}, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
 """
         else:
-            content += """
-        results = runner.run(output_path=os.path.join("inner", "flow.py"), structured_io=True, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
+            content += f"""
+        results = runner.run(output_path=os.path.join("inner", "flow.py"), structured_io={structured_io}, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
 """
         content += """
         return results

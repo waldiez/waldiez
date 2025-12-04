@@ -105,15 +105,13 @@ export const toolMapper = {
         }
         let kwargs: { [key: string]: unknown } = { ...toolNode.data.kwargs } as { [key: string]: unknown };
         if (toolNode.data.toolType === "predefined") {
+            kwargs = {};
             // check required kwargs for predefined tools
-            const requiredKwargs = PREDEFINED_TOOL_REQUIRED_KWARGS[toolNode.data.label] || {};
-            kwargs = Object.entries(requiredKwargs).reduce(
-                (acc, [key, _]) => {
-                    acc[key] = kwargs[key] || secrets[key] || "REPLACE_ME";
-                    return acc;
-                },
-                {} as { [key: string]: unknown },
-            );
+            const requiredKwargs = PREDEFINED_TOOL_REQUIRED_KWARGS[toolNode.data.label] || [];
+            requiredKwargs.forEach(kwarg => {
+                const value = toolNode.data.kwargs?.[kwarg.key] || secrets[kwarg.key] || "REPLACE_ME";
+                kwargs[kwarg.key] = value || "REPLACE_ME";
+            });
         }
         const rest = getRestFromJSON(toolNode, ["id", "type", "parentId", "data"]);
         const toolName = toolNode.data.label;

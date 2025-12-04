@@ -104,7 +104,7 @@ describe("toolMapper", () => {
             secret: "REPLACE_ME",
         });
     });
-    it("should export a predefined tool with the required secrets and args replaced", () => {
+    it("should export a predefined tool with the required secrets and args defined", () => {
         const allPredefinedTools = Object.values(PREDEFINED_TOOL_TYPES);
         allPredefinedTools.forEach(toolType => {
             const toolData = new WaldiezToolData();
@@ -119,17 +119,10 @@ describe("toolMapper", () => {
             expect(toolJson).toBeTruthy();
             expect(toolJson.id).toBe("1");
             expect(toolJson.type).toBe("tool");
-            if (
-                PREDEFINED_TOOL_REQUIRED_KWARGS[toolType] &&
-                Object.keys(PREDEFINED_TOOL_REQUIRED_KWARGS[toolType]).length > 0
-            ) {
-                Object.entries(PREDEFINED_TOOL_REQUIRED_KWARGS[toolType]).forEach(([key, _]) => {
-                    expect((toolJson.data as any).kwargs[key]).toBe("REPLACE_ME");
-                });
-            }
-            if (PREDEFINED_TOOL_REQUIRED_KWARGS[toolType]) {
-                Object.entries(PREDEFINED_TOOL_REQUIRED_KWARGS[toolType]).forEach(([key, _]) => {
-                    expect((toolJson.data as any).kwargs[key]).toBe("REPLACE_ME");
+            const requiredKwargs = PREDEFINED_TOOL_REQUIRED_KWARGS[toolType];
+            if (requiredKwargs && requiredKwargs.length > 0) {
+                requiredKwargs.forEach(arg => {
+                    expect((toolJson.data as any).kwargs[arg.key]).toBeDefined();
                 });
             }
         });

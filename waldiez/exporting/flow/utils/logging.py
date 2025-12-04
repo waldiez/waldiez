@@ -272,7 +272,7 @@ def get_sqlite_out_call(tabs: int, is_async: bool) -> str:
     content += tab + 'if not os.path.exists("logs"):\n'
     content += tab + "    try:\n"
     content += tab + '        os.makedirs("logs", exist_ok=True)\n'
-    content += tab + "    except Baseexception:\n"
+    content += tab + "    except BaseException:\n"
     content += tab + "        pass\n"
     content += tab + "for table in [\n"
     for table in table_names:
