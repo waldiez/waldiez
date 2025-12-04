@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
+# pylint: disable=broad-exception-caught,too-many-try-statements,too-many-lines
 # pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
 # pyright: reportUnknownArgumentType=false, reportUnusedParameter=false
 """Base runner for Waldiez workflows."""
@@ -186,7 +187,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         checkpoint_arg: str,
     ) -> WaldiezCheckpoint | None:
         checkpoint: WaldiezCheckpoint | None = None
-        # pylint: disable=broad-exception-caught,too-many-try-statements
         session_name = WaldiezBaseRunner._flow_name
         checkpoint_id, history_index = StorageManager.parse_checkpoint_arg(
             checkpoint_arg
@@ -319,6 +319,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez flow."""
@@ -333,6 +334,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez flow asynchronously."""
@@ -350,14 +352,11 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
     ) -> Path | None:
         """Run after the flow execution."""
-        # Save results
         self._last_results = results
-
-        # Reset stop flag for next run
         self._stop_requested.clear()
-        # pylint: disable=broad-exception-caught
         try:
             return ResultsMixin.post_run(
                 results=results,
@@ -370,9 +369,12 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 skip_mmd=skip_mmd,
                 skip_timeline=skip_timeline,
                 storage_manager=WaldiezBaseRunner._storage_manager,
+                skip_symlinks=skip_symlinks,
             )
-        except BaseException as exc:  # pragma: no cover
-            self.log.warning("Error occurred during after_run: %s", exc)
+        except BaseException:  # pragma: no cover
+            self.log.warning(
+                "Error occurred during after_run: \n%s\n", tb.format_exc()
+            )
         self.log.info("Cleanup completed")
         return None
 
@@ -386,11 +388,11 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
     ) -> Path | None:
         """Run after the flow execution asynchronously."""
         self._last_results = results
         self._stop_requested.clear()
-        # pylint: disable=broad-exception-caught
         try:
             return await ResultsMixin.a_post_run(
                 results=results,
@@ -402,6 +404,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 uploads_root=uploads_root,
                 skip_mmd=skip_mmd,
                 skip_timeline=skip_timeline,
+                skip_symlinks=skip_symlinks,
             )
         except BaseException as exc:  # pragma: no cover
             self.log.warning("Error occurred during a_after_run: %s", exc)
@@ -513,7 +516,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         self.install_requirements()
         return temp_dir, output_file, uploads_root_path
 
-    # noinspection PyProtocol
     # pylint: disable=too-many-locals,unused-argument
     @override
     def run(
@@ -523,6 +525,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        skip_symlinks: bool = False,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
@@ -540,6 +543,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
         dot_env : str | Path | None
             The path to the .env file, if any.
         **kwargs : Any
@@ -574,6 +579,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                     uploads_root,
                     structured_io,
                     skip_mmd,
+                    skip_timeline,
+                    skip_symlinks,
+                    dot_env,
+                    **kwargs,
                 )
         temp_dir, output_file, uploads_root_path = self.prepare(
             output_path=output_path,
@@ -593,12 +602,13 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                     uploads_root=uploads_root_path,
                     skip_mmd=skip_mmd,
                     skip_timeline=skip_timeline,
+                    skip_symlinks=skip_symlinks,
                 )
         except (SystemExit, StopRunningException, KeyboardInterrupt) as exc:
             error = exc
             self.log.warning("Execution stopped: %s", exc)
             raise StopRunningException(StopRunningException.reason) from exc
-        except BaseException as exc:  # pylint: disable=broad-exception-caught
+        except BaseException as exc:
             self.log.error("Error occurred while running workflow: %s", exc)
             error = exc
         finally:
@@ -612,6 +622,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 temp_dir=temp_dir,
                 skip_mmd=skip_mmd,
                 skip_timeline=skip_timeline,
+                skip_symlinks=skip_symlinks,
             )
             if output:
                 output_dir = output
@@ -650,8 +661,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         await self.a_install_requirements()
         return temp_dir, output_file, uploads_root_path
 
-    # noinspection DuplicatedCode
-    # noinspection PyProtocol
     @override
     async def a_run(
         self,
@@ -660,6 +669,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        skip_symlinks: bool = False,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
@@ -677,6 +687,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
         dot_env : str | Path | None
             The path to the .env file, if any.
         **kwargs : Any
@@ -721,12 +733,14 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                     uploads_root=uploads_root_path,
                     skip_mmd=skip_mmd,
                     skip_timeline=skip_timeline,
+                    skip_symlinks=skip_symlinks,
+                    **kwargs,
                 )
         except (SystemExit, StopRunningException, KeyboardInterrupt) as exc:
             self.log.warning("Execution stopped: %s", exc)
             error = exc
             raise StopRunningException(StopRunningException.reason) from exc
-        except BaseException as exc:  # pylint: disable=broad-exception-caught
+        except BaseException as exc:
             self.log.error("Error occurred while running workflow: %s", exc)
             error = exc
         finally:
@@ -740,6 +754,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 temp_dir=temp_dir,
                 skip_mmd=skip_mmd,
                 skip_timeline=skip_timeline,
+                skip_symlinks=skip_symlinks,
             )
             if output:
                 output_dir = output
@@ -757,6 +772,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
     ) -> Path | None:
         """Actions to perform after running the flow.
 
@@ -776,6 +792,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
 
         Returns
         -------
@@ -791,6 +809,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             temp_dir=temp_dir,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
+            skip_symlinks=skip_symlinks,
         )
 
     @override
@@ -803,6 +822,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
     ) -> Path | None:
         """Asynchronously perform actions after running the flow.
 
@@ -821,6 +841,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
+            Whether to skip generating the timeline JSON.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
 
         Returns
         -------
@@ -836,6 +859,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
             waldiez_file=WaldiezBaseRunner._waldiez_file,
+            skip_symlinks=skip_symlinks,
         )
 
     @property

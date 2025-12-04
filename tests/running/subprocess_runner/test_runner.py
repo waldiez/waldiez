@@ -453,6 +453,7 @@ def test_runner_after_run(
             temp_dir=tmp_path,
             skip_mmd=False,
             skip_timeline=False,
+            skip_symlinks=False,
         )
 
     assert runner.async_runner is None
@@ -479,6 +480,7 @@ def test_runner_after_run_sync_running(
             temp_dir=tmp_path,
             skip_mmd=False,
             skip_timeline=False,
+            skip_symlinks=False,
         )
 
     assert runner.async_runner is None
@@ -507,6 +509,7 @@ async def test_a_runner_after_run_sync(
             temp_dir=tmp_path,
             skip_mmd=False,
             skip_timeline=False,
+            skip_symlinks=False,
         )
 
     assert runner.async_runner is None
@@ -536,6 +539,7 @@ async def test_a_runner_after_run_async(
         temp_dir=tmp_path,
         skip_mmd=False,
         skip_timeline=False,
+        skip_symlinks=False,
     )
 
     assert runner.async_runner is None

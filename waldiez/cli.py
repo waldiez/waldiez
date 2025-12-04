@@ -372,6 +372,7 @@ def _do_run(
                 structured,  # structured_io
                 False,  # skip_mmd
                 False,  # skip_timeline
+                False,  # skip_symlinks
                 env_file,
             )
             # os._exit(0 if _error is None else 1)
@@ -382,6 +383,7 @@ def _do_run(
                 structured_io=structured,
                 skip_mmd=False,
                 skip_timeline=False,
+                skip_symlinks=False,
                 dot_env=env_file,
             )
     except Exception as error:

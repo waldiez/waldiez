@@ -153,6 +153,7 @@ class ResultsMixin:
             "reasoning_tree.json",
         ),
         ignore_names: Iterable[str] = (".cache", ".env"),
+        skip_symlinks: bool = False,
     ) -> Path | None:
         """Actions to perform after running the flow.
 
@@ -193,6 +194,8 @@ class ResultsMixin:
             File names (exact matches) to also copy into output_dir.
         ignore_names : Iterable[str]
             Directory/file names to skip entirely.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
 
         Returns
         -------
@@ -242,6 +245,7 @@ class ResultsMixin:
             copy_into_subdir=copy_artifacts_into,
             promote_to_output=promote_to_output,
             ignore_names=to_ignore,
+            skip_symlinks=skip_symlinks,
         )
         try:
             dst_waldiez = public_link_path / waldiez_file.name
@@ -273,6 +277,7 @@ class ResultsMixin:
             "reasoning_tree.json",
         ),
         ignore_names: Iterable[str] = (".cache", ".env"),
+        skip_symlinks: bool = False,
     ) -> Path | None:
         """Actions to perform after running the flow.
 
@@ -313,6 +318,8 @@ class ResultsMixin:
             File names (exact matches) to also copy into output_dir.
         ignore_names : Iterable[str]
             Directory/file names to skip entirely.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
 
         Returns
         -------
@@ -337,6 +344,7 @@ class ResultsMixin:
             link_latest,
             promote_to_output,
             ignore_names,
+            skip_symlinks,
         )
 
     @staticmethod

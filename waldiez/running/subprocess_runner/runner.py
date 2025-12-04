@@ -203,6 +203,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        skip_symlinks: bool = False,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
@@ -220,6 +221,8 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
         dot_env : str | Path | None
             The path to the .env file, if any.
         **kwargs : Any
@@ -242,6 +245,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             uploads_root=Path(uploads_root) if uploads_root else None,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
+            skip_symlinks=skip_symlinks,
             dot_env=dot_env,
             **kwargs,
         )
@@ -268,6 +272,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         # pylint: disable=too-many-try-statements,broad-exception-caught
@@ -305,6 +310,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        skip_symlinks: bool = False,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
@@ -322,6 +328,8 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
         dot_env : str | Path | None
             The path to the .env file, if any.
         **kwargs : Any
@@ -344,6 +352,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             uploads_root=Path(uploads_root) if uploads_root else None,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
+            skip_symlinks=skip_symlinks,
             dot_env=dot_env,
             **kwargs,
         )
@@ -356,6 +365,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run workflow using async subprocess runner.
@@ -372,6 +382,8 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             Skip mermaid diagram generation
         skip_timeline : bool
             Skip timeline generation
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
         **kwargs : Any
             Additional arguments
 
@@ -522,6 +534,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
     ) -> None:
         """Actions to perform after running the flow.
 
@@ -543,6 +556,8 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             Skip mermaid diagram generation
         skip_timeline : bool
             Skip timeline generation
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
         """
         # Cleanup subprocess runners
         self._cleanup_subprocess_runners()
@@ -558,6 +573,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
     ) -> None:
         """Actions to perform after running the flow (async version).
 
@@ -579,6 +595,8 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             Skip mermaid diagram generation
         skip_timeline : bool
             Skip timeline generation
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
         """
         # Cleanup subprocess runners
         self._cleanup_subprocess_runners()

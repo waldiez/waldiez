@@ -190,6 +190,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         return self._runner._run(
@@ -198,6 +199,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             uploads_root=uploads_root,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
+            skip_symlinks=skip_symlinks,
             **kwargs,
         )
 
@@ -209,6 +211,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
@@ -218,6 +221,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             uploads_root=uploads_root,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
+            skip_symlinks=skip_symlinks,
             dot_env=dot_env,
             **kwargs,
         )

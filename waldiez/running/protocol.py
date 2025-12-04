@@ -58,6 +58,7 @@ class WaldiezRunnerProtocol(Protocol):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        skip_symlinks: bool = False,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
@@ -75,6 +76,8 @@ class WaldiezRunnerProtocol(Protocol):
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
         dot_env : str | Path | None
             The path to the .env file, if any.
         **kwargs : Any
@@ -99,6 +102,7 @@ class WaldiezRunnerProtocol(Protocol):
         structured_io: bool | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        skip_symlinks: bool = False,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
@@ -116,6 +120,8 @@ class WaldiezRunnerProtocol(Protocol):
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
         dot_env : str | Path | None
             The path to the .env file, if any.
         **kwargs : Any
@@ -142,6 +148,7 @@ class WaldiezRunnerProtocol(Protocol):
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
     ) -> Path | None:
         """Actions to perform after running the flow.
 
@@ -161,6 +168,8 @@ class WaldiezRunnerProtocol(Protocol):
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
         """
 
     async def a_after_run(
@@ -172,6 +181,7 @@ class WaldiezRunnerProtocol(Protocol):
         temp_dir: Path,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool,
     ) -> Path | None:
         """Asynchronously perform actions after running the flow.
 
@@ -191,6 +201,8 @@ class WaldiezRunnerProtocol(Protocol):
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
         """
 
     def is_running(self) -> bool:

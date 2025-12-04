@@ -132,8 +132,9 @@ class StorageManager:
         """Get the workspace directory."""
         return self._storage.workspace_dir
 
-    # pylint: disable=too-many-locals,too-many-arguments
-    def finalize(
+    # pylint: disable=too-many-locals,too-many-arguments,too-complex
+    # pylint: disable=too-many-branches
+    def finalize(  # noqa: C901
         self,
         session_name: str,
         output_file: Path,
@@ -150,6 +151,7 @@ class StorageManager:
             "reasoning_tree.json",
         ),
         ignore_names: Iterable[str] = (".cache", ".env"),
+        skip_symlinks: bool = False,
     ) -> tuple[Path, Path]:
         """Copy a run's temporary artifacts into a new checkpoint.
 
@@ -180,6 +182,8 @@ class StorageManager:
             File names (exact matches) to also copy into output_dir.
         ignore_names : Iterable[str]
             Directory/file names to skip entirely.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
 
         Returns
         -------
@@ -227,28 +231,47 @@ class StorageManager:
         session_out_dir.mkdir(parents=True, exist_ok=True)
 
         public_link_path = session_out_dir / checkpoint_path.name
-        symlink(public_link_path, checkpoint_path, overwrite=True)
+        if not skip_symlinks:
+            # Symlink-based public path
+            symlink(public_link_path, checkpoint_path, overwrite=True)
 
-        if link_latest:
-            latest_link = session_out_dir / "latest"
-            tmp_latest = session_out_dir / ".latest.tmp"
-            symlink(tmp_latest, checkpoint_path, overwrite=True)
-            # pylint: disable=too-many-try-statements,broad-exception-caught
-            # noinspection PyBroadException
-            try:
-                if sys.platform == "win32":
-                    # Windows: remove target first
-                    if os.path.exists(latest_link):
-                        os.remove(latest_link)
-                    os.rename(tmp_latest, latest_link)
+            if link_latest:
+                latest_link = session_out_dir / "latest"
+                tmp_latest = session_out_dir / ".latest.tmp"
+                symlink(tmp_latest, checkpoint_path, overwrite=True)
+                # pylint: disable=too-many-try-statements,broad-exception-caught
+                # noinspection PyBroadException
+                try:
+                    if sys.platform == "win32":
+                        # Windows: remove target first
+                        if os.path.exists(latest_link):
+                            os.remove(latest_link)
+                        os.rename(tmp_latest, latest_link)
+                    else:
+                        # Unix-like: atomic replace
+                        os.replace(tmp_latest, latest_link)
+                except BaseException:
+                    pass
+                finally:
+                    if tmp_latest.exists():
+                        tmp_latest.unlink(missing_ok=True)
+        else:
+            # Copy-based public path (no symlinks)
+            if public_link_path.exists():
+                if public_link_path.is_symlink() or public_link_path.is_file():
+                    public_link_path.unlink()
                 else:
-                    # Unix-like: atomic replace
-                    os.replace(tmp_latest, latest_link)
-            except BaseException:
-                pass
-            finally:
-                if tmp_latest.exists():
-                    tmp_latest.unlink(missing_ok=True)
+                    shutil.rmtree(public_link_path)
+            shutil.copytree(checkpoint_path, public_link_path)
+
+            if link_latest:
+                latest_link = session_out_dir / "latest"
+                if latest_link.exists():
+                    if latest_link.is_symlink() or latest_link.is_file():
+                        latest_link.unlink()
+                    else:
+                        shutil.rmtree(latest_link)
+                shutil.copytree(checkpoint_path, latest_link)
 
         if keep_tmp is False:
             shutil.rmtree(tmp_dir, ignore_errors=True)

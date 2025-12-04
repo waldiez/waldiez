@@ -137,6 +137,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
     """
     from waldiez import WaldiezRunner
     import os
+    import json
 
     if not flow or not os.path.exists(flow):
         flow = "{self.kwargs.get("flow")}"
@@ -149,11 +150,11 @@ class WaldiezFlowToolImpl(PredefinedTool):
 """
         if is_async:
             content += """
-        results = await runner.a_run()
+        results = await runner.a_run(output_path=os.path.join("inner", "flow.py"), structured_io=True, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
 """
         else:
             content += """
-        results = runner.run()
+        results = runner.run(output_path=os.path.join("inner", "flow.py"), structured_io=True, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
 """
         content += """
         return results

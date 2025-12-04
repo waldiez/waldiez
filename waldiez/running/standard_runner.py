@@ -73,6 +73,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         skip_mmd: bool,
         skip_timeline: bool,
+        skip_symlinks: bool = False,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow."""
@@ -196,6 +197,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         uploads_root: Path | None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
+        skip_symlinks: bool = False,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow asynchronously."""
