@@ -13,12 +13,12 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""RAG.
+"""Waldiez Flow As Tool.
 
-Group Chat with Retrieval Augmented Generation.
+Use a Waldiez Flow as another Waldiez Flow's tool.
 
-Requirements: ag2[openai]==0.10.1, beautifulsoup4, chromadb>=0.5.23, ipython, markdownify, protobuf==5.29.3, pypdf, sentence_transformers
-Tags: RAG, FLAML
+Requirements: ag2[openai]==0.10.1, waldiez
+Tags:
 🧩 generated with ❤️ by Waldiez.
 """
 
@@ -56,17 +56,15 @@ from typing import (
 import autogen  # type: ignore
 from autogen import (
     Agent,
+    AssistantAgent,
     Cache,
     ChatResult,
     ConversableAgent,
     GroupChat,
+    UserProxyAgent,
+    register_function,
     runtime_logging,
 )
-from autogen.agentchat import GroupChatManager, run_group_chat
-from autogen.agentchat.contrib.retrieve_user_proxy_agent import (
-    RetrieveUserProxyAgent,
-)
-from autogen.agentchat.contrib.vectordb.chromadb import ChromaVectorDB
 from autogen.agentchat.group import ContextVariables
 from autogen.agentchat.group.patterns.pattern import Pattern
 from autogen.events import BaseEvent
@@ -74,13 +72,9 @@ from autogen.io.run_response import (
     AsyncRunResponseProtocol,
     RunResponseProtocol,
 )
-import chromadb
 import numpy as np
-from chromadb.config import Settings
-from chromadb.utils.embedding_functions.sentence_transformer_embedding_function import (
-    SentenceTransformerEmbeddingFunction,
-)
 from dotenv import load_dotenv
+from waldiez import WaldiezRunner
 
 # Common environment variable setup for Waldiez flows
 load_dotenv(override=True)
@@ -127,7 +121,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "RAG_api_keys.py"
+# "Waldiez_Flow_As_Tool_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -154,10 +148,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("RAG")
+__MODELS_MODULE__ = load_api_key_module("Waldiez_Flow_As_Tool")
 
 
-def get_RAG_model_api_key(model_name: str) -> str:
+def get_Waldiez_Flow_As_Tool_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -169,7 +163,7 @@ def get_RAG_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_RAG_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Waldiez_Flow_As_Tool_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -184,222 +178,137 @@ __GROUP__: GroupDict = {"chats": {}, "patterns": {}}
 __AGENTS__: dict[str, ConversableAgent] = {}
 
 
+# Tools
+
+
+def waldiez_flow(
+    flow: str | Path | None = None,
+    env_path: str | None = None,
+    skip_deps: bool | None = None,
+) -> list[str] | list[dict[str, Any]] | str:
+    """Run a waldiez flow and return its results.
+
+    Args:
+        flow: The path of te flow to run.
+        env_path: Optional path to file with environment variables to use for the flow.
+        skip_deps : Skip 'pip install' dependencies before running the flow.
+
+    Returns:
+        list[str] | list[dict[str, Any]] | str: The flow results.
+
+    Raises:
+        FileNotFoundError: If the flow path cannot be resolved.
+        RuntimeError: If running the flow fails.
+    """
+    import tempfile
+    import os
+    import shutil
+    from urllib.request import urlopen
+    from waldiez import WaldiezRunner
+
+    if skip_deps is None:
+        skip_deps = True
+    if not flow or not os.path.exists(flow):
+        flow = "https://raw.githubusercontent.com/waldiez/waldiez/refs/heads/main/examples/01%20-%20Standup%20Comedians/Standup%20Comedians%202.waldiez"
+    if isinstance(flow, Path):
+        flow_str = str(flow)
+    else:
+        flow_str = flow
+
+    is_http_url = isinstance(flow_str, str) and (
+        flow_str.startswith("http://") or flow_str.startswith("https://")
+    )
+    tmp_dir = tempfile.mkdtemp(prefix="waldiez_flow_")
+    tmp_path = os.path.join(tmp_dir, "flow.waldiez")
+    flow = tmp_path
+    if is_http_url:
+        try:
+            with urlopen(flow_str) as resp, open(tmp_path, "wb") as f:
+                shutil.copyfileobj(resp, f)
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to download flow from URL {flow_str}: {e}"
+            ) from e
+    else:
+        # Local filesystem check
+        if not flow_str or not os.path.exists(flow_str):
+            raise FileNotFoundError(f"Invalid flow path: {flow_str}")
+        shutil.copyfile(flow_str, tmp_path)
+
+    try:
+        runner = WaldiezRunner.load(flow, dot_env=env_path)
+
+        results = runner.run(
+            output_path=os.path.join(tmp_dir, "flow.py"),
+            structured_io=False,
+            skip_deps=skip_deps,
+            skip_mmd=True,
+            skip_timeline=True,
+            skip_symlinks=True,
+        )
+
+        raise RuntimeError(results)
+        return results
+    except BaseException as error:
+        print(error)
+        raise RuntimeError(str(error)) from error
+    finally:
+        try:
+            shutil.rmtree(tmp_dir, ignore_errors=True)
+        except BaseException as error:
+            pass
+
+
 # Models
 
-gpt_4_1_llm_config: dict[str, Any] = {
-    "model": "gpt-4.1",
+gpt_5_mini_llm_config: dict[str, Any] = {
+    "model": "gpt-5-mini",
     "api_type": "openai",
-    "api_key": get_RAG_model_api_key("gpt_4_1"),
+    "api_key": get_Waldiez_Flow_As_Tool_model_api_key("gpt_5_mini"),
 }
 
 # Agents
 
-Boss_Assistant_client = chromadb.Client(Settings(anonymized_telemetry=False))
-Boss_Assistant_embedding_function = SentenceTransformerEmbeddingFunction(
-    model_name="all-MiniLM-L6-v2",
-)
-Boss_Assistant_client.get_or_create_collection(
-    "autogen-docs",
-    embedding_function=Boss_Assistant_embedding_function,
-)
-
-Boss_Assistant = RetrieveUserProxyAgent(
-    name="Boss_Assistant",
-    description="Assistant who has extra content retrieval power for solving difficult problems.",
-    human_input_mode="ALWAYS",
-    max_consecutive_auto_reply=3,
-    default_auto_reply="Reply 'TERMINATE' if the task is done.",
-    code_execution_config=False,
-    is_termination_msg=lambda x: any(
-        isinstance(x, dict)
-        and x.get("content", "")
-        and isinstance(x.get("content", ""), str)
-        and x.get("content", "").endswith(keyword)
-        for keyword in ["TERMINATE"]
-    ),
-    retrieve_config={
-        "task": "default",
-        "model": "all-MiniLM-L6-v2",
-        "docs_path": [
-            r"https://raw.githubusercontent.com/microsoft/FLAML/main/website/docs/Examples/Integrate%20-%20Spark.md"
-        ],
-        "new_docs": True,
-        "update_context": True,
-        "get_or_create": True,
-        "overwrite": False,
-        "recursive": True,
-        "chunk_mode": "multi_lines",
-        "must_break_at_empty_line": True,
-        "collection_name": "autogen-docs",
-        "distance_threshold": -1.0,
-        "vector_db": ChromaVectorDB(
-            client=Boss_Assistant_client,
-            embedding_function=Boss_Assistant_embedding_function,
-        ),
-        "client": Boss_Assistant_client,
-    },
-    llm_config=False,
-)
-
-__AGENTS__["Boss_Assistant"] = Boss_Assistant
-
-Code_Reviewer = ConversableAgent(
-    name="Code_Reviewer",
-    description="Code Reviewer who can review the code.",
-    system_message="You are a code reviewer. Reply 'TERMINATE' in the end when everything is done.",
-    human_input_mode="NEVER",
-    max_consecutive_auto_reply=None,
-    default_auto_reply="",
-    code_execution_config=False,
-    is_termination_msg=lambda x: any(
-        isinstance(x, dict)
-        and x.get("content", "")
-        and isinstance(x.get("content", ""), str)
-        and x.get("content", "").endswith(keyword)
-        for keyword in ["TERMINATE"]
-    ),
-    functions=[],
-    update_agent_state_before_reply=[],
-    llm_config=autogen.LLMConfig(
-        config_list=[
-            gpt_4_1_llm_config,
-        ],
-        cache_seed=42,
-    ),
-)
-
-__AGENTS__["Code_Reviewer"] = Code_Reviewer
-
-Product_Manager = ConversableAgent(
-    name="Product_Manager",
-    description="Product Manager who can design and plan the project.",
-    system_message="You are a product manager. Reply 'TERMINATE' in the end when everything is done.",
-    human_input_mode="NEVER",
-    max_consecutive_auto_reply=None,
-    default_auto_reply="",
-    code_execution_config=False,
-    is_termination_msg=lambda x: any(
-        isinstance(x, dict)
-        and x.get("content", "")
-        and isinstance(x.get("content", ""), str)
-        and x.get("content", "").endswith(keyword)
-        for keyword in ["TERMINATE"]
-    ),
-    functions=[],
-    update_agent_state_before_reply=[],
-    llm_config=autogen.LLMConfig(
-        config_list=[
-            gpt_4_1_llm_config,
-        ],
-        cache_seed=42,
-    ),
-)
-
-__AGENTS__["Product_Manager"] = Product_Manager
-
-Senior_Python_Engineer = ConversableAgent(
-    name="Senior_Python_Engineer",
-    description="Senior Python Engineer",
-    system_message="You are a senior python engineer, you provide python code to answer questions. Reply 'TERMINATE' in the end when everything is done.",
-    human_input_mode="NEVER",
-    max_consecutive_auto_reply=None,
-    default_auto_reply="",
-    code_execution_config=False,
-    is_termination_msg=lambda x: any(
-        isinstance(x, dict)
-        and x.get("content", "")
-        and isinstance(x.get("content", ""), str)
-        and x.get("content", "").endswith(keyword)
-        for keyword in ["TERMINATE"]
-    ),
-    functions=[],
-    update_agent_state_before_reply=[],
-    llm_config=autogen.LLMConfig(
-        config_list=[
-            gpt_4_1_llm_config,
-        ],
-        cache_seed=42,
-    ),
-)
-
-__AGENTS__["Senior_Python_Engineer"] = Senior_Python_Engineer
-
-Manager_group_chat = GroupChat(
-    agents=[
-        Product_Manager,
-        Senior_Python_Engineer,
-        Code_Reviewer,
-        Boss_Assistant,
-    ],
-    enable_clear_history=False,
-    send_introductions=False,
-    messages=[],
-    max_round=20,
-    admin_name="Boss_Assistant",
-    speaker_selection_method="round_robin",
-    allow_repeat_speaker=True,
-)
-
-Manager = GroupChatManager(
-    name="Manager",
-    description="The group manager agent",
+Assistant = AssistantAgent(
+    name="Assistant",
+    description="A new Assistant agent",
     human_input_mode="NEVER",
     max_consecutive_auto_reply=None,
     default_auto_reply="",
     code_execution_config=False,
     is_termination_msg=None,
-    groupchat=Manager_group_chat,
     llm_config=autogen.LLMConfig(
         config_list=[
-            gpt_4_1_llm_config,
+            gpt_5_mini_llm_config,
         ],
-        cache_seed=42,
+        cache_seed=None,
     ),
 )
 
-__AGENTS__["Manager"] = Manager
+__AGENTS__["Assistant"] = Assistant
 
+User = UserProxyAgent(
+    name="User",
+    description="A new User agent",
+    human_input_mode="ALWAYS",
+    max_consecutive_auto_reply=None,
+    default_auto_reply="",
+    code_execution_config=False,
+    is_termination_msg=None,
+    llm_config=False,
+)
 
-def callable_message_Boss_Assistant_To_Manager(
-    sender: RetrieveUserProxyAgent,
-    recipient: ConversableAgent,
-    context: dict[str, Any],
-) -> Union[dict[str, Any], str]:
-    """Get the message using the RAG message generator method.
+__AGENTS__["User"] = User
 
-    Parameters
-    ----------
-    sender : RetrieveUserProxyAgent
-        The source agent.
-    recipient : ConversableAgent
-        The target agent.
-    context : dict[str, Any]
-        The context.
+register_function(
+    waldiez_flow,
+    caller=Assistant,
+    executor=User,
+    name="waldiez_flow",
+    description="Run a waldiez flow as tool",
+)
 
-    Returns
-    -------
-    Union[dict[str, Any], str]
-        The message to send using the last carryover.
-    """
-    carryover = context.get("carryover", "")
-    if isinstance(carryover, list):
-        carryover = carryover[-1]
-    if not isinstance(carryover, str):
-        if isinstance(carryover, list):
-            carryover = carryover[-1]
-        elif isinstance(carryover, dict):
-            carryover = carryover.get("content", "")
-    if not isinstance(carryover, str):
-        carryover = ""
-    message = sender.message_generator(sender, recipient, context)
-    if carryover:
-        message += carryover
-    return message
-
-
-__INITIAL_MSG__ = callable_message_Boss_Assistant_To_Manager
-
-__GROUP__["chats"]["Manager_group_chat"] = Manager_group_chat
+__INITIAL_MSG__ = "Use the tool that is available to you to answer the question: \"What was the last joke about?\"."
 
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
@@ -505,53 +414,23 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if Senior_Python_Engineer not in _known_agents:
-        _known_agents.append(Senior_Python_Engineer)
-    _known_agents.append(Senior_Python_Engineer)
-    for _group_member in _check_for_group_members(Senior_Python_Engineer):
+    if User not in _known_agents:
+        _known_agents.append(User)
+    _known_agents.append(User)
+    for _group_member in _check_for_group_members(User):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(Senior_Python_Engineer):
+    for _extra_agent in _check_for_extra_agents(User):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if Product_Manager not in _known_agents:
-        _known_agents.append(Product_Manager)
-    _known_agents.append(Product_Manager)
-    for _group_member in _check_for_group_members(Product_Manager):
+    if Assistant not in _known_agents:
+        _known_agents.append(Assistant)
+    _known_agents.append(Assistant)
+    for _group_member in _check_for_group_members(Assistant):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(Product_Manager):
-        if _extra_agent not in _known_agents:
-            _known_agents.append(_extra_agent)
-
-    if Code_Reviewer not in _known_agents:
-        _known_agents.append(Code_Reviewer)
-    _known_agents.append(Code_Reviewer)
-    for _group_member in _check_for_group_members(Code_Reviewer):
-        if _group_member not in _known_agents:
-            _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(Code_Reviewer):
-        if _extra_agent not in _known_agents:
-            _known_agents.append(_extra_agent)
-
-    if Boss_Assistant not in _known_agents:
-        _known_agents.append(Boss_Assistant)
-    _known_agents.append(Boss_Assistant)
-    for _group_member in _check_for_group_members(Boss_Assistant):
-        if _group_member not in _known_agents:
-            _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(Boss_Assistant):
-        if _extra_agent not in _known_agents:
-            _known_agents.append(_extra_agent)
-
-    if Manager not in _known_agents:
-        _known_agents.append(Manager)
-    _known_agents.append(Manager)
-    for _group_member in _check_for_group_members(Manager):
-        if _group_member not in _known_agents:
-            _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(Manager):
+    for _extra_agent in _check_for_extra_agents(Assistant):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -761,112 +640,106 @@ def main(
     a_pause_event.set()
     pause_event = threading.Event()
     pause_event.set()
-    with Cache.disk(cache_seed=42) as cache:
-        results = Boss_Assistant.run(
-            Manager,
-            cache=cache,
-            summary_method="last_msg",
-            clear_history=True,
-            problem="How to use spark for parallel training in FLAML? Give me sample code.",
-            message=__INITIAL_MSG__,
-        )
-        if not isinstance(results, list):
-            results = [results]  # pylint: disable=redefined-variable-type
-        got_agents = False
-        known_agents: list[ConversableAgent] = []
-        result_events: list[dict[str, Any]] = []
-        if on_event:
-            for index, result in enumerate(results):
-                result_events = []
-                for event in result.events:
-                    try:
-                        result_events.append(
-                            event.model_dump(mode="json", fallback=str)
-                        )
-                    except (
-                        BaseException
-                    ):  # pylint: disable=broad-exception-caught
-                        pass
-                    if not got_agents:
-                        known_agents = _get_known_agents()
-                        got_agents = True
-                    pause_event.clear()
-                    try:
-                        should_continue = on_event(event, known_agents)
-                        pause_event.set()
-                    except BaseException as e:
-                        stop_logging()
-                        store_error(e)
-                        raise SystemExit(
-                            "Error in event handler: " + str(e)
-                        ) from e
-                    if getattr(event, "type") == "run_completion":
-                        break
-                    if not should_continue:
-                        stop_logging()
-                        store_error()
-                        raise SystemExit("Event handler stopped processing")
-                result_cost = result.cost
-                result_context_variables = result.context_variables
-                result_dict = {
-                    "index": index,
-                    "uuid": str(result.uuid),
-                    "events": result_events,
-                    "messages": result.messages,
-                    "summary": result.summary,
-                    "cost": (
-                        result_cost.model_dump(mode="json", fallback=str)
-                        if result_cost
-                        else None
-                    ),
-                    "context_variables": (
-                        result_context_variables.model_dump(
-                            mode="json", fallback=str
-                        )
-                        if result_context_variables
-                        else None
-                    ),
-                    "last_speaker": result.last_speaker,
-                }
-                result_dicts.append(result_dict)
-        else:
-            for index, result in enumerate(results):
-                result_events = []
-                # result.process()
-                for event in result.events:
-                    try:
-                        result_events.append(
-                            event.model_dump(mode="json", fallback=str)
-                        )
-                    except (
-                        BaseException
-                    ):  # pylint: disable=broad-exception-caught
-                        pass
-                result_cost = result.cost
-                result_context_variables = result.context_variables
-                result_dict = {
-                    "index": index,
-                    "uuid": str(result.uuid),
-                    "events": result_events,
-                    "messages": result.messages,
-                    "summary": result.summary,
-                    "cost": (
-                        result_cost.model_dump(mode="json", fallback=str)
-                        if result_cost
-                        else None
-                    ),
-                    "context_variables": (
-                        result_context_variables.model_dump(
-                            mode="json", fallback=str
-                        )
-                        if result_context_variables
-                        else None
-                    ),
-                    "last_speaker": result.last_speaker,
-                }
-                result_dicts.append(result_dict)
+    if Path(".cache").is_dir():
+        shutil.rmtree(".cache", ignore_errors=True)
+    results = User.run(
+        Assistant,
+        summary_method="last_msg",
+        max_turns=2,
+        clear_history=True,
+        message=__INITIAL_MSG__,
+    )
+    if not isinstance(results, list):
+        results = [results]  # pylint: disable=redefined-variable-type
+    got_agents = False
+    known_agents: list[ConversableAgent] = []
+    result_events: list[dict[str, Any]] = []
+    if on_event:
+        for index, result in enumerate(results):
+            result_events = []
+            for event in result.events:
+                try:
+                    result_events.append(
+                        event.model_dump(mode="json", fallback=str)
+                    )
+                except BaseException:  # pylint: disable=broad-exception-caught
+                    pass
+                if not got_agents:
+                    known_agents = _get_known_agents()
+                    got_agents = True
+                pause_event.clear()
+                try:
+                    should_continue = on_event(event, known_agents)
+                    pause_event.set()
+                except BaseException as e:
+                    stop_logging()
+                    store_error(e)
+                    raise SystemExit("Error in event handler: " + str(e)) from e
+                if getattr(event, "type") == "run_completion":
+                    break
+                if not should_continue:
+                    stop_logging()
+                    store_error()
+                    raise SystemExit("Event handler stopped processing")
+            result_cost = result.cost
+            result_context_variables = result.context_variables
+            result_dict = {
+                "index": index,
+                "uuid": str(result.uuid),
+                "events": result_events,
+                "messages": result.messages,
+                "summary": result.summary,
+                "cost": (
+                    result_cost.model_dump(mode="json", fallback=str)
+                    if result_cost
+                    else None
+                ),
+                "context_variables": (
+                    result_context_variables.model_dump(
+                        mode="json", fallback=str
+                    )
+                    if result_context_variables
+                    else None
+                ),
+                "last_speaker": result.last_speaker,
+            }
+            result_dicts.append(result_dict)
+    else:
+        for index, result in enumerate(results):
+            result_events = []
+            # result.process()
+            for event in result.events:
+                try:
+                    result_events.append(
+                        event.model_dump(mode="json", fallback=str)
+                    )
+                except BaseException:  # pylint: disable=broad-exception-caught
+                    pass
+            result_cost = result.cost
+            result_context_variables = result.context_variables
+            result_dict = {
+                "index": index,
+                "uuid": str(result.uuid),
+                "events": result_events,
+                "messages": result.messages,
+                "summary": result.summary,
+                "cost": (
+                    result_cost.model_dump(mode="json", fallback=str)
+                    if result_cost
+                    else None
+                ),
+                "context_variables": (
+                    result_context_variables.model_dump(
+                        mode="json", fallback=str
+                    )
+                    if result_context_variables
+                    else None
+                ),
+                "last_speaker": result.last_speaker,
+            }
+            result_dicts.append(result_dict)
 
-        stop_logging()
+    stop_logging()
     store_results(result_dicts)
     return result_dicts
 

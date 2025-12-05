@@ -2,6 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+type PredefinedKwargType = "string" | "boolean";
+
+type PredefinedKwargConfig = {
+    label: string;
+    key: string;
+    type?: PredefinedKwargType; // default to "string" if omitted
+};
+
 export const PREDEFINED_TOOL_TYPES = [
     "wikipedia_search",
     "youtube_search",
@@ -52,7 +60,7 @@ export const PREDEFINED_TOOL_REQUIRED_ENVS: { [key: string]: { label: string; ke
     searxng_search: [],
     waldiez_flow: [],
 };
-export const PREDEFINED_TOOL_REQUIRED_KWARGS: { [key: string]: { label: string; key: string }[] } = {
+export const PREDEFINED_TOOL_REQUIRED_KWARGS: Record<string, PredefinedKwargConfig[]> = {
     wikipedia_search: [],
     youtube_search: [],
     google_search: [],
@@ -60,5 +68,8 @@ export const PREDEFINED_TOOL_REQUIRED_KWARGS: { [key: string]: { label: string; 
     duckduckgo_search: [],
     perplexity_search: [],
     searxng_search: [],
-    waldiez_flow: [{ label: "Flow path", key: "flow" }],
+    waldiez_flow: [
+        { label: "Flow path", key: "flow", type: "string" },
+        { label: "Skip installing dependencies", key: "skip_deps", type: "boolean" },
+    ],
 };

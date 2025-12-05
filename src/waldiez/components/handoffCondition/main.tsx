@@ -4,8 +4,8 @@
  */
 import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from "react";
 
+import { ExpressionBuilder } from "@waldiez/components/expressionBuilder";
 import { Select, type SingleValue } from "@waldiez/components/select";
-import { TextInput } from "@waldiez/components/textInput";
 import { TextareaInput } from "@waldiez/components/textareaInput";
 import type { ConditionType, WaldiezHandoffCondition } from "@waldiez/types";
 
@@ -24,23 +24,19 @@ const conditionTypeOptions: { value: ConditionType; label: string }[] = [
     { value: "expression_context", label: conditionTypeMapping.expression_context },
 ];
 
-// Types for condition field updates
-type ConditionFieldUpdater = {
-    field: string;
-    handler: (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
-};
+type ContextOption = { value: string; label: string };
 
 export const HandoffCondition: FC<{
     condition: WaldiezHandoffCondition;
+    contextVariables: string[];
     onDataChange: (condition: WaldiezHandoffCondition) => void;
 }> = props => {
-    const { condition, onDataChange } = props;
+    const { condition, contextVariables, onDataChange } = props;
 
-    // State
     const [currentHandoffCondition, setCurrentHandoffCondition] =
         useState<WaldiezHandoffCondition>(condition);
 
-    // Effect to sync with external condition changes
+    // Sync with external condition changes
     useEffect(() => {
         setCurrentHandoffCondition(condition);
     }, [condition]);
@@ -48,77 +44,94 @@ export const HandoffCondition: FC<{
     // Generic function to update condition fields
     const updateConditionField = useCallback(
         (field: string, value: string) => {
-            if (!currentHandoffCondition) {
-                return;
-            }
-            const updatedCondition = {
-                ...currentHandoffCondition,
-                [field]: value,
-            } as WaldiezHandoffCondition;
-            setCurrentHandoffCondition(updatedCondition);
-            onDataChange(updatedCondition);
-        },
-        [currentHandoffCondition, onDataChange],
-    );
-
-    const onConditionTypeChange = useCallback(
-        (selectedOption: SingleValue<{ value: ConditionType; label: string }>) => {
-            if (selectedOption) {
-                const selectedConditionType = selectedOption.value;
-                const newCondition = {
-                    conditionType: selectedConditionType,
+            setCurrentHandoffCondition(prev => {
+                const updated = {
+                    ...prev,
+                    [field]: value,
                 } as WaldiezHandoffCondition;
-
-                setCurrentHandoffCondition(newCondition);
-                onDataChange(newCondition);
-            }
+                onDataChange(updated);
+                return updated;
+            });
         },
         [onDataChange],
     );
 
-    // Field updaters for each condition type
-    const fieldUpdaters = useMemo<Record<ConditionType, ConditionFieldUpdater>>(
-        () => ({
-            string_llm: {
-                field: "prompt",
-                handler: e => updateConditionField("prompt", e.target.value),
-            },
-            context_str_llm: {
-                field: "context_str",
-                handler: e => updateConditionField("context_str", e.target.value),
-            },
-            string_context: {
-                field: "variable_name",
-                handler: e => updateConditionField("variable_name", e.target.value),
-            },
-            expression_context: {
-                field: "expression",
-                handler: e => updateConditionField("expression", e.target.value),
-            },
-        }),
+    const onConditionTypeChange = useCallback(
+        (selectedOption: SingleValue<{ value: ConditionType; label: string }>) => {
+            if (!selectedOption) {
+                return;
+            }
+
+            const selectedConditionType = selectedOption.value;
+            const newCondition: WaldiezHandoffCondition = {
+                conditionType: selectedConditionType,
+            } as WaldiezHandoffCondition;
+
+            setCurrentHandoffCondition(newCondition);
+            onDataChange(newCondition);
+        },
+        [onDataChange],
+    );
+
+    // Handlers for specific fields
+    const onStaticPromptChange = useCallback(
+        (e: ChangeEvent<HTMLTextAreaElement>) => {
+            updateConditionField("prompt", e.target.value);
+        },
+        [updateConditionField],
+    );
+
+    const onDynamicPromptChange = useCallback(
+        (e: ChangeEvent<HTMLTextAreaElement>) => {
+            updateConditionField("context_str", e.target.value);
+        },
+        [updateConditionField],
+    );
+
+    const contextVariableOptions = useMemo<ContextOption[]>(
+        () => contextVariables.map(v => ({ value: v, label: v })),
+        [contextVariables],
+    );
+
+    const selectedVariableOption = useMemo<SingleValue<ContextOption>>(() => {
+        if (currentHandoffCondition.conditionType !== "string_context") {
+            return null;
+        }
+        const variableName = currentHandoffCondition.variable_name;
+        return variableName
+            ? {
+                  value: variableName,
+                  label: variableName,
+              }
+            : null;
+    }, [currentHandoffCondition]);
+
+    const onVariableSelectChange = useCallback(
+        (option: SingleValue<ContextOption>) => {
+            const value = option?.value ?? "";
+            updateConditionField("variable_name", value);
+        },
         [updateConditionField],
     );
 
     // Memoized selected condition type option
     const selectedTypeOption = useMemo(
         () =>
-            currentHandoffCondition?.conditionType
+            currentHandoffCondition.conditionType
                 ? {
                       label: conditionTypeMapping[currentHandoffCondition.conditionType],
                       value: currentHandoffCondition.conditionType,
                   }
                 : null,
-        [currentHandoffCondition?.conditionType],
+        [currentHandoffCondition.conditionType],
     );
 
     // Helper function to render the appropriate input field based on condition type
     const renderConditionInput = useCallback(() => {
-        if (!currentHandoffCondition?.conditionType) {
+        const conditionType = currentHandoffCondition.conditionType;
+        if (!conditionType) {
             return null;
         }
-
-        const conditionType = currentHandoffCondition.conditionType;
-        const updater = fieldUpdaters[conditionType];
 
         switch (conditionType) {
             case "string_llm":
@@ -131,11 +144,12 @@ export const HandoffCondition: FC<{
                             title="LLM Prompt"
                             placeholder="Enter the LLM prompt"
                             value={currentHandoffCondition.prompt || ""}
-                            onChange={updater.handler}
+                            onChange={onStaticPromptChange}
                             data-testid="llm-prompt-input"
                         />
                     </div>
                 );
+
             case "context_str_llm":
                 return (
                     <div className="margin-top-10">
@@ -146,44 +160,60 @@ export const HandoffCondition: FC<{
                             title="Prompt"
                             placeholder="Enter the prompt to evaluate"
                             value={currentHandoffCondition.context_str || ""}
-                            onChange={updater.handler}
+                            onChange={onDynamicPromptChange}
                             data-testid="context-llm-prompt-input"
                         />
                     </div>
                 );
+
             case "string_context":
                 return (
                     <div className="margin-top-10">
-                        <TextInput
-                            name="variable-name"
-                            label="Variable Name:"
-                            className="margin-top-5"
-                            placeholder="Enter the variable name to check"
-                            value={currentHandoffCondition.variable_name || ""}
-                            onChange={updater.handler}
-                            dataTestId="variable-name-input"
-                        />
+                        <label htmlFor="variable-name-select">Variable Name:</label>
+                        <div className="margin-top-5" />
+                        {contextVariableOptions.length > 0 ? (
+                            <Select
+                                options={contextVariableOptions}
+                                value={selectedVariableOption}
+                                onChange={onVariableSelectChange}
+                                className="flex-1"
+                                isClearable
+                                placeholder="Select a context variable"
+                                inputId="variable-name-select"
+                            />
+                        ) : (
+                            <div className="info">
+                                No context variables defined yet. Create context variables first to use this
+                                condition.
+                            </div>
+                        )}
                     </div>
                 );
+
             case "expression_context":
                 return (
-                    <div className="margin-top-10">
-                        <label>Expression:</label>
-                        <TextareaInput
-                            rows={2}
-                            className="margin-top-5"
-                            title="Expression"
-                            placeholder="Enter the expression to evaluate"
-                            value={currentHandoffCondition.expression || ""}
-                            onChange={updater.handler}
-                            data-testid="expression-input"
-                        />
-                    </div>
+                    <ExpressionBuilder
+                        value={currentHandoffCondition.expression || ""}
+                        onChange={expr => updateConditionField("expression", expr)}
+                        contextVariables={contextVariables}
+                        label="Expression"
+                        placeholder="Enter an expression, e.g. ${orders} > 3"
+                    />
                 );
+
             default:
                 return null;
         }
-    }, [currentHandoffCondition, fieldUpdaters]);
+    }, [
+        contextVariableOptions,
+        contextVariables,
+        currentHandoffCondition,
+        onDynamicPromptChange,
+        onStaticPromptChange,
+        onVariableSelectChange,
+        selectedVariableOption,
+        updateConditionField,
+    ]);
 
     return (
         <div className="flex flex-col">
@@ -222,8 +252,8 @@ export const HandoffCondition: FC<{
                         <ul>
                             <li>
                                 <code>
-                                    not ${"{"}logged_in{"}"} and ${"{"}is_admin{"}"} or ${"{"}guest_checkout
-                                    {"}"}
+                                    not ${"{"}logged_in{"}"} and ${"{"}is_admin{"}"} or ${"{"}
+                                    guest_checkout{"}"}
                                 </code>
                             </li>
                             <li>

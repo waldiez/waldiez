@@ -300,7 +300,7 @@ Writer = AssistantAgent(
 __AGENTS__["Writer"] = Writer
 
 
-def nested_chat_message_Writer_to_Ethics_Reviewer(
+def nested_chat_message_Writer_To_Ethics_Reviewer(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -311,7 +311,7 @@ def nested_chat_message_Writer_to_Ethics_Reviewer(
         \n\n {recipient.chat_messages_for_summary(sender)[-1]['content']}"""
 
 
-def nested_chat_message_Writer_to_Legal_Reviewer(
+def nested_chat_message_Writer_To_Legal_Reviewer(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -322,7 +322,7 @@ def nested_chat_message_Writer_to_Legal_Reviewer(
         \n\n {recipient.chat_messages_for_summary(sender)[-1]['content']}"""
 
 
-def nested_chat_message_Writer_to_SEO_reviewer(
+def nested_chat_message_Writer_To_SEO_reviewer(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -340,7 +340,7 @@ Critic_chat_queue: list[dict[str, Any]] = [
         "clear_history": True,
         "chat_id": 0,
         "recipient": Ethics_Reviewer,
-        "message": nested_chat_message_Writer_to_Ethics_Reviewer,
+        "message": nested_chat_message_Writer_To_Ethics_Reviewer,
     },
     {
         "summary_method": "last_msg",
@@ -348,7 +348,7 @@ Critic_chat_queue: list[dict[str, Any]] = [
         "clear_history": True,
         "chat_id": 1,
         "recipient": Legal_Reviewer,
-        "message": nested_chat_message_Writer_to_Legal_Reviewer,
+        "message": nested_chat_message_Writer_To_Legal_Reviewer,
     },
     {
         "summary_method": "last_msg",
@@ -356,7 +356,7 @@ Critic_chat_queue: list[dict[str, Any]] = [
         "clear_history": True,
         "chat_id": 2,
         "recipient": SEO_reviewer,
-        "message": nested_chat_message_Writer_to_SEO_reviewer,
+        "message": nested_chat_message_Writer_To_SEO_reviewer,
     },
     {
         "summary_method": "last_msg",
@@ -430,7 +430,10 @@ def stop_logging() -> None:
     """Stop logging."""
     runtime_logging.stop()
     if not os.path.exists("logs"):
-        os.makedirs("logs")
+        try:
+            os.makedirs("logs", exist_ok=True)
+        except BaseException:
+            pass
     for table in [
         "chat_completions",
         "agents",
@@ -811,7 +814,7 @@ def main(
     else:
         for index, result in enumerate(results):
             result_events = []
-            result.process()
+            # result.process()
             for event in result.events:
                 try:
                     result_events.append(

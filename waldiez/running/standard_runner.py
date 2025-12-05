@@ -77,6 +77,12 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow."""
+        WaldiezBaseRunner._skip_deps = (
+            str(
+                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
+            ).lower()
+            == "true"
+        )
         # pylint: disable=import-outside-toplevel
         from autogen.io import IOStream  # type: ignore
 
@@ -201,6 +207,12 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow asynchronously."""
+        WaldiezBaseRunner._skip_deps = (
+            str(
+                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
+            ).lower()
+            == "true"
+        )
 
         # fmt: off
         async def _execute_workflow() -> list[dict[str, Any]]:

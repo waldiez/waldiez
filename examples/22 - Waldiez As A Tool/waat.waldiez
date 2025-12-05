@@ -1,0 +1,317 @@
+{
+  "id": "wf-AbhhlPVVBqhScZgzPOE06",
+  "type": "flow",
+  "version": "0.6.7",
+  "storageId": "wf-AbhhlPVVBqhScZgzPOE06",
+  "name": "Waldiez Flow As Tool",
+  "description": "Use a Waldiez Flow as another Waldiez Flow's tool.",
+  "tags": [],
+  "requirements": [],
+  "createdAt": "2025-12-05T16:44:29.743Z",
+  "updatedAt": "2025-12-05T16:59:42.267Z",
+  "data": {
+    "nodes": [
+      {
+        "id": "wm-1764953267829cVxx1KsYEROzvdQwe63iS",
+        "type": "model",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 100
+        },
+        "selected": false,
+        "hidden": true
+      },
+      {
+        "id": "wt-17649530944958TyMfYXqnHfF0h07BWk2p",
+        "type": "tool",
+        "position": {
+          "x": 0,
+          "y": 10
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "selected": false,
+        "hidden": true
+      },
+      {
+        "id": "wa-1764953073383j7AXUaZgRgtG8ZidaM5VD",
+        "type": "agent",
+        "style": {
+          "width": 130
+        },
+        "position": {
+          "x": 182,
+          "y": 237
+        },
+        "measured": {
+          "width": 130,
+          "height": 120
+        },
+        "hidden": false,
+        "selected": false
+      },
+      {
+        "id": "wa-1764953076049YhvTiAEIf-V5fzfV6pnvo",
+        "type": "agent",
+        "style": {
+          "width": 180
+        },
+        "position": {
+          "x": 618,
+          "y": 263
+        },
+        "measured": {
+          "width": 180,
+          "height": 120
+        },
+        "hidden": false,
+        "selected": false
+      }
+    ],
+    "edges": [
+      {
+        "id": "wc-1764953078462hxEuVqzEJ5dj-KNzIyx5k",
+        "source": "wa-1764953073383j7AXUaZgRgtG8ZidaM5VD",
+        "target": "wa-1764953076049YhvTiAEIf-V5fzfV6pnvo",
+        "type": "chat",
+        "hidden": false,
+        "style": {
+          "stroke": "#bc76f5",
+          "strokeWidth": 1
+        },
+        "animated": false,
+        "selected": false,
+        "markerEnd": {
+          "type": "arrowclosed",
+          "color": "#bc76f5",
+          "width": 10,
+          "height": 10
+        },
+        "sourceHandle": "agent-handle-right-source-wa-1764953073383j7AXUaZgRgtG8ZidaM5VD",
+        "targetHandle": "agent-handle-left-target-wa-1764953076049YhvTiAEIf-V5fzfV6pnvo"
+      }
+    ],
+    "viewport": {
+      "x": 124.57641262388762,
+      "y": -77.82219508754599,
+      "zoom": 0.9711773118841176
+    },
+    "agents": {
+      "groupManagerAgents": [],
+      "userProxyAgents": [
+        {
+          "type": "agent",
+          "name": "User",
+          "description": "A new User agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-12-05T16:44:33.383Z",
+          "updatedAt": "2025-12-05T16:44:33.383Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "ALWAYS",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [],
+            "tools": [],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null
+          },
+          "id": "wa-1764953073383j7AXUaZgRgtG8ZidaM5VD",
+          "agentType": "user_proxy"
+        }
+      ],
+      "assistantAgents": [
+        {
+          "type": "agent",
+          "name": "Assistant",
+          "description": "A new Assistant agent",
+          "tags": [],
+          "requirements": [],
+          "createdAt": "2025-12-05T16:44:36.049Z",
+          "updatedAt": "2025-12-05T16:44:36.049Z",
+          "data": {
+            "systemMessage": null,
+            "humanInputMode": "NEVER",
+            "codeExecutionConfig": false,
+            "agentDefaultAutoReply": null,
+            "maxConsecutiveAutoReply": null,
+            "termination": {
+              "type": "none",
+              "keywords": [],
+              "criterion": null,
+              "methodContent": null
+            },
+            "modelIds": [
+              "wm-1764953267829cVxx1KsYEROzvdQwe63iS"
+            ],
+            "tools": [
+              {
+                "id": "wt-17649530944958TyMfYXqnHfF0h07BWk2p",
+                "executorId": "wa-1764953073383j7AXUaZgRgtG8ZidaM5VD"
+              }
+            ],
+            "nestedChats": [
+              {
+                "messages": [],
+                "triggeredBy": [],
+                "condition": {
+                  "conditionType": "string_llm",
+                  "prompt": ""
+                },
+                "available": {
+                  "type": "none",
+                  "value": ""
+                }
+              }
+            ],
+            "handoffs": [],
+            "contextVariables": {},
+            "updateAgentStateBeforeReply": [],
+            "afterWork": null,
+            "isMultimodal": false
+          },
+          "id": "wa-1764953076049YhvTiAEIf-V5fzfV6pnvo",
+          "agentType": "assistant"
+        }
+      ],
+      "ragUserProxyAgents": [],
+      "reasoningAgents": [],
+      "captainAgents": [],
+      "docAgents": []
+    },
+    "models": [
+      {
+        "id": "wm-1764953267829cVxx1KsYEROzvdQwe63iS",
+        "type": "model",
+        "name": "gpt-5-mini",
+        "description": "A new model",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-12-05T16:47:47.829Z",
+        "updatedAt": "2025-12-05T16:47:53.302Z",
+        "data": {
+          "apiKey": "REPLACE_ME",
+          "apiType": "openai",
+          "apiVersion": null,
+          "baseUrl": null,
+          "temperature": null,
+          "topP": null,
+          "maxTokens": null,
+          "aws": {
+            "region": null,
+            "accessKey": null,
+            "secretKey": null,
+            "sessionToken": null,
+            "profileName": null
+          },
+          "extras": {},
+          "defaultHeaders": {},
+          "price": {
+            "promptPricePer1k": null,
+            "completionTokenPricePer1k": null
+          }
+        }
+      }
+    ],
+    "tools": [
+      {
+        "id": "wt-17649530944958TyMfYXqnHfF0h07BWk2p",
+        "type": "tool",
+        "name": "waldiez_flow",
+        "description": "Run a waldiez flow as tool",
+        "tags": [],
+        "requirements": [],
+        "createdAt": "2025-12-05T16:44:54.495Z",
+        "updatedAt": "2025-12-05T16:59:37.367Z",
+        "data": {
+          "content": "",
+          "toolType": "predefined",
+          "secrets": {},
+          "kwargs": {
+            "flow": "https://raw.githubusercontent.com/waldiez/waldiez/refs/heads/main/examples/01%20-%20Standup%20Comedians/Standup%20Comedians%202.waldiez",
+            "skip_deps": "true"
+          }
+        }
+      }
+    ],
+    "chats": [
+      {
+        "id": "wc-1764953078462hxEuVqzEJ5dj-KNzIyx5k",
+        "type": "chat",
+        "source": "wa-1764953073383j7AXUaZgRgtG8ZidaM5VD",
+        "target": "wa-1764953076049YhvTiAEIf-V5fzfV6pnvo",
+        "data": {
+          "sourceType": "user_proxy",
+          "targetType": "assistant",
+          "name": "User => Assistant",
+          "order": 0,
+          "description": "User to Assistant",
+          "position": 1,
+          "clearHistory": true,
+          "maxTurns": 2,
+          "message": {
+            "type": "string",
+            "content": "Use the tool that is available to you to answer the question: \"What was the last joke about?\".",
+            "context": {},
+            "useCarryover": false
+          },
+          "summary": {
+            "method": "lastMsg",
+            "prompt": "",
+            "args": {},
+            "content": ""
+          },
+          "nestedChat": {
+            "message": null,
+            "reply": null
+          },
+          "prerequisites": [],
+          "condition": {
+            "conditionType": "string_llm",
+            "prompt": ""
+          },
+          "available": {
+            "type": "none",
+            "value": ""
+          },
+          "afterWork": null,
+          "silent": false,
+          "realSource": null,
+          "realTarget": null
+        }
+      }
+    ],
+    "isAsync": false,
+    "silent": false
+  }
+}

@@ -2,20 +2,31 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import selectEvent from "react-select-event";
 
 import { HandoffCondition } from "@waldiez/components/handoffCondition";
 import type { WaldiezHandoffCondition } from "@waldiez/models/types";
 
-const setup = (dataOverrides: WaldiezHandoffCondition, onDataChange = vi.fn()) => {
-    render(<HandoffCondition condition={dataOverrides} onDataChange={onDataChange} />);
+const setup = (
+    dataOverrides: WaldiezHandoffCondition,
+    onDataChange = vi.fn(),
+    contextVariables: string[] = [],
+) => {
+    render(
+        <HandoffCondition
+            condition={dataOverrides}
+            contextVariables={contextVariables}
+            onDataChange={onDataChange}
+        />,
+    );
+    return { onDataChange };
 };
 
 describe("HandoffCondition", () => {
-    it("changes condition type to 'expression_context'", async () => {
+    it("changes condition type to 'expression_context' and shows expression builder", async () => {
         const mock = vi.fn();
         setup(
             {
@@ -29,7 +40,9 @@ describe("HandoffCondition", () => {
         selectEvent.openMenu(select);
         await selectEvent.select(select, "Expression check");
 
-        expect(screen.getByTestId("expression-input")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByTestId("toggle-free-form-expression-mode")).toBeInTheDocument();
+        });
     });
 
     it("updates LLM prompt", () => {
@@ -54,33 +67,53 @@ describe("HandoffCondition", () => {
         });
     });
 
-    it("updates variable name", () => {
+    it("uses context variable <Select> in string_context mode and updates variable_name", async () => {
         const mock = vi.fn();
-        setup({ conditionType: "string_context", variable_name: "" }, mock);
-        const input = screen.getByTestId("variable-name-input");
-        fireEvent.change(input, { target: { value: "user_logged_in" } });
-        expect(mock).toHaveBeenCalledWith({
-            conditionType: "string_context",
-            variable_name: "user_logged_in",
+        setup(
+            {
+                conditionType: "string_context",
+                variable_name: "",
+            },
+            mock,
+            ["user_logged_in", "user_is_admin"],
+        );
+
+        const variableSelect = screen.getByLabelText("Variable Name:");
+        selectEvent.openMenu(variableSelect);
+        await selectEvent.select(variableSelect, "user_logged_in");
+
+        await waitFor(() => {
+            expect(mock).toHaveBeenLastCalledWith({
+                conditionType: "string_context",
+                variable_name: "user_logged_in",
+            });
         });
     });
 
-    it("updates expression", () => {
+    it("updates expression via advanced mode textarea in expression_context", () => {
         const mock = vi.fn();
-        setup({ conditionType: "expression_context", expression: "" }, mock);
-        const input = screen.getByTestId("expression-input");
-        fireEvent.change(input, { target: { value: "len(${orders}) > 0" } });
-        expect(mock).toHaveBeenCalledWith({
+        setup(
+            {
+                conditionType: "expression_context",
+                expression: "",
+            },
+            mock,
+            ["orders"],
+        );
+
+        // Switch ExpressionBuilder to advanced mode
+        const toggle = screen.getByTestId("toggle-free-form-expression-mode") as HTMLInputElement;
+        fireEvent.click(toggle);
+        expect(toggle).toBeChecked();
+
+        const textarea = screen.getByTestId("expression-input");
+        fireEvent.change(textarea, {
+            target: { value: "len(${orders}) > 0" },
+        });
+
+        expect(mock).toHaveBeenLastCalledWith({
             conditionType: "expression_context",
             expression: "len(${orders}) > 0",
         });
-    });
-
-    it("clears selected condition", async () => {
-        const mock = vi.fn();
-        setup({ conditionType: "string_llm", prompt: "..." }, mock);
-        const select = screen.getByRole("combobox");
-        await selectEvent.clearFirst(select);
-        expect(mock).not.toHaveBeenCalled();
     });
 });

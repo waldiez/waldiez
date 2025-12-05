@@ -386,7 +386,10 @@ def stop_logging() -> None:
     """Stop logging."""
     runtime_logging.stop()
     if not os.path.exists("logs"):
-        os.makedirs("logs")
+        try:
+            os.makedirs("logs", exist_ok=True)
+        except BaseException:
+            pass
     for table in [
         "chat_completions",
         "agents",
@@ -759,7 +762,7 @@ def main(
         else:
             for index, result in enumerate(results):
                 result_events = []
-                result.process()
+                # result.process()
                 for event in result.events:
                     try:
                         result_events.append(

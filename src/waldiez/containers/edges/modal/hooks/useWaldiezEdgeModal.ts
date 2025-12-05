@@ -24,6 +24,7 @@ export const useWaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
     const updateEdgeType = useWaldiez(s => s.updateEdgeType);
     const getEdgeById = useWaldiez(s => s.getEdgeById);
     const deleteEdge = useWaldiez(s => s.deleteEdge);
+    const getGroupManager = useWaldiez(s => s.getAgentById);
     const flowId = useWaldiez(s => s.flowId);
     const { isDark } = useWaldiezTheme();
 
@@ -33,6 +34,24 @@ export const useWaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
     const sourceAgent = useMemo(() => (edge ? getEdgeSourceAgent(edge) : null), [edge, getEdgeSourceAgent]);
 
     const targetAgent = useMemo(() => (edge ? getEdgeTargetAgent(edge) : null), [edge, getEdgeTargetAgent]);
+
+    const groupManager = useMemo(() => {
+        if (sourceAgent?.parentId) {
+            return getGroupManager(sourceAgent.parentId);
+        }
+        if (targetAgent?.parentId) {
+            return getGroupManager(targetAgent.parentId);
+        }
+        return null;
+    }, [getGroupManager, sourceAgent, targetAgent]);
+
+    const contextVariables = useMemo(() => {
+        if (groupManager) {
+            console.debug(groupManager.data.contextVariables);
+            return Object.keys(groupManager.data.contextVariables || {});
+        }
+        return [];
+    }, [groupManager]);
 
     // Local state
     const [edgeType, setEdgeType] = useState<WaldiezEdgeType>(edge?.type ?? "chat");
@@ -134,6 +153,7 @@ export const useWaldiezEdgeModal = (props: WaldiezEdgeModalProps) => {
         isDark,
         sourceAgent,
         targetAgent,
+        contextVariables,
         onDataChange,
         onTypeChange,
         onCancel,

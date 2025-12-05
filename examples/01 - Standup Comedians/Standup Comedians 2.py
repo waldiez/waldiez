@@ -118,7 +118,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "standup_comedians_2_api_keys.py"
+# "Standup_comedians_2_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -145,10 +145,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("standup_comedians_2")
+__MODELS_MODULE__ = load_api_key_module("Standup_comedians_2")
 
 
-def get_standup_comedians_2_model_api_key(model_name: str) -> str:
+def get_Standup_comedians_2_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -160,7 +160,7 @@ def get_standup_comedians_2_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_standup_comedians_2_model_api_key(model_name)
+    return __MODELS_MODULE__.get_Standup_comedians_2_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -180,13 +180,13 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 gpt_3_5_turbo_llm_config: dict[str, Any] = {
     "model": "gpt-3.5-turbo",
     "api_type": "openai",
-    "api_key": get_standup_comedians_2_model_api_key("gpt_3_5_turbo"),
+    "api_key": get_Standup_comedians_2_model_api_key("gpt_3_5_turbo"),
 }
 
 # Agents
 
-cathy = AssistantAgent(
-    name="cathy",
+Cathy = AssistantAgent(
+    name="Cathy",
     description="Cathy is a standup comedian.",
     system_message="Your name is Cathy and you are a standup comedian.",
     human_input_mode="NEVER",
@@ -202,10 +202,10 @@ cathy = AssistantAgent(
     ),
 )
 
-__AGENTS__["cathy"] = cathy
+__AGENTS__["Cathy"] = Cathy
 
-joe = AssistantAgent(
-    name="joe",
+Joe = AssistantAgent(
+    name="Joe",
     description="Joe is a standup comedian.",
     system_message="Your name is Joe and you are a standup comedian. Start the next joke from the previous punchline.",
     human_input_mode="NEVER",
@@ -221,7 +221,7 @@ joe = AssistantAgent(
     ),
 )
 
-__AGENTS__["joe"] = joe
+__AGENTS__["Joe"] = Joe
 
 __INITIAL_MSG__ = "Hi Cathy, I'm Joe. Let's keep the jokes rolling!"
 
@@ -278,7 +278,10 @@ def stop_logging() -> None:
     """Stop logging."""
     runtime_logging.stop()
     if not os.path.exists("logs"):
-        os.makedirs("logs")
+        try:
+            os.makedirs("logs", exist_ok=True)
+        except BaseException:
+            pass
     for table in [
         "chat_completions",
         "agents",
@@ -326,23 +329,23 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if joe not in _known_agents:
-        _known_agents.append(joe)
-    _known_agents.append(joe)
-    for _group_member in _check_for_group_members(joe):
+    if Joe not in _known_agents:
+        _known_agents.append(Joe)
+    _known_agents.append(Joe)
+    for _group_member in _check_for_group_members(Joe):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(joe):
+    for _extra_agent in _check_for_extra_agents(Joe):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if cathy not in _known_agents:
-        _known_agents.append(cathy)
-    _known_agents.append(cathy)
-    for _group_member in _check_for_group_members(cathy):
+    if Cathy not in _known_agents:
+        _known_agents.append(Cathy)
+    _known_agents.append(Cathy)
+    for _group_member in _check_for_group_members(Cathy):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(cathy):
+    for _extra_agent in _check_for_extra_agents(Cathy):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -554,8 +557,8 @@ def main(
     pause_event.set()
     if Path(".cache").is_dir():
         shutil.rmtree(".cache", ignore_errors=True)
-    results = joe.run(
-        cathy,
+    results = Joe.run(
+        Cathy,
         summary_method="last_msg",
         max_turns=3,
         clear_history=True,
@@ -619,7 +622,7 @@ def main(
     else:
         for index, result in enumerate(results):
             result_events = []
-            result.process()
+            # result.process()
             for event in result.events:
                 try:
                     result_events.append(

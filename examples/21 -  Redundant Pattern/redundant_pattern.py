@@ -412,7 +412,7 @@ taskmaster_agent = ConversableAgent(
 __AGENTS__["taskmaster_agent"] = taskmaster_agent
 
 
-def nested_chat_message_taskmaster_agen_to_agent_a(
+def nested_chat_message_taskmaster_agen_To_agent_a(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -424,7 +424,7 @@ def nested_chat_message_taskmaster_agen_to_agent_a(
     )
 
 
-def nested_chat_message_taskmaster_agen_to_agent_b(
+def nested_chat_message_taskmaster_agen_To_agent_b(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -436,7 +436,7 @@ def nested_chat_message_taskmaster_agen_to_agent_b(
     )
 
 
-def nested_chat_message_taskmaster_agen_to_agent_c(
+def nested_chat_message_taskmaster_agen_To_agent_c(
     recipient: ConversableAgent,
     messages: list[dict[str, Any]],
     sender: ConversableAgent,
@@ -454,21 +454,21 @@ taskmaster_agent_handoff_nested_chat_queue: list[dict[str, Any]] = [
         "clear_history": True,
         "chat_id": 0,
         "recipient": agent_a,
-        "message": nested_chat_message_taskmaster_agen_to_agent_a,
+        "message": nested_chat_message_taskmaster_agen_To_agent_a,
     },
     {
         "max_turns": 1,
         "clear_history": True,
         "chat_id": 1,
         "recipient": agent_b,
-        "message": nested_chat_message_taskmaster_agen_to_agent_b,
+        "message": nested_chat_message_taskmaster_agen_To_agent_b,
     },
     {
         "max_turns": 1,
         "clear_history": True,
         "chat_id": 2,
         "recipient": agent_c,
-        "message": nested_chat_message_taskmaster_agen_to_agent_c,
+        "message": nested_chat_message_taskmaster_agen_To_agent_c,
     },
 ]
 
@@ -598,7 +598,10 @@ def stop_logging() -> None:
     """Stop logging."""
     runtime_logging.stop()
     if not os.path.exists("logs"):
-        os.makedirs("logs")
+        try:
+            os.makedirs("logs", exist_ok=True)
+        except BaseException:
+            pass
     for table in [
         "chat_completions",
         "agents",
@@ -978,7 +981,7 @@ def main(
     else:
         for index, result in enumerate(results):
             result_events = []
-            result.process()
+            # result.process()
             for event in result.events:
                 try:
                     result_events.append(

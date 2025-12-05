@@ -4,7 +4,14 @@
  */
 import { type ChangeEvent, type JSX, memo, useCallback, useMemo } from "react";
 
-import { CodeEditor, Select, type SingleValue, TextInput, TextareaInput } from "@waldiez/components";
+import {
+    CheckboxInput,
+    CodeEditor,
+    Select,
+    type SingleValue,
+    TextInput,
+    TextareaInput,
+} from "@waldiez/components";
 import { useToolNodeModal } from "@waldiez/containers/nodes/tool/modal/hooks";
 import { type WaldiezNodeToolModalProps } from "@waldiez/containers/nodes/tool/modal/types";
 import { PREDEFINED_TOOL_INSTRUCTIONS, TOOL_TYPE_OPTIONS } from "@waldiez/containers/nodes/tool/utils";
@@ -80,8 +87,7 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
     );
 
     const onPredefinedToolArgChange = useCallback(
-        (kwarg: string, event: ChangeEvent<HTMLInputElement>) => {
-            const value = event.target.value;
+        (kwarg: string, value: string) => {
             onSetToolKwarg(kwarg, value);
         },
         [onSetToolKwarg],
@@ -170,20 +176,40 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
                 PREDEFINED_TOOL_REQUIRED_KWARGS[data.label] &&
                 PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]!.length > 0 && (
                     <div className="margin-top-10">
-                        {PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]?.map((kwarg, index) => (
-                            <div key={index} className="margin-bottom-5">
-                                <TextInput
-                                    name={kwarg.label}
-                                    label={`${kwarg.label}:`}
-                                    dataTestId={`env-var-input-${index}-${kwarg.key}`}
-                                    value={(data.kwargs ? (data.kwargs[kwarg.key] as string) : "") || ""}
-                                    onChange={onPredefinedToolArgChange.bind(null, kwarg.key)}
-                                    className="margin-top-10"
-                                    isPassword={false}
-                                    placeholder={`Enter the ${kwarg.label}`}
-                                />
-                            </div>
-                        ))}
+                        {PREDEFINED_TOOL_REQUIRED_KWARGS[data.label]!.map((kwarg, index) => {
+                            const type = kwarg.type ?? "string";
+                            const rawValue = data.kwargs ? data.kwargs[kwarg.key] : undefined;
+
+                            if (type === "boolean") {
+                                const checked = String(rawValue).toLowerCase() === "true";
+                                return (
+                                    <div key={index} className="margin-bottom-5">
+                                        <CheckboxInput
+                                            id={`env-var-input-${index}-${kwarg.key}`}
+                                            isChecked={checked}
+                                            onCheckedChange={checked =>
+                                                onPredefinedToolArgChange(kwarg.key, String(checked))
+                                            }
+                                            label={kwarg.label}
+                                        />
+                                    </div>
+                                );
+                            }
+                            return (
+                                <div key={index} className="margin-bottom-5">
+                                    <TextInput
+                                        name={kwarg.label}
+                                        label={`${kwarg.label}:`}
+                                        dataTestId={`env-var-input-${index}-${kwarg.key}`}
+                                        value={(rawValue as string) || ""}
+                                        onChange={e => onPredefinedToolArgChange(kwarg.key, e.target.value)}
+                                        className="margin-top-10"
+                                        isPassword={false}
+                                        placeholder={`Enter the ${kwarg.label}`}
+                                    />
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
             {data.toolType === "predefined" &&

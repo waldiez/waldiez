@@ -52,6 +52,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     _checkpoint: WaldiezCheckpoint | None
     _output_dir: Path
     _logger: WaldiezLogger
+    _skip_deps: bool
 
     def __init__(
         self,
@@ -112,6 +113,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             )
         self._output_dir = WaldiezBaseRunner._init_output_dir(output_path)
         WaldiezBaseRunner._check_dot_env(self._output_dir)
+        WaldiezBaseRunner._skip_deps = (
+            str(kwargs.get("skip_deps", "false")).lower() == "true"
+        )
 
     @staticmethod
     def _init_output_dir(output_path: str | Path | None) -> Path:
@@ -513,7 +517,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             output_file=output_file,
             uploads_root=uploads_root_path,
         )
-        self.install_requirements()
+        if not WaldiezBaseRunner._skip_deps:
+            self.install_requirements()
         return temp_dir, output_file, uploads_root_path
 
     # pylint: disable=too-many-locals,unused-argument
@@ -563,6 +568,12 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         StopRunningException
             If the run is stopped by the user.
         """
+        WaldiezBaseRunner._skip_deps = (
+            str(
+                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
+            ).lower()
+            == "true"
+        )
         if dot_env is not None:
             resolved = Path(dot_env).resolve()
             if resolved.is_file():
@@ -658,7 +669,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             output_file=output_file,
             uploads_root=uploads_root_path,
         )
-        await self.a_install_requirements()
+        if not WaldiezBaseRunner._skip_deps:
+            await self.a_install_requirements()
         return temp_dir, output_file, uploads_root_path
 
     @override
@@ -707,6 +719,12 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         StopRunningException
             If the run is stopped by the user.
         """
+        WaldiezBaseRunner._skip_deps = (
+            str(
+                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
+            ).lower()
+            == "true"
+        )
         if dot_env is not None:
             resolved = Path(dot_env).resolve()
             if resolved.is_file():

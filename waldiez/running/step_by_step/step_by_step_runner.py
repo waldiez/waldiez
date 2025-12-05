@@ -592,6 +592,12 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow with step-by-step debugging."""
+        WaldiezBaseRunner._skip_deps = (
+            str(
+                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
+            ).lower()
+            == "true"
+        )
         # pylint: disable=import-outside-toplevel
         from autogen.io import IOStream  # type: ignore
 
@@ -711,6 +717,12 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow with step-by-step debugging (async)."""
+        WaldiezBaseRunner._skip_deps = (
+            str(
+                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
+            ).lower()
+            == "true"
+        )
 
         async def _execute_workflow() -> list[dict[str, Any]]:
             # pylint: disable=import-outside-toplevel

@@ -5,8 +5,8 @@
 import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from "react";
 
 import { CheckboxInput } from "@waldiez/components/checkboxInput";
+import { ExpressionBuilder } from "@waldiez/components/expressionBuilder";
 import { Select, type SingleValue } from "@waldiez/components/select";
-import { TextareaInput } from "@waldiez/components/textareaInput";
 import { type WaldiezHandoffAvailability } from "@waldiez/types";
 
 const availabilityTypeOptions = [
@@ -16,9 +16,10 @@ const availabilityTypeOptions = [
 
 export const HandoffAvailability: FC<{
     available: WaldiezHandoffAvailability;
+    contextVariables: string[];
     onDataChange: (condition: WaldiezHandoffAvailability) => void;
 }> = props => {
-    const { available, onDataChange } = props;
+    const { available, contextVariables, onDataChange } = props;
 
     // State
     const [currentAvailability, setCurrentAvailability] = useState<WaldiezHandoffAvailability>(available);
@@ -34,6 +35,22 @@ export const HandoffAvailability: FC<{
     const selectedTypeOption = useMemo(
         () => availabilityTypeOptions.find(option => option.value === currentAvailability.type),
         [currentAvailability.type],
+    );
+
+    const contextVariableOptions = useMemo(
+        () => contextVariables.map(v => ({ value: v, label: v })),
+        [contextVariables],
+    );
+
+    const selectedVariableOption = useMemo(
+        () =>
+            currentAvailability.type === "string" && currentAvailability.value
+                ? {
+                      value: currentAvailability.value,
+                      label: currentAvailability.value,
+                  }
+                : null,
+        [currentAvailability.type, currentAvailability.value],
     );
 
     // Handler for availability type change
@@ -79,36 +96,47 @@ export const HandoffAvailability: FC<{
     );
     // Render expression input
     const renderExpressionInput = () => (
-        <div className="flex flex-col margin-top-10">
-            <label className="hidden" htmlFor="expression-input">
-                Expression
-            </label>
-            <TextareaInput
-                rows={2}
-                className="margin-top-5"
-                title="Expression"
-                placeholder="Enter the expression to evaluate"
-                value={currentAvailability.value || ""}
-                onChange={onAvailabilityValueChange}
-                data-testid="expression-input"
-            />
-        </div>
+        <ExpressionBuilder
+            value={currentAvailability.value || ""}
+            onChange={expr => {
+                const updatedAvailability: WaldiezHandoffAvailability = {
+                    ...currentAvailability,
+                    value: expr,
+                };
+                setCurrentAvailability(updatedAvailability);
+                onDataChange(updatedAvailability);
+            }}
+            contextVariables={contextVariables}
+            label="Expression"
+            placeholder="Enter the expression to evaluate, e.g. ${is_logged_in} and not ${is_banned}"
+        />
     );
     // Render string input
     const renderStringInput = () => (
         <div className="flex flex-col margin-top-10">
-            <label className="hidden" htmlFor="string-input">
+            <label className="hidden" htmlFor="availability-variable-select">
                 Variable Name
             </label>
-            <input
-                type="text"
-                id="string-input"
-                value={currentAvailability.value}
-                onChange={onAvailabilityValueChange}
-                className="flex-1"
-                placeholder="Enter variable name"
-                data-testid="string-input"
-            />
+            {contextVariableOptions.length > 0 ? (
+                <Select
+                    options={contextVariableOptions}
+                    value={selectedVariableOption}
+                    onChange={option =>
+                        onAvailabilityValueChange({
+                            target: { value: option?.value ?? "" },
+                        } as any)
+                    }
+                    className="flex-1"
+                    placeholder="Select variable name"
+                    inputId="availability-variable-select"
+                    isClearable
+                    data-testid="string-select"
+                />
+            ) : (
+                <div className="info">
+                    No context variables defined yet. Create context variables first to use this check.
+                </div>
+            )}
         </div>
     );
     return (
@@ -140,7 +168,7 @@ export const HandoffAvailability: FC<{
                     aria-label="Enable availability check"
                 />
             </div>
-            {available.type !== "none" && (
+            {currentAvailability.type !== "none" && (
                 <div className="flex flex-col margin-top-10">
                     <label className="hidden" htmlFor="select-availability-type">
                         Availability Type

@@ -5,6 +5,7 @@
 import { memo, useCallback, useEffect, useMemo } from "react";
 
 import { HandoffAvailability, HandoffCondition, TabItem, TabItems } from "@waldiez/components";
+import { useWaldiez } from "@waldiez/store";
 import type {
     WaldiezAgentConnections,
     WaldiezAgentNestedChat,
@@ -79,8 +80,15 @@ const getNestedChats = (agentData: WaldiezNodeAgentData, edges: WaldiezEdge[]): 
 export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNestedChatTabsProps) => {
     const { id, flowId, agentConnections, data, edges, onDataChange } = props;
 
+    const getGroupManager = useWaldiez(s => s.getAgentById);
     // Get nested chats with all edges included
     const nestedChats = useMemo(() => getNestedChats(data, edges), [data, edges]);
+
+    const groupManager = useMemo(
+        () => (data.parentId ? getGroupManager(data.parentId) : null),
+        [data, getGroupManager],
+    );
+    const contextVariables = groupManager ? Object.keys(groupManager.data.contextVariables || {}) : [];
 
     useEffect(() => {
         if (!data?.nestedChats?.length) {
@@ -256,20 +264,22 @@ export const WaldiezAgentGroupNestedChatTabs = memo((props: WaldiezAgentGroupNes
                     </div>
                 </TabItem>
 
-                {/* HandoffCondition Tab - Only shown when in a group */}
-                <TabItem label="Condition" id={`wf-${flowId}-wa-${id}-nested-chat-condition`}>
-                    <HandoffCondition
-                        condition={nestedChats[0]?.condition || defaultCondition}
-                        onDataChange={onConditionChange}
-                        aria-label="Handoff condition settings"
-                    />
-                </TabItem>
                 {/* HandoffAvailability Tab - Only shown when in a group */}
                 <TabItem label="Availability" id={`wf-${flowId}-wa-${id}-nested-chat-availability`}>
                     <HandoffAvailability
                         available={nestedChats[0]?.available || defaultAvailability}
+                        contextVariables={contextVariables}
                         onDataChange={onAvailabilityChange}
                         aria-label="Handoff availability settings"
+                    />
+                </TabItem>
+                {/* HandoffCondition Tab - Only shown when in a group */}
+                <TabItem label="Condition" id={`wf-${flowId}-wa-${id}-nested-chat-condition`}>
+                    <HandoffCondition
+                        contextVariables={contextVariables}
+                        condition={nestedChats[0]?.condition || defaultCondition}
+                        onDataChange={onConditionChange}
+                        aria-label="Handoff condition settings"
                     />
                 </TabItem>
             </TabItems>

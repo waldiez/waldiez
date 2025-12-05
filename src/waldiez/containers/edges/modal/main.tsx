@@ -43,6 +43,7 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
         edge,
         edgeData,
         edgeType,
+        contextVariables,
         isDark,
         isDirty,
         isRagUserProxy,
@@ -285,6 +286,7 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                         {groupChatType === "handoff" && (
                             <TabItem label="Condition" id={tabIds.condition}>
                                 <HandoffCondition
+                                    contextVariables={contextVariables}
                                     condition={edgeData.condition}
                                     onDataChange={onConditionChange}
                                 />
@@ -293,6 +295,7 @@ export const WaldiezEdgeModal = memo((props: WaldiezEdgeModalProps) => {
                         {groupChatType === "handoff" && (
                             <TabItem label="Availability" id={tabIds.availability}>
                                 <HandoffAvailability
+                                    contextVariables={contextVariables}
                                     available={edgeData.available}
                                     onDataChange={onAvailabilityChange}
                                 />

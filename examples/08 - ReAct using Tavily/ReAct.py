@@ -279,7 +279,7 @@ register_function(
 )
 
 
-def callable_message_User_proxy_to_Assistant(
+def callable_message_User_proxy_To_Assistant(
     sender: ConversableAgent,
     recipient: ConversableAgent,
     context: dict[str, Any],
@@ -305,7 +305,7 @@ Question: {input}
     return ReAct_prompt.format(input=context["question"])
 
 
-__INITIAL_MSG__ = callable_message_User_proxy_to_Assistant
+__INITIAL_MSG__ = callable_message_User_proxy_To_Assistant
 
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
@@ -360,7 +360,10 @@ def stop_logging() -> None:
     """Stop logging."""
     runtime_logging.stop()
     if not os.path.exists("logs"):
-        os.makedirs("logs")
+        try:
+            os.makedirs("logs", exist_ok=True)
+        except BaseException:
+            pass
     for table in [
         "chat_completions",
         "agents",
@@ -701,7 +704,7 @@ def main(
     else:
         for index, result in enumerate(results):
             result_events = []
-            result.process()
+            # result.process()
             for event in result.events:
                 try:
                     result_events.append(
