@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
+/* eslint-disable max-lines */
 import { type FC, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { getContentString } from "@waldiez/components/stepByStep/utils";
@@ -9,10 +10,6 @@ import { WaldiezChatMessageUtils } from "@waldiez/utils/chat/utils";
 
 import { Markdown } from "../markdown";
 
-/**
- * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
- */
 type ToolCall = {
     function: { name: string; arguments?: string };
 };
@@ -58,6 +55,22 @@ type TerminationAndHumanReplyNoInputContent = {
     sender: string;
     recipient: string;
 };
+type OnContextConditionTransitionContent = {
+    source_agent: string;
+    transition_target: string;
+};
+type AfterWorksTransitionContent = {
+    source_agent: string;
+    transition_target: string;
+};
+type OnConditionLLMTransitionContent = {
+    source_agent: string;
+    transition_target: string;
+};
+type ReplyResultTransitionContent = {
+    source_agent: string;
+    transition_target: string;
+};
 
 export type WaldiezEvent =
     | EventBase<"text", TextContent>
@@ -77,6 +90,12 @@ export type WaldiezEvent =
     | EventBase<"error", ErrorContent>
     | EventBase<"empty", TextContent>
     | EventBase<"termination_and_human_reply_no_input", TerminationAndHumanReplyNoInputContent>
+    // Handoff related
+    | EventBase<"on_context_condition_transition", OnContextConditionTransitionContent>
+    | EventBase<"after_works_transition", AfterWorksTransitionContent>
+    | EventBase<"on_condition_llm_transition", OnConditionLLMTransitionContent>
+    | EventBase<"on_condition_l_l_m_transition", OnConditionLLMTransitionContent>
+    | EventBase<"reply_result_transition", ReplyResultTransitionContent>
     | EventBase<string, any>; // fallback/unknown
 
 type EventConsoleProps = {
@@ -333,6 +352,30 @@ const renderEvent = (ev: WaldiezEvent, darkMode: boolean) => {
         case "group_chat_resume":
             return <ResumeSpinner />;
 
+        case "on_condition_l_l_m_transition":
+        case "on_condition_llm_transition":
+        case "on_context_condition_transition":
+        case "after_works_transition":
+        case "reply_result_transition":
+            const target = (ev as any).transition_target || (ev as any).content.transition_target;
+            const source = (ev as any).source_agent || (ev as any).content.source_agent;
+            const eventDisplay = getEventDisplay(ev.type);
+            if (target) {
+                if (source) {
+                    return (
+                        <div className="font-semibold text-blue-600/80">
+                            ${eventDisplay} (${source}): Hand off to ${target}
+                        </div>
+                    );
+                }
+                return (
+                    <div className="font-semibold text-blue-600/80">
+                        ${eventDisplay}: Hand off to ${target}
+                    </div>
+                );
+            }
+            return null;
+
         case "info":
             return (
                 <div className="info">
@@ -359,6 +402,22 @@ const renderEvent = (ev: WaldiezEvent, darkMode: boolean) => {
                 </div>
             );
     }
+};
+
+const getEventDisplay = (eventType: string) => {
+    if (["on_condition_l_l_m_transition", "on_condition_llm_transition"].includes(eventType)) {
+        return "LLMTransition Handoff";
+    }
+    if (eventType === "on_context_condition_transition") {
+        return "ContextCondition Handoff";
+    }
+    if (eventType === "after_works_transition") {
+        return "AfterWork Handoff";
+    }
+    if (eventType === "reply_result_transition") {
+        return "ReplyResult";
+    }
+    return eventType;
 };
 
 export const EventConsole: FC<EventConsoleProps> = ({

@@ -12,7 +12,7 @@ pandas>=2
 parso==0.8.5
 pillow
 pip>=25.1
-platformdirs==4.5.0
+platformdirs==4.5.1
 psutil==7.1.3
 pydantic>=2.10,<3
 rpds-py==0.30.0
