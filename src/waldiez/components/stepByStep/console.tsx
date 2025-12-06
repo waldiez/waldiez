@@ -72,6 +72,13 @@ type ReplyResultTransitionContent = {
     transition_target: string;
 };
 
+type Transitionevent =
+    | EventBase<"on_context_condition_transition", OnContextConditionTransitionContent>
+    | EventBase<"after_works_transition", AfterWorksTransitionContent>
+    | EventBase<"on_condition_llm_transition", OnConditionLLMTransitionContent>
+    | EventBase<"on_condition_l_l_m_transition", OnConditionLLMTransitionContent>
+    | EventBase<"reply_result_transition", ReplyResultTransitionContent>;
+
 export type WaldiezEvent =
     | EventBase<"text", TextContent>
     | EventBase<"post_carryover_processing", PostCarryoverContent>
@@ -90,12 +97,7 @@ export type WaldiezEvent =
     | EventBase<"error", ErrorContent>
     | EventBase<"empty", TextContent>
     | EventBase<"termination_and_human_reply_no_input", TerminationAndHumanReplyNoInputContent>
-    // Handoff related
-    | EventBase<"on_context_condition_transition", OnContextConditionTransitionContent>
-    | EventBase<"after_works_transition", AfterWorksTransitionContent>
-    | EventBase<"on_condition_llm_transition", OnConditionLLMTransitionContent>
-    | EventBase<"on_condition_l_l_m_transition", OnConditionLLMTransitionContent>
-    | EventBase<"reply_result_transition", ReplyResultTransitionContent>
+    | Transitionevent
     | EventBase<string, any>; // fallback/unknown
 
 type EventConsoleProps = {
@@ -357,20 +359,26 @@ const renderEvent = (ev: WaldiezEvent, darkMode: boolean) => {
         case "on_context_condition_transition":
         case "after_works_transition":
         case "reply_result_transition":
-            const target = (ev as any).transition_target || (ev as any).content.transition_target;
-            const source = (ev as any).source_agent || (ev as any).content.source_agent;
+            let target = (ev as Transitionevent).content.transition_target || (ev as any).transition_target;
+            const source = (ev as Transitionevent).content.source_agent || (ev as any).source_agent;
+            if (typeof target !== "string") {
+                const { recipient } = getParticipants(ev);
+                if (typeof recipient === "string") {
+                    target = recipient;
+                }
+            }
             const eventDisplay = getEventDisplay(ev.type);
-            if (target) {
-                if (source) {
+            if (typeof target === "string") {
+                if (typeof source === "string") {
                     return (
                         <div className="font-semibold text-blue-600/80">
-                            ${eventDisplay} (${source}): Hand off to ${target}
+                            {eventDisplay} ({source}): Hand off to {target}
                         </div>
                     );
                 }
                 return (
                     <div className="font-semibold text-blue-600/80">
-                        ${eventDisplay}: Hand off to ${target}
+                        {eventDisplay}: Hand off to {target}
                     </div>
                 );
             }
