@@ -101,6 +101,9 @@ class TavilySearchToolImpl(PredefinedTool):
             The content for the tool.
         """
         content = f'''
+from autogen.agentchat import ReplyResult
+
+
 def {self.name}(
     query: str,
     search_depth: str = "basic",
@@ -109,7 +112,7 @@ def {self.name}(
     include_raw_content: bool = False,
     include_domains: list[str] = [],
     num_results: int = 5,
-) -> list[dict[str, Any]]:
+) -> ReplyResult:
     """Performs a search using the Tavily API and returns formatted results.
 
             Args:
@@ -132,7 +135,7 @@ def {self.name}(
     {self.name}_tool = TavilySearchTool(
         tavily_api_key=tavily_api_key,
     )
-    return {self.name}_tool(
+    result = {self.name}_tool(
         query=query,
         tavily_api_key=tavily_api_key,
         search_depth=search_depth,
@@ -142,6 +145,7 @@ def {self.name}(
         include_domains=include_domains,
         num_results=num_results,
     )
+    return ReplyResult(message=f"{{result}}")
 '''
         return content
 

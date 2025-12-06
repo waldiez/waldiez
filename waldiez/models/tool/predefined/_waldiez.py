@@ -125,6 +125,9 @@ class WaldiezFlowToolImpl(PredefinedTool):
         skip_deps = str(self.kwargs.get("skip_deps", "False")).lower() == "true"
         the_def = "async def" if is_async else "def"
         content = f'''
+from autogen.agentchat import ReplyResult
+
+
 {the_def} {self.name}(flow: str | Path | None = None, env_path: str | None = None, skip_deps: bool | None = None) -> list[str] | list[dict[str, Any]] | str:
     """Run a waldiez flow and return its results.
 
@@ -178,13 +181,14 @@ class WaldiezFlowToolImpl(PredefinedTool):
 """
         if is_async:
             content += f"""
-        return await runner.a_run(output_path=output_path, structured_io={structured_io}, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
+        result = await runner.a_run(output_path=output_path, structured_io={structured_io}, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
 """
         else:
             content += f"""
-        return runner.run(output_path=output_path, structured_io={structured_io}, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
+        result = runner.run(output_path=output_path, structured_io={structured_io}, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
 """
         content += """
+        return ReplyResult(message=f"{result}")
     except BaseException as error:
         print(error)
         raise RuntimeError(str(error)) from error

@@ -99,7 +99,10 @@ class DuckDuckGoSearchToolImpl(PredefinedTool):
             The content for the tool.
         """
         content = f'''
-def {self.name}(query: str, num_results: int = 5) -> list[dict[str, Any]]:
+from autogen.agentchat import ReplyResult
+
+
+def {self.name}(query: str, num_results: int = 5) -> ReplyResult:
     """Perform a DuckDuckGo search and return formatted results.
 
     Args:
@@ -110,7 +113,8 @@ def {self.name}(query: str, num_results: int = 5) -> list[dict[str, Any]]:
         A list of dictionaries of the search results.
     """
     tool = DuckDuckGoSearchTool()
-    return tool(query=query, num_results=num_results)
+    result = tool(query=query, num_results=num_results)
+    return ReplyResult(message=f"{{result}}")
 '''
         return content
 

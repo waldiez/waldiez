@@ -141,10 +141,13 @@ class GoogleSearchToolImpl(PredefinedTool):
             The content for the tool.
         """
         content = f'''
+from autogen.agentchat import ReplyResult
+
+
 def {self.name}(
     query: str,
     num_results: int = 10,
-) -> list[dict[str, Any]]:
+) -> ReplyResult:
     """Perform a Google search and return formatted results.
 
     Args:
@@ -163,12 +166,13 @@ def {self.name}(
         search_api_key=google_search_api_key,
         search_engine_id=google_search_engine_id,
     )
-    return {self.name}_tool(
+    result = {self.name}_tool(
         query=query,
         search_api_key=google_search_api_key,
         search_engine_id=google_search_engine_id,
         num_results=num_results
     )
+    return ReplyResult(message=f"{{result}}")
 '''
         return content
 

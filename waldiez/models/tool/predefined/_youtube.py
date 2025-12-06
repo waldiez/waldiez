@@ -104,6 +104,9 @@ class YouTubeSearchToolImpl(PredefinedTool):
             The content for the tool.
         """
         content = f'''
+from autogen.agentchat import ReplyResult
+
+
 def {self.name}(
     query: str,
     max_results: int = 5,
@@ -128,12 +131,13 @@ def {self.name}(
     youtube_search_tool = YoutubeSearchTool(
         youtube_api_key=youtube_api_key,
     )
-    return youtube_search_tool(
+    result = youtube_search_tool(
         query=query,
         youtube_api_key=youtube_api_key,
         max_results=max_results,
         include_video_details=include_video_details,
     )
+    return ReplyResult(message=f"{{result}}")
 '''
         return content
 

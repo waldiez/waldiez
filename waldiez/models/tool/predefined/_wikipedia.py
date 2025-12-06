@@ -121,6 +121,9 @@ class WikipediaSearchToolImpl(PredefinedTool):
             Content of the tool.
         """
         content = f'''
+from autogen.agentchat import ReplyResult
+
+
 def {self.name}(query: str, language: str = "en", top_k: int = 3, verbose: bool = False) -> Union[list[str], str]:
     """Search Wikipedia for a given query and return results.
 
@@ -140,7 +143,8 @@ def {self.name}(query: str, language: str = "en", top_k: int = 3, verbose: bool 
             content += f"       {key}={value!r},\n"
         content += "    )\n"
         content += """
-    return tool(query=query)
+    result = tool(query=query)
+    return ReplyResult(message=f"{result}")
 """
         return content
 

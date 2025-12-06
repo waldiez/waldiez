@@ -264,7 +264,11 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
         if _detected_pattern:
             _state_context_variables = _state_dict.get("context_variables", {})
             if _state_context_variables and isinstance(_state_context_variables, dict):
-                _detected_pattern.context_variables = ContextVariables(data=_state_context_variables)
+                _new_context_variables = _detected_pattern.context_variables.data.copy()
+                _new_context_variables.update(_state_context_variables)
+                _detected_pattern.context_variables = ContextVariables(
+                    data=_new_context_variables
+                )
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
     elif _state_group_manager and isinstance(_state_group_manager, str):
@@ -277,8 +281,10 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _detected_pattern:
                 _state_context_variables = _state_dict.get("context_variables", {})
                 if _state_context_variables and isinstance(_state_context_variables, dict):
+                    _new_context_variables = _detected_pattern.context_variables.data.copy()
+                    _new_context_variables.update(_state_context_variables)
                     _detected_pattern.context_variables = ContextVariables(
-                        data=_state_context_variables
+                        data=_new_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages

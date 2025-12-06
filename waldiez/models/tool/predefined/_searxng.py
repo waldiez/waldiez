@@ -115,12 +115,14 @@ class SearxNGSearchToolImpl(PredefinedTool):
             Content retrieved by the tool.
         """
         content = f'''
+from autogen.agentchat import ReplyResult
+
 def {self.name}(
         query: str,
         max_results: int = 5,
         categories: list[str] | None = None,
         language: str | None = None,
-    ) -> list[dict[str, Any]]:
+    ) -> ReplyResult:
     """Perform a SearxNG search and return formatted results.
 
     Args:
@@ -136,12 +138,13 @@ def {self.name}(
     tool = SearxngSearchTool(
         base_url="{self.kwargs["base_url"]}",
     )
-    return tool(
+    result = tool(
         query=query,
         max_results=max_results,
         categories=categories,
         language=language,
     )
+    return ReplyResult(message=f"{{result}}")
 '''
         return content
 

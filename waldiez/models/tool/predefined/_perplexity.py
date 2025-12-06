@@ -126,12 +126,16 @@ class PerplexitySearchToolImpl(PredefinedTool):
         max_tokens = self.kwargs["max_tokens"]
         search_domain_filter = self.kwargs["search_domain_filter"]
         content = f'''
+
+from autogen.agentchat import ReplyResult
+
+
 def {self.name}(
     query: str,
     model: str = "{model}",
     max_tokens: int = {max_tokens},
     search_domain_filter: Optional[list[str]] = {search_domain_filter},
-) -> "SearchResponse":
+) -> ReplyResult:
     """Perform a Perplexity AI search and return formatted results.
 
     Args:
@@ -151,7 +155,8 @@ def {self.name}(
         max_tokens=max_tokens,
         search_domain_filter=search_domain_filter,
     )
-    return perplexity_search_tool(query=query)
+    result = perplexity_search_tool(query=query)
+    return ReplyResult(message=f"{{result}}")
 '''
         return content
 
