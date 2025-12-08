@@ -7,7 +7,6 @@ The contents of each release will be used in
 
 ## v0.6.8
 
-- Added support for waldiez flows as tools
 - Updated ag2 dependency to 0.10.2
 - Allow case sensitive variable names
 - UI enhancements
