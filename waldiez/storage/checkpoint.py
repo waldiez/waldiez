@@ -237,7 +237,13 @@ class WaldiezCheckpoint:
         messages.pop()
         try:
             with open(self.history_file, "w", encoding="utf-8") as f:
-                json.dump({"history": history_entries}, f, ensure_ascii=False)
+                json.dump(
+                    {"history": history_entries},
+                    f,
+                    indent=2,
+                    default=str,
+                    ensure_ascii=False,
+                )
         except Exception:  # pylint: disable=broad-exception-caught
             pass
         return history_entries
