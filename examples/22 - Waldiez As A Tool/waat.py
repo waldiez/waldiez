@@ -201,8 +201,8 @@ def waldiez_flow(
         FileNotFoundError: If the flow path cannot be resolved.
         RuntimeError: If running the flow fails.
     """
+    import json
     import tempfile
-    import os
     import shutil
     from urllib.request import urlopen
     from waldiez import WaldiezRunner
@@ -237,19 +237,21 @@ def waldiez_flow(
         shutil.copyfile(flow_str, flow_path)
 
     try:
-        runner = WaldiezRunner.load(flow, dot_env=env_path, skip_deps=skip_deps)
+        runner = WaldiezRunner.load(
+            flow_path, dot_env=env_path, skip_deps=skip_deps
+        )
 
         result = runner.run(
             output_path=output_path,
-            structured_io=False,
+            structured_io=True,
             skip_mmd=True,
             skip_timeline=True,
             skip_symlinks=True,
         )
 
-        return ReplyResult(message=f"{result}")
+        return ReplyResult(message=json.dumps(result))
     except BaseException as error:
-        print(error)
+        print("error during waat call: ", error)
         raise RuntimeError(str(error)) from error
     finally:
         try:
@@ -307,7 +309,9 @@ register_function(
     description="Run a waldiez flow as tool",
 )
 
-__INITIAL_MSG__ = "Use the tool that is available to you to answer the question: \"What was the last joke about?\"."
+__INITIAL_MSG__ = (
+    "Use the tool that is available to you and summarize the conversation."
+)
 
 
 def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
@@ -652,7 +656,7 @@ def main(
     results = User.run(
         Assistant,
         summary_method="last_msg",
-        max_turns=2,
+        max_turns=3,
         clear_history=True,
         message=__INITIAL_MSG__,
     )

@@ -278,10 +278,10 @@
           "description": "User to Assistant",
           "position": 1,
           "clearHistory": true,
-          "maxTurns": 2,
+          "maxTurns": 3,
           "message": {
             "type": "string",
-            "content": "Use the tool that is available to you to answer the question: \"What was the last joke about?\".",
+            "content": "Use the tool that is available to you and summarize the conversation.",
             "context": {},
             "useCarryover": false
           },

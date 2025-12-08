@@ -365,7 +365,9 @@ def diff_has_path_changes(file_path: str) -> bool:
             return False
         if remaining.startswith('"."') or remaining.startswith("'."):
             return False  # relative
-        if remaining.startswith('\\"chroma\\",\\n"'):
+        if remaining.startswith('\\"chroma\\",\\n"') or remaining.startswith(
+            "output_path"
+        ):
             return False
         print(remaining[:100])
         return True

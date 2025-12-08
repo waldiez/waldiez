@@ -8,7 +8,6 @@
 """Tests for waldiez.io.stream.*."""
 
 import json
-import sys
 from pathlib import Path
 from typing import Any, Callable
 from unittest.mock import MagicMock, patch
@@ -273,41 +272,6 @@ class TestStructuredIOStream:
             "test_id",
         )
         assert result.to_string() == "<img src='double.jpg'> Hello"
-
-    @patch("builtins.print")
-    def test_handle_user_input_mismatched_request_id(
-        self, mock_print: MagicMock
-    ) -> None:
-        """Test parsing input with mismatched request_id."""
-        json_input = json.dumps(
-            {"request_id": "wrong_id", "data": "This should be ignored"}
-        )
-        result = self.stream._handle_user_input(
-            json_input,
-            "test_id",
-        )
-
-        # Verify warning was printed
-        stderr_call = None
-        for call_args in mock_print.call_args_list:
-            args, kwargs = call_args
-            if kwargs.get("file") is sys.stderr or "stderr" in str(
-                kwargs.get("file", "")
-            ):
-                stderr_call = call_args
-                break
-
-        # Check the warning message
-        assert stderr_call is not None
-        args, kwargs = stderr_call
-        payload = json.loads(args[0])
-
-        assert payload["type"] == "warning"
-        assert "mismatched request_id" in payload["data"]["message"]
-        assert payload["data"]["details"]["expected_id"] == "test_id"
-
-        # Result should be empty
-        assert result.to_string() == ""
 
     @patch("builtins.print")
     def test_print_with_json_dumped(self, mock_print: MagicMock) -> None:

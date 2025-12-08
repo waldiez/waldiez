@@ -326,62 +326,50 @@ class StructuredIOStream(IOStream):
             response_type = "input_response"
         else:
             response_type = _response_type
-        if (
-            user_input.get("request_id") == request_id
-            or response_type == "debug_input_response"
-        ):
-            # We have a valid response to our request
-            data = user_input.get("data")
-            if not data:
-                # let's check if text|image keys are sent (outside data)
-                if "image" in user_input or "text" in user_input:
-                    return UserResponse(
-                        type=response_type,
-                        request_id=request_id,
-                        data=self._format_multimedia_response(
-                            request_id=request_id, data=user_input
-                        ),
-                    )
-            if isinstance(data, list):
-                return self._handle_list_response(
-                    data,
-                    request_id=request_id,
-                    response_type=response_type,
-                )
-            if not data or not isinstance(data, (str, int, float, bool, dict)):
-                # No / invalid data provided in the response
+        data = user_input.get("data")
+        if not data:
+            # let's check if text|image keys are sent (outside data)
+            if "image" in user_input or "text" in user_input:
                 return UserResponse(
                     type=response_type,
                     request_id=request_id,
-                    data="",
-                )
-            # Process different data types
-            if isinstance(data, str):
-                # double inner dumped?
-                data = self._load_user_input(data)
-            if isinstance(data, dict):
-                return UserResponse(
-                    type=response_type,
                     data=self._format_multimedia_response(
-                        request_id=request_id,
-                        data=data,
+                        request_id=request_id, data=user_input
                     ),
-                    request_id=request_id,
                 )
-            # For other types (numbers, bools ,...),
-            #  let's just convert to string
+        if isinstance(data, list):
+            return self._handle_list_response(
+                data,
+                request_id=request_id,
+                response_type=response_type,
+            )
+        if not data or not isinstance(data, (str, int, float, bool, dict)):
+            # No / invalid data provided in the response
             return UserResponse(
                 type=response_type,
-                data=str(data),
                 request_id=request_id,
-            )  # pragma: no cover
-        # This response doesn't match our request_id, log and return empty
-        self._log_mismatched_response(request_id, user_input)
+                data="",
+            )
+        # Process different data types
+        if isinstance(data, str):
+            # double inner dumped?
+            data = self._load_user_input(data)
+        if isinstance(data, dict):
+            return UserResponse(
+                type=response_type,
+                data=self._format_multimedia_response(
+                    request_id=request_id,
+                    data=data,
+                ),
+                request_id=request_id,
+            )
+        # For other types (numbers, bools ,...),
+        #  let's just convert to string
         return UserResponse(
             type=response_type,
+            data=str(data),
             request_id=request_id,
-            data="",
-        )
+        )  # pragma: no cover
 
     # noinspection PyMethodMayBeStatic
     def _handle_list_response(
