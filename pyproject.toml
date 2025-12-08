@@ -135,7 +135,7 @@ dev = [
   "autoflake==2.3.1",
   "bandit==1.9.2",
   "basedpyright==1.35.0",
-  "black[jupyter]==25.11.0",
+  "black[jupyter]==25.12.0",
   "build==1.3.0",
   "fakeredis==2.32.1",
   "flake8==7.3.0",

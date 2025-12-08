@@ -359,30 +359,7 @@ const renderEvent = (ev: WaldiezEvent, darkMode: boolean) => {
         case "on_context_condition_transition":
         case "after_works_transition":
         case "reply_result_transition":
-            let target = (ev as Transitionevent).content.transition_target || (ev as any).transition_target;
-            const source = (ev as Transitionevent).content.source_agent || (ev as any).source_agent;
-            if (typeof target !== "string") {
-                const { recipient } = getParticipants(ev);
-                if (typeof recipient === "string") {
-                    target = recipient;
-                }
-            }
-            const eventDisplay = getEventDisplay(ev.type);
-            if (typeof target === "string") {
-                if (typeof source === "string") {
-                    return (
-                        <div className="font-semibold text-blue-600/80">
-                            {eventDisplay} ({source}): Hand off to {target}
-                        </div>
-                    );
-                }
-                return (
-                    <div className="font-semibold text-blue-600/80">
-                        {eventDisplay}: Hand off to {target}
-                    </div>
-                );
-            }
-            return null;
+            return renderTransitionEvent(ev);
 
         case "info":
             return (
@@ -410,6 +387,33 @@ const renderEvent = (ev: WaldiezEvent, darkMode: boolean) => {
                 </div>
             );
     }
+};
+
+const renderTransitionEvent = (ev: WaldiezEvent) => {
+    let target = (ev as Transitionevent).content.transition_target || (ev as any).transition_target;
+    const source = (ev as Transitionevent).content.source_agent || (ev as any).source_agent;
+    if (typeof target !== "string") {
+        const { recipient } = getParticipants(ev);
+        if (typeof recipient === "string") {
+            target = recipient;
+        }
+    }
+    const eventDisplay = getEventDisplay(ev.type);
+    if (typeof target === "string") {
+        if (typeof source === "string") {
+            return (
+                <div className="font-semibold text-blue-600/80">
+                    {eventDisplay} ({source}): Hand off to {target}
+                </div>
+            );
+        }
+        return (
+            <div className="font-semibold text-blue-600/80">
+                {eventDisplay}: Hand off to {target}
+            </div>
+        );
+    }
+    return null;
 };
 
 const getEventDisplay = (eventType: string) => {
