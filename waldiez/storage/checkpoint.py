@@ -213,39 +213,41 @@ class WaldiezCheckpoint:
         self,
         history_entries: list[dict[str, Any]],
     ) -> list[dict[str, Any]]:
-        """Check if the last message in the history was a tool_call."""
-        if not history_entries:
-            return history_entries
+        """Remove trailing tool_call messages from all history entries."""
+        modified = False
 
-        last_entry = history_entries[-1]
-        state = last_entry.get("state")
-        if not isinstance(state, dict):
-            return history_entries
+        for entry in history_entries:
+            state = entry.get("state")
+            if not isinstance(state, dict):
+                continue
 
-        messages = state.get("messages")
-        if not isinstance(messages, list) or not messages:
-            return history_entries
+            messages = state.get("messages")
+            if not isinstance(messages, list) or not messages:
+                continue
 
-        last_msg = messages[-1]
-        if not isinstance(last_msg, dict):
-            return history_entries
+            # Remove all trailing tool_call messages
+            # (there may be more than one)
+            while (
+                messages
+                and isinstance(messages[-1], dict)
+                and "tool_calls" in messages[-1]
+            ):
+                messages.pop()
+                modified = True
 
-        if "tool_calls" not in last_msg:
-            return history_entries
+        if modified:
+            try:
+                with open(self.history_file, "w", encoding="utf-8") as f:
+                    json.dump(
+                        {"history": history_entries},
+                        f,
+                        indent=2,
+                        ensure_ascii=False,
+                        default=str,
+                    )
+            except Exception:  # pylint: disable=broad-exception-caught
+                pass
 
-        # Remove the last message
-        messages.pop()
-        try:
-            with open(self.history_file, "w", encoding="utf-8") as f:
-                json.dump(
-                    {"history": history_entries},
-                    f,
-                    indent=2,
-                    default=str,
-                    ensure_ascii=False,
-                )
-        except Exception:  # pylint: disable=broad-exception-caught
-            pass
         return history_entries
 
 
