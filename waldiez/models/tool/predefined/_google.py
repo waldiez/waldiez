@@ -141,9 +141,6 @@ class GoogleSearchToolImpl(PredefinedTool):
             The content for the tool.
         """
         content = f'''
-from autogen.agentchat import ReplyResult
-
-
 def {self.name}(
     query: str,
     num_results: int = 10,

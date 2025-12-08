@@ -13,11 +13,11 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""Waldiez Flow As Tool.
+"""waldiez flow as tool.
 
 Use a Waldiez Flow as another Waldiez Flow's tool.
 
-Requirements: ag2[openai]==0.10.1, waldiez
+Requirements: ag2[openai]==0.10.2, waldiez
 Tags:
 🧩 generated with ❤️ by Waldiez.
 """
@@ -65,6 +65,7 @@ from autogen import (
     register_function,
     runtime_logging,
 )
+from autogen.agentchat import ReplyResult
 from autogen.agentchat.group import ContextVariables
 from autogen.agentchat.group.patterns.pattern import Pattern
 from autogen.events import BaseEvent
@@ -121,7 +122,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "Waldiez_Flow_As_Tool_api_keys.py"
+# "waldiez_flow_as_tool_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -148,10 +149,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("Waldiez_Flow_As_Tool")
+__MODELS_MODULE__ = load_api_key_module("waldiez_flow_as_tool")
 
 
-def get_Waldiez_Flow_As_Tool_model_api_key(model_name: str) -> str:
+def get_waldiez_flow_as_tool_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -163,7 +164,7 @@ def get_Waldiez_Flow_As_Tool_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_Waldiez_Flow_As_Tool_model_api_key(model_name)
+    return __MODELS_MODULE__.get_waldiez_flow_as_tool_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -185,7 +186,7 @@ def waldiez_flow(
     flow: str | Path | None = None,
     env_path: str | None = None,
     skip_deps: bool | None = None,
-) -> list[str] | list[dict[str, Any]] | str:
+) -> ReplyResult:
     """Run a waldiez flow and return its results.
 
     Args:
@@ -208,7 +209,7 @@ def waldiez_flow(
 
     if skip_deps is None:
         skip_deps = True
-    if not flow or not os.path.exists(flow):
+    if not flow or (not flow.startswith("http") and not os.path.exists(flow)):
         flow = "https://raw.githubusercontent.com/waldiez/waldiez/refs/heads/main/examples/01%20-%20Standup%20Comedians/Standup%20Comedians%202.waldiez"
     if isinstance(flow, Path):
         flow_str = str(flow)
@@ -219,11 +220,11 @@ def waldiez_flow(
         flow_str.startswith("http://") or flow_str.startswith("https://")
     )
     tmp_dir = tempfile.mkdtemp(prefix="waldiez_flow_")
-    tmp_path = os.path.join(tmp_dir, "flow.waldiez")
-    flow = tmp_path
+    flow_path = os.path.join(tmp_dir, "flow.waldiez")
+    output_path = os.path.join(tmp_dir, "flow.py")
     if is_http_url:
         try:
-            with urlopen(flow_str) as resp, open(tmp_path, "wb") as f:
+            with urlopen(flow_str) as resp, open(flow_path, "wb") as f:
                 shutil.copyfileobj(resp, f)
         except Exception as e:
             raise RuntimeError(
@@ -233,22 +234,20 @@ def waldiez_flow(
         # Local filesystem check
         if not flow_str or not os.path.exists(flow_str):
             raise FileNotFoundError(f"Invalid flow path: {flow_str}")
-        shutil.copyfile(flow_str, tmp_path)
+        shutil.copyfile(flow_str, flow_path)
 
     try:
-        runner = WaldiezRunner.load(flow, dot_env=env_path)
+        runner = WaldiezRunner.load(flow, dot_env=env_path, skip_deps=skip_deps)
 
-        results = runner.run(
-            output_path=os.path.join(tmp_dir, "flow.py"),
+        result = runner.run(
+            output_path=output_path,
             structured_io=False,
-            skip_deps=skip_deps,
             skip_mmd=True,
             skip_timeline=True,
             skip_symlinks=True,
         )
 
-        raise RuntimeError(results)
-        return results
+        return ReplyResult(message=f"{result}")
     except BaseException as error:
         print(error)
         raise RuntimeError(str(error)) from error
@@ -264,7 +263,7 @@ def waldiez_flow(
 gpt_5_mini_llm_config: dict[str, Any] = {
     "model": "gpt-5-mini",
     "api_type": "openai",
-    "api_key": get_Waldiez_Flow_As_Tool_model_api_key("gpt_5_mini"),
+    "api_key": get_waldiez_flow_as_tool_model_api_key("gpt_5_mini"),
 }
 
 # Agents
@@ -579,8 +578,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _state_context_variables and isinstance(
                 _state_context_variables, dict
             ):
+                _new_context_variables = (
+                    _detected_pattern.context_variables.data.copy()
+                )
+                _new_context_variables.update(_state_context_variables)
                 _detected_pattern.context_variables = ContextVariables(
-                    data=_state_context_variables
+                    data=_new_context_variables
                 )
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
@@ -600,8 +603,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
+                    _new_context_variables = (
+                        _detected_pattern.context_variables.data.copy()
+                    )
+                    _new_context_variables.update(_state_context_variables)
                     _detected_pattern.context_variables = ContextVariables(
-                        data=_state_context_variables
+                        data=_new_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages

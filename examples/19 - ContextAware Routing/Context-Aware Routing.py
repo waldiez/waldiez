@@ -13,12 +13,12 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""Context-Aware Routing.
+"""context-aware routing.
 
 A waldiez implementation of AG2 example: https://docs.ag2.ai/latest/docs/user-guide/advanced-concepts/pattern-cookbook/context_aware_routing/
 The Context-Aware Routing Pattern creates a dynamic workflow where tasks are intelligently distributed to specialized agents based on content analysis rather than predetermined paths. Unlike static patterns with fixed routes, this approach analyzes each request in real-time to determine the most appropriate specialist, ensuring queries are handled by agents with the most relevant expertise while maintaining conversation continuity even as topics shift across domains.
 
-Requirements: ag2[openai]==0.10.1
+Requirements: ag2[openai]==0.10.2
 Tags:
 🧩 generated with ❤️ by Waldiez.
 """
@@ -65,7 +65,7 @@ from autogen import (
     register_function,
     runtime_logging,
 )
-from autogen.agentchat import GroupChatManager, run_group_chat
+from autogen.agentchat import GroupChatManager, ReplyResult, run_group_chat
 from autogen.agentchat.group import (
     AgentTarget,
     ContextExpression,
@@ -136,7 +136,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "Context_Aware_Routin_api_keys.py"
+# "context_aware_routin_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -163,10 +163,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("Context_Aware_Routin")
+__MODELS_MODULE__ = load_api_key_module("context_aware_routin")
 
 
-def get_Context_Aware_Routin_model_api_key(model_name: str) -> str:
+def get_context_aware_routin_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -178,7 +178,7 @@ def get_Context_Aware_Routin_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_Context_Aware_Routin_model_api_key(model_name)
+    return __MODELS_MODULE__.get_context_aware_routin_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -422,7 +422,7 @@ def request_clarification(
 gpt_4_1_mini_llm_config: dict[str, Any] = {
     "model": "gpt-4.1-mini",
     "api_type": "openai",
-    "api_key": get_Context_Aware_Routin_model_api_key("gpt_4_1_mini"),
+    "api_key": get_context_aware_routin_model_api_key("gpt_4_1_mini"),
 }
 
 # Agents
@@ -962,8 +962,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _state_context_variables and isinstance(
                 _state_context_variables, dict
             ):
+                _new_context_variables = (
+                    _detected_pattern.context_variables.data.copy()
+                )
+                _new_context_variables.update(_state_context_variables)
                 _detected_pattern.context_variables = ContextVariables(
-                    data=_state_context_variables
+                    data=_new_context_variables
                 )
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
@@ -983,8 +987,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
+                    _new_context_variables = (
+                        _detected_pattern.context_variables.data.copy()
+                    )
+                    _new_context_variables.update(_state_context_variables)
                     _detected_pattern.context_variables = ContextVariables(
-                        data=_state_context_variables
+                        data=_new_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages

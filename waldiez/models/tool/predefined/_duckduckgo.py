@@ -99,9 +99,6 @@ class DuckDuckGoSearchToolImpl(PredefinedTool):
             The content for the tool.
         """
         content = f'''
-from autogen.agentchat import ReplyResult
-
-
 def {self.name}(query: str, num_results: int = 5) -> ReplyResult:
     """Perform a DuckDuckGo search and return formatted results.
 

@@ -13,11 +13,11 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""YouTube search Waldiez Flow.
+"""youtube search waldiez flow.
 
 A example waldiez flow using YouTube search
 
-Requirements: ag2[google-search], ag2[openai]==0.10.1
+Requirements: ag2[google-search], ag2[openai]==0.10.2
 Tags: youtube
 🧩 generated with ❤️ by Waldiez.
 """
@@ -65,6 +65,7 @@ from autogen import (
     register_function,
     runtime_logging,
 )
+from autogen.agentchat import ReplyResult
 from autogen.agentchat.group import ContextVariables
 from autogen.agentchat.group.patterns.pattern import Pattern
 from autogen.events import BaseEvent
@@ -121,7 +122,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "YouTube_search_Waldi_api_keys.py"
+# "youtube_search_waldi_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -148,10 +149,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("YouTube_search_Waldi")
+__MODELS_MODULE__ = load_api_key_module("youtube_search_waldi")
 
 
-def get_YouTube_search_Waldi_model_api_key(model_name: str) -> str:
+def get_youtube_search_waldi_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -163,7 +164,7 @@ def get_YouTube_search_Waldi_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_YouTube_search_Waldi_model_api_key(model_name)
+    return __MODELS_MODULE__.get_youtube_search_waldi_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -183,7 +184,7 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 # Load tool secrets module if needed
 # NOTE:
 # This section assumes that a file named:
-# "YouTube_search_Waldi_youtube_search_secrets.py"
+# "youtube_search_waldi_youtube_search_secrets.py"
 # exists in the same directory as this file.
 # This file contains the secrets for the tool used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -210,7 +211,7 @@ def load_tool_secrets_module(flow_name: str, tool_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-load_tool_secrets_module("YouTube_search_Waldi", "youtube_search")
+load_tool_secrets_module("youtube_search_waldi", "youtube_search")
 
 
 def youtube_search(
@@ -237,12 +238,13 @@ def youtube_search(
     youtube_search_tool = YoutubeSearchTool(
         youtube_api_key=youtube_api_key,
     )
-    return youtube_search_tool(
+    result = youtube_search_tool(
         query=query,
         youtube_api_key=youtube_api_key,
         max_results=max_results,
         include_video_details=include_video_details,
     )
+    return ReplyResult(message=f"{result}")
 
 
 # Models
@@ -250,7 +252,7 @@ def youtube_search(
 gpt_4_1_llm_config: dict[str, Any] = {
     "model": "gpt-4.1",
     "api_type": "openai",
-    "api_key": get_YouTube_search_Waldi_model_api_key("gpt_4_1"),
+    "api_key": get_youtube_search_waldi_model_api_key("gpt_4_1"),
 }
 
 # Agents
@@ -567,8 +569,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _state_context_variables and isinstance(
                 _state_context_variables, dict
             ):
+                _new_context_variables = (
+                    _detected_pattern.context_variables.data.copy()
+                )
+                _new_context_variables.update(_state_context_variables)
                 _detected_pattern.context_variables = ContextVariables(
-                    data=_state_context_variables
+                    data=_new_context_variables
                 )
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
@@ -588,8 +594,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
+                    _new_context_variables = (
+                        _detected_pattern.context_variables.data.copy()
+                    )
+                    _new_context_variables.update(_state_context_variables)
                     _detected_pattern.context_variables = ContextVariables(
-                        data=_state_context_variables
+                        data=_new_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages

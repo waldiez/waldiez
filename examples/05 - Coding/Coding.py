@@ -13,11 +13,11 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""Coding.
+"""coding.
 
 Coding and Financial Analysis
 
-Requirements: ag2[anthropic]==0.10.1, ag2[openai]==0.10.1, matplotlib, pandas, yfinance
+Requirements: ag2[anthropic]==0.10.2, ag2[openai]==0.10.2, matplotlib, pandas, yfinance
 Tags: Coding
 🧩 generated with ❤️ by Waldiez.
 """
@@ -65,6 +65,7 @@ from autogen import (
     register_function,
     runtime_logging,
 )
+from autogen.agentchat import ReplyResult
 from autogen.agentchat.group import ContextVariables
 from autogen.agentchat.group.patterns.pattern import Pattern
 from autogen.coding import LocalCommandLineCodeExecutor
@@ -124,7 +125,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "Coding_api_keys.py"
+# "coding_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -151,10 +152,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("Coding")
+__MODELS_MODULE__ = load_api_key_module("coding")
 
 
-def get_Coding_model_api_key(model_name: str) -> str:
+def get_coding_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -166,7 +167,7 @@ def get_Coding_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_Coding_model_api_key(model_name)
+    return __MODELS_MODULE__.get_coding_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -227,7 +228,7 @@ def get_and_plot_stock_data(
 claude_3_7_sonnet_20250219_llm_config: dict[str, Any] = {
     "model": "claude-3-7-sonnet-20250219",
     "api_type": "anthropic",
-    "api_key": get_Coding_model_api_key("claude_3_7_sonnet_20250219"),
+    "api_key": get_coding_model_api_key("claude_3_7_sonnet_20250219"),
 }
 
 # Agents
@@ -569,8 +570,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _state_context_variables and isinstance(
                 _state_context_variables, dict
             ):
+                _new_context_variables = (
+                    _detected_pattern.context_variables.data.copy()
+                )
+                _new_context_variables.update(_state_context_variables)
                 _detected_pattern.context_variables = ContextVariables(
-                    data=_state_context_variables
+                    data=_new_context_variables
                 )
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
@@ -590,8 +595,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
+                    _new_context_variables = (
+                        _detected_pattern.context_variables.data.copy()
+                    )
+                    _new_context_variables.update(_state_context_variables)
                     _detected_pattern.context_variables = ContextVariables(
-                        data=_state_context_variables
+                        data=_new_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages

@@ -13,12 +13,12 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""Hierarchical_Pattern.
+"""hierarchical_pattern.
 
 A waldiez flow for the AG2 example on hierarchical pattern: https://docs.ag2.ai/latest/docs/user-guide/advanced-concepts/pattern-cookbook/hierarchical/
 The Hierarchical, or Tree, Orchestration Pattern is a powerful approach to organizing multi-agent workflows, inspired by traditional organizational structures where work and information flow through a well-defined chain of command. This pattern creates a tree-structured arrangement of agents with clear levels of responsibility, specialization, and reporting relationships.
 
-Requirements: ag2[openai]==0.10.1
+Requirements: ag2[openai]==0.10.2
 Tags:
 🧩 generated with ❤️ by Waldiez.
 """
@@ -65,7 +65,7 @@ from autogen import (
     register_function,
     runtime_logging,
 )
-from autogen.agentchat import GroupChatManager, run_group_chat
+from autogen.agentchat import GroupChatManager, ReplyResult, run_group_chat
 from autogen.agentchat.group import (
     AgentNameTarget,
     AgentTarget,
@@ -135,7 +135,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "Hierarchical_Pattern_api_keys.py"
+# "hierarchical_pattern_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -162,10 +162,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("Hierarchical_Pattern")
+__MODELS_MODULE__ = load_api_key_module("hierarchical_pattern")
 
 
-def get_Hierarchical_Pattern_model_api_key(model_name: str) -> str:
+def get_hierarchical_pattern_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -177,7 +177,7 @@ def get_Hierarchical_Pattern_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_Hierarchical_Pattern_model_api_key(model_name)
+    return __MODELS_MODULE__.get_hierarchical_pattern_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -398,7 +398,7 @@ def compile_final_report(
 gpt_4o_mini_llm_config: dict[str, Any] = {
     "model": "gpt-4o-mini",
     "api_type": "openai",
-    "api_key": get_Hierarchical_Pattern_model_api_key("gpt_4o_mini"),
+    "api_key": get_hierarchical_pattern_model_api_key("gpt_4o_mini"),
 }
 
 # Agents
@@ -1162,8 +1162,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _state_context_variables and isinstance(
                 _state_context_variables, dict
             ):
+                _new_context_variables = (
+                    _detected_pattern.context_variables.data.copy()
+                )
+                _new_context_variables.update(_state_context_variables)
                 _detected_pattern.context_variables = ContextVariables(
-                    data=_state_context_variables
+                    data=_new_context_variables
                 )
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
@@ -1183,8 +1187,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
+                    _new_context_variables = (
+                        _detected_pattern.context_variables.data.copy()
+                    )
+                    _new_context_variables.update(_state_context_variables)
                     _detected_pattern.context_variables = ContextVariables(
-                        data=_state_context_variables
+                        data=_new_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages

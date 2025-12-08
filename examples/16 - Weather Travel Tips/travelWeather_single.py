@@ -13,11 +13,11 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""Weather tips agent .
+"""weather tips agent .
 
 A workflow containing a single agent capable of understanding images, writing code and providing tips for the weather.
 
-Requirements: ag2[lmm]==0.10.1, ag2[openai]==0.10.1
+Requirements: ag2[lmm]==0.10.2, ag2[openai]==0.10.2
 Tags: Multimodal, Weather, Travel, Code
 🧩 generated with ❤️ by Waldiez.
 """
@@ -63,6 +63,7 @@ from autogen import (
     UserProxyAgent,
     runtime_logging,
 )
+from autogen.agentchat import ReplyResult
 from autogen.agentchat.contrib.multimodal_conversable_agent import (
     MultimodalConversableAgent,
 )
@@ -122,7 +123,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "Weather_tips_agent_api_keys.py"
+# "weather_tips_agent_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -149,10 +150,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("Weather_tips_agent")
+__MODELS_MODULE__ = load_api_key_module("weather_tips_agent")
 
 
-def get_Weather_tips_agent_model_api_key(model_name: str) -> str:
+def get_weather_tips_agent_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -164,7 +165,7 @@ def get_Weather_tips_agent_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_Weather_tips_agent_model_api_key(model_name)
+    return __MODELS_MODULE__.get_weather_tips_agent_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -184,7 +185,7 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 gpt_4_1_llm_config: dict[str, Any] = {
     "model": "gpt-4.1",
     "api_type": "openai",
-    "api_key": get_Weather_tips_agent_model_api_key("gpt_4_1"),
+    "api_key": get_weather_tips_agent_model_api_key("gpt_4_1"),
 }
 
 # Agents
@@ -496,8 +497,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _state_context_variables and isinstance(
                 _state_context_variables, dict
             ):
+                _new_context_variables = (
+                    _detected_pattern.context_variables.data.copy()
+                )
+                _new_context_variables.update(_state_context_variables)
                 _detected_pattern.context_variables = ContextVariables(
-                    data=_state_context_variables
+                    data=_new_context_variables
                 )
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
@@ -517,8 +522,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
+                    _new_context_variables = (
+                        _detected_pattern.context_variables.data.copy()
+                    )
+                    _new_context_variables.update(_state_context_variables)
                     _detected_pattern.context_variables = ContextVariables(
-                        data=_state_context_variables
+                        data=_new_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages

@@ -13,11 +13,11 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""RAG with Doc Agent.
+"""rag with doc agent.
 
 Retrieval Augmented Generation using a Doc agent. Based on <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/docagent/#example>
 
-Requirements: ag2[openai]==0.10.1, chromadb>=0.5,<2, docling>=2.15.1,<3, llama-index, llama-index-core, llama-index-embeddings-huggingface, llama-index-llms-langchain, llama-index-llms-openai, llama-index-vector-stores-chroma, selenium>=4.28.1,<5, webdriver-manager==4.0.2
+Requirements: ag2[openai]==0.10.2, chromadb>=0.5,<2, docling>=2.15.1,<3, llama-index, llama-index-core, llama-index-embeddings-huggingface, llama-index-llms-langchain, llama-index-llms-openai, llama-index-vector-stores-chroma, selenium>=4.28.1,<5, webdriver-manager==4.0.2
 Tags: RAG, Doc Agent
 🧩 generated with ❤️ by Waldiez.
 """
@@ -63,6 +63,7 @@ from autogen import (
     UserProxyAgent,
     runtime_logging,
 )
+from autogen.agentchat import ReplyResult
 from autogen.agentchat.group import ContextVariables
 from autogen.agentchat.group.patterns.pattern import Pattern
 from autogen.agents.experimental import DocAgent
@@ -190,16 +191,16 @@ gpt_4o_llm_config: dict[str, Any] = {
 
 # Agents
 
-doc_agent_query_engine = VectorChromaQueryEngine(
+Doc_agent_query_engine = VectorChromaQueryEngine(
     llm=OpenAI(model="gpt-4o", temperature=0.0),
     db_path="chroma",
     collection_name="financial_report",
 )
 
-doc_agent = DocAgent(
-    name="doc_agent",
+Doc_agent = DocAgent(
+    name="Doc_agent",
     parsed_docs_path="parsed_docs",
-    query_engine=doc_agent_query_engine,
+    query_engine=Doc_agent_query_engine,
     llm_config=autogen.LLMConfig(
         config_list=[
             gpt_4o_llm_config,
@@ -208,10 +209,10 @@ doc_agent = DocAgent(
     ),
 )
 
-__AGENTS__["doc_agent"] = doc_agent
+__AGENTS__["Doc_agent"] = Doc_agent
 
-user = UserProxyAgent(
-    name="user",
+User = UserProxyAgent(
+    name="User",
     description="A new User agent",
     human_input_mode="ALWAYS",
     max_consecutive_auto_reply=None,
@@ -221,7 +222,7 @@ user = UserProxyAgent(
     llm_config=False,
 )
 
-__AGENTS__["user"] = user
+__AGENTS__["User"] = User
 
 __INITIAL_MSG__ = "Can you ingest \"https://raw.githubusercontent.com/ag2ai/ag2/refs/heads/main/test/agentchat/contrib/graph_rag/Toast_financial_report.pdf\"  and tell me the fiscal year 2024 financial summary?\" "
 
@@ -278,7 +279,10 @@ def stop_logging() -> None:
     """Stop logging."""
     runtime_logging.stop()
     if not os.path.exists("logs"):
-        os.makedirs("logs")
+        try:
+            os.makedirs("logs", exist_ok=True)
+        except BaseException:
+            pass
     for table in [
         "chat_completions",
         "agents",
@@ -326,23 +330,23 @@ def _check_for_group_members(agent: ConversableAgent) -> list[ConversableAgent]:
 
 def _get_known_agents() -> list[ConversableAgent]:
     _known_agents: list[ConversableAgent] = []
-    if user not in _known_agents:
-        _known_agents.append(user)
-    _known_agents.append(user)
-    for _group_member in _check_for_group_members(user):
+    if User not in _known_agents:
+        _known_agents.append(User)
+    _known_agents.append(User)
+    for _group_member in _check_for_group_members(User):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(user):
+    for _extra_agent in _check_for_extra_agents(User):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
 
-    if doc_agent not in _known_agents:
-        _known_agents.append(doc_agent)
-    _known_agents.append(doc_agent)
-    for _group_member in _check_for_group_members(doc_agent):
+    if Doc_agent not in _known_agents:
+        _known_agents.append(Doc_agent)
+    _known_agents.append(Doc_agent)
+    for _group_member in _check_for_group_members(Doc_agent):
         if _group_member not in _known_agents:
             _known_agents.append(_group_member)
-    for _extra_agent in _check_for_extra_agents(doc_agent):
+    for _extra_agent in _check_for_extra_agents(Doc_agent):
         if _extra_agent not in _known_agents:
             _known_agents.append(_extra_agent)
     return _known_agents
@@ -491,8 +495,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _state_context_variables and isinstance(
                 _state_context_variables, dict
             ):
+                _new_context_variables = (
+                    _detected_pattern.context_variables.data.copy()
+                )
+                _new_context_variables.update(_state_context_variables)
                 _detected_pattern.context_variables = ContextVariables(
-                    data=_state_context_variables
+                    data=_new_context_variables
                 )
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
@@ -512,8 +520,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
+                    _new_context_variables = (
+                        _detected_pattern.context_variables.data.copy()
+                    )
+                    _new_context_variables.update(_state_context_variables)
                     _detected_pattern.context_variables = ContextVariables(
-                        data=_state_context_variables
+                        data=_new_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages
@@ -553,8 +565,8 @@ def main(
     pause_event = threading.Event()
     pause_event.set()
     with Cache.disk(cache_seed=42) as cache:
-        results = user.run(
-            doc_agent,
+        results = User.run(
+            Doc_agent,
             cache=cache,
             summary_method="last_msg",
             max_turns=2,
@@ -623,7 +635,7 @@ def main(
         else:
             for index, result in enumerate(results):
                 result_events = []
-                result.process()
+                # result.process()
                 for event in result.events:
                     try:
                         result_events.append(

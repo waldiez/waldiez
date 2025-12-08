@@ -498,6 +498,7 @@ class WaldiezFlow(WaldiezBase):
             If the agents do not connect to any other node.
             If the manager's group chat has no members.
         """
+        self.name = self.name.lower()
         all_members = list(self.data.agents.members)
         all_chats = list(self.data.chats)
         for agent in all_members:

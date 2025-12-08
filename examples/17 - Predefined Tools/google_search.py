@@ -17,7 +17,7 @@
 
 A example waldiez flow using google search
 
-Requirements: ag2[google-search,gemini], ag2[openai]==0.10.1
+Requirements: ag2[google-search,gemini], ag2[openai]==0.10.2
 Tags: websearch
 🧩 generated with ❤️ by Waldiez.
 """
@@ -65,6 +65,7 @@ from autogen import (
     register_function,
     runtime_logging,
 )
+from autogen.agentchat import ReplyResult
 from autogen.agentchat.group import ContextVariables
 from autogen.agentchat.group.patterns.pattern import Pattern
 from autogen.events import BaseEvent
@@ -216,7 +217,7 @@ load_tool_secrets_module("google_search_flow", "google_search")
 def google_search(
     query: str,
     num_results: int = 10,
-) -> list[dict[str, Any]]:
+) -> ReplyResult:
     """Perform a Google search and return formatted results.
 
     Args:
@@ -239,12 +240,13 @@ def google_search(
         search_api_key=google_search_api_key,
         search_engine_id=google_search_engine_id,
     )
-    return google_search_tool(
+    result = google_search_tool(
         query=query,
         search_api_key=google_search_api_key,
         search_engine_id=google_search_engine_id,
         num_results=num_results,
     )
+    return ReplyResult(message=f"{result}")
 
 
 # Models
@@ -569,8 +571,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _state_context_variables and isinstance(
                 _state_context_variables, dict
             ):
+                _new_context_variables = (
+                    _detected_pattern.context_variables.data.copy()
+                )
+                _new_context_variables.update(_state_context_variables)
                 _detected_pattern.context_variables = ContextVariables(
-                    data=_state_context_variables
+                    data=_new_context_variables
                 )
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
@@ -590,8 +596,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
+                    _new_context_variables = (
+                        _detected_pattern.context_variables.data.copy()
+                    )
+                    _new_context_variables.update(_state_context_variables)
                     _detected_pattern.context_variables = ContextVariables(
-                        data=_state_context_variables
+                        data=_new_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages

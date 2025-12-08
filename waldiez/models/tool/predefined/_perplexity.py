@@ -126,10 +126,6 @@ class PerplexitySearchToolImpl(PredefinedTool):
         max_tokens = self.kwargs["max_tokens"]
         search_domain_filter = self.kwargs["search_domain_filter"]
         content = f'''
-
-from autogen.agentchat import ReplyResult
-
-
 def {self.name}(
     query: str,
     model: str = "{model}",

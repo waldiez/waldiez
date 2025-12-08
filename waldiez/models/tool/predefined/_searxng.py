@@ -115,8 +115,6 @@ class SearxNGSearchToolImpl(PredefinedTool):
             Content retrieved by the tool.
         """
         content = f'''
-from autogen.agentchat import ReplyResult
-
 def {self.name}(
         query: str,
         max_results: int = 5,

@@ -43,6 +43,7 @@ COMMON_AUTOGEN_IMPORTS = [
     "from autogen import GroupChat",
     "from autogen import runtime_logging",
     "from autogen.events import BaseEvent",
+    "from autogen.agentchat import ReplyResult",
     "from autogen.agentchat.group import ContextVariables",
     "from autogen.agentchat.group.patterns.pattern import Pattern",
     "from autogen.io.run_response import RunResponseProtocol",

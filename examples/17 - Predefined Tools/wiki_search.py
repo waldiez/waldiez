@@ -13,11 +13,11 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""Wikipedia search Flow.
+"""wikipedia search flow.
 
 A example waldiez flow using wiki search
 
-Requirements: ag2[openai]==0.10.1, ag2[wikipedia]
+Requirements: ag2[openai]==0.10.2, ag2[wikipedia]
 Tags: wikipedia
 🧩 generated with ❤️ by Waldiez.
 """
@@ -65,6 +65,7 @@ from autogen import (
     register_function,
     runtime_logging,
 )
+from autogen.agentchat import ReplyResult
 from autogen.agentchat.group import ContextVariables
 from autogen.agentchat.group.patterns.pattern import Pattern
 from autogen.events import BaseEvent
@@ -124,7 +125,7 @@ start_logging()
 # Load model API keys
 # NOTE:
 # This section assumes that a file named:
-# "Wikipedia_search_Flo_api_keys.py"
+# "wikipedia_search_flo_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -151,10 +152,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-__MODELS_MODULE__ = load_api_key_module("Wikipedia_search_Flo")
+__MODELS_MODULE__ = load_api_key_module("wikipedia_search_flo")
 
 
-def get_Wikipedia_search_Flo_model_api_key(model_name: str) -> str:
+def get_wikipedia_search_flo_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -166,7 +167,7 @@ def get_Wikipedia_search_Flo_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_Wikipedia_search_Flo_model_api_key(model_name)
+    return __MODELS_MODULE__.get_wikipedia_search_flo_model_api_key(model_name)
 
 
 class GroupDict(TypedDict):
@@ -205,7 +206,8 @@ def wikipedia_search(
         verbose=False,
     )
 
-    return tool(query=query)
+    result = tool(query=query)
+    return ReplyResult(message=f"{result}")
 
 
 # Models
@@ -213,7 +215,7 @@ def wikipedia_search(
 gpt_4_1_llm_config: dict[str, Any] = {
     "model": "gpt-4.1",
     "api_type": "openai",
-    "api_key": get_Wikipedia_search_Flo_model_api_key("gpt_4_1"),
+    "api_key": get_wikipedia_search_flo_model_api_key("gpt_4_1"),
 }
 
 # Agents
@@ -528,8 +530,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _state_context_variables and isinstance(
                 _state_context_variables, dict
             ):
+                _new_context_variables = (
+                    _detected_pattern.context_variables.data.copy()
+                )
+                _new_context_variables.update(_state_context_variables)
                 _detected_pattern.context_variables = ContextVariables(
-                    data=_state_context_variables
+                    data=_new_context_variables
                 )
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
@@ -549,8 +555,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
+                    _new_context_variables = (
+                        _detected_pattern.context_variables.data.copy()
+                    )
+                    _new_context_variables.update(_state_context_variables)
                     _detected_pattern.context_variables = ContextVariables(
-                        data=_state_context_variables
+                        data=_new_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages

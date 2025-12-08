@@ -90,7 +90,7 @@ class TestEnsureWaldiezUniqueNames:
         assert not result["models"]
         assert not result["tools"]
         assert not result["chats"]
-        assert result["flow_name"] == "Test_Flow"
+        assert result["flow_name"] == "test_flow"
 
     def test_single_agent(self) -> None:
         """Test with single agent."""
@@ -101,7 +101,7 @@ class TestEnsureWaldiezUniqueNames:
 
         assert result["agent_names"] == {"agent1": "Test_Agent"}
         assert result["agents"] == [agent]
-        assert result["flow_name"] == "Test_Flow"
+        assert result["flow_name"] == "test_flow"
 
     def test_single_model(self) -> None:
         """Test with single model."""
@@ -207,7 +207,7 @@ class TestEnsureWaldiezUniqueNames:
         assert len(result["model_names"]) == 2
         assert len(result["tool_names"]) == 2
         assert len(result["chat_names"]) == 2
-        assert result["flow_name"] == "Complex_Flow"
+        assert result["flow_name"] == "complex_flow"
 
         # Check specific mappings
         assert result["agent_names"]["a1"] == "Main_Agent"
@@ -242,7 +242,7 @@ class TestEnsureWaldiezUniqueNames:
 
         # Flow name should be truncated to 8 characters
         assert len(result["flow_name"]) == 8
-        assert result["flow_name"] == "Very_Lon"
+        assert result["flow_name"] == "very_lon"
 
     def test_invalid_python_names_get_cleaned(self) -> None:
         """Test that invalid Python names get properly cleaned."""
@@ -398,7 +398,7 @@ class TestIntegration:
         assert result["chat_names"]["main_chat"] == "Main_Discussion"
         assert result["chat_names"]["review_chat"] == "Code_Review"
 
-        assert result["flow_name"] == "AI_Coding_Assistant"
+        assert result["flow_name"] == "ai_coding_assistant"
 
     def test_massive_name_conflicts(self) -> None:
         """Test scenario with many identical names."""

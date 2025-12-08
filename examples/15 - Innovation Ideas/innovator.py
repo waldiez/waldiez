@@ -17,7 +17,7 @@
 
 A waldiez flow that provides innovative ideas based on recent arxiv papers.
 
-Requirements: ag2[openai]==0.10.1, arxiv
+Requirements: ag2[openai]==0.10.2, arxiv
 Tags: arxiv
 🧩 generated with ❤️ by Waldiez.
 """
@@ -64,7 +64,7 @@ from autogen import (
     register_function,
     runtime_logging,
 )
-from autogen.agentchat import GroupChatManager, run_group_chat
+from autogen.agentchat import GroupChatManager, ReplyResult, run_group_chat
 from autogen.agentchat.group import ContextVariables
 from autogen.agentchat.group.patterns import AutoPattern
 from autogen.agentchat.group.patterns.pattern import Pattern
@@ -584,8 +584,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
             if _state_context_variables and isinstance(
                 _state_context_variables, dict
             ):
+                _new_context_variables = (
+                    _detected_pattern.context_variables.data.copy()
+                )
+                _new_context_variables.update(_state_context_variables)
                 _detected_pattern.context_variables = ContextVariables(
-                    data=_state_context_variables
+                    data=_new_context_variables
                 )
         if _state_messages and isinstance(_state_messages, list):
             __INITIAL_MSG__ = _state_messages
@@ -605,8 +609,12 @@ def _prepare_resume(state_json: str | Path | None = None) -> None:
                 if _state_context_variables and isinstance(
                     _state_context_variables, dict
                 ):
+                    _new_context_variables = (
+                        _detected_pattern.context_variables.data.copy()
+                    )
+                    _new_context_variables.update(_state_context_variables)
                     _detected_pattern.context_variables = ContextVariables(
-                        data=_state_context_variables
+                        data=_new_context_variables
                     )
             if _state_messages and isinstance(_state_messages, list):
                 __INITIAL_MSG__ = _state_messages

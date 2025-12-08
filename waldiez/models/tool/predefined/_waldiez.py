@@ -125,10 +125,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
         skip_deps = str(self.kwargs.get("skip_deps", "False")).lower() == "true"
         the_def = "async def" if is_async else "def"
         content = f'''
-from autogen.agentchat import ReplyResult
-
-
-{the_def} {self.name}(flow: str | Path | None = None, env_path: str | None = None, skip_deps: bool | None = None) -> list[str] | list[dict[str, Any]] | str:
+{the_def} {self.name}(flow: str | Path | None = None, env_path: str | None = None, skip_deps: bool | None = None) -> ReplyResult:
     """Run a waldiez flow and return its results.
 
     Args:
@@ -150,7 +147,7 @@ from autogen.agentchat import ReplyResult
     from waldiez import WaldiezRunner
     if skip_deps is None:
         skip_deps = {skip_deps}
-    if not flow or not os.path.exists(flow):
+    if not flow or (not flow.startswith("http") and not os.path.exists(flow)):
         flow = "{self.kwargs.get("flow")}"
     if isinstance(flow, Path):
         flow_str = str(flow)

@@ -101,9 +101,6 @@ class TavilySearchToolImpl(PredefinedTool):
             The content for the tool.
         """
         content = f'''
-from autogen.agentchat import ReplyResult
-
-
 def {self.name}(
     query: str,
     search_depth: str = "basic",

@@ -494,14 +494,13 @@ def check_diffs(output_ipynb_path: str, output_py_path: str) -> None:
         try:
             git_restore(output_ipynb_path)
         except BaseException:
-            # If restore fails (not in git yet?), we can still continue
             pass
     if diff_has_path_changes(output_ipynb_path):
         LOG.warning("The converted .ipynb file has path changes.")
-        # try:
-        #     git_restore(output_ipynb_path)
-        # except BaseException:
-        #     pass
+        try:
+            git_restore(output_ipynb_path)
+        except BaseException:
+            pass
     if diff_has_path_changes(output_py_path):
         LOG.warning("The converted .py file has path changes.")
         try:
