@@ -13,7 +13,7 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""a example waldiez flow using tavily search.
+"""A example waldiez flow using tavily search.
 
 A example waldiez flow using tavily search
 
@@ -184,7 +184,7 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 # Load tool secrets module if needed
 # NOTE:
 # This section assumes that a file named:
-# "a_example_waldiez_fl_tavily_search_secrets.py"
+# "A_example_waldiez_fl_tavily_search_secrets.py"
 # exists in the same directory as this file.
 # This file contains the secrets for the tool used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -211,7 +211,7 @@ def load_tool_secrets_module(flow_name: str, tool_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-load_tool_secrets_module("a_example_waldiez_fl", "tavily_search")
+load_tool_secrets_module("A_example_waldiez_fl", "tavily_search")
 
 
 def tavily_search(

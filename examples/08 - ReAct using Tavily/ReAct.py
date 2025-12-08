@@ -13,7 +13,7 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""react.
+"""ReAct.
 
 ReAct using Tavily
 
@@ -184,7 +184,7 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 # Load tool secrets module if needed
 # NOTE:
 # This section assumes that a file named:
-# "react_search_tool_secrets.py"
+# "ReAct_search_tool_secrets.py"
 # exists in the same directory as this file.
 # This file contains the secrets for the tool used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -211,7 +211,7 @@ def load_tool_secrets_module(flow_name: str, tool_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-load_tool_secrets_module("react", "search_tool")
+load_tool_secrets_module("ReAct", "search_tool")
 
 
 def search_tool(query: str) -> str:

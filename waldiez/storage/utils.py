@@ -190,6 +190,9 @@ def get_root_dir(user_id: str | None = None) -> Path:
     is_testing = (
         is_testing_env[0] in ("t", "y", "1") if is_testing_env else False
     )
+    # WALDIEZ_TESTING=true/yes/on/1
+    if is_testing_env == "on":
+        is_testing = True
     if is_testing:
         # allow overriding for tests
         root_dir = (

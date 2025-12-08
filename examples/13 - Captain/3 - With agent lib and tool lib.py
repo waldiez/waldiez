@@ -13,7 +13,7 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""3 - with agent lib and tool lib.
+"""3 - With agent lib and tool lib.
 
 Using CaptainAgent with agent library and tool library. Based on: <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/captainagent/#using-both-agent-library-and-tool-library>
 
@@ -185,7 +185,7 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 # Load tool secrets module if needed
 # NOTE:
 # This section assumes that a file named:
-# "wf_3___with_agent_lib_a_new_tool_secrets.py"
+# "wf_3___With_agent_lib_a_new_tool_secrets.py"
 # exists in the same directory as this file.
 # This file contains the secrets for the tool used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -212,7 +212,7 @@ def load_tool_secrets_module(flow_name: str, tool_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-load_tool_secrets_module("wf_3___with_agent_lib_a", "new_tool")
+load_tool_secrets_module("wf_3___With_agent_lib_a", "new_tool")
 
 """Replace this with your code.
 

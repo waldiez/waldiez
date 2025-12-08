@@ -42,13 +42,23 @@ export const DEFAULT_CUSTOM_TOOL_CONTENT = `
 make sure a function with the same name
 as the tool is defined in the code.
 """
-
-# Example:
-# tool name: 'new_tool'
 #
-# def new_tool() -> str:
-#     """Tool entry point."""
-#     return "Hello, world!"
+## Example:
+##
+## tool name: 'new_tool'
+##
+# from autogen.agentchat.group import AgentNameTarget, ContextVariables, ReplyResult
+#
+# def new_tool(message: str, context_variables: ContextVariables) -> ReplyResult:
+#    """Tool description"""
+#    context_variables["var_1"] = True
+#    context_variables["var_2"] = message
+#
+#    return ReplyResult(
+#        message="Context information provided and stored.",
+#        context_variables=context_variables,
+#        target=AgentNameTarget("Assistant1"),
+#    )
 #
 # Add your code below
 

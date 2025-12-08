@@ -116,7 +116,7 @@ def ensure_unique_names(
         prefix="wf",
         max_length=flow_name_max_length,
     )
-    all_names[flow_id] = all_names[flow_id].lower()
+    # all_names[flow_id] = all_names[flow_id].lower()
     flow_name = all_names[flow_id]
 
     result: WaldiezUniqueNames = {

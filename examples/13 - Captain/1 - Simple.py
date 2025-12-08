@@ -13,7 +13,7 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""1 - simple.
+"""1 - Simple.
 
 Using CaptainAgent without libraries. Based on: <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/captainagent/#using-captainagent-without-libraries>
 

@@ -58,9 +58,8 @@ class ModelProcessor:
             model_dict_str = self.serializer.serialize(model_config, tabs=0)
             # and use the getter function to get it when needed
             if api_key:  # pragma: no branch
-                extra_arg = (
-                    f'get_{self.flow_name}_model_api_key("{model_name}")'
-                )
+                flow_lower = self.flow_name.lower()
+                extra_arg = f'get_{flow_lower}_model_api_key("{model_name}")'
                 # remove the \n}, from the end of the dict string
                 model_dict_str = model_dict_str.rstrip("\n},")
                 model_dict_str += f',\n    "api_key": {extra_arg}\n}}'
@@ -80,6 +79,7 @@ class ModelProcessor:
     def _write_api_keys(self) -> None:
         """Write API keys file."""
         flow_name_upper = self.flow_name.upper()
+        flow_name_lower = self.flow_name.lower()
         api_keys_content = f'''{FILE_HEADER}
 # flake8: noqa: E501
 # pylint: disable=line-too-long
@@ -101,7 +101,7 @@ __{flow_name_upper}_MODEL_API_KEYS__ = {{'''
         api_keys_content += "\n}\n"
         api_keys_content += f'''
 
-def get_{self.flow_name}_model_api_key(model_name: str) -> str:
+def get_{flow_name_lower}_model_api_key(model_name: str) -> str:
     """Get the api key for the model.
 
     Parameters
@@ -126,7 +126,7 @@ def get_{self.flow_name}_model_api_key(model_name: str) -> str:
 '''
 
         # Write the file
-        file_name = f"{self.flow_name}_api_keys.py"
+        file_name = f"{flow_name_lower}_api_keys.py"
         output_path = (
             self.output_dir / file_name if self.output_dir else Path(file_name)
         )

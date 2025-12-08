@@ -21,7 +21,7 @@ from .processor import ModelProcessor
 
 
 class ModelsExporter(Exporter[ModelExtras]):
-    """Mdels exporter with structured extras."""
+    """Models exporter with structured extras."""
 
     def __init__(
         self,
@@ -185,9 +185,10 @@ class ModelsExporter(Exporter[ModelExtras]):
             "Load model API keys",
             for_notebook=self.config.for_notebook,
         )
+        flow_lower = self.flow_name.lower()
         loader_script = f'''{comment}# NOTE:
 # This section assumes that a file named:
-# "{self.flow_name}_api_keys.py"
+# "{flow_lower}_api_keys.py"
 # exists in the same directory as this file.
 # This file contains the API keys for the models used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -213,10 +214,10 @@ def load_api_key_module(flow_name: str) -> ModuleType:
         return importlib.reload(sys.modules[module_name])
     return importlib.import_module(module_name)
 
-__MODELS_MODULE__ = load_api_key_module("{self.flow_name}")
+__MODELS_MODULE__ = load_api_key_module("{flow_lower}")
 
 
-def get_{self.flow_name}_model_api_key(model_name: str) -> str:
+def get_{flow_lower}_model_api_key(model_name: str) -> str:
     """Get the model api key.
     Parameters
     ----------
@@ -228,7 +229,7 @@ def get_{self.flow_name}_model_api_key(model_name: str) -> str:
     str
         The model api key.
     """
-    return __MODELS_MODULE__.get_{self.flow_name}_model_api_key(model_name)
+    return __MODELS_MODULE__.get_{flow_lower}_model_api_key(model_name)
 
 '''
         return loader_script

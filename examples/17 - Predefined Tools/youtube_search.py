@@ -13,7 +13,7 @@
 # pyright: reportOperatorIssue=false,reportOptionalMemberAccess=false,reportPossiblyUnboundVariable=false,reportUnreachable=false,reportUnusedImport=false,reportUnknownArgumentType=false,reportUnknownMemberType=false
 # pyright: reportUnknownLambdaType=false,reportUnnecessaryIsInstance=false,reportUnusedParameter=false,reportUnusedVariable=false,reportUnknownVariableType=false
 
-"""youtube search waldiez flow.
+"""YouTube search Waldiez Flow.
 
 A example waldiez flow using YouTube search
 
@@ -184,7 +184,7 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 # Load tool secrets module if needed
 # NOTE:
 # This section assumes that a file named:
-# "youtube_search_waldi_youtube_search_secrets.py"
+# "YouTube_search_Waldi_youtube_search_secrets.py"
 # exists in the same directory as this file.
 # This file contains the secrets for the tool used in this flow.
 # It should be .gitignored and not shared publicly.
@@ -211,7 +211,7 @@ def load_tool_secrets_module(flow_name: str, tool_name: str) -> ModuleType:
     return importlib.import_module(module_name)
 
 
-load_tool_secrets_module("youtube_search_waldi", "youtube_search")
+load_tool_secrets_module("YouTube_search_Waldi", "youtube_search")
 
 
 def youtube_search(
