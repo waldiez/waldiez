@@ -121,7 +121,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
             if runtime_kwargs
             else "True"
         )
-        structured_io = str(use_structured_io).lower() == "false"
+        structured_io = str(use_structured_io).lower() == "true"
         skip_deps = str(self.kwargs.get("skip_deps", "False")).lower() == "true"
         the_def = "async def" if is_async else "def"
         content = f'''
@@ -140,8 +140,8 @@ class WaldiezFlowToolImpl(PredefinedTool):
         FileNotFoundError: If the flow path cannot be resolved.
         RuntimeError: If running the flow fails.
     """
+    import json
     import tempfile
-    import os
     import shutil
     from urllib.request import urlopen
     from waldiez import WaldiezRunner
@@ -174,7 +174,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
 '''
         content += """
     try:
-        runner = WaldiezRunner.load(flow, dot_env=env_path, skip_deps=skip_deps)
+        runner = WaldiezRunner.load(flow_path, dot_env=env_path, skip_deps=skip_deps)
 """
         if is_async:
             content += f"""
@@ -185,9 +185,9 @@ class WaldiezFlowToolImpl(PredefinedTool):
         result = runner.run(output_path=output_path, structured_io={structured_io}, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
 """
         content += """
-        return ReplyResult(message=f"{result}")
+        return ReplyResult(message=json.dumps(result))
     except BaseException as error:
-        print(error)
+        print("error during waat call: ", error)
         raise RuntimeError(str(error)) from error
     finally:
         try:
