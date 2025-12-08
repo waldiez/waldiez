@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 
-# pyright: reportUnknownVariableType=false
+# pyright: reportUnknownVariableType=false,reportUnknownMemberType=false
+# pyright: reportUnknownArgumentType=false
 
 """WaldiezCheckpoint data structures."""
 
@@ -104,6 +105,8 @@ class WaldiezCheckpoint:
             return []
         history_entries = history_dict.get("history", [])
         if history_entries and isinstance(history_entries, list):
+            if history_entries:
+                self._check_if_tool_call_is_last(history_entries)
             return history_entries
         return []
 
@@ -203,6 +206,38 @@ class WaldiezCheckpoint:
                 ):
                     return data[0]
         return None
+
+    def _check_if_tool_call_is_last(
+        self,
+        history_entries: list[dict[str, Any]],
+    ) -> None:
+        """Check if the last message in the history was a tool_call."""
+        if not history_entries:
+            return
+
+        last_entry = history_entries[-1]
+        state = last_entry.get("state")
+        if not isinstance(state, dict):
+            return
+
+        messages = state.get("messages")
+        if not isinstance(messages, list) or not messages:
+            return
+
+        last_msg = messages[-1]
+        if not isinstance(last_msg, dict):
+            return
+
+        if "tool_calls" not in last_msg:
+            return
+
+        # Remove the last message
+        messages.pop()
+        try:
+            with open(self.history_file, "w", encoding="utf-8") as f:
+                json.dump(history_entries, f, ensure_ascii=False)
+        except Exception:  # pylint: disable=broad-exception-caught
+            return
 
 
 @dataclass

@@ -150,6 +150,7 @@ export const PREDEFINED_TOOL_INSTRUCTIONS: { [key: string]: ReactNode | undefine
         </div>
     ),
     searxng_search: undefined,
+    waldiez_flow: undefined,
     shared: undefined,
     custom: undefined,
 };
@@ -217,6 +218,14 @@ export const getToolIcon = (toolLabel: string, toolType: string, size: number = 
                 <img
                     src={TOOL_ICONS.searxng_search}
                     alt="SearxNG Search Icon"
+                    style={{ width: size, height: size }}
+                />
+            );
+        case "waldiez_flow":
+            return (
+                <img
+                    src={TOOL_ICONS.waldiez_flow}
+                    alt="Waldiez flow tool icon"
                     style={{ width: size, height: size }}
                 />
             );
@@ -301,17 +310,17 @@ export const TOOL_TYPE_OPTIONS: { value: string; label: string; icon?: JSX.Eleme
             />
         ),
     },
-    {
-        value: "waldiez_flow",
-        label: "Waldiez Flow tool",
-        icon: (
-            <img
-                src={TOOL_ICONS.waldiez_flow}
-                alt="Waldiez flow tool icon"
-                style={{ width: 20, height: 20 }}
-            />
-        ),
-    },
+    // {
+    //     value: "waldiez_flow",
+    //     label: "Waldiez Flow tool",
+    //     icon: (
+    //         <img
+    //             src={TOOL_ICONS.waldiez_flow}
+    //             alt="Waldiez flow tool icon"
+    //             style={{ width: 20, height: 20 }}
+    //         />
+    //     ),
+    // },
     {
         value: "custom",
         label: "Custom Tool",
