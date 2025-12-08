@@ -106,7 +106,9 @@ class WaldiezCheckpoint:
         history_entries = history_dict.get("history", [])
         if history_entries and isinstance(history_entries, list):
             if history_entries:
-                self._check_if_tool_call_is_last(history_entries)
+                history_entries = self._check_if_tool_call_is_last(
+                    history_entries
+                )
             return history_entries
         return []
 
@@ -210,34 +212,35 @@ class WaldiezCheckpoint:
     def _check_if_tool_call_is_last(
         self,
         history_entries: list[dict[str, Any]],
-    ) -> None:
+    ) -> list[dict[str, Any]]:
         """Check if the last message in the history was a tool_call."""
         if not history_entries:
-            return
+            return history_entries
 
         last_entry = history_entries[-1]
         state = last_entry.get("state")
         if not isinstance(state, dict):
-            return
+            return history_entries
 
         messages = state.get("messages")
         if not isinstance(messages, list) or not messages:
-            return
+            return history_entries
 
         last_msg = messages[-1]
         if not isinstance(last_msg, dict):
-            return
+            return history_entries
 
         if "tool_calls" not in last_msg:
-            return
+            return history_entries
 
         # Remove the last message
         messages.pop()
         try:
             with open(self.history_file, "w", encoding="utf-8") as f:
-                json.dump(history_entries, f, ensure_ascii=False)
+                json.dump({"history": history_entries}, f, ensure_ascii=False)
         except Exception:  # pylint: disable=broad-exception-caught
-            return
+            pass
+        return history_entries
 
 
 @dataclass
