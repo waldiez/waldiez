@@ -90,28 +90,6 @@ class WaldiezCheckpoint:
                 json.dump(state, f)
             self.refresh()
 
-    def history(self) -> list[dict[str, Any]]:
-        """Get the state history.
-
-        Returns
-        -------
-        list[dict[str, Any]]
-            The stored history entries
-        """
-        if not self.history_file.is_file():
-            return []
-        history_dict = self._load_json(self.history_file)
-        if not history_dict:
-            return []
-        history_entries = history_dict.get("history", [])
-        if history_entries and isinstance(history_entries, list):
-            if history_entries:
-                history_entries = self._check_if_tool_call_is_last(
-                    history_entries
-                )
-            return history_entries
-        return []
-
     def to_dict(self, include_history: bool = False) -> dict[str, Any]:
         """Get the dict representation of the checkpoint.
 
@@ -194,22 +172,28 @@ class WaldiezCheckpoint:
         """
         return str(int(timestamp.timestamp() * 1_000_000))
 
-    @staticmethod
-    def _load_json(path: Path) -> dict[str, Any] | None:
-        with suppress(Exception):
-            with open(path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                if isinstance(data, dict):
-                    return data
-                if (
-                    isinstance(data, list)
-                    and data
-                    and isinstance(data[0], dict)
-                ):
-                    return data[0]
-        return None
+    def history(self) -> list[dict[str, Any]]:
+        """Get the state history.
 
-    def _check_if_tool_call_is_last(
+        Returns
+        -------
+        list[dict[str, Any]]
+            The stored history entries
+        """
+        if not self.history_file.is_file():
+            return []
+        history_dict = self._load_json(self.history_file)
+        if not history_dict:
+            return []
+        history_entries = history_dict.get("history", [])
+        if history_entries and isinstance(history_entries, list):
+            history_entries = self._remove_trailing_tool_calls(history_entries)
+            return self._dedupe_history(history_entries)
+        if not isinstance(history_entries, list):
+            self._store_history([])
+        return []
+
+    def _remove_trailing_tool_calls(
         self,
         history_entries: list[dict[str, Any]],
     ) -> list[dict[str, Any]]:
@@ -236,19 +220,63 @@ class WaldiezCheckpoint:
                 modified = True
 
         if modified:
-            try:
-                with open(self.history_file, "w", encoding="utf-8") as f:
-                    json.dump(
-                        {"history": history_entries},
-                        f,
-                        indent=2,
-                        ensure_ascii=False,
-                        default=str,
-                    )
-            except Exception:  # pylint: disable=broad-exception-caught
-                pass
+            self._store_history(history_entries)
 
         return history_entries
+
+    def _dedupe_history(
+        self, entries: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
+        """Remove duplicate history entries based on state & metadata."""
+        seen = set()
+        deduped = []
+
+        for entry in entries:
+            key = json.dumps(
+                {
+                    "state": entry.get("state"),
+                    "metadata": entry.get("metadata"),
+                },
+                sort_keys=True,
+                default=str,
+            )
+            if key not in seen:
+                deduped.append(entry)
+                seen.add(key)
+
+        # Only if something changed
+        if len(deduped) != len(entries):
+            self._store_history(deduped)
+
+        return deduped
+
+    def _store_history(self, entries: list[dict[str, Any]]) -> None:
+        try:
+            with open(self.history_file, "w", encoding="utf-8") as f:
+                json.dump(
+                    {"history": entries},
+                    f,
+                    indent=2,
+                    ensure_ascii=False,
+                    default=str,
+                )
+        except Exception:  # pylint: disable=broad-exception-caught
+            pass
+
+    @staticmethod
+    def _load_json(path: Path) -> dict[str, Any] | None:
+        with suppress(Exception):
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, dict):
+                    return data
+                if (
+                    isinstance(data, list)
+                    and data
+                    and isinstance(data[0], dict)
+                ):
+                    return data[0]
+        return None
 
 
 @dataclass
