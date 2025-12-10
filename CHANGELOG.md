@@ -8,8 +8,8 @@ The contents of each release will be used in
 ## v0.6.8
 
 - Updated ag2 dependency to 0.10.2
-- Allow case sensitive variable names
-- UI enhancements
+- Updated code generation to allow case sensitive names
+- Minor UI enhancements
 - Bug fixes
 - Dependency updates
 
