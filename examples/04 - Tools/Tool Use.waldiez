@@ -1,7 +1,7 @@
 {
   "id": "KYd3gDaGM1jXMYVYA03u6OcQzVVZNpUn",
   "type": "flow",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "storageId": "wf-afhmSNzq3QHTSjqYUhtAF",
   "name": "Tool Use",
   "description": "Tool Use and Conversational Chess",

@@ -1,7 +1,7 @@
 {
   "id": "wf-WTy6LgJUIY2XuNBggSfb4",
   "type": "flow",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "storageId": "wf-WTy6LgJUIY2XuNBggSfb4",
   "name": "Planning 2",
   "description": "Planning and Stock Report Generation, using Ag2’s group patterns.",

@@ -1,7 +1,7 @@
 {
   "id": "wf-py-mZACp7XV0RVTT6PJEo",
   "type": "flow",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "storageId": "wf-py-mZACp7XV0RVTT6PJEo",
   "name": "HR_Remote",
   "description": "A waldiez flow",

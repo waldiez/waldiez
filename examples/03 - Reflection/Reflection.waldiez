@@ -1,7 +1,7 @@
 {
   "id": "wf-pwbSjRAgEtVtWK5EQPAzx",
   "type": "flow",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "storageId": "wf-pwbSjRAgEtVtWK5EQPAzx",
   "name": "Blog post Writing with Reflection",
   "description": "Reflection and Blog post Writing",
