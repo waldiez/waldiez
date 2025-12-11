@@ -8,6 +8,7 @@ The contents of each release will be used in
 ## v0.6.10
 
 - Fixed an issue in studio regarding base url and static assets
+- Dependency updates
 
 ## v0.6.9
 
