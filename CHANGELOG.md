@@ -5,6 +5,10 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## v0.6.10
+
+- Fixed an issue in studio regarding to base url handling
+
 ## v0.6.9
 
 - Updated ag2 dependency to 0.10.2
@@ -15,11 +19,7 @@ The contents of each release will be used in
 
 ## v0.6.8
 
-- Updated ag2 dependency to 0.10.2
-- Updated code generation to allow case sensitive names
-- Minor UI enhancements
-- Bug fixes
-- Dependency updates
+- Invalid/Yanked release
 
 ## v0.6.7
 
