@@ -7,6 +7,7 @@ The contents of each release will be used in
 
 ## v0.6.10
 
+- Added Claude 4.5 Opus and Sonnet 4.5 Haiku predefined model options
 - Fixed an issue in studio regarding base url and static assets
 - Dependency updates
 
