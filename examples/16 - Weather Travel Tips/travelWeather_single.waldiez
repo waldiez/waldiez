@@ -1,7 +1,7 @@
 {
   "id": "id-3050d67d-3c75-47e2-a234-064f4cfd5428",
   "type": "flow",
-  "version": "0.6.8",
+  "version": "0.6.9",
   "storageId": "wf-1750886744218w88W3p9epKgm3XDm0VWFl",
   "name": "Weather tips agent ",
   "description": "A workflow containing a single agent capable of understanding images, writing code and providing tips for the weather.",

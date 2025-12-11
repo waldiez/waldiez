@@ -21,7 +21,7 @@ jobs:
       name: npmi
       url: https://www.npmjs.com/package/@waldiez/react
     steps:
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v6.0.1
         with:
           submodules: "recursive"
 
@@ -60,12 +60,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Package Python 🐍 distribution 📦
     steps:
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v6.0.1
         with:
           submodules: "recursive"
 
       - name: Set up Python
-        uses: actions/setup-python@v6.0.0
+        uses: actions/setup-python@v6.1.0
         with:
           python-version: "3.12"
 
