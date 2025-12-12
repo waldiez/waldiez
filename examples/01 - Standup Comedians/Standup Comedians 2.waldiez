@@ -1,7 +1,7 @@
 {
   "id": "id-e7670f87-2625-4485-9bd2-092107b14466",
   "type": "flow",
-  "version": "0.6.10",
+  "version": "0.6.11",
   "storageId": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "name": "Standup comedians 2",
   "description": "Standup comedians without user input.",

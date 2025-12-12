@@ -1,7 +1,7 @@
 {
   "id": "NCrX1wa1nZfOh6ngq53yDxyzUE5dSmCe",
   "type": "flow",
-  "version": "0.6.10",
+  "version": "0.6.11",
   "storageId": "wf-1751356647504EGfkn3kn88sBiytPWhvwi",
   "name": "Wikipedia search Flow",
   "description": "A example waldiez flow using wiki search",

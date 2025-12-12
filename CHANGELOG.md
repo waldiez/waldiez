@@ -5,6 +5,10 @@ The contents of each release will be used in
 "gh release create"
  -->
 
+## v0.6.11
+
+- Fixed an issue in vscode extension with step-by-step mode state and view updates
+
 ## v0.6.10
 
 - Added Claude 4.5 Opus and Sonnet 4.5 Haiku predefined model options
