@@ -4,8 +4,10 @@
 # flake8: noqa: E501
 """Predefined Waldiez tool for Waldiez (like inception or sth)."""
 
+import json
 from typing import Any
 
+from ...common import get_valid_python_variable_name
 from ._config import PredefinedToolConfig
 from .protocol import PredefinedTool
 
@@ -14,8 +16,13 @@ class WaldiezFlowToolImpl(PredefinedTool):
     """Perplexity AI search tool for Waldiez."""
 
     required_secrets: list[str] = []
-    required_kwargs: dict[str, type] = {"flow": str, "skip_deps": bool}
-    _kwargs: dict[str, Any] = {"skip_deps": False}
+    required_kwargs: dict[str, type] = {
+        "flow": str,
+        "name": str,
+        "description": str,
+        "skip_deps": bool,
+    }
+    _kwargs: dict[str, Any] = {"skip_deps": False, "message": None}
 
     @property
     def name(self) -> str:
@@ -88,6 +95,9 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 self._kwargs[key] = casted
             except Exception:  # pylint: disable=broad-exception-caught
                 pass
+        message = kwargs.get("message", None)
+        if isinstance(message, str):
+            self._kwargs["message"] = message
         return missing
 
     # pylint: disable=unused-argument
@@ -124,14 +134,15 @@ class WaldiezFlowToolImpl(PredefinedTool):
         structured_io = str(use_structured_io).lower() == "true"
         skip_deps = str(self.kwargs.get("skip_deps", "False")).lower() == "true"
         the_def = "async def" if is_async else "def"
+        name = get_valid_python_variable_name(self.kwargs["name"])
+        description = self.kwargs["description"]
+        message = self.kwargs["message"]
+        message_arg = "None"
+        if message:
+            message_arg = f"{json.dumps(message)}"
         content = f'''
-{the_def} {self.name}(flow: str | Path | None = None, env_path: str | None = None, skip_deps: bool | None = None) -> ReplyResult:
-    """Run a waldiez flow and return its results.
-
-    Args:
-        flow: The path of te flow to run.
-        env_path: Optional path to file with environment variables to use for the flow.
-        skip_deps : Skip 'pip install' dependencies before running the flow.
+{the_def} {name}() -> ReplyResult:
+    """{description}
 
     Returns:
         list[str] | list[dict[str, Any]] | str: The flow results.
@@ -145,10 +156,8 @@ class WaldiezFlowToolImpl(PredefinedTool):
     import shutil
     from urllib.request import urlopen
     from waldiez import WaldiezRunner
-    if skip_deps is None:
-        skip_deps = {skip_deps}
-    if not flow or (not flow.startswith("http") and not os.path.exists(flow)):
-        flow = "{self.kwargs.get("flow")}"
+    skip_deps = {skip_deps}
+    flow = "{self.kwargs.get("flow")}"
     if isinstance(flow, Path):
         flow_str = str(flow)
     else:
@@ -157,7 +166,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
     is_http_url = isinstance(flow_str, str) and (
         flow_str.startswith("http://") or flow_str.startswith("https://")
     )
-    tmp_dir = tempfile.mkdtemp(prefix="waldiez_flow_")
+    tmp_dir = tempfile.mkdtemp(prefix="wlz-tool")
     flow_path = os.path.join(tmp_dir, "flow.waldiez")
     output_path = os.path.join(tmp_dir, "flow.py")
     if is_http_url:
@@ -178,11 +187,25 @@ class WaldiezFlowToolImpl(PredefinedTool):
 """
         if is_async:
             content += f"""
-        result = await runner.a_run(output_path=output_path, structured_io={structured_io}, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
+        result = await runner.a_run(
+            output_path=output_path,
+            structured_io={structured_io},
+            skip_mmd=True,
+            skip_timeline=True,
+            skip_symlinks=True,
+            message={message_arg},
+        )
 """
         else:
             content += f"""
-        result = runner.run(output_path=output_path, structured_io={structured_io}, skip_mmd=True, skip_timeline=True, skip_symlinks=True)
+        result = runner.run(
+            output_path=output_path,
+            structured_io={structured_io},
+            skip_mmd=True,
+            skip_timeline=True,
+            skip_symlinks=True,
+            message={message_arg},
+        )
 """
         content += """
         return ReplyResult(message=json.dumps(result))

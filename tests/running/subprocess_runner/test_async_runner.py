@@ -320,7 +320,9 @@ async def test_run_subprocess_success(
         with patch.object(runner, "_cleanup", new_callable=AsyncMock):
             flow_path = Path("test_flow.waldiez")
 
-            result = await runner.run_subprocess(flow_path)
+            result = await runner.run_subprocess(
+                flow_path, mode="run", message=None
+            )
 
             assert result is True
             mock_create_subprocess.assert_called_once()
@@ -345,7 +347,9 @@ async def test_run_subprocess_failure(
         with patch.object(runner, "_cleanup", new_callable=AsyncMock):
             flow_path = Path("test_flow.waldiez")
 
-            result = await runner.run_subprocess(flow_path)
+            result = await runner.run_subprocess(
+                flow_path, mode="run", message=None
+            )
 
             assert result is False
             mock_output_callback.assert_called_once()  # Completion message
@@ -365,7 +369,9 @@ async def test_run_subprocess_exception(
     flow_path = Path("test_flow.waldiez")
 
     with patch.object(runner, "_cleanup", new_callable=AsyncMock):
-        result = await runner.run_subprocess(flow_path)
+        result = await runner.run_subprocess(
+            flow_path, mode="run", message=None
+        )
 
         assert result is False
         mock_output_callback.assert_called_once()  # Error message

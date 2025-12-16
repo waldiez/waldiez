@@ -65,6 +65,7 @@ class BaseSubprocessRunner:
         flow_path: Path,
         output_path: str | Path | None = None,
         mode: Literal["debug", "run"] = "run",
+        message: str | None = None,
         structured: bool = True,
         force: bool = True,
     ) -> list[str]:
@@ -78,6 +79,8 @@ class BaseSubprocessRunner:
             Path to the output file
         mode : Literal["debug", "run"]
             Execution mode ('debug', 'run', etc.)
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
         structured : bool
             Whether to use structured I/O
         force : bool
@@ -124,6 +127,8 @@ class BaseSubprocessRunner:
                 cmd.extend(["--breakpoints", entry])
         if self.checkpoint:
             cmd.extend(["--checkpoint", self.checkpoint.id])
+        if message:
+            cmd.extend(["--message", json.dumps(message)])
         self.logger.debug("Runner command: %s", " ".join(cmd))
         return cmd
 

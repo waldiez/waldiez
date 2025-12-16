@@ -54,6 +54,7 @@ class ChatsProcessor:
         for_notebook: bool,
         is_async: bool,
         cache_seed: int | None,
+        message: str | None,
         serializer: Serializer,
         extras: ChatExtras,
     ) -> None:
@@ -79,6 +80,8 @@ class ChatsProcessor:
             Whether the chat is asynchronous.
         cache_seed : int | None
             The cache seed for the export, if any.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
         serializer : Serializer
             The serializer to use for escaping quotes in strings.
         extras : ChatExtras
@@ -95,6 +98,7 @@ class ChatsProcessor:
         self._is_async = is_async
         self._for_notebook = for_notebook
         self._cache_seed = cache_seed
+        self._message = message
         self._serializer = serializer
         self._extras = extras
         chat_tabs = 1
@@ -137,10 +141,13 @@ class ChatsProcessor:
         """
         message_arg = "messages"
         message_var = "__INITIAL_MSG__"
+        message_val = "None" if not self._message else json.dumps(self._message)
         if len(self._chats.main) == 0:
             if not self._root_group_manager:
                 return ""
-            self._extras.set_chat_prerequisites(f"{message_var} = None")
+            self._extras.set_chat_prerequisites(
+                f"{message_var} = {message_val}"
+            )
             return export_group_chats(
                 agent_names=self._agent_names,
                 manager=self._root_group_manager,
@@ -158,13 +165,16 @@ class ChatsProcessor:
                 and not chat.message.is_method()
             ):
                 chat_massage_string: str | None = None
-                before_chat = f'{message_var}=""'
-                if chat.message.type == "string":
-                    chat_massage_string = chat.message.content
-                    before_chat = (
-                        f"{message_var}={json.dumps(chat_massage_string)}"
-                    )
-                self._extras.set_chat_prerequisites(before_chat)
+                before_chat = f'{message_var} = ""'
+                if self._message:
+                    before_chat += f"{json.dumps(message_val)}"
+                else:
+                    if chat.message.type == "string":
+                        chat_massage_string = chat.message.content
+                        before_chat = (
+                            f"{message_var}={json.dumps(chat_massage_string)}"
+                        )
+                    self._extras.set_chat_prerequisites(before_chat)
                 return export_group_chats(
                     agent_names=self._agent_names,
                     manager=recipient,
@@ -178,6 +188,7 @@ class ChatsProcessor:
                 recipient=recipient,
                 chat=chat,
                 message_kwarg=(message_arg, message_var),
+                message_override=self._message,
                 agent_names=self._agent_names,
                 chat_names=self._chats.names,
                 serializer=self._serializer.serialize,

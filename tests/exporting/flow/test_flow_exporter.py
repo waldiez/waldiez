@@ -69,6 +69,7 @@ def _export_flow(
             output_dir=output_dir,
             uploads_root=None,
             for_notebook=for_notebook,
+            message=None,
             is_async=is_async,
         )
     )

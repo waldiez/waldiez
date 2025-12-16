@@ -4,10 +4,13 @@
  */
 type PredefinedKwargType = "string" | "boolean";
 
-type PredefinedKwargConfig = {
+export type PredefinedKwargConfig = {
     label: string;
     key: string;
     type?: PredefinedKwargType; // default to "string" if omitted
+    multi?: boolean; // if true, use a textarea
+    optional?: boolean; // if true, allow empty/not-set
+    info?: string; // if set, add additional info icon/message
 };
 
 export const PREDEFINED_TOOL_TYPES = [
@@ -69,7 +72,19 @@ export const PREDEFINED_TOOL_REQUIRED_KWARGS: Record<string, PredefinedKwargConf
     perplexity_search: [],
     searxng_search: [],
     waldiez_flow: [
-        { label: "Flow path", key: "flow", type: "string" },
-        { label: "Skip installing dependencies", key: "skip_deps", type: "boolean" },
+        {
+            label: "Flow path",
+            key: "flow",
+            type: "string",
+            info: "Enter either the path (in the runner) of the flow, or the url to download it from.",
+        },
+        { label: "Tool name", key: "name", type: "string" },
+        { label: "Tool description", key: "description", type: "string", multi: true },
+        { label: "Initial message", key: "message", type: "string", multi: true, optional: true },
+        {
+            label: "Skip installing flow's dependencies",
+            key: "skip_deps",
+            type: "boolean",
+        },
     ],
 };

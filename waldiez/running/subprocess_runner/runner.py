@@ -201,9 +201,11 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool | None = None,
+        message: str | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
         skip_symlinks: bool = False,
+        skip_deps: bool | None = None,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
@@ -217,12 +219,16 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             The runtime uploads root, by default None.
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print'.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
         skip_symlinks : bool
             Whether to skip creating symlinks for checkpoints.
+        skip_deps : bool | None
+            Whether to skip installing dependencies.
         dot_env : str | Path | None
             The path to the .env file, if any.
         **kwargs : Any
@@ -243,9 +249,11 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             temp_dir=temp_dir,
             output_file=output_file,
             uploads_root=Path(uploads_root) if uploads_root else None,
+            message=message,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
             skip_symlinks=skip_symlinks,
+            skip_deps=skip_deps,
             dot_env=dot_env,
             **kwargs,
         )
@@ -270,6 +278,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None,
         skip_mmd: bool,
         skip_timeline: bool,
         skip_symlinks: bool,
@@ -289,7 +298,11 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
 
             # Run subprocess
             # noinspection PyTypeChecker
-            runner.run_subprocess(self._waldiez_file, mode=self.mode)
+            runner.run_subprocess(
+                self._waldiez_file,
+                mode=self.mode,
+                message=message,
+            )
             return self.read_from_output(output_file.parent)
 
         except BaseException as e:
@@ -308,9 +321,11 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool | None = None,
+        message: str | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
         skip_symlinks: bool = False,
+        skip_deps: bool | None = None,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
@@ -324,12 +339,16 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             The runtime uploads root.
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print'.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
         skip_symlinks : bool
             Whether to skip creating symlinks for checkpoints.
+        skip_deps : bool | None
+            Whether to skip installing dependencies.
         dot_env : str | Path | None
             The path to the .env file, if any.
         **kwargs : Any
@@ -350,6 +369,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             temp_dir=temp_dir,
             output_file=output_file,
             uploads_root=Path(uploads_root) if uploads_root else None,
+            message=message,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
             skip_symlinks=skip_symlinks,
@@ -363,6 +383,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None,
         skip_mmd: bool,
         skip_timeline: bool,
         skip_symlinks: bool,
@@ -378,6 +399,8 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             Output file path
         uploads_root : Path | None
             Uploads root directory
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
         skip_mmd : bool
             Skip mermaid diagram generation
         skip_timeline : bool
@@ -410,6 +433,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             await runner.run_subprocess(
                 self._waldiez_file,
                 mode=self.mode,
+                message=message,
             )
             return await self.a_read_from_output(output_file.parent)
 

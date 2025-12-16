@@ -104,6 +104,15 @@ def run(
         dir_okay=True,
         resolve_path=True,
     ),
+    message: str | None = typer.Option(  # noqa: B008
+        None,
+        "--message",
+        "-m",
+        help=(
+            "Optional message to pass to the runner "
+            "This will override the flow's initial message if any"
+        ),
+    ),
     structured: bool = typer.Option(  # noqa: B008
         False,
         help=(
@@ -174,8 +183,6 @@ def run(
     ),
 ) -> None:
     """Run a Waldiez flow."""
-    os.environ["AUTOGEN_USE_DOCKER"] = "0"
-    os.environ["NEP50_DISABLE_WARNING"] = "1"
     output_path = _get_output_path(output, force)
     from waldiez.runner import create_runner
     from waldiez.storage import safe_name
@@ -216,7 +223,7 @@ def run(
     except ValueError as error:
         typer.echo(f"Invalid .waldiez file: {error}")
         raise typer.Exit(code=1) from error
-    _do_run(runner, output_path, uploads_root, structured, env_file)
+    _do_run(runner, output_path, uploads_root, structured, message, env_file)
 
 
 @app.command(
@@ -252,6 +259,15 @@ def convert(
         dir_okay=False,
         resolve_path=True,
     ),
+    message: str | None = typer.Option(  # noqa: B008
+        None,
+        "--message",
+        "-m",
+        help=(
+            "Optional initial message to pass to the generated file. "
+            "This will override the flow's initial message if any"
+        ),
+    ),
     force: bool = typer.Option(
         False,
         help="Override the output file if it already exists.",
@@ -283,6 +299,7 @@ def convert(
         output = Path(file).with_suffix(".py").resolve()
     exporter.export(
         output,
+        message=message,
         force=force,
         debug=debug,
     )
@@ -357,6 +374,7 @@ def _do_run(
     output_path: Path | None,
     uploads_root: Path | None,
     structured: bool,
+    message: str | None,
     env_file: Path | None,
 ) -> None:
     _error: Exception | None = None
@@ -370,9 +388,11 @@ def _do_run(
                 output_path,
                 uploads_root,
                 structured,  # structured_io
+                message,
                 False,  # skip_mmd
                 False,  # skip_timeline
                 False,  # skip_symlinks
+                False,  # skip_deps
                 env_file,
             )
             # os._exit(0 if _error is None else 1)
@@ -381,9 +401,11 @@ def _do_run(
                 output_path=output_path,
                 uploads_root=uploads_root,
                 structured_io=structured,
+                message=message,
                 skip_mmd=False,
                 skip_timeline=False,
                 skip_symlinks=False,
+                skip_deps=False,
                 dot_env=env_file,
             )
     except Exception as error:

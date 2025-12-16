@@ -267,7 +267,13 @@ const useAgentContentView = (id: string, data: WaldiezNodeAgentData) => {
                                         className="font-small agent-tool-name"
                                         data-testid={`agent-${id}-linked-tool-${index}`}
                                     >
-                                        {tool.data.label}
+                                        {tool.data.toolType !== "predefined"
+                                            ? tool.data.label
+                                            : tool.data.label !== "waldiez_flow"
+                                              ? tool.data.label
+                                              : typeof tool.data.kwargs?.name === "string"
+                                                ? tool.data.kwargs.name
+                                                : tool.data.label}
                                     </div>
                                 </div>
                             );

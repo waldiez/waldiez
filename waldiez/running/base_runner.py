@@ -4,6 +4,7 @@
 # pylint: disable=broad-exception-caught,too-many-try-statements,too-many-lines
 # pyright: reportUnknownMemberType=false, reportAttributeAccessIssue=false
 # pyright: reportUnknownArgumentType=false, reportUnusedParameter=false
+# flake8: noqa: C901
 """Base runner for Waldiez workflows."""
 
 import importlib.util
@@ -272,6 +273,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         self,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None = None,
     ) -> Path:
         """Run before the flow execution."""
         self.log.info("Preparing workflow file: %s", output_file)
@@ -281,9 +283,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         with chdir(to=temp_dir):
             self._exporter.export(
                 path=file_name,
-                force=True,
                 uploads_root=uploads_root,
+                message=message,
                 structured_io=WaldiezBaseRunner._structured_io,
+                force=True,
             )
             if self.dot_env_path and self.dot_env_path.is_file():
                 shutil.copyfile(
@@ -296,6 +299,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         self,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None,
     ) -> Path:
         """Run before the flow execution asynchronously."""
         temp_dir = Path(tempfile.mkdtemp(prefix="wlz-"))
@@ -305,6 +309,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             self._exporter.export(
                 path=file_name,
                 uploads_root=uploads_root,
+                message=message,
                 structured_io=self.structured_io,
                 force=True,
             )
@@ -321,6 +326,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None,
         skip_mmd: bool,
         skip_timeline: bool,
         skip_symlinks: bool,
@@ -336,6 +342,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None,
         skip_mmd: bool,
         skip_timeline: bool,
         skip_symlinks: bool,
@@ -442,6 +449,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         self,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None,
     ) -> Path:
         """Run the before_run method synchronously.
 
@@ -451,6 +459,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             The path to the output file.
         uploads_root : Path | None
             The root path for uploads, if any.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
 
         Returns
         -------
@@ -460,6 +470,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         return self._before_run(
             output_file=output_file,
             uploads_root=uploads_root,
+            message=message,
         )
 
     @override
@@ -467,6 +478,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         self,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None,
     ) -> Path:
         """Run the _a_before_run method asynchronously.
 
@@ -476,6 +488,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             The path to the output file.
         uploads_root : Path | None
             The root path for uploads, if any.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
 
         Returns
         -------
@@ -485,12 +499,14 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         return await self._a_before_run(
             output_file=output_file,
             uploads_root=uploads_root,
+            message=message,
         )
 
     def prepare(
         self,
         output_path: str | Path | None,
         uploads_root: str | Path | None,
+        message: str | None,
     ) -> tuple[Path, Path, Path | None]:
         """Prepare the paths and environment for running the flow.
 
@@ -500,6 +516,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             The output path for the flow, by default None.
         uploads_root : str | Path | None
             The root path for uploads, by default None.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
 
         Returns
         -------
@@ -516,21 +534,24 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         temp_dir = self.before_run(
             output_file=output_file,
             uploads_root=uploads_root_path,
+            message=message,
         )
         if not WaldiezBaseRunner._skip_deps:
             self.install_requirements()
         return temp_dir, output_file, uploads_root_path
 
-    # pylint: disable=too-many-locals,unused-argument
+    # pylint: disable=too-many-locals,unused-argument,too-complex
     @override
     def run(
         self,
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool | None = None,
+        message: str | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
         skip_symlinks: bool = False,
+        skip_deps: bool | None = None,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
@@ -544,12 +565,16 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             The runtime uploads root, by default None.
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print'.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
         skip_symlinks : bool
             Whether to skip creating symlinks for checkpoints.
+        skip_deps : bool | None
+            Whether to skip installing dependencies.
         dot_env : str | Path | None
             The path to the .env file, if any.
         **kwargs : Any
@@ -568,12 +593,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         StopRunningException
             If the run is stopped by the user.
         """
-        WaldiezBaseRunner._skip_deps = (
-            str(
-                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
-            ).lower()
-            == "true"
-        )
+        if isinstance(skip_deps, bool):
+            WaldiezBaseRunner._skip_deps = skip_deps
         if dot_env is not None:
             resolved = Path(dot_env).resolve()
             if resolved.is_file():
@@ -589,15 +610,18 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                     output_path,
                     uploads_root,
                     structured_io,
+                    message,
                     skip_mmd,
                     skip_timeline,
                     skip_symlinks,
+                    skip_deps,
                     dot_env,
                     **kwargs,
                 )
         temp_dir, output_file, uploads_root_path = self.prepare(
             output_path=output_path,
             uploads_root=uploads_root,
+            message=message,
         )
         WaldiezBaseRunner._running = True
         results: list[dict[str, Any]] = []
@@ -611,6 +635,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                     temp_dir=temp_dir,
                     output_file=output_file,
                     uploads_root=uploads_root_path,
+                    message=message,
                     skip_mmd=skip_mmd,
                     skip_timeline=skip_timeline,
                     skip_symlinks=skip_symlinks,
@@ -646,6 +671,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         self,
         output_path: str | Path | None,
         uploads_root: str | Path | None,
+        message: str | None,
     ) -> tuple[Path, Path, Path | None]:
         """Prepare the paths for the async run.
 
@@ -655,6 +681,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             The output path, by default None.
         uploads_root : str | Path | None
             The uploads root path, by default None.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
 
         Returns
         -------
@@ -668,6 +696,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         temp_dir = await self._a_before_run(
             output_file=output_file,
             uploads_root=uploads_root_path,
+            message=message,
         )
         if not WaldiezBaseRunner._skip_deps:
             await self.a_install_requirements()
@@ -679,9 +708,11 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
         structured_io: bool | None = None,
+        message: str | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
         skip_symlinks: bool = False,
+        skip_deps: bool | None = None,
         dot_env: str | Path | None = None,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
@@ -695,12 +726,16 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             The runtime uploads root.
         structured_io : bool
             Whether to use structured IO instead of the default 'input/print'.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
         skip_mmd : bool
             Whether to skip generating the mermaid diagram.
         skip_timeline : bool
             Whether to skip generating the timeline JSON.
         skip_symlinks : bool
             Whether to skip creating symlinks for checkpoints.
+        skip_deps : bool
+            Whether to skip installing dependencies.
         dot_env : str | Path | None
             The path to the .env file, if any.
         **kwargs : Any
@@ -719,12 +754,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         StopRunningException
             If the run is stopped by the user.
         """
-        WaldiezBaseRunner._skip_deps = (
-            str(
-                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
-            ).lower()
-            == "true"
-        )
+        if isinstance(skip_deps, bool):
+            WaldiezBaseRunner._skip_deps = skip_deps
         if dot_env is not None:
             resolved = Path(dot_env).resolve()
             if resolved.is_file():
@@ -736,6 +767,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         temp_dir, output_file, uploads_root_path = await self.a_prepare(
             output_path=output_path,
             uploads_root=uploads_root,
+            message=message,
         )
         WaldiezBaseRunner._running = True
         results: list[dict[str, Any]] = []

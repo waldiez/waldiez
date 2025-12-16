@@ -61,7 +61,7 @@ export const SideBar = (props: SidebarViewProps) => {
             <div className="waldiez-sidebar-content">
                 <ul>
                     <li
-                        className="clickable"
+                        className="clickable select-none"
                         id={`edit-flow-${flowId}-sidebar-button`}
                         data-testid={`edit-flow-${flowId}-sidebar-button`}
                         onClick={onOpenEditModal}
@@ -77,7 +77,7 @@ export const SideBar = (props: SidebarViewProps) => {
                         )}
                     </li>
                     <li
-                        className="clickable"
+                        className="clickable select-none"
                         data-node-type="model"
                         data-testid="show-models"
                         onClick={onShowModels}
@@ -92,7 +92,7 @@ export const SideBar = (props: SidebarViewProps) => {
                         )}
                     </li>
                     <li
-                        className="clickable"
+                        className="clickable select-none"
                         data-node-type="tool"
                         data-testid="show-tools"
                         onClick={onShowTools}
@@ -107,7 +107,7 @@ export const SideBar = (props: SidebarViewProps) => {
                         )}
                     </li>
                     <li
-                        className="clickable expandable"
+                        className="clickable expandable select-none"
                         data-node-type="agent"
                         data-testid="show-agents"
                         onClick={onShowAgents}

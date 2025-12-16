@@ -70,6 +70,7 @@ class WaldiezExporter:
         path: str | Path,
         structured_io: bool = False,
         uploads_root: Path | None = None,
+        message: str | None = None,
         force: bool = False,
         debug: bool = False,
     ) -> None:
@@ -84,6 +85,8 @@ class WaldiezExporter:
             by default False.
         uploads_root : str | Path | None, (optional)
             The uploads root, to get user-uploaded files, by default None.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
         force : bool, (optional)
             Override the output file if it already exists, by default False.
         debug : bool, (optional)
@@ -118,6 +121,7 @@ class WaldiezExporter:
                 path,
                 structured_io=structured_io,
                 uploads_root=uploads_root,
+                message=message,
                 debug=debug,
             )
         elif extension == ".ipynb":
@@ -125,6 +129,7 @@ class WaldiezExporter:
                 path,
                 structured_io=structured_io,
                 uploads_root=uploads_root,
+                message=message,
                 debug=debug,
             )
         else:
@@ -135,6 +140,7 @@ class WaldiezExporter:
         path: str | Path,
         structured_io: bool = False,
         uploads_root: Path | None = None,
+        message: str | None = None,
         debug: bool = False,
     ) -> None:
         """Export flow to jupyter notebook.
@@ -148,6 +154,8 @@ class WaldiezExporter:
             by default False.
         uploads_root : Path | None, optional
             The uploads root, to get user-uploaded files, by default None.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
         debug : bool, optional
             Whether to enable debug mode, by default False.
 
@@ -165,6 +173,7 @@ class WaldiezExporter:
             output_dir=path.parent,
             uploads_root=uploads_root,
             structured_io=structured_io,
+            message=message,
             for_notebook=True,
             debug=debug,
         )
@@ -202,6 +211,7 @@ class WaldiezExporter:
         path: str | Path,
         structured_io: bool = False,
         uploads_root: Path | None = None,
+        message: str | None = None,
         debug: bool = False,
     ) -> None:
         """Export waldiez flow to a python script.
@@ -215,6 +225,8 @@ class WaldiezExporter:
             by default False.
         uploads_root : Path | None, optional
             The uploads root, to get user-uploaded files, by default None.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
         debug : bool, optional
             Whether to enable debug mode, by default False.
 
@@ -231,6 +243,7 @@ class WaldiezExporter:
             for_notebook=False,
             uploads_root=uploads_root,
             structured_io=structured_io,
+            message=message,
             debug=debug,
         )
         self.flow_extras = exporter.extras

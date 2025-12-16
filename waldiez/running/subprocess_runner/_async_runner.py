@@ -67,7 +67,8 @@ class AsyncSubprocessRunner(BaseSubprocessRunner):
     async def run_subprocess(
         self,
         flow_path: Path,
-        mode: Literal["debug", "run"] = "debug",
+        mode: Literal["debug", "run"],
+        message: str | None,
     ) -> bool:
         """Run subprocess with the given flow data.
 
@@ -77,6 +78,8 @@ class AsyncSubprocessRunner(BaseSubprocessRunner):
             Path to the waldiez flow file
         mode : Literal["debug", "run"]
             Execution mode ('debug', 'run')
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
 
         Returns
         -------
@@ -88,7 +91,7 @@ class AsyncSubprocessRunner(BaseSubprocessRunner):
             # flow_path = self.prepare_flow_file(flow_data, base_dir, filename)
 
             # Build command
-            cmd = self.build_command(flow_path, mode=mode)
+            cmd = self.build_command(flow_path, mode=mode, message=message)
             self.log_subprocess_start(cmd)
 
             # Start subprocess

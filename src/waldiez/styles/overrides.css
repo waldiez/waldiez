@@ -125,6 +125,7 @@
   border: none !important;
   width: 30px !important;
   height: 30px !important;
+  border-radius: 50%;
 }
 
 .react-flow__background-pattern.dots {

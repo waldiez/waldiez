@@ -119,6 +119,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         mode: Literal["standard", "debug"] = "standard",
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
+        message: str | None = None,
         structured_io: bool = False,
         dot_env: str | Path | None = None,
         **kwargs: Any,
@@ -135,6 +136,8 @@ class WaldiezRunner(WaldiezBaseRunner):
             Output path for results, by default None
         uploads_root : str | Path | None, optional
             Uploads root directory, by default None
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
         structured_io : bool, optional
             Use structured I/O, by default False
         dot_env : str | Path | None, optional
@@ -148,6 +151,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured_io,
+            message=message,
             dot_env=dot_env,
             **kwargs,
         )
@@ -188,6 +192,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None,
         skip_mmd: bool,
         skip_timeline: bool,
         skip_symlinks: bool,
@@ -197,6 +202,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             temp_dir=temp_dir,
             output_file=output_file,
             uploads_root=uploads_root,
+            message=message,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
             skip_symlinks=skip_symlinks,
@@ -209,6 +215,7 @@ class WaldiezRunner(WaldiezBaseRunner):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None,
         skip_mmd: bool,
         skip_timeline: bool,
         skip_symlinks: bool,
@@ -219,6 +226,7 @@ class WaldiezRunner(WaldiezBaseRunner):
             temp_dir=temp_dir,
             output_file=output_file,
             uploads_root=uploads_root,
+            message=message,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
             skip_symlinks=skip_symlinks,

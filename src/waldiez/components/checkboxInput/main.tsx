@@ -15,7 +15,7 @@ export const CheckboxInput: FC<{
     const ariaLabel = typeof label === "string" ? label : "Label for checkbox";
     return (
         <div
-            className="flex items-center margin-bottom-10 margin-top-5"
+            className="flex items-center margin-bottom-10 margin-top-5 select-none"
             data-testid={`checkbox-input-container-${id}`}
         >
             <Checkbox.Root

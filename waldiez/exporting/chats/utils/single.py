@@ -4,6 +4,7 @@
 # pylint: disable=line-too-long
 """Utilities for exporting a single chat in a flow."""
 
+import json
 from typing import Any, Callable
 
 from waldiez.models import (
@@ -16,11 +17,13 @@ from waldiez.models import (
 from .common import get_chat_message_string, get_event_handler_string
 
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments
 def export_single_chat(
     sender: WaldiezAgent,
     recipient: WaldiezAgent,
     chat: WaldiezChat,
     message_kwarg: tuple[str, str],
+    message_override: str | None,
     agent_names: dict[str, str],
     chat_names: dict[str, str],
     serializer: Callable[[str], str],
@@ -41,6 +44,8 @@ def export_single_chat(
         The chat.
     message_kwarg : tuple[str, str]
         The message kwarg and the var to use for it.
+    message_override : str | None
+        Optional initial message to pass (override flow's message if needed)
     agent_names : dict[str, str]
         A mapping of agent id to agent name.
     chat_names : dict[str, str]
@@ -69,6 +74,7 @@ def export_single_chat(
             sender=sender,
             recipient=recipient,
             message_kwarg=message_kwarg,
+            message_override=message_override,
             agent_names=agent_names,
             chat_names=chat_names,
             tab=tab,
@@ -81,6 +87,7 @@ def export_single_chat(
         sender=sender,
         recipient=recipient,
         message_kwarg=message_kwarg,
+        message_override=message_override,
         agent_names=agent_names,
         chat_names=chat_names,
         serializer=serializer,
@@ -90,12 +97,13 @@ def export_single_chat(
     )
 
 
-# pylint: disable=too-many-locals
+# pylint: disable=too-many-locals,too-many-arguments,too-many-positional-arguments
 def get_simple_chat_string(
     chat: WaldiezChat,
     sender: WaldiezAgent,
     recipient: WaldiezAgent,
     message_kwarg: tuple[str, str],
+    message_override: str | None,
     agent_names: dict[str, str],
     chat_names: dict[str, str],
     chat_args: dict[str, Any],
@@ -116,6 +124,8 @@ def get_simple_chat_string(
         The recipient.
     message_kwarg : tuple[str, str]
         The message kwarg and the var to use for it.
+    message_override : str | None
+        Optional initial message to pass (override flow's message if needed)
     agent_names : dict[str, str]
         A mapping of agent id to agent name.
     chat_names : dict[str, str]
@@ -167,6 +177,7 @@ def get_simple_chat_string(
         sender=sender,
         sender_name=sender_name,
         message_kwarg=message_kwarg,
+        message_override=message_override,
     )
     chat_string += message_arg
     summary_arg, before_summary = _get_chat_summary(
@@ -187,6 +198,7 @@ def get_empty_simple_chat_string(
     sender: WaldiezAgent,
     recipient: WaldiezAgent,
     message_kwarg: tuple[str, str],
+    message_override: str | None,
     agent_names: dict[str, str],
     chat_names: dict[str, str],
     tab: str,
@@ -205,6 +217,8 @@ def get_empty_simple_chat_string(
         The recipient.
     message_kwarg : tuple[str, str]
         The message kwarg and the var to use for it.
+    message_override : str | None
+        Optional initial message to pass (override flow's message if needed)
     agent_names : dict[str, str]
         A mapping of agent id to agent name.
     chat_names : dict[str, str]
@@ -237,6 +251,7 @@ def get_empty_simple_chat_string(
         sender=sender,
         sender_name=sender_name,
         message_kwarg=message_kwarg,
+        message_override=message_override,
     )
     content += message_arg
     summary_arg, before_summary = _get_chat_summary(
@@ -258,6 +273,7 @@ def _get_chat_message(
     sender: WaldiezAgent,
     sender_name: str,
     message_kwarg: tuple[str, str],
+    message_override: str | None,
 ) -> tuple[str, str]:
     """Get the chat message string.
 
@@ -275,6 +291,8 @@ def _get_chat_message(
         The sender name.
     message_kwarg : tuple[str, str]
         The message kwarg and the var to use for it.
+    message_override : str | None
+        Optional initial message to pass (override flow's message if needed)
 
     Returns
     -------
@@ -284,6 +302,9 @@ def _get_chat_message(
     before_chat = ""
     message_arg, message_var = message_kwarg
     message_arg_var = "\n" + f"{tab}    {message_arg}={message_var},"
+    if message_override:
+        before_chat = f"{message_var} = {json.dumps(message_override)}"
+        return message_arg_var, before_chat
     if (
         sender.is_rag_user
         and isinstance(sender, WaldiezRagUserProxy)

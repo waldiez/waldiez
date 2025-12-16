@@ -42,6 +42,7 @@ def test_run_success_and_failure(runner: WaldiezStandardRunner) -> None:
             temp_dir=MagicMock(),
             output_file=MagicMock(),
             uploads_root=None,
+            message=None,
             skip_mmd=False,
             skip_timeline=False,
         )
@@ -54,6 +55,7 @@ def test_run_success_and_failure(runner: WaldiezStandardRunner) -> None:
             temp_dir=MagicMock(),
             output_file=MagicMock(),
             uploads_root=None,
+            message=None,
             skip_mmd=False,
             skip_timeline=False,
         )
@@ -127,6 +129,7 @@ async def test_async_run_cancellation_and_success(
             temp_dir=MagicMock(),
             output_file=MagicMock(),
             uploads_root=None,
+            message=None,
         )
         assert results == [{"ok": True}]
 
@@ -138,6 +141,7 @@ async def test_async_run_cancellation_and_success(
             temp_dir=MagicMock(),
             output_file=MagicMock(),
             uploads_root=None,
+            message=None,
         )
         assert results == []
 
@@ -163,6 +167,7 @@ def test_printing_using_structured_io(runner: WaldiezStandardRunner) -> None:
                     temp_dir=MagicMock(),
                     output_file=MagicMock(),
                     uploads_root=None,
+                    message=None,
                     skip_mmd=False,
                     skip_timeline=False,
                 )
@@ -189,6 +194,7 @@ async def test_async_printing_using_structured_io(
                     temp_dir=MagicMock(),
                     output_file=MagicMock(),
                     uploads_root=None,
+                    message=None,
                     skip_mmd=False,
                     skip_timeline=False,
                 )

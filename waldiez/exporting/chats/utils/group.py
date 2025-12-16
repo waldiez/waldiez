@@ -27,7 +27,7 @@ def export_group_chats(
     manager : WaldiezGroupManager
         The group manager agent.
     message : str | None
-        The initial message/messages arg and value for the chat
+        The initial message/messages arg and value for the chat.
     tabs : int
         The number of tabs for indentation.
     is_async : bool

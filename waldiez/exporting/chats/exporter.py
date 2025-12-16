@@ -74,6 +74,7 @@ class ChatsExporter(Exporter[ChatExtras]):
     def _create_chat_extras(self) -> ChatExtras:
         """Create and populate chat extras."""
         extras = ChatExtras("chats")
+        message = self.context.config.message if self.context.config else None
         processor = ChatsProcessor(
             all_agents=self.all_agents,
             agent_names=self.agent_names,
@@ -85,6 +86,7 @@ class ChatsExporter(Exporter[ChatExtras]):
             is_async=self.is_async,
             cache_seed=self.cache_seed,
             serializer=self.context.get_serializer(),
+            message=message,
             extras=extras,
         )
         processor.process()

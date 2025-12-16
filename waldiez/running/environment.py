@@ -23,6 +23,7 @@ def refresh_environment() -> None:
     # temp (until we handle/detect docker setup)
     os.environ["AUTOGEN_USE_DOCKER"] = "0"
     os.environ["ANONYMIZED_TELEMETRY"] = "False"
+    os.environ["TOGETHER_NO_BANNER"] = "1"
     try_handle_the_np_thing()
     reload_autogen()
     reload_chroma_if_needed()

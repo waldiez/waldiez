@@ -399,7 +399,7 @@ def test_run_subprocess_success(
         with patch.object(runner, "_cleanup"):
             flow_path = Path("test_flow.waldiez")
 
-            result = runner.run_subprocess(flow_path, mode="run")
+            result = runner.run_subprocess(flow_path, mode="run", message=None)
 
             assert result is True
             mock_popen.assert_called_once()
@@ -423,7 +423,9 @@ def test_run_subprocess_failure(
         with patch.object(runner, "_cleanup"):
             flow_path = Path("test_flow.waldiez")
 
-            result = runner.run_subprocess(flow_path, mode="debug")
+            result = runner.run_subprocess(
+                flow_path, mode="debug", message=None
+            )
 
             assert result is False
             mock_output_callback.assert_called_once()  # Completion message
@@ -442,7 +444,7 @@ def test_run_subprocess_exception(
     flow_path = Path("test_flow.waldiez")
 
     with patch.object(runner, "_cleanup"):
-        result = runner.run_subprocess(flow_path, mode="run")
+        result = runner.run_subprocess(flow_path, mode="run", message=None)
 
         assert result is False
         mock_output_callback.assert_called_once()  # Error message

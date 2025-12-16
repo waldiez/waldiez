@@ -355,7 +355,9 @@ def test_prepare_paths_and_before_run(
     runner._exporter.export = MagicMock()  # type: ignore
 
     temp_dir = runner._before_run(
-        output_file=tmp_path / "dummy.py", uploads_root=None
+        output_file=tmp_path / "dummy.py",
+        uploads_root=None,
+        message=None,
     )
     assert temp_dir.exists()
     # Check that .env was copied

@@ -187,6 +187,7 @@ def get_common_env_var_setup() -> str:
 # Common environment variable setup for Waldiez flows
 load_dotenv(override=True)
 os.environ["AUTOGEN_USE_DOCKER"] = "0"
+os.environ["TOGETHER_NO_BANNER"] = "1"
 os.environ["ANONYMIZED_TELEMETRY"] = "False"
 """
     return content

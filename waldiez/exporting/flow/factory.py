@@ -22,6 +22,7 @@ def create_flow_exporter(
     output_dir: Path | None,
     uploads_root: Path | None,
     for_notebook: bool,
+    message: str | None,
     context: ExporterContext | None = None,
     **kwargs: Any,
 ) -> FlowExporter:
@@ -37,6 +38,8 @@ def create_flow_exporter(
         The root directory for uploads, if applicable.
     for_notebook : bool
         Whether the export is intended for a notebook environment.
+    message : str | None
+        Optional initial message to pass (override flow's message if needed)
     context : Optional[ExporterContext], optional
         Exporter context with dependencies, by default None
     **kwargs : Any
@@ -57,6 +60,7 @@ def create_flow_exporter(
             is_async=waldiez.is_async,
             output_directory=output_dir,
             uploads_root=uploads_root,
+            message=message,
             cache_seed=waldiez.cache_seed,
         )
         context = ExporterContext(
@@ -76,6 +80,7 @@ def create_flow_exporter(
                 is_async=waldiez.is_async,
                 output_directory=output_dir,
                 uploads_root=uploads_root,
+                message=message,
                 cache_seed=waldiez.cache_seed,
             )
         else:
@@ -90,7 +95,8 @@ def create_flow_exporter(
                 uploads_root=uploads_root,
                 cache_seed=waldiez.cache_seed,
             )
-
+            if message:
+                context.config.message = message
     return FlowExporter(
         waldiez=waldiez,
         output_dir=output_dir,

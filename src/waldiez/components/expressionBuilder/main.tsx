@@ -180,9 +180,9 @@ export const ExpressionBuilder: FC<ExpressionBuilderProps> = ({
                         <div className="flex-1">
                             <TextInput
                                 name="expression-constant"
-                                label="Constant"
+                                label="Value"
                                 className="margin-bottom-0"
-                                placeholder="Enter constant value"
+                                placeholder="Enter the value to compare with"
                                 value={exprValue}
                                 onChange={handleValueChange}
                                 dataTestId="expression-constant-input"

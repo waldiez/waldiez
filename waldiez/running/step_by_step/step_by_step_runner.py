@@ -580,15 +580,17 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 return False
             # For other actions (info, help, etc.), continue the loop
 
+    # pylint: disable=too-many-locals
     @override
     def _run(
         self,
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
-        skip_mmd: bool,
-        skip_timeline: bool,
-        skip_symlinks: bool,
+        message: str | None = None,
+        skip_mmd: bool = False,
+        skip_timeline: bool = False,
+        skip_symlinks: bool = False,
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow with step-by-step debugging."""
@@ -711,6 +713,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None = None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
         skip_symlinks: bool = False,

@@ -254,6 +254,8 @@ class ExportConfig:
         The directory where the exported content will be saved.
     uploads_root : Optional[str | Path]
         The root directory for uploads, if applicable.
+    message : str | None
+        Optional initial message to pass (override flow's message if needed)
     cache_seed : Optional[int]
         The seed for caching, if applicable.
     output_extension : str
@@ -272,6 +274,7 @@ class ExportConfig:
     is_async: bool = False
     output_directory: str | Path | None = None
     uploads_root: Path | None = None
+    message: str | None = None
     cache_seed: int | None = None
 
     @property

@@ -462,7 +462,9 @@ def test_run_handles_stop_running_exception(
         lambda *a, **k: MagicMock(main=raise_stop),
     )
     with pytest.raises(StopRunningException):
-        runner._run(tmp_path, tmp_path / "out.py", None, False, False, False)
+        runner._run(
+            tmp_path, tmp_path / "out.py", None, None, False, False, False
+        )
 
 
 def test_run_handles_generic_exception(
@@ -484,7 +486,7 @@ def test_run_handles_generic_exception(
         lambda *a, **k: MagicMock(main=raise_exc),
     )
     results = runner._run(
-        tmp_path, tmp_path / "out.py", None, False, False, False
+        tmp_path, tmp_path / "out.py", None, None, False, False, False
     )
     captured = capsys.readouterr()
     assert results == []

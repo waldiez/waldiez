@@ -310,17 +310,17 @@ export const TOOL_TYPE_OPTIONS: { value: string; label: string; icon?: JSX.Eleme
             />
         ),
     },
-    // {
-    //     value: "waldiez_flow",
-    //     label: "Waldiez Flow tool",
-    //     icon: (
-    //         <img
-    //             src={TOOL_ICONS.waldiez_flow}
-    //             alt="Waldiez flow tool icon"
-    //             style={{ width: 20, height: 20 }}
-    //         />
-    //     ),
-    // },
+    {
+        value: "waldiez_flow",
+        label: "Waldiez Flow tool",
+        icon: (
+            <img
+                src={TOOL_ICONS.waldiez_flow}
+                alt="Waldiez flow tool icon"
+                style={{ width: 20, height: 20 }}
+            />
+        ),
+    },
     {
         value: "custom",
         label: "Custom Tool",

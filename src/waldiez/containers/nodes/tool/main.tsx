@@ -30,6 +30,22 @@ export const WaldiezNodeToolView: FC<NodeProps<WaldiezNodeTool>> = props => {
         onExport,
         onImport,
     } = useWaldiezNodeTool(props.id, props.data);
+    const toolLabel =
+        data.toolType !== "predefined"
+            ? data.label
+            : data.label !== "waldiez_flow"
+              ? data.label
+              : typeof data.kwargs?.name === "string"
+                ? data.kwargs.name
+                : data.label;
+    const toolDescription =
+        data.toolType !== "predefined"
+            ? data.label
+            : data.label !== "waldiez_flow"
+              ? data.description
+              : typeof data.kwargs?.description === "string"
+                ? data.kwargs.description
+                : data.description;
     return (
         <div className={isModalOpen ? "tool-node nodrag nowheel" : "tool-node nodrag"}>
             <div className="tool-header">
@@ -45,13 +61,13 @@ export const WaldiezNodeToolView: FC<NodeProps<WaldiezNodeTool>> = props => {
                     <FaGear />
                 </div>
                 <div data-testid={`node-label-${id}`} className="node-label">
-                    {data.label}
+                    {toolLabel}
                 </div>
                 <div className={`tool-logo ${data.toolType}`}>{logo}</div>
             </div>
             <div className="tool-content">
                 <div className="description" data-test-id={`node-description-${id}`}>
-                    {data.description}
+                    {toolDescription}
                 </div>
             </div>
             <div className="tool-footer" data-testid={`tool-footer-${id}`}>

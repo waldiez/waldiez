@@ -64,13 +64,14 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         self._event_count = 0
         self._processed_events = 0
 
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument,too-many-locals
     @override
     def _run(
         self,
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None,
         skip_mmd: bool,
         skip_timeline: bool,
         skip_symlinks: bool = False,
@@ -201,6 +202,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         temp_dir: Path,
         output_file: Path,
         uploads_root: Path | None,
+        message: str | None,
         skip_mmd: bool = False,
         skip_timeline: bool = False,
         skip_symlinks: bool = False,

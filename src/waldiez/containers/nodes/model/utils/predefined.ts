@@ -22,6 +22,22 @@ export const modelLinks: Record<WaldiezModelAPIType, string> = {
 // https://platform.openai.com/docs/models
 const predefinedOpenAIModels = [
     {
+        label: "GPT-5.2",
+        value: "gpt-5.2",
+    },
+    {
+        label: "GPT-5.2 Pro",
+        value: "gpt-5.2-pro",
+    },
+    {
+        label: "GPT-5.1",
+        value: "gpt-5.1",
+    },
+    {
+        label: "GPT-5 Pro",
+        value: "gpt-5-pro",
+    },
+    {
         label: "GPT-5",
         value: "gpt-5",
     },
