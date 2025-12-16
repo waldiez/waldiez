@@ -30,7 +30,7 @@ dependencies = [
   "ag2[openai]==0.10.2",
   "aiocsv==1.4.0",
   "aiofiles==25.1.0",
-  "aiosqlite==0.21.0",
+  "aiosqlite==0.22.0",
   "numpy",
   "nest_asyncio==1.6.0",
   "graphviz<=0.21",
@@ -69,7 +69,7 @@ mqtt = [
 # jupyterlab extension
 jupyter = [
   "waldiez_jupyter==0.6.11",
-  "jupyterlab==4.5.0",
+  "jupyterlab==4.5.1",
   "ipywidgets==8.1.8",
   "jupyter_server==2.17.0",
 ]
@@ -140,7 +140,7 @@ dev = [
   "fakeredis==2.32.1",
   "flake8==7.3.0",
   "jsonschema==4.25.1",
-  "jupyterlab==4.5.0",
+  "jupyterlab==4.5.1",
   "notebook-shim>=0.2.4",
   "fastjsonschema>=2.21.2",
   "jupyter_server==2.17.0",
@@ -148,16 +148,16 @@ dev = [
   "nbformat>=5.10.4",
   "nbconvert>=7.16.6",
   "hatchling==1.28.0",
-  "mypy==1.19.0",
+  "mypy==1.19.1",
   "mypy-extensions>=1.1.0",
   "paho-mqtt>=2.1.0,<3.0",
   "pandas-stubs==2.3.3.251201",
   "nodeenv>=1.9.1",
-  "prek==0.2.21",
+  "prek==0.2.22",
   "pydocstyle==6.3.0",
   "pylint==4.0.4",
   "python-dotenv==1.2.1",
-  "ruff==0.14.8",
+  "ruff==0.14.9",
   "types-aiofiles==25.1.0.20251011",
   "types-jsonschema==4.25.1.20251009",
   "types-pyyaml==6.0.12.20250915",
@@ -384,6 +384,7 @@ managed = true
 # handle conflicts with
 # published extras not yet bumped
 override-dependencies = [
+    "aiosqlite==0.22.0"
 ]
 
 # pip-tools
