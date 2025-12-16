@@ -1,0 +1,4 @@
+dev/
+**/*api_keys.py
+**/*secrets.py
+**/*.json

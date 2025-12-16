@@ -93,6 +93,7 @@ from dotenv import load_dotenv
 # Common environment variable setup for Waldiez flows
 load_dotenv(override=True)
 os.environ["AUTOGEN_USE_DOCKER"] = "0"
+os.environ["TOGETHER_NO_BANNER"] = "1"
 os.environ["ANONYMIZED_TELEMETRY"] = "False"
 #
 # let's try to avoid:
