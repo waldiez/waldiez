@@ -781,6 +781,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                     temp_dir=temp_dir,
                     output_file=output_file,
                     uploads_root=uploads_root_path,
+                    message=message,
                     skip_mmd=skip_mmd,
                     skip_timeline=skip_timeline,
                     skip_symlinks=skip_symlinks,
