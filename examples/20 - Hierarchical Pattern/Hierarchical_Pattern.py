@@ -390,7 +390,7 @@ def compile_final_report(
     return ReplyResult(
         message="Final report compiled successfully. The comprehensive renewable energy report is now complete.",
         context_variables=context_variables,
-        target=AgentTarget(user),  # Return to user with final report
+        target=AgentTarget(User),  # Return to user with final report
     )
 
 

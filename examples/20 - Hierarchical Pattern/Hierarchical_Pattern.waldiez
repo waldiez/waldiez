@@ -1513,7 +1513,7 @@
         "createdAt": "2025-08-19T10:30:39.313Z",
         "updatedAt": "2025-08-19T11:01:00.171Z",
         "data": {
-          "content": "from autogen.agentchat.group import AgentNameTarget, AgentTarget, ContextVariables, ReplyResult\n\ndef compile_final_report(report_content: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Compile the final comprehensive report from all sections\"\"\"\n    context_variables[\"final_report\"] = report_content\n    context_variables[\"task_completed\"] = True\n\n    return ReplyResult(\n        message=\"Final report compiled successfully. The comprehensive renewable energy report is now complete.\",\n        context_variables=context_variables,\n        target=AgentTarget(user)  # Return to user with final report\n    )\n",
+          "content": "from autogen.agentchat.group import AgentNameTarget, AgentTarget, ContextVariables, ReplyResult\n\ndef compile_final_report(report_content: str, context_variables: ContextVariables) -> ReplyResult:\n    \"\"\"Compile the final comprehensive report from all sections\"\"\"\n    context_variables[\"final_report\"] = report_content\n    context_variables[\"task_completed\"] = True\n\n    return ReplyResult(\n        message=\"Final report compiled successfully. The comprehensive renewable energy report is now complete.\",\n        context_variables=context_variables,\n        target=AgentTarget(User)  # Return to user with final report\n    )\n",
           "toolType": "custom",
           "secrets": {},
           "kwargs": {}
