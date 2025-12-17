@@ -229,7 +229,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
         else:
             content += f"""
         if message:
-            result = await runner.a_run(
+            result = runner.run(
                 output_path=output_path,
                 structured_io={structured_io},
                 skip_mmd=True,
@@ -238,7 +238,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 message=message,
             )
         else:
-            result = await runner.a_run(
+            result = runner.run(
                 output_path=output_path,
                 structured_io={structured_io},
                 skip_mmd=True,
