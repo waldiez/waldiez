@@ -174,11 +174,11 @@ const commonGeminiModels = [
 // https://api-docs.deepseek.com/quick_start/pricing
 const predefinedDeepSeekModels = [
     {
-        label: "DeepSeek-V3",
+        label: "DeepSeek Chat",
         value: "deepseek-chat",
     },
     {
-        label: "DeepSeek-R1",
+        label: "DeepSeek Reasoner",
         value: "deepseek-reasoner",
     },
 ];
@@ -213,6 +213,14 @@ const predefinedCohereModels = [
 
 // https://docs.nvidia.com/nim/large-language-models/latest/models.html
 const predefinedNIMModels = [
+    {
+        label: "NVIDIA Nemotron 3 Nano 30B A3B",
+        value: "nvidia/nemotron-3-nano-30b-a3b",
+    },
+    {
+        label: "NVIDIA Nemotron Nano 12B v2-vl",
+        value: "nvidia/nemotron-nano-12b-v2-vl",
+    },
     {
         label: "GPT-OSS-20B",
         value: "openai/gpt-oss-20b",
