@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=line-too-long
+# pyright: reportUnnecessaryIsInstance=false
 # flake8: noqa: E501
 """Predefined Waldiez tool for Waldiez (like inception or sth)."""
 
 import json
+import os
 from typing import Any
 
 from ...common import get_valid_python_variable_name
@@ -22,7 +24,11 @@ class WaldiezFlowToolImpl(PredefinedTool):
         "description": str,
         "skip_deps": bool,
     }
-    _kwargs: dict[str, Any] = {"skip_deps": False, "message": None}
+    _kwargs: dict[str, Any] = {
+        "skip_deps": False,
+        "message": None,
+        "dot_env": str,
+    }
 
     @property
     def name(self) -> str:
@@ -98,6 +104,9 @@ class WaldiezFlowToolImpl(PredefinedTool):
         message = kwargs.get("message", None)
         if isinstance(message, str):
             self._kwargs["message"] = message
+        dot_env = kwargs.get("dot_env", None)
+        if isinstance(dot_env, str):
+            self._kwargs["dot_env"] = dot_env
         return missing
 
     # pylint: disable=unused-argument
@@ -133,6 +142,14 @@ class WaldiezFlowToolImpl(PredefinedTool):
         )
         structured_io = str(use_structured_io).lower() == "true"
         skip_deps = str(self.kwargs.get("skip_deps", "False")).lower() == "true"
+        dot_env: str | None = self.kwargs.get("dot_env", None)
+        if (
+            not dot_env
+            or not isinstance(dot_env, str)
+            or not os.path.exists(dot_env)
+        ):
+            dot_env = None
+        dot_env_arg = "None" if not dot_env else f"{json.dumps(dot_env)}"
         the_def = "async def" if is_async else "def"
         name = get_valid_python_variable_name(self.kwargs["name"])
         description = self.kwargs["description"]
@@ -181,9 +198,9 @@ class WaldiezFlowToolImpl(PredefinedTool):
             raise FileNotFoundError(f"Invalid flow path: {{flow_str}}")
         shutil.copyfile(flow_str, flow_path)
 '''
-        content += """
+        content += f"""
     try:
-        runner = WaldiezRunner.load(flow_path, dot_env=env_path, skip_deps=skip_deps)
+        runner = WaldiezRunner.load(flow_path, dot_env={dot_env_arg}, skip_deps=skip_deps)
 """
         if is_async:
             content += f"""
