@@ -167,7 +167,7 @@ class ChatsProcessor:
                 chat_massage_string: str | None = None
                 before_chat = f'{message_var} = ""'
                 if self._message:
-                    before_chat += f"{json.dumps(message_val)}"
+                    before_chat = f"{message_var} = {json.dumps(message_val)}"
                 else:
                     if chat.message.type == "string":
                         chat_massage_string = chat.message.content
