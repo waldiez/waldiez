@@ -158,8 +158,11 @@ class WaldiezFlowToolImpl(PredefinedTool):
         if message:
             message_arg = f"{json.dumps(message)}"
         content = f'''
-{the_def} {name}() -> ReplyResult:
+{the_def} {name}(message: str | None = None) -> ReplyResult:
     """{description}
+
+    Args:
+        message: str | None: Optional initial message to pass to the flow. Defaults to None (use the flow's original message)
 
     Returns:
         list[str] | list[dict[str, Any]] | str: The flow results.
@@ -179,7 +182,8 @@ class WaldiezFlowToolImpl(PredefinedTool):
         flow_str = str(flow)
     else:
         flow_str = flow
-
+    if not message:
+        message = {message_arg}
     is_http_url = isinstance(flow_str, str) and (
         flow_str.startswith("http://") or flow_str.startswith("https://")
     )
@@ -204,25 +208,43 @@ class WaldiezFlowToolImpl(PredefinedTool):
 """
         if is_async:
             content += f"""
-        result = await runner.a_run(
-            output_path=output_path,
-            structured_io={structured_io},
-            skip_mmd=True,
-            skip_timeline=True,
-            skip_symlinks=True,
-            message={message_arg},
-        )
+        if message:
+            result = await runner.a_run(
+                output_path=output_path,
+                structured_io={structured_io},
+                skip_mmd=True,
+                skip_timeline=True,
+                skip_symlinks=True,
+                message=message,
+            )
+        else:
+            result = await runner.a_run(
+                output_path=output_path,
+                structured_io={structured_io},
+                skip_mmd=True,
+                skip_timeline=True,
+                skip_symlinks=True,
+            )
 """
         else:
             content += f"""
-        result = runner.run(
-            output_path=output_path,
-            structured_io={structured_io},
-            skip_mmd=True,
-            skip_timeline=True,
-            skip_symlinks=True,
-            message={message_arg},
-        )
+        if message:
+            result = await runner.a_run(
+                output_path=output_path,
+                structured_io={structured_io},
+                skip_mmd=True,
+                skip_timeline=True,
+                skip_symlinks=True,
+                message=message,
+            )
+        else:
+            result = await runner.a_run(
+                output_path=output_path,
+                structured_io={structured_io},
+                skip_mmd=True,
+                skip_timeline=True,
+                skip_symlinks=True,
+            )
 """
         content += """
         return ReplyResult(message=json.dumps(result))
