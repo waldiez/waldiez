@@ -26,7 +26,6 @@ class WaldiezFlowToolImpl(PredefinedTool):
     }
     _kwargs: dict[str, Any] = {
         "skip_deps": False,
-        "message": None,
         "dot_env": str,
     }
 
@@ -101,9 +100,6 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 self._kwargs[key] = casted
             except Exception:  # pylint: disable=broad-exception-caught
                 pass
-        message = kwargs.get("message", None)
-        if isinstance(message, str):
-            self._kwargs["message"] = message
         dot_env = kwargs.get("dot_env", None)
         if isinstance(dot_env, str):
             self._kwargs["dot_env"] = dot_env
@@ -153,10 +149,6 @@ class WaldiezFlowToolImpl(PredefinedTool):
         the_def = "async def" if is_async else "def"
         name = get_valid_python_variable_name(self.kwargs["name"])
         description = self.kwargs["description"]
-        message = self.kwargs["message"]
-        message_arg = "None"
-        if message:
-            message_arg = f"{json.dumps(message)}"
         content = f'''
 {the_def} {name}(message: str | None = None) -> ReplyResult:
     """{description}
@@ -182,8 +174,6 @@ class WaldiezFlowToolImpl(PredefinedTool):
         flow_str = str(flow)
     else:
         flow_str = flow
-    if not message:
-        message = {message_arg}
     is_http_url = isinstance(flow_str, str) and (
         flow_str.startswith("http://") or flow_str.startswith("https://")
     )
