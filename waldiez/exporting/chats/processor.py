@@ -174,7 +174,7 @@ class ChatsProcessor:
                         before_chat = (
                             f"{message_var}={json.dumps(chat_massage_string)}"
                         )
-                    self._extras.set_chat_prerequisites(before_chat)
+                self._extras.set_chat_prerequisites(before_chat)
                 return export_group_chats(
                     agent_names=self._agent_names,
                     manager=recipient,
