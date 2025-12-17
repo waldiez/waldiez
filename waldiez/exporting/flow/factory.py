@@ -50,6 +50,10 @@ def create_flow_exporter(
     ChatsExporter
         The created chats exporter.
     """
+    log_level = "info"
+    debug = kwargs.get("debug", None)
+    if isinstance(debug, bool) and debug is True:
+        log_level = "debug"
     if context is None:
         config = ExportConfig(
             name=waldiez.name,
@@ -67,7 +71,7 @@ def create_flow_exporter(
             config=config,
             serializer=DefaultSerializer(),
             path_resolver=DefaultPathResolver(),
-            logger=WaldiezLogger(),
+            logger=WaldiezLogger(log_level),
         )
     else:
         if not context.config:  # pragma: no cover
@@ -97,6 +101,7 @@ def create_flow_exporter(
             )
             if message:
                 context.config.message = message
+        context.get_logger().set_level(log_level)
     return FlowExporter(
         waldiez=waldiez,
         output_dir=output_dir,

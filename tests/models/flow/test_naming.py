@@ -155,7 +155,7 @@ class TestEnsureWaldiezUniqueNames:
         assert (
             result["model_names"]["model1"] == "wm_test"
         )  # Second gets prefix
-        assert result["tool_names"]["tool1"] == "ws_test"  # Third gets prefix
+        assert result["tool_names"]["tool1"] == "wt_test"  # Third gets prefix
         assert result["chat_names"]["chat1"] == "wc_test"  # Fourth gets prefix
         assert result["flow_name"] == "wf_test"  # Flow gets prefix
 

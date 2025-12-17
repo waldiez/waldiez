@@ -205,7 +205,7 @@ class Exporter(abc.ABC, Generic[Extras]):
             Position relative to agent, by default None
         skip_strip : bool | None, optional
             Whether to skip stripping whitespace, by default None
-            If None, defaults to True for CHATS position (keep identation),
+            If None, defaults to True for CHATS position (keep indentation),
         **metadata : Any
             Additional metadata for the content.
         """

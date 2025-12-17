@@ -100,7 +100,7 @@ def ensure_unique_names(
         all_names = get_valid_instance_name(
             (tool.id, tool_name),
             all_names,
-            prefix="ws",
+            prefix="wt",
             max_length=max_length,
         )
         tool_names[tool.id] = all_names[tool.id]
