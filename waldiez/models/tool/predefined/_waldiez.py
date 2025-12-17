@@ -105,6 +105,12 @@ class WaldiezFlowToolImpl(PredefinedTool):
             self._kwargs["dot_env"] = dot_env
         return missing
 
+    def _update_kwargs(self, runtime_kwargs: dict[str, Any] | None) -> None:
+        if runtime_kwargs:
+            for key, value in runtime_kwargs.items():
+                if key in self._kwargs:
+                    self._kwargs[key] = value
+
     # pylint: disable=unused-argument
     def get_content(
         self,
@@ -125,6 +131,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
         str
             Content of the tool.
         """
+        self._update_kwargs(runtime_kwargs)
         is_async_flow = (
             runtime_kwargs.get("is_async", "False")
             if runtime_kwargs

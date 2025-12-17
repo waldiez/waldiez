@@ -21,7 +21,7 @@ export const WaldiezAgentTools = memo((props: WaldiezAgentToolsProps) => {
         selectedTool,
         selectedTools,
         selectedExecutor,
-        getToolName,
+        getLinkedToolName,
         getAgentName,
         onSelectedToolChange,
         onSelectedToolsChange,
@@ -108,7 +108,7 @@ export const WaldiezAgentTools = memo((props: WaldiezAgentToolsProps) => {
                                     <div className="tool-item">
                                         Tool:{" "}
                                         <div className="tool-name" data-testid={`tool-name-${id}-${index}`}>
-                                            {getToolName(tool)}
+                                            {getLinkedToolName(tool)}
                                         </div>
                                     </div>
 
@@ -125,7 +125,7 @@ export const WaldiezAgentTools = memo((props: WaldiezAgentToolsProps) => {
                                         className="p-2 rounded-lg text-sm"
                                         onClick={() => onRemoveTool(index)}
                                         data-testid={`remove-agent-tool-${id}-${index}`}
-                                        aria-label={`Remove ${getToolName(tool)}`}
+                                        aria-label={`Remove ${getLinkedToolName(tool)}`}
                                     >
                                         Remove
                                     </button>

@@ -44,7 +44,12 @@ export const useWaldiezAgentTools = (props: WaldiezAgentToolsProps) => {
         }
     }, [tools, data.tools, updateAgentData, id]);
 
-    // const currentTools = data.tools;
+    const getToolName = useCallback((tool: WaldiezNodeTool) => {
+        if (tool.data.toolType === "predefined" && tool.data.label === "waldiez_flow" && tool.data.kwargs) {
+            return (tool.data.kwargs.name || tool.data.label) as string;
+        }
+        return tool.data.label as string;
+    }, []);
 
     const selectedTools = useMemo(
         () =>
@@ -54,11 +59,11 @@ export const useWaldiezAgentTools = (props: WaldiezAgentToolsProps) => {
                     return null;
                 }
                 return {
-                    label: toolFound.data.label as string,
+                    label: getToolName(toolFound),
                     value: toolFound,
                 };
             }),
-        [data.tools, tools],
+        [data.tools, tools, getToolName],
     );
 
     const onSelectedToolsChange = useCallback(
@@ -87,10 +92,10 @@ export const useWaldiezAgentTools = (props: WaldiezAgentToolsProps) => {
             tools
                 .filter(tool => tool.data.toolType !== "shared")
                 .map(tool => ({
-                    label: (tool.data.label as string) ?? "Unknown tool",
+                    label: getToolName(tool),
                     value: tool,
                 })),
-        [tools],
+        [tools, getToolName],
     );
 
     /**
@@ -108,15 +113,15 @@ export const useWaldiezAgentTools = (props: WaldiezAgentToolsProps) => {
     /**
      * Get tool name from linked tool id
      */
-    const getToolName = useCallback(
+    const getLinkedToolName = useCallback(
         (linkedTool: WaldiezAgentLinkedTool) => {
             const toolFound = tools.find(tool => tool.id === linkedTool.id);
             if (!toolFound) {
                 return "Unknown tool";
             }
-            return toolFound.data.label as string;
+            return getToolName(toolFound);
         },
-        [tools],
+        [tools, getToolName],
     );
 
     /**
@@ -182,7 +187,7 @@ export const useWaldiezAgentTools = (props: WaldiezAgentToolsProps) => {
         selectedTool,
         selectedTools,
         selectedExecutor,
-        getToolName,
+        getLinkedToolName,
         getAgentName,
         onSelectedToolChange: setSelectedTool,
         onSelectedToolsChange,

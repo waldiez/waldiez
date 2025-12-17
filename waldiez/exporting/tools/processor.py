@@ -72,7 +72,8 @@ class ToolProcessor:
         shared_tools = [tool for tool in self.tools if tool.is_shared]
         regular_tools = [tool for tool in self.tools if not tool.is_shared]
 
-        # Process shared tools first (they need to be available to other tools)
+        # Process shared tools first
+        # (they might need to be available to other tools)
         for tool in shared_tools:
             self._process_single_tool(tool, result)
 

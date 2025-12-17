@@ -111,6 +111,8 @@ class WaldiezTool(WaldiezBase):
         ),
     ]
 
+    _original_name: str = ""
+
     @staticmethod
     def load(data_or_path: str | Path | dict[str, Any]) -> "WaldiezTool":
         """Load a tool from a read-only file.
@@ -206,6 +208,19 @@ class WaldiezTool(WaldiezBase):
         return self.tool_type in ("langchain", "crewai")
 
     @property
+    def is_waldiez_flow(self) -> bool:
+        """Check if the tool is a waldiez flow.
+
+        Returns
+        -------
+        bool
+            True if the tool is a waldiez flow, False otherwise.
+        """
+        return self.is_predefined and (
+            self.name == "waldiez_flow" or self._original_name == "waldiez_flow"
+        )
+
+    @property
     def content(self) -> str:
         """Get the content (source) of the tool."""
         return self.data.content
@@ -229,13 +244,17 @@ class WaldiezTool(WaldiezBase):
             The content of the tool.
         """
         if self.is_predefined:
-            return self._generate_predefined_content(
+            if self.is_waldiez_flow:
+                runtime_kwargs = runtime_kwargs or {}
+                runtime_kwargs.update(self.data.kwargs)
+            content = self._generate_predefined_content(
                 runtime_kwargs=runtime_kwargs
             )
+            return content
         if self.is_shared or self.is_interop:
             return self.data.content
         # if custom, only the function content
-        return get_function(self.data.content, self.name)
+        return get_function(self.data.content, self._original_name)
 
     def _generate_predefined_content(
         self,
@@ -253,7 +272,7 @@ class WaldiezTool(WaldiezBase):
         str
             The content of the predefined tool.
         """
-        config = get_predefined_tool_config(self.name)
+        config = get_predefined_tool_config(self._original_name)
         if not config:
             return ""
         return config.get_content(
@@ -373,6 +392,7 @@ class WaldiezTool(WaldiezBase):
             If the tool name is not in the content.
             If the tool content is invalid.
         """
+        self._original_name = str(self.name)
         self._validate_custom_tool()
         self._validate_interop_tool()
         self._validate_predefined_tool()
@@ -403,4 +423,9 @@ class WaldiezTool(WaldiezBase):
         while valid_lines and not valid_lines[-1].strip():
             valid_lines.pop()
         self.data.content = "\n".join(valid_lines)
+        if self.is_predefined and self.name == "waldiez_flow":
+            self.name = self.data.kwargs.get("name", self.name)
+            self.description = self.data.kwargs.get(
+                "description", self.description
+            )
         return self

@@ -94,11 +94,8 @@ def ensure_unique_names(
         models.append(model)
 
     for tool in flow_tools:
-        tool_name = tool.name
-        if tool.data.tool_type == "predefined" and tool.name == "waldiez_flow":
-            tool_name = tool.data.kwargs.get("name", tool_name)
         all_names = get_valid_instance_name(
-            (tool.id, tool_name),
+            (tool.id, tool.name),
             all_names,
             prefix="wt",
             max_length=max_length,
