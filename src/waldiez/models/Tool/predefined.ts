@@ -80,7 +80,6 @@ export const PREDEFINED_TOOL_REQUIRED_KWARGS: Record<string, PredefinedKwargConf
         },
         { label: "Tool name", key: "name", type: "string" },
         { label: "Tool description", key: "description", type: "string", multi: true },
-        { label: "Initial message", key: "message", type: "string", multi: true, optional: true },
         {
             label: "Skip installing flow's dependencies",
             key: "skip_deps",
