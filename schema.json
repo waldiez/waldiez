@@ -34,6 +34,9 @@
                 "type": "string"
             }
         },
+        "skipDeps": {
+            "type": ["boolean", "null"]
+        },
         "storageId": {
             "type": "string"
         },

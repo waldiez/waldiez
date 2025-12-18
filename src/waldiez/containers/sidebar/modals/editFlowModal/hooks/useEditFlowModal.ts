@@ -20,7 +20,7 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
     const updateFlowOrder = useWaldiez(s => s.updateFlowOrder);
     const updateFlowPrerequisites = useWaldiez(s => s.updateFlowPrerequisites);
     const flowInfo = getFlowInfo();
-    const { name, description, requirements, tags, isAsync, cacheSeed } = flowInfo;
+    const { name, description, requirements, tags, isAsync, cacheSeed, skipDeps } = flowInfo;
     const [flowData, setFlowData] = useState<EditFlowModalData>({
         name,
         description,
@@ -28,6 +28,7 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
         tags,
         isAsync,
         cacheSeed,
+        skipDeps,
     });
     const [selectedNewEdge, setSelectedNewEdge] = useState<WaldiezEdge | null>(null);
     const getFlowEdges = useWaldiez(s => s.getFlowEdges);
@@ -68,7 +69,7 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
         setIsDirty(false);
     };
     const reset = useCallback(() => {
-        const { name, description, requirements, tags, isAsync, cacheSeed } = getFlowInfo();
+        const { name, description, requirements, tags, isAsync, cacheSeed, skipDeps } = getFlowInfo();
         setFlowData({
             name,
             description,
@@ -76,6 +77,7 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
             tags,
             isAsync,
             cacheSeed,
+            skipDeps,
         });
         const { used, remaining } = getFlowEdges();
         setSortedEdgesState(used);

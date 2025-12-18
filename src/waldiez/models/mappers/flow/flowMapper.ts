@@ -53,7 +53,7 @@ export const flowMapper = {
         if (!flowJson.type || flowJson.type !== "flow") {
             return emptyFlow;
         }
-        const { id, storageId, name, description, tags, requirements, createdAt, updatedAt, rest } =
+        const { id, storageId, name, description, tags, requirements, skipDeps, createdAt, updatedAt, rest } =
             importFlowMeta(flowJson);
         const flowData = (flowJson.data || flowJson) as Record<string, unknown>;
         const flowId = newId || id;
@@ -69,6 +69,7 @@ export const flowMapper = {
             description,
             tags,
             requirements,
+            skipDeps,
             data,
             createdAt,
             updatedAt,
@@ -92,6 +93,7 @@ export const flowMapper = {
             description: flow.description,
             tags: flow.tags,
             requirements: flow.requirements,
+            skipDeps: flow.skipDeps,
             createdAt: flow.createdAt,
             updatedAt: flow.updatedAt,
             edges,
@@ -121,6 +123,7 @@ export const flowMapper = {
             description: flow.description,
             tags: flow.tags,
             requirements: flow.requirements,
+            skipDeps: flow.skipDeps,
             createdAt: flow.createdAt || new Date().toISOString(),
             updatedAt: flow.updatedAt || new Date().toISOString(),
             data: getFlowDataToExport(flow, hideSecrets, skipLinks),

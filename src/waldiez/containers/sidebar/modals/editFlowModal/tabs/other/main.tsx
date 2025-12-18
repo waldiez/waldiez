@@ -2,14 +2,14 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { type ChangeEvent } from "react";
+import { type ChangeEvent, useCallback } from "react";
 
 import { CheckboxInput, StringList } from "@waldiez/components";
 import { type EditFlowModalModalTabOtherProps } from "@waldiez/containers/sidebar/modals/editFlowModal/tabs/other/types";
 
 export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProps) => {
     const { flowId, data, onDataChange } = props;
-    const { tags, requirements, cacheSeed } = data;
+    const { tags, requirements, cacheSeed, skipDeps } = data;
     const onAddTag = (tag: string) => {
         onDataChange({ tags: [...tags, tag] });
     };
@@ -45,11 +45,21 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
             // ignore
         }
     };
+    const onSkipDepsToggleChange = (checked: boolean) => {
+        onDataChange({ skipDeps: checked });
+    };
     const viewLabelInfo = () => (
         <div>
             Requirements to <span className="bold italic">pip install</span> before running this flow
         </div>
     );
+    const shouldShowRequirements = useCallback(() => {
+        if (typeof skipDeps === "boolean") {
+            return skipDeps === false;
+        }
+        return true;
+    }, [skipDeps]);
+    const showRequirements = shouldShowRequirements();
     return (
         <div
             className="padding-left-10 padding-right-10"
@@ -76,15 +86,24 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
                     />
                 </div>
             )}
-            <StringList
-                items={requirements}
-                itemsType="requirement"
-                viewLabel="Additional Requirements"
-                viewLabelInfo={viewLabelInfo}
-                onItemAdded={onAddRequirement}
-                onItemDeleted={onDeleteRequirement}
-                onItemChange={onRequirementChange}
+            <CheckboxInput
+                id={`edit-flow-${flowId}-modal-skip-deps-toggle`}
+                label="Skip dependencies"
+                isChecked={typeof skipDeps === "boolean" && skipDeps === true}
+                onCheckedChange={onSkipDepsToggleChange}
+                data-testid={`edit-flow-${flowId}-modal-skip-deps-toggle`}
             />
+            {showRequirements && (
+                <StringList
+                    items={requirements}
+                    itemsType="requirement"
+                    viewLabel="Additional Requirements"
+                    viewLabelInfo={viewLabelInfo}
+                    onItemAdded={onAddRequirement}
+                    onItemDeleted={onDeleteRequirement}
+                    onItemChange={onRequirementChange}
+                />
+            )}
             <StringList
                 items={tags}
                 itemsType="tag"

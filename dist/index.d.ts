@@ -505,6 +505,7 @@ export declare interface IWaldiezFlowStore {
      * @param data.requirements - An array of requirements for the flow.
      * @param data.isAsync - Whether the flow is asynchronous.
      * @param data.cacheSeed - The cache seed for the flow.
+     * @param data.skipDeps - Skip installing dependencies.
      */
     updateFlowInfo: (data: {
         name: string;
@@ -512,7 +513,8 @@ export declare interface IWaldiezFlowStore {
         tags: string[];
         requirements: string[];
         isAsync: boolean;
-        cacheSeed: number | null;
+        cacheSeed?: number | null;
+        skipDeps?: boolean | null;
     }) => void;
 }
 
@@ -3102,6 +3104,7 @@ export declare type WaldiezExpressionContextCondition = {
  * @param description - The description of the flow
  * @param tags - The tags
  * @param requirements - The requirements
+ * @param skipDeps - Skip installing the dependencies
  * @param data - The data
  * @param storageId - The storage ID
  * @param createdAt - The created at date
@@ -3117,6 +3120,7 @@ export declare class WaldiezFlow {
     description: string;
     tags: string[];
     requirements: string[];
+    skipDeps?: boolean | null;
     data: WaldiezFlowData;
     storageId: string;
     createdAt: string;
@@ -3130,6 +3134,7 @@ export declare class WaldiezFlow {
         description: string;
         tags: string[];
         requirements: string[];
+        skipDeps?: boolean | null;
         data: WaldiezFlowData;
         storageId: string;
         createdAt: string;
@@ -3211,6 +3216,7 @@ export declare class WaldiezFlowData {
  * @param requirements - The requirements of the flow
  * @param isAsync - Whether the flow is async or not
  * @param cacheSeed - The seed for the cache
+ * @param skipDeps - Skip installing dependencies
  */
 export declare type WaldiezFlowInfo = {
     flowId: string;
@@ -3222,6 +3228,7 @@ export declare type WaldiezFlowInfo = {
     requirements: string[];
     isAsync: boolean;
     cacheSeed: number | null;
+    skipDeps?: boolean | null;
 };
 
 /**
@@ -3235,6 +3242,7 @@ export declare type WaldiezFlowInfo = {
  * @param description - The description of the flow
  * @param tags - The tags of the flow
  * @param requirements - The requirements of the flow
+ * @param skipDeps - Skip installing the dependencies
  * @param viewport - The viewport of the flow
  * @param createdAt - The creation date of the flow (as ISO 8601 string)
  * @param updatedAt - The update date of the flow (as ISO 8601 string)
@@ -3249,6 +3257,7 @@ export declare type WaldiezFlowProps = ReactFlowJsonObject & {
     description: string;
     tags: string[];
     requirements: string[];
+    skipDeps?: boolean | null;
     viewport?: Viewport;
     createdAt?: string;
     updatedAt?: string;
@@ -4653,6 +4662,7 @@ export declare type WaldiezStoreProps = {
     name?: string;
     description?: string;
     requirements?: string[];
+    skipDeps?: boolean | null;
     storageId?: string;
     createdAt?: string;
     updatedAt?: string;

@@ -33,6 +33,8 @@ class WaldiezFlow(WaldiezBase):
         The tags of the flow.
     requirements : list[str]
         The requirements of the flow.
+    skip_deps : bool | None
+        Skip installing dependencies.
     storage_id : str
         The storage ID of the flow (ignored, UI related).
     created_at : str
@@ -97,6 +99,15 @@ class WaldiezFlow(WaldiezBase):
             description="The requirements of the flow",
             title="Requirements",
             default_factory=list,
+        ),
+    ]
+    skip_deps: Annotated[
+        bool | None,
+        Field(
+            None,
+            alias="skipDeps",
+            description="Skip installing dependencies. Default is None.",
+            title="Skip deps",
         ),
     ]
     data: Annotated[

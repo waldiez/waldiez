@@ -98,6 +98,7 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
             updatedAt,
             isAsync,
             cacheSeed,
+            skipDeps,
         } = this.get();
         return {
             flowId,
@@ -110,6 +111,7 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
             updatedAt,
             isAsync: isAsync ?? false,
             cacheSeed: typeof cacheSeed !== "undefined" ? cacheSeed : 42,
+            skipDeps,
         };
     };
     /**
@@ -337,7 +339,8 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
         tags: string[];
         requirements: string[];
         isAsync: boolean;
-        cacheSeed: number | null;
+        cacheSeed?: number | null;
+        skipDeps?: boolean | null;
     }) => void = data => {
         this.set({
             name: data.name,
@@ -347,6 +350,7 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
             updatedAt: new Date().toISOString(),
             isAsync: data.isAsync,
             cacheSeed: data.cacheSeed,
+            skipDeps: data.skipDeps,
         });
     };
 }

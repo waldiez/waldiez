@@ -103,6 +103,7 @@ export interface IWaldiezFlowStore {
      * @param data.requirements - An array of requirements for the flow.
      * @param data.isAsync - Whether the flow is asynchronous.
      * @param data.cacheSeed - The cache seed for the flow.
+     * @param data.skipDeps - Skip installing dependencies.
      */
     updateFlowInfo: (data: {
         name: string;
@@ -110,6 +111,7 @@ export interface IWaldiezFlowStore {
         tags: string[];
         requirements: string[];
         isAsync: boolean;
-        cacheSeed: number | null;
+        cacheSeed?: number | null;
+        skipDeps?: boolean | null;
     }) => void;
 }

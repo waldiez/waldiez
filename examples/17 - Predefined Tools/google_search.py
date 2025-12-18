@@ -17,7 +17,7 @@
 
 A example waldiez flow using google search
 
-Requirements: ag2[google-search,gemini], ag2[openai]==0.10.2
+Requirements: ag2[gemini,google-search,openai]==0.10.2
 Tags: websearch
 🧩 generated with ❤️ by Waldiez.
 """

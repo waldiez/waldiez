@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 import aiofiles
+from packaging.requirements import Requirement
 
 from .agents import (
     WaldiezAgent,
@@ -350,50 +351,89 @@ class Waldiez:
         return self.flow.is_single_agent_mode
 
     @property
+    def skip_deps(self) -> bool:
+        """Check if we should skip installing dependencies.
+
+        This can be overridden later at the runner.
+        """
+        return self.flow.skip_deps is True
+
+    @property
     def requirements(self) -> list[str]:
         """Get the flow requirements."""
         autogen_version = get_autogen_version()
-        requirements_list = filter(
-            # we use the fixed "ag2=={autogen_version}" below
-            lambda requirement: not (
-                requirement.startswith("ag2")
-                or requirement.startswith("ag2")
-                or requirement.startswith("autogen")
-            ),
-            self.flow.requirements,
-        )
-        requirements = set(requirements_list)
-        requirements.add(f"ag2[openai]=={autogen_version}")
+
+        reqs: set[str] = set(self.flow.requirements)
+
         if self.has_rag_agents:  # pragma: no branch
-            rag_extras = get_retrievechat_extra_requirements(list(self.agents))
-            requirements.update(rag_extras)
+            reqs.update(get_retrievechat_extra_requirements(list(self.agents)))
+
         if self.has_multimodal_agents:  # pragma: no branch
-            requirements.add(f"ag2[lmm]=={autogen_version}")
+            reqs.add(
+                f"ag2[lmm]=={autogen_version}"
+            )  # ok to add; we'll normalize later
+
         if self.has_captain_agents:  # pragma: no branch
-            captain_extras = get_captain_agent_extra_requirements()
-            requirements.update(captain_extras)
+            reqs.update(get_captain_agent_extra_requirements())
+
         for doc_agent in self.flow.data.agents.docAgents:
-            requirements.update(
+            reqs.update(
                 doc_agent.get_llm_requirements(
                     ag2_version=autogen_version,
                     all_models=list(self.models),
                 )
             )
-        requirements.update(
-            get_models_extra_requirements(
-                list(self.models),
-                autogen_version=autogen_version,
-            )
-        )
-        requirements.update(
-            get_tools_extra_requirements(
-                list(self.tools),
-                autogen_version=autogen_version,
-            )
-        )
-        return sorted(requirements)
 
-    # def get_flow_chat_info(self) ->
+        reqs.update(
+            get_models_extra_requirements(
+                list(self.models), autogen_version=autogen_version
+            )
+        )
+        reqs.update(
+            get_tools_extra_requirements(
+                list(self.tools), autogen_version=autogen_version
+            )
+        )
+        reqs = self._finalize_requirements(
+            reqs, autogen_version, always_ag2_extras={"openai"}
+        )
+
+        return sorted(reqs)
+
+    @staticmethod
+    def _finalize_requirements(
+        reqs: set[str],
+        autogen_version: str,
+        always_ag2_extras: set[str] | None = None,
+    ) -> set[str]:
+        always_ag2_extras = always_ag2_extras or {"openai"}
+
+        kept: set[str] = set()
+        ag2_extras: set[str] = set()
+
+        for raw in reqs:
+            s = raw.strip()
+            if not s:
+                continue
+
+            try:
+                r = Requirement(s)
+            except Exception:  # pylint: disable=broad-exception-caught
+                kept.add(s)
+                continue
+
+            name = (r.name or "").lower()
+            if name in {"ag2", "autogen"}:
+                ag2_extras.update(r.extras)
+                # drop it; we’ll re-add a single pinned ag2 later
+                continue
+
+            kept.add(s)
+
+        merged_extras = set(always_ag2_extras) | ag2_extras
+        extras_part = ",".join(sorted(merged_extras))
+        kept.add(f"ag2[{extras_part}]=={autogen_version}")
+        return kept
 
     def get_flow_env_vars(self) -> list[tuple[str, str]]:
         """Get the flow environment variables.

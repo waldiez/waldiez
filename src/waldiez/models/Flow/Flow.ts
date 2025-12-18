@@ -15,6 +15,7 @@ import { WaldiezFlowData } from "@waldiez/models/Flow/FlowData";
  * @param description - The description of the flow
  * @param tags - The tags
  * @param requirements - The requirements
+ * @param skipDeps - Skip installing the dependencies
  * @param data - The data
  * @param storageId - The storage ID
  * @param createdAt - The created at date
@@ -30,6 +31,7 @@ export class WaldiezFlow {
     description: string;
     tags: string[];
     requirements: string[];
+    skipDeps?: boolean | null;
     data: WaldiezFlowData;
     storageId: string;
     createdAt: string;
@@ -42,6 +44,7 @@ export class WaldiezFlow {
         description: string;
         tags: string[];
         requirements: string[];
+        skipDeps?: boolean | null;
         data: WaldiezFlowData;
         storageId: string;
         createdAt: string;
@@ -53,6 +56,7 @@ export class WaldiezFlow {
         this.description = props.description;
         this.tags = props.tags;
         this.requirements = props.requirements;
+        this.skipDeps = props.skipDeps;
         this.data = props.data;
         this.storageId = props.storageId;
         this.createdAt = props.createdAt;

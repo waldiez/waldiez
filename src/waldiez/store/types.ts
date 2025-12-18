@@ -60,6 +60,7 @@ export type WaldiezStoreProps = {
     name?: string;
     description?: string;
     requirements?: string[];
+    skipDeps?: boolean | null;
     storageId?: string;
     createdAt?: string;
     updatedAt?: string;
@@ -98,6 +99,7 @@ export type WaldiezStoreProps = {
  * @param requirements - The requirements of the flow
  * @param isAsync - Whether the flow is async or not
  * @param cacheSeed - The seed for the cache
+ * @param skipDeps - Skip installing dependencies
  */
 export type WaldiezFlowInfo = {
     flowId: string;
@@ -109,6 +111,7 @@ export type WaldiezFlowInfo = {
     requirements: string[];
     isAsync: boolean;
     cacheSeed: number | null;
+    skipDeps?: boolean | null;
 };
 
 /**

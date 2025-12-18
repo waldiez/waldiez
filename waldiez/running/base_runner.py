@@ -115,7 +115,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         self._output_dir = WaldiezBaseRunner._init_output_dir(output_path)
         WaldiezBaseRunner._check_dot_env(self._output_dir)
         WaldiezBaseRunner._skip_deps = (
-            str(kwargs.get("skip_deps", "false")).lower() == "true"
+            str(kwargs.get("skip_deps", waldiez.skip_deps)).lower() == "true"
         )
 
     @staticmethod

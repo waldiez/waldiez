@@ -17,7 +17,7 @@
 
 A workflow containing a single agent capable of understanding images, writing code and providing tips for the weather.
 
-Requirements: ag2[lmm]==0.10.2, ag2[openai]==0.10.2
+Requirements: ag2[lmm,openai]==0.10.2
 Tags: Multimodal, Weather, Travel, Code
 🧩 generated with ❤️ by Waldiez.
 """

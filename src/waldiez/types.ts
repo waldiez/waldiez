@@ -38,6 +38,7 @@ export type EventType =
  * @param description - The description of the flow
  * @param tags - The tags of the flow
  * @param requirements - The requirements of the flow
+ * @param skipDeps - Skip installing the dependencies
  * @param viewport - The viewport of the flow
  * @param createdAt - The creation date of the flow (as ISO 8601 string)
  * @param updatedAt - The update date of the flow (as ISO 8601 string)
@@ -52,6 +53,7 @@ export type WaldiezFlowProps = ReactFlowJsonObject & {
     description: string;
     tags: string[];
     requirements: string[];
+    skipDeps?: boolean | null;
     viewport?: Viewport;
     createdAt?: string;
     updatedAt?: string;

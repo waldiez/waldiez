@@ -10,6 +10,7 @@ export type EditFlowModalData = {
     requirements: string[];
     isAsync: boolean;
     cacheSeed: number | null;
+    skipDeps?: boolean | null;
 };
 
 export type EditFlowModalProps = {

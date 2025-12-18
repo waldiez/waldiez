@@ -9,6 +9,7 @@ import {
     getNameFromJSON,
     getRequirementsFromJSON,
     getRestFromJSON,
+    getSkipDepsFromJSON,
     getTagsFromJSON,
     getUpdatedAtFromJSON,
 } from "@waldiez/models/mappers/common";
@@ -19,6 +20,7 @@ export const importFlowMeta = (json: Record<string, unknown>) => {
     const description = getDescriptionFromJSON(json, "A waldiez flow");
     const tags = getTagsFromJSON(json);
     const requirements = getRequirementsFromJSON(json);
+    const skipDeps = getSkipDepsFromJSON(json);
     const createdAt = getCreatedAtFromJSON(json);
     const updatedAt = getUpdatedAtFromJSON(json);
     const rest = getRestFromJSON(json, [
@@ -28,6 +30,7 @@ export const importFlowMeta = (json: Record<string, unknown>) => {
         "description",
         "tags",
         "requirements",
+        "skipDeps",
         "createdAt",
         "updatedAt",
         "data",
@@ -40,6 +43,7 @@ export const importFlowMeta = (json: Record<string, unknown>) => {
         description,
         tags,
         requirements,
+        skipDeps,
         createdAt,
         updatedAt,
         rest,
