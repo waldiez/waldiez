@@ -100,16 +100,12 @@ export const PREDEFINED_TOOL_REQUIRED_KWARGS: Record<string, PredefinedKwargConf
                     value: "messages",
                 },
                 {
-                    label: "The conversation's summary",
-                    value: "summary",
-                },
-                {
                     label: "The whole conversation, including post-processing output",
                     value: "all",
                 },
                 {
                     label: "The last message of the conversation",
-                    value: "last",
+                    value: "summary",
                 },
             ],
         },

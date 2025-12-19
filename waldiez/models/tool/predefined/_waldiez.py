@@ -143,7 +143,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
             result = result[-1]
         if not isinstance(result, dict) or not result:
             return ReplyResult(message=json.dumps(result, default=str))
-        messages = result.get("message", result.get("history", []))
+        messages = result.get("messages", result.get("history", []))
         if not isinstance(messages, list) or not messages:
             return ReplyResult(message=json.dumps(result, default=str))
         last_message = messages[-1]
