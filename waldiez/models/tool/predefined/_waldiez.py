@@ -17,6 +17,7 @@ from .protocol import PredefinedTool
 class WaldiezFlowToolImpl(PredefinedTool):
     """Perplexity AI search tool for Waldiez."""
 
+    return_options = ["all", "messages", "summary", "last"]
     required_secrets: list[str] = []
     required_kwargs: dict[str, type] = {
         "flow": str,
@@ -26,7 +27,8 @@ class WaldiezFlowToolImpl(PredefinedTool):
     }
     _kwargs: dict[str, Any] = {
         "skip_deps": False,
-        "dot_env": str,
+        "return_option": "all",
+        "dot_env": None,
     }
 
     @property
@@ -103,13 +105,74 @@ class WaldiezFlowToolImpl(PredefinedTool):
         dot_env = kwargs.get("dot_env", None)
         if isinstance(dot_env, str):
             self._kwargs["dot_env"] = dot_env
+        return_option = kwargs.get("return_option", "all")
+        if not return_option or return_option not in self.return_options:
+            return_option = "all"
+        self._kwargs["return_option"] = return_option
         return missing
+
+    @property
+    def return_type(self) -> str:
+        """Get the tool's return type."""
+        ret = self.kwargs.get("return_option", "all")
+        if ret not in self.return_options:
+            ret = "all"
+        return ret
 
     def _update_kwargs(self, runtime_kwargs: dict[str, Any] | None) -> None:
         if runtime_kwargs:
             for key, value in runtime_kwargs.items():
                 if key in self._kwargs:
                     self._kwargs[key] = value
+
+    def _get_reply_result(self) -> str:
+        if self.return_type == "messages":
+            return """
+        while isinstance(result, list):
+            result = result[-1]
+        if not isinstance(result, dict) or not result:
+            return ReplyResult(message=json.dumps(result, default=str))
+        messages = result.get("messages", result.get("history", []))
+        if not isinstance(messages, list) or not messages:
+            return ReplyResult(message=json.dumps(result, default=str))
+        return ReplyResult(message=json.dumps(messages, default=str))
+"""
+        if self.return_type == "last":
+            return """
+        while isinstance(result, list):
+            result = result[-1]
+        if not isinstance(result, dict) or not result:
+            return ReplyResult(message=json.dumps(result, default=str))
+        messages = result.get("message", result.get("history", []))
+        if not isinstance(messages, list) or not messages:
+            return ReplyResult(message=json.dumps(result, default=str))
+        last_message = messages[-1]
+        if isinstance(last_message, str):
+            return ReplyResult(message=last_message)
+        if "content" in last_message and isinstance(last_message["content"], str):
+            return ReplyResult(message=last_message["content"])
+        return ReplyResult(message=json.dumps(messages[-1], default=str))
+"""
+        if self.return_type == "summary":
+            return """
+        while isinstance(result, list):
+            result = result[-1]
+        if not isinstance(result, dict) or not result:
+            return ReplyResult(message=json.dumps(result, default=str))
+        summary = result.get("summary", "")
+        if not isinstance(summary, (str, dict)):
+            return ReplyResult(message=json.dumps(summary, default=str))
+        if isinstance(summary, str):
+            return ReplyResult(message=summary)
+        if "content" in summary and isinstance(summary["content"], str):
+            return ReplyResult(message=summary["content"])
+        return ReplyResult(message=json.dumps(summary, default=str))
+"""
+        # return_type: "all"
+        # everything
+        return """
+        return ReplyResult(message=json.dumps(result, default=str))
+"""
 
     # pylint: disable=unused-argument
     def get_content(
@@ -243,8 +306,8 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_symlinks=True,
             )
 """
+        content += self._get_reply_result()
         content += """
-        return ReplyResult(message=json.dumps(result))
     except BaseException as error:
         print("error during waat call: ", error)
         raise RuntimeError(str(error)) from error

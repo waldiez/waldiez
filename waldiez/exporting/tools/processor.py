@@ -100,7 +100,10 @@ class ToolProcessor:
         """
         # Get tool content
         tool_content = tool.get_content(
-            runtime_kwargs={"is_async": self.is_async}
+            runtime_kwargs={
+                "is_async": self.is_async,
+                "name": self.tool_names[tool.id],
+            }
         )
         if tool_content:  # pragma: no branch
             # Add interop conversion if needed

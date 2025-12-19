@@ -111,7 +111,29 @@ class WaldiezTool(WaldiezBase):
         ),
     ]
 
-    _original_name: str = ""
+    def get_name(self) -> str:
+        """Get the name of the tool.
+
+        Returns
+        -------
+        str
+            The name of the tool.
+        """
+        if self.is_waldiez_flow:
+            return self.data.kwargs.get("name", self.name)
+        return self.name
+
+    def get_description(self) -> str:
+        """Get the description of the tool.
+
+        Returns
+        -------
+        str
+            The description of the tool.
+        """
+        if self.is_waldiez_flow:
+            return self.data.kwargs.get("description", self.description)
+        return self.description
 
     @staticmethod
     def load(data_or_path: str | Path | dict[str, Any]) -> "WaldiezTool":
@@ -216,9 +238,7 @@ class WaldiezTool(WaldiezBase):
         bool
             True if the tool is a waldiez flow, False otherwise.
         """
-        return self.is_predefined and (
-            self.name == "waldiez_flow" or self._original_name == "waldiez_flow"
-        )
+        return self.is_predefined and (self.name == "waldiez_flow")
 
     @property
     def content(self) -> str:
@@ -246,7 +266,15 @@ class WaldiezTool(WaldiezBase):
         if self.is_predefined:
             if self.is_waldiez_flow:
                 runtime_kwargs = runtime_kwargs or {}
+                # we might have modified the name (to ensure unique valid names)
+                runtime_name = runtime_kwargs.pop("name", None)
                 runtime_kwargs.update(self.data.kwargs)
+                if (
+                    runtime_name
+                    and isinstance(runtime_name, str)
+                    and runtime_name != "waldiez_flow"
+                ):
+                    runtime_kwargs["name"] = runtime_name
             content = self._generate_predefined_content(
                 runtime_kwargs=runtime_kwargs
             )
@@ -254,7 +282,7 @@ class WaldiezTool(WaldiezBase):
         if self.is_shared or self.is_interop:
             return self.data.content
         # if custom, only the function content
-        return get_function(self.data.content, self._original_name)
+        return get_function(self.data.content, self.get_name())
 
     def _generate_predefined_content(
         self,
@@ -272,7 +300,7 @@ class WaldiezTool(WaldiezBase):
         str
             The content of the predefined tool.
         """
-        config = get_predefined_tool_config(self._original_name)
+        config = get_predefined_tool_config(self.name)
         if not config:
             return ""
         return config.get_content(
@@ -392,7 +420,6 @@ class WaldiezTool(WaldiezBase):
             If the tool name is not in the content.
             If the tool content is invalid.
         """
-        self._original_name = str(self.name)
         self._validate_custom_tool()
         self._validate_interop_tool()
         self._validate_predefined_tool()
@@ -423,9 +450,9 @@ class WaldiezTool(WaldiezBase):
         while valid_lines and not valid_lines[-1].strip():
             valid_lines.pop()
         self.data.content = "\n".join(valid_lines)
-        if self.is_predefined and self.name == "waldiez_flow":
-            self.name = self.data.kwargs.get("name", self.name)
-            self.description = self.data.kwargs.get(
-                "description", self.description
-            )
+        # if self.is_predefined and self.name == "waldiez_flow":
+        #     self.name = self.data.kwargs.get("name", self.name)
+        #     self.description = self.data.kwargs.get(
+        #         "description", self.description
+        #     )
         return self

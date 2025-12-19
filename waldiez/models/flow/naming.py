@@ -95,7 +95,7 @@ def ensure_unique_names(
 
     for tool in flow_tools:
         all_names = get_valid_instance_name(
-            (tool.id, tool.name),
+            (tool.id, tool.get_name()),
             all_names,
             prefix="wt",
             max_length=max_length,

@@ -48,6 +48,7 @@ def create_mock_tool(tool_id: str, name: str) -> WaldiezTool:
     tool.data = Mock(
         kwargs={"name": name, "description": f"Description of {name}"}
     )
+    tool.get_name = Mock(return_value=name)
     return tool
 
 
