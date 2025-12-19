@@ -6,7 +6,6 @@ import type { NodeProps } from "@xyflow/react";
 
 import type { FC } from "react";
 import { FaCopy, FaGear, FaTrashCan } from "react-icons/fa6";
-import { TbSettingsCheck } from "react-icons/tb";
 
 import { getImportExportView } from "@waldiez/containers/nodes/common";
 import { useWaldiezNodeModel } from "@waldiez/containers/nodes/model/hooks";
@@ -30,7 +29,6 @@ export const WaldiezNodeModelView: FC<NodeProps<WaldiezNodeModel>> = ({ id, data
         onSave,
         onSaveAndClose,
         onCancel,
-        onCheck,
     } = useWaldiezNodeModel(id, data);
     const importExportView = getImportExportView(flowId, id, "model", onImport, onExport);
     return (
@@ -67,16 +65,6 @@ export const WaldiezNodeModelView: FC<NodeProps<WaldiezNodeModel>> = ({ id, data
                 <div className="flex items-center">
                     <div
                         role="button"
-                        title="Check"
-                        className="clickable margin-right-10"
-                        id={`test-model-${id}`}
-                        data-testid={`test-model-${id}`}
-                        onClick={onCheck}
-                    >
-                        <TbSettingsCheck fontSize="1.1em" />
-                    </div>
-                    <div
-                        role="button"
                         title="Clone"
                         className="clickable"
                         id={`clone-node-${id}`}
@@ -99,7 +87,6 @@ export const WaldiezNodeModelView: FC<NodeProps<WaldiezNodeModel>> = ({ id, data
                 onClose={onCancel}
                 onCancel={onCancel}
                 onSave={onSave}
-                onTest={onCheck}
                 onSaveAndClose={onSaveAndClose}
             />
         </div>

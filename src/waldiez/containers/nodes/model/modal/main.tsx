@@ -26,7 +26,6 @@ export const WaldiezNodeModelModal: FC<WaldiezNodeModelModalProps> = (props: Wal
         onClose,
         onSave,
         onSaveAndClose,
-        onTest,
         onCancel,
     } = props;
     const [activeTabIndex, setActiveTabIndex] = useState(0);
@@ -90,16 +89,6 @@ export const WaldiezNodeModelModal: FC<WaldiezNodeModelModalProps> = (props: Wal
                         Cancel
                     </button>
                     <div className="flex-row">
-                        <button
-                            type="button"
-                            title="Test"
-                            className="margin-right-10 neutral"
-                            onClick={onTest}
-                            data-testid={`modal-test-btn-${modelId}`}
-                            disabled={isDirty}
-                        >
-                            Test
-                        </button>
                         <button
                             title="Save & Close"
                             type="button"

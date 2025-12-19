@@ -109,6 +109,41 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
         },
     );
 
+    const getKwargSelectValue = (kwarg: PredefinedKwargConfig) => {
+        const fallback = kwarg.options?.[0] || {
+            label: "Nothing",
+            value: "none",
+        };
+        if (!data.kwargs || !kwarg.options) {
+            return fallback;
+        }
+        for (const kwOption of kwarg.options) {
+            if (data.kwargs && kwOption.value === data.kwargs[kwarg.key]) {
+                return kwOption;
+            }
+        }
+        // kwarg.options.forEach(kwOption => {
+        //     if (data.kwargs && kwOption.value === data.kwargs[kwarg.key]) {
+        //         return kwOption;
+        //     }
+        // });
+        return fallback;
+    };
+
+    const onKwargSelectValueChange = (
+        kwarg: PredefinedKwargConfig,
+        option: SingleValue<{ label: string; value: string }>,
+    ) => {
+        if (!data.kwargs || !kwarg.options) {
+            return;
+        }
+        kwarg.options.forEach(kwOption => {
+            if (kwOption.value === option?.value) {
+                onPredefinedToolArgChange(kwarg.key, kwOption.value);
+            }
+        });
+    };
+
     const renderPredefinedKwarg = (kwarg: PredefinedKwargConfig, index: number) => {
         const type = kwarg.type ?? "string";
         const rawValue = data.kwargs ? data.kwargs[kwarg.key] : undefined;
@@ -153,6 +188,19 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
                         className="w-full margin-top-5"
                         aria-label={kwarg.label}
                         placeholder={`Enter the ${kwarg.label}`}
+                    />
+                </div>
+            );
+        }
+        if (kwarg.options) {
+            return (
+                <div className="margin-bottom-10">
+                    <label htmlFor={`kwarg-input-${index}-${kwarg.key}`}>{kwarg.label}:</label>
+                    <Select
+                        className="margin-top-5"
+                        options={kwarg.options}
+                        value={getKwargSelectValue(kwarg)}
+                        onChange={onKwargSelectValueChange.bind(null, kwarg)}
                     />
                 </div>
             );

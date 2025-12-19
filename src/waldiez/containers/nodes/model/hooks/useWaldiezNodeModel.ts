@@ -7,8 +7,6 @@ import type { Node } from "@xyflow/react";
 import { type ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import isEqual from "react-fast-compare";
 
-import { showSnackbar } from "@waldiez/components/snackbar";
-import { validateModel } from "@waldiez/containers/nodes/model/utils";
 import type { WaldiezNodeModelData } from "@waldiez/models/types";
 import { useWaldiez } from "@waldiez/store";
 import { LOGOS } from "@waldiez/theme";
@@ -122,45 +120,6 @@ export const useWaldiezNodeModel = (id: string, data: WaldiezNodeModelData) => {
     }, [data]);
 
     /**
-     * Validate the model configuration
-     */
-    const onCheck = useCallback(() => {
-        validateModel(modelData)
-            .then(result => {
-                if (result.success) {
-                    showSnackbar({
-                        flowId,
-                        message: result.message,
-                        level: "success",
-                        details: null,
-                        duration: 3000,
-                        withCloseButton: false,
-                    });
-                } else {
-                    showSnackbar({
-                        flowId,
-                        message: result.message,
-                        level: "error",
-                        details: result.details,
-                        duration: undefined,
-                        withCloseButton: true,
-                    });
-                }
-            })
-            .catch(error => {
-                const details = error instanceof Error ? error.message : String(error);
-                showSnackbar({
-                    flowId,
-                    message: "Error validating model",
-                    level: "error",
-                    details,
-                    duration: undefined,
-                    withCloseButton: true,
-                });
-            });
-    }, [modelData, flowId]);
-
-    /**
      * Save changes without closing
      */
     const onSave = useCallback(() => {
@@ -204,7 +163,6 @@ export const useWaldiezNodeModel = (id: string, data: WaldiezNodeModelData) => {
             onSave,
             onSaveAndClose,
             onCancel,
-            onCheck,
         }),
         [
             flowId,
@@ -222,7 +180,6 @@ export const useWaldiezNodeModel = (id: string, data: WaldiezNodeModelData) => {
             onSave,
             onSaveAndClose,
             onCancel,
-            onCheck,
         ],
     );
 };

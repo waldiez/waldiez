@@ -63,7 +63,7 @@ export const WaldiezNodeModelModalBasicTab: FC<WaldiezNodeModelModalBasicTabProp
                         .filter(([_, link]) => link.length > 0)
                         .map(([key, link]) => (
                             <div key={key} className="flex-row margin-bottom-5">
-                                <span className="flex-shrink-0">{capitalize(key)} models:&nbsp;&nbsp;</span>
+                                <span className="shrink-0">{capitalize(key)} models:&nbsp;&nbsp;</span>
                                 <a href={link} target="_blank" rel="noreferrer" className="text-truncate">
                                     {link}
                                 </a>
@@ -99,12 +99,7 @@ export const WaldiezNodeModelModalBasicTab: FC<WaldiezNodeModelModalBasicTabProp
                 <div className="info margin-bottom-10">
                     You can select one of the predefined models from the list below or manually enter the
                     model name and type. In the latter case, make sure that the model's name is a valid name
-                    (based on the provider). You can use the <strong>Test</strong> button to check if the
-                    model parameters are correct, but model credits might be used for this test (depending on
-                    the provider). <br />
-                    <strong>Note</strong> that if testing the model fails with a "Failed to load" message (for
-                    example a NIM model), it doesn't mean that the configuration is not correct (it could be a
-                    browser/CORS issue).
+                    (based on the provider).
                     <Collapsible
                         title="Useful Links"
                         expanded={false}

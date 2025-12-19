@@ -11,6 +11,11 @@ export type PredefinedKwargConfig = {
     multi?: boolean; // if true, use a textarea
     optional?: boolean; // if true, allow empty/not-set
     info?: string; // if set, add additional info icon/message
+    options?: {
+        // is set, render a 'select' view
+        label: string;
+        value: string;
+    }[];
 };
 
 export const PREDEFINED_TOOL_TYPES = [
@@ -84,6 +89,29 @@ export const PREDEFINED_TOOL_REQUIRED_KWARGS: Record<string, PredefinedKwargConf
             label: "Skip installing flow's dependencies",
             key: "skip_deps",
             type: "boolean",
+        },
+        {
+            label: "Return type",
+            key: "return_option",
+            type: "string",
+            options: [
+                {
+                    label: "All the conversation's messages",
+                    value: "messages",
+                },
+                {
+                    label: "The whole conversation, including post-processing output",
+                    value: "all",
+                },
+                {
+                    label: "Nothing",
+                    value: "none",
+                },
+                {
+                    label: "The last message of the conversation",
+                    value: "last",
+                },
+            ],
         },
     ],
 };

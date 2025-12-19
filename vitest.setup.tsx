@@ -146,27 +146,7 @@ globalThis.FormData = FormData;
 if (!document.queryCommandSupported) {
     document.queryCommandSupported = () => true;
 }
-const mockWebCrypto = async () => {
-    // Mock Web Crypto API for Vitest on Windows
-    if (!globalThis.crypto || !globalThis.crypto.subtle) {
-        const { webcrypto } = await import("crypto");
 
-        Object.defineProperty(globalThis, "crypto", {
-            value: webcrypto,
-            writable: false,
-            configurable: true,
-        });
-    }
-
-    // Mock window.crypto for browser-like environment
-    if (typeof window !== "undefined" && (!window.crypto || !window.crypto.subtle)) {
-        Object.defineProperty(window, "crypto", {
-            value: globalThis.crypto,
-            writable: false,
-            configurable: true,
-        });
-    }
-};
 beforeEach(() => {
     mockReactFlow();
     mockMatchMedia();
@@ -177,7 +157,6 @@ afterEach(() => {
     vi.useRealTimers();
 });
 beforeAll(async () => {
-    await mockWebCrypto();
     global.ResizeObserver = ResizeObserver;
     HTMLDivElement.prototype.scrollIntoView = vi.fn();
     HTMLAnchorElement.prototype.click = vi.fn();

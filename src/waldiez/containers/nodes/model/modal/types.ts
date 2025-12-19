@@ -17,7 +17,6 @@ export type WaldiezNodeModelModalProps = {
     onClose: () => void;
     onDataChange: (data: Partial<WaldiezNodeModelData>) => void;
     onSave: () => void;
-    onTest: () => void;
     onSaveAndClose: () => void;
     onCancel: () => void;
 };
