@@ -5,6 +5,8 @@
     "search.exclude": {
         "**/node_modules": true,
         "**/.venv": true,
+        "**/.hatch": true,
+        "**/.tox": true,
         "**/dist": true,
         "**/out": true
     },

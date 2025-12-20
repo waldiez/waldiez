@@ -38,29 +38,21 @@ DOT_LOCAL.mkdir(exist_ok=True, parents=True)
 
 # Git repo details
 BRANCH = "main"
-REPO = "waldiez/examples"
-REPO_URL = f"https://raw.githubusercontent.com/{REPO}/refs/heads/{BRANCH}"
+REPO = "waldiez/waldiez"
+REPO_URL = (
+    f"https://raw.githubusercontent.com/{REPO}/refs/heads/{BRANCH}/examples"
+)
 
-EXAMPLES_CWD = ROOT_DIR / "examples"  # submodule path
-
-# let's get them dynamically: parse subfolders,
-# skip the folder "dev" if it exists
+EXAMPLES_CWD = ROOT_DIR / "examples"
 
 
 def _get_examples() -> list[str]:
-    """Get the list of example files."""
-    examples: list[str] = []
-    for root, dirs, files in os.walk(EXAMPLES_CWD):
-        # Skip the "dev" folder
-        if "dev" in dirs:
-            dirs.remove("dev")
-        for filename in files:
-            if filename.endswith(".waldiez"):
-                examples.append(
-                    os.path.relpath(os.path.join(root, filename), EXAMPLES_CWD)
-                )
-    # sort by filename (01 - ...)
-    examples.sort(key=lambda folder: int(folder.split("-")[0]))
+    base = Path(EXAMPLES_CWD)
+    examples = [
+        str(p.relative_to(base)).replace("\\", "/")
+        for p in base.glob("[0-9][0-9] -*/*.waldiez")
+    ]
+    examples.sort(key=lambda p: int(p.split("-", 1)[0]))
     return examples
 
 

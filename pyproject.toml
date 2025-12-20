@@ -15,6 +15,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Operating System :: OS Independent",
   "Framework :: Pydantic :: 2",
   "Intended Audience :: Science/Research",
@@ -27,11 +28,11 @@ classifiers = [
 ]
 
 dependencies = [
-  "ag2[openai]==0.10.2",
+  "ag2[openai]==0.10.3",
   "aiocsv==1.4.0",
   "aiofiles==25.1.0",
   "aiosqlite==0.22.0",
-  "numpy",
+  "numpy>2",
   "nest_asyncio==1.6.0",
   "graphviz<=0.21",
   "pandas>=2",
@@ -51,7 +52,7 @@ dependencies = [
 dynamic = ["version", "description", "authors", "urls", "keywords"]
 name = "waldiez"
 readme = "README.md"
-requires-python = ">=3.10,<3.14"
+requires-python = ">=3.10"
 
 [project.scripts]
 waldiez = "waldiez.cli:app"
@@ -59,7 +60,7 @@ waldiez = "waldiez.cli:app"
 [project.optional-dependencies]
 # stream-io-extensions: redis, websockets, mqtt
 redis = [
-    "ag2[redis]==0.10.2",
+    "ag2[redis]==0.10.3",
 ]
 websockets = [
     "websockets>=14.0,<16",
@@ -84,55 +85,54 @@ reload = [
   "watchdog>=5.0.0",
 ]
 ag2_extras = [
-  "ag2[a2a]==0.10.2",
-  "ag2[anthropic]==0.10.2",
-  "ag2[autobuild]==0.10.2",
-  "ag2[bedrock]==0.10.2",
-  "ag2[blendsearch]==0.10.2",
-  "ag2[cohere]==0.10.2",
-  "ag2[commsagent-discord]==0.10.2",
-  "ag2[commsagent-slack]==0.10.2",
-  "ag2[commsagent-telegram]==0.10.2",
-  "ag2[crawl4ai]==0.10.2",
-  "ag2[duckduckgo]==0.10.2",
-  "ag2[gemini-realtime]==0.10.2;sys_platform != 'win32'",
-  "ag2[gemini-realtime]==0.10.2;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
-  "ag2[gemini]==0.10.2;sys_platform != 'win32'",
-  "ag2[gemini]==0.10.2;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
-  "ag2[google-api]==0.10.2",
-  "ag2[google-client]==0.10.2",
-  "ag2[google-search]==0.10.2",
-  "ag2[graph]==0.10.2",
-  "ag2[groq]==0.10.2",
-  "ag2[interop-crewai]==0.10.2",
-  "ag2[interop-langchain]==0.10.2",
-  "ag2[interop-pydantic-ai]==0.10.2",
-  "ag2[lmm]==0.10.2",
-  "ag2[long-context]==0.10.2",
-  # "ag2[mcp-proxy-gen]==0.10.2",
-  "ag2[mcp]==0.10.2",
-  "ag2[mistral]==0.10.2",
-  "ag2[neo4j]==0.10.2;sys_platform != 'win32'",
-  "ag2[neo4j]==0.10.2;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
-  "ag2[ollama]==0.10.2",
-  "ag2[openai-realtime]==0.10.2",
-  "ag2[redis]==0.10.2",
-  "ag2[retrievechat]==0.10.2",
-  "ag2[retrievechat-pgvector]==0.10.2",
-  "ag2[retrievechat-mongodb]==0.10.2",
-  "ag2[retrievechat-qdrant]==0.10.2",
-  "ag2[retrievechat-couchbase]==0.10.2",
-  "ag2[tavily]==0.10.2",
-  "ag2[rag]==0.10.2",
-  "ag2[together]==0.10.2;sys_platform != 'win32'",
-  "ag2[together]==0.10.2;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
-  "ag2[twilio]==0.10.2",
-  "ag2[websockets]==0.10.2",
-  "ag2[websurfer]==0.10.2",
-  "ag2[wikipedia]==0.10.2",
+  "ag2[a2a]==0.10.3",
+  "ag2[anthropic]==0.10.3",
+  "ag2[autobuild]==0.10.3; python_version < '3.14'",
+  "ag2[bedrock]==0.10.3",
+  "ag2[cohere]==0.10.3",
+  "ag2[commsagent-discord]==0.10.3",
+  "ag2[commsagent-slack]==0.10.3",
+  "ag2[commsagent-telegram]==0.10.3",
+  "ag2[crawl4ai]==0.10.3",
+  "ag2[duckduckgo]==0.10.3",
+  "ag2[gemini-realtime]==0.10.3;sys_platform != 'win32'",
+  "ag2[gemini-realtime]==0.10.3;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
+  "ag2[gemini]==0.10.3;sys_platform != 'win32'",
+  "ag2[gemini]==0.10.3;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
+  "ag2[google-api]==0.10.3",
+  "ag2[google-client]==0.10.3",
+  "ag2[google-search]==0.10.3",
+  "ag2[graph]==0.10.3",
+  "ag2[groq]==0.10.3",
+  "ag2[interop-crewai]==0.10.3",
+  "ag2[interop-langchain]==0.10.3",
+  "ag2[interop-pydantic-ai]==0.10.3",
+  "ag2[lmm]==0.10.3",
+  "ag2[long-context]==0.10.3",
+  # "ag2[mcp-proxy-gen]==0.10.3",
+  "ag2[mcp]==0.10.3",
+  "ag2[mistral]==0.10.3",
+  "ag2[neo4j]==0.10.3;sys_platform != 'win32'",
+  "ag2[neo4j]==0.10.3;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
+  "ag2[ollama]==0.10.3",
+  "ag2[openai-realtime]==0.10.3",
+  "ag2[redis]==0.10.3",
+  "ag2[retrievechat]==0.10.3; python_version < '3.14'",
+  "ag2[retrievechat-pgvector]==0.10.3; python_version < '3.14'",
+  "ag2[retrievechat-mongodb]==0.10.3; python_version < '3.14'",
+  "ag2[retrievechat-qdrant]==0.10.3; python_version < '3.14'",
+  "ag2[retrievechat-couchbase]==0.10.3; python_version < '3.14'",
+  "ag2[tavily]==0.10.3",
+  "ag2[rag]==0.10.3; python_version < '3.14'",
+  "ag2[together]==0.10.3;sys_platform != 'win32'",
+  "ag2[together]==0.10.3;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
+  "ag2[twilio]==0.10.3",
+  "ag2[websockets]==0.10.3",
+  "ag2[websurfer]==0.10.3",
+  "ag2[wikipedia]==0.10.3",
 ]
 dev = [
-  "ag2[redis]==0.10.2",
+  "ag2[redis]==0.10.3",
   "autoflake==2.3.1",
   "bandit==1.9.2",
   "basedpyright==1.36.1",
@@ -145,20 +145,20 @@ dev = [
   "notebook-shim>=0.2.4",
   "fastjsonschema>=2.21.2",
   "jupyter_server==2.17.0",
-  "nbclient>=0.10.2",
+  "nbclient>=0.10.3",
   "nbformat>=5.10.4",
   "nbconvert>=7.16.6",
   "hatchling==1.28.0",
   "mypy==1.19.1",
   "mypy-extensions>=1.1.0",
   "paho-mqtt>=2.1.0,<3.0",
-  "pandas-stubs==2.3.3.251201",
+  "pandas-stubs==2.3.3.251219",
   "nodeenv>=1.9.1",
-  "prek==0.2.22",
+  "prek==0.2.23",
   "pydocstyle==6.3.0",
   "pylint==4.0.4",
   "python-dotenv==1.2.1",
-  "ruff==0.14.9",
+  "ruff==0.14.10",
   "types-aiofiles==25.1.0.20251011",
   "types-jsonschema==4.25.1.20251009",
   "types-pyyaml==6.0.12.20250915",
@@ -180,7 +180,7 @@ docs = [
   "mkdocs-autorefs==1.4.3",
   "mkdocs-jupyter==0.25.1",
   "mkdocs-macros-plugin==1.5.0",
-  "mkdocs-material==9.7.0",
+  "mkdocs-material==9.7.1",
   "mkdocs-minify-html-plugin==0.3.9;python_version >='3.11'",
   "mkdocs-minify-html-plugin==0.3.9;python_version <= '3.13' and sys_platform != 'win32'",
   "mkdocs-minify-html-plugin;python_version =='3.10' and sys_platform == 'win32' and platform_machine == 'arm64'",
@@ -196,8 +196,8 @@ docs = [
   "natsort==8.4.0",
 ]
 test = [
-  "ag2[redis]==0.10.2",
-  "ag2[websockets]==0.10.2",
+  "ag2[redis]==0.10.3",
+  "ag2[websockets]==0.10.3",
   "fakeredis==2.33.0",
   "paho-mqtt>=2.1.0,<3.0",
   "pytest==9.0.2",
@@ -356,8 +356,8 @@ matrix-lint = "hatch run dev:lint"
 test-matrix = "hatch run dev:test"
 lint-matrix = "hatch run dev:lint"
 
-tox-test = "tox -e py310,py311,py312,py313"
-tox-lint = "tox -e lint-py310,lint-py311,lint-py312,lint-py313"
+tox-test = "tox -e py310,py311,py312,py313,py314"
+tox-lint = "tox -e lint-py310,lint-py311,lint-py312,lint-py313,lint-py314"
 tox-all = "tox"
 tox-p = "tox -p"
 
@@ -378,7 +378,7 @@ all = [
 inherit = true
 
 [[tool.hatch.envs.dev.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13"]
+python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
 
 [tool.uv]
 managed = true
@@ -625,6 +625,12 @@ filterwarnings = [
   #   Type google._upb._message.MessageMapContainer uses PyType_Spec with a metaclass that has custom tp_new.
   #   This is deprecated and will no longer be allowed in Python 3.14.
   "ignore::DeprecationWarning",
+  # FutureWarning: ChainedAssignmentError: behavior will change in pandas 3.0!
+  "ignore::FutureWarning",
+  # python3.14/site-packages/langsmith/schemas.py:23: UserWarning: Core Pydantic V1 functionality isn't compatible with Python 3.14 or greater.
+  "ignore::UserWarning:langsmith(\\..*)?$",
+  # python3.14/site-packages/autogen/logger/file_logger.py:82: SyntaxWarning: 'return' in a 'finally' block
+  "ignore::SyntaxWarning:autogen(\\..*)?$",
 ]
 python_files = [
   "tests.py",
@@ -635,7 +641,8 @@ pythonpath = ["."]
 #
 env = [
   "WALDIEZ_TESTING=1",
-  "PYTHONUNBUFFERED=1"
+  "PYTHONUNBUFFERED=1",
+  "PYTHONWARNINGS=ignore::UserWarning:langsmith.schemas"
 ]
 #
 # coverage

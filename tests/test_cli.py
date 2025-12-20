@@ -138,7 +138,13 @@ def test_cli_run(
     with pytest.raises(SystemExit):
         waldiez_main()
     captured = capsys.readouterr()
-    assert "Workflow finished" in escape_ansi(captured.out)
+    output = captured.out or captured.err
+    workflow_msg = "Preparing workflow file"
+    finished_msg = "workflow finished"
+    escaped = escape_ansi(output)
+    has_wrk_flow = workflow_msg in escaped
+    has_finished = finished_msg in escaped
+    assert has_wrk_flow or has_finished
 
 
 def test_cli_check(

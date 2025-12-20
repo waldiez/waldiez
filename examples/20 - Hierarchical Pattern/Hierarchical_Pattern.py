@@ -18,7 +18,7 @@
 A waldiez flow for the AG2 example on hierarchical pattern: https://docs.ag2.ai/latest/docs/user-guide/advanced-concepts/pattern-cookbook/hierarchical/
 The Hierarchical, or Tree, Orchestration Pattern is a powerful approach to organizing multi-agent workflows, inspired by traditional organizational structures where work and information flow through a well-defined chain of command. This pattern creates a tree-structured arrangement of agents with clear levels of responsibility, specialization, and reporting relationships.
 
-Requirements: ag2[openai]==0.10.2
+Requirements: ag2[openai]==0.10.3
 Tags:
 🧩 generated with ❤️ by Waldiez.
 """
@@ -1047,10 +1047,15 @@ def store_results(result_dicts: list[dict[str, Any]]) -> None:
     result_dicts : list[dict[str, Any]]
         The list of the results.
     """
-    with open("results.json", "w", encoding="utf-8", newline="\n") as file:
-        file.write(
-            json.dumps({'results': result_dicts}, indent=4, ensure_ascii=False)
-        )
+    try:
+        with open("results.json", "w", encoding="utf-8", newline="\n") as file:
+            file.write(
+                json.dumps(
+                    {'results': result_dicts}, indent=4, ensure_ascii=False
+                )
+            )
+    except BaseException:  # pylint: disable=broad-exception-caught
+        pass
 
 
 def _get_agent_by_name(

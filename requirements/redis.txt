@@ -1,2 +1,2 @@
 -r main.txt
-ag2[redis]==0.10.2
+ag2[redis]==0.10.3

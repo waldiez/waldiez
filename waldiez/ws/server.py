@@ -7,6 +7,7 @@
 # pyright: reportAttributeAccessIssue=false,reportAny=false
 # pyright: reportConstantRedefinition=false,reportAssignmentType=false
 # pyright: reportImportCycles=false,reportGeneralTypeIssues=false
+# pyright: reportUnnecessaryIsInstance=false
 # pylint: disable=import-error,line-too-long,invalid-name
 # flake8: noqa: E501
 """WebSocket server implementation for Waldiez."""

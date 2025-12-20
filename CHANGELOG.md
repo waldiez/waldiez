@@ -3,7 +3,20 @@
 <!-- Careful with the quotes or any special chars
 The contents of each release will be used in
 "gh release create"
+Also, make sure the npm token is not expired
  -->
+
+## Unreleased
+
+- Added waldiez-as-a-tool support
+- Added python3.14 support
+- Allow overriding the initial message in run and export
+- Allow skipping dependencies installation in the runner
+- Updated ag2 dependency to 0.10.3
+- Updated jupyter dependencies to 4.5.1
+- Bug fixes and enhancements
+- UI related enhancements
+- Dependency updates
 
 ## v0.6.11
 

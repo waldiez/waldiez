@@ -17,7 +17,7 @@
 
 A group chat workflow checking whether the weather conditions are fine for visiting a specified site at a specified date. It contains an agent capable of retrieving the temperature at real-time.
 
-Requirements: ag2[lmm,openai]==0.10.2
+Requirements: ag2[lmm,openai]==0.10.3
 Tags: Weather, Travel, Group
 🧩 generated with ❤️ by Waldiez.
 """
@@ -502,10 +502,15 @@ def store_results(result_dicts: list[dict[str, Any]]) -> None:
     result_dicts : list[dict[str, Any]]
         The list of the results.
     """
-    with open("results.json", "w", encoding="utf-8", newline="\n") as file:
-        file.write(
-            json.dumps({'results': result_dicts}, indent=4, ensure_ascii=False)
-        )
+    try:
+        with open("results.json", "w", encoding="utf-8", newline="\n") as file:
+            file.write(
+                json.dumps(
+                    {'results': result_dicts}, indent=4, ensure_ascii=False
+                )
+            )
+    except BaseException:  # pylint: disable=broad-exception-caught
+        pass
 
 
 def _get_agent_by_name(

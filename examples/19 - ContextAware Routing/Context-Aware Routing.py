@@ -18,7 +18,7 @@
 A waldiez implementation of AG2 example: https://docs.ag2.ai/latest/docs/user-guide/advanced-concepts/pattern-cookbook/context_aware_routing/
 The Context-Aware Routing Pattern creates a dynamic workflow where tasks are intelligently distributed to specialized agents based on content analysis rather than predetermined paths. Unlike static patterns with fixed routes, this approach analyzes each request in real-time to determine the most appropriate specialist, ensuring queries are handled by agents with the most relevant expertise while maintaining conversation continuity even as topics shift across domains.
 
-Requirements: ag2[openai]==0.10.2
+Requirements: ag2[openai]==0.10.3
 Tags:
 🧩 generated with ❤️ by Waldiez.
 """
@@ -847,10 +847,15 @@ def store_results(result_dicts: list[dict[str, Any]]) -> None:
     result_dicts : list[dict[str, Any]]
         The list of the results.
     """
-    with open("results.json", "w", encoding="utf-8", newline="\n") as file:
-        file.write(
-            json.dumps({'results': result_dicts}, indent=4, ensure_ascii=False)
-        )
+    try:
+        with open("results.json", "w", encoding="utf-8", newline="\n") as file:
+            file.write(
+                json.dumps(
+                    {'results': result_dicts}, indent=4, ensure_ascii=False
+                )
+            )
+    except BaseException:  # pylint: disable=broad-exception-caught
+        pass
 
 
 def _get_agent_by_name(

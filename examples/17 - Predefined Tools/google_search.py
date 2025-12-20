@@ -17,7 +17,7 @@
 
 A example waldiez flow using google search
 
-Requirements: ag2[gemini,google-search,openai]==0.10.2
+Requirements: ag2[gemini,google-search,openai]==0.10.3
 Tags: websearch
 🧩 generated with ❤️ by Waldiez.
 """
@@ -456,10 +456,15 @@ def store_results(result_dicts: list[dict[str, Any]]) -> None:
     result_dicts : list[dict[str, Any]]
         The list of the results.
     """
-    with open("results.json", "w", encoding="utf-8", newline="\n") as file:
-        file.write(
-            json.dumps({'results': result_dicts}, indent=4, ensure_ascii=False)
-        )
+    try:
+        with open("results.json", "w", encoding="utf-8", newline="\n") as file:
+            file.write(
+                json.dumps(
+                    {'results': result_dicts}, indent=4, ensure_ascii=False
+                )
+            )
+    except BaseException:  # pylint: disable=broad-exception-caught
+        pass
 
 
 def _get_agent_by_name(

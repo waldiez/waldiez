@@ -92,12 +92,15 @@ class ExecutionGenerator:
         content += f"{tab}result_dicts : list[dict[str, Any]]\n"
         content += f"{tab}{tab}The list of the results.\n"
         content += f'{tab}"""\n'
+        content += f"{tab}try:\n"
         if is_async:
-            content += f'{tab}async with aiofiles.open("results.json", "w", encoding="utf-8", newline="\\n") as file:\n'
-            content += f"{tab}{tab}await file.write(json.dumps({{'results': result_dicts}}, indent=4, ensure_ascii=False))\n"
+            content += f'{tab}{tab}async with aiofiles.open("results.json", "w", encoding="utf-8", newline="\\n") as file:\n'
+            content += f"{tab}{tab}{tab}await file.write(json.dumps({{'results': result_dicts}}, indent=4, ensure_ascii=False))\n"
         else:
-            content += f'{tab}with open("results.json", "w", encoding="utf-8", newline="\\n") as file:\n'
-            content += f"{tab}{tab}file.write(json.dumps({{'results': result_dicts}}, indent=4, ensure_ascii=False))\n"
+            content += f'{tab}{tab}with open("results.json", "w", encoding="utf-8", newline="\\n") as file:\n'
+            content += f"{tab}{tab}{tab}file.write(json.dumps({{'results': result_dicts}}, indent=4, ensure_ascii=False))\n"
+        content += f"{tab}except BaseException:  # pylint: disable=broad-exception-caught\n"
+        content += f"{tab}{tab}pass\n"
         return content
 
     @staticmethod

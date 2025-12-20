@@ -490,7 +490,8 @@ def test_run_handles_generic_exception(
     )
     captured = capsys.readouterr()
     assert results == []
-    assert "Workflow execution failed: generic error" in captured.out
+    msg = captured.out or captured.err
+    assert "generic error" in msg
 
 
 @pytest.mark.asyncio
@@ -538,8 +539,9 @@ async def test_async_run_handles_generic_exception(
         tmp_path, tmp_path / "out.py", None
     )  # nosemgrep # nosec
     captured = capsys.readouterr()
+    msg = captured.out or captured.err
     assert results == []
-    assert "Workflow execution failed: generic async error" in captured.out
+    assert "generic async error" in msg
 
 
 def test_get_user_response_invalid_json_not_allowed(

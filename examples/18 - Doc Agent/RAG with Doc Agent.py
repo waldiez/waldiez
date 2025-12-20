@@ -17,7 +17,7 @@
 
 Retrieval Augmented Generation using a Doc agent. Based on <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/docagent/#example>
 
-Requirements: ag2[openai]==0.10.2, chromadb>=0.5,<2, docling>=2.15.1,<3, llama-index, llama-index-core, llama-index-embeddings-huggingface, llama-index-llms-langchain, llama-index-llms-openai, llama-index-vector-stores-chroma, selenium>=4.28.1,<5, webdriver-manager==4.0.2
+Requirements: ag2[openai]==0.10.3, chromadb>=0.5,<2, docling>=2.15.1,<3, llama-index, llama-index-core, llama-index-embeddings-huggingface, llama-index-llms-langchain, llama-index-llms-openai, llama-index-vector-stores-chroma, selenium>=4.28.1,<5, webdriver-manager==4.0.2
 Tags: RAG, Doc Agent
 🧩 generated with ❤️ by Waldiez.
 """
@@ -380,10 +380,15 @@ def store_results(result_dicts: list[dict[str, Any]]) -> None:
     result_dicts : list[dict[str, Any]]
         The list of the results.
     """
-    with open("results.json", "w", encoding="utf-8", newline="\n") as file:
-        file.write(
-            json.dumps({'results': result_dicts}, indent=4, ensure_ascii=False)
-        )
+    try:
+        with open("results.json", "w", encoding="utf-8", newline="\n") as file:
+            file.write(
+                json.dumps(
+                    {'results': result_dicts}, indent=4, ensure_ascii=False
+                )
+            )
+    except BaseException:  # pylint: disable=broad-exception-caught
+        pass
 
 
 def _get_agent_by_name(

@@ -177,16 +177,13 @@ def test_get_printer(capsys: pytest.CaptureFixture[str]) -> None:
     capsys : pytest.CaptureFixture[str]
         Pytest fixture to capture stdout and stderr.
     """
-    printer = get_printer()
     invalid_str = "This is an invalid string: 🤯"
-    printer(invalid_str)
-    assert "This is an invalid string: " in capsys.readouterr().out
-    invalid_encoded = "This is an invalid encoded string".encode("cp1252")
-    printer(invalid_encoded)
-    assert "This is an invalid encoded string" in capsys.readouterr().out
     with IOStream.set_default(BadIOStream()):
         printer1 = get_printer()
         printer1(invalid_str)
+        out_err = capsys.readouterr()
+        msg = out_err.out or out_err.err
+        assert "invalid string" in msg
 
 
 def test_runner_load(

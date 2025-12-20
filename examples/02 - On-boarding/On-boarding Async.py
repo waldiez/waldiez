@@ -17,7 +17,7 @@
 
 Async version of Sequential Chats and Customer Onboarding
 
-Requirements: ag2[anthropic,openai]==0.10.2
+Requirements: ag2[anthropic,openai]==0.10.3
 Tags: Sequential, Customer, On-boarding, Onboarding
 🧩 generated with ❤️ by Waldiez.
 """
@@ -519,12 +519,17 @@ async def store_results(result_dicts: list[dict[str, Any]]) -> None:
     result_dicts : list[dict[str, Any]]
         The list of the results.
     """
-    async with aiofiles.open(
-        "results.json", "w", encoding="utf-8", newline="\n"
-    ) as file:
-        await file.write(
-            json.dumps({'results': result_dicts}, indent=4, ensure_ascii=False)
-        )
+    try:
+        async with aiofiles.open(
+            "results.json", "w", encoding="utf-8", newline="\n"
+        ) as file:
+            await file.write(
+                json.dumps(
+                    {'results': result_dicts}, indent=4, ensure_ascii=False
+                )
+            )
+    except BaseException:  # pylint: disable=broad-exception-caught
+        pass
 
 
 def _get_agent_by_name(
