@@ -31,7 +31,7 @@ dependencies = [
   "ag2[openai]==0.10.3",
   "aiocsv==1.4.0",
   "aiofiles==25.1.0",
-  "aiosqlite==0.22.0",
+  "aiosqlite>=0.21.0",  # watch for: https://github.com/omnilib/aiosqlite/issues/369
   "numpy>2",
   "nest_asyncio==1.6.0",
   "graphviz<=0.21",
