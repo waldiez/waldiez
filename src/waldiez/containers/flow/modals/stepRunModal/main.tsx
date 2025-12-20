@@ -2,7 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2025 Waldiez & contributors
  */
-import { type FC, useCallback, useMemo, useState } from "react";
+import { type FC, useCallback, useEffect, useMemo, useState } from "react";
 import { FaBug } from "react-icons/fa6";
 import { MdTimeline } from "react-icons/md";
 
@@ -35,6 +35,12 @@ export const StepRunModal: FC<{
         resetActiveEventType();
         resetActiveParticipants();
     }, [stepByStep?.handlers, resetActiveEventType, resetActiveParticipants]);
+    useEffect(() => {
+        if (!stepByStep?.show || !stepByStep.active) {
+            resetActiveEventType();
+            resetActiveParticipants();
+        }
+    }, [resetActiveEventType, resetActiveParticipants, stepByStep?.active, stepByStep?.show]);
     const events = useMemo(() => {
         const raw = stepByStep?.eventHistory ?? [];
         const max = 500;
