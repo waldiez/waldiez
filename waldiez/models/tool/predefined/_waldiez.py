@@ -7,6 +7,7 @@
 
 import json
 import os
+from pathlib import Path
 from typing import Any
 
 from ...common import get_valid_python_variable_name
@@ -96,6 +97,11 @@ class WaldiezFlowToolImpl(PredefinedTool):
         for key, type_of in self.required_kwargs.items():
             if key not in kwargs:
                 missing.append(key)
+                continue
+            if key == "flow":
+                # handle possible windows path
+                flow_path = resolve_path(kwargs[key])
+                self._kwargs[key] = flow_path
                 continue
             try:
                 casted = type_of(kwargs[key])
@@ -318,6 +324,78 @@ class WaldiezFlowToolImpl(PredefinedTool):
             pass
 """
         return content
+
+
+def extract_raw_string_content(value: str) -> str:
+    """Remove Python-style raw-string wrapper like r"..." / r'...' if present.
+
+    Parameters
+    ----------
+    value : str
+        The path that might be wrapped in raw string format.
+
+    Returns
+    -------
+    str
+        The actual content of the path, without raw string formatting.
+    """
+    s = value.strip()
+    if len(s) >= 3 and (
+        s.startswith('r"')
+        or s.startswith("r'")
+        or s.startswith('R"')
+        or s.startswith("R'")
+    ):
+        quote = s[1]
+        # r"...."
+        if s.endswith(quote):
+            return s[2:-1]
+        # malformed wrapper: r"...  (no closing quote)
+        return s[2:]
+    return s
+
+
+def _strip_wrapping_quotes(value: str) -> str:
+    s = value.strip()
+    if len(s) >= 2 and s[0] == s[-1] and s[0] in ('"', "'"):
+        return s[1:-1]
+    return s
+
+
+def resolve_path(path: str) -> str:
+    """Resolve a local path (or pass through http/https URLs).
+
+    Parameters
+    ----------
+    path : str
+        The path to resolve.
+
+    Returns
+    -------
+    str
+        The resolved path, potentially wrapped in raw string format.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the flow path cannot be resolved.
+    """
+    s = path.strip()
+    if s.startswith(("http://", "https://")):
+        return s
+
+    s = extract_raw_string_content(s)
+    s = _strip_wrapping_quotes(s)
+
+    # Handle double / JSON-escaped backslashes
+    while "\\\\" in s:  # pragma: no cover
+        s = s.replace("\\\\", "\\")
+
+    resolved = Path(s).expanduser().resolve()
+    if not resolved.exists():
+        raise FileNotFoundError(f"Path does not exist: {s}")
+
+    return str(resolved)
 
 
 # pylint: disable=invalid-name
