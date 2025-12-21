@@ -146,7 +146,7 @@ index 109063cfb7..dafcdafdfa 100644
  
                  IOStream.get_default().send(
 diff --git a/autogen/agentchat/groupchat.py b/autogen/agentchat/groupchat.py
-index 707d529806..41003180c6 100644
+index d8520fbce0..79c097184a 100644
 --- a/autogen/agentchat/groupchat.py
 +++ b/autogen/agentchat/groupchat.py
 @@ -4,12 +4,15 @@
