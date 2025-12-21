@@ -5,6 +5,7 @@
 
 """Test waldiez.models.tool.predefined._waldiez."""
 
+import json
 import os
 import tempfile
 from pathlib import Path
@@ -282,7 +283,7 @@ class TestWaldiezFlowToolImpl:
                 }
             )
             content = tool.get_content({})
-            assert f'dot_env="{env_path}"' in content
+            assert f"dot_env={json.dumps(env_path)}" in content
         finally:
             os.unlink(temp_path)
             os.unlink(env_path)
