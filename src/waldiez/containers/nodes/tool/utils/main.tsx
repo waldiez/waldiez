@@ -150,7 +150,16 @@ export const PREDEFINED_TOOL_INSTRUCTIONS: { [key: string]: ReactNode | undefine
         </div>
     ),
     searxng_search: undefined,
-    waldiez_flow: undefined,
+    waldiez_flow: (
+        <div className="info">
+            <p>
+                For the <strong>flow path</strong>, you can use either the full local path to the{" "}
+                <span className="italic">.waldiez</span> file or a URL.
+            </p>
+            <p>On windows, you may need to use double backslashes for local paths:</p>
+            <p className="italic font-bold">C:\\Users\\you\\path\\to\\the\\file.waldiez</p>
+        </div>
+    ),
     shared: undefined,
     custom: undefined,
 };

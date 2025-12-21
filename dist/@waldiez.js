@@ -689,7 +689,12 @@ return C("div",{className:"flex flex-col",children:/* @__PURE__ */w("div",{class
 /* @__PURE__ */w("li",{children:["Navigate to"," ",
 /* @__PURE__ */C("a",{href:"https://www.perplexity.ai/settings/api",target:"_blank",rel:"noopener noreferrer",children:"Perplexity API"}),"."]}),
 /* @__PURE__ */w("li",{children:["Generate an API key under ",
-/* @__PURE__ */C("strong",{children:"API Keys"}),"."]})]})]}),searxng_search:void 0,waldiez_flow:void 0,shared:void 0,custom:void 0},eC=(e,t,n=14)=>{if("custom"===t)/* @__PURE__ */
+/* @__PURE__ */C("strong",{children:"API Keys"}),"."]})]})]}),searxng_search:void 0,waldiez_flow:/* @__PURE__ */w("div",{className:"info",children:[
+/* @__PURE__ */w("p",{children:["For the ",
+/* @__PURE__ */C("strong",{children:"flow path"}),", you can use either the full local path to the"," ",
+/* @__PURE__ */C("span",{className:"italic",children:".waldiez"})," file or a URL."]}),
+/* @__PURE__ */C("p",{children:"On windows, you may need to use double backslashes for local paths:"}),
+/* @__PURE__ */C("p",{className:"italic font-bold",children:"C:\\\\Users\\\\you\\\\path\\\\to\\\\the\\\\file.waldiez"})]}),shared:void 0,custom:void 0},eC=(e,t,n=14)=>{if("custom"===t)/* @__PURE__ */
 return C(We,{"aria-hidden":"true",size:n,style:{width:n,height:n}});if("shared"===t)/* @__PURE__ */
 return C(_e,{"aria-hidden":"true",size:n,style:{width:n,height:n}});switch(e){case"wikipedia_search":/* @__PURE__ */
 return C("img",{src:zo,alt:"Wikipedia Search Icon",style:{width:n,height:n}});case"youtube_search":/* @__PURE__ */

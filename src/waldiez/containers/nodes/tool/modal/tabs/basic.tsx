@@ -122,11 +122,6 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
                 return kwOption;
             }
         }
-        // kwarg.options.forEach(kwOption => {
-        //     if (data.kwargs && kwOption.value === data.kwargs[kwarg.key]) {
-        //         return kwOption;
-        //     }
-        // });
         return fallback;
     };
 
