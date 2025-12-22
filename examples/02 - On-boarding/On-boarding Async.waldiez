@@ -1,7 +1,7 @@
 {
   "id": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "type": "flow",
-  "version": "0.6.11",
+  "version": "0.7.0",
   "storageId": "wf-PMXW6XGEf7lHcDNnuh9Qa",
   "name": "On-boarding Async",
   "description": "Async version of Sequential Chats and Customer Onboarding",

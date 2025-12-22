@@ -6,7 +6,7 @@ The contents of each release will be used in
 Also, make sure the npm token is not expired
  -->
 
-## Unreleased
+## v0.7.0
 
 - Added waldiez-as-a-tool support
 - Added python3.14 support
