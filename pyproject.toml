@@ -70,16 +70,16 @@ mqtt = [
 ]
 # jupyterlab extension
 jupyter = [
-  "waldiez_jupyter==0.6.11",
+  "waldiez_jupyter==0.7.0",
   "jupyterlab==4.5.1",
   "ipywidgets==8.1.8",
   "jupyter_server==2.17.0",
 ]
 runner = [
-  "waldiez_runner==0.6.11; python_version >= '3.11'",
+  "waldiez_runner==0.7.0; python_version >= '3.11'",
 ]
 studio = [
-  "waldiez_studio==0.6.11",
+  "waldiez_studio==0.7.0",
 ]
 reload = [
   "watchdog>=5.0.0",
@@ -385,8 +385,6 @@ managed = true
 # handle conflicts with
 # published extras not yet bumped
 override-dependencies = [
-    "aiosqlite==0.22.0",
-    "fakeredis==2.33.0",
 ]
 
 # pip-tools
