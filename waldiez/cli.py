@@ -3,6 +3,7 @@
 # flake8: noqa: E501
 # pylint: disable=missing-function-docstring, missing-param-doc, missing-raises-doc
 # pylint: disable=line-too-long, import-outside-toplevel,too-many-locals
+# pylint: disable=too-many-arguments,too-many-positional-arguments
 # pyright: reportUnknownArgumentType=false,reportCallInDefaultInitializer=false
 # pyright:  reportUnusedCallResult=false,reportAny=false
 """Command line interface to convert or run a waldiez file."""
@@ -285,6 +286,10 @@ def convert(
         False,
         help="Override the output file if it already exists.",
     ),
+    skip_secrets: bool = typer.Option(
+        False,
+        help="Redact any secrets from the generated dump",
+    ),
     debug: bool = typer.Option(
         False,
         "--debug",
@@ -314,6 +319,7 @@ def convert(
         output,
         message=message,
         force=force,
+        skip_secrets=skip_secrets,
         debug=debug,
     )
     generated = str(output).replace(os.getcwd(), ".")
