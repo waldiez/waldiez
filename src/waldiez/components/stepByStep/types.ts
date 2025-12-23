@@ -14,6 +14,8 @@ import type {
 } from "@waldiez/components/chatUI/types";
 import type { WaldiezTimelineData } from "@waldiez/components/timeline/types";
 
+export type * from "@waldiez/components/stepByStep/event_types";
+
 /**
  * Explicit response codes allowed by the backend for step control.
  */

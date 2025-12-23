@@ -13,6 +13,7 @@ import {
     WaldiezChatGroupChatRunHandler,
     WaldiezChatInputRequestHandler,
     WaldiezChatParticipantsHandler,
+    WaldiezChatPostCarryoverHandler,
     WaldiezChatPrintMessageHandler,
     WaldiezChatRunCompletionHandler,
     WaldiezChatSpeakerSelectionHandler,
@@ -22,6 +23,7 @@ import {
     WaldiezChatTimelineDataHandler,
     WaldiezChatToolCallHandler,
     WaldiezChatToolResponseHandler,
+    WaldiezChatTransitionEventHandler,
     WaldiezChatUsingAutoReplyHandler,
 } from "@waldiez/utils/chat/handlers";
 import type {
@@ -38,6 +40,7 @@ export class WaldiezChatMessageProcessor {
             this._handlers = [
                 new WaldiezChatInputRequestHandler(),
                 new WaldiezChatParticipantsHandler(),
+                new WaldiezChatPostCarryoverHandler(),
                 new WaldiezChatPrintMessageHandler(),
                 new WaldiezChatTextMessageHandler(),
                 new WaldiezChatTerminationHandler(),
@@ -54,6 +57,7 @@ export class WaldiezChatMessageProcessor {
                 new WaldiezChatExecutedFunctionHandler(),
                 new WaldiezChatTimelineDataHandler(),
                 new WaldiezChatErrorHandler(),
+                new WaldiezChatTransitionEventHandler(),
             ];
         }
         return this._handlers;

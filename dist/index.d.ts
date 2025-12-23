@@ -26,6 +26,11 @@ import { XYPosition } from '@xyflow/react';
 
 export { ActionMeta }
 
+export declare type AfterWorksTransitionContent = {
+    source_agent: string;
+    transition_target: string;
+};
+
 /**
  * Chat UI component props
  * @param messages - Array of chat messages
@@ -126,6 +131,30 @@ export declare const defaultRetrieveConfig: WaldiezRagUserRetrieveConfig;
  */
 export declare const emptyFlow: WaldiezFlow;
 
+export declare type ErrorContent = string | Record<string, never>;
+
+export declare type EventBase<TType extends string, TContent> = {
+    id?: string;
+    type: TType;
+    content: TContent;
+    sender?: string;
+    recipient?: string;
+    timestamp?: string;
+};
+
+export declare type ExecutedFunctionContent = {
+    func_name?: string;
+    is_exec_success?: boolean;
+    recipient?: string;
+    content?: any;
+};
+
+export declare type ExecuteFunctionContent = {
+    func_name: string;
+    recipient: string;
+    arguments?: unknown;
+};
+
 /**
  * Export a flow to a JSON object.
  * @param data - The flow to export
@@ -137,7 +166,15 @@ export declare const emptyFlow: WaldiezFlow;
  */
 export declare const exportFlow: (data: any, hideSecrets?: boolean, skipLinks?: boolean) => WaldiezFlow;
 
+export declare type GenerateCodeExecutionReplyContent = Record<string, never>;
+
 export { GroupBase }
+
+export declare type GroupChatResumeContent = Record<string, never>;
+
+export declare type GroupChatRunChatContent = {
+    speaker: string;
+};
 
 /**
  * The method used to select the speaker in a group chat.
@@ -200,6 +237,16 @@ export declare type ImportedFlow = {
  * @see {@link WaldiezFlowProps}
  */
 export declare const importFlow: (data: any) => WaldiezFlowProps;
+
+export declare type InfoContent = string | Record<string, never>;
+
+export declare type InputRequestContent = {
+    prompt?: string;
+    /** Your backend should use this to route the response back to the pending request */
+    request_id?: string;
+    /** Provide a responder for local mock, else use onRespond prop */
+    respond?: (text: string) => void;
+};
 
 export declare interface IWaldiezAgentStore {
     /**
@@ -685,6 +732,22 @@ export declare interface IWaldiezToolStore {
 
 export { MultiValue }
 
+export declare type OnConditionLLMTransitionContent = {
+    source_agent: string;
+    transition_target: string;
+};
+
+export declare type OnContextConditionTransitionContent = {
+    source_agent: string;
+    transition_target: string;
+};
+
+export declare type PostCarryoverContent = {
+    sender: string;
+    recipient: string;
+    message: string;
+};
+
 /**
  * RAGQueryEngine
  * The configuration for the RAG query engine used by the document agent.
@@ -724,6 +787,13 @@ export declare type reasonConfigAnswerApproach = "pool" | "best";
  * @see {@link WaldiezReasoningAgentReasonConfig}
  */
 export declare type reasonConfigMethod = "beam_search" | "mcts" | "lats" | "dfs";
+
+export declare type ReplyResultTransitionContent = {
+    source_agent: string;
+    transition_target: string;
+};
+
+export declare type RunCompletionContent = Record<string, never>;
 
 /**
  * Show a snackbar notification.
@@ -770,6 +840,22 @@ export declare type SnackbarLevel = "info" | "warning" | "error" | "success";
 
 export declare type SnackbarQueue = SnackbarItem[];
 
+export declare type TerminationAndHumanReplyNoInputContent = {
+    no_human_input_msg: string;
+    sender: string;
+    recipient: string;
+};
+
+export declare type TerminationContent = {
+    termination_reason?: string;
+};
+
+export declare type TextContent = {
+    sender: string;
+    recipient: string;
+    content: any;
+};
+
 /**
  * ThingsToImport
  * @param override - Whether to override the existing flow
@@ -799,6 +885,28 @@ export declare type ThingsToImport = {
     };
     edges: Edge[];
 };
+
+export declare type ToolCall = {
+    function: {
+        name: string;
+        arguments?: string;
+    };
+};
+
+export declare type ToolCallContent = {
+    sender: string;
+    recipient: string;
+    tool_calls: ToolCall[];
+};
+
+export declare type ToolResponseContent = {
+    content: string;
+    sender: string;
+    recipient: string;
+};
+
+declare type TransitionEvent_2 = EventBase<"on_context_condition_transition", OnContextConditionTransitionContent> | EventBase<"after_works_transition", AfterWorksTransitionContent> | EventBase<"on_condition_llm_transition", OnConditionLLMTransitionContent> | EventBase<"on_condition_l_l_m_transition", OnConditionLLMTransitionContent> | EventBase<"reply_result_transition", ReplyResultTransitionContent>;
+export { TransitionEvent_2 as TransitionEvent }
 
 /**
  * The types of targets that can be used in a handoff.
@@ -1143,6 +1251,11 @@ export declare const useWaldiezWsStepByStep: (props: {
     getConnectionState: () => number;
     send: (msg: unknown) => boolean | void;
     reconnect: () => void;
+};
+
+export declare type UsingAutoReplyContent = {
+    sender: string;
+    recipient: string;
 };
 
 /**
@@ -3079,6 +3192,8 @@ export declare type WaldiezEdgeData = WaldiezChatDataCommon & {
  * @param hidden - Hidden type
  */
 export declare type WaldiezEdgeType = "chat" | "nested" | "group" | "hidden";
+
+export declare type WaldiezEvent = EventBase<"text", TextContent> | EventBase<"post_carryover_processing", PostCarryoverContent> | EventBase<"group_chat_run_chat", GroupChatRunChatContent> | EventBase<"using_auto_reply", UsingAutoReplyContent> | EventBase<"tool_call", ToolCallContent> | EventBase<"execute_function", ExecuteFunctionContent> | EventBase<"executed_function", ExecutedFunctionContent> | EventBase<"input_request", InputRequestContent> | EventBase<"tool_response", ToolResponseContent> | EventBase<"termination", TerminationContent> | EventBase<"run_completion", RunCompletionContent> | EventBase<"generate_code_execution_reply", GenerateCodeExecutionReplyContent> | EventBase<"group_chat_resume", GroupChatResumeContent> | EventBase<"info", InfoContent> | EventBase<"error", ErrorContent> | EventBase<"empty", TextContent> | EventBase<"termination_and_human_reply_no_input", TerminationAndHumanReplyNoInputContent> | TransitionEvent_2 | EventBase<string, any>;
 
 /**
  * Waldiez Expression context condition

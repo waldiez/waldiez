@@ -6,8 +6,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { StepByStepView } from "@waldiez/components/stepByStep";
-import type { WaldiezEvent } from "@waldiez/components/stepByStep/console";
-import type { WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
+import type { WaldiezEvent, WaldiezStepByStep } from "@waldiez/components/stepByStep/types";
 import { WaldiezProvider } from "@waldiez/store";
 
 // Mock nanoid

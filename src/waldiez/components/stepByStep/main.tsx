@@ -9,10 +9,14 @@ import { FaCaretLeft, FaInfo, FaPlay, FaStop } from "react-icons/fa6";
 
 import { nanoid } from "nanoid";
 
-import { EventConsole, type WaldiezEvent } from "@waldiez/components/stepByStep/console";
+import { EventConsole } from "@waldiez/components/stepByStep/console";
 import { EventAgentsList } from "@waldiez/components/stepByStep/eventAgentsList";
 import { useAgentClassUpdates } from "@waldiez/components/stepByStep/hooks";
-import { type WaldiezStepByStep, controlToResponse } from "@waldiez/components/stepByStep/types";
+import {
+    type WaldiezEvent,
+    type WaldiezStepByStep,
+    controlToResponse,
+} from "@waldiez/components/stepByStep/types";
 import { useWaldiez } from "@waldiez/store";
 
 /**

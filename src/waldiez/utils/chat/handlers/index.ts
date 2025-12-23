@@ -30,3 +30,4 @@ export {
     WaldiezChatToolCallHandler,
     WaldiezChatToolResponseHandler,
 } from "@waldiez/utils/chat/handlers/tools";
+export { WaldiezChatTransitionEventHandler } from "@waldiez/utils/chat/handlers/transition";

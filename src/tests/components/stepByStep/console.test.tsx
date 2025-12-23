@@ -7,7 +7,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import React from "react";
 
-import { EventConsole, type WaldiezEvent } from "@waldiez/components/stepByStep/console";
+import { EventConsole } from "@waldiez/components/stepByStep/console";
+import type { WaldiezEvent } from "@waldiez/components/stepByStep/types";
 
 describe("EventConsole", () => {
     beforeEach(() => {
