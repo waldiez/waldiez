@@ -4777,11 +4777,11 @@ export declare type WaldiezStoreProps = {
     isReadOnly?: boolean;
     skipImport?: boolean;
     skipExport?: boolean;
+    skipDeps?: boolean | null;
     cacheSeed?: number | null;
     name?: string;
     description?: string;
     requirements?: string[];
-    skipDeps?: boolean | null;
     storageId?: string;
     createdAt?: string;
     updatedAt?: string;
