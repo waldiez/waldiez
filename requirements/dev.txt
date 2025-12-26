@@ -17,7 +17,7 @@ mypy==1.19.1
 nbclient>=0.10.4
 nbconvert>=7.16.6
 nbformat>=5.10.4
-nodeenv>=1.9.1
+nodeenv>=1.10.0
 notebook-shim>=0.2.4
 paho-mqtt>=2.1.0,<3.0
 pandas-stubs==2.3.3.251219
