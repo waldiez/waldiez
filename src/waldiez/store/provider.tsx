@@ -58,8 +58,9 @@ export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
     const onConvert = props.onConvert ?? null;
     const checkpoints = props.checkpoints ?? null;
     const rfInstance = props.rfInstance;
-    const isAsync = props.isAsync ?? false;
-    const cacheSeed = props.cacheSeed ?? 42;
+    const isAsync = typeof props.isAsync === "boolean" ? props.isAsync : false;
+    const skipDeps = typeof props.skipDeps === "boolean" ? props.skipDeps : false;
+    const cacheSeed = typeof props.cacheSeed === "number" ? props.cacheSeed : null;
     const store = useMemo(() => {
         storeRef.current = createWaldiezStore({
             flowId,
@@ -76,6 +77,7 @@ export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
             edges,
             rfInstance,
             cacheSeed,
+            skipDeps,
             onUpload,
             onChange,
             onSave,
