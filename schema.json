@@ -34,9 +34,6 @@
                 "type": "string"
             }
         },
-        "skipDeps": {
-            "type": ["boolean", "null"]
-        },
         "storageId": {
             "type": "string"
         },
@@ -158,6 +155,9 @@
                 },
                 "silent": {
                     "type": "boolean"
+                },
+                "skipDeps": {
+                    "type": ["boolean", "null"]
                 }
             },
             "required": ["agents", "chats", "edges", "models", "nodes", "tools"],

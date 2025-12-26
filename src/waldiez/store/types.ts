@@ -135,6 +135,7 @@ export type ImportedFlow = {
     updatedAt?: string;
     isAsync?: boolean;
     cacheSeed?: number | null;
+    skipDeps?: boolean | null;
     tags: string[];
     nodes: Node[];
     edges: Edge[];
@@ -162,6 +163,7 @@ export type ThingsToImport = {
     requirements: boolean;
     isAsync: boolean;
     cacheSeed?: boolean | null;
+    skipDeps?: boolean | null;
     nodes: {
         models: Node[];
         tools: Node[];
@@ -187,6 +189,7 @@ export type WaldiezChatParticipantsState = {
  * @param skipImport - Whether to skip the import of the flow
  * @param skipExport - Whether to skip the export of the flow
  * @param cacheSeed - The seed for the cache
+ * @param skipDeps - Skip installing the dependencies
  * @param name - The name of the flow
  * @param description - The description of the flow
  * @param requirements - The requirements of the flow
@@ -259,6 +262,7 @@ export type WaldiezStore = ReturnType<typeof createWaldiezStore>;
  * @param skipImport - Whether to skip the import of the flow
  * @param skipExport - Whether to skip the export of the flow
  * @param cacheSeed - The seed for the cache
+ * @param skipDeps - Skip installing the dependencies
  * @param name - The name of the flow
  * @param description - The description of the flow
  * @param requirements - The requirements of the flow

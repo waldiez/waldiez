@@ -142,6 +142,15 @@ class WaldiezFlowData(WaldiezBase):
             title="Cache Seed",
         ),
     ]
+    skip_deps: Annotated[
+        bool | None,
+        Field(
+            None,
+            alias="skipDeps",
+            description="Skip installing dependencies. Default is None.",
+            title="Skip deps",
+        ),
+    ]
 
     @model_validator(mode="after")
     def validate_flow_chats(self) -> Self:
@@ -286,6 +295,7 @@ class WaldiezFlowData(WaldiezBase):
             ],
             is_async=False,
             cache_seed=None,
+            skip_deps=None,
         )
 
 

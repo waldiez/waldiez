@@ -224,6 +224,7 @@ export declare type ImportedFlow = {
     updatedAt?: string;
     isAsync?: boolean;
     cacheSeed?: number | null;
+    skipDeps?: boolean | null;
     tags: string[];
     nodes: Node_2[];
     edges: Edge[];
@@ -878,6 +879,7 @@ export declare type ThingsToImport = {
     requirements: boolean;
     isAsync: boolean;
     cacheSeed?: boolean | null;
+    skipDeps?: boolean | null;
     nodes: {
         models: Node_2[];
         tools: Node_2[];
@@ -3219,7 +3221,6 @@ export declare type WaldiezExpressionContextCondition = {
  * @param description - The description of the flow
  * @param tags - The tags
  * @param requirements - The requirements
- * @param skipDeps - Skip installing the dependencies
  * @param data - The data
  * @param storageId - The storage ID
  * @param createdAt - The created at date
@@ -3235,7 +3236,6 @@ export declare class WaldiezFlow {
     description: string;
     tags: string[];
     requirements: string[];
-    skipDeps?: boolean | null;
     data: WaldiezFlowData;
     storageId: string;
     createdAt: string;
@@ -3249,7 +3249,6 @@ export declare class WaldiezFlow {
         description: string;
         tags: string[];
         requirements: string[];
-        skipDeps?: boolean | null;
         data: WaldiezFlowData;
         storageId: string;
         createdAt: string;
@@ -3270,6 +3269,7 @@ export declare class WaldiezFlow {
  * @param chats - The chats
  * @param isAsync - Is async
  * @param cacheSeed - The cache seed
+ * @param skipDeps - Skip installing the dependencies
  * @param viewport - The viewport
  * @see {@link WaldiezAgentUserProxy}
  * @see {@link WaldiezAgentAssistant}
@@ -3298,6 +3298,7 @@ export declare class WaldiezFlowData {
     isAsync?: boolean;
     cacheSeed?: number | null;
     silent?: boolean;
+    skipDeps?: boolean | null;
     constructor(props?: {
         nodes: Node_2[];
         edges: Edge[];
@@ -3317,6 +3318,7 @@ export declare class WaldiezFlowData {
         isAsync?: boolean;
         cacheSeed?: number | null;
         silent?: boolean;
+        skipDeps?: boolean | null;
     });
 }
 
@@ -4316,6 +4318,7 @@ export declare type WaldiezProps = WaldiezFlowProps & {
  * @param skipImport - Whether to skip the import of the flow
  * @param skipExport - Whether to skip the export of the flow
  * @param cacheSeed - The seed for the cache
+ * @param skipDeps - Skip installing the dependencies
  * @param name - The name of the flow
  * @param description - The description of the flow
  * @param requirements - The requirements of the flow
@@ -4430,6 +4433,7 @@ export declare type WaldiezReasoningAgentReasonConfig = {
  * @param skipImport - Whether to skip the import of the flow
  * @param skipExport - Whether to skip the export of the flow
  * @param cacheSeed - The seed for the cache
+ * @param skipDeps - Skip installing the dependencies
  * @param name - The name of the flow
  * @param description - The description of the flow
  * @param requirements - The requirements of the flow

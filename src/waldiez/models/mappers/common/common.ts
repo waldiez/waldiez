@@ -79,19 +79,6 @@ export const getRequirementsFromJSON = (json: Record<string, unknown>): string[]
 };
 
 /**
- * Extracts the skipDeps from JSON object.
- * @param json - The JSON object to extract the skipDeps from.
- * @returns The optional skipDeps extracted.
- */
-export const getSkipDepsFromJSON = (json: Record<string, unknown>): boolean | undefined | null => {
-    let skipDeps: boolean | undefined | null;
-    if ("skipDeps" in json && typeof json.skipDeps === "boolean") {
-        skipDeps = json.skipDeps;
-    }
-    return skipDeps;
-};
-
-/**
  * Extracts the createdAt timestamp from a JSON object.
  * If the JSON object has a "createdAt" property, it uses that.
  * If not, it defaults to the current date and time in ISO format.

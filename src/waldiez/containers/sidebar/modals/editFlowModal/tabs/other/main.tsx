@@ -89,7 +89,7 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
             <CheckboxInput
                 id={`edit-flow-${flowId}-modal-skip-deps-toggle`}
                 label="Skip dependencies"
-                isChecked={typeof skipDeps === "boolean" && skipDeps === true}
+                isChecked={!showRequirements}
                 onCheckedChange={onSkipDepsToggleChange}
                 data-testid={`edit-flow-${flowId}-modal-skip-deps-toggle`}
             />

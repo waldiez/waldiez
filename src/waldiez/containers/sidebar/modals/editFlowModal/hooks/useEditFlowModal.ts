@@ -44,6 +44,7 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
         tags,
         isAsync,
         cacheSeed,
+        skipDeps,
     });
     const isEdgesDirty = !isEqual(sortedEdgesState, sortedEdges);
     const [isDirty, setIsDirty] = useState<boolean>(isDataDirty || isEdgesDirty);
