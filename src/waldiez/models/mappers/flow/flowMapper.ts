@@ -114,6 +114,7 @@ export const flowMapper = {
      * @returns The WaldiezFlow instance
      */
     exportFlow: (flow: WaldiezFlowProps, hideSecrets: boolean, skipLinks: boolean = false) => {
+        const skipDeps = typeof flow.skipDeps === "boolean" ? flow.skipDeps : false;
         const waldiezFlow: WaldiezFlow = {
             id: flow.flowId,
             type: "flow",
@@ -123,7 +124,7 @@ export const flowMapper = {
             description: flow.description,
             tags: flow.tags,
             requirements: flow.requirements,
-            skipDeps: flow.skipDeps,
+            skipDeps,
             createdAt: flow.createdAt || new Date().toISOString(),
             updatedAt: flow.updatedAt || new Date().toISOString(),
             data: getFlowDataToExport(flow, hideSecrets, skipLinks),
