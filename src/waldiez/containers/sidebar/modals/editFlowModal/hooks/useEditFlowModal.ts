@@ -94,7 +94,7 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
     const onDataChange = (partialData: Partial<EditFlowModalData>) => {
         const isDataDirty = !isEqual(
             { ...flowData, ...partialData },
-            { name, description, requirements, tags, isAsync, cacheSeed },
+            { name, description, requirements, tags, isAsync, cacheSeed, skipDeps },
         );
         const isEdgesDirty = !isEqual(sortedEdgesState, sortedEdges);
         setFlowData({ ...flowData, ...partialData });

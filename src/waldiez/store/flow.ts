@@ -273,6 +273,7 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
             name,
             description,
             tags,
+            skipDeps,
             requirements,
             createdAt,
             updatedAt,
@@ -293,6 +294,7 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
             storageId: storageId ?? flowId,
             isAsync: isAsync ?? false,
             cacheSeed,
+            skipDeps,
         };
         return flowMapper.exportFlow(flow, hideSecrets, false);
     };
