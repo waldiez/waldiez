@@ -594,11 +594,8 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow with step-by-step debugging."""
-        WaldiezBaseRunner._skip_deps = (
-            str(
-                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
-            ).lower()
-            == "true"
+        self._skip_deps = (
+            str(kwargs.get("skip_deps", str(self._skip_deps))).lower() == "true"
         )
         # pylint: disable=import-outside-toplevel
         from autogen.io import IOStream  # type: ignore
@@ -613,9 +610,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
             loaded_module = self._load_module(output_file, temp_dir)
-            WaldiezBaseRunner._store_run_paths(
-                tmp_dir=temp_dir, output_file=output_file
-            )
+            self._store_run_paths(tmp_dir=temp_dir, output_file=output_file)
             if self._stop_requested.is_set():
                 self.log.debug(
                     "Step-by-step execution stopped before workflow start"
@@ -651,7 +646,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             self.print(MESSAGES["workflow_failed"].format(error=str(e)))
         finally:
             results_container["completed"] = True
-            WaldiezBaseRunner._remove_run_paths()
+            self._remove_run_paths()
 
         return results_container["results"]
 
@@ -720,11 +715,8 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow with step-by-step debugging (async)."""
-        WaldiezBaseRunner._skip_deps = (
-            str(
-                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
-            ).lower()
-            == "true"
+        self._skip_deps = (
+            str(kwargs.get("skip_deps", str(self._skip_deps))).lower() == "true"
         )
 
         async def _execute_workflow() -> list[dict[str, Any]]:
@@ -736,7 +728,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             # pylint: disable=too-many-try-statements,broad-exception-caught
             try:
                 loaded_module = self._load_module(output_file, temp_dir)
-                await WaldiezBaseRunner._a_store_run_paths(
+                await self._a_store_run_paths(
                     tmp_dir=temp_dir, output_file=output_file
                 )
                 if self._stop_requested.is_set():
@@ -776,7 +768,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 traceback.print_exc()
                 return []
             finally:
-                WaldiezBaseRunner._remove_run_paths()
+                self._remove_run_paths()
 
         # Create and monitor cancellable task
         task = asyncio.create_task(_execute_workflow())

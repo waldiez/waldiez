@@ -68,14 +68,14 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         workspace_arg: str | None = kwargs.pop("workspace", None)
         if not isinstance(workspace_arg, str):
             workspace_arg = None
-        WaldiezBaseRunner._running = False
-        WaldiezBaseRunner._structured_io = structured_io
-        WaldiezBaseRunner._output_path = output_path
-        WaldiezBaseRunner._uploads_root = uploads_root
-        WaldiezBaseRunner._dot_env_path = Path(dot_env) if dot_env else None
-        WaldiezBaseRunner._flow_name = safe_name(waldiez.name)
-        WaldiezBaseRunner._storage_manager = StorageManager(None, workspace_arg)
-        WaldiezBaseRunner._waldiez = waldiez
+        self._running = False
+        self._structured_io = structured_io
+        self._output_path = output_path
+        self._uploads_root = uploads_root
+        self._dot_env_path = Path(dot_env) if dot_env else None
+        self._flow_name = safe_name(waldiez.name)
+        self._storage_manager = StorageManager(None, workspace_arg)
+        self._waldiez = waldiez
         EventsMixin.set_input_function(input)
         EventsMixin.set_print_function(print)
         EventsMixin.set_send_function(print)
@@ -93,7 +93,6 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             self._logger = logger
         else:
             self._logger = get_logger()
-        WaldiezBaseRunner._logger = self._logger
         waldiez_file = kwargs.get("waldiez_file", "")
         if isinstance(waldiez_file, str) and waldiez_file:
             waldiez_file_path = Path(waldiez_file).resolve()
@@ -103,18 +102,18 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             waldiez_file_path = waldiez.dump(to=output_path)
         if not waldiez_file_path or not waldiez_file_path.is_file():
             raise ValueError("Could not resolve a waldiez file path")
-        WaldiezBaseRunner._waldiez_file = waldiez_file_path
+        self._waldiez_file = waldiez_file_path
         if (waldiez_file_path.parent / ".env").exists():
-            WaldiezBaseRunner._dot_env_path = waldiez_file_path.parent / ".env"
-        WaldiezBaseRunner._checkpoint = None
+            self._dot_env_path = waldiez_file_path.parent / ".env"
+        self._checkpoint = None
         checkpoint_arg = kwargs.get("checkpoint", "")
         if checkpoint_arg and isinstance(checkpoint_arg, str):
-            WaldiezBaseRunner._checkpoint = WaldiezBaseRunner._init_checkpoint(
+            self._checkpoint = self._init_checkpoint(
                 checkpoint_arg=checkpoint_arg,
             )
-        self._output_dir = WaldiezBaseRunner._init_output_dir(output_path)
-        WaldiezBaseRunner._check_dot_env(self._output_dir)
-        WaldiezBaseRunner._skip_deps = (
+        self._output_dir = self._init_output_dir(output_path)
+        self._check_dot_env(self._output_dir)
+        self._skip_deps = (
             str(kwargs.get("skip_deps", waldiez.skip_deps)).lower() == "true"
         )
 
@@ -130,8 +129,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             )
         return Path.cwd()  # should change on ".run(...)"
 
-    @staticmethod
-    def _store_run_paths(tmp_dir: Path, output_file: Path) -> None:
+    def _store_run_paths(self, tmp_dir: Path, output_file: Path) -> None:
         """Store the path of the module that is to be run."""
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
@@ -141,7 +139,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 {
                     "src": str(tmp_dir),
                     "dst": str(output_file),
-                    "name": WaldiezBaseRunner._waldiez.name,
+                    "name": self._waldiez.name,
                 }
             )
             with open(
@@ -149,15 +147,16 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             ) as f:
                 f.write(msg)
         except BaseException:
-            WaldiezBaseRunner._logger.error(tb.format_exc())
+            self._logger.error(tb.format_exc())
 
     @staticmethod
     def _remove_run_paths() -> None:
         """Remove run paths."""
         ResultsMixin._cleanup()
 
-    @staticmethod
-    async def _a_store_run_paths(tmp_dir: Path, output_file: Path) -> None:
+    async def _a_store_run_paths(
+        self, tmp_dir: Path, output_file: Path
+    ) -> None:
         """Store the path of the module that is to be run."""
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
@@ -167,7 +166,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 {
                     "src": str(tmp_dir),
                     "dst": str(output_file),
-                    "name": WaldiezBaseRunner._waldiez.name,
+                    "name": self._waldiez.name,
                 }
             )
             async with aiofiles.open(
@@ -175,34 +174,28 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             ) as f:
                 await f.write(msg)
         except BaseException:
-            WaldiezBaseRunner._logger.error(tb.format_exc())
+            self._logger.error(tb.format_exc())
 
-    @staticmethod
-    def _check_dot_env(output_dir: Path) -> None:
-        if (
-            WaldiezBaseRunner._dot_env_path
-            and WaldiezBaseRunner._dot_env_path.is_file()
-        ):
+    def _check_dot_env(self, output_dir: Path) -> None:
+        if self._dot_env_path and self._dot_env_path.is_file():
             return
         if (output_dir / ".env").is_file():
-            WaldiezBaseRunner._dot_env_path = output_dir / ".env"
+            self._dot_env_path = output_dir / ".env"
 
-    @staticmethod
     def _init_checkpoint(
+        self,
         checkpoint_arg: str,
     ) -> WaldiezCheckpoint | None:
         checkpoint: WaldiezCheckpoint | None = None
-        session_name = WaldiezBaseRunner._flow_name
+        session_name = self._flow_name
         checkpoint_id, history_index = StorageManager.parse_checkpoint_arg(
             checkpoint_arg
         )
         if checkpoint_id == "latest":
             try:
-                info = WaldiezBaseRunner._storage_manager.get_latest_checkpoint(
-                    session_name
-                )
+                info = self._storage_manager.get_latest_checkpoint(session_name)
                 if info:
-                    checkpoint = WaldiezBaseRunner._storage_manager.load(
+                    checkpoint = self._storage_manager.load(
                         info, history_index=history_index
                     )
             except BaseException:
@@ -210,11 +203,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         else:
             try:
                 checkpoint_ts = WaldiezCheckpoint.parse_timestamp(checkpoint_id)
-                info = WaldiezBaseRunner._storage_manager.get(
-                    session_name, checkpoint_ts
-                )
+                info = self._storage_manager.get(session_name, checkpoint_ts)
                 if info:
-                    checkpoint = WaldiezBaseRunner._storage_manager.load(
+                    checkpoint = self._storage_manager.load(
                         info, history_index=history_index
                     )
             except BaseException:
@@ -249,7 +240,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             True if the workflow is running, False otherwise.
         """
         with self._running_lock:
-            return WaldiezBaseRunner._running
+            return self._running
 
     def _load_module(self, output_file: Path, temp_dir: Path) -> ModuleType:
         """Load the module from the waldiez file."""
@@ -285,7 +276,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 path=file_name,
                 uploads_root=uploads_root,
                 message=message,
-                structured_io=WaldiezBaseRunner._structured_io,
+                structured_io=self._structured_io,
                 force=True,
             )
             if self.dot_env_path and self.dot_env_path.is_file():
@@ -374,12 +365,12 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 error=error,
                 temp_dir=temp_dir,
                 output_file=output_file,
-                flow_name=WaldiezBaseRunner._flow_name,
+                flow_name=self._flow_name,
                 waldiez_file=waldiez_file,
                 uploads_root=uploads_root,
                 skip_mmd=skip_mmd,
                 skip_timeline=skip_timeline,
-                storage_manager=WaldiezBaseRunner._storage_manager,
+                storage_manager=self._storage_manager,
                 skip_symlinks=skip_symlinks,
             )
         except BaseException:  # pragma: no cover
@@ -410,7 +401,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
                 error=error,
                 temp_dir=temp_dir,
                 output_file=output_file,
-                flow_name=WaldiezBaseRunner._flow_name,
+                flow_name=self._flow_name,
                 waldiez_file=waldiez_file,
                 uploads_root=uploads_root,
                 skip_mmd=skip_mmd,
@@ -422,8 +413,8 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         self.log.info("Cleanup completed")
         return None
 
-    @staticmethod
     def _prepare_paths(
+        self,
         output_path: str | Path | None = None,
         uploads_root: str | Path | None = None,
     ) -> tuple[Path, Path | None]:
@@ -431,17 +422,17 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         uploads_root_path: Path | None = None
         if uploads_root is not None:
             uploads_root_path = Path(uploads_root)
-            WaldiezBaseRunner._uploads_root = uploads_root_path
+            self._uploads_root = uploads_root_path
 
         if output_path is not None:
             output_path = Path(output_path)
-            WaldiezBaseRunner._output_path = output_path
-        if not WaldiezBaseRunner._output_path:
-            WaldiezBaseRunner._output_path = (
-                Path.cwd() / safe_name(WaldiezBaseRunner._waldiez.name)
+            self._output_path = output_path
+        if not self._output_path:
+            self._output_path = (
+                Path.cwd() / safe_name(self._waldiez.name)
             ).with_suffix(".py")
-        output_file: Path = Path(WaldiezBaseRunner._output_path)
-        WaldiezBaseRunner._check_dot_env(output_file.parent)
+        output_file: Path = Path(self._output_path)
+        self._check_dot_env(output_file.parent)
         return output_file, uploads_root_path
 
     @override
@@ -536,7 +527,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             uploads_root=uploads_root_path,
             message=message,
         )
-        if not WaldiezBaseRunner._skip_deps:
+        if not self._skip_deps:
             self.install_requirements()
         return temp_dir, output_file, uploads_root_path
 
@@ -594,13 +585,13 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             If the run is stopped by the user.
         """
         if isinstance(skip_deps, bool):
-            WaldiezBaseRunner._skip_deps = skip_deps
+            self._skip_deps = skip_deps
         if dot_env is not None:
             resolved = Path(dot_env).resolve()
             if resolved.is_file():
-                WaldiezBaseRunner._dot_env_path = resolved
+                self._dot_env_path = resolved
         if structured_io is not None:
-            WaldiezBaseRunner._structured_io = structured_io
+            self._structured_io = structured_io
         if self.is_running():
             raise RuntimeError("Workflow already running")
         if self.is_async:
@@ -623,7 +614,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             uploads_root=uploads_root,
             message=message,
         )
-        WaldiezBaseRunner._running = True
+        self._running = True
         results: list[dict[str, Any]] = []
         error: BaseException | None = None
         old_env_vars = set_env_vars(self._waldiez.get_flow_env_vars())
@@ -648,7 +639,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             self.log.error("Error occurred while running workflow: %s", exc)
             error = exc
         finally:
-            WaldiezBaseRunner._running = False
+            self._running = False
             reset_env_vars(old_env_vars)
             output = self.after_run(
                 results=results,
@@ -698,7 +689,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             uploads_root=uploads_root_path,
             message=message,
         )
-        if not WaldiezBaseRunner._skip_deps:
+        if not self._skip_deps:
             await self.a_install_requirements()
         return temp_dir, output_file, uploads_root_path
 
@@ -755,13 +746,13 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             If the run is stopped by the user.
         """
         if isinstance(skip_deps, bool):
-            WaldiezBaseRunner._skip_deps = skip_deps
+            self._skip_deps = skip_deps
         if dot_env is not None:
             resolved = Path(dot_env).resolve()
             if resolved.is_file():
-                WaldiezBaseRunner._dot_env_path = resolved
+                self._dot_env_path = resolved
         if structured_io is not None:
-            WaldiezBaseRunner._structured_io = structured_io
+            self._structured_io = structured_io
         if self.is_running():
             raise RuntimeError("Workflow already running")
         temp_dir, output_file, uploads_root_path = await self.a_prepare(
@@ -769,7 +760,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             uploads_root=uploads_root,
             message=message,
         )
-        WaldiezBaseRunner._running = True
+        self._running = True
         results: list[dict[str, Any]] = []
         error: BaseException | None = None
         output_dir = output_file.parent
@@ -795,7 +786,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             self.log.error("Error occurred while running workflow: %s", exc)
             error = exc
         finally:
-            WaldiezBaseRunner._running = False
+            self._running = False
             reset_env_vars(old_env_vars)
             output = await self.a_after_run(
                 results=results,
@@ -855,7 +846,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             results=results,
             error=error,
             output_file=output_file,
-            waldiez_file=WaldiezBaseRunner._waldiez_file,
+            waldiez_file=self._waldiez_file,
             uploads_root=uploads_root,
             temp_dir=temp_dir,
             skip_mmd=skip_mmd,
@@ -909,14 +900,14 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             temp_dir=temp_dir,
             skip_mmd=skip_mmd,
             skip_timeline=skip_timeline,
-            waldiez_file=WaldiezBaseRunner._waldiez_file,
+            waldiez_file=self._waldiez_file,
             skip_symlinks=skip_symlinks,
         )
 
     @property
     def waldiez(self) -> Waldiez:
         """Get the Waldiez instance."""
-        return WaldiezBaseRunner._waldiez
+        return self._waldiez
 
     @property
     def waldiez_file(self) -> Path:
@@ -926,7 +917,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     @property
     def is_async(self) -> bool:
         """Check if the workflow is async."""
-        return WaldiezBaseRunner._waldiez.is_async
+        return self._waldiez.is_async
 
     @property
     def running(self) -> bool:
@@ -941,28 +932,28 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
     @property
     def structured_io(self) -> bool:
         """Check if the runner is using structured IO."""
-        return WaldiezBaseRunner._structured_io
+        return self._structured_io
 
     @property
     def dot_env_path(self) -> Path | None:
         """Get the path to the .env file, if any."""
-        return WaldiezBaseRunner._dot_env_path
+        return self._dot_env_path
 
     @property
     def output_path(self) -> str | Path | None:
         """Get the output path for the runner."""
-        return WaldiezBaseRunner._output_path
+        return self._output_path
 
     @property
     def uploads_root(self) -> str | Path | None:
         """Get the uploads root path for the runner."""
-        return WaldiezBaseRunner._uploads_root
+        return self._uploads_root
 
     @property
     def state_json(self) -> Path | None:
         """Get the state.json path to resume from if any."""
-        if WaldiezBaseRunner._checkpoint:
-            state_file = WaldiezBaseRunner._checkpoint.state_file
+        if self._checkpoint:
+            state_file = self._checkpoint.state_file
             if state_file.is_file():
                 return state_file
         return None

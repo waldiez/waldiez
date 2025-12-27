@@ -162,7 +162,7 @@ def test_printing_using_structured_io(runner: WaldiezStandardRunner) -> None:
 
     with patch.object(runner, "_load_module", return_value=mock_module):
         with patch("builtins.print") as mock_print:
-            with patch(f"{BASE_RUNNER}._structured_io", return_value=True):
+            with patch.object(runner, "_structured_io", return_value=True):
                 runner._run(
                     temp_dir=MagicMock(),
                     output_file=MagicMock(),
@@ -189,7 +189,7 @@ async def test_async_printing_using_structured_io(
 
     with patch.object(runner, "_load_module", return_value=mock_module):
         with patch("builtins.print") as mock_print:
-            with patch(f"{BASE_RUNNER}._structured_io", return_value=True):
+            with patch.object(runner, "_structured_io", return_value=True):
                 await runner._a_run(
                     temp_dir=MagicMock(),
                     output_file=MagicMock(),

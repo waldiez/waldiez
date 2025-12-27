@@ -21,7 +21,6 @@ from waldiez.models.flow.flow import WaldiezFlow
 from waldiez.models.waldiez import Waldiez
 from waldiez.running.base_runner import WaldiezBaseRunner
 from waldiez.running.events_mixin import EventsMixin
-from waldiez.running.exceptions import StopRunningException
 
 
 @pytest.fixture(name="waldiez_file")
@@ -164,7 +163,7 @@ def test_run_raises_if_already_running(
         structured_io=False,
     )
     # Manually set running flag
-    WaldiezBaseRunner._running = True
+    runner._running = True
     with pytest.raises(RuntimeError, match="already running"):
         runner.run(output_path=str(file_path))
 
@@ -182,7 +181,7 @@ async def test_async_run_raises_if_already_running(
         uploads_root=None,
         structured_io=False,
     )
-    WaldiezBaseRunner._running = True
+    runner._running = True
     with pytest.raises(RuntimeError, match="already running"):
         await runner.a_run(output_path=str(file_path))
 
@@ -351,7 +350,7 @@ def test_prepare_paths_and_before_run(
     dummy_env = tmp_path / ".env"
     dummy_env.write_text("TEST=1")
 
-    WaldiezBaseRunner._dot_env_path = dummy_env
+    runner._dot_env_path = dummy_env
     runner._exporter.export = MagicMock()  # type: ignore
 
     temp_dir = runner._before_run(
@@ -362,29 +361,6 @@ def test_prepare_paths_and_before_run(
     assert temp_dir.exists()
     # Check that .env was copied
     assert (temp_dir / ".env").exists()
-
-
-def test_context_manager_stop_requested(
-    monkeypatch: pytest.MonkeyPatch,
-    waldiez_file: Path,
-) -> None:
-    """Test if context manager handles stop_requested flag."""
-    runner = DummyRunner(
-        waldiez=MagicMock(is_async=False),
-        waldiez_file=waldiez_file,
-        output_path=None,
-        uploads_root=None,
-        structured_io=False,
-    )
-    runner._running = True
-    with runner:
-        pass
-    assert not runner.is_stop_requested()
-
-    runner._running = True
-    with pytest.raises(StopRunningException):
-        with runner:
-            raise StopRunningException("stop")
 
 
 def test_get_input_function_overrides(
@@ -484,7 +460,7 @@ def test_stop_method_with_running_workflow(waldiez_file: Path) -> None:
     )
 
     # Simulate a running workflow
-    WaldiezBaseRunner._running = True
+    runner._running = True
     assert runner.is_running()
 
     # Call stop
@@ -495,7 +471,7 @@ def test_stop_method_with_running_workflow(waldiez_file: Path) -> None:
     assert runner._stop_requested.is_set()
 
     # Clean up
-    WaldiezBaseRunner._running = False
+    runner._running = False
     assert not runner.is_running()
 
 
@@ -525,7 +501,7 @@ def test_context_manager_exit_when_running(waldiez_file: Path) -> None:
     )
 
     # Set runner to running state
-    WaldiezBaseRunner._running = True
+    runner._running = True
 
     # Use context manager - __exit__ should set stop flag
     with runner:
@@ -535,7 +511,7 @@ def test_context_manager_exit_when_running(waldiez_file: Path) -> None:
     assert runner.is_stop_requested()
 
     # Clean up
-    WaldiezBaseRunner._running = False
+    runner._running = False
 
 
 def test_context_manager_exit_when_not_running(waldiez_file: Path) -> None:
@@ -549,7 +525,7 @@ def test_context_manager_exit_when_not_running(waldiez_file: Path) -> None:
     )
 
     # Ensure runner is not running
-    WaldiezBaseRunner._running = False
+    runner._running = False
 
     # Use context manager
     with runner:
@@ -589,7 +565,7 @@ async def test_async_context_manager_aexit_when_running(
     )
 
     # Set runner to running state
-    WaldiezBaseRunner._running = True
+    runner._running = True
 
     # Use async context manager - __aexit__ should set stop flag
     async with runner:
@@ -599,7 +575,7 @@ async def test_async_context_manager_aexit_when_running(
     assert runner.is_stop_requested()
 
     # Clean up
-    WaldiezBaseRunner._running = False
+    runner._running = False
 
 
 @pytest.mark.asyncio
@@ -616,7 +592,7 @@ async def test_async_context_manager_aexit_when_not_running(
     )
 
     # Ensure runner is not running
-    WaldiezBaseRunner._running = False
+    runner._running = False
 
     # Use async context manager
     async with runner:

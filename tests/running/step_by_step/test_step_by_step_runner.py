@@ -170,7 +170,7 @@ def test_on_event_breaks_and_continues(
 
     # Patch _handle_step_interaction to return True so it continues
     with patch.object(runner, "_handle_step_interaction", return_value=True):
-        # Patch WaldiezBaseRunner.process_event to do nothing
+        # Patch runner.process_event to do nothing
         with patch(f"{EVENTS_MIXIN}.process_event") as mock_process:
             result = runner._on_event(text_event, [])
             assert result is True

@@ -78,11 +78,8 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow."""
-        WaldiezBaseRunner._skip_deps = (
-            str(
-                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
-            ).lower()
-            == "true"
+        self._skip_deps = (
+            str(kwargs.get("skip_deps", str(self._skip_deps))).lower() == "true"
         )
         # pylint: disable=import-outside-toplevel
         from autogen.io import IOStream  # type: ignore
@@ -97,9 +94,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
             loaded_module = self._load_module(output_file, temp_dir)
-            WaldiezBaseRunner._store_run_paths(
-                tmp_dir=temp_dir, output_file=output_file
-            )
+            self._store_run_paths(tmp_dir=temp_dir, output_file=output_file)
             if self._stop_requested.is_set():
                 self.log.debug(
                     "Execution stopped before AG2 workflow start (sync)"
@@ -134,7 +129,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
 
         finally:
             results_container["completed"] = True
-            WaldiezBaseRunner._remove_run_paths()
+            self._remove_run_paths()
         return results_container["results"]
 
     def _on_event(
@@ -209,11 +204,8 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow asynchronously."""
-        WaldiezBaseRunner._skip_deps = (
-            str(
-                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
-            ).lower()
-            == "true"
+        self._skip_deps = (
+            str(kwargs.get("skip_deps", str(self._skip_deps))).lower() == "true"
         )
 
         # fmt: off
@@ -229,7 +221,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             # pylint: disable=too-many-try-statements,broad-exception-caught
             try:
                 loaded_module = self._load_module(output_file, temp_dir)
-                await WaldiezBaseRunner._a_store_run_paths(
+                await self._a_store_run_paths(
                     tmp_dir=temp_dir, output_file=output_file,
                 )
                 if self._stop_requested.is_set():  # pragma: no cover
@@ -267,7 +259,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                     f"Error loading workflow: {e}\n{traceback.format_exc()}"
                 ) from e
             finally:
-                WaldiezBaseRunner._remove_run_paths()
+                self._remove_run_paths()
             return results
 
         # Create cancellable task
