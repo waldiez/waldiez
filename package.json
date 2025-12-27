@@ -190,7 +190,7 @@
         "gunzip-maybe": "^1.4.2",
         "hint": "^7.1.13",
         "husky": "^9.1.7",
-        "jsdom": "^27.3.0",
+        "jsdom": "^27.4.0",
         "lint-staged": "^16.2.7",
         "lookpath": "^1.2.3",
         "playwright": "^1.57.0",
