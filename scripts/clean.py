@@ -20,6 +20,7 @@ DIR_PATTERNS = [
     ".ruff_cache",
     "*.egg-info",
     os.path.join("coverage", "py"),
+    os.path.join("workspace", "waldiez_checkpoints"),
     "build",
     "site",
     "waldiez_out",
