@@ -20,6 +20,7 @@ from ._async_runner import AsyncSubprocessRunner
 from ._sync_runner import SyncSubprocessRunner
 
 
+# pylint: disable=too-many-instance-attributes
 # noinspection PyUnusedLocal,PyBroadException
 class WaldiezSubprocessRunner(WaldiezBaseRunner):
     """Waldiez runner that uses subprocess execution via standalone runners."""

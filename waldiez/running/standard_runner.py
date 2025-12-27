@@ -22,7 +22,6 @@ from typing_extensions import override
 from waldiez.models.waldiez import Waldiez
 
 from .base_runner import WaldiezBaseRunner
-from .events_mixin import EventsMixin
 from .results_mixin import WaldiezRunResults
 
 if TYPE_CHECKING:
@@ -107,9 +106,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                 )
             else:
                 stream = IOStream.get_default()
-            EventsMixin.set_print_function(stream.print)
-            EventsMixin.set_input_function(stream.input)
-            EventsMixin.set_send_function(stream.send)
+            self.set_print_function(stream.print)
+            self.set_input_function(stream.input)
+            self.set_send_function(stream.send)
             self._output_dir = temp_dir
             self.print(MESSAGES["workflow_starting"])
             self.print(self.waldiez.info.model_dump_json())
@@ -145,9 +144,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             )
             return False
         try:
-            EventsMixin.process_event(
-                event, agents, output_dir=self._output_dir
-            )
+            self.process_event(event, agents, output_dir=self._output_dir)
             self._processed_events += 1
         except SystemExit:  # pragma: no cover
             self.log.debug("Execution stopped by user (sync)")
@@ -174,7 +171,7 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
             )
             return False
         try:
-            await EventsMixin.a_process_event(
+            await self.a_process_event(
                 event, agents, output_dir=self._output_dir
             )
             self._processed_events += 1
@@ -238,9 +235,9 @@ class WaldiezStandardRunner(WaldiezBaseRunner):
                     )
                 else:
                     stream = IOStream.get_default()
-                EventsMixin.set_print_function(stream.print)
-                EventsMixin.set_input_function(stream.input)
-                EventsMixin.set_send_function(stream.send)
+                self.set_print_function(stream.print)
+                self.set_input_function(stream.input)
+                self.set_send_function(stream.send)
                 self._output_dir = temp_dir
                 self.print(MESSAGES["workflow_starting"])
                 self.print(self.waldiez.info.model_dump_json())

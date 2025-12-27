@@ -39,8 +39,8 @@ class EventsMixin:
     _send: Union[Callable[["BaseMessage"], None], Callable[["BaseEvent"], None]]
     _is_async: bool
 
-    @staticmethod
     def set_input_function(
+        self,
         input_fn: Callable[..., str] | Callable[..., Coroutine[Any, Any, str]],
     ) -> None:
         """Set the input function.
@@ -50,10 +50,9 @@ class EventsMixin:
         input_fn: Callable[..., str] | Callable[..., Coroutine[Any, Any, str]],
             The function that handles input.
         """
-        EventsMixin._input = input_fn
+        self._input = input_fn
 
-    @staticmethod
-    def set_print_function(print_fn: Callable[..., None]) -> None:
+    def set_print_function(self, print_fn: Callable[..., None]) -> None:
         """Set the print function.
 
         Parameters
@@ -61,10 +60,10 @@ class EventsMixin:
         print_fn: Callable[..., None]
             The function that handles printing messages.
         """
-        EventsMixin._print = print_fn
+        self._print = print_fn
 
-    @staticmethod
     def set_send_function(
+        self,
         send_fn: Union[
             Callable[["BaseMessage"], None], Callable[["BaseEvent"], None]
         ],
@@ -76,10 +75,9 @@ class EventsMixin:
         send_fn: Callable[[Union["BaseEvent", "BaseMessage"]], None],
             The function to use for sending events and messages.
         """
-        EventsMixin._send = send_fn
+        self._send = send_fn
 
-    @staticmethod
-    def set_async(value: bool) -> None:
+    def set_async(self, value: bool) -> None:
         """Set the _is_async flag.
 
         Parameters
@@ -87,10 +85,9 @@ class EventsMixin:
         value : bool
             The value to set.
         """
-        EventsMixin._is_async = value
+        self._is_async = value
 
-    @staticmethod
-    def do_print(*args: Any, **kwargs: Any) -> None:
+    def do_print(self, *args: Any, **kwargs: Any) -> None:
         """Print a message to the output stream.
 
         Parameters
@@ -100,12 +97,11 @@ class EventsMixin:
         **kwargs : Any
             Keyword arguments to print.
         """
-        EventsMixin._print(*args, **kwargs)
+        self._print(*args, **kwargs)
 
-    @staticmethod
-    def get_input_function() -> (
-        Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]
-    ):
+    def get_input_function(
+        self,
+    ) -> Callable[..., str] | Callable[..., Coroutine[Any, Any, str]]:
         """Get the input function for user interaction.
 
         Returns
@@ -114,15 +110,14 @@ class EventsMixin:
             A function that takes a prompt and a password flag,
             returning user input.
         """
-        if hasattr(EventsMixin, "_input") and callable(EventsMixin._input):
-            return EventsMixin._input
-        if EventsMixin._is_async:
+        if hasattr(self, "_input") and callable(self._input):
+            return self._input
+        if self._is_async:
             return input_async
         return input_sync
 
-    @staticmethod
     async def a_get_user_input(
-        prompt: str, *, password: bool = False, **kwargs: Any
+        self, prompt: str, *, password: bool = False, **kwargs: Any
     ) -> str:
         """Get user input with an optional password prompt.
 
@@ -140,7 +135,7 @@ class EventsMixin:
         str
             The user input.
         """
-        input_function = EventsMixin.get_input_function()
+        input_function = self.get_input_function()
         if is_async_callable(input_function):
             try:
                 result = await input_function(  # type: ignore
@@ -157,8 +152,8 @@ class EventsMixin:
                 result = input_function(prompt)
         return result  # pyright: ignore[reportReturnType]
 
-    @staticmethod
     def get_user_input(
+        self,
         prompt: str,
         *,
         password: bool = False,
@@ -180,7 +175,7 @@ class EventsMixin:
         str
             The user input.
         """
-        input_function = EventsMixin.get_input_function()
+        input_function = self.get_input_function()
         if inspect.iscoroutinefunction(input_function):
             try:
                 return syncify(input_function)(
@@ -312,8 +307,8 @@ class EventsMixin:
         async with aiofiles.open(history_file, "w", encoding="utf-8") as f_out:
             await f_out.write(json.dumps(history, default=str, indent=2))
 
-    @staticmethod
     async def a_process_event(
+        self,
         event: Union["BaseEvent", "BaseMessage"],
         agents: list["ConversableAgent"],
         output_dir: Path,
@@ -332,13 +327,11 @@ class EventsMixin:
         skip_send : bool
             Skip sending the event.
         """
-        group_manager = EventsMixin._find_group_manager(agents)
+        group_manager = self._find_group_manager(agents)
         if group_manager:
-            await EventsMixin.a_save_state(group_manager, output_dir=output_dir)
-            await EventsMixin.a_save_metadata(
-                group_manager, output_dir=output_dir
-            )
-            await EventsMixin.a_save_history(output_dir=output_dir)
+            await self.a_save_state(group_manager, output_dir=output_dir)
+            await self.a_save_metadata(group_manager, output_dir=output_dir)
+            await self.a_save_history(output_dir=output_dir)
         if hasattr(event, "type"):  # pragma: no branch
             if getattr(event, "type", "") == "input_request":
                 prompt = getattr(
@@ -349,12 +342,12 @@ class EventsMixin:
                     "password",
                     getattr(event.content, "password", False),
                 )
-                user_input = await EventsMixin.a_get_user_input(
+                user_input = await self.a_get_user_input(
                     prompt, password=password
                 )
                 await event.content.respond(user_input)
             elif not skip_send:
-                EventsMixin._send(event)  # pyright: ignore[reportArgumentType]
+                self._send(event)  # pyright: ignore[reportArgumentType]
 
     @staticmethod
     def save_state(manager: "ConversableAgent", output_dir: Path) -> None:
@@ -433,8 +426,8 @@ class EventsMixin:
                 )
             )
 
-    @staticmethod
     def process_event(
+        self,
         event: Union["BaseEvent", "BaseMessage"],
         agents: list["ConversableAgent"],
         output_dir: Path,
@@ -453,11 +446,11 @@ class EventsMixin:
         skip_send : bool
             Skip sending the event.
         """
-        group_manager = EventsMixin._find_group_manager(agents)
+        group_manager = self._find_group_manager(agents)
         if group_manager:
-            EventsMixin.save_state(group_manager, output_dir=output_dir)
-            EventsMixin.save_metadata(group_manager, output_dir=output_dir)
-            EventsMixin.save_history(output_dir=output_dir)
+            self.save_state(group_manager, output_dir=output_dir)
+            self.save_metadata(group_manager, output_dir=output_dir)
+            self.save_history(output_dir=output_dir)
         if hasattr(event, "type"):  # pragma: no branch
             if event.type == "input_request":
                 prompt = getattr(
@@ -468,12 +461,10 @@ class EventsMixin:
                     "password",
                     getattr(event.content, "password", False),
                 )
-                user_input = EventsMixin.get_user_input(
-                    prompt, password=password
-                )
+                user_input = self.get_user_input(prompt, password=password)
                 event.content.respond(user_input)
             elif not skip_send:
-                EventsMixin._send(event)  # pyright: ignore[reportArgumentType]
+                self._send(event)  # pyright: ignore[reportArgumentType]
 
     @staticmethod
     def _find_group_manager(

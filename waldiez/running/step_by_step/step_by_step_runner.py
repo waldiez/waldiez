@@ -27,7 +27,6 @@ from waldiez.running.step_by_step.command_handler import CommandHandler
 from waldiez.running.step_by_step.events_processor import EventProcessor
 
 from ..base_runner import WaldiezBaseRunner
-from ..events_mixin import EventsMixin
 from ..exceptions import StopRunningException
 from ..results_mixin import WaldiezRunResults
 from .breakpoints_mixin import BreakpointsMixin
@@ -73,7 +72,7 @@ def gen_id() -> str:
     return str(uuid.uuid4())
 
 
-# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-instance-attributes,too-many-ancestors
 # noinspection DuplicatedCode,StrFormat
 class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
     """Refactored step-by-step runner with improved architecture."""
@@ -500,7 +499,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             except Exception as e:  # pylint: disable=broad-exception-caught
                 self.log.warning("Failed to emit input request: %s", e)
             try:
-                user_input = EventsMixin.get_user_input(
+                user_input = self.get_user_input(
                     DEBUG_INPUT_PROMPT,
                     request_id=request_id,
                 ).strip()
@@ -531,9 +530,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     )
                 )
 
-                user_input = await EventsMixin.a_get_user_input(
-                    DEBUG_INPUT_PROMPT
-                )
+                user_input = await self.a_get_user_input(DEBUG_INPUT_PROMPT)
                 user_input = user_input.strip()
                 return self._parse_user_action(
                     user_input, request_id=request_id
@@ -625,9 +622,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             else:
                 stream = IOStream.get_default()
 
-            EventsMixin.set_print_function(stream.print)
-            EventsMixin.set_input_function(stream.input)
-            EventsMixin.set_send_function(stream.send)
+            self.set_print_function(stream.print)
+            self.set_input_function(stream.input)
+            self.set_send_function(stream.send)
             self._output_dir = temp_dir
             self.print(MESSAGES["workflow_starting"])
             self.print(self.waldiez.info.model_dump_json())
@@ -687,7 +684,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     raise StopRunningException(StopRunningException.reason)
                 self._re_emit_if_needed(event_info)
             # Process the actual event
-            EventsMixin.process_event(
+            self.process_event(
                 event, agents, output_dir=self._output_dir, skip_send=True
             )
             self._processed_events += 1
@@ -744,9 +741,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 else:
                     stream = IOStream.get_default()
 
-                EventsMixin.set_print_function(stream.print)
-                EventsMixin.set_input_function(stream.input)
-                EventsMixin.set_send_function(stream.send)
+                self.set_print_function(stream.print)
+                self.set_input_function(stream.input)
+                self.set_send_function(stream.send)
 
                 self._output_dir = temp_dir
                 self.print(MESSAGES["workflow_starting"])
@@ -813,7 +810,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     raise StopRunningException(StopRunningException.reason)
                 self._re_emit_if_needed(event_info)
             # Process the actual event
-            await EventsMixin.a_process_event(
+            await self.a_process_event(
                 event, agents, output_dir=self._output_dir, skip_send=True
             )
             self._processed_events += 1

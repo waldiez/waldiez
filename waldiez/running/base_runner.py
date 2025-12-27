@@ -37,9 +37,11 @@ from .requirements_mixin import RequirementsMixin
 from .results_mixin import ResultsMixin
 
 
-# pylint: disable=too-many-public-methods
+# pylint: disable=too-many-public-methods,too-many-instance-attributes
 # noinspection PyBroadException
-class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
+class WaldiezBaseRunner(
+    WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin, EventsMixin
+):
     """Base runner for Waldiez."""
 
     _structured_io: bool
@@ -76,10 +78,10 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         self._flow_name = safe_name(waldiez.name)
         self._storage_manager = StorageManager(None, workspace_arg)
         self._waldiez = waldiez
-        EventsMixin.set_input_function(input)
-        EventsMixin.set_print_function(print)
-        EventsMixin.set_send_function(print)
-        EventsMixin.set_async(waldiez.is_async)
+        self.set_input_function(input)
+        self.set_print_function(print)
+        self.set_send_function(print)
+        self.set_async(waldiez.is_async)
         RequirementsMixin.__init__(self)
         self._called_install_requirements = False
         self._exporter = WaldiezExporter(waldiez)
@@ -213,8 +215,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         return checkpoint
 
     @override
-    @staticmethod
-    def print(*args: Any, **kwargs: Any) -> None:
+    def print(self, *args: Any, **kwargs: Any) -> None:
         """Print a message to the output stream.
 
         Parameters
@@ -226,9 +227,9 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
         """
         if len(args) == 1 and isinstance(args[0], dict):
             arg = json.dumps(args[0], default=str, ensure_ascii=False)
-            EventsMixin.do_print(arg, **kwargs)
+            self.do_print(arg, **kwargs)
         else:
-            EventsMixin.do_print(*args, **kwargs)
+            self.do_print(*args, **kwargs)
 
     @override
     def is_running(self) -> bool:
@@ -653,7 +654,7 @@ class WaldiezBaseRunner(WaldiezRunnerProtocol, RequirementsMixin, ResultsMixin):
             )
             if output:
                 output_dir = output
-        EventsMixin.do_print("<Waldiez> - Done running the flow.")
+        self.do_print("<Waldiez> - Done running the flow.")
         if sys.path[0] == str(temp_dir):
             sys.path.pop(0)
         return self.get_results(results, output_dir)
