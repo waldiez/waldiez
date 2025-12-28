@@ -6,6 +6,13 @@ The contents of each release will be used in
 Also, make sure the npm token is not expired
  -->
 
+## Unreleased
+
+- Added cli option to skip dependencies installation when running a flow
+- Fixed importing and exporting flows for skipping dependencies installation
+- Fixed messages not showing in the vscode extension when WAAT is used
+- Dependency updates
+
 ## v0.7.0
 
 - Added waldiez-as-a-tool support
