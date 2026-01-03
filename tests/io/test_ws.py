@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=unused-import,unused-argument,protected-access
 # pylint: disable=too-many-public-methods,too-few-public-methods
 # pylint: disable=missing-param-doc,missing-return-doc

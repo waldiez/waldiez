@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Tools for exporting agents, models, tools and chats to strings."""
 
 from .agent import AgentExporter, create_agent_exporter

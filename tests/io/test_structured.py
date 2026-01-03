@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pyright: reportPrivateUsage=false,reportMissingTypeStubs=false
 # pylint: disable=missing-module-docstring,missing-class-docstring,no-self-use
 # pylint: disable=missing-function-docstring,missing-param-doc,protected-access

@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
 """Constants for Waldiez exporting core."""
 
 from datetime import datetime, timezone

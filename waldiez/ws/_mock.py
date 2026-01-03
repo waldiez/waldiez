@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
 
 # pylint: disable=invalid-name,line-too-long,unused-argument,too-few-public-methods,no-self-use
 # pylint: disable=missing-class-docstring,missing-function-docstring,missing-return-doc
