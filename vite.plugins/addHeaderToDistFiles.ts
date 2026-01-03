@@ -14,7 +14,7 @@ const licenseIdentifier = packageJson.license || "Apache-2.0";
 const thisYear = new Date().getFullYear();
 const copyrightYears = `${projectBirthYear} - ${thisYear + 1}`;
 const copyrightHolder = `${owner} & contributors`;
-const distExtensions = [".js", ".css", "cjs", ".mjs", ".ts", ".d.ts"];
+const distExtensions = [".js", ".css", ".cjs", ".mjs", ".ts", ".d.ts"];
 
 const addHeaderToFile = async (filePath: string): Promise<void> => {
     const content = await fs.readFile(filePath, "utf-8");
