@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 /* c8 ignore file -- @preserve */
 import { type Node, type NodeChange, type Viewport, applyNodeChanges } from "@xyflow/react";

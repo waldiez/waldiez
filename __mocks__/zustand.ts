@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 // https://zustand.docs.pmnd.rs/guides/testing#vitest
 import { act } from "@testing-library/react";

@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 # Copyright (c) 2024 - 2025 Waldiez and contributors.
 # pylint: disable=too-few-public-methods
 """Transition availability processor for Waldiez agents."""

@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 export { WaldiezChat } from "@waldiez/models/Chat/Chat";
 export { DEFAULT_CUSTOM_SUMMARY_CONTENT, WaldiezChatData } from "@waldiez/models/Chat/ChatData";

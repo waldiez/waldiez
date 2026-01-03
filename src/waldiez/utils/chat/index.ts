@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 export { WORKFLOW_CHAT_END_MARKERS, WORKFLOW_DONE } from "@waldiez/utils/chat/constants";
 export { defaultChatConfig, useWaldiezChat } from "@waldiez/utils/chat/hooks/useWaldiezChat";

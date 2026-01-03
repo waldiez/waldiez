@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 /* eslint-disable tsdoc/syntax */
 import type { ReactFlowInstance, Viewport } from "@xyflow/react";

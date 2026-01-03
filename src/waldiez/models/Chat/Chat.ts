@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import { WaldiezChatData } from "@waldiez/models/Chat/ChatData";
 import { type WaldiezEdgeType } from "@waldiez/models/Chat/types";

@@ -4,7 +4,7 @@
 
 # cspell:disable
 
-FROM python:3.12-slim AS builder
+FROM python:3.13-slim AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential && \
@@ -34,7 +34,7 @@ RUN python -m build --wheel --outdir dist
 #####################################################################################
 # Final image
 #####################################################################################
-FROM python:3.12-slim
+FROM python:3.13-slim
 
 LABEL maintainer="waldiez <development@waldiez.io>"
 LABEL org.opencontainers.image.source="https://github.com/waldiez/waldiez"

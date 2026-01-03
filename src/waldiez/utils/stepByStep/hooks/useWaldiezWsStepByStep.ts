@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import { type Dispatch, useCallback } from "react";
 
@@ -14,7 +14,7 @@ import { type WaldiezWsMessageHandler, useWaldiezWs } from "@waldiez/utils/ws";
 
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 export const useWaldiezWsStepByStep: (props: {
     ws: {
