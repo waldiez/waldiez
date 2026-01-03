@@ -7,7 +7,7 @@ import type { Edge, EdgeChange, Node, NodeChange, ReactFlowInstance } from "@xyf
 import { type MouseEvent as ReactMouseEvent, useCallback, useMemo } from "react";
 
 import { showSnackbar } from "@waldiez/components";
-import type { WaldiezEdge } from "@waldiez/models";
+import type { WaldiezEdge, WaldiezNodeAgent, WaldiezNodeAgentGroupManager } from "@waldiez/models";
 import { useWaldiez } from "@waldiez/store";
 import { exportItem, getFlowRoot } from "@waldiez/utils";
 
@@ -142,12 +142,32 @@ export const useFlowEvents = (flowId: string) => {
         [isReadOnly, handleNodeDoubleClick],
     );
 
+    const canGroupRun = useCallback((flowId: string, allAgents: WaldiezNodeAgent[]) => {
+        // check group manager
+        const groupManager = allAgents.find(agent => agent.data.agentType === "group_manager");
+        if (groupManager) {
+            const mangerAgent = groupManager as WaldiezNodeAgentGroupManager;
+            if (!mangerAgent.data.initialAgentId) {
+                showSnackbar({
+                    flowId,
+                    message: "No initial agent is defined in group chat",
+                    level: "error",
+                    details: undefined,
+                    duration: 3000,
+                });
+                return mangerAgent;
+            }
+            return null;
+        }
+        return null;
+    }, []);
+
     /**
      * Check if the flow can be run
      */
     const canRun = useCallback(() => {
         if (isReadOnly) {
-            return false;
+            return { canRun: false, openFlowModal: false, groupManager: null };
         }
 
         const allAgents = getAgents();
@@ -163,17 +183,19 @@ export const useFlowEvents = (flowId: string) => {
                 details: undefined,
                 duration: 3000,
             });
-            return false;
+            return { canRun: false, openFlowModal: false, groupManager: null };
         }
-        // check group manager
-        const groupManager = allAgents.find(agent => agent.data.agentType === "group_manager");
+        const groupManager = canGroupRun(flowId, allAgents);
         if (groupManager) {
-            return true;
+            return { canRun: false, openFlowModal: false, groupManager };
         }
         // Check for complete edge connections
         const { used, remaining } = getFlowEdges();
-        return used.length > 0 && remaining.length === 0;
-    }, [isReadOnly, getAgents, getFlowEdges, flowId]);
+        if (used.length > 0 && remaining.length === 0) {
+            return { canRun: true, openFlowModal: false, groupManager: null };
+        }
+        return { canRun: false, openFlowModal: true, groupManager: null };
+    }, [isReadOnly, getAgents, getFlowEdges, canGroupRun, flowId]);
 
     /**
      * Convert flow to Python
@@ -203,6 +225,24 @@ export const useFlowEvents = (flowId: string) => {
         [isReadOnly, onFlowChanged, onConvert, getFlowInfo],
     );
 
+    const onCannotRun = useCallback(
+        (flowId: string, openFlowModal: boolean, groupManager: WaldiezNodeAgent | null) => {
+            if (openFlowModal) {
+                // chats/edges misconfiguration
+                const openEditFlowButtonId = `edit-flow-${flowId}-sidebar-button`;
+                const openEditFlowButton = document.getElementById(openEditFlowButtonId);
+                if (openEditFlowButton) {
+                    openEditFlowButton.click();
+                }
+                return;
+            }
+            if (groupManager) {
+                handleNodeDoubleClick(null, groupManager);
+            }
+        },
+        [handleNodeDoubleClick],
+    );
+
     /**
      * Run the flow
      */
@@ -211,23 +251,18 @@ export const useFlowEvents = (flowId: string) => {
             if (isReadOnly || typeof runner !== "function") {
                 return;
             }
-
-            if (canRun()) {
+            const result = canRun();
+            if (result.canRun) {
                 const flow = onFlowChanged();
                 if (flow) {
                     const { path: flowPath } = getFlowInfo();
                     runner(JSON.stringify(flow), path || flowPath);
                 }
-            } else {
-                // Open edit flow sidebar if flow isn't ready to run
-                const openEditFlowButtonId = `edit-flow-${flowId}-sidebar-button`;
-                const openEditFlowButton = document.getElementById(openEditFlowButtonId);
-                if (openEditFlowButton) {
-                    openEditFlowButton.click();
-                }
+                return;
             }
+            onCannotRun(flowId, result.openFlowModal, result.groupManager);
         },
-        [isReadOnly, runner, canRun, onFlowChanged, getFlowInfo, flowId],
+        [isReadOnly, runner, canRun, onCannotRun, onFlowChanged, getFlowInfo, flowId],
     );
 
     /**
@@ -238,13 +273,18 @@ export const useFlowEvents = (flowId: string) => {
             if (isReadOnly || typeof stepRunner !== "function") {
                 return;
             }
-            const flow = onFlowChanged();
-            if (flow) {
-                const { path: flowPath } = getFlowInfo();
-                stepRunner(JSON.stringify(flow), breakpoints, checkpoint, path || flowPath);
+            const result = canRun();
+            if (result.canRun) {
+                const flow = onFlowChanged();
+                if (flow) {
+                    const { path: flowPath } = getFlowInfo();
+                    stepRunner(JSON.stringify(flow), breakpoints, checkpoint, path || flowPath);
+                }
+                return;
             }
+            onCannotRun(flowId, result.openFlowModal, result.groupManager);
         },
-        [isReadOnly, stepRunner, onFlowChanged, getFlowInfo],
+        [isReadOnly, stepRunner, canRun, onCannotRun, flowId, onFlowChanged, getFlowInfo],
     );
 
     const onGetCheckpoints: () => Promise<Record<string, any> | null> = useCallback(async () => {
