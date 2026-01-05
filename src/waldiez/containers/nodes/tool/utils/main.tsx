@@ -152,6 +152,20 @@ export const PREDEFINED_TOOL_INSTRUCTIONS: { [key: string]: ReactNode | undefine
     searxng_search: undefined,
     waldiez_flow: (
         <div className="info">
+            <p className="mb-2">
+                Required fields:
+                <ul className="p-2">
+                    <li>
+                        <strong>Flow path:</strong> The URL or local path of the waldiez flow.
+                    </li>
+                    <li>
+                        <strong>Tool name</strong> The name to use for the tool.
+                    </li>
+                    <li>
+                        <strong>Tool description</strong> A short description of the tool.
+                    </li>
+                </ul>
+            </p>
             <p>
                 For the <strong>flow path</strong>, you can use either the full local path to the{" "}
                 <span className="italic">.waldiez</span> file or a URL.

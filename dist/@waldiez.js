@@ -695,6 +695,14 @@ return C("div",{className:"flex flex-col",children:/* @__PURE__ */w("div",{class
 /* @__PURE__ */C("a",{href:"https://www.perplexity.ai/settings/api",target:"_blank",rel:"noopener noreferrer",children:"Perplexity API"}),"."]}),
 /* @__PURE__ */w("li",{children:["Generate an API key under ",
 /* @__PURE__ */C("strong",{children:"API Keys"}),"."]})]})]}),searxng_search:void 0,waldiez_flow:/* @__PURE__ */w("div",{className:"info",children:[
+/* @__PURE__ */w("p",{className:"mb-2",children:["Required fields:",
+/* @__PURE__ */w("ul",{className:"p-2",children:[
+/* @__PURE__ */w("li",{children:[
+/* @__PURE__ */C("strong",{children:"Flow path:"})," The URL or local path of the waldiez flow."]}),
+/* @__PURE__ */w("li",{children:[
+/* @__PURE__ */C("strong",{children:"Tool name"})," The name to use for the tool."]}),
+/* @__PURE__ */w("li",{children:[
+/* @__PURE__ */C("strong",{children:"Tool description"})," A short description of the tool."]})]})]}),
 /* @__PURE__ */w("p",{children:["For the ",
 /* @__PURE__ */C("strong",{children:"flow path"}),", you can use either the full local path to the"," ",
 /* @__PURE__ */C("span",{className:"italic",children:".waldiez"})," file or a URL."]}),
@@ -1063,9 +1071,11 @@ return w("div",{className:"flex flex-col",children:[
 /* @__PURE__ */C("label",{htmlFor:D,className:"hidden",children:"Model Type:"}),
 /* @__PURE__ */C(oh,{options:b,value:{label:u,value:l},components:{Option:M},onChange:N,inputId:D,"aria-label":"Model API type",className:"w-full"})]}),"bedrock"!==l&&/* @__PURE__ */w("div",{className:"margin-top-0",children:[
 /* @__PURE__ */C(ab,{label:"API Key:",info:p,htmlFor:O}),
+/* @__PURE__ */w("div",{className:"flex flex-col w-full",children:[
+/* @__PURE__ */C("div",{className:"info margin-bottom-10",children:"Make sure that you either provide this field, or that the corresponding environment variable is set when the flow runs."}),
 /* @__PURE__ */w("div",{className:"flex w-full",children:[
 /* @__PURE__ */C("input",{id:O,className:"flex-1 margin-right-10",type:f?"text":"password",value:c||"",placeholder:m,onChange:k,"data-testid":"model-api-key-input","aria-label":"API key"}),
-/* @__PURE__ */C("button",{type:"button",className:"toggle-visibility-btn",onClick:A,title:f?"Hide API key":"Show API key","aria-label":f?"Hide API key":"Show API key","data-testid":`visibility-apiKey-model-${t}`,children:/* @__PURE__ */C(f?ae:oe,{})})]})]}),
+/* @__PURE__ */C("button",{type:"button",className:"toggle-visibility-btn",onClick:A,title:f?"Hide API key":"Show API key","aria-label":f?"Hide API key":"Show API key","data-testid":`visibility-apiKey-model-${t}`,children:/* @__PURE__ */C(f?ae:oe,{})})]})]})]}),
 /* @__PURE__ */w("div",{className:"margin-top-0",children:[
 /* @__PURE__ */C(ab,{label:"Base URL:",info:"Model's base URL (including version)",htmlFor:P}),/* @__PURE__ */C("input",h?{id:P,title:"Model base URL",type:"text",value:d||"",onChange:S,"data-testid":"model-base-url-input",className:"w-full","aria-label":"Base URL"}:{id:P,type:"text",title:"Model base URL",readOnly:!0,disabled:!0,value:y,"data-testid":"model-base-url-input-read-only",className:"w-full","aria-label":"Base URL (read-only)"})]})]})});rw.displayName="WaldiezNodeModelModalBasicTab";const iw=g(e=>{const{modelId:t,data:a}=e,{onPricePromptChange:o,onPriceCompletionChange:i}=(e=>{const{data:t,onDataChange:n}=e,a=r(e=>{const a=parseFloat(e.target.value);if(isNaN(a))return;const o=t.price?.completionTokenPricePer1k??null;n({price:{completionTokenPricePer1k:o,promptPricePer1k:a>=0?a:null}})},[t.price?.completionTokenPricePer1k,n]),o=r(e=>{const a=parseFloat(e.target.value);if(isNaN(a))return;const o=t.price?.promptPricePer1k??null;n({price:{completionTokenPricePer1k:a>=0?a:null,promptPricePer1k:o}})},[t.price?.promptPricePer1k,n]);return{onPricePromptChange:a,onPriceCompletionChange:o}})(e),s=n(()=>null!==a.price?.promptPricePer1k?a.price.promptPricePer1k:-1,[a.price?.promptPricePer1k]),l=n(()=>null!==a.price?.completionTokenPricePer1k?a.price.completionTokenPricePer1k:-1,[a.price?.completionTokenPricePer1k]),c=`model-modal-price-prompt-${t}`,d=`model-modal-price-completion-${t}`,u=`price-prompt-${t}`,p=`price-completion-${t}`;/* @__PURE__ */
 return C("div",{className:"flex flex-col",children:/* @__PURE__ */w("div",{className:"model-price",children:[
