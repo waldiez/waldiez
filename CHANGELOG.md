@@ -11,6 +11,7 @@ Also, make sure the npm token is not expired
 - Added cli option to skip dependencies installation when running a flow
 - Fixed importing and exporting flows for skipping dependencies installation
 - Fixed messages not showing in the vscode extension when WAAT is used
+- Minor UI related changes
 - Dependency updates
 
 ## v0.7.0
