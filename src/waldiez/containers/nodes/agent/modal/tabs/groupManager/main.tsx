@@ -110,10 +110,10 @@ export const WaldiezNodeGroupManagerTabs = memo((props: WaldiezNodeGroupManagerT
                         dataTestId={`agent-name-input-${id}`}
                         aria-label="Group name"
                     />
-
                     <label htmlFor={`wf-${flowId}-agent-config-${id}-select-initial-agent`}>
-                        Initial Agent:
+                        Initial Agent: <span className="text-[#b91c1c] font-bold">*</span>
                     </label>
+                    <div className="warning">Make sure you specify an initial agent for the group.</div>
                     <Select
                         options={initialAgentOptions}
                         value={initialAgent}

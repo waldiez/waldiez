@@ -155,16 +155,17 @@ export const useFlowEvents = (flowId: string) => {
                     details: undefined,
                     duration: 3000,
                 });
-                return mangerAgent;
+                return { groupManager, valid: false };
             }
-            return null;
+            return { groupManager, valid: true };
         }
-        return null;
+        return { groupManager: null, valid: true };
     }, []);
 
     /**
      * Check if the flow can be run
      */
+    // eslint-disable-next-line max-statements
     const canRun = useCallback(() => {
         if (isReadOnly) {
             return { canRun: false, openFlowModal: false, groupManager: null };
@@ -185,9 +186,12 @@ export const useFlowEvents = (flowId: string) => {
             });
             return { canRun: false, openFlowModal: false, groupManager: null };
         }
-        const groupManager = canGroupRun(flowId, allAgents);
-        if (groupManager) {
+        const { groupManager, valid } = canGroupRun(flowId, allAgents);
+        if (!valid) {
             return { canRun: false, openFlowModal: false, groupManager };
+        }
+        if (groupManager) {
+            return { canRun: true, openFlowModal: false, groupManager: null };
         }
         // Check for complete edge connections
         const { used, remaining } = getFlowEdges();

@@ -41,7 +41,7 @@ dependencies = [
   "jupytext",
   "packaging==25.0",
   "parso==0.8.5",
-  "psutil==7.2.0",
+  "psutil==7.2.1",
   "rpds-py==0.30.0",
   "platformdirs==4.5.1",
   "pydantic>=2.10,<3",
@@ -386,6 +386,7 @@ managed = true
 # published extras not yet bumped
 override-dependencies = [
   "aiosqlite==0.22.1",
+  "psutil==7.2.1",
 ]
 
 # pip-tools
