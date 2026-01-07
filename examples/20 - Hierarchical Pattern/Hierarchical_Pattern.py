@@ -192,6 +192,8 @@ __GROUP__: GroupDict = {"chats": {}, "patterns": {}}
 
 __AGENTS__: dict[str, ConversableAgent] = {}
 
+__CACHE_SEED__: int | None = 42
+
 
 # Tools
 
@@ -1237,7 +1239,9 @@ def main(
     a_pause_event.set()
     pause_event = threading.Event()
     pause_event.set()
-    with Cache.disk(cache_seed=42) as cache:
+    if Path(".cache").is_dir():
+        shutil.rmtree(".cache", ignore_errors=True)
+    with Cache.disk(cache_seed=__CACHE_SEED__) as cache:
         results = run_group_chat(
             pattern=Manager_pattern,
             messages=__INITIAL_MSG__,

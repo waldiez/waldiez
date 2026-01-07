@@ -182,6 +182,8 @@ __GROUP__: GroupDict = {"chats": {}, "patterns": {}}
 
 __AGENTS__: dict[str, ConversableAgent] = {}
 
+__CACHE_SEED__: int | None = None
+
 
 # Tools
 

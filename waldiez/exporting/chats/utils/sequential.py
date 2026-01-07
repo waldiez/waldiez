@@ -180,7 +180,7 @@ def _get_chat_string_start(
         chat_string += "\n" + f'{tab}    "sender": {agent_names[sender.id]},'
     chat_string += "\n" + f'{tab}    "recipient": {agent_names[recipient.id]},'
     if not skip_cache:
-        chat_string += "\n" + f'{tab}    "cache": cache,'
+        chat_string += "\n" + f'{tab}    "cache": __CACHE_SEED__,'
     # additional_methods_string = ""
     for key, value in chat_args.items():
         if isinstance(value, (dict, str)):

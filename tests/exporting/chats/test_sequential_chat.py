@@ -122,7 +122,7 @@ def test_sequential_chat() -> None:
     expected_queue = """__INITIAL_MSG__ = [
         {
             "recipient": agent2,
-            "cache": cache,
+            "cache": __CACHE_SEED__,
             "summary_method": "last_msg",
             "clear_history": True,
             "chat_id": 0,
@@ -131,7 +131,7 @@ def test_sequential_chat() -> None:
         {
             "sender": agent2,
             "recipient": agent3,
-            "cache": cache,
+            "cache": __CACHE_SEED__,
             "summary_method": "last_msg",
             "clear_history": True,
             "chat_id": 0,
