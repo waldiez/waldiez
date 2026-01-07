@@ -210,6 +210,71 @@ class WaldiezRunner(WaldiezBaseRunner):
         )
 
     @override
+    def run(
+        self,
+        output_path: str | Path | None = None,
+        uploads_root: str | Path | None = None,
+        structured_io: bool | None = None,
+        message: str | None = None,
+        skip_mmd: bool = False,
+        skip_timeline: bool = False,
+        skip_symlinks: bool = False,
+        skip_deps: bool | None = None,
+        dot_env: str | Path | None = None,
+        **kwargs: Any,
+    ) -> list[dict[str, Any]]:
+        """Run the Waldiez flow.
+
+        Parameters
+        ----------
+        output_path : str | Path | None
+            The output path, by default None.
+        uploads_root : str | Path | None
+            The runtime uploads root, by default None.
+        structured_io : bool
+            Whether to use structured IO instead of the default 'input/print'.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
+        skip_mmd : bool
+            Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
+        skip_deps : bool | None
+            Whether to skip installing dependencies.
+        dot_env : str | Path | None
+            The path to the .env file, if any.
+        **kwargs : Any
+            Additional keyword arguments for the run method.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            The results of the run.
+
+        Raises
+        ------
+        RuntimeError
+            If the runner is already running, the workflow is not async,
+            or an error occurs during the run.
+        StopRunningException
+            If the run is stopped by the user.
+        """
+        return self._runner.run(
+            output_path,
+            uploads_root,
+            structured_io,
+            message,
+            skip_mmd,
+            skip_timeline,
+            skip_symlinks,
+            skip_deps,
+            dot_env,
+            **kwargs,
+        )
+
+    @override
     async def _a_run(
         self,
         temp_dir: Path,
@@ -231,6 +296,71 @@ class WaldiezRunner(WaldiezBaseRunner):
             skip_timeline=skip_timeline,
             skip_symlinks=skip_symlinks,
             dot_env=dot_env,
+            **kwargs,
+        )
+
+    @override
+    async def a_run(
+        self,
+        output_path: str | Path | None = None,
+        uploads_root: str | Path | None = None,
+        structured_io: bool | None = None,
+        message: str | None = None,
+        skip_mmd: bool = False,
+        skip_timeline: bool = False,
+        skip_symlinks: bool = False,
+        skip_deps: bool | None = None,
+        dot_env: str | Path | None = None,
+        **kwargs: Any,
+    ) -> list[dict[str, Any]]:
+        """Run the Waldiez flow asynchronously.
+
+        Parameters
+        ----------
+        output_path : str | Path | None
+            The output path, by default None.
+        uploads_root : str | Path | None
+            The runtime uploads root.
+        structured_io : bool
+            Whether to use structured IO instead of the default 'input/print'.
+        message : str | None
+            Optional initial message to pass (override flow's message if needed)
+        skip_mmd : bool
+            Whether to skip generating the mermaid diagram.
+        skip_timeline : bool
+            Whether to skip generating the timeline JSON.
+        skip_symlinks : bool
+            Whether to skip creating symlinks for checkpoints.
+        skip_deps : bool
+            Whether to skip installing dependencies.
+        dot_env : str | Path | None
+            The path to the .env file, if any.
+        **kwargs : Any
+            Additional keyword arguments for the a_run method.
+
+        Returns
+        -------
+        list[dict[str, Any]]
+            The results of the run.
+
+        Raises
+        ------
+        RuntimeError
+            If the runner is already running, the workflow is not async
+            or an error occurs during the run.
+        StopRunningException
+            If the run is stopped by the user.
+        """
+        return await self._runner.a_run(
+            output_path,
+            uploads_root,
+            structured_io,
+            message,
+            skip_mmd,
+            skip_timeline,
+            skip_symlinks,
+            skip_deps,
+            dot_env,
             **kwargs,
         )
 
