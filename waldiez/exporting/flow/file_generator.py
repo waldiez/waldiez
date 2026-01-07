@@ -34,6 +34,9 @@ class FileGenerator(ContentGenerator):
         """
         self.context = context
         self.config = context.get_config()
+        self.cache_seed = (
+            self.context.config.cache_seed if self.context.config else None
+        )
 
     # pylint: disable=too-many-locals,unused-argument
     def generate(
@@ -69,9 +72,6 @@ class FileGenerator(ContentGenerator):
         ExporterContentError
             If there is no content to export.
         """
-        cache_seed = (
-            self.context.config.cache_seed if self.context.config else None
-        )
         # 1. Generate header
         header = self.get_header(merged_result)
 
@@ -106,7 +106,6 @@ class FileGenerator(ContentGenerator):
         main, call_main, execution_block = self._get_execution_content(
             chats_content=chats_content,
             is_async=is_async,
-            cache_seed=cache_seed,
             after_run=after_run,
             for_notebook=self.config.for_notebook,
             skip_logging=skip_logging,
@@ -123,7 +122,7 @@ class FileGenerator(ContentGenerator):
             everything.append(
                 "\n".join([entry.content for entry in imports_section])
             )
-        everything.append(FileGenerator._get_globals(cache_seed))
+        everything.append(FileGenerator._get_globals(self.cache_seed))
         if tools_section:
             comment = get_comment(
                 "Tools",
@@ -184,7 +183,6 @@ __CACHE_SEED__: int | None = {cache_seed}
         self,
         chats_content: list[PositionedContent],
         is_async: bool,
-        cache_seed: int | None,
         for_notebook: bool,
         after_run: str,
         skip_logging: bool,
@@ -198,7 +196,7 @@ __CACHE_SEED__: int | None = {cache_seed}
             content=chat_contents,
             is_async=is_async,
             for_notebook=for_notebook,
-            cache_seed=cache_seed,
+            cache_seed=self.cache_seed,
             after_run=after_run,
             skip_logging=skip_logging,
         )
