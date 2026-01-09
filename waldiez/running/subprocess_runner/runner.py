@@ -20,6 +20,7 @@ from ._async_runner import AsyncSubprocessRunner
 from ._sync_runner import SyncSubprocessRunner
 
 
+# pylint: disable=too-many-instance-attributes
 # noinspection PyUnusedLocal,PyBroadException
 class WaldiezSubprocessRunner(WaldiezBaseRunner):
     """Waldiez runner that uses subprocess execution via standalone runners."""
@@ -154,7 +155,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             dot_env=self.dot_env_path,
             logger=self.log,
             breakpoints=self.breakpoints,
-            checkpoint=WaldiezBaseRunner._checkpoint,
+            checkpoint=self._checkpoint,
         )
         return self.async_runner
 
@@ -168,7 +169,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
             dot_env=self.dot_env_path,
             logger=self.log,
             breakpoints=self.breakpoints,
-            checkpoint=WaldiezBaseRunner._checkpoint,
+            checkpoint=self._checkpoint,
         )
         return self.sync_runner
 
@@ -244,7 +245,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         if dot_env is not None:  # pragma: no cover
             resolved = Path(dot_env).resolve()
             if resolved.is_file():
-                WaldiezBaseRunner._dot_env_path = resolved
+                self._dot_env_path = resolved
         return self._run(
             temp_dir=temp_dir,
             output_file=output_file,
@@ -362,7 +363,7 @@ class WaldiezSubprocessRunner(WaldiezBaseRunner):
         if dot_env is not None:  # pragma: no cover
             resolved = Path(dot_env).resolve()
             if resolved.is_file():
-                WaldiezBaseRunner._dot_env_path = resolved
+                self._dot_env_path = resolved
         temp_dir = Path.cwd()
         output_file = self._get_output_file(output_path)
         return await self._a_run(

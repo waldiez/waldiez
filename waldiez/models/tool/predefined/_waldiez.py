@@ -230,8 +230,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
     """{description}
 
     Args:
-        message: str | None: Optional initial message to pass to the flow.
-            Defaults to None (use the flow's original message or ask for input if needed).
+        message: str | None: Optional initial message to pass to the flow. Defaults to None (use the flow's original message)
 
     Returns:
         list[str] | list[dict[str, Any]] | str: The flow results.

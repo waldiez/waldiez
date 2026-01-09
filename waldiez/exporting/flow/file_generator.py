@@ -74,6 +74,7 @@ class FileGenerator(ContentGenerator):
         """
         # 1. Generate header
         header = self.get_header(merged_result)
+
         # 2. Generate imports
         imports_section = merged_result.get_content_by_position(
             ExportPosition.IMPORTS
@@ -105,7 +106,6 @@ class FileGenerator(ContentGenerator):
         main, call_main, execution_block = self._get_execution_content(
             chats_content=chats_content,
             is_async=is_async,
-            cache_seed=self.cache_seed,
             after_run=after_run,
             for_notebook=self.config.for_notebook,
             skip_logging=skip_logging,
@@ -171,18 +171,18 @@ class GroupDict(TypedDict):
     chats: dict[str, GroupChat]
     patterns: dict[str, Pattern]
 
-__CACHE_SEED__: int | None = {cache_seed}
 __GROUP__: GroupDict = {{"chats": {{}}, "patterns": {{}}}}
 
 __AGENTS__: dict[str, ConversableAgent] = {{}}
 
+__CACHE_SEED__: int | None = {cache_seed}
+
 '''
 
-    @staticmethod
     def _get_execution_content(
+        self,
         chats_content: list[PositionedContent],
         is_async: bool,
-        cache_seed: int | None,
         for_notebook: bool,
         after_run: str,
         skip_logging: bool,
@@ -196,7 +196,7 @@ __AGENTS__: dict[str, ConversableAgent] = {{}}
             content=chat_contents,
             is_async=is_async,
             for_notebook=for_notebook,
-            cache_seed=cache_seed,
+            cache_seed=self.cache_seed,
             after_run=after_run,
             skip_logging=skip_logging,
         )

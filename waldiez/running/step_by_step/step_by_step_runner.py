@@ -27,7 +27,6 @@ from waldiez.running.step_by_step.command_handler import CommandHandler
 from waldiez.running.step_by_step.events_processor import EventProcessor
 
 from ..base_runner import WaldiezBaseRunner
-from ..events_mixin import EventsMixin
 from ..exceptions import StopRunningException
 from ..results_mixin import WaldiezRunResults
 from .breakpoints_mixin import BreakpointsMixin
@@ -73,7 +72,7 @@ def gen_id() -> str:
     return str(uuid.uuid4())
 
 
-# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-instance-attributes,too-many-ancestors
 # noinspection DuplicatedCode,StrFormat
 class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
     """Refactored step-by-step runner with improved architecture."""
@@ -500,7 +499,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             except Exception as e:  # pylint: disable=broad-exception-caught
                 self.log.warning("Failed to emit input request: %s", e)
             try:
-                user_input = EventsMixin.get_user_input(
+                user_input = self.get_user_input(
                     DEBUG_INPUT_PROMPT,
                     request_id=request_id,
                 ).strip()
@@ -531,9 +530,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     )
                 )
 
-                user_input = await EventsMixin.a_get_user_input(
-                    DEBUG_INPUT_PROMPT
-                )
+                user_input = await self.a_get_user_input(DEBUG_INPUT_PROMPT)
                 user_input = user_input.strip()
                 return self._parse_user_action(
                     user_input, request_id=request_id
@@ -594,11 +591,8 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow with step-by-step debugging."""
-        WaldiezBaseRunner._skip_deps = (
-            str(
-                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
-            ).lower()
-            == "true"
+        self._skip_deps = (
+            str(kwargs.get("skip_deps", str(self._skip_deps))).lower() == "true"
         )
         # pylint: disable=import-outside-toplevel
         from autogen.io import IOStream  # type: ignore
@@ -613,9 +607,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         # pylint: disable=too-many-try-statements,broad-exception-caught
         try:
             loaded_module = self._load_module(output_file, temp_dir)
-            WaldiezBaseRunner._store_run_paths(
-                tmp_dir=temp_dir, output_file=output_file
-            )
+            self._store_run_paths(tmp_dir=temp_dir, output_file=output_file)
             if self._stop_requested.is_set():
                 self.log.debug(
                     "Step-by-step execution stopped before workflow start"
@@ -630,9 +622,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             else:
                 stream = IOStream.get_default()
 
-            EventsMixin.set_print_function(stream.print)
-            EventsMixin.set_input_function(stream.input)
-            EventsMixin.set_send_function(stream.send)
+            self.set_print_function(stream.print)
+            self.set_input_function(stream.input)
+            self.set_send_function(stream.send)
             self._output_dir = temp_dir
             self.print(MESSAGES["workflow_starting"])
             self.print(self.waldiez.info.model_dump_json())
@@ -651,7 +643,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             self.print(MESSAGES["workflow_failed"].format(error=str(e)))
         finally:
             results_container["completed"] = True
-            WaldiezBaseRunner._remove_run_paths()
+            self._remove_run_paths()
 
         return results_container["results"]
 
@@ -692,7 +684,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     raise StopRunningException(StopRunningException.reason)
                 self._re_emit_if_needed(event_info)
             # Process the actual event
-            EventsMixin.process_event(
+            self.process_event(
                 event, agents, output_dir=self._output_dir, skip_send=True
             )
             self._processed_events += 1
@@ -720,11 +712,8 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
         **kwargs: Any,
     ) -> list[dict[str, Any]]:
         """Run the Waldiez workflow with step-by-step debugging (async)."""
-        WaldiezBaseRunner._skip_deps = (
-            str(
-                kwargs.get("skip_deps", str(WaldiezBaseRunner._skip_deps))
-            ).lower()
-            == "true"
+        self._skip_deps = (
+            str(kwargs.get("skip_deps", str(self._skip_deps))).lower() == "true"
         )
 
         async def _execute_workflow() -> list[dict[str, Any]]:
@@ -736,7 +725,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
             # pylint: disable=too-many-try-statements,broad-exception-caught
             try:
                 loaded_module = self._load_module(output_file, temp_dir)
-                await WaldiezBaseRunner._a_store_run_paths(
+                await self._a_store_run_paths(
                     tmp_dir=temp_dir, output_file=output_file
                 )
                 if self._stop_requested.is_set():
@@ -752,9 +741,9 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 else:
                     stream = IOStream.get_default()
 
-                EventsMixin.set_print_function(stream.print)
-                EventsMixin.set_input_function(stream.input)
-                EventsMixin.set_send_function(stream.send)
+                self.set_print_function(stream.print)
+                self.set_input_function(stream.input)
+                self.set_send_function(stream.send)
 
                 self._output_dir = temp_dir
                 self.print(MESSAGES["workflow_starting"])
@@ -776,7 +765,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                 traceback.print_exc()
                 return []
             finally:
-                WaldiezBaseRunner._remove_run_paths()
+                self._remove_run_paths()
 
         # Create and monitor cancellable task
         task = asyncio.create_task(_execute_workflow())
@@ -821,7 +810,7 @@ class WaldiezStepByStepRunner(WaldiezBaseRunner, BreakpointsMixin):
                     raise StopRunningException(StopRunningException.reason)
                 self._re_emit_if_needed(event_info)
             # Process the actual event
-            await EventsMixin.a_process_event(
+            await self.a_process_event(
                 event, agents, output_dir=self._output_dir, skip_send=True
             )
             self._processed_events += 1

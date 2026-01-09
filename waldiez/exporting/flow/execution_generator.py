@@ -492,6 +492,7 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
                 "    with Cache.disk(cache_seed=__CACHE_SEED__) as cache:\n"
             )
             space = f"{space}    "
+
         flow_content += f"{content}" + "\n"
         if not skip_logging:
             flow_content += ExecutionGenerator._get_stop_logging_call(

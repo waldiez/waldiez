@@ -145,10 +145,6 @@ test_schema:
 .PHONY: test-schema
 test-schema: test_schema
 
-.PHONY: schema
-schema:
-	bun schema
-
 .PHONY: build
 build:
 	$(PYTHON) scripts/build.py

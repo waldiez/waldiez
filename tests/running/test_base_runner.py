@@ -20,8 +20,6 @@ import pytest
 from waldiez.models.flow.flow import WaldiezFlow
 from waldiez.models.waldiez import Waldiez
 from waldiez.running.base_runner import WaldiezBaseRunner
-from waldiez.running.events_mixin import EventsMixin
-from waldiez.running.exceptions import StopRunningException
 
 
 @pytest.fixture(name="waldiez_file")
@@ -164,7 +162,7 @@ def test_run_raises_if_already_running(
         structured_io=False,
     )
     # Manually set running flag
-    WaldiezBaseRunner._running = True
+    runner._running = True
     with pytest.raises(RuntimeError, match="already running"):
         runner.run(output_path=str(file_path))
 
@@ -182,16 +180,14 @@ async def test_async_run_raises_if_already_running(
         uploads_root=None,
         structured_io=False,
     )
-    WaldiezBaseRunner._running = True
+    runner._running = True
     with pytest.raises(RuntimeError, match="already running"):
         await runner.a_run(output_path=str(file_path))
 
 
-def test_process_event_calls_send(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waldiez_file: Path
-) -> None:
+def test_process_event_calls_send(tmp_path: Path, waldiez_file: Path) -> None:
     """Test if process_event calls the send method."""
-    _runner = DummyRunner(
+    runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
         waldiez_file=waldiez_file,
         output_path=None,
@@ -207,16 +203,16 @@ def test_process_event_calls_send(
         called["sent"] = True
         assert e == event
 
-    monkeypatch.setattr(EventsMixin, "_send", staticmethod(fake_send))
-    EventsMixin.process_event(event, [], tmp_path)
+    runner.set_send_function(fake_send)
+    runner.process_event(event, [], tmp_path)
     assert called.get("sent") is True
 
 
 def test_process_event_input_request(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, waldiez_file: Path
+    tmp_path: Path, waldiez_file: Path
 ) -> None:
     """Test if process_event handles input_request events."""
-    _runner = DummyRunner(
+    runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
         waldiez_file=waldiez_file,
         output_path=None,
@@ -241,25 +237,19 @@ def test_process_event_input_request(
     event.prompt = "Enter:"
     event.password = False
     event.content = DummyContent()
+    runner.set_input_function(lambda prompt, password=False: "user_input")
 
-    monkeypatch.setattr(
-        EventsMixin,
-        "get_user_input",
-        staticmethod(lambda prompt, password=False: "user_input"),
-    )
-
-    EventsMixin.process_event(event, [], tmp_path)
+    runner.process_event(event, [], tmp_path)
     assert responded == "user_input"
 
 
 @pytest.mark.asyncio
 async def test_a_process_event_calls_send(
-    monkeypatch: pytest.MonkeyPatch,
     waldiez_file: Path,
     tmp_path: Path,
 ) -> None:
     """Test if async process_event calls the send method."""
-    _runner = DummyRunner(
+    runner = DummyRunner(
         waldiez=MagicMock(is_async=True),
         waldiez_file=waldiez_file,
         output_path=None,
@@ -275,19 +265,18 @@ async def test_a_process_event_calls_send(
         called["sent"] = True
         assert e == event
 
-    monkeypatch.setattr(EventsMixin, "_send", staticmethod(fake_send))
-    await EventsMixin.a_process_event(event, [], tmp_path)
+    runner.set_send_function(fake_send)
+    await runner.a_process_event(event, [], tmp_path)
     assert called.get("sent") is True
 
 
 @pytest.mark.asyncio
 async def test_a_process_event_input_request(
-    monkeypatch: pytest.MonkeyPatch,
     waldiez_file: Path,
     tmp_path: Path,
 ) -> None:
     """Test if async process_event handles input_request events."""
-    _runner = DummyRunner(
+    runner = DummyRunner(
         waldiez=MagicMock(is_async=True),
         waldiez_file=waldiez_file,
         output_path=None,
@@ -318,18 +307,12 @@ async def test_a_process_event_input_request(
     event.password = False
     event.content = DummyContent()
 
-    monkeypatch.setattr(
-        EventsMixin,
-        "a_get_user_input",
-        staticmethod(fake_input),
-    )
-
-    await EventsMixin.a_process_event(event, [], tmp_path)
+    runner.set_input_function(fake_input)
+    await runner.a_process_event(event, [], tmp_path)
     assert responded == "user_input"
 
 
 def test_prepare_paths_and_before_run(
-    monkeypatch: pytest.MonkeyPatch,
     tmp_path: Path,
     waldiez_file: Path,
 ) -> None:
@@ -351,7 +334,7 @@ def test_prepare_paths_and_before_run(
     dummy_env = tmp_path / ".env"
     dummy_env.write_text("TEST=1")
 
-    WaldiezBaseRunner._dot_env_path = dummy_env
+    runner._dot_env_path = dummy_env
     runner._exporter.export = MagicMock()  # type: ignore
 
     temp_dir = runner._before_run(
@@ -364,11 +347,8 @@ def test_prepare_paths_and_before_run(
     assert (temp_dir / ".env").exists()
 
 
-def test_context_manager_stop_requested(
-    monkeypatch: pytest.MonkeyPatch,
-    waldiez_file: Path,
-) -> None:
-    """Test if context manager handles stop_requested flag."""
+def test_get_user_input_sync_and_async(waldiez_file: Path) -> None:
+    """Test if get_user_input works with sync and async functions."""
     runner = DummyRunner(
         waldiez=MagicMock(is_async=False),
         waldiez_file=waldiez_file,
@@ -376,54 +356,8 @@ def test_context_manager_stop_requested(
         uploads_root=None,
         structured_io=False,
     )
-    runner._running = True
-    with runner:
-        pass
-    assert not runner.is_stop_requested()
-
-    runner._running = True
-    with pytest.raises(StopRunningException):
-        with runner:
-            raise StopRunningException("stop")
-
-
-def test_get_input_function_overrides(
-    monkeypatch: pytest.MonkeyPatch,
-    waldiez_file: Path,
-) -> None:
-    """Test if get_input_function returns the correct input function."""
-    _runner = DummyRunner(
-        waldiez=MagicMock(is_async=False),
-        waldiez_file=waldiez_file,
-        output_path=None,
-        uploads_root=None,
-        structured_io=False,
-    )
-
-    # Override _input with a custom function
-    # noinspection PyUnusedLocal
-    def fake_input(prompt: str, *, password: bool = False) -> str:
-        """Fake input function."""
-        return "custom input"
-
-    EventsMixin._input = fake_input
-    input_func = EventsMixin.get_input_function()
-    assert input_func == fake_input  # pylint: disable=comparison-with-callable
-
-
-def test_get_user_input_sync_and_async(
-    monkeypatch: pytest.MonkeyPatch, waldiez_file: Path
-) -> None:
-    """Test if get_user_input works with sync and async functions."""
-    _runner = DummyRunner(
-        waldiez=MagicMock(is_async=False),
-        waldiez_file=waldiez_file,
-        output_path=None,
-        uploads_root=None,
-        structured_io=False,
-    )
-    EventsMixin._input = lambda prompt, password=False: "sync_input"
-    val = EventsMixin.get_user_input("Prompt")
+    runner._input = lambda prompt, password=False: "sync_input"
+    val = runner.get_user_input("Prompt")
     assert val == "sync_input"
 
     # noinspection PyUnusedLocal
@@ -431,23 +365,9 @@ def test_get_user_input_sync_and_async(
         """Fake async input function."""
         return "async_input"
 
-    EventsMixin._input = async_input
+    runner._input = async_input
     # Should run async input with sync call via syncify
-    val = EventsMixin.get_user_input("Prompt")
-    assert val == "async_input"
-
-
-@pytest.mark.asyncio
-async def test_async_get_user_input(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Test if a_get_user_input works as expected."""
-
-    # noinspection PyUnusedLocal
-    async def async_input(prompt: str, *, password: bool = False) -> str:
-        """Fake async input function."""
-        return "async_input"
-
-    EventsMixin._input = async_input
-    val = await EventsMixin.a_get_user_input("Prompt")
+    val = runner.get_user_input("Prompt")
     assert val == "async_input"
 
 
@@ -484,7 +404,7 @@ def test_stop_method_with_running_workflow(waldiez_file: Path) -> None:
     )
 
     # Simulate a running workflow
-    WaldiezBaseRunner._running = True
+    runner._running = True
     assert runner.is_running()
 
     # Call stop
@@ -495,7 +415,7 @@ def test_stop_method_with_running_workflow(waldiez_file: Path) -> None:
     assert runner._stop_requested.is_set()
 
     # Clean up
-    WaldiezBaseRunner._running = False
+    runner._running = False
     assert not runner.is_running()
 
 
@@ -525,7 +445,7 @@ def test_context_manager_exit_when_running(waldiez_file: Path) -> None:
     )
 
     # Set runner to running state
-    WaldiezBaseRunner._running = True
+    runner._running = True
 
     # Use context manager - __exit__ should set stop flag
     with runner:
@@ -535,7 +455,7 @@ def test_context_manager_exit_when_running(waldiez_file: Path) -> None:
     assert runner.is_stop_requested()
 
     # Clean up
-    WaldiezBaseRunner._running = False
+    runner._running = False
 
 
 def test_context_manager_exit_when_not_running(waldiez_file: Path) -> None:
@@ -549,7 +469,7 @@ def test_context_manager_exit_when_not_running(waldiez_file: Path) -> None:
     )
 
     # Ensure runner is not running
-    WaldiezBaseRunner._running = False
+    runner._running = False
 
     # Use context manager
     with runner:
@@ -589,7 +509,7 @@ async def test_async_context_manager_aexit_when_running(
     )
 
     # Set runner to running state
-    WaldiezBaseRunner._running = True
+    runner._running = True
 
     # Use async context manager - __aexit__ should set stop flag
     async with runner:
@@ -599,7 +519,7 @@ async def test_async_context_manager_aexit_when_running(
     assert runner.is_stop_requested()
 
     # Clean up
-    WaldiezBaseRunner._running = False
+    runner._running = False
 
 
 @pytest.mark.asyncio
@@ -616,7 +536,7 @@ async def test_async_context_manager_aexit_when_not_running(
     )
 
     # Ensure runner is not running
-    WaldiezBaseRunner._running = False
+    runner._running = False
 
     # Use async context manager
     async with runner:

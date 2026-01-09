@@ -175,10 +175,11 @@ class GroupDict(TypedDict):
     patterns: dict[str, Pattern]
 
 
-__CACHE_SEED__: int | None = 42
 __GROUP__: GroupDict = {"chats": {}, "patterns": {}}
 
 __AGENTS__: dict[str, ConversableAgent] = {}
+
+__CACHE_SEED__: int | None = 42
 
 
 # Tools

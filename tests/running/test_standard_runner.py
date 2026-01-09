@@ -16,9 +16,6 @@ import pytest
 from waldiez.models.flow.info import WaldiezFlowInfo
 from waldiez.running.standard_runner import WaldiezStandardRunner
 
-BASE_RUNNER = "waldiez.running.base_runner.WaldiezBaseRunner"
-EVENTS_MIXIN = "waldiez.running.events_mixin.EventsMixin"
-
 
 @pytest.fixture(name="runner")
 def runner_fixture(tmp_path: Path) -> WaldiezStandardRunner:
@@ -67,7 +64,7 @@ def test_on_event_processing_and_stop(runner: WaldiezStandardRunner) -> None:
     event = MagicMock()
     event.type = "normal"
 
-    with patch(f"{EVENTS_MIXIN}.process_event") as mock_process:
+    with patch.object(runner, "process_event") as mock_process:
         result = runner._on_event(event, [])
         assert result is True
         mock_process.assert_called_once_with(
@@ -81,7 +78,7 @@ def test_on_event_processing_and_stop(runner: WaldiezStandardRunner) -> None:
     runner._stop_requested.clear()
 
     # Raise exception in process_event
-    with patch(f"{EVENTS_MIXIN}.process_event", side_effect=Exception("fail")):
+    with patch.object(runner, "process_event", side_effect=Exception("fail")):
         with pytest.raises(RuntimeError):
             runner._on_event(event, [])
 
@@ -94,8 +91,8 @@ async def test_async_on_event_processing_and_stop(
     event = MagicMock()
     event.type = "normal"
 
-    with patch(
-        f"{EVENTS_MIXIN}.a_process_event", new_callable=AsyncMock
+    with patch.object(
+        runner, "a_process_event", new_callable=AsyncMock
     ) as mock_process:
         result = await runner._a_on_event(event, [])
         assert result is True
@@ -108,9 +105,7 @@ async def test_async_on_event_processing_and_stop(
     assert result is False
     runner._stop_requested.clear()
 
-    with patch(
-        f"{EVENTS_MIXIN}.a_process_event", side_effect=Exception("fail")
-    ):
+    with patch.object(runner, "a_process_event", side_effect=Exception("fail")):
         with pytest.raises(RuntimeError):
             await runner._a_on_event(event, [])
 
@@ -148,9 +143,10 @@ async def test_async_run_cancellation_and_success(
 
 def test_print_calls_base_runner_print(runner: WaldiezStandardRunner) -> None:
     """Test print calls to base runner."""
-    with patch(f"{EVENTS_MIXIN}._print") as mock_print:
-        runner.print("hello")
-        mock_print.assert_called_once_with("hello")
+    mock_print = MagicMock()
+    runner.set_print_function(mock_print)
+    runner.print("hello")
+    mock_print.assert_called_once_with("hello")
 
 
 def test_printing_using_structured_io(runner: WaldiezStandardRunner) -> None:
@@ -162,7 +158,7 @@ def test_printing_using_structured_io(runner: WaldiezStandardRunner) -> None:
 
     with patch.object(runner, "_load_module", return_value=mock_module):
         with patch("builtins.print") as mock_print:
-            with patch(f"{BASE_RUNNER}._structured_io", return_value=True):
+            with patch.object(runner, "_structured_io", return_value=True):
                 runner._run(
                     temp_dir=MagicMock(),
                     output_file=MagicMock(),
@@ -189,7 +185,7 @@ async def test_async_printing_using_structured_io(
 
     with patch.object(runner, "_load_module", return_value=mock_module):
         with patch("builtins.print") as mock_print:
-            with patch(f"{BASE_RUNNER}._structured_io", return_value=True):
+            with patch.object(runner, "_structured_io", return_value=True):
                 await runner._a_run(
                     temp_dir=MagicMock(),
                     output_file=MagicMock(),
