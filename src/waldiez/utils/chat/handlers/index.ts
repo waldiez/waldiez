@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 
 export { WaldiezChatUsingAutoReplyHandler } from "@waldiez/utils/chat/handlers/auto_reply";
@@ -30,3 +30,4 @@ export {
     WaldiezChatToolCallHandler,
     WaldiezChatToolResponseHandler,
 } from "@waldiez/utils/chat/handlers/tools";
+export { WaldiezChatTransitionEventHandler } from "@waldiez/utils/chat/handlers/transition";

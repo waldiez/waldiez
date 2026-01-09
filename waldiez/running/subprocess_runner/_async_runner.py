@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 # pylint: disable=no-self-use,unused-argument,logging-fstring-interpolation
 # pylint: disable=too-many-try-statements,broad-exception-caught,duplicate-code
 # flake8: noqa: G004

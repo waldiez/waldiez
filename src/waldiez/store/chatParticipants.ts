@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import type { IWaldiezChatParticipantsStore } from "@waldiez/models/Stores/IChatParticipantsStore";
 import type { typeOfGet, typeOfSet } from "@waldiez/types";

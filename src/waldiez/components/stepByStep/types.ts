@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 /*
  * Step-by-step (debug) models for the Waldiez frontend.
@@ -13,6 +13,8 @@ import type {
     WaldiezChatUserInput,
 } from "@waldiez/components/chatUI/types";
 import type { WaldiezTimelineData } from "@waldiez/components/timeline/types";
+
+export type * from "@waldiez/components/stepByStep/event_types";
 
 /**
  * Explicit response codes allowed by the backend for step control.

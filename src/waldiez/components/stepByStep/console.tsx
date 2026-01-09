@@ -1,104 +1,26 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
-/* eslint-disable max-lines */
 import { type FC, useEffect, useLayoutEffect, useRef, useState } from "react";
 
+import { Markdown } from "@waldiez/components/markdown";
+import type {
+    ExecuteFunctionContent,
+    ExecutedFunctionContent,
+    GroupChatRunChatContent,
+    InputRequestContent,
+    PostCarryoverContent,
+    TerminationAndHumanReplyNoInputContent,
+    TerminationContent,
+    TextContent,
+    ToolCallContent,
+    ToolResponseContent,
+    TransitionEvent,
+    WaldiezEvent,
+} from "@waldiez/components/stepByStep/event_types";
 import { getContentString } from "@waldiez/components/stepByStep/utils";
 import { WaldiezChatMessageUtils } from "@waldiez/utils/chat/utils";
-
-import { Markdown } from "../markdown";
-
-type ToolCall = {
-    function: { name: string; arguments?: string };
-};
-
-type EventBase<TType extends string, TContent> = {
-    id?: string;
-    type: TType;
-    content: TContent;
-    sender?: string;
-    recipient?: string;
-    // Optional common fields you may have:
-    timestamp?: string;
-};
-
-type TextContent = { sender: string; recipient: string; content: any };
-type PostCarryoverContent = { sender: string; recipient: string; message: string };
-type GroupChatRunChatContent = { speaker: string };
-type UsingAutoReplyContent = { sender: string; recipient: string };
-type ToolCallContent = { sender: string; recipient: string; tool_calls: ToolCall[] };
-type ExecuteFunctionContent = { func_name: string; recipient: string; arguments?: unknown };
-type ExecutedFunctionContent = {
-    func_name?: string;
-    is_exec_success?: boolean;
-    recipient?: string;
-    content?: any;
-};
-type InputRequestContent = {
-    prompt?: string;
-    /** Your backend should use this to route the response back to the pending request */
-    request_id?: string;
-    /** Provide a responder for local mock, else use onRespond prop */
-    respond?: (text: string) => void;
-};
-type ToolResponseContent = { content: string; sender: string; recipient: string };
-type TerminationContent = { termination_reason?: string };
-type GroupChatResumeContent = Record<string, never>;
-type InfoContent = string | Record<string, never>;
-type ErrorContent = string | Record<string, never>;
-type RunCompletionContent = Record<string, never>;
-type GenerateCodeExecutionReplyContent = Record<string, never>;
-type TerminationAndHumanReplyNoInputContent = {
-    no_human_input_msg: string;
-    sender: string;
-    recipient: string;
-};
-type OnContextConditionTransitionContent = {
-    source_agent: string;
-    transition_target: string;
-};
-type AfterWorksTransitionContent = {
-    source_agent: string;
-    transition_target: string;
-};
-type OnConditionLLMTransitionContent = {
-    source_agent: string;
-    transition_target: string;
-};
-type ReplyResultTransitionContent = {
-    source_agent: string;
-    transition_target: string;
-};
-
-type Transitionevent =
-    | EventBase<"on_context_condition_transition", OnContextConditionTransitionContent>
-    | EventBase<"after_works_transition", AfterWorksTransitionContent>
-    | EventBase<"on_condition_llm_transition", OnConditionLLMTransitionContent>
-    | EventBase<"on_condition_l_l_m_transition", OnConditionLLMTransitionContent>
-    | EventBase<"reply_result_transition", ReplyResultTransitionContent>;
-
-export type WaldiezEvent =
-    | EventBase<"text", TextContent>
-    | EventBase<"post_carryover_processing", PostCarryoverContent>
-    | EventBase<"group_chat_run_chat", GroupChatRunChatContent>
-    | EventBase<"using_auto_reply", UsingAutoReplyContent>
-    | EventBase<"tool_call", ToolCallContent>
-    | EventBase<"execute_function", ExecuteFunctionContent>
-    | EventBase<"executed_function", ExecutedFunctionContent>
-    | EventBase<"input_request", InputRequestContent>
-    | EventBase<"tool_response", ToolResponseContent>
-    | EventBase<"termination", TerminationContent>
-    | EventBase<"run_completion", RunCompletionContent>
-    | EventBase<"generate_code_execution_reply", GenerateCodeExecutionReplyContent>
-    | EventBase<"group_chat_resume", GroupChatResumeContent>
-    | EventBase<"info", InfoContent>
-    | EventBase<"error", ErrorContent>
-    | EventBase<"empty", TextContent>
-    | EventBase<"termination_and_human_reply_no_input", TerminationAndHumanReplyNoInputContent>
-    | Transitionevent
-    | EventBase<string, any>; // fallback/unknown
 
 type EventConsoleProps = {
     events: WaldiezEvent[];
@@ -390,8 +312,8 @@ const renderEvent = (ev: WaldiezEvent, darkMode: boolean) => {
 };
 
 const renderTransitionEvent = (ev: WaldiezEvent) => {
-    let target = (ev as Transitionevent).content.transition_target || (ev as any).transition_target;
-    const source = (ev as Transitionevent).content.source_agent || (ev as any).source_agent;
+    let target = (ev as TransitionEvent).content.transition_target || (ev as any).transition_target;
+    const source = (ev as TransitionEvent).content.source_agent || (ev as any).source_agent;
     if (typeof target !== "string") {
         const { recipient } = getParticipants(ev);
         if (typeof recipient === "string") {

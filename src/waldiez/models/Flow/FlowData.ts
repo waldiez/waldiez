@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import type { Edge, Node, Viewport } from "@xyflow/react";
 
@@ -27,6 +27,7 @@ import { WaldiezTool } from "@waldiez/models/Tool";
  * @param chats - The chats
  * @param isAsync - Is async
  * @param cacheSeed - The cache seed
+ * @param skipDeps - Skip installing the dependencies
  * @param viewport - The viewport
  * @see {@link WaldiezAgentUserProxy}
  * @see {@link WaldiezAgentAssistant}
@@ -55,6 +56,7 @@ export class WaldiezFlowData {
     isAsync?: boolean = false;
     cacheSeed?: number | null = null;
     silent?: boolean = false;
+    skipDeps?: boolean | null = null;
 
     constructor(
         props: {
@@ -76,6 +78,7 @@ export class WaldiezFlowData {
             isAsync?: boolean;
             cacheSeed?: number | null;
             silent?: boolean;
+            skipDeps?: boolean | null;
         } = {
             nodes: [],
             edges: [],
@@ -99,6 +102,7 @@ export class WaldiezFlowData {
             isAsync: false,
             cacheSeed: null,
             silent: false,
+            skipDeps: null,
         },
     ) {
         this.nodes = props.nodes;
@@ -111,5 +115,6 @@ export class WaldiezFlowData {
         this.isAsync = props.isAsync;
         this.cacheSeed = props.cacheSeed;
         this.silent = props.silent;
+        this.skipDeps = props.skipDeps;
     }
 }

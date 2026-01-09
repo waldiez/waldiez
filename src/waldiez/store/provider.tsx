@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import { useMemo, useRef } from "react";
 
@@ -16,6 +16,7 @@ import type { WaldiezProviderProps, WaldiezStore } from "@waldiez/store/types";
  * @param props - The properties to initialize the Waldiez store.
  * @param props.children - The child components that will have access to the Waldiez store.
  * @param props.isReadOnly - Whether the store is read-only.
+ * @param props.skipDeps - Skip installing the dependencies
  * @param props.nodes - Initial nodes for the flow.
  * @param props.edges - Initial edges for the flow.
  * @param props.flowId - The unique identifier for the flow.
@@ -39,7 +40,6 @@ import type { WaldiezProviderProps, WaldiezStore } from "@waldiez/store/types";
  */
 export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
     const storeRef = useRef<WaldiezStore | undefined>(undefined);
-    const isReadOnly = typeof props.isReadOnly === "boolean" ? props.isReadOnly : false;
     const nodes = props.nodes;
     const edges = props.edges;
     const flowId = props.flowId;
@@ -58,8 +58,10 @@ export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
     const onConvert = props.onConvert ?? null;
     const checkpoints = props.checkpoints ?? null;
     const rfInstance = props.rfInstance;
-    const isAsync = props.isAsync ?? false;
-    const cacheSeed = props.cacheSeed ?? 42;
+    const isReadOnly = typeof props.isReadOnly === "boolean" ? props.isReadOnly : false;
+    const isAsync = typeof props.isAsync === "boolean" ? props.isAsync : false;
+    const skipDeps = typeof props.skipDeps === "boolean" ? props.skipDeps : false;
+    const cacheSeed = typeof props.cacheSeed === "number" ? props.cacheSeed : null;
     const store = useMemo(() => {
         storeRef.current = createWaldiezStore({
             flowId,
@@ -76,6 +78,7 @@ export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
             edges,
             rfInstance,
             cacheSeed,
+            skipDeps,
             onUpload,
             onChange,
             onSave,

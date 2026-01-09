@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import { useCallback, useEffect, useState } from "react";
 import isEqual from "react-fast-compare";
@@ -44,6 +44,7 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
         tags,
         isAsync,
         cacheSeed,
+        skipDeps,
     });
     const isEdgesDirty = !isEqual(sortedEdgesState, sortedEdges);
     const [isDirty, setIsDirty] = useState<boolean>(isDataDirty || isEdgesDirty);
@@ -94,7 +95,7 @@ export const useEditFlowModal = (props: EditFlowModalProps) => {
     const onDataChange = (partialData: Partial<EditFlowModalData>) => {
         const isDataDirty = !isEqual(
             { ...flowData, ...partialData },
-            { name, description, requirements, tags, isAsync, cacheSeed },
+            { name, description, requirements, tags, isAsync, cacheSeed, skipDeps },
         );
         const isEdgesDirty = !isEqual(sortedEdgesState, sortedEdges);
         setFlowData({ ...flowData, ...partialData });

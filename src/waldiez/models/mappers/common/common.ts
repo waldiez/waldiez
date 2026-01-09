@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import { getId } from "@waldiez/utils";
 
@@ -76,19 +76,6 @@ export const getRequirementsFromJSON = (json: Record<string, unknown>): string[]
         requirements = json.requirements.filter(requirement => typeof requirement === "string");
     }
     return requirements;
-};
-
-/**
- * Extracts the skipDeps from JSON object.
- * @param json - The JSON object to extract the skipDeps from.
- * @returns The optional skipDeps extracted.
- */
-export const getSkipDepsFromJSON = (json: Record<string, unknown>): boolean | undefined | null => {
-    let skipDeps: boolean | undefined | null;
-    if ("skipDeps" in json && typeof json.skipDeps === "boolean") {
-        skipDeps = json.skipDeps;
-    }
-    return skipDeps;
 };
 
 /**

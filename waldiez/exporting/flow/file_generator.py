@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 """Generate the whole flow content."""
 
 from typing import Any
@@ -34,6 +34,9 @@ class FileGenerator(ContentGenerator):
         """
         self.context = context
         self.config = context.get_config()
+        self.cache_seed = (
+            self.context.config.cache_seed if self.context.config else None
+        )
 
     # pylint: disable=too-many-locals,unused-argument
     def generate(
@@ -71,7 +74,6 @@ class FileGenerator(ContentGenerator):
         """
         # 1. Generate header
         header = self.get_header(merged_result)
-
         # 2. Generate imports
         imports_section = merged_result.get_content_by_position(
             ExportPosition.IMPORTS
@@ -103,6 +105,7 @@ class FileGenerator(ContentGenerator):
         main, call_main, execution_block = self._get_execution_content(
             chats_content=chats_content,
             is_async=is_async,
+            cache_seed=self.cache_seed,
             after_run=after_run,
             for_notebook=self.config.for_notebook,
             skip_logging=skip_logging,
@@ -119,7 +122,7 @@ class FileGenerator(ContentGenerator):
             everything.append(
                 "\n".join([entry.content for entry in imports_section])
             )
-        everything.append(FileGenerator._get_global_dicts())
+        everything.append(FileGenerator._get_globals(self.cache_seed))
         if tools_section:
             comment = get_comment(
                 "Tools",
@@ -159,32 +162,31 @@ class FileGenerator(ContentGenerator):
         return "\n".join(everything)
 
     @staticmethod
-    def _get_global_dicts() -> str:
-        """Get global dict definitions and initializations."""
-        return '''
+    def _get_globals(cache_seed: int | None) -> str:
+        """Get global definitions and initializations."""
+        return f'''
 
 class GroupDict(TypedDict):
     """Group related global dict."""
     chats: dict[str, GroupChat]
     patterns: dict[str, Pattern]
 
-__GROUP__: GroupDict = {"chats": {}, "patterns": {}}
+__CACHE_SEED__: int | None = {cache_seed}
+__GROUP__: GroupDict = {{"chats": {{}}, "patterns": {{}}}}
 
-__AGENTS__: dict[str, ConversableAgent] = {}
+__AGENTS__: dict[str, ConversableAgent] = {{}}
 
 '''
 
+    @staticmethod
     def _get_execution_content(
-        self,
         chats_content: list[PositionedContent],
         is_async: bool,
+        cache_seed: int | None,
         for_notebook: bool,
         after_run: str,
         skip_logging: bool,
     ) -> tuple[str, str, str]:
-        cache_seed = (
-            self.context.config.cache_seed if self.context.config else None
-        )
         execution_gen = ExecutionGenerator()
         chat_contents = "\n".join(chat.content for chat in chats_content)
         before_main = execution_gen.generate_store_error(is_async) + "\n\n"

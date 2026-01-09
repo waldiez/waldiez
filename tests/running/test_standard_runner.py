@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 # pylint: disable=line-too-long,missing-param-doc,missing-return-doc
 # pylint: disable=protected-access,too-few-public-methods,unused-argument
 # flake8: noqa: E501

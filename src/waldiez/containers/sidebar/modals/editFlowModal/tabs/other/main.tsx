@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import { type ChangeEvent, useCallback } from "react";
 
@@ -89,7 +89,7 @@ export const EditFlowModalModalTabOther = (props: EditFlowModalModalTabOtherProp
             <CheckboxInput
                 id={`edit-flow-${flowId}-modal-skip-deps-toggle`}
                 label="Skip dependencies"
-                isChecked={typeof skipDeps === "boolean" && skipDeps === true}
+                isChecked={!showRequirements}
                 onCheckedChange={onSkipDepsToggleChange}
                 data-testid={`edit-flow-${flowId}-modal-skip-deps-toggle`}
             />

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # SPDX-License-Identifier: Apache-2.0.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 # flake8: noqa: E501
 
 # pylint: disable=broad-exception-caught,f-string-without-interpolation,invalid-name,import-error,import-outside-toplevel,inconsistent-quotes,line-too-long,missing-function-docstring
@@ -173,6 +173,7 @@ class GroupDict(TypedDict):
     patterns: dict[str, Pattern]
 
 
+__CACHE_SEED__: int | None = None
 __GROUP__: GroupDict = {"chats": {}, "patterns": {}}
 
 __AGENTS__: dict[str, ConversableAgent] = {}

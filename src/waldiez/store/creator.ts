@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 /* eslint-disable complexity */
 import diff from "microdiff";
@@ -63,10 +63,10 @@ export const createWaldiezStore = (props: WaldiezStoreProps) => {
                 skipExport,
                 skipImport,
                 storageId,
-                name: name,
-                description: description,
-                tags: tags,
-                requirements: requirements,
+                name,
+                description,
+                tags,
+                requirements,
                 skipDeps,
                 cacheSeed,
                 createdAt,

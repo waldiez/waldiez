@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import type { Edge, Node } from "@xyflow/react";
 
@@ -162,6 +162,7 @@ export const loadFlow: (
                   requirements: mergeRequirements(currentFlow.requirements, newFlow.requirements),
                   isAsync: newFlow.isAsync ?? currentFlow.isAsync,
                   cacheSeed: newFlow.cacheSeed ?? currentFlow.cacheSeed ?? null,
+                  skipDeps: newFlow.skipDeps,
                   nodes: mergedNodes,
                   edges: mergeEdges(mergedNodes, currentFlow.edges, newFlow.edges),
               };
@@ -206,6 +207,7 @@ const selectivelyOverrideOrMergeFlow = (
     if (items.cacheSeed) {
         mergedFlow.cacheSeed = newFlow.cacheSeed ?? currentFlow.cacheSeed ?? 42;
     }
+    mergedFlow.skipDeps = newFlow.skipDeps;
     const itemNodes: Node[] = [...items.nodes.models, ...items.nodes.tools, ...items.nodes.agents];
     const itemNodeIds: string[] = itemNodes.map(node => node.id);
     const newFlowNodesToUse = newFlow.nodes.filter(node => itemNodeIds.includes(node.id));

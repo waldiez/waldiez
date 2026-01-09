@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 
 # pylint: disable=too-many-try-statements,broad-exception-caught,line-too-long
 # pylint: disable=too-complex,too-many-return-statements,import-error,too-many-branches

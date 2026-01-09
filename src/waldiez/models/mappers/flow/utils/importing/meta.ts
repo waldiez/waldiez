@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import {
     getCreatedAtFromJSON,
@@ -9,7 +9,6 @@ import {
     getNameFromJSON,
     getRequirementsFromJSON,
     getRestFromJSON,
-    getSkipDepsFromJSON,
     getTagsFromJSON,
     getUpdatedAtFromJSON,
 } from "@waldiez/models/mappers/common";
@@ -20,7 +19,6 @@ export const importFlowMeta = (json: Record<string, unknown>) => {
     const description = getDescriptionFromJSON(json, "A waldiez flow");
     const tags = getTagsFromJSON(json);
     const requirements = getRequirementsFromJSON(json);
-    const skipDeps = getSkipDepsFromJSON(json);
     const createdAt = getCreatedAtFromJSON(json);
     const updatedAt = getUpdatedAtFromJSON(json);
     const rest = getRestFromJSON(json, [
@@ -30,7 +28,6 @@ export const importFlowMeta = (json: Record<string, unknown>) => {
         "description",
         "tags",
         "requirements",
-        "skipDeps",
         "createdAt",
         "updatedAt",
         "data",
@@ -43,7 +40,6 @@ export const importFlowMeta = (json: Record<string, unknown>) => {
         description,
         tags,
         requirements,
-        skipDeps,
         createdAt,
         updatedAt,
         rest,
@@ -106,4 +102,17 @@ export const getCacheSeed = (json: Record<string, unknown>) => {
         }
     }
     return cacheSeed;
+};
+
+/**
+ * Extracts the skipDeps from JSON object.
+ * @param json - The JSON object to extract the skipDeps from.
+ * @returns The optional skipDeps extracted.
+ */
+export const getFlowSkipDeps = (json: Record<string, unknown>): boolean | undefined | null => {
+    let skipDeps: boolean | undefined | null;
+    if ("skipDeps" in json && typeof json.skipDeps === "boolean") {
+        skipDeps = json.skipDeps;
+    }
+    return skipDeps;
 };

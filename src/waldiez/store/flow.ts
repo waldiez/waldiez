@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import type { ReactFlowInstance } from "@xyflow/react";
 
@@ -215,6 +215,8 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
             nodes: currentNodes,
             edges: currentEdges,
             isAsync: currentIsAsync,
+            cacheSeed: currentCacheSeed,
+            skipDeps: currentSkipDeps,
             rfInstance,
         } = this.get();
         const currentFlow: ImportedFlow = {
@@ -225,19 +227,29 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
             nodes: currentNodes,
             edges: currentEdges,
             isAsync: currentIsAsync ?? false,
+            cacheSeed: currentCacheSeed,
+            skipDeps: currentSkipDeps,
         };
-        const { name, createdAt, description, tags, requirements, isAsync, nodes, edges } = loadFlow(
-            items,
-            currentFlow,
-            flowData,
-            typeShown,
-        );
+        const {
+            name,
+            createdAt,
+            description,
+            tags,
+            requirements,
+            isAsync,
+            nodes,
+            edges,
+            cacheSeed,
+            skipDeps,
+        } = loadFlow(items, currentFlow, flowData, typeShown);
         this.set({
             name,
             description,
             tags,
             requirements,
             isAsync,
+            cacheSeed,
+            skipDeps,
             storageId: storageId ?? `wf-${getId()}`,
             createdAt: createdAt ?? new Date().toISOString(),
             updatedAt: new Date().toISOString(),
@@ -273,6 +285,7 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
             name,
             description,
             tags,
+            skipDeps,
             requirements,
             createdAt,
             updatedAt,
@@ -293,6 +306,7 @@ export class WaldiezFlowStore implements IWaldiezFlowStore {
             storageId: storageId ?? flowId,
             isAsync: isAsync ?? false,
             cacheSeed,
+            skipDeps,
         };
         return flowMapper.exportFlow(flow, hideSecrets, false);
     };

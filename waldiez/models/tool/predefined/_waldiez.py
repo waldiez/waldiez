@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 # pylint: disable=line-too-long
 # pyright: reportUnnecessaryIsInstance=false
 # flake8: noqa: E501
@@ -230,7 +230,8 @@ class WaldiezFlowToolImpl(PredefinedTool):
     """{description}
 
     Args:
-        message: str | None: Optional initial message to pass to the flow. Defaults to None (use the flow's original message)
+        message: str | None: Optional initial message to pass to the flow.
+            Defaults to None (use the flow's original message or ask for input if needed).
 
     Returns:
         list[str] | list[dict[str, Any]] | str: The flow results.
@@ -270,7 +271,12 @@ class WaldiezFlowToolImpl(PredefinedTool):
 '''
         content += f"""
     try:
-        runner = WaldiezRunner.load(flow_path, dot_env={dot_env_arg}, skip_deps=skip_deps)
+        runner = WaldiezRunner.load(
+            flow_path,
+            dot_env={dot_env_arg},
+            skip_deps=skip_deps,
+            structured_io={structured_io},
+        )
 """
         if is_async:
             content += f"""

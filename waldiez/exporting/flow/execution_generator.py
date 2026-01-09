@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 """Generates the main() and call_main() functions."""
 
 # pylint: disable=no-self-use,unused-argument,line-too-long
@@ -482,17 +482,16 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
         flow_content += "    pause_event = threading.Event()\n"
         flow_content += "    pause_event.set()\n"
         space = "    "
+        flow_content += (
+            '    if Path(".cache").is_dir():\n'
+            '        shutil.rmtree(".cache", ignore_errors=True)\n'
+        )
         if cache_seed is not None:
             # noinspection SqlDialectInspection
             flow_content += (
-                f"    with Cache.disk(cache_seed={cache_seed}) as cache:\n"
+                "    with Cache.disk(cache_seed=__CACHE_SEED__) as cache:\n"
             )
             space = f"{space}    "
-        else:
-            flow_content += (
-                '    if Path(".cache").is_dir():\n'
-                '        shutil.rmtree(".cache", ignore_errors=True)\n'
-            )
         flow_content += f"{content}" + "\n"
         if not skip_logging:
             flow_content += ExecutionGenerator._get_stop_logging_call(

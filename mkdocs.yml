@@ -4,7 +4,7 @@ site_description: "Make AG2 Agents Collaborate: Drag, Drop, and Orchestrate with
 site_url: https://docs.waldiez.io
 repo_name: waldiez/waldiez
 repo_url: https://github.com/waldiez/waldiez
-copyright: "Copyright &copy; 2024 - 2025 Waldiez"
+copyright: "Copyright &copy; 2024 - 2026 Waldiez"
 docs_dir: docs
 theme:
   name: material

@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import { type FC, memo, useMemo } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -152,27 +152,34 @@ export const WaldiezNodeModelModalBasicTab: FC<WaldiezNodeModelModalBasicTabProp
                 {apiType !== "bedrock" && (
                     <div className="margin-top-0">
                         <InfoLabel label="API Key:" info={apiKeyInfo} htmlFor={apiKeyInputId} />
-                        <div className="flex w-full">
-                            <input
-                                id={apiKeyInputId}
-                                className="flex-1 margin-right-10"
-                                type={apiKeyVisible ? "text" : "password"}
-                                value={apiKey || ""}
-                                placeholder={apiKeyEnv}
-                                onChange={onApiKeyChange}
-                                data-testid="model-api-key-input"
-                                aria-label="API key"
-                            />
-                            <button
-                                type="button"
-                                className="toggle-visibility-btn"
-                                onClick={onApiKeyVisibleChange}
-                                title={apiKeyVisible ? "Hide API key" : "Show API key"}
-                                aria-label={apiKeyVisible ? "Hide API key" : "Show API key"}
-                                data-testid={`visibility-apiKey-model-${id}`}
-                            >
-                                {apiKeyVisible ? <FaEyeSlash /> : <FaEye />}
-                            </button>
+
+                        <div className="flex flex-col w-full">
+                            <div className="info margin-bottom-10">
+                                Make sure that you either provide this field, or that the corresponding
+                                environment variable is set when the flow runs.
+                            </div>
+                            <div className="flex w-full">
+                                <input
+                                    id={apiKeyInputId}
+                                    className="flex-1 margin-right-10"
+                                    type={apiKeyVisible ? "text" : "password"}
+                                    value={apiKey || ""}
+                                    placeholder={apiKeyEnv}
+                                    onChange={onApiKeyChange}
+                                    data-testid="model-api-key-input"
+                                    aria-label="API key"
+                                />
+                                <button
+                                    type="button"
+                                    className="toggle-visibility-btn"
+                                    onClick={onApiKeyVisibleChange}
+                                    title={apiKeyVisible ? "Hide API key" : "Show API key"}
+                                    aria-label={apiKeyVisible ? "Hide API key" : "Show API key"}
+                                    data-testid={`visibility-apiKey-model-${id}`}
+                                >
+                                    {apiKeyVisible ? <FaEyeSlash /> : <FaEye />}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}

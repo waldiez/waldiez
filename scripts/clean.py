@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 
 """Clean the project."""
 
@@ -20,6 +20,7 @@ DIR_PATTERNS = [
     ".ruff_cache",
     "*.egg-info",
     os.path.join("coverage", "py"),
+    os.path.join("workspace", "waldiez_checkpoints"),
     "build",
     "site",
     "waldiez_out",

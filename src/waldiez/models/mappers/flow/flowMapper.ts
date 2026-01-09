@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 /* eslint-disable max-statements */
 import type { Edge, Node } from "@xyflow/react";
@@ -18,6 +18,7 @@ import { exportTool } from "@waldiez/models/mappers/flow/utils/exporting/tools";
 import { getChats, getEdges } from "@waldiez/models/mappers/flow/utils/importing/edges";
 import {
     getCacheSeed,
+    getFlowSkipDeps,
     getFlowViewport,
     getIsAsync,
     importFlowMeta,
@@ -53,7 +54,7 @@ export const flowMapper = {
         if (!flowJson.type || flowJson.type !== "flow") {
             return emptyFlow;
         }
-        const { id, storageId, name, description, tags, requirements, skipDeps, createdAt, updatedAt, rest } =
+        const { id, storageId, name, description, tags, requirements, createdAt, updatedAt, rest } =
             importFlowMeta(flowJson);
         const flowData = (flowJson.data || flowJson) as Record<string, unknown>;
         const flowId = newId || id;
@@ -69,7 +70,6 @@ export const flowMapper = {
             description,
             tags,
             requirements,
-            skipDeps,
             data,
             createdAt,
             updatedAt,
@@ -93,7 +93,7 @@ export const flowMapper = {
             description: flow.description,
             tags: flow.tags,
             requirements: flow.requirements,
-            skipDeps: flow.skipDeps,
+            skipDeps: flow.data.skipDeps,
             createdAt: flow.createdAt,
             updatedAt: flow.updatedAt,
             edges,
@@ -123,7 +123,6 @@ export const flowMapper = {
             description: flow.description,
             tags: flow.tags,
             requirements: flow.requirements,
-            skipDeps: flow.skipDeps,
             createdAt: flow.createdAt || new Date().toISOString(),
             updatedAt: flow.updatedAt || new Date().toISOString(),
             data: getFlowDataToExport(flow, hideSecrets, skipLinks),
@@ -141,6 +140,7 @@ const getFlowDataToImport = (json: Record<string, unknown>) => {
     const isAsync = getIsAsync(json);
     const cacheSeed = getCacheSeed(json);
     const viewport = getFlowViewport(json);
+    const skipDeps = getFlowSkipDeps(json);
     const nodes = getNodes(json);
     let edges = getEdges(json);
     const chatsNEdges = getChats(json, nodes, edges);
@@ -164,6 +164,7 @@ const getFlowDataToImport = (json: Record<string, unknown>) => {
         tools,
         chats,
         isAsync,
+        skipDeps,
         cacheSeed,
         viewport,
     });
@@ -228,6 +229,7 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
         chats: edges.map((edge, index) => exportChat(edge, edges, index)),
         isAsync: flow.isAsync,
         cacheSeed: flow.cacheSeed,
+        skipDeps: typeof flow.skipDeps === "boolean" ? flow.skipDeps : false,
         viewport: flow.viewport,
         silent: flow.silent || false,
     });

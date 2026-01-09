@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import fs from "fs-extra";
 import path from "path";
@@ -12,9 +12,9 @@ const owner = "Waldiez";
 const projectBirthYear = 2024;
 const licenseIdentifier = packageJson.license || "Apache-2.0";
 const thisYear = new Date().getFullYear();
-const copyrightYears = `${projectBirthYear} - ${thisYear + 1}`;
+const copyrightYears = `${projectBirthYear} - ${thisYear}`;
 const copyrightHolder = `${owner} & contributors`;
-const distExtensions = [".js", ".css", "cjs", ".mjs", ".ts", ".d.ts"];
+const distExtensions = [".js", ".css", ".cjs", ".mjs", ".ts", ".d.ts"];
 
 const addHeaderToFile = async (filePath: string): Promise<void> => {
     const content = await fs.readFile(filePath, "utf-8");
@@ -26,7 +26,7 @@ const addHeaderToFile = async (filePath: string): Promise<void> => {
         header += "\n/* stylelint-disable */";
     }
     // Avoid adding twice
-    if (!content.includes("SPDX-License-Identifier")) {
+    if (!content.startsWith(header)) {
         let newContent = `${header}\n\n${content}`.replace(/\r\n/g, "\n");
         if (!newContent.endsWith("\n")) {
             // Ensure the file ends with a newline

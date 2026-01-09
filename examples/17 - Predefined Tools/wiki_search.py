@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # SPDX-License-Identifier: Apache-2.0.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 # flake8: noqa: E501
 
 # pylint: disable=broad-exception-caught,f-string-without-interpolation,invalid-name,import-error,import-outside-toplevel,inconsistent-quotes,line-too-long,missing-function-docstring
@@ -178,6 +178,7 @@ class GroupDict(TypedDict):
     patterns: dict[str, Pattern]
 
 
+__CACHE_SEED__: int | None = 42
 __GROUP__: GroupDict = {"chats": {}, "patterns": {}}
 
 __AGENTS__: dict[str, ConversableAgent] = {}
@@ -605,7 +606,9 @@ def main(
     a_pause_event.set()
     pause_event = threading.Event()
     pause_event.set()
-    with Cache.disk(cache_seed=42) as cache:
+    if Path(".cache").is_dir():
+        shutil.rmtree(".cache", ignore_errors=True)
+    with Cache.disk(cache_seed=__CACHE_SEED__) as cache:
         results = User.run(
             Assistant,
             cache=cache,

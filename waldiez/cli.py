@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 # flake8: noqa: E501
 # pylint: disable=missing-function-docstring, missing-param-doc, missing-raises-doc
 # pylint: disable=line-too-long, import-outside-toplevel,too-many-locals
+# pylint: disable=too-many-arguments,too-many-positional-arguments
 # pyright: reportUnknownArgumentType=false,reportCallInDefaultInitializer=false
 # pyright:  reportUnusedCallResult=false,reportAny=false
 """Command line interface to convert or run a waldiez file."""
@@ -124,6 +125,10 @@ def run(
         False,
         help="Override the output file if it already exists.",
     ),
+    skip_deps: bool = typer.Option(  # noqa: B008
+        False,
+        help="Skip installing dependencies.",
+    ),
     env_file: Path | None = typer.Option(  # noqa: B008
         None,
         "--env-file",
@@ -208,6 +213,7 @@ def run(
             output_path=output_path,
             uploads_root=uploads_root,
             structured_io=structured,
+            skip_deps=skip_deps,
             dot_env=env_file,
             subprocess_mode=subprocess_mode,
             waldiez_file=file,
@@ -223,7 +229,15 @@ def run(
     except ValueError as error:
         typer.echo(f"Invalid .waldiez file: {error}")
         raise typer.Exit(code=1) from error
-    _do_run(runner, output_path, uploads_root, structured, message, env_file)
+    _do_run(
+        runner,
+        output_path=output_path,
+        uploads_root=uploads_root,
+        structured=structured,
+        message=message,
+        env_file=env_file,
+        skip_deps=skip_deps,
+    )
 
 
 @app.command(
@@ -272,6 +286,10 @@ def convert(
         False,
         help="Override the output file if it already exists.",
     ),
+    skip_secrets: bool = typer.Option(
+        False,
+        help="Redact any secrets from the generated dump",
+    ),
     debug: bool = typer.Option(
         False,
         "--debug",
@@ -301,6 +319,7 @@ def convert(
         output,
         message=message,
         force=force,
+        skip_secrets=skip_secrets,
         debug=debug,
     )
     generated = str(output).replace(os.getcwd(), ".")
@@ -376,6 +395,7 @@ def _do_run(
     structured: bool,
     message: str | None,
     env_file: Path | None,
+    skip_deps: bool,
 ) -> None:
     _error: Exception | None = None
     _stopped: bool = False
@@ -392,7 +412,7 @@ def _do_run(
                 False,  # skip_mmd
                 False,  # skip_timeline
                 False,  # skip_symlinks
-                False,  # skip_deps
+                skip_deps,  # skip_deps
                 env_file,
             )
             # os._exit(0 if _error is None else 1)
@@ -405,7 +425,7 @@ def _do_run(
                 skip_mmd=False,
                 skip_timeline=False,
                 skip_symlinks=False,
-                skip_deps=False,
+                skip_deps=skip_deps,
                 dot_env=env_file,
             )
     except Exception as error:

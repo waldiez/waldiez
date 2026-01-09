@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import type { XYPosition } from "@xyflow/react";
 
@@ -122,7 +122,10 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
                 ...agent,
                 position,
                 id: getId(),
-                data: { ...agent.data, label: newName },
+                data:
+                    agent.data.agentType === "group_manager"
+                        ? { ...agent.data, label: newName, initialAgentId: null }
+                        : { ...agent.data, label: newName },
             };
             this.set({
                 nodes: [...this.get().nodes, newAgent],
@@ -190,6 +193,9 @@ export class WaldiezAgentStore implements IWaldiezAgentStore {
                             node.parentId = undefined;
                             node.data.parentId = undefined;
                             node.extent = undefined;
+                        }
+                        if (node.data.initialAgentId === id) {
+                            node.data.initialAgentId = null;
                         }
                         return node;
                     }),

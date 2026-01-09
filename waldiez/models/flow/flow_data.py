@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 
 # pyright:  reportArgumentType=false
 
@@ -140,6 +140,15 @@ class WaldiezFlowData(WaldiezBase):
                 "Default is None."
             ),
             title="Cache Seed",
+        ),
+    ]
+    skip_deps: Annotated[
+        bool | None,
+        Field(
+            None,
+            alias="skipDeps",
+            description="Skip installing dependencies. Default is None.",
+            title="Skip deps",
         ),
     ]
 
@@ -286,6 +295,7 @@ class WaldiezFlowData(WaldiezBase):
             ],
             is_async=False,
             cache_seed=None,
+            skip_deps=None,
         )
 
 

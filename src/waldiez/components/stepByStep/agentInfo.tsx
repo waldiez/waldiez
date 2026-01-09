@@ -1,6 +1,6 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 /* eslint-disable complexity */
 import { ChevronDown, ChevronRight, MessageSquare, User, Zap } from "lucide-react";

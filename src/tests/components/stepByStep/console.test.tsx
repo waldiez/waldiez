@@ -1,13 +1,14 @@
 /**
  * SPDX-License-Identifier: Apache-2.0
- * Copyright 2024 - 2025 Waldiez & contributors
+ * Copyright 2024 - 2026 Waldiez & contributors
  */
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import React from "react";
 
-import { EventConsole, type WaldiezEvent } from "@waldiez/components/stepByStep/console";
+import { EventConsole } from "@waldiez/components/stepByStep/console";
+import type { WaldiezEvent } from "@waldiez/components/stepByStep/types";
 
 describe("EventConsole", () => {
     beforeEach(() => {

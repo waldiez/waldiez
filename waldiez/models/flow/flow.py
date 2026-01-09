@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0.
-# Copyright (c) 2024 - 2025 Waldiez and contributors.
+# Copyright (c) 2024 - 2026 Waldiez and contributors.
 # pyright: reportCallIssue=false
 """Waldiez flow model."""
 
@@ -101,15 +101,6 @@ class WaldiezFlow(WaldiezBase):
             default_factory=list,
         ),
     ]
-    skip_deps: Annotated[
-        bool | None,
-        Field(
-            None,
-            alias="skipDeps",
-            description="Skip installing dependencies. Default is None.",
-            title="Skip deps",
-        ),
-    ]
     data: Annotated[
         WaldiezFlowData,
         Field(
@@ -157,6 +148,11 @@ class WaldiezFlow(WaldiezBase):
             True if the flow is asynchronous, False otherwise.
         """
         return self.data.is_async
+
+    @property
+    def skip_deps(self) -> bool:
+        """Check if we should install dependencies before running the flow."""
+        return self.data.skip_deps is True
 
     @property
     def is_group_chat(self) -> bool:
