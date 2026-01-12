@@ -19,7 +19,6 @@ class ExecutionGenerator:
         for_notebook: bool,
         cache_seed: int | None,
         after_run: str,
-        skip_logging: bool,
     ) -> str:
         """Generate the complete flow script content.
 
@@ -36,8 +35,6 @@ class ExecutionGenerator:
         after_run : str, optional
             Additional content to add after the main chat execution,
             by default ""
-        skip_logging : bool, optional
-            Whether to skip logging setup, by default False
 
         Returns
         -------
@@ -50,7 +47,6 @@ class ExecutionGenerator:
             cache_seed=cache_seed,
             after_run=after_run,
             for_notebook=for_notebook,
-            skip_logging=skip_logging,
         )
         call_main_function = ExecutionGenerator.generate_call_main_function(
             is_async=is_async,
@@ -414,7 +410,6 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
         cache_seed: int | None,
         after_run: str,
         for_notebook: bool,
-        skip_logging: bool,
     ) -> str:
         """Generate the main function for the flow script.
 
@@ -430,8 +425,6 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
             Additional content to add after the main chat execution.
         for_notebook : bool
             Whether the export is intended for a notebook environment.
-        skip_logging : bool, optional
-            Whether to skip logging setup, by default False
 
         Returns
         -------
@@ -494,10 +487,9 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
             space = f"{space}    "
 
         flow_content += f"{content}" + "\n"
-        if not skip_logging:
-            flow_content += ExecutionGenerator._get_stop_logging_call(
-                space, is_async
-            )
+        flow_content += ExecutionGenerator._get_stop_logging_call(
+            space, is_async
+        )
         flow_content += "\n"
         if after_run:
             flow_content += after_run + "\n"

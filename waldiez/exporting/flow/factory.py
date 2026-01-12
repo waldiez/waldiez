@@ -54,6 +54,7 @@ def create_flow_exporter(
     debug = kwargs.get("debug", None)
     if isinstance(debug, bool) and debug is True:
         log_level = "debug"
+    is_waat = str(kwargs.get("is_waat", "False")).lower() == "true"
     if context is None:
         config = ExportConfig(
             name=waldiez.name,
@@ -66,6 +67,7 @@ def create_flow_exporter(
             uploads_root=uploads_root,
             message=message,
             cache_seed=waldiez.cache_seed,
+            is_waat=is_waat,
         )
         context = ExporterContext(
             config=config,
@@ -86,6 +88,7 @@ def create_flow_exporter(
                 uploads_root=uploads_root,
                 message=message,
                 cache_seed=waldiez.cache_seed,
+                is_waat=is_waat,
             )
         else:
             context.config.update(
@@ -98,6 +101,7 @@ def create_flow_exporter(
                 output_directory=output_dir,
                 uploads_root=uploads_root,
                 cache_seed=waldiez.cache_seed,
+                is_waat=is_waat,
             )
             if message:
                 context.config.message = message

@@ -305,7 +305,7 @@ def get_stop_logging(is_async: bool, tabs: int = 0) -> str:
     Example
     -------
     ```python
-    >>> get_stop_logging()
+    >>> get_stop_logging(False)
     def stop_logging() -> None:
         \"\"\"Stop logging.\"\"\"
         runtime_logging.stop()
@@ -326,10 +326,13 @@ def get_stop_logging(is_async: bool, tabs: int = 0) -> str:
     if is_async:
         content += "async "
     content += "def stop_logging() -> None:\n"
-    content += '    """Stop logging."""\n'
+    content += f'{tab}    """Stop logging."""\n'
+    content += "    if not __IS_WAAT__:\n"
     if is_async:
-        content += f"{tab}    await asyncio.to_thread(runtime_logging.stop)\n"
+        content += (
+            f"{tab}        await asyncio.to_thread(runtime_logging.stop)\n"
+        )
     else:
-        content += f"{tab}    runtime_logging.stop()\n"
-    content += get_sqlite_out_call(tabs + 1, is_async)
+        content += f"{tab}        runtime_logging.stop()\n"
+    content += get_sqlite_out_call(tabs + 2, is_async)
     return content

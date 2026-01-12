@@ -197,13 +197,12 @@ class ExportOrchestrator:
             position=ExportPosition.AGENTS,
             order=ContentOrder.LATE_CLEANUP.value + 1,  # after all agents
         )
-        if not self.should_skip_logging():
-            merged_result.add_content(
-                get_stop_logging(is_async=self.waldiez.is_async),
-                position=ExportPosition.AGENTS,
-                order=ContentOrder.LATE_CLEANUP.value
-                + 2,  # before def main (chats)
-            )
+        merged_result.add_content(
+            get_stop_logging(is_async=self.waldiez.is_async),
+            position=ExportPosition.AGENTS,
+            order=ContentOrder.LATE_CLEANUP.value
+            + 2,  # before def main (chats)
+        )
         all_imports: list[tuple[str, ImportPosition]] = [
             (item.statement, item.position)
             for item in merged_result.get_sorted_imports()
@@ -504,4 +503,4 @@ def _get_known_agents() -> list[ConversableAgent]:
         bool
             True if logging should be skipped, False otherwise.
         """
-        return False
+        return self.config.is_waat

@@ -108,7 +108,6 @@ class FileGenerator(ContentGenerator):
             is_async=is_async,
             after_run=after_run,
             for_notebook=self.config.for_notebook,
-            skip_logging=skip_logging,
         )
 
         # 5. Combine everything
@@ -122,7 +121,9 @@ class FileGenerator(ContentGenerator):
             everything.append(
                 "\n".join([entry.content for entry in imports_section])
             )
-        everything.append(FileGenerator._get_globals(self.cache_seed))
+        everything.append(
+            FileGenerator._get_globals(self.cache_seed, self.config.is_waat)
+        )
         if tools_section:
             comment = get_comment(
                 "Tools",
@@ -162,7 +163,7 @@ class FileGenerator(ContentGenerator):
         return "\n".join(everything)
 
     @staticmethod
-    def _get_globals(cache_seed: int | None) -> str:
+    def _get_globals(cache_seed: int | None, is_waat: bool) -> str:
         """Get global definitions and initializations."""
         return f'''
 
@@ -177,6 +178,8 @@ __AGENTS__: dict[str, ConversableAgent] = {{}}
 
 __CACHE_SEED__: int | None = {cache_seed}
 
+__IS_WAAT__: bool = {is_waat}
+
 '''
 
     def _get_execution_content(
@@ -185,7 +188,6 @@ __CACHE_SEED__: int | None = {cache_seed}
         is_async: bool,
         for_notebook: bool,
         after_run: str,
-        skip_logging: bool,
     ) -> tuple[str, str, str]:
         execution_gen = ExecutionGenerator()
         chat_contents = "\n".join(chat.content for chat in chats_content)
@@ -198,7 +200,6 @@ __CACHE_SEED__: int | None = {cache_seed}
             for_notebook=for_notebook,
             cache_seed=self.cache_seed,
             after_run=after_run,
-            skip_logging=skip_logging,
         )
         call_main = execution_gen.generate_call_main_function(
             is_async=is_async,

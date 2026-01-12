@@ -286,6 +286,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_mmd=True,
                 skip_timeline=True,
                 skip_symlinks=True,
+                is_waat=True,
                 message=message,
             )
         else:
@@ -295,6 +296,8 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_mmd=True,
                 skip_timeline=True,
                 skip_symlinks=True,
+                is_waat=True,
+                message=message,
             )
 """
         else:
@@ -307,6 +310,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_timeline=True,
                 skip_symlinks=True,
                 message=message,
+                is_waat=True,
             )
         else:
             result = runner.run(
@@ -315,6 +319,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_mmd=True,
                 skip_timeline=True,
                 skip_symlinks=True,
+                is_waat=True,
             )
 """
         content += self._get_reply_result()
