@@ -179,6 +179,8 @@ __AGENTS__: dict[str, ConversableAgent] = {}
 
 __CACHE_SEED__: int | None = None
 
+__IS_WAAT__: bool = False
+
 
 # Models
 
@@ -283,23 +285,24 @@ def get_sqlite_out(dbname: str, table: str, csv_file: str) -> None:
 
 def stop_logging() -> None:
     """Stop logging."""
-    runtime_logging.stop()
-    if not os.path.exists("logs"):
-        try:
-            os.makedirs("logs", exist_ok=True)
-        except BaseException:
-            pass
-    for table in [
-        "chat_completions",
-        "agents",
-        "oai_wrappers",
-        "oai_clients",
-        "version",
-        "events",
-        "function_calls",
-    ]:
-        dest = os.path.join("logs", f"{table}.csv")
-        get_sqlite_out("flow.db", table, dest)
+    if not __IS_WAAT__:
+        runtime_logging.stop()
+        if not os.path.exists("logs"):
+            try:
+                os.makedirs("logs", exist_ok=True)
+            except BaseException:
+                pass
+        for table in [
+            "chat_completions",
+            "agents",
+            "oai_wrappers",
+            "oai_clients",
+            "version",
+            "events",
+            "function_calls",
+        ]:
+            dest = os.path.join("logs", f"{table}.csv")
+            get_sqlite_out("flow.db", table, dest)
 
 
 def _check_for_extra_agents(agent: ConversableAgent) -> list[ConversableAgent]:
