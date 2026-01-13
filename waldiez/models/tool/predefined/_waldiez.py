@@ -270,7 +270,12 @@ class WaldiezFlowToolImpl(PredefinedTool):
 '''
         content += f"""
     try:
-        runner = WaldiezRunner.load(flow_path, dot_env={dot_env_arg}, skip_deps=skip_deps)
+        runner = WaldiezRunner.load(
+            flow_path,
+            dot_env={dot_env_arg},
+            skip_deps=skip_deps,
+            structured_io={structured_io},
+        )
 """
         if is_async:
             content += f"""
@@ -281,6 +286,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_mmd=True,
                 skip_timeline=True,
                 skip_symlinks=True,
+                is_waat=True,
                 message=message,
             )
         else:
@@ -290,6 +296,8 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_mmd=True,
                 skip_timeline=True,
                 skip_symlinks=True,
+                is_waat=True,
+                message=message,
             )
 """
         else:
@@ -302,6 +310,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_timeline=True,
                 skip_symlinks=True,
                 message=message,
+                is_waat=True,
             )
         else:
             result = runner.run(
@@ -310,6 +319,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_mmd=True,
                 skip_timeline=True,
                 skip_symlinks=True,
+                is_waat=True,
             )
 """
         content += self._get_reply_result()
