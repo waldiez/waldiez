@@ -71,7 +71,7 @@ mqtt = [
 # jupyterlab extension
 jupyter = [
   "waldiez_jupyter==0.7.0",
-  "jupyterlab==4.5.1",
+  "jupyterlab==4.5.2",
   "ipywidgets==8.1.8",
   "jupyter_server==2.17.0",
 ]
@@ -141,7 +141,7 @@ dev = [
   "fakeredis==2.33.0",
   "flake8==7.3.0",
   "jsonschema==4.26.0",
-  "jupyterlab==4.5.1",
+  "jupyterlab==4.5.2",
   "notebook-shim>=0.2.4",
   "fastjsonschema>=2.21.2",
   "jupyter_server==2.17.0",
@@ -170,7 +170,7 @@ dev = [
   "tox==4.34.1",
   "watchdog>=5.0.0",
   "websockets>=14.0,<16",
-  "yamllint==1.37.1",
+  "yamllint==1.38.0",
 ]
 docs = [
   "markdown-callouts==0.4.0",
@@ -387,6 +387,7 @@ managed = true
 override-dependencies = [
   "aiosqlite==0.22.1",
   "psutil==7.2.1",
+  "jupyterlab==4.5.2"
 ]
 
 # pip-tools

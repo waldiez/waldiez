@@ -10,9 +10,10 @@ Also, make sure the npm token is not expired
 
 - Added cli option to skip dependencies installation when running a flow
 - Fixed importing and exporting flows for skipping dependencies installation
-- Fixed messages not showing in the vscode extension when WAAT is used
+- Fixed internal messages not showing in the vscode extension when WAAT is used
+- Updated jupyter dependencies to 4.5.2
 - Minor UI related changes
-- Dependency updates
+- Dependencies updates
 
 ## v0.7.0
 
