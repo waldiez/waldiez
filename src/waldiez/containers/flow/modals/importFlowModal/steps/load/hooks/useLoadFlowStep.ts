@@ -235,7 +235,7 @@ export const useLoadFlowStep = (props: {
             const timeoutId = setTimeout(() => {
                 controller.abort();
             }, TIMEOUT_MS);
-            fetch(`${result.url}?count=false`, {
+            fetch(`${result.url}?count=true`, {
                 signal,
                 mode: "cors",
                 redirect: "follow",
