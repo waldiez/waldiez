@@ -2064,6 +2064,7 @@
     ],
     "isAsync": false,
     "cacheSeed": 42,
-    "silent": false
+    "silent": false,
+    "skipDeps": false
   }
 }
