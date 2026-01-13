@@ -6,7 +6,7 @@ The contents of each release will be used in
 Also, make sure the npm token is not expired
  -->
 
-## Unreleased
+## v0.7.1
 
 - Added cli option to skip dependencies installation when running a flow
 - Fixed importing and exporting flows for skipping dependencies installation

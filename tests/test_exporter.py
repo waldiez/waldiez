@@ -198,7 +198,7 @@ def _make_flow_with_secrets() -> WaldiezFlow:
     flow_dict: dict[str, Any] = {
         "id": uuid.uuid4().hex,
         "type": "flow",
-        "version": "0.7.0",
+        "version": "0.7.1",
         "storageId": uuid.uuid4().hex,
         "name": "test",
         "description": "test",

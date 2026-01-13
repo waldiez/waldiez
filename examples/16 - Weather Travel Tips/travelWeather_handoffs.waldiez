@@ -1,7 +1,7 @@
 {
   "id": "id-8a2fe765-8a83-4cc8-ac84-741b8368e30d",
   "type": "flow",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "storageId": "wf-1750765176648stPd3Agvx5FqouIKo96p2",
   "name": "Weather sightseeing recommendation",
   "description": "A group chat workflow checking whether the weather conditions are fine for visiting a specified site at a specified date. It contains an agent using tool to retrieve the temperature at real-time. The communication within the agents is achieved using handoffs.",

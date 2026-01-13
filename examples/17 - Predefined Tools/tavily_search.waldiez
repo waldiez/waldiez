@@ -1,7 +1,7 @@
 {
   "id": "id-081f43b0-f5c7-4b74-9dd7-2c6a8f4bde81",
   "type": "flow",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "storageId": "wf-17513622917494lqGbKY_Q3O1_IQ37hpBi",
   "name": "A example waldiez flow using tavily search",
   "description": "A example waldiez flow using tavily search",
