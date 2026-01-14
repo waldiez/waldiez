@@ -3291,6 +3291,7 @@ export declare class WaldiezFlowData {
         captainAgents?: WaldiezAgentCaptain[];
         groupManagerAgents?: WaldiezAgentGroupManager[];
         docAgents?: WaldiezAgentDocAgent[];
+        [k: string]: unknown;
     };
     models: WaldiezModel[];
     tools: WaldiezTool[];

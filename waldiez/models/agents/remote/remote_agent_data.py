@@ -8,7 +8,7 @@ from typing_extensions import Annotated, Literal
 from ..agent import WaldiezAgentData
 
 
-class WaldiezAssistantData(WaldiezAgentData):
+class WaldiezRemoteAgentData(WaldiezAgentData):
     """Assistant agent data class.
 
     The data for an agent with `human_input_mode` set to `"NEVER"` as default.
@@ -18,9 +18,6 @@ class WaldiezAssistantData(WaldiezAgentData):
     ----------
     human_input_mode : Literal["ALWAYS", "NEVER", "TERMINATE"]
         The human input mode, Defaults to `NEVER`
-    is_multimodal : bool
-        A flag to indicate if the agent is multimodal.
-        Defaults to `False`.
     """
 
     human_input_mode: Annotated[
@@ -30,14 +27,5 @@ class WaldiezAssistantData(WaldiezAgentData):
             title="Human input mode",
             description="The human input mode, Defaults to `NEVER`",
             alias="humanInputMode",
-        ),
-    ]
-    is_multimodal: Annotated[
-        bool,
-        Field(
-            False,
-            title="Is multimodal",
-            description="A flag to indicate if the agent is multimodal.",
-            alias="isMultimodal",
         ),
     ]

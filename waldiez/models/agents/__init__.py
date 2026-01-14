@@ -72,6 +72,10 @@ from .reasoning import (
     WaldiezReasoningAgentData,
     WaldiezReasoningAgentReasonConfig,
 )
+from .remote import (
+    WaldiezRemoteAgent,
+    WaldiezRemoteAgentData,
+)
 from .user_proxy import WaldiezUserProxy, WaldiezUserProxyData
 
 __all__ = [
@@ -115,6 +119,8 @@ __all__ = [
     "WaldiezReasoningAgent",
     "WaldiezReasoningAgentData",
     "WaldiezReasoningAgentReasonConfig",
+    "WaldiezRemoteAgent",
+    "WaldiezRemoteAgentData",
     "WaldiezUserProxy",
     "WaldiezUserProxyData",
     "WaldiezDocAgentQueryEngine",

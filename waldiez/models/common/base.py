@@ -23,6 +23,7 @@ class WaldiezBase(BaseModel):
         populate_by_name=True,
         # allow setting any attribute after initialization
         frozen=False,
+        json_schema_serialization_defaults_required=False,
     )
 
     def model_dump(self, **kwargs: Any) -> dict[str, Any]:

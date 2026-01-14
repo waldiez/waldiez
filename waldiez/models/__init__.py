@@ -49,6 +49,8 @@ from .agents import (
     WaldiezReasoningAgent,
     WaldiezReasoningAgentData,
     WaldiezReasoningAgentReasonConfig,
+    WaldiezRemoteAgent,
+    WaldiezRemoteAgentData,
     WaldiezUserProxy,
     WaldiezUserProxyData,
 )
@@ -189,6 +191,8 @@ __all__ = [
     "WaldiezReasoningAgent",
     "WaldiezReasoningAgentData",
     "WaldiezReasoningAgentReasonConfig",
+    "WaldiezRemoteAgent",
+    "WaldiezRemoteAgentData",
     "WaldiezSimpleTarget",
     "WaldiezStringContextCondition",
     "WaldiezStringLLMCondition",

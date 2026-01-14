@@ -49,6 +49,8 @@ export class WaldiezFlowData {
         captainAgents?: WaldiezAgentCaptain[];
         groupManagerAgents?: WaldiezAgentGroupManager[];
         docAgents?: WaldiezAgentDocAgent[];
+        // remoteAgents? WaldiezAgentRemote[];
+        [k: string]: unknown; // allows new fields without breaking old schema
     };
     models: WaldiezModel[];
     tools: WaldiezTool[];

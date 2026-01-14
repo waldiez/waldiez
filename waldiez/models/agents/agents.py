@@ -15,6 +15,7 @@ from .doc_agent import WaldiezDocAgent
 from .group_manager import WaldiezGroupManager
 from .rag_user_proxy import WaldiezRagUserProxy
 from .reasoning import WaldiezReasoningAgent
+from .remote import WaldiezRemoteAgent
 from .user_proxy import WaldiezUserProxy
 
 
@@ -35,6 +36,8 @@ class WaldiezAgents(WaldiezBase):
         Captain agents.
     groupManagerAgents : list[WaldiezGroupManager]
         Group manager agents.
+    remoteAgents : list[WaldiezRemoteAgent]
+        Remote agents.
     """
 
     userProxyAgents: Annotated[
@@ -93,6 +96,14 @@ class WaldiezAgents(WaldiezBase):
             default_factory=list,
         ),
     ]
+    remoteAgents: Annotated[
+        list[WaldiezRemoteAgent],
+        Field(
+            title="Remote Agents.",
+            description="The remote agents in the flow.",
+            default_factory=list,
+        ),
+    ]
 
     @property
     def members(self) -> Iterator[WaldiezAgent]:
@@ -110,6 +121,7 @@ class WaldiezAgents(WaldiezBase):
         yield from self.captainAgents
         yield from self.groupManagerAgents
         yield from self.docAgents
+        yield from self.remoteAgents
 
     @model_validator(mode="after")
     def validate_agents(self) -> Self:
