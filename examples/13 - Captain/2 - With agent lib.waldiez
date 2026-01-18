@@ -292,7 +292,8 @@
           "agentType": "captain"
         }
       ],
-      "docAgents": []
+      "docAgents": [],
+      "remoteAgents": []
     },
     "models": [
       {

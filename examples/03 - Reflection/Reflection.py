@@ -17,11 +17,10 @@
 
 Reflection and Blog post Writing
 
-Requirements: ag2[openai]==0.10.3
+Requirements: ag2[openai]==0.10.4
 Tags: Reflection, "Blog post"
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

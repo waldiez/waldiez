@@ -17,11 +17,10 @@
 
 A example waldiez flow using wiki search
 
-Requirements: ag2[openai,wikipedia]==0.10.3
+Requirements: ag2[openai,wikipedia]==0.10.4
 Tags: wikipedia
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

@@ -17,11 +17,10 @@
 
 A example waldiez flow using tavily search
 
-Requirements: ag2[openai,tavily]==0.10.3
+Requirements: ag2[openai,tavily]==0.10.4
 Tags: websearch
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

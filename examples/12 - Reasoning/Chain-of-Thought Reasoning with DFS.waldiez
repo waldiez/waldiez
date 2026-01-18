@@ -203,7 +203,8 @@
         }
       ],
       "captainAgents": [],
-      "docAgents": []
+      "docAgents": [],
+      "remoteAgents": []
     },
     "models": [
       {

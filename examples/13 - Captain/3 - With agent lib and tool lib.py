@@ -17,11 +17,10 @@
 
 Using CaptainAgent with agent library and tool library. Based on: <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/captainagent/#using-both-agent-library-and-tool-library>
 
-Requirements: ag2[openai]==0.10.3, arxiv, chromadb, easyocr, huggingface-hub, markdownify, openai-whisper, pandas, pymupdf, python-pptx, scipy, sentence-transformers, wikipedia-api
+Requirements: ag2[openai]==0.10.4, arxiv, chromadb, easyocr, huggingface-hub, markdownify, openai-whisper, pandas, pymupdf, python-pptx, scipy, sentence-transformers, wikipedia-api
 Tags: CaptainAgent, ag2
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

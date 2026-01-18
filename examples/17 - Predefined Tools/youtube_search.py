@@ -17,11 +17,10 @@
 
 A example waldiez flow using YouTube search
 
-Requirements: ag2[google-search,openai]==0.10.3
+Requirements: ag2[google-search,openai]==0.10.4
 Tags: youtube
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

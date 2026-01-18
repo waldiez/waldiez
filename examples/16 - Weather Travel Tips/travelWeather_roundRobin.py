@@ -17,11 +17,10 @@
 
 A group chat workflow checking whether the weather conditions are fine for visiting a specified site at a specified date. It contains an agent capable of retrieving the temperature at real-time.
 
-Requirements: ag2[lmm,openai]==0.10.3
+Requirements: ag2[lmm,openai]==0.10.4
 Tags: Weather, Travel, Group
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

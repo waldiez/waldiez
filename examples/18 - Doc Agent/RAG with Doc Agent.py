@@ -17,11 +17,10 @@
 
 Retrieval Augmented Generation using a Doc agent. Based on <https://docs.ag2.ai/latest/docs/user-guide/reference-agents/docagent/#example>
 
-Requirements: ag2[openai]==0.10.3, chromadb>=0.5,<2, docling>=2.15.1,<3, llama-index, llama-index-core, llama-index-embeddings-huggingface, llama-index-llms-langchain, llama-index-llms-openai, llama-index-vector-stores-chroma, selenium>=4.28.1,<5, webdriver-manager==4.0.2
+Requirements: ag2[openai]==0.10.4, chromadb>=0.5,<2, docling>=2.15.1,<3, llama-index, llama-index-core, llama-index-embeddings-huggingface, llama-index-llms-langchain, llama-index-llms-openai, llama-index-vector-stores-chroma, selenium>=4.28.1,<5, webdriver-manager==4.0.2
 Tags: RAG, Doc Agent
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

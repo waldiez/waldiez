@@ -17,11 +17,10 @@
 
 Group Chat for Planning a Travel
 
-Requirements: ag2[openai]==0.10.3
+Requirements: ag2[openai]==0.10.4
 Tags: Planning, Group, Travel
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

@@ -17,11 +17,10 @@
 
 Enhanced Swarm Orchestration with AG2. Based on <https://docs.ag2.ai/latest/docs/use-cases/notebooks/notebooks/agentchat_swarm_enhanced>
 
-Requirements: ag2[openai]==0.10.3
+Requirements: ag2[openai]==0.10.4
 Tags: Swarm, Group
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

@@ -17,11 +17,10 @@
 
 A example waldiez flow using google search
 
-Requirements: ag2[gemini,google-search,openai]==0.10.3
+Requirements: ag2[gemini,google-search,openai]==0.10.4
 Tags: websearch
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

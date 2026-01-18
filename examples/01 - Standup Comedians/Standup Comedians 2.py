@@ -17,11 +17,10 @@
 
 Standup comedians without user input.
 
-Requirements: ag2[openai]==0.10.3
+Requirements: ag2[openai]==0.10.4
 Tags: standup, comedy
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

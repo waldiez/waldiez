@@ -17,11 +17,10 @@
 
 A waldiez flow
 
-Requirements: ag2[openai]==0.10.3, langchain-google-community[gmail]
+Requirements: ag2[openai]==0.10.4, langchain-google-community[gmail]
 Tags:
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

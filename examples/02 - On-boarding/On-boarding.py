@@ -17,11 +17,10 @@
 
 Sequential Chats and Customer Onboarding
 
-Requirements: ag2[anthropic,openai]==0.10.3
+Requirements: ag2[anthropic,openai]==0.10.4
 Tags: Sequential, Customer, On-boarding, Onboarding
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

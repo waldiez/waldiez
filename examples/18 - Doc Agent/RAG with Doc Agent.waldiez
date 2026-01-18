@@ -202,7 +202,8 @@
           "id": "wa-1753179848368A2XuQpE7CgY2F8d66dhLo",
           "agentType": "doc_agent"
         }
-      ]
+      ],
+      "remoteAgents": []
     },
     "models": [
       {

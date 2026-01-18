@@ -17,11 +17,10 @@
 
 Group Chat with Retrieval Augmented Generation.
 
-Requirements: ag2[openai]==0.10.3, beautifulsoup4, chromadb>=0.5.23, ipython, markdownify, protobuf==5.29.3, pypdf, sentence_transformers
+Requirements: ag2[openai]==0.10.4, beautifulsoup4, chromadb>=0.5.23, ipython, markdownify, protobuf==5.29.3, pypdf, sentence_transformers
 Tags: RAG, FLAML
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 

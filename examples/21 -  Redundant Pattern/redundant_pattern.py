@@ -17,11 +17,10 @@
 
 A waldiez flow
 
-Requirements: ag2[openai]==0.10.3
+Requirements: ag2[openai]==0.10.4
 Tags:
 🧩 generated with ❤️ by Waldiez.
 """
-
 
 # Imports
 
