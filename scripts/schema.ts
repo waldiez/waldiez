@@ -26,7 +26,7 @@ const config: tsj.Config = {
     schemaId,
     skipTypeCheck: false,
     topRef: false,
-    additionalProperties: false,
+    additionalProperties: true,
 };
 
 const schema = tsj.createGenerator(config).createSchema(config.type);

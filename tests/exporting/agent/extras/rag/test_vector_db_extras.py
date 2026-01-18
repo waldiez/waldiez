@@ -273,9 +273,7 @@ def test_get_rag_user_vector_db_string_custom_embedding() -> None:
     extras = get_vector_db_extras(rag_user, agent_name)
     # Then
     local_path = os.path.join(os.getcwd(), "local_storage_path")
-    assert (
-        extras.before_arg
-        == f"""
+    expected_before = f"""
 rag_user_client = chromadb.PersistentClient(
     path=r"{local_path}",
     settings=Settings(anonymized_telemetry=False),
@@ -298,13 +296,14 @@ def custom_embedding_function_rag_user() -> Callable[..., Any]:
     return SentenceTransformer("model").encode
 
 """
-    )
-    assert extras.vector_db_arg == (
+    assert extras.before_arg == expected_before
+    expected_vector_db_arg = (
         "ChromaVectorDB(\n"
         "            client=rag_user_client,\n"
         "            embedding_function=custom_embedding_function_rag_user,\n"
         "        )"
     )
+    assert extras.vector_db_arg == expected_vector_db_arg
     assert extras.imports == {
         "import chromadb",
         "from chromadb.config import Settings",
@@ -353,9 +352,7 @@ def test_get_rag_user_vector_db_string_with_metadata() -> None:
     extras = get_vector_db_extras(rag_user, agent_name)
     # Then
     local_path = os.path.join(os.getcwd(), "local_storage_path")
-    assert (
-        extras.before_arg
-        == f"""
+    expected_before = f"""
 rag_user_client = chromadb.PersistentClient(
     path=r"{local_path}",
     settings=Settings(anonymized_telemetry=False),
@@ -374,8 +371,8 @@ except ValueError:
         embedding_function=rag_user_embedding_function,
     )
 """
-    )
-    assert extras.vector_db_arg == (
+    assert extras.before_arg == expected_before
+    expected_vector_db_arg = (
         "ChromaVectorDB(\n"
         "            client=rag_user_client,\n"
         "            embedding_function=rag_user_embedding_function,\n"
@@ -387,6 +384,7 @@ except ValueError:
         "            },\n"
         "        )"
     )
+    assert extras.vector_db_arg == expected_vector_db_arg
     assert extras.imports == {
         "import chromadb",
         "from chromadb.config import Settings",

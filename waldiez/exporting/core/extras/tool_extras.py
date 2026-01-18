@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
 """Agent specific extras module."""
+
 # pylint: disable=too-few-public-methods
 
 from dataclasses import dataclass

@@ -399,12 +399,10 @@ def custom_tool(text: str) -> list[str]:
     assert not tool.secrets
     assert not tool.tags
     assert not tool.requirements
-    assert (
-        tool.get_content()
-        == '''def custom_tool(text: str) -> list[str]:
+    expected_content = '''def custom_tool(text: str) -> list[str]:
     """Tokenize the text."""
     return word_tokenize(text)'''
-    )
+    assert tool.get_content() == expected_content
     tool_imports = tool.get_imports()
     assert tool_imports[0] == ["import os", "from typing import List"]
     assert tool_imports[1] == [

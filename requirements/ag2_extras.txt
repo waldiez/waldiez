@@ -1,45 +1,45 @@
 -r main.txt
-ag2[a2a]==0.10.3
-ag2[anthropic]==0.10.3
-ag2[autobuild]==0.10.3; python_version < '3.14'
-ag2[bedrock]==0.10.3
-ag2[cohere]==0.10.3
-ag2[commsagent-discord]==0.10.3
-ag2[commsagent-slack]==0.10.3
-ag2[commsagent-telegram]==0.10.3
-ag2[crawl4ai]==0.10.3
-ag2[duckduckgo]==0.10.3
-ag2[gemini-realtime]==0.10.3;sys_platform != 'win32'
-ag2[gemini-realtime]==0.10.3;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-ag2[gemini]==0.10.3;sys_platform != 'win32'
-ag2[gemini]==0.10.3;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-ag2[google-api]==0.10.3
-ag2[google-client]==0.10.3
-ag2[google-search]==0.10.3
-ag2[graph]==0.10.3
-ag2[groq]==0.10.3
-ag2[interop-crewai]==0.10.3
-ag2[interop-langchain]==0.10.3
-ag2[interop-pydantic-ai]==0.10.3
-ag2[lmm]==0.10.3
-ag2[long-context]==0.10.3
-ag2[mcp]==0.10.3
-ag2[mistral]==0.10.3
-ag2[neo4j]==0.10.3;sys_platform != 'win32'
-ag2[neo4j]==0.10.3;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-ag2[ollama]==0.10.3
-ag2[openai-realtime]==0.10.3
-ag2[rag]==0.10.3; python_version < '3.14'
-ag2[redis]==0.10.3
-ag2[retrievechat-couchbase]==0.10.3; python_version < '3.14'
-ag2[retrievechat-mongodb]==0.10.3; python_version < '3.14'
-ag2[retrievechat-pgvector]==0.10.3; python_version < '3.14'
-ag2[retrievechat-qdrant]==0.10.3; python_version < '3.14'
-ag2[retrievechat]==0.10.3; python_version < '3.14'
-ag2[tavily]==0.10.3
-ag2[together]==0.10.3;sys_platform != 'win32'
-ag2[together]==0.10.3;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
-ag2[twilio]==0.10.3
-ag2[websockets]==0.10.3
-ag2[websurfer]==0.10.3
-ag2[wikipedia]==0.10.3
+ag2[a2a]==0.10.4
+ag2[anthropic]==0.10.4
+ag2[autobuild]==0.10.4; python_version < '3.14'
+ag2[bedrock]==0.10.4
+ag2[cohere]==0.10.4
+ag2[commsagent-discord]==0.10.4
+ag2[commsagent-slack]==0.10.4
+ag2[commsagent-telegram]==0.10.4
+ag2[crawl4ai]==0.10.4
+ag2[duckduckgo]==0.10.4
+ag2[gemini-realtime]==0.10.4;sys_platform != 'win32'
+ag2[gemini-realtime]==0.10.4;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
+ag2[gemini]==0.10.4;sys_platform != 'win32'
+ag2[gemini]==0.10.4;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
+ag2[google-api]==0.10.4
+ag2[google-client]==0.10.4
+ag2[google-search]==0.10.4
+ag2[graph]==0.10.4
+ag2[groq]==0.10.4
+ag2[interop-crewai]==0.10.4
+ag2[interop-langchain]==0.10.4
+ag2[interop-pydantic-ai]==0.10.4
+ag2[lmm]==0.10.4
+ag2[long-context]==0.10.4
+ag2[mcp]==0.10.4
+ag2[mistral]==0.10.4
+ag2[neo4j]==0.10.4;sys_platform != 'win32'
+ag2[neo4j]==0.10.4;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
+ag2[ollama]==0.10.4
+ag2[openai-realtime]==0.10.4
+ag2[rag]==0.10.4; python_version < '3.14'
+ag2[redis]==0.10.4
+ag2[retrievechat-couchbase]==0.10.4; python_version < '3.14'
+ag2[retrievechat-mongodb]==0.10.4; python_version < '3.14'
+ag2[retrievechat-pgvector]==0.10.4; python_version < '3.14'
+ag2[retrievechat-qdrant]==0.10.4; python_version < '3.14'
+ag2[retrievechat]==0.10.4; python_version < '3.14'
+ag2[tavily]==0.10.4
+ag2[together]==0.10.4;sys_platform != 'win32'
+ag2[together]==0.10.4;sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'
+ag2[twilio]==0.10.4
+ag2[websockets]==0.10.4
+ag2[websurfer]==0.10.4
+ag2[wikipedia]==0.10.4

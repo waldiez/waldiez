@@ -2,6 +2,7 @@
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
 
 """Storage protocol for workspace and checkpoint management."""
+
 # pylint: disable=unnecessary-ellipsis
 
 from collections.abc import Generator, Iterable, Mapping

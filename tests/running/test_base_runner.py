@@ -65,19 +65,15 @@ def create_dummy_module(tmp_path: Path, async_main: bool = False) -> Path:
     """Create a dummy module for testing."""
     file_path = tmp_path / "dummy_flow.py"
     if async_main:
-        content = textwrap.dedent(
-            """
+        content = textwrap.dedent("""
             async def main(on_event=None):
                 return [{"ok": True}]
-            """
-        )
+            """)
     else:
-        content = textwrap.dedent(
-            """
+        content = textwrap.dedent("""
             def main(on_event=None):
                 return [{"ok": True}]
-            """
-        )
+            """)
     file_path.write_text(content)
     return file_path
 

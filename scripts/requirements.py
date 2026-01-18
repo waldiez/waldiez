@@ -15,7 +15,6 @@ import sys
 from pathlib import Path
 from typing import Any, Protocol
 
-
 ROOT_DIR = Path(__file__).parent.parent
 EXCLUDED_EXTRAS = [
     "studio",

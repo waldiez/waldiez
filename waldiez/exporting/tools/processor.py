@@ -192,14 +192,12 @@ ag2_{tool_name} = ag2_{tool_name}_interop.convert_tool(
         # pylint: disable=too-many-try-statements
         try:
             with secrets_file.open("w", encoding="utf-8", newline="\n") as f:
-                f.write(
-                    f'''{FILE_HEADER}
+                f.write(f'''{FILE_HEADER}
 # flake8: noqa: E501
 # pylint: disable=line-too-long
 """Secrets for the tool: {tool_name}."""
 
-'''
-                )
+''')
                 f.write("import os\n\n")
                 for key, value in tool.secrets.items():
                     # f.write(f'os.environ["{key}"] = "{value}"\n')

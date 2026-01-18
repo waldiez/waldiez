@@ -194,13 +194,11 @@ def callable_message(sender, recipient, context):
     )
     # Then
     assert valid
-    assert (
-        body
-        == '''    """
+    expected_body = '''    """
     A callable message.
     """
     return "Hello"'''
-    )
+    assert body == expected_body
 
 
 def test_check_function_with_empty_body() -> None:

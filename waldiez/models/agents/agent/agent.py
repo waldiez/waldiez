@@ -81,7 +81,7 @@ class WaldiezAgent(WaldiezBase):
             title="Agent type",
             description=(
                 "The type of the agent: user_proxy, assistant, group_manager, "
-                "rag_user_proxy or reasoning"
+                "rag_user_proxy, reasoning, remote ..."
             ),
         ),
     ]

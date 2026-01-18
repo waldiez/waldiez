@@ -26,16 +26,14 @@ class TestGetSqliteOut:
         cursor = conn.cursor()
 
         # Create and populate test table
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE users (
                 id INTEGER PRIMARY KEY,
                 name TEXT,
                 email TEXT,
                 age INTEGER
             )
-        """
-        )
+        """)
 
         test_data = [
             (1, "Alice", "alice@example.com", 30),
@@ -178,15 +176,13 @@ class TestGetSqliteOut:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE large_table (
                 id INTEGER PRIMARY KEY,
                 value REAL,
                 description TEXT
             )
-        """
-        )
+        """)
 
         # Insert 1000 rows
         large_data = [
@@ -234,15 +230,13 @@ class TestAsyncGetSqliteOut:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 
-        cursor.execute(
-            """
+        cursor.execute("""
             CREATE TABLE products (
                 id INTEGER PRIMARY KEY,
                 name TEXT,
                 price REAL
             )
-        """
-        )
+        """)
 
         test_data = [
             (1, "Product A", 19.99),

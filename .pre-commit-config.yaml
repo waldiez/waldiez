@@ -15,7 +15,7 @@ repos:
         exclude: '(\.svg$|\.md$|\.snap$|\.diff$|\.waldiez$|\.waldiezTool$|\.waldiezModel$|\.waldiezAgent$)'
 
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 25.1.0
+    rev: 26.1.0
     hooks:
       - id: black
         language_version: python3.13
@@ -27,13 +27,13 @@ repos:
         args: ["--config", .flake8]
 
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.6
+    rev: 1.9.2
     hooks:
       - id: bandit
         args: ["-c", "pyproject.toml"]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.13.0
+    rev: v0.14.13
     hooks:
       # Run the linter.
       - id: ruff-check
@@ -42,7 +42,7 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/DetachHead/basedpyright-prek-mirror
-    rev: 1.31.7
+    rev: 1.37.1
     hooks:
       - id: basedpyright
         require_serial: true
