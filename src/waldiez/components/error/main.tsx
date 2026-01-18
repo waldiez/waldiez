@@ -4,7 +4,7 @@
  */
 import { motion } from "framer-motion";
 
-import { type FC } from "react";
+import { type FC, useCallback } from "react";
 
 import { AGENT_ICONS } from "@waldiez/theme";
 
@@ -48,7 +48,22 @@ const bots = [
     { src: AGENT_ICONS.captain, alt: "Captain Waldiez" },
     { src: AGENT_ICONS.user_proxy, alt: "User Waldiez" },
 ];
+
 export const ErrorPage: FC<{ error?: Error }> = ({ error }) => {
+    const handleReload = useCallback(() => {
+        const inIframe = (() => {
+            try {
+                return window.self !== window.top;
+            } catch {
+                return true;
+            }
+        })();
+        if (inIframe) {
+            window.location.replace(window.location.href);
+        } else {
+            window.location.reload();
+        }
+    }, []);
     return (
         <div className="waldiez-error-container" data-testid="error-boundary">
             <div className="waldiez-bots-row">
@@ -94,7 +109,7 @@ export const ErrorPage: FC<{ error?: Error }> = ({ error }) => {
                 {/* Refresh Button */}
                 <div className="waldiez-refresh-btn-container">
                     <button
-                        onClick={() => window.location.reload()}
+                        onClick={handleReload}
                         className="waldiez-refresh-btn"
                         onMouseDown={e => (e.currentTarget.style.transform = "scale(0.97)")}
                         onMouseUp={e => (e.currentTarget.style.transform = "scale(1)")}

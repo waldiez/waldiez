@@ -14,7 +14,7 @@ import { ReactFlowProvider } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
 import { type FC, useEffect } from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import { ErrorBoundary, getErrorMessage } from "react-error-boundary";
 import { HotkeysProvider } from "react-hotkeys-hook";
 
 import { loader } from "@monaco-editor/react";
@@ -149,14 +149,15 @@ export const Waldiez: FC<Partial<WaldiezProps>> = (props: Partial<WaldiezProps>)
 };
 
 type errorRenderProps = {
-    error: Error;
+    error: unknown;
     resetErrorBoundary: (...args: any[]) => void;
 };
 const fallbackRender = (props: errorRenderProps) => {
     // Call resetErrorBoundary() to reset the error boundary and retry the render.
     const { error } = props;
     console.error("Error in Waldiez component:", error);
-    return <ErrorPage error={error} />;
+    const errorObj = error instanceof Error ? error : new Error(getErrorMessage(error));
+    return <ErrorPage error={errorObj} />;
 };
 
 const checkInitialBodyThemeClass = () => {
