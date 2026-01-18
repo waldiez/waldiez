@@ -13,7 +13,6 @@ export type { WaldiezAgentAssistantData } from "@waldiez/models/Agent/Assistant/
  * WaldiezNodeAgentAssistantData
  * The data for the agent node.
  * @param label - The label of the node.
- * @param retrieveConfig - The configuration for the RAG user.
  * @param name - The name of the agent
  * @param description - The description of the agent
  * @param parentId - The parent id of the agent (if in a group)

@@ -14,6 +14,7 @@ export const AGENT_COLORS = {
     doc_agent: "#e34561",
     reasoning: "#63D0D4",
     group_manager: "#ed8a34",
+    remote: "#f0c808",
 };
 /**
  * A collection of alternative color constants used in Waldiez.
@@ -28,4 +29,5 @@ export const AGENT_COLORS_ALT = {
     doc_agent: "#e34561",
     reasoning: "#63D0D4",
     group_manager: "#ed8a34",
+    remote: "#f0c808",
 };

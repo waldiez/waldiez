@@ -13,6 +13,8 @@
   --reasoning-agent-alt-color: #4aa3a6;
   --group-manager-agent-color: #ed8a34;
   --group-manager-agent-alt-color: #b76c2a;
+  --remote-agent-color: #f0c808;
+  --remote-agent-alt-color: #f0c808;
   --app-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
   --app-width: calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right));
   --info-blue: #007bff;
@@ -49,6 +51,7 @@ body.waldiez-dark {
   --reasoning-agent-background: rgb(0 150 150 / 20%);
   --captain-agent-background: rgb(14 39 102 / 20%);
   --group-manager-agent-background: rgb(237 138 52 / 20%);
+  --remote-agent-background: rgb(237 138 52 / 20%);
   --card-background: #141414;
   --card-border: #333;
   --card-text: #f9fafb;
@@ -74,6 +77,7 @@ body.waldiez-light {
   --reasoning-agent-background: rgb(0 150 150 / 10%);
   --captain-agent-background: rgb(14 39 102 / 15%);
   --group-manager-agent-background: rgb(237 138 52 / 10%);
+  --remote-agent-background: rgb(237 138 52 / 10%);
   --card-background: #fefefe;
   --card-border: #e5e7eb;
   --card-text: #111827;

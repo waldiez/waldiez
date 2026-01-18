@@ -44,6 +44,7 @@ export const WaldiezAgentTools = memo((props: WaldiezAgentToolsProps) => {
             <div className="agent-panel agent-tools-panel margin-top-10 margin-bottom-10">
                 <div className="agent-panel-select-tools">
                     <label htmlFor={`select-agent-tools-${id}`}>Tools:</label>
+                    <div className="margin-bottom-5" />
                     <Select
                         options={toolOptions}
                         onChange={onSelectedToolsChange}

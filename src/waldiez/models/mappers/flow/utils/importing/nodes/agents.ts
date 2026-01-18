@@ -12,6 +12,7 @@ import {
     WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
     WaldiezAgentReasoning,
+    WaldiezAgentRemote,
     type WaldiezAgentType,
     WaldiezAgentUserProxy,
 } from "@waldiez/models/Agent";
@@ -35,6 +36,7 @@ export const getAgents = (
             captainAgents: [],
             groupManagerAgents: [],
             docAgents: [],
+            remoteAgents: [],
         };
     }
     const agentsJson = json.agents as Record<string, unknown>;
@@ -46,6 +48,7 @@ export const getAgents = (
         captainAgents: WaldiezAgentCaptain[];
         groupManagerAgents: WaldiezAgentGroupManager[];
         docAgents: WaldiezAgentDocAgent[];
+        remoteAgents: WaldiezAgentRemote[];
     } = {
         userProxyAgents: getFlowAgents(
             "user_proxy",
@@ -103,6 +106,14 @@ export const getAgents = (
             toolIds,
             chatIds,
         ) as WaldiezAgentDocAgent[],
+        remoteAgents: getFlowAgents(
+            "remote",
+            agentsJson,
+            nodes,
+            modelIds,
+            toolIds,
+            chatIds,
+        ) as WaldiezAgentRemote[],
     };
     return agents;
 };
@@ -118,6 +129,9 @@ const getFlowAgents = (
     let keyToCheck = `${agentType}_agents`;
     if (agentType === "doc_agent") {
         keyToCheck = "docAgents";
+    }
+    if (agentType === "remote") {
+        keyToCheck = "remoteAgents";
     }
     if (!(keyToCheck in json) || !Array.isArray(json[keyToCheck])) {
         keyToCheck = toCamelCase(keyToCheck);

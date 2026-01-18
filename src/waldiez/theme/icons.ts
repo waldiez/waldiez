@@ -28,6 +28,7 @@ import youtubeSearchTool from "@waldiez/assets/logos/youtube.svg";
 import managerWebp from "@waldiez/assets/manager.webp";
 import ragWebp from "@waldiez/assets/rag.webp";
 import reasoningWebp from "@waldiez/assets/reasoning.webp";
+import remoteWebp from "@waldiez/assets/remote.webp";
 import userWebp from "@waldiez/assets/user.webp";
 
 /**
@@ -61,6 +62,7 @@ export const AGENT_ICONS = {
     assistant: assistantWebp,
     reasoning: reasoningWebp,
     group_manager: managerWebp,
+    remote: remoteWebp,
 };
 
 export const TOOL_ICONS = {

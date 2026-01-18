@@ -171,10 +171,12 @@ export type WaldiezAgentCommonData = {
  * Waldiez agent type.
  * @param user_proxy - User proxy
  * @param assistant - Assistant
- * @param rag_user_proxy - RAG user proxy
+ * @param rag_user_proxy - RAG user proxy (deprecated, use "doc_agent")
  * @param reasoning - Reasoning
  * @param captain - Captain
  * @param group_manager - Group manager
+ * @param doc_agent - Document agent
+ * @param remote - Remote agent
  */
 export type WaldiezAgentType =
     | "user_proxy"
@@ -183,7 +185,8 @@ export type WaldiezAgentType =
     | "reasoning"
     | "captain"
     | "group_manager"
-    | "doc_agent";
+    | "doc_agent"
+    | "remote";
 
 /**
  * Waldiez node agent type (alias for WaldiezAgentType).
@@ -194,5 +197,6 @@ export type WaldiezAgentType =
  * @param captain - Captain
  * @param group_manager - Group manager
  * @param doc_agent - Document agent
+ * @param remote - Remote agent
  */
 export type WaldiezNodeAgentType = WaldiezAgentType;

@@ -229,6 +229,11 @@ body.waldiez-dark .agent-model-preview .agent-model-img.openai img {
   border-color: color-mix(in srgb, var(--group-manager-agent-alt-color) 50%, var(--background-color));
 }
 
+.agent-actions.remote {
+  background-color: var(--remote-agent-background);
+  border-color: color-mix(in srgb, var(--remote-agent-alt-color) 50%, var(--background-color));
+}
+
 .agent-actions .delete-icon,
 .agent-actions .cog-icon,
 .agent-actions .copy-icon,
@@ -293,6 +298,15 @@ body.waldiez-dark .agent-model-preview .agent-model-img.openai img {
 
 .agent-node.captain:hover {
   box-shadow: 0 0 8px var(--captain-agent-alt-color);
+}
+
+.agent-node.remote {
+  border-color: var(--remote-agent-color) !important;
+  background-color: var(--remote-agent-background) !important;
+}
+
+.agent-node.remote:hover {
+  box-shadow: 0 0 8px var(--remote-agent-alt-color);
 }
 
 .agent-panel {

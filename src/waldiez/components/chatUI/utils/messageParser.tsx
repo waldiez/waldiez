@@ -20,7 +20,7 @@ const parseStructuredContent = (
     }
 
     const children = items
-        // eslint-disable-next-line max-statements
+
         .map((item, idx) => {
             if (typeof item === "string") {
                 return parseTextWithImages(item, isDarkMode, onImageClick);
@@ -85,7 +85,6 @@ const parseStructuredContent = (
     return <div className="structured-content">{children}</div>;
 };
 
-// eslint-disable-next-line max-statements
 const parseTextWithImages = (text: string, isDarkMode: boolean, onImageClick: (url: string) => void) => {
     // noinspection RegExpRedundantEscape
     const regex = /\[Image:\s*(.+?)\]/g;

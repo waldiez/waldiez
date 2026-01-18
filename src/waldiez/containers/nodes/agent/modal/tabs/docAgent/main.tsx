@@ -102,7 +102,6 @@ export const WaldiezDocAgentTab = memo((props: WaldiezDocAgentTabProps) => {
     );
 });
 
-// eslint-disable-next-line max-statements
 const getPlatform = (): string => {
     try {
         if (

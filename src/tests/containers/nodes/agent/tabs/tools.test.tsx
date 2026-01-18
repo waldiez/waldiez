@@ -80,12 +80,4 @@ describe("Tools tab", () => {
         });
         submitAgentChanges();
     });
-    it("should show a message if there are no tools", async () => {
-        renderAgent("assistant", {
-            openModal: true,
-        });
-        goToToolsTab();
-        const noToolsMessage = screen.getByText("No tools found in the workspace");
-        expect(noToolsMessage).toBeInTheDocument();
-    });
 });

@@ -17,6 +17,7 @@ import type {
     WaldiezNodeAgentReasoning,
     WaldiezNodeAgentReasoningData,
 } from "@waldiez/models/Agent/Reasoning";
+import type { WaldiezNodeAgentRemote, WaldiezNodeAgentRemoteData } from "@waldiez/models/Agent/Remote";
 import type {
     WaldiezNodeAgentUserProxy,
     WaldiezNodeAgentUserProxyData,
@@ -38,6 +39,7 @@ export type {
     WaldiezAgentReasoningData,
 } from "@waldiez/models/Agent/Reasoning/ReasoningAgentData";
 export type * from "@waldiez/models/Agent/Reasoning/types";
+export type * from "@waldiez/models/Agent/Remote/types";
 export type * from "@waldiez/models/Agent/UserProxy/types";
 
 /**
@@ -57,6 +59,7 @@ export type * from "@waldiez/models/Agent/UserProxy/types";
  * @see {@link WaldiezNodeAgentCaptainData}
  * @see {@link WaldiezNodeAgentGroupManagerData}
  * @see {@link WaldiezNodeAgentDocAgentData}
+ * @see {@link WaldiezNodeAgentRemoteData}
  */
 export type WaldiezNodeAgentData =
     | WaldiezNodeAgentAssistantData
@@ -65,7 +68,8 @@ export type WaldiezNodeAgentData =
     | WaldiezNodeAgentReasoningData
     | WaldiezNodeAgentCaptainData
     | WaldiezNodeAgentGroupManagerData
-    | WaldiezNodeAgentDocAgentData;
+    | WaldiezNodeAgentDocAgentData
+    | WaldiezNodeAgentRemoteData;
 
 /**
  * WaldiezNodeAgent
@@ -85,6 +89,7 @@ export type WaldiezNodeAgentData =
  * @see {@link WaldiezNodeAgentCaptain}
  * @see {@link WaldiezNodeAgentGroupManager}
  * @see {@link WaldiezNodeAgentDocAgent}
+ * @see {@link WaldiezNodeAgentRemote}
  */
 export type WaldiezNodeAgent =
     | WaldiezNodeAgentAssistant
@@ -93,4 +98,5 @@ export type WaldiezNodeAgent =
     | WaldiezNodeAgentUserProxy
     | WaldiezNodeAgentCaptain
     | WaldiezNodeAgentGroupManager
-    | WaldiezNodeAgentDocAgent;
+    | WaldiezNodeAgentDocAgent
+    | WaldiezNodeAgentRemote;

@@ -17,6 +17,8 @@ import {
     WaldiezAgentRagUserData,
     WaldiezAgentReasoning,
     WaldiezAgentReasoningData,
+    WaldiezAgentRemote,
+    WaldiezAgentRemoteData,
     WaldiezAgentUserProxy,
     WaldiezAgentUserProxyData,
     type WaldiezNodeAgentType,
@@ -143,6 +145,20 @@ export const getAgent = (
             createdAt,
             updatedAt,
             data: data as WaldiezAgentDocAgentData,
+            rest,
+        });
+    }
+    if (agentType === "remote") {
+        return new WaldiezAgentRemote({
+            id,
+            agentType,
+            name,
+            description,
+            tags,
+            requirements,
+            createdAt,
+            updatedAt,
+            data: data as WaldiezAgentRemoteData,
             rest,
         });
     }

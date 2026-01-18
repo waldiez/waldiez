@@ -10,6 +10,7 @@ import {
     WaldiezAgentGroupManagerData,
     WaldiezAgentRagUserData,
     WaldiezAgentReasoningData,
+    WaldiezAgentRemoteData,
     type WaldiezEdge,
     type WaldiezNodeAgent,
     type WaldiezNodeAgentType,
@@ -44,6 +45,9 @@ export const getAgentNode = (
     } else if (agentType === "group_manager") {
         const agentExtras = new WaldiezAgentGroupManagerData();
         agentExtras.groupName = "Group";
+        agentNode.data = { ...agentNode.data, ...agentExtras };
+    } else if (agentType === "remote") {
+        const agentExtras = new WaldiezAgentRemoteData();
         agentNode.data = { ...agentNode.data, ...agentExtras };
     }
     if (parentId) {

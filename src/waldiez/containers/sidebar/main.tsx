@@ -29,6 +29,7 @@ export const SideBar = (props: SidebarViewProps) => {
         onReasoningDragStart,
         onCaptainDragStart,
         onManagerDragStart,
+        onRemoteDragStart,
     } = useSidebarView(props);
     const { isCollapsed, toggleSidebar } = useSidebar();
     return (
@@ -197,6 +198,15 @@ export const SideBar = (props: SidebarViewProps) => {
                                 title="Group Manager Agent"
                             />
                             Group Manager
+                        </div>
+                        <div
+                            className="dnd-area"
+                            data-testid="remote-agent-dnd"
+                            onDragStart={onRemoteDragStart}
+                            draggable
+                        >
+                            <img alt="Remote agent icon" src={AGENT_ICONS.remote} title="Remote Agent" />
+                            Remote Agent
                         </div>
                     </>
                 )}

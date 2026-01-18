@@ -11,9 +11,11 @@ import {
     WaldiezAgentGroupManagerData,
     WaldiezAgentRagUserData,
     WaldiezAgentReasoningData,
+    WaldiezAgentRemoteData,
     type WaldiezNodeAgent,
     type WaldiezNodeAgentGroupManager,
     type WaldiezNodeAgentRagUser,
+    type WaldiezNodeAgentRemote,
     type WaldiezNodeAgentType,
 } from "@waldiez/models/Agent";
 import { getAgent } from "@waldiez/models/mappers/agent/utils/agent";
@@ -46,6 +48,7 @@ import {
     getSpeakers,
 } from "@waldiez/models/mappers/agent/utils/group";
 import { getReasonConfig, getVerbose } from "@waldiez/models/mappers/agent/utils/reasonConfig";
+import { getRemoteAgentClient, getRemoteAgentServer } from "@waldiez/models/mappers/agent/utils/remote";
 import { getRetrieveConfig } from "@waldiez/models/mappers/agent/utils/retrieveConfig";
 import {
     ensureOneNestedChatExists,
@@ -231,6 +234,9 @@ const getKeysToExclude = (agentType: WaldiezNodeAgentType) => {
     if (agentType === "doc_agent") {
         toExclude.push("collectionName", "resetCollection", "parsedDocsPath", "queryEngine");
     }
+    if (agentType === "remote") {
+        toExclude.push("server", "client");
+    }
     return toExclude;
 };
 
@@ -295,6 +301,13 @@ const getAgentDataToImport = (
             queryEngine: getQueryEngine(jsonData),
         });
     }
+    if (agentType === "remote") {
+        return new WaldiezAgentRemoteData({
+            ...data,
+            server: getRemoteAgentServer(jsonData),
+            client: getRemoteAgentClient(jsonData),
+        });
+    }
     return data;
 };
 
@@ -305,6 +318,7 @@ const getAgentDataToImport = (
  * @param agent - The agent to process.
  * @returns A new agent object with links removed.
  */
+// eslint-disable-next-line max-statements
 const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
     const agentCopy = { ...agent };
     agentCopy.data.modelIds = [];
@@ -329,6 +343,29 @@ const removeLinks: (agent: WaldiezNodeAgent) => WaldiezNodeAgent = agent => {
             order: [],
         };
         (agentCopy as WaldiezNodeAgentGroupManager).data.initialAgentId = undefined;
+    }
+    if (agent.data.agentType === "remote") {
+        const remoteAgent = agentCopy as WaldiezNodeAgentRemote;
+        const serverConfig = remoteAgent.data.server.config;
+        if (serverConfig) {
+            const updatedConfig = { ...serverConfig };
+            if (serverConfig.agentCard && Array.isArray(serverConfig.agentCard.skills)) {
+                updatedConfig.agentCard = {
+                    ...serverConfig.agentCard,
+                    skills: [],
+                };
+            }
+            if (serverConfig.extendedAgentCard && Array.isArray(serverConfig.extendedAgentCard.skills)) {
+                updatedConfig.extendedAgentCard = {
+                    ...serverConfig.extendedAgentCard,
+                    skills: [],
+                };
+            }
+            remoteAgent.data.server = {
+                ...remoteAgent.data.server,
+                config: updatedConfig,
+            };
+        }
     }
     return agentCopy;
 };
@@ -360,6 +397,9 @@ const updateAgentDataToExport = (agentType: WaldiezNodeAgentType, agentData: any
     }
     if (agentType === "doc_agent") {
         updateDocAgent(agentData, data);
+    }
+    if (agentType === "remote") {
+        updateRemoteAgent(agentData, data);
     }
 };
 
@@ -425,4 +465,15 @@ const updateDocAgent = (agentData: WaldiezAgentDocAgentData, data: any) => {
     agentData.resetCollection = getResetCollection(data);
     agentData.queryEngine = getQueryEngine(data);
     agentData.parsedDocsPath = getParsedDocsPath(data);
+};
+
+/**
+ * Updates the remote agent data with specific properties required for export.
+ * This includes the retrieve configuration and any other rag-specific properties.
+ * @param agentData - The remote agent data to update.
+ * @param data - The original data object containing all properties.
+ */
+const updateRemoteAgent = (agentData: WaldiezAgentRemoteData, data: any) => {
+    agentData.server = getRemoteAgentServer(data);
+    agentData.client = getRemoteAgentClient(data);
 };

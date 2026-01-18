@@ -13,7 +13,6 @@ export type { WaldiezAgentUserProxyData } from "@waldiez/models/Agent/UserProxy/
  * WaldiezNodeAgentUserProxyData
  * The data for the user proxy agent node.
  * @param label - The label of the node.
- * @param retrieveConfig - The configuration for the RAG user.
  * @param name - The name of the agent
  * @param description - The description of the agent
  * @param parentId - The parent id of the agent (if in a group)

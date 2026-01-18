@@ -11,6 +11,7 @@ import {
     WaldiezAgentGroupManager,
     WaldiezAgentRagUser,
     WaldiezAgentReasoning,
+    WaldiezAgentRemote,
     WaldiezAgentUserProxy,
 } from "@waldiez/models/Agent";
 import { WaldiezChat } from "@waldiez/models/Chat";
@@ -32,6 +33,10 @@ import { WaldiezTool } from "@waldiez/models/Tool";
  * @see {@link WaldiezAgentUserProxy}
  * @see {@link WaldiezAgentAssistant}
  * @see {@link WaldiezAgentRagUser}
+ * @see {@link WaldiezAgentReasoning}
+ * @see {@link WaldiezAgentGroupManager}
+ * @see {@link WaldiezAgentDocAgent}
+ * @see {@link WaldiezAgentRemote}
  * @see {@link WaldiezModel}
  * @see {@link WaldiezTool}
  * @see {@link WaldiezChat}
@@ -49,8 +54,8 @@ export class WaldiezFlowData {
         captainAgents?: WaldiezAgentCaptain[];
         groupManagerAgents?: WaldiezAgentGroupManager[];
         docAgents?: WaldiezAgentDocAgent[];
-        // remoteAgents? WaldiezAgentRemote[];
-        [k: string]: unknown; // allows new fields without breaking old schema
+        remoteAgents?: WaldiezAgentRemote[];
+        [k: string]: unknown;
     };
     models: WaldiezModel[];
     tools: WaldiezTool[];
@@ -73,6 +78,8 @@ export class WaldiezFlowData {
                 captainAgents?: WaldiezAgentCaptain[];
                 groupManagerAgents?: WaldiezAgentGroupManager[];
                 docAgents?: WaldiezAgentDocAgent[];
+                remoteAgents?: WaldiezAgentRemote[];
+                [k: string]: unknown;
             };
             models: WaldiezModel[];
             tools: WaldiezTool[];
@@ -97,6 +104,7 @@ export class WaldiezFlowData {
                 captainAgents: [],
                 groupManagerAgents: [],
                 docAgents: [],
+                remoteAgents: [],
             },
             models: [],
             tools: [],

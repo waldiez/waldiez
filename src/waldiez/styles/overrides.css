@@ -67,6 +67,10 @@
   background-color: var(--captain-agent-color);
 }
 
+.agent-node.remote .react-flow__handle {
+  background-color: var(--remote-agent-color);
+}
+
 .react-flow__resize-control.line {
   display: none;
 }

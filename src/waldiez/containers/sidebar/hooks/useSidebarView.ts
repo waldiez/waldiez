@@ -102,6 +102,13 @@ export const useSidebarView = (props: SidebarViewProps) => {
         [onDragStart],
     );
 
+    const onRemoteDragStart = useCallback(
+        (event: DragEvent<HTMLDivElement>) => {
+            onDragStart(event, "agent", "remote");
+        },
+        [onDragStart],
+    );
+
     // Modal handlers
     const onOpenEditModal = useCallback(() => {
         setIsEditModalOpen(true);
@@ -120,6 +127,7 @@ export const useSidebarView = (props: SidebarViewProps) => {
             captain: onCaptainDragStart,
             group_manager: onManagerDragStart,
             rag_user_proxy: onRagDragStart,
+            remote: onRemoteDragStart,
         }),
         [
             onUserDragStart,
@@ -128,6 +136,7 @@ export const useSidebarView = (props: SidebarViewProps) => {
             onCaptainDragStart,
             onManagerDragStart,
             onRagDragStart,
+            onRemoteDragStart,
         ],
     );
 
@@ -146,6 +155,7 @@ export const useSidebarView = (props: SidebarViewProps) => {
         onReasoningDragStart,
         onCaptainDragStart,
         onManagerDragStart,
+        onRemoteDragStart,
         agentDragHandlers,
     };
 };

@@ -14,16 +14,17 @@ type InfoCheckboxProps = {
     label: string | JSX.Element | (() => JSX.Element | string);
     info: string | JSX.Element | (() => JSX.Element | string);
     checked: boolean;
-    onChange: (checked: boolean) => void; // Updated to match Radix checkbox API
+    onChange: (checked: boolean) => void;
+    className?: string;
 };
 
 export const InfoCheckbox: FC<InfoCheckboxProps> = memo((props: InfoCheckboxProps) => {
-    const { id, label, info, checked, onChange } = props;
+    const { id, label, info, checked, onChange, className } = props;
 
     const labelElement = typeof label === "function" ? label() : label;
     const infoElement = typeof info === "function" ? info() : info;
     return (
-        <div className="info-checkbox-container">
+        <div className={`info-checkbox-container ${className}`}>
             <div className="info-checkbox-wrapper">
                 <CheckboxInput id={id} label={labelElement} isChecked={checked} onCheckedChange={onChange} />
                 <Tooltip.Provider delayDuration={100}>

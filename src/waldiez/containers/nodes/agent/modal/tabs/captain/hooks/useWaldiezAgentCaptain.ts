@@ -105,7 +105,6 @@ export const useWaldiezAgentCaptain = (props: WaldiezAgentCaptainTabProps) => {
                                   ? entryObject.system_message
                                   : null;
 
-                        // eslint-disable-next-line max-depth
                         if (systemMessage) {
                             parsedAgentLib.push({
                                 name,

@@ -63,7 +63,6 @@ export class WaldiezChatMessageUtils {
         return data.timestamp || new Date().toISOString();
     }
 
-    // eslint-disable-next-line max-statements
     static replaceImageUrls(content: unknown, imageUrl: string): WaldiezChatContent {
         const imgRegex = /<img\s+(?!.*src=)([^"'>\s]+)\s*\/?>/g;
 
@@ -148,7 +147,6 @@ export class WaldiezChatMessageUtils {
         return content as WaldiezChatContent;
     }
 
-    // eslint-disable-next-line max-statements
     static normalizeContent(content: WaldiezChatContent, imageUrl?: string): WaldiezChatContent {
         if (typeof content === "string") {
             if (imageUrl) {

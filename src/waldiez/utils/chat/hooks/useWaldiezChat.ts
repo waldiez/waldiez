@@ -234,7 +234,6 @@ export const useWaldiezChat: (props: {
     );
 
     const process = useCallback(
-        // eslint-disable-next-line max-statements
         (data: any) => {
             const requestId = config.activeRequest?.request_id;
             const previewUrl = requestId ? onPreview?.(requestId) : undefined;

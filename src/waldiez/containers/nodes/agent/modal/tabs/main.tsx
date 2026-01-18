@@ -17,20 +17,22 @@ import {
 } from "@waldiez/containers/nodes/agent/modal/tabs/nested";
 import { WaldiezAgentRagUserTabs } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser";
 import { WaldiezAgentReasoning } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning";
+import { WaldiezAgentRemoteTab } from "@waldiez/containers/nodes/agent/modal/tabs/remote";
 import { WaldiezAgentTermination } from "@waldiez/containers/nodes/agent/modal/tabs/termination";
 import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools";
 import { type WaldiezNodeAgentModalTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/types";
 import { WaldiezAgentUserTabs } from "@waldiez/containers/nodes/agent/modal/tabs/user";
-import type {
-    WaldiezEdge,
-    WaldiezNodeAgent,
-    WaldiezNodeAgentCaptainData,
-    WaldiezNodeAgentData,
-    WaldiezNodeAgentDocAgentData,
-    WaldiezNodeAgentRagUserData,
-    WaldiezNodeAgentReasoningData,
-    WaldiezNodeModel,
-    WaldiezNodeTool,
+import {
+    type WaldiezEdge,
+    type WaldiezNodeAgent,
+    type WaldiezNodeAgentCaptainData,
+    type WaldiezNodeAgentData,
+    type WaldiezNodeAgentDocAgentData,
+    type WaldiezNodeAgentRagUserData,
+    type WaldiezNodeAgentReasoningData,
+    type WaldiezNodeAgentRemoteData,
+    type WaldiezNodeModel,
+    type WaldiezNodeTool,
 } from "@waldiez/models/types";
 import { useWaldiez } from "@waldiez/store";
 
@@ -77,15 +79,22 @@ export const WaldiezNodeAgentModalTabs = memo(
                 isReasoning: data.agentType === "reasoning",
                 isCaptain: data.agentType === "captain",
                 isDocAgent: data.agentType === "doc_agent",
+                isRemote: data.agentType === "remote",
             }),
             [data.agentType, data.parentId],
         );
 
         // Extract agent type flags for readability
-        const { isManager, isGroupMember, isRagUser, isReasoning, isCaptain, isDocAgent } = agentTypeInfo;
-
+        const { isManager, isGroupMember, isRagUser, isReasoning, isCaptain, isDocAgent, isRemote } =
+            agentTypeInfo;
+        const isRemoteAndServerIsEnabled =
+            isRemote && (data as WaldiezNodeAgentRemoteData).server.enabled === true;
+        let includeTools = !(isDocAgent && isGroupMember);
+        if (includeTools && isRemote) {
+            // if remote and server is included
+            includeTools = isRemoteAndServerIsEnabled;
+        }
         // Compute derived data
-        // eslint-disable-next-line max-statements
         const derivedData = useMemo(() => {
             // Get necessary data from store
             const agentConnections = getAgentConnections(id);
@@ -163,7 +172,9 @@ export const WaldiezNodeAgentModalTabs = memo(
             connectionsOutsideGroup,
             uploadsEnabled,
         } = derivedData;
-
+        // if (includeTools && tools.length === 0) {
+        //     includeTools = false;
+        // }
         if (isRagUser) {
             return (
                 <WaldiezAgentRagUserTabs
@@ -227,6 +238,18 @@ export const WaldiezNodeAgentModalTabs = memo(
                         </div>
                     </TabItem>
                 )}
+                {/* Remote Tabs - Only for remote agents */}
+                {isRemote && (
+                    <TabItem label="Remote" id={`wf-${flowId}-wa-${id}-remote`}>
+                        <div className="modal-tab-body">
+                            <WaldiezAgentRemoteTab
+                                id={id}
+                                data={data as WaldiezNodeAgentRemoteData}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
+                    </TabItem>
+                )}
 
                 {/* Captain Tab - Only visible for captain agents */}
                 {isCaptain && (
@@ -282,8 +305,8 @@ export const WaldiezNodeAgentModalTabs = memo(
                     </div>
                 </TabItem>
 
-                {/* Tools Tab - not visible if docAgent and group member */}
-                {!(isDocAgent && isGroupMember) && (
+                {/* Tools Tab - not visible in some cases */}
+                {includeTools && (
                     <TabItem label="Tools" id={`wf-${flowId}-wa-${id}-tools`}>
                         <div className="modal-tab-body">
                             <WaldiezAgentTools
@@ -291,7 +314,7 @@ export const WaldiezNodeAgentModalTabs = memo(
                                 data={data}
                                 agents={agents}
                                 tools={tools}
-                                skipExecutor={isGroupMember}
+                                skipExecutor={isGroupMember || isRemote}
                                 onDataChange={onDataChange}
                             />
                         </div>

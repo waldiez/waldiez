@@ -81,7 +81,6 @@ const useAgentContentView = (id: string, data: WaldiezNodeAgentData) => {
     }, [getModels, getTools, data.modelIds]);
 
     const calculateDisplayCounts = useCallback(
-        // eslint-disable-next-line max-statements
         (availableHeight: number) => {
             const itemHeight = 18; // Must match CSS!
             const maxItems = Math.floor(availableHeight / itemHeight);

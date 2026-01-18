@@ -2,7 +2,6 @@
     "$id": "https://raw.githubusercontent.com/waldiez/waldiez/tree/tags/v0.7.1/schema.json",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
-    "additionalProperties": false,
     "properties": {
         "data": {
             "$ref": "#/definitions/WaldiezFlowData"
@@ -64,7 +63,6 @@
     "definitions": {
         "WaldiezFlowData": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
                 "nodes": {
                     "type": "array",
@@ -124,6 +122,12 @@
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/WaldiezAgentDocAgent"
+                            }
+                        },
+                        "remoteAgents": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/WaldiezAgentRemote"
                             }
                         }
                     },
@@ -219,7 +223,6 @@
                 "type",
                 "updatedAt"
             ],
-            "additionalProperties": false,
             "description": "Waldiez User Proxy Agent."
         },
         "WaldiezNodeAgentType": {
@@ -235,13 +238,13 @@
                 "reasoning",
                 "captain",
                 "group_manager",
-                "doc_agent"
+                "doc_agent",
+                "remote"
             ],
             "description": "Waldiez agent type."
         },
         "WaldiezAgentUserProxyData": {
             "type": "object",
-            "additionalProperties": false,
             "properties": {
                 "systemMessage": {
                     "type": ["string", "null"]
@@ -388,7 +391,6 @@
                     }
                 }
             },
-            "additionalProperties": false,
             "description": "Code execution configuration."
         },
         "WaldiezAgentTerminationMessageCheck": {
@@ -418,7 +420,6 @@
                 }
             },
             "required": ["type", "keywords", "criterion", "methodContent"],
-            "additionalProperties": false,
             "description": "Waldiez agent termination message check."
         },
         "WaldiezAgentTypeTerminationTypeOption": {
@@ -442,7 +443,6 @@
                 }
             },
             "required": ["id", "executorId"],
-            "additionalProperties": false,
             "description": "Waldiez agent linked tools."
         },
         "WaldiezAgentNestedChat": {
@@ -466,8 +466,7 @@
                                 "type": "boolean"
                             }
                         },
-                        "required": ["id", "isReply"],
-                        "additionalProperties": false
+                        "required": ["id", "isReply"]
                     }
                 },
                 "condition": {
@@ -478,7 +477,6 @@
                 }
             },
             "required": ["triggeredBy", "messages", "condition", "available"],
-            "additionalProperties": false,
             "description": "Waldiez agent nested chat."
         },
         "WaldiezHandoffCondition": {
@@ -518,7 +516,6 @@
                 }
             },
             "required": ["conditionType", "prompt"],
-            "additionalProperties": false,
             "description": "Waldiez String LLM condition A static string prompt to be evaluated by an LLM."
         },
         "WaldiezContextStrLLMCondition": {
@@ -536,7 +533,6 @@
                 }
             },
             "required": ["conditionType", "context_str"],
-            "additionalProperties": false,
             "description": "Waldiez ContextStr LLM condition A `ContextStr` object with context variable placeholders that  will be substituted before being evaluated by an LLM."
         },
         "WaldiezContextBasedCondition": {
@@ -562,7 +558,6 @@
                 }
             },
             "required": ["conditionType", "variable_name"],
-            "additionalProperties": false,
             "description": "Waldiez String context condition  This condition checks if a named context variable exists and is truthy."
         },
         "WaldiezExpressionContextCondition": {
@@ -580,7 +575,6 @@
                 }
             },
             "required": ["conditionType", "expression"],
-            "additionalProperties": false,
             "description": "Waldiez Expression context condition  This condition evaluates a ContextExpression against the context variables."
         },
         "WaldiezHandoffAvailability": {
@@ -594,8 +588,7 @@
                     "type": "string"
                 }
             },
-            "required": ["type", "value"],
-            "additionalProperties": false
+            "required": ["type", "value"]
         },
         "WaldiezAgentUpdateSystemMessage": {
             "type": "object",
@@ -608,7 +601,6 @@
                 }
             },
             "required": ["type", "content"],
-            "additionalProperties": false,
             "description": "System message for agent update."
         },
         "WaldiezAgentUpdateSystemMessageType": {
@@ -632,8 +624,7 @@
                             }
                         }
                     },
-                    "required": ["targetType", "value"],
-                    "additionalProperties": false
+                    "required": ["targetType", "value"]
                 },
                 {
                     "type": "object",
@@ -649,8 +640,7 @@
                             }
                         }
                     },
-                    "required": ["targetType", "value"],
-                    "additionalProperties": false
+                    "required": ["targetType", "value"]
                 },
                 {
                     "type": "object",
@@ -666,8 +656,7 @@
                             }
                         }
                     },
-                    "required": ["targetType", "value"],
-                    "additionalProperties": false
+                    "required": ["targetType", "value"]
                 },
                 {
                     "type": "object",
@@ -689,8 +678,7 @@
                             }
                         }
                     },
-                    "required": ["targetType", "value"],
-                    "additionalProperties": false
+                    "required": ["targetType", "value"]
                 }
             ],
             "description": "The type of target in a handoff transition."
@@ -751,7 +739,6 @@
                 "type",
                 "updatedAt"
             ],
-            "additionalProperties": false,
             "description": "Waldiez Agent Assistant."
         },
         "WaldiezAgentAssistantData": {
@@ -841,7 +828,6 @@
                 "tools",
                 "updateAgentStateBeforeReply"
             ],
-            "additionalProperties": false,
             "description": "Waldiez Assistant Agent Data."
         },
         "WaldiezAgentRagUser": {
@@ -900,7 +886,6 @@
                 "type",
                 "updatedAt"
             ],
-            "additionalProperties": false,
             "description": "WaldiezAgentRagUser"
         },
         "WaldiezAgentRagUserData": {
@@ -990,7 +975,6 @@
                 "tools",
                 "updateAgentStateBeforeReply"
             ],
-            "additionalProperties": false,
             "description": "Waldiez Rag User Agent Data."
         },
         "WaldiezRagUserRetrieveConfig": {
@@ -1119,7 +1103,6 @@
                 "distanceThreshold",
                 "nResults"
             ],
-            "additionalProperties": false,
             "description": "WaldiezRagUserRetrieveConfig Configuration for the RAG user."
         },
         "WaldiezVectorDbConfig": {
@@ -1159,7 +1142,6 @@
                 }
             },
             "required": ["model", "useMemory", "useLocalStorage", "localStoragePath", "connectionUrl"],
-            "additionalProperties": false,
             "description": "WaldiezVectorDbConfig Configuration for the vector database."
         },
         "WaldiezAgentReasoning": {
@@ -1218,7 +1200,6 @@
                 "type",
                 "updatedAt"
             ],
-            "additionalProperties": false,
             "description": "WaldiezAgentReasoning"
         },
         "WaldiezAgentReasoningData": {
@@ -1312,7 +1293,6 @@
                 "updateAgentStateBeforeReply",
                 "verbose"
             ],
-            "additionalProperties": false,
             "description": "Waldiez Reasoning Agent Data."
         },
         "WaldiezReasoningAgentReasonConfig": {
@@ -1353,7 +1333,6 @@
                 "nsim",
                 "explorationConstant"
             ],
-            "additionalProperties": false,
             "description": "WaldiezReasoningAgentReasonConfig The configuration for the reasoning agent."
         },
         "reasonConfigMethod": {
@@ -1422,7 +1401,6 @@
                 "type",
                 "updatedAt"
             ],
-            "additionalProperties": false,
             "description": "WaldiezAgentCaptain"
         },
         "WaldiezAgentCaptainData": {
@@ -1528,7 +1506,6 @@
                 "tools",
                 "updateAgentStateBeforeReply"
             ],
-            "additionalProperties": false,
             "description": "Waldiez Captain Agent Data."
         },
         "WaldiezCaptainAgentLibEntry": {
@@ -1545,7 +1522,6 @@
                 }
             },
             "required": ["name", "description", "systemMessage"],
-            "additionalProperties": false,
             "description": "WaldiezCaptainAgentLibEntry Represents an entry in the agent library for the captain agent."
         },
         "WaldiezAgentGroupManager": {
@@ -1604,7 +1580,6 @@
                 "type",
                 "updatedAt"
             ],
-            "additionalProperties": false,
             "description": "Waldiez Agent Group Manager."
         },
         "WaldiezAgentGroupManagerData": {
@@ -1714,7 +1689,6 @@
                 "tools",
                 "updateAgentStateBeforeReply"
             ],
-            "additionalProperties": false,
             "description": "Waldiez Group Manager Agent Data."
         },
         "WaldiezAgentGroupManagerSpeakers": {
@@ -1774,7 +1748,6 @@
                 "transitionsType",
                 "order"
             ],
-            "additionalProperties": false,
             "description": "WaldiezAgentGroupManagerSpeakers"
         },
         "GroupChatSpeakerSelectionMethodOption": {
@@ -1848,7 +1821,6 @@
                 "type",
                 "updatedAt"
             ],
-            "additionalProperties": false,
             "description": "Waldiez Agent Document Agent."
         },
         "WaldiezAgentDocAgentData": {
@@ -1957,7 +1929,6 @@
                 "tools",
                 "updateAgentStateBeforeReply"
             ],
-            "additionalProperties": false,
             "description": "Waldiez Assistant Agent Data."
         },
         "RAGQueryEngine": {
@@ -1982,8 +1953,308 @@
                 }
             },
             "required": ["type"],
-            "additionalProperties": false,
             "description": "RAGQueryEngine The configuration for the RAG query engine used by the document agent. It can be one of the following:"
+        },
+        "WaldiezAgentRemote": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "agentType": {
+                    "$ref": "#/definitions/WaldiezNodeAgentType"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "requirements": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "data": {
+                    "$ref": "#/definitions/WaldiezAgentRemoteData"
+                },
+                "rest": {
+                    "type": "object",
+                    "additionalProperties": {}
+                }
+            },
+            "required": [
+                "agentType",
+                "createdAt",
+                "data",
+                "description",
+                "id",
+                "name",
+                "requirements",
+                "tags",
+                "type",
+                "updatedAt"
+            ],
+            "description": "Waldiez Agent Remote."
+        },
+        "WaldiezAgentRemoteData": {
+            "type": "object",
+            "properties": {
+                "systemMessage": {
+                    "type": ["string", "null"]
+                },
+                "humanInputMode": {
+                    "$ref": "#/definitions/WaldiezAgentHumanInputMode"
+                },
+                "codeExecutionConfig": {
+                    "$ref": "#/definitions/WaldiezAgentCodeExecutionConfig"
+                },
+                "agentDefaultAutoReply": {
+                    "type": ["string", "null"]
+                },
+                "maxConsecutiveAutoReply": {
+                    "type": ["number", "null"]
+                },
+                "termination": {
+                    "$ref": "#/definitions/WaldiezAgentTerminationMessageCheck"
+                },
+                "modelIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tools": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentLinkedTool"
+                    }
+                },
+                "parentId": {
+                    "type": ["string", "null"]
+                },
+                "nestedChats": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentNestedChat"
+                    }
+                },
+                "contextVariables": {
+                    "type": "object"
+                },
+                "updateAgentStateBeforeReply": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/WaldiezAgentUpdateSystemMessage"
+                    }
+                },
+                "afterWork": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/WaldiezTransitionTarget"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "handoffs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "server": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "config": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/WaldiezAgentRemoteServer"
+                                },
+                                {
+                                    "type": "null"
+                                }
+                            ]
+                        }
+                    },
+                    "required": ["enabled"]
+                },
+                "client": {
+                    "type": "object",
+                    "properties": {
+                        "url": {
+                            "type": ["string", "null"]
+                        },
+                        "name": {
+                            "type": ["string", "null"]
+                        },
+                        "silent": {
+                            "type": ["boolean", "null"]
+                        },
+                        "maxReconnects": {
+                            "type": ["number", "null"]
+                        },
+                        "pollingInterval": {
+                            "type": ["number", "null"]
+                        },
+                        "headers": {
+                            "type": "object",
+                            "additionalProperties": {}
+                        }
+                    }
+                }
+            },
+            "required": [
+                "afterWork",
+                "agentDefaultAutoReply",
+                "client",
+                "codeExecutionConfig",
+                "contextVariables",
+                "handoffs",
+                "humanInputMode",
+                "maxConsecutiveAutoReply",
+                "modelIds",
+                "nestedChats",
+                "server",
+                "systemMessage",
+                "termination",
+                "tools",
+                "updateAgentStateBeforeReply"
+            ],
+            "description": "Waldiez Remote Agent Data."
+        },
+        "WaldiezAgentRemoteServer": {
+            "type": "object",
+            "properties": {
+                "url": {
+                    "type": ["string", "null"]
+                },
+                "agentCard": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/WaldiezAgentRemoteCard"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "cardModifier": {
+                    "type": ["string", "null"]
+                },
+                "extendedAgentCard": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/WaldiezAgentRemoteCard"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "extendedCardModifier": {
+                    "type": ["string", "null"]
+                }
+            },
+            "description": "WaldiezAgentRemoteServer Remote agent server configuration."
+        },
+        "WaldiezAgentRemoteCard": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": ["string", "null"]
+                },
+                "description": {
+                    "type": ["string", "null"]
+                },
+                "url": {
+                    "type": ["string", "null"]
+                },
+                "version": {
+                    "type": ["string", "null"]
+                },
+                "defaultInputModes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "defaultOutputModes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "capabilities": {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "streaming": {
+                                    "type": "boolean"
+                                },
+                                "pushNotifications": {
+                                    "type": "boolean"
+                                },
+                                "extensions": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "uri": {
+                                                "type": "string"
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            },
+                                            "required": {
+                                                "type": "boolean"
+                                            },
+                                            "params": {
+                                                "type": "object",
+                                                "additionalProperties": {}
+                                            }
+                                        },
+                                        "required": ["uri", "description", "required", "params"]
+                                    }
+                                }
+                            },
+                            "required": ["streaming", "pushNotifications", "extensions"]
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "skills": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": ["skills"],
+            "description": "WaldiezRemoteAgentCard Remote agent server card."
         },
         "WaldiezModel": {
             "type": "object",
@@ -2037,7 +2308,6 @@
                 "updatedAt",
                 "data"
             ],
-            "additionalProperties": false,
             "description": "Waldiez Model"
         },
         "WaldiezModelData": {
@@ -2098,7 +2368,6 @@
                 "defaultHeaders",
                 "price"
             ],
-            "additionalProperties": false,
             "description": "ModelData"
         },
         "WaldiezModelAPIType": {
@@ -2138,7 +2407,6 @@
                     "type": ["string", "null"]
                 }
             },
-            "additionalProperties": false,
             "description": "AWS related fields"
         },
         "WaldiezModelPrice": {
@@ -2152,7 +2420,6 @@
                 }
             },
             "required": ["promptPricePer1k", "completionTokenPricePer1k"],
-            "additionalProperties": false,
             "description": "Price related fields"
         },
         "WaldiezTool": {
@@ -2207,7 +2474,6 @@
                 "updatedAt",
                 "data"
             ],
-            "additionalProperties": false,
             "description": "Waldiez Tool"
         },
         "WaldiezToolData": {
@@ -2229,7 +2495,6 @@
                 }
             },
             "required": ["content", "toolType", "secrets"],
-            "additionalProperties": false,
             "description": "Tool data."
         },
         "WaldiezToolType": {
@@ -2261,7 +2526,6 @@
                 }
             },
             "required": ["id", "type", "source", "target", "data"],
-            "additionalProperties": false,
             "description": "Waldiez Chat"
         },
         "WaldiezEdgeType": {
@@ -2326,8 +2590,7 @@
                             ]
                         }
                     },
-                    "required": ["message", "reply"],
-                    "additionalProperties": false
+                    "required": ["message", "reply"]
                 },
                 "prerequisites": {
                     "type": "array",
@@ -2380,7 +2643,6 @@
                 "condition",
                 "afterWork"
             ],
-            "additionalProperties": false,
             "description": "Waldiez Chat Data"
         },
         "WaldiezMessage": {
@@ -2401,7 +2663,6 @@
                 }
             },
             "required": ["type", "content", "context"],
-            "additionalProperties": false,
             "description": "WaldiezMessage Represents a message in the Waldiez chat system."
         },
         "WaldiezMessageType": {
@@ -2426,7 +2687,6 @@
                 }
             },
             "required": ["method", "prompt", "args"],
-            "additionalProperties": false,
             "description": "Waldiez Chat Summary"
         },
         "WaldiezChatLlmSummaryMethod": {

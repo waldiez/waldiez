@@ -20,7 +20,6 @@ export class DebugPrintHandler implements WaldiezStepByStepHandler {
         return type === "debug_print" || type === "print";
     }
 
-    // eslint-disable-next-line max-statements
     handle(
         data: WaldiezDebugMessage,
         _context: WaldiezStepByStepProcessingContext,

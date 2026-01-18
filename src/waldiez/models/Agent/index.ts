@@ -9,6 +9,7 @@ export * from "@waldiez/models/Agent/DocAgent";
 export * from "@waldiez/models/Agent/GroupManager";
 export * from "@waldiez/models/Agent/RagUser";
 export * from "@waldiez/models/Agent/Reasoning";
+export * from "@waldiez/models/Agent/Remote";
 export type { WaldiezNodeAgent, WaldiezNodeAgentData } from "@waldiez/models/Agent/types";
 export * from "@waldiez/models/Agent/UserProxy";
 export const ValidAgentTypes = [
@@ -19,4 +20,5 @@ export const ValidAgentTypes = [
     "captain",
     "group_manager",
     "doc_agent",
+    "remote",
 ];

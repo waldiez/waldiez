@@ -2,7 +2,6 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2026 Waldiez & contributors
  */
-/* eslint-disable max-statements */
 import type { Edge, Node } from "@xyflow/react";
 
 import type { WaldiezChat, WaldiezEdge } from "@waldiez/models/Chat";
@@ -190,6 +189,7 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
         reasoningAgentNodes,
         captainAgentNodes,
         groupManagerAgentNodes,
+        remoteAgentNodes,
     } = getAgentNodes(nodes);
     return new WaldiezFlowData({
         nodes: nodes.map(node => {
@@ -223,6 +223,9 @@ const getFlowDataToExport = (flow: WaldiezFlowProps, hideSecrets: boolean, skipL
                 exportAgent(captainAgentNode, nodes, edges, skipLinks),
             ),
             docAgents: docAgentNodes.map(docAgentNode => exportAgent(docAgentNode, nodes, edges, skipLinks)),
+            remoteAgents: remoteAgentNodes.map(remoteAgentNode =>
+                exportAgent(remoteAgentNode, nodes, edges, skipLinks),
+            ),
         },
         models: modelNodes.map(modelNode => exportModel(modelNode, nodes, hideSecrets)),
         tools: toolNodes.map(toolNode => exportTool(toolNode, nodes, hideSecrets)),
@@ -269,6 +272,9 @@ const getRFNodes = (flow: WaldiezFlow) => {
     });
     flow.data.agents.docAgents?.forEach(docAgent => {
         nodes.push(agentMapper.asNode(docAgent));
+    });
+    flow.data.agents.remoteAgents?.forEach(remoteAgent => {
+        nodes.push(agentMapper.asNode(remoteAgent));
     });
     return nodes;
 };

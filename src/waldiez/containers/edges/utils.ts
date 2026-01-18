@@ -8,7 +8,6 @@ import { Position } from "@xyflow/react";
  * Position labels relative to their respective nodes, not the edge center
  * This ensures they stay "attached" to source/target when nodes move
  */
-// eslint-disable-next-line max-statements
 export const getEdgeLabelTransform = (
     sourceX: number,
     sourceY: number,
@@ -179,7 +178,6 @@ export const getEdgeLabelTransformFixed = (
 /**
  * Dynamic offset based on port position
  */
-// eslint-disable-next-line max-statements
 export const getEdgeLabelTransformNodeOffset = (
     sourceX: number,
     sourceY: number,

@@ -165,7 +165,6 @@ export const useFlowEvents = (flowId: string) => {
     /**
      * Check if the flow can be run
      */
-    // eslint-disable-next-line max-statements
     const canRun = useCallback(() => {
         if (isReadOnly) {
             return { canRun: false, openFlowModal: false, groupManager: null };

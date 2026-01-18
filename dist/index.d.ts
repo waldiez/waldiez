@@ -2169,6 +2169,164 @@ export declare class WaldiezAgentReasoningData extends WaldiezAgentData {
 }
 
 /**
+ * Waldiez Agent Remote.
+ * @param id - The id of the agent
+ * @param type - The type of the node in a graph (agent)
+ * @param agentType - The type of the agent ("assistant")
+ * @param name - The name of the agent
+ * @param description - The description of the agent
+ * @param tags - The tags of the agent
+ * @param requirements - The requirements of the agent
+ * @param createdAt - The creation date of the agent
+ * @param updatedAt - The update date of the agent
+ * @param data - The data of the agent. See {@link WaldiezAgentRemoteAgentData}
+ * @param rest - Any other data
+ * @see {@link WaldiezAgent}
+ */
+export declare class WaldiezAgentRemote extends WaldiezAgent {
+    data: WaldiezAgentRemoteData;
+    agentType: WaldiezNodeAgentType;
+    constructor(props: {
+        id: string;
+        agentType: WaldiezNodeAgentType;
+        name: string;
+        description: string;
+        tags: string[];
+        requirements: string[];
+        createdAt: string;
+        updatedAt: string;
+        data: WaldiezAgentRemoteData;
+        rest?: {
+            [key: string]: unknown;
+        };
+    });
+}
+
+/**
+ * WaldiezRemoteAgentCard
+ * Remote agent server card.
+ * @param name - A human-readable name for the agent. Uses original agent name if not set.
+ * @param description - A human-readable description of the agent, assisting users and other agents in understanding its purpose. Uses original agent description if not set.
+ * @param url - The preferred endpoint URL for interacting with the agent. This URL MUST support the transport specified by 'preferredTransport'. Uses original A2aAgentServer url if not set.
+ * @param version - The agent's own version number. The format is defined by the provider.
+ * @param defaultInputModes - Default set of supported input MIME types for all skills, which can be overridden on a per-skill basis.
+ * @param defaultOutputModes - Default set of supported output MIME types for all skills, which can be overridden on a per-skill basis.
+ * @param capabilities - A declaration of optional capabilities supported by the agent.
+ * @param skills - The set of skills, or distinct capabilities, that the agent can perform.
+ */
+export declare type WaldiezAgentRemoteCard = {
+    name?: string | null;
+    description?: string | null;
+    url?: string | null;
+    version?: string | null;
+    defaultInputModes?: string[];
+    defaultOutputModes?: string[];
+    capabilities?: {
+        streaming: boolean;
+        pushNotifications: boolean;
+        extensions: {
+            uri: string;
+            description: string;
+            required: boolean;
+            params: {
+                [k: string]: unknown;
+            };
+        }[];
+    } | null;
+    skills: string[];
+};
+
+/**
+ * Waldiez Remote Agent Data.
+ * @param humanInputMode - The human input mode of the agent ("NEVER" | "ALWAYS" | "TERMINATE")
+ * @param systemMessage - The system message of the agent
+ * @param codeExecutionConfig - The code execution configuration of the agent
+ * @param agentDefaultAutoReply - The default auto reply of the agent
+ * @param maxConsecutiveAutoReply - The maximum consecutive auto reply of the agent
+ * @param termination - The termination message check of the agent
+ * @param modelIds - The agent's model ids
+ * @param tools - The tools available to the agent
+ * @param parentId - The parent id of the agent
+ * @param nestedChats - The nested chats of the agent
+ * @param contextVariables - The context variables of the agent
+ * @param updateAgentStateBeforeReply - The update agent state before reply of the agent
+ * @param afterWork - The handoff transition after work of the agent
+ * @param handoffs - The handoff / edge ids (used for ordering if needed)
+ * @see {@link WaldiezAgentData}
+ * @see {@link WaldiezAgentLinkedTool}
+ * @see {@link WaldiezAgentNestedChat}
+ * @see {@link WaldiezAgentTerminationMessageCheck}
+ * @see {@link WaldiezAgentHumanInputMode}
+ * @see {@link WaldiezAgentCodeExecutionConfig}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
+ * @see {@link WaldiezAgentRemoteServer}
+ */
+export declare class WaldiezAgentRemoteData extends WaldiezAgentData {
+    server: {
+        enabled: boolean;
+        config?: WaldiezAgentRemoteServer | null;
+    };
+    client: {
+        url?: string | null;
+        name?: string | null;
+        silent?: boolean | null;
+        maxReconnects?: number | null;
+        pollingInterval?: number | null;
+        headers?: {
+            [k: string]: unknown;
+        };
+    };
+    constructor(props?: {
+        humanInputMode: WaldiezAgentHumanInputMode;
+        systemMessage: string | null;
+        codeExecutionConfig: WaldiezAgentCodeExecutionConfig;
+        agentDefaultAutoReply: string | null;
+        maxConsecutiveAutoReply: number | null;
+        termination: WaldiezAgentTerminationMessageCheck;
+        modelIds: string[];
+        tools: WaldiezAgentLinkedTool[];
+        parentId?: string | null;
+        nestedChats: WaldiezAgentNestedChat[];
+        contextVariables: Record<string, any>;
+        updateAgentStateBeforeReply: WaldiezAgentUpdateSystemMessage[];
+        afterWork: WaldiezTransitionTarget | null;
+        handoffs: string[];
+        server: {
+            enabled: boolean;
+            config?: WaldiezAgentRemoteServer | null;
+        };
+        client: {
+            url?: string | null;
+            name?: string | null;
+            silent?: boolean | null;
+            maxReconnects?: number | null;
+            pollingInterval?: number | null;
+            headers?: {
+                [k: string]: unknown;
+            };
+        };
+    });
+}
+
+/**
+ * WaldiezAgentRemoteServer
+ * Remote agent server configuration.
+ * @param url - The base URL for the A2A server.
+ * @param agentCard - Configuration for the base agent card.
+ * @param card_modifier - Function to modify the base agent card (Callable[[AgentCard], AgentCard]).
+ * @param extendedAgentCard - Configuration for the extended agent card.
+ * @param extendedCardModifier - Function to modify the extended agent card (Callable[[AgentCard, ServerCallContext], AgentCard]).
+ */
+export declare type WaldiezAgentRemoteServer = {
+    url?: string | null;
+    agentCard?: WaldiezAgentRemoteCard | null;
+    cardModifier?: string | null;
+    extendedAgentCard?: WaldiezAgentRemoteCard | null;
+    extendedCardModifier?: string | null;
+};
+
+/**
  * Termination criterion (if the termination type is "keyword").
  * @param found - Termination when the message contains the keyword
  * @param ending - Termination when the message ends with the keyword
@@ -2195,12 +2353,14 @@ export declare type WaldiezAgentTerminationMessageCheck = {
  * Waldiez agent type.
  * @param user_proxy - User proxy
  * @param assistant - Assistant
- * @param rag_user_proxy - RAG user proxy
+ * @param rag_user_proxy - RAG user proxy (deprecated, use "doc_agent")
  * @param reasoning - Reasoning
  * @param captain - Captain
  * @param group_manager - Group manager
+ * @param doc_agent - Document agent
+ * @param remote - Remote agent
  */
-export declare type WaldiezAgentType = "user_proxy" | "assistant" | "rag_user_proxy" | "reasoning" | "captain" | "group_manager" | "doc_agent";
+export declare type WaldiezAgentType = "user_proxy" | "assistant" | "rag_user_proxy" | "reasoning" | "captain" | "group_manager" | "doc_agent" | "remote";
 
 /**
  * Termination type.
@@ -3274,6 +3434,10 @@ export declare class WaldiezFlow {
  * @see {@link WaldiezAgentUserProxy}
  * @see {@link WaldiezAgentAssistant}
  * @see {@link WaldiezAgentRagUser}
+ * @see {@link WaldiezAgentReasoning}
+ * @see {@link WaldiezAgentGroupManager}
+ * @see {@link WaldiezAgentDocAgent}
+ * @see {@link WaldiezAgentRemote}
  * @see {@link WaldiezModel}
  * @see {@link WaldiezTool}
  * @see {@link WaldiezChat}
@@ -3291,6 +3455,7 @@ export declare class WaldiezFlowData {
         captainAgents?: WaldiezAgentCaptain[];
         groupManagerAgents?: WaldiezAgentGroupManager[];
         docAgents?: WaldiezAgentDocAgent[];
+        remoteAgents?: WaldiezAgentRemote[];
         [k: string]: unknown;
     };
     models: WaldiezModel[];
@@ -3312,6 +3477,8 @@ export declare class WaldiezFlowData {
             captainAgents?: WaldiezAgentCaptain[];
             groupManagerAgents?: WaldiezAgentGroupManager[];
             docAgents?: WaldiezAgentDocAgent[];
+            remoteAgents?: WaldiezAgentRemote[];
+            [k: string]: unknown;
         };
         models: WaldiezModel[];
         tools: WaldiezTool[];
@@ -3781,8 +3948,9 @@ export declare type WaldiezNestedChat = {
  * @see {@link WaldiezNodeAgentCaptain}
  * @see {@link WaldiezNodeAgentGroupManager}
  * @see {@link WaldiezNodeAgentDocAgent}
+ * @see {@link WaldiezNodeAgentRemote}
  */
-export declare type WaldiezNodeAgent = WaldiezNodeAgentAssistant | WaldiezNodeAgentRagUser | WaldiezNodeAgentReasoning | WaldiezNodeAgentUserProxy | WaldiezNodeAgentCaptain | WaldiezNodeAgentGroupManager | WaldiezNodeAgentDocAgent;
+export declare type WaldiezNodeAgent = WaldiezNodeAgentAssistant | WaldiezNodeAgentRagUser | WaldiezNodeAgentReasoning | WaldiezNodeAgentUserProxy | WaldiezNodeAgentCaptain | WaldiezNodeAgentGroupManager | WaldiezNodeAgentDocAgent | WaldiezNodeAgentRemote;
 
 /**
  * WaldiezNodeAgentAssistant
@@ -3797,7 +3965,6 @@ export declare type WaldiezNodeAgentAssistant = Node_2<WaldiezNodeAgentAssistant
  * WaldiezNodeAgentAssistantData
  * The data for the agent node.
  * @param label - The label of the node.
- * @param retrieveConfig - The configuration for the RAG user.
  * @param name - The name of the agent
  * @param description - The description of the agent
  * @param parentId - The parent id of the agent (if in a group)
@@ -3848,7 +4015,6 @@ export declare type WaldiezNodeAgentCaptain = Node_2<WaldiezNodeAgentCaptainData
  * WaldiezNodeAgentCaptainData
  * Represents the data for the captain agent node.
  * @param label - The label of the node.
- * @param retrieveConfig - The configuration for the RAG user.
  * @param name - The name of the agent
  * @param description - The description of the agent
  * @param parentId - The parent id of the agent (if in a group)
@@ -3906,8 +4072,9 @@ export declare type WaldiezNodeAgentCaptainData = WaldiezAgentCommonData & {
  * @see {@link WaldiezNodeAgentCaptainData}
  * @see {@link WaldiezNodeAgentGroupManagerData}
  * @see {@link WaldiezNodeAgentDocAgentData}
+ * @see {@link WaldiezNodeAgentRemoteData}
  */
-export declare type WaldiezNodeAgentData = WaldiezNodeAgentAssistantData | WaldiezNodeAgentUserProxyData | WaldiezNodeAgentRagUserData | WaldiezNodeAgentReasoningData | WaldiezNodeAgentCaptainData | WaldiezNodeAgentGroupManagerData | WaldiezNodeAgentDocAgentData;
+export declare type WaldiezNodeAgentData = WaldiezNodeAgentAssistantData | WaldiezNodeAgentUserProxyData | WaldiezNodeAgentRagUserData | WaldiezNodeAgentReasoningData | WaldiezNodeAgentCaptainData | WaldiezNodeAgentGroupManagerData | WaldiezNodeAgentDocAgentData | WaldiezNodeAgentRemoteData;
 
 /**
  * WaldiezNodeAgentDocAgent
@@ -4094,7 +4261,6 @@ export declare type WaldiezNodeAgentReasoning = Node_2<WaldiezNodeAgentReasoning
  * WaldiezNodeAgentReasoningData
  * The data for the reasoning agent.
  * @param label - The label of the node.
- * @param retrieveConfig - The configuration for the RAG user.
  * @param name - The name of the agent
  * @param description - The description of the agent
  * @param parentId - The parent id of the agent (if in a group)
@@ -4133,6 +4299,71 @@ export declare type WaldiezNodeAgentReasoningData = WaldiezAgentCommonData & {
 };
 
 /**
+ * WaldiezNodeAgentRemote
+ * The react-flow node component for an agent.
+ * @param data - The data of the agent node.
+ * @param type - The type of the node (should be "agent").
+ * @see {@link WaldiezNodeAgentRemoteData}
+ */
+export declare type WaldiezNodeAgentRemote = Node_2<WaldiezNodeAgentRemoteData, "agent">;
+
+/**
+ * WaldiezNodeAgentRemoteData
+ * The data for the agent node.
+ * @param label - The label of the node.
+ * @param name - The name of the agent
+ * @param description - The description of the agent
+ * @param parentId - The parent id of the agent (if in a group)
+ * @param agentType - The agent type
+ * @param systemMessage - The system message
+ * @param humanInputMode - The human input mode
+ * @param codeExecutionConfig - The code execution configuration
+ * @param agentDefaultAutoReply - The agent default auto reply
+ * @param maxConsecutiveAutoReply - The max consecutive auto reply
+ * @param termination - The termination message check
+ * @param nestedChats - The nested chats
+ * @param contextVariables - The context variables
+ * @param updateAgentStateBeforeReply - Optional handler to update the agent state before replying
+ * @param afterWork - The handoff transition after work
+ * @param handoffs - The handoff / edge ids (used for ordering if needed)
+ * @param modelIds - The agent's model ids
+ * @param tools - The tools available to the agent
+ * @param tags - The tags
+ * @param requirements - The requirements
+ * @param createdAt - The created at date
+ * @param updatedAt - The updated at date
+ * @see {@link WaldiezNodeAgentType}
+ * @see {@link WaldiezAgentHumanInputMode}
+ * @see {@link WaldiezAgentCodeExecutionConfig}
+ * @see {@link WaldiezAgentTerminationMessageCheck}
+ * @see {@link WaldiezAgentNestedChat}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezTransitionTarget}
+ * @see {@link WaldiezAgentLinkedTool}
+ * @see {@link WaldiezAgentUpdateSystemMessage}
+ * @see {@link WaldiezAgentCommonData}
+ * @see {@link WaldiezAgentRemoteCard}
+ * @see {@link WaldiezAgentRemoteServer}
+ */
+export declare type WaldiezNodeAgentRemoteData = WaldiezAgentCommonData & {
+    label: string;
+    server: {
+        enabled: boolean;
+        config?: WaldiezAgentRemoteServer | null;
+    };
+    client: {
+        url?: string | null;
+        name?: string | null;
+        silent?: boolean | null;
+        maxReconnects?: number | null;
+        pollingInterval?: number | null;
+        headers?: {
+            [k: string]: unknown;
+        };
+    };
+};
+
+/**
  * Waldiez node agent type (alias for WaldiezAgentType).
  * @param user_proxy - User proxy
  * @param assistant - Assistant
@@ -4141,6 +4372,7 @@ export declare type WaldiezNodeAgentReasoningData = WaldiezAgentCommonData & {
  * @param captain - Captain
  * @param group_manager - Group manager
  * @param doc_agent - Document agent
+ * @param remote - Remote agent
  */
 export declare type WaldiezNodeAgentType = WaldiezAgentType;
 
@@ -4157,7 +4389,6 @@ export declare type WaldiezNodeAgentUserProxy = Node_2<WaldiezNodeAgentUserProxy
  * WaldiezNodeAgentUserProxyData
  * The data for the user proxy agent node.
  * @param label - The label of the node.
- * @param retrieveConfig - The configuration for the RAG user.
  * @param name - The name of the agent
  * @param description - The description of the agent
  * @param parentId - The parent id of the agent (if in a group)

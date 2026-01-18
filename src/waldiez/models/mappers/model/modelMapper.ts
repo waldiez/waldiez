@@ -162,7 +162,7 @@ export const modelMapper = {
  * @param modelNode - The WaldiezNodeModel instance representing the model.
  * @returns An object containing the modified defaultHeaders, extras, and aws properties.
  */
-// eslint-disable-next-line max-statements
+
 const replaceModelSecrets = (modelNode: WaldiezNodeModel) => {
     const defaultHeaders = { ...modelNode.data.defaultHeaders };
     const extras = { ...modelNode.data.extras };

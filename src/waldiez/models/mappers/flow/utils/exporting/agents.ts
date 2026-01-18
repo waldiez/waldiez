@@ -8,7 +8,11 @@ import type {
     WaldiezNodeAgent,
     WaldiezNodeAgentAssistant,
     WaldiezNodeAgentCaptain,
+    WaldiezNodeAgentDocAgent,
+    WaldiezNodeAgentGroupManager,
     WaldiezNodeAgentRagUser,
+    WaldiezNodeAgentReasoning,
+    WaldiezNodeAgentRemote,
     WaldiezNodeAgentUserProxy,
 } from "@waldiez/models/Agent";
 import { agentMapper } from "@waldiez/models/mappers/agent";
@@ -47,7 +51,7 @@ export const getAgentNodes = (nodes: Node[]) => {
             node.data &&
             "agentType" in node.data &&
             node.data.agentType === "reasoning",
-    );
+    ) as WaldiezNodeAgentReasoning[];
     const captainAgentNodes = agentNodes.filter(
         node =>
             "data" in node &&
@@ -63,7 +67,7 @@ export const getAgentNodes = (nodes: Node[]) => {
             node.data &&
             "agentType" in node.data &&
             node.data.agentType === "group_manager",
-    );
+    ) as WaldiezNodeAgentGroupManager[];
     const docAgentNodes = agentNodes.filter(
         node =>
             "data" in node &&
@@ -71,7 +75,15 @@ export const getAgentNodes = (nodes: Node[]) => {
             node.data &&
             "agentType" in node.data &&
             node.data.agentType === "doc_agent",
-    );
+    ) as WaldiezNodeAgentDocAgent[];
+    const remoteAgentNodes = agentNodes.filter(
+        node =>
+            "data" in node &&
+            typeof node.data === "object" &&
+            node.data &&
+            "agentType" in node.data &&
+            node.data.agentType === "remote",
+    ) as WaldiezNodeAgentRemote[];
     return {
         agentNodes,
         userAgentNodes,
@@ -81,6 +93,7 @@ export const getAgentNodes = (nodes: Node[]) => {
         reasoningAgentNodes,
         captainAgentNodes,
         groupManagerAgentNodes,
+        remoteAgentNodes,
     };
 };
 
