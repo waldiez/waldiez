@@ -4,11 +4,13 @@
 
 from typing import Any
 
-from pydantic import BaseModel, Field
-from typing_extensions import Annotated
+from pydantic import Field, model_validator
+from typing_extensions import Annotated, Self
+
+from ...common import WaldiezBase, update_dict
 
 
-class WaldiezAgentRemoteCardExtension(BaseModel):
+class WaldiezAgentRemoteCardExtension(WaldiezBase):
     """Remote agent card extension.
 
     Attributes
@@ -57,7 +59,7 @@ class WaldiezAgentRemoteCardExtension(BaseModel):
     ]
 
 
-class WaldiezAgentRemoteCardCapabilities(BaseModel):
+class WaldiezAgentRemoteCardCapabilities(WaldiezBase):
     """Remote agent card capabilities.
 
     Attributes
@@ -110,7 +112,7 @@ class WaldiezAgentRemoteCardCapabilities(BaseModel):
         )
 
 
-class WaldiezAgentRemoteCard(BaseModel):
+class WaldiezAgentRemoteCard(WaldiezBase):
     """Remote agent server card.
 
     Attributes
@@ -212,7 +214,7 @@ class WaldiezAgentRemoteCard(BaseModel):
     ]
 
 
-class WaldiezAgentRemoteServerConfig(BaseModel):
+class WaldiezAgentRemoteServerConfig(WaldiezBase):
     """Remote agent server configuration.
 
     Attributes
@@ -277,7 +279,7 @@ class WaldiezAgentRemoteServerConfig(BaseModel):
     ]
 
 
-class WaldiezAgentRemoteServer(BaseModel):
+class WaldiezAgentRemoteServer(WaldiezBase):
     """Remote agent server settings.
 
     Attributes
@@ -320,7 +322,7 @@ class WaldiezAgentRemoteServer(BaseModel):
         )
 
 
-class WaldiezAgentRemoteClient(BaseModel):
+class WaldiezAgentRemoteClient(WaldiezBase):
     """Remote agent client settings.
 
     Attributes
@@ -379,6 +381,31 @@ class WaldiezAgentRemoteClient(BaseModel):
             alias="pollingInterval",
         ),
     ]
+    headers: Annotated[
+        dict[str, Any],
+        Field(
+            default_factory=dict,
+            title="Headers",
+            description="Custom headers for the client connection",
+        ),
+    ]
+
+    @model_validator(mode="after")
+    def validate_remote_client(self) -> Self:
+        """Validate the header data.
+
+        Returns
+        -------
+        WaldiezAgentRemoteClient
+            The validated chat data.
+
+        Raises
+        ------
+        ValueError
+            If the validation fails.
+        """
+        self.headers = update_dict(self.headers)
+        return self
 
     @classmethod
     def default(cls) -> "WaldiezAgentRemoteClient":
@@ -395,4 +422,5 @@ class WaldiezAgentRemoteClient(BaseModel):
             silent=True,
             max_reconnects=None,
             polling_interval=None,
+            headers={},
         )

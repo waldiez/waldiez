@@ -23,7 +23,7 @@ def _strip_outer_quotes(value: str) -> str:
     return value_stripped
 
 
-def _detect_null_or_boolean(value: str) -> bool | str | None:
+def _detect_null_or_boolean(value: str) -> tuple[bool, bool | None]:
     """
     Detect null values or booleans.
 
@@ -34,20 +34,21 @@ def _detect_null_or_boolean(value: str) -> bool | str | None:
 
     Returns
     -------
-    Union[None, bool, str]
-        None for null values, bool for booleans, or original string if neither.
+    tuple[bool, bool | None]
+        A tuple of (was_converted, converted_value).
+        If was_converted is False, the second value should be ignored.
     """
     value_lower = value.lower()
 
     if value_lower in NULL_VALUES:
-        return None
+        return (True, None)
     if value_lower in BOOL_VALUES:
-        return value_lower == "true"
+        return (True, value_lower == "true")
 
-    return value
+    return (False, None)
 
 
-def _detect_numeric_type(value: str) -> int | float | str:
+def _detect_numeric_type(value: str) -> tuple[bool, int | float | None]:
     """
     Detect if string represents an integer or float.
 
@@ -58,23 +59,26 @@ def _detect_numeric_type(value: str) -> int | float | str:
 
     Returns
     -------
-    Union[int, float, str]
-        int for integers, float for floats, or original string if neither.
+    tuple[bool, int | float | None]
+        A tuple of (was_converted, converted_value).
+        If was_converted is False, the second value should be ignored.
     """
     # Check for integer first (more specific)
     if re.fullmatch(r"[-+]?\d+", value):
-        return int(value)
+        return (True, int(value))
 
     # Try float conversion
     try:
-        return float(value)
+        return (True, float(value))
     except ValueError:
-        return value
+        return (False, None)
 
 
 def _detect_container_type(
     value: str,
-) -> dict[str, Any] | list[Any] | tuple[Any] | set[Any] | str:
+) -> tuple[
+    bool, dict[str, Any] | list[Any] | tuple[Any, ...] | set[Any] | None
+]:
     """
     Detect if string represents a container type (dict, list, tuple, set).
 
@@ -85,21 +89,22 @@ def _detect_container_type(
 
     Returns
     -------
-    Union[dict[str, Any], list[Any], tuple[Any], set[Any], str]
-        Parsed container or original string if not a container.
+    tuple[bool, dict[str, Any] | list[Any] | tuple[Any, ...] | set[Any] | None]
+        A tuple of (was_converted, converted_value).
+        If was_converted is False, the second value should be ignored.
     """
-    if not (value[0] in "{[(" and value[-1] in "}])"):
-        return value
+    if not value or not (value[0] in "{[(" and value[-1] in "}])"):
+        return (False, None)
 
     # Handle empty containers
     if value in ("()", "[]", "{}"):
-        return ast.literal_eval(value)
+        return (True, ast.literal_eval(value))
 
     # Try JSON first (expects double quotes)
     try:
         parsed = json.loads(value)
         if isinstance(parsed, (dict, list)):
-            return parsed
+            return (True, parsed)
     except (json.JSONDecodeError, TypeError):
         pass
 
@@ -107,11 +112,11 @@ def _detect_container_type(
     try:
         parsed = ast.literal_eval(value)
         if isinstance(parsed, (dict, list, tuple, set)):
-            return parsed
+            return (True, parsed)
     except (ValueError, SyntaxError):
         pass
 
-    return value
+    return (False, None)
 
 
 def _convert_string_value(value: str) -> Any:
@@ -138,18 +143,18 @@ def _convert_string_value(value: str) -> Any:
     # Try conversions in order of specificity
 
     # 1. Container types (most specific structure)
-    container_result = _detect_container_type(cleaned_value)
-    if container_result != cleaned_value:
+    converted, container_result = _detect_container_type(cleaned_value)
+    if converted:
         return container_result
 
     # 2. Null and boolean values
-    null_bool_result = _detect_null_or_boolean(cleaned_value)
-    if null_bool_result != cleaned_value:
+    converted, null_bool_result = _detect_null_or_boolean(cleaned_value)
+    if converted:
         return null_bool_result
 
     # 3. Numeric types
-    numeric_result = _detect_numeric_type(cleaned_value)
-    if numeric_result != cleaned_value:
+    converted, numeric_result = _detect_numeric_type(cleaned_value)
+    if converted:
         return numeric_result
 
     # 4. Keep as string if no conversion succeeded
