@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
+
 # pylint: disable=broad-exception-raised
+# pyright: reportUnknownMemberType=false,reportUnknownVariableType=false
+# pyright: reportUnknownArgumentType=false
+
 """Check if we can load and convert the examples in the git repo.
 
 No model api keys or tool secrets files are checked.

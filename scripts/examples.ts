@@ -121,7 +121,7 @@ const collectFilePaths = (): string[] => {
         if (fs.statSync(filePath).isDirectory()) {
             const dirPrefix = item.split("-")[0].trim();
             if (examplesToSkip.includes(dirPrefix)) {
-                console.log(`\x1b[33mSkipping example ${item}.\x1b[0m`);
+                console.log(`\x1b[33mSkipping examples in ${item}.\x1b[0m`);
                 continue;
             }
             for (const subFile of fs.readdirSync(filePath)) {
