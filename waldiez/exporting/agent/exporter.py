@@ -1,8 +1,11 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
+
 # pylint: disable=too-many-arguments,too-many-positional-arguments
 # pylint: disable=too-many-return-statements,too-many-instance-attributes
+# pylint: disable=too-many-locals
 # pyright: reportUnusedParameter=false
+
 """Export agents."""
 
 from pathlib import Path
@@ -29,6 +32,7 @@ from .extras.group_manager_agent_extras import GroupManagerProcessor
 from .extras.group_member_extras import GroupMemberAgentProcessor
 from .extras.rag_user_proxy_agent_extras import RagUserProxyAgentProcessor
 from .extras.reasoning_agent_extras import ReasoningAgentProcessor
+from .extras.remote_agent_extras import RemoteAgentProcessor
 from .processor import AgentProcessor
 from .system_message import SystemMessageProcessor
 from .termination import TerminationProcessor
@@ -40,6 +44,7 @@ class AgentExporter(Exporter[StandardExtras]):
     def __init__(
         self,
         agent: WaldiezAgent,
+        all_agents: list[WaldiezAgent],
         agent_names: dict[str, str],
         models: tuple[list[WaldiezModel], dict[str, str]],
         chats: tuple[list[WaldiezChat], dict[str, str]],
@@ -60,6 +65,8 @@ class AgentExporter(Exporter[StandardExtras]):
         ----------
         agent : WaldiezAgent
             The agent to export.
+        all_agents : list[WaldiezAgent]
+            All the agents in a flow.
         agent_names : dict[str, str]
             Mapping of agent IDs to names.
         models : tuple[list[WaldiezModel], dict[str, str]]
@@ -90,6 +97,7 @@ class AgentExporter(Exporter[StandardExtras]):
         super().__init__(context, **kwargs)
 
         self.agent = agent
+        self.all_agents = all_agents
         self.agent_names = agent_names
         self.models = models[0]
         self.model_names = models[1]
@@ -122,11 +130,13 @@ class AgentExporter(Exporter[StandardExtras]):
         if self.agent.is_captain:
             return self._create_captain_extras()
         if self.agent.is_reasoning:
-            return self.create_reasoning_extras()
+            return self._create_reasoning_extras()
         if self.agent.is_rag_user:
             return self._create_rag_user_extras()
         if self.agent.is_doc_agent:
             return self._create_doc_agent_extras()
+        if self.agent.is_remote:
+            return self._create_remote_agent_extras()
         return self._create_standard_extras()
 
     def _create_standard_extras(self) -> StandardExtras:
@@ -305,7 +315,7 @@ class AgentExporter(Exporter[StandardExtras]):
 
         return extras
 
-    def create_reasoning_extras(self) -> StandardExtras:
+    def _create_reasoning_extras(self) -> StandardExtras:
         """Create reasoning-specific extras for the agent.
 
         Returns
@@ -325,16 +335,43 @@ class AgentExporter(Exporter[StandardExtras]):
             ),
         )
         # Process reasoning-specific content
-        reason_extras = reasoning_processor.process(
+        reasoning_extras = reasoning_processor.process(
             code_execution_config=extras.code_execution_config,
             termination_config=extras.termination_config,
             system_message_config=extras.system_message_config,
         )
         # Add reasoning arguments
-        for arg in reason_extras.extra_args:
+        for arg in reasoning_extras.extra_args:
             extras.add_arg(arg)
 
-        return reason_extras
+        return reasoning_extras
+
+    def _create_remote_agent_extras(self) -> StandardExtras:
+        """Create remote-specific extras for the agent.
+
+        Returns
+        -------
+        StandardExtras
+            The remote-specific extras.
+        """
+        # Start with standard extras
+        extras = self._create_standard_extras()
+        print("TODO: this")
+        remote_processor = RemoteAgentProcessor(
+            agent=self.agent,
+            agent_names=self.agent_names,
+            tool_names=self.tool_names,
+            all_agents=self.all_agents,
+            all_chats=self.all_chats,
+            chat_names=self.chat_names,
+            context=self.context,
+        )
+        result = remote_processor.process(
+            code_execution_config=extras.code_execution_config,
+            termination_config=extras.termination_config,
+            system_message_config=extras.system_message_config,
+        )
+        return result
 
     def generate_main_content(self) -> str | None:
         """Generate the main agent definition.

@@ -23,6 +23,7 @@ from .exporter import AgentExporter
 
 def create_agent_exporter(
     agent: WaldiezAgent,
+    all_agents: list[WaldiezAgent],
     agent_names: dict[str, str],
     models: tuple[list[WaldiezModel], dict[str, str]],
     chats: tuple[list[WaldiezChat], dict[str, str]],
@@ -43,6 +44,8 @@ def create_agent_exporter(
     ----------
     agent : WaldiezAgent
         The agent to export.
+    all_agents : list[WaldiezAgent]
+        All the agents in a flow.
     agent_names : dict[str, str]
         Mapping of agent IDs to names.
     models : tuple[list[WaldiezModel], dict[str, str]]
@@ -79,6 +82,7 @@ def create_agent_exporter(
         context = get_default_exporter_context()
     return AgentExporter(
         agent=agent,
+        all_agents=all_agents,
         agent_names=agent_names,
         models=models,
         chats=chats,

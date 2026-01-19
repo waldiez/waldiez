@@ -25,6 +25,7 @@ def test_export_reasoning_agent(tmp_path: Path) -> None:
     # noinspection PyTypeChecker
     exporter = AgentExporter(
         agent=agent,
+        all_agents=[agent],
         agent_names={agent.id: agent.name},
         tool_names={tool.id: tool.name for tool in tools},
         models=(models, model_names),

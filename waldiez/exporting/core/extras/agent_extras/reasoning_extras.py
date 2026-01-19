@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
 # pylint: disable=too-few-public-methods
-"""Resoning agent extras module."""
+"""Reasoning agent extras."""
 
 from dataclasses import dataclass
 

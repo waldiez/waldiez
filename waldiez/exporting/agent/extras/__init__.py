@@ -7,6 +7,7 @@ from .doc_agent_extras import DocAgentProcessor
 from .group_manager_agent_extras import GroupManagerProcessor
 from .group_member_extras import GroupMemberAgentProcessor
 from .reasoning_agent_extras import ReasoningAgentProcessor
+from .remote_agent_extras import RemoteAgentProcessor
 
 __all__ = [
     "CaptainAgentProcessor",
@@ -14,4 +15,5 @@ __all__ = [
     "GroupManagerProcessor",
     "GroupMemberAgentProcessor",
     "ReasoningAgentProcessor",
+    "RemoteAgentProcessor",
 ]

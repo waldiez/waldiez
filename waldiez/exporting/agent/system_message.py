@@ -31,6 +31,6 @@ class SystemMessageProcessor:
             return SystemMessageConfig()
 
         return SystemMessageConfig(
-            before_agent_conent="",
+            before_agent_content="",
             system_message_arg=json.dumps(self.agent.data.system_message),
         )

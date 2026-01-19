@@ -279,6 +279,17 @@ class WaldiezAgent(WaldiezBase):
         return self.agent_type == "reasoning"
 
     @property
+    def is_remote(self) -> bool:
+        """Check if the agent is a remote agent.
+
+        Returns
+        -------
+        bool
+            True if the agent is a remote agent, False otherwise.
+        """
+        return self.agent_type == "remote"
+
+    @property
     def is_user(self) -> bool:
         """Check if the agent is a user.
 

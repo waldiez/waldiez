@@ -57,7 +57,7 @@ class SystemMessageConfig:
     """System message configuration."""
 
     # in case we support later custom methods for system messages
-    before_agent_conent: str = ""
+    before_agent_content: str = ""
     system_message_arg: str = ""
 
     def has_content(self) -> bool:
@@ -116,8 +116,8 @@ class StandardExtras(BaseExtras):
             The system message configuration.
         """
         self.system_message_config = config
-        if config.before_agent_conent:
-            self.append_before_agent(config.before_agent_conent)
+        if config.before_agent_content:
+            self.append_before_agent(config.before_agent_content)
 
     def get_code_execution_arg(self) -> InstanceArgument:
         """Get the code execution argument string.

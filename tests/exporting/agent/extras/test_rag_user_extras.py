@@ -27,6 +27,7 @@ def test_export_rag_user_agent(tmp_path: Path) -> None:
     # noinspection PyTypeChecker
     exporter = AgentExporter(
         agent=agent,
+        all_agents=[agent],
         agent_names={agent.id: agent.name},
         chats=([], {}),
         tool_names={tool.id: tool.name for tool in tools},

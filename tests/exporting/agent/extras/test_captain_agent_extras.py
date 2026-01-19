@@ -26,6 +26,7 @@ def test_export_captain_agent(tmp_path: Path) -> None:
     # noinspection PyTypeChecker
     exporter = AgentExporter(
         agent=agent,
+        all_agents=[agent],
         agent_names={agent.id: agent.name},
         tool_names={tool.id: tool.name for tool in tools},
         models=(models, model_names),
@@ -104,6 +105,7 @@ def test_export_captain_agent(tmp_path: Path) -> None:
     ]
     exporter = create_agent_exporter(
         agent=agent1,
+        all_agents=[agent1],
         agent_names={agent1.id: agent1.name},
         models=(models, model_names),
         tool_names={tool.id: tool.name for tool in tools},

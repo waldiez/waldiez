@@ -24,6 +24,7 @@ def test_export_doc_agent(tmp_path: Path) -> None:
     models_and_names = (models, {model.id: model.name for model in models})
     exporter = AgentExporter(
         agent=agent,
+        all_agents=[agent],
         tools=tools,
         models=models_and_names,
         output_dir=output_dir,
@@ -38,6 +39,7 @@ def test_export_doc_agent(tmp_path: Path) -> None:
 
     exporter = create_agent_exporter(
         agent=agent,
+        all_agents=[agent],
         tools=tools,
         models=models_and_names,
         output_dir=output_dir,

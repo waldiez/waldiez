@@ -57,6 +57,7 @@ class ExportOrchestrator:
         self._models_exporter: ModelsExporter | None = None
         self._chats_exporter: ChatsExporter | None = None
         self.logger = context.get_logger()
+        self._all_agents = list(self.waldiez.agents)
         self._initialize()
 
     def _initialize(self) -> None:
@@ -399,6 +400,7 @@ def _get_known_agents() -> list[ConversableAgent]:
         # noinspection PyTypeChecker
         return create_agent_exporter(
             agent=agent,
+            all_agents=self._all_agents,
             agent_names=self.agent_names,
             models=(self.models, self.model_names),
             chats=(self.chats, self.chat_names),
@@ -478,7 +480,7 @@ def _get_known_agents() -> list[ConversableAgent]:
             A list of export results for each agent.
         """
         results: list[ExportResult] = []
-        for agent in self.waldiez.agents:
+        for agent in self._all_agents:
             agent_exporter = self._create_agent_exporter(
                 agent, exported_arguments
             )
