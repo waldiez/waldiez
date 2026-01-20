@@ -131,13 +131,13 @@ class StandardExtras(BaseExtras):
             self.code_execution_config
             and self.code_execution_config.executor_argument
         ):
-            argunent = self.code_execution_config.executor_argument
+            argument = self.code_execution_config.executor_argument
         else:
-            argunent = "False"
+            argument = "False"
         return InstanceArgument(
             instance_id=self.instance_id,
             name="code_execution_config",
-            value=argunent,
+            value=argument,
             skip_trailing_comma=True,
             tabs=1,
         )
