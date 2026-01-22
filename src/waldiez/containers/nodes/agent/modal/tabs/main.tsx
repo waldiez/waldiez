@@ -2,6 +2,7 @@
  * SPDX-License-Identifier: Apache-2.0
  * Copyright 2024 - 2026 Waldiez & contributors
  */
+/* eslint-disable complexity */
 import { memo, useEffect, useMemo, useState } from "react";
 
 import { TabItem, TabItems } from "@waldiez/components";
@@ -17,7 +18,10 @@ import {
 } from "@waldiez/containers/nodes/agent/modal/tabs/nested";
 import { WaldiezAgentRagUserTabs } from "@waldiez/containers/nodes/agent/modal/tabs/ragUser";
 import { WaldiezAgentReasoning } from "@waldiez/containers/nodes/agent/modal/tabs/reasoning";
-import { WaldiezAgentRemoteTab } from "@waldiez/containers/nodes/agent/modal/tabs/remote";
+import {
+    INCLUDE_SERVER_OPTIONS,
+    WaldiezAgentRemoteTab,
+} from "@waldiez/containers/nodes/agent/modal/tabs/remote";
 import { WaldiezAgentTermination } from "@waldiez/containers/nodes/agent/modal/tabs/termination";
 import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools";
 import { type WaldiezNodeAgentModalTabsProps } from "@waldiez/containers/nodes/agent/modal/tabs/types";
@@ -90,10 +94,12 @@ export const WaldiezNodeAgentModalTabs = memo(
         const isRemoteAndServerIsEnabled =
             isRemote && (data as WaldiezNodeAgentRemoteData).server.enabled === true;
         let includeTools = !(isDocAgent && isGroupMember);
-        if (includeTools && isRemote) {
+        if (includeTools && isRemote && !INCLUDE_SERVER_OPTIONS) {
             // if remote and server is included
             includeTools = isRemoteAndServerIsEnabled;
         }
+        const includeModelsTab = !isRemote || (isRemote && INCLUDE_SERVER_OPTIONS);
+        const includeCodeExecution = !isRemote || (isRemote && INCLUDE_SERVER_OPTIONS);
         // Compute derived data
         const derivedData = useMemo(() => {
             // Get necessary data from store
@@ -279,32 +285,39 @@ export const WaldiezNodeAgentModalTabs = memo(
                     </TabItem>
                 )}
 
-                {/* Termination Tab - Always visible */}
+                {/* Termination Tab */}
                 <TabItem label="Termination" id={`wf-${flowId}-wa-${id}-termination`}>
                     <div className="modal-tab-body">
                         <WaldiezAgentTermination id={id} data={data} onDataChange={onDataChange} />
                     </div>
                 </TabItem>
 
-                {/* Code Execution Tab - Always visible */}
-                <TabItem label="Code Execution" id={`wf-${flowId}-wa-${id}-codeExecution`}>
-                    <div className="modal-tab-body">
-                        <WaldiezAgentCodeExecution
-                            id={id}
-                            data={data}
-                            tools={tools}
-                            onDataChange={onDataChange}
-                        />
-                    </div>
-                </TabItem>
-
-                {/* Models Tab - Always visible */}
-                <TabItem label="Models" id={`wf-${flowId}-wa-${id}-models`}>
-                    <div className="modal-tab-body">
-                        <WaldiezAgentModels id={id} data={data} models={models} onDataChange={onDataChange} />
-                    </div>
-                </TabItem>
-
+                {/* Code Execution Tab */}
+                {includeCodeExecution && (
+                    <TabItem label="Code Execution" id={`wf-${flowId}-wa-${id}-codeExecution`}>
+                        <div className="modal-tab-body">
+                            <WaldiezAgentCodeExecution
+                                id={id}
+                                data={data}
+                                tools={tools}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
+                    </TabItem>
+                )}
+                {/* Models Tab */}
+                {includeModelsTab && (
+                    <TabItem label="Models" id={`wf-${flowId}-wa-${id}-models`}>
+                        <div className="modal-tab-body">
+                            <WaldiezAgentModels
+                                id={id}
+                                data={data}
+                                models={models}
+                                onDataChange={onDataChange}
+                            />
+                        </div>
+                    </TabItem>
+                )}
                 {/* Tools Tab - not visible in some cases */}
                 {includeTools && (
                     <TabItem label="Tools" id={`wf-${flowId}-wa-${id}-tools`}>

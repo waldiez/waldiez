@@ -7,6 +7,8 @@ import { type ChangeEvent, memo, useCallback, useMemo } from "react";
 import { Dict, InfoCheckbox, NumberInput, TextInput } from "@waldiez/components";
 import type { WaldiezAgentRemoteTabProps } from "@waldiez/containers/nodes/agent/modal/tabs/remote/types";
 
+export const INCLUDE_SERVER_OPTIONS = false;
+
 export const WaldiezAgentRemoteTab = memo((props: WaldiezAgentRemoteTabProps) => {
     const { id, data, onDataChange } = props;
     const onServerEnabledChange = useCallback(
@@ -136,15 +138,19 @@ export const WaldiezAgentRemoteTab = memo((props: WaldiezAgentRemoteTabProps) =>
     return (
         <div className="agent-panel agent-remote-panel">
             {/* Toggle Enable server */}
-            <InfoCheckbox
-                label="Include Server"
-                info="When enabled, a remote agent will also be generated and a remote agent server will start when the flow starts."
-                checked={data.server.enabled}
-                onChange={onServerEnabledChange}
-                id={`agent-remote-server-enable-toggle-${id}`}
-                aria-label="Also setup the remote server."
-            />
-            <div className="margin-top--10" />
+            {INCLUDE_SERVER_OPTIONS && (
+                <>
+                    <InfoCheckbox
+                        label="Include Server"
+                        info="When enabled, a remote agent will also be generated and a remote agent server will start when the flow starts."
+                        checked={data.server.enabled}
+                        onChange={onServerEnabledChange}
+                        id={`agent-remote-server-enable-toggle-${id}`}
+                        aria-label="Also setup the remote server."
+                    />
+                    <div className="margin-top--10" />
+                </>
+            )}
             {!data.server.enabled ? (
                 <TextInput
                     name="url"
@@ -166,10 +172,13 @@ export const WaldiezAgentRemoteTab = memo((props: WaldiezAgentRemoteTabProps) =>
                     onLowerLabel="Use a random port"
                 />
             )}
-            <div className="margin-top--10" />
+            <div className="margin-top-10" />
+            {/* <div className="margin-top--10" /> */}
             <NumberInput
                 name="Max Reconnects"
                 label="Max Reconnects:"
+                labelInfo={"Maximum number of reconnection attempts before giving up."}
+                forceInt
                 value={data.client.maxReconnects || null}
                 onChange={onMaxReconnectsChange}
                 min={0}
@@ -177,9 +186,13 @@ export const WaldiezAgentRemoteTab = memo((props: WaldiezAgentRemoteTabProps) =>
                 setNullOnLower
                 onLowerLabel="No limit"
             />
+            <div className="margin-top-10" />
             <NumberInput
                 name="Polling interval"
                 label="Polling interval (seconds):"
+                labelInfo={
+                    "Time in seconds between polling operations. Works for A2A Servers doesn't support streaming."
+                }
                 value={data.client.pollingInterval || null}
                 onChange={onPollingIntervalChange}
                 min={0}
@@ -197,11 +210,12 @@ export const WaldiezAgentRemoteTab = memo((props: WaldiezAgentRemoteTabProps) =>
                 id={`agent-remote-client-toggle-${id}`}
                 aria-label="Enable verbose output"
             />
-            <div className="margin-top--10" />
+            {/* <div className="margin-top-10" /> */}
             <Dict
                 items={data.client.headers || {}}
                 itemsType="remote-client-headers"
                 viewLabel="Custom headers:"
+                viewLabelInfo="Additional headers to use when connecting to the server."
                 onAdd={onAddHeader}
                 onUpdate={onUpdateHeaders}
                 onDelete={onDeleteHeader}
