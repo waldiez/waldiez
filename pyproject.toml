@@ -188,7 +188,7 @@ docs = [
   "mkdocs-minify-html-plugin;python_version == '3.10' and sys_platform == 'win32' and platform_machine == 'ARM64'",
   "mkdocs-minify-html-plugin;python_version == '3.10' and sys_platform == 'win32' and platform_machine == 'AARCH64'",
   "mkdocs-minify-html-plugin==0.3.9;python_version == '3.10' and sys_platform == 'win32' and platform_machine != 'arm64' and platform_machine != 'aarch64' and platform_machine != 'ARM64' and platform_machine != 'AARCH64'",
-  "mkdocstrings[crystal,python]==1.0.0",
+  "mkdocstrings[crystal,python]==1.0.1",
   "mkdocstrings-crystal==0.3.9",
   "mkdocstrings-python==2.0.1",
   "mkdocs-awesome-nav==3.3.0",
