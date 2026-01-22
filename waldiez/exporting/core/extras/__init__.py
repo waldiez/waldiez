@@ -8,6 +8,8 @@ from .agent_extras import (
     GroupManagerExtras,
     RAGUserExtras,
     ReasoningExtras,
+    RemoteClientConfig,
+    RemoteExtras,
     StandardExtras,
     SystemMessageConfig,
     TerminationConfig,
@@ -35,5 +37,7 @@ __all__ = [
     "TerminationConfig",
     "RAGUserExtras",
     "ReasoningExtras",
+    "RemoteClientConfig",
+    "RemoteExtras",
     "GroupManagerExtras",
 ]

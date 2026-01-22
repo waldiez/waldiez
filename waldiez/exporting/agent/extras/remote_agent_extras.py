@@ -8,11 +8,13 @@
 from waldiez.models import (
     WaldiezAgent,
     WaldiezChat,
+    WaldiezRemoteAgent,
 )
 
 from ...core import (
     CodeExecutionConfig,
     ExporterContext,
+    RemoteClientConfig,
     SystemMessageConfig,
     TerminationConfig,
 )
@@ -43,6 +45,16 @@ class RemoteAgentProcessor:
         self.context = context
         self.serializer = context.get_serializer().serialize
 
+    def _get_client_config(self) -> RemoteClientConfig | None:
+        if not self.agent.is_remote or not isinstance(
+            self.agent, WaldiezRemoteAgent
+        ):
+            return None
+        url = "http://localhost:8000"
+        if self.agent.data.client and self.agent.data.client.url:
+            url = self.agent.data.client.url
+        return RemoteClientConfig(url_arg=url)
+
     def process(
         self,
         code_execution_config: CodeExecutionConfig | None = None,
@@ -71,5 +83,8 @@ class RemoteAgentProcessor:
             termination_config=termination_config,
             system_message_config=system_message_config,
         )
-        print("TODO: this")
+        if termination_config:
+            self.extras.set_termination_config(termination_config)
+        client_config = self._get_client_config()
+        self.extras.set_client_config(client_config)
         return self.extras

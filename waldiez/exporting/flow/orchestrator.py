@@ -387,6 +387,8 @@ def _get_known_agents() -> list[ConversableAgent]:
                 A list of arguments to be used for the agent.
             """
             # Extract arguments from exported_arguments
+            if target_agent.is_remote:
+                return []
             return exported_arguments.get(target_agent.id, [])
 
         return arguments_resolver

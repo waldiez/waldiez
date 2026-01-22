@@ -5,7 +5,7 @@
 from collections.abc import Iterable
 from typing import TypedDict
 
-from ..agents import WaldiezAgent
+from ..agents import WaldiezAgent, WaldiezRemoteAgent
 from ..chat import WaldiezChat
 from ..common import MAX_VARIABLE_LENGTH, get_valid_instance_name
 from ..model import WaldiezModel
@@ -74,8 +74,22 @@ def ensure_unique_names(
     chats: list[WaldiezChat] = []
 
     for agent in flow_agents:
+        agent_name = agent.name
+        if agent.is_remote and isinstance(agent, WaldiezRemoteAgent):
+            # get the name from the server config
+            if (
+                agent.data.server.enabled
+                and agent.data.server.config
+                and agent.data.server.config.agent_card
+                and agent.data.server.config.agent_card.name
+            ):
+                agent_name = agent.data.server.config.agent_card.name
+            # or check if the name is set in the client config
+            elif agent.data.client.name:
+                agent_name = agent.data.client.name
+
         all_names = get_valid_instance_name(
-            (agent.id, agent.name),
+            (agent.id, agent_name),
             all_names,
             prefix="wa",
             max_length=max_length,

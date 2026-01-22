@@ -7,7 +7,7 @@ from .captain_extras import CaptainExtras
 from .group_manager_extras import GroupManagerExtras
 from .rag_user_extras import RAGUserExtras
 from .reasoning_extras import ReasoningExtras
-from .remote_extras import RemoteExtras
+from .remote_extras import RemoteClientConfig, RemoteExtras
 from .standard_extras import (
     CodeExecutionConfig,
     StandardExtras,
@@ -21,6 +21,7 @@ __all__ = [
     "StandardExtras",
     "RAGUserExtras",
     "ReasoningExtras",
+    "RemoteClientConfig",
     "RemoteExtras",
     "GroupManagerExtras",
     "CodeExecutionConfig",

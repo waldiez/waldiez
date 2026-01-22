@@ -25,7 +25,7 @@ def get_retrievechat_extra_requirements(
         The retrievechat extra requirements.
     """
     # https://github.com/ag2ai/ag2/blob/main/pyproject.toml
-    # with chromadb and sentence_transdormers relaxed
+    # with chromadb and sentence_transformers relaxed
     rag_requirements: set[str] = {
         "protobuf==5.29.3",
         "chromadb>=0.5.23",

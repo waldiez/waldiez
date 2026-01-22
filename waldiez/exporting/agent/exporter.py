@@ -356,7 +356,6 @@ class AgentExporter(Exporter[StandardExtras]):
         """
         # Start with standard extras
         extras = self._create_standard_extras()
-        print("TODO: this")
         remote_processor = RemoteAgentProcessor(
             agent=self.agent,
             agent_names=self.agent_names,

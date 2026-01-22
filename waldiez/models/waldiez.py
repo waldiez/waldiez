@@ -248,6 +248,11 @@ class Waldiez:
         )
 
     @property
+    def has_remote_agents(self) -> bool:
+        """Check if the flow has remote agents."""
+        return any(agent.is_remote for agent in self.agents)
+
+    @property
     def has_captain_agents(self) -> bool:
         """Check if the flow has captain agents."""
         return any(agent.is_captain for agent in self.agents)
@@ -375,6 +380,9 @@ class Waldiez:
 
         if self.has_captain_agents:  # pragma: no branch
             reqs.update(get_captain_agent_extra_requirements())
+
+        if self.has_remote_agents:
+            reqs.add(f"ag2[a2a]=={autogen_version}")
 
         for doc_agent in self.flow.data.agents.docAgents:
             reqs.update(

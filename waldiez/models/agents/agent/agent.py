@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
 
-# pylint: disable=too-many-public-methods
+# pylint: disable=too-many-public-methods,too-complex
 # pyright:  reportArgumentType=false
 """Base agent class to be inherited by all agents."""
 
@@ -172,6 +172,18 @@ class WaldiezAgent(WaldiezBase):
                 "default_auto_reply",
                 "code_execution_config",
                 "is_termination_msg",
+                "functions",
+                "update_agent_state_before_reply",
+            ]
+        if self.is_remote:
+            return [
+                "description",
+                "human_input_mode",
+                "max_consecutive_auto_reply",
+                "default_auto_reply",
+                "code_execution_config",
+                "is_termination_msg",
+                "llm_config",
                 "functions",
                 "update_agent_state_before_reply",
             ]
@@ -369,6 +381,8 @@ class WaldiezAgent(WaldiezBase):
             class_name = "GroupChatManager"
         if self.is_doc_agent:
             class_name = "DocAgent"
+        if self.is_remote:  # pragma: no branch
+            return "A2aRemoteAgent"
         return class_name  # pragma: no cover
 
     def get_group_member_class_name(self) -> str:
@@ -389,6 +403,8 @@ class WaldiezAgent(WaldiezBase):
             return "ReasoningAgent"
         if self.is_doc_agent:  # pragma: no branch
             return "DocAgent"
+        if self.is_remote:  # pragma: no branch
+            return "A2aRemoteAgent"
         return "ConversableAgent"  # pragma: no cover
 
     def get_assistant_class_name(self) -> str:
@@ -406,7 +422,7 @@ class WaldiezAgent(WaldiezBase):
         return class_name  # pragma: no cover
 
     @property
-    def ag2_imports(self) -> set[str]:  # pylint: disable=too-complex
+    def ag2_imports(self) -> set[str]:  # noqa: C901
         """Return the AG2 imports of the agent.
 
         Returns
@@ -457,6 +473,8 @@ class WaldiezAgent(WaldiezBase):
                 )
             case "DocAgent":
                 imports.add("from autogen.agents.experimental import DocAgent")
+            case "A2aRemoteAgent":
+                imports.add("from autogen.a2a import A2aRemoteAgent")
             case "ConversableAgent":
                 imports.add("from autogen import ConversableAgent")
             case _:  # pragma: no cover
