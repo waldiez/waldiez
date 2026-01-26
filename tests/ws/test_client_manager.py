@@ -802,7 +802,7 @@ class TestClientManager:
                 "session_id": "test_session",
                 "request_id": "req_123",
                 "prompt": "Enter value: ",
-                "password": False,
+                "password": False,  # nosemgrep # nosec
                 "timeout": 120.0,
             }
 

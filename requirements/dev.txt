@@ -1,8 +1,8 @@
 -r main.txt
 ag2[redis]==0.10.4
 autoflake==2.3.1
-bandit==1.9.2
-basedpyright==1.37.1
+bandit==1.9.3
+basedpyright==1.37.2
 black[jupyter]==26.1.0
 build==1.4.0
 fakeredis==2.33.0
@@ -11,7 +11,7 @@ flake8==7.3.0
 hatchling==1.28.0
 jsonschema==4.26.0
 jupyter_server==2.17.0
-jupyterlab==4.5.2
+jupyterlab==4.5.3
 mypy-extensions>=1.1.0
 mypy==1.19.1
 nbclient>=0.10.4
@@ -21,11 +21,11 @@ nodeenv>=1.10.0
 notebook-shim>=0.2.4
 paho-mqtt>=2.1.0,<3.0
 pandas-stubs==2.3.3.260113
-prek==0.2.29
+prek==0.3.0
 pydocstyle==6.3.0
 pylint==4.0.4
 python-dotenv==1.2.1
-ruff==0.14.13
+ruff==0.14.14
 toml==0.10.2; python_version <= '3.10'
 tox==4.34.1
 types-aiofiles==25.1.0.20251011

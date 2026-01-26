@@ -234,7 +234,10 @@ def _make_flow_with_secrets() -> WaldiezFlow:
                             "tools": [],
                             "parentId": None,
                             "nestedChats": [],
-                            "contextVariables": {"token": "SHOULD_BE_REDACTED"},
+                            "contextVariables": {
+                                # pylint: disable=line-too-long
+                                "token": "SHOULD_BE_REDACTED",  # nosemgrep # nosec # noqa: E501
+                            },
                             "updateAgentStateBeforeReply": [],
                             "afterWork": None,
                             "handoffs": [],
@@ -418,7 +421,9 @@ def test_replace_secrets_deep_redacts_suspicious_keys_everywhere() -> None:
                 "tools": [],
                 "parentId": None,
                 "nestedChats": [],
-                "contextVariables": {"token": "SHOULD_BE_REDACTED"},
+                "contextVariables": {
+                    "token": "SHOULD_BE_REDACTED",  # nosemgrep # nosec
+                },
                 "updateAgentStateBeforeReply": [],
                 "afterWork": None,
                 "handoffs": [],

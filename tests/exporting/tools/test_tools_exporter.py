@@ -12,6 +12,7 @@ from waldiez.models import WaldiezAgent, WaldiezTool
 
 # flake8: noqa: E501
 # pylint: disable=too-many-locals,unused-argument,line-too-long,inconsistent-quotes
+# pyright: reportUnknownMemberType=false
 # noinspection PyArgumentList
 def test_tools_exporter(tmp_path: Path) -> None:
     """Test ToolsExporter.
@@ -55,8 +56,8 @@ def tool3():
         data={  # type: ignore
             "content": tool1_content,
             "secrets": {
-                "SECRET_KEY_1": "SECRET_VALUE_1",
-                "SECRET_KEY_2": "SECRET_VALUE_2",
+                "SECRET_KEY_1": "SECRET_VALUE_1",  # nosemgrep # nosec
+                "SECRET_KEY_2": "SECRET_VALUE_2",  # nosemgrep # nosec
             },
         },
     )
@@ -244,8 +245,8 @@ wiki_tool = WikipediaQueryRun(api_wrapper=api_wrapper)
         data={  # type: ignore
             "content": tool1_content,
             "secrets": {
-                "SECRET_KEY_1": "SECRET_VALUE_1",
-                "SECRET_KEY_2": "SECRET_VALUE_2",
+                "SECRET_KEY_1": "SECRET_VALUE_1",  # nosemgrep # nosec
+                "SECRET_KEY_2": "SECRET_VALUE_2",  # nosemgrep # nosec
             },
         },
     )

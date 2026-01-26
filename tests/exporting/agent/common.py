@@ -45,8 +45,8 @@ def create_agent(
         data={  # type: ignore
             "content": f"def tool{counter}_1():" + "\n" + f'    return "tool body of tool{counter}_1"',
             "secrets": {
-                "SECRET_KEY_1": "SECRET_VALUE_1",
-                "SECRET_KEY_2": "SECRET_VALUE_2",
+                "SECRET_KEY_1": "SECRET_VALUE_1",  # nosemgrep # nosec
+                "SECRET_KEY_2": "SECRET_VALUE_2",  # nosemgrep # nosec
             },
         },
     )
