@@ -262,7 +262,7 @@ class ExportConfig:
         The file extension for the exported content.
     is_async : bool
         Whether the exported content should be asynchronous.
-    is_waat : bool
+    skip_logging : bool
         Whether this is a flow used as a tool (waat).
     """
 
@@ -278,7 +278,7 @@ class ExportConfig:
     uploads_root: Path | None = None
     message: str | None = None
     cache_seed: int | None = None
-    is_waat: bool = False
+    skip_logging: bool = False
 
     @property
     def for_notebook(self) -> bool:
@@ -317,7 +317,7 @@ class ExportConfig:
         valid_fields = {f.name for f in fields(cls)}
         output_extension = kwargs.pop("output_extension", "py")
         for_notebook = kwargs.pop("for_notebook", output_extension == "ipynb")
-        is_waat = str(kwargs.pop("is_waat", False)).lower() == "true"
+        skip_logging = str(kwargs.pop("skip_logging", False)).lower() == "true"
         if for_notebook:
             output_extension = "ipynb"
         cache_seed = kwargs.pop("cache_seed", None)
@@ -327,7 +327,7 @@ class ExportConfig:
         return cls(
             cache_seed=cache_seed,
             output_extension=output_extension,
-            is_waat=is_waat,
+            skip_logging=skip_logging,
             **{k: v for k, v in kwargs.items() if k in valid_fields},
         )
 

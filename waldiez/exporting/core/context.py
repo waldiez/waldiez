@@ -56,7 +56,7 @@ class ExporterContext:
         is_async: bool = False,
         output_directory: str | None = None,
         cache_seed: int | None = None,
-        is_waat: bool | None = None,
+        skip_logging: bool | None = None,
     ) -> ExportConfig:
         """Get export config or return default.
 
@@ -78,21 +78,21 @@ class ExporterContext:
             The directory where the output will be saved, by default None
         cache_seed : int], optional
             The seed for caching, by default None
-        is_waat : bool, Optional
-            Whether this is a flow used as a tool (waat).
+        skip_logging : bool, Optional
+            Whether to skip ag2's runtime logging.
 
         Returns
         -------
         ExportConfig
             The export configuration.
         """
-        if is_waat is None:
-            is_waat = self.config.is_waat if self.config else False
+        if skip_logging is None:
+            skip_logging = self.config.skip_logging if self.config else False
         kwargs: dict[str, Any] = {
             "requirements": requirements or [],
             "tags": tags or [],
             "is_async": self.config.is_async if self.config else is_async,
-            "is_waat": is_waat,
+            "skip_logging": skip_logging,
         }
         if output_extension is not None:
             kwargs["output_extension"] = output_extension

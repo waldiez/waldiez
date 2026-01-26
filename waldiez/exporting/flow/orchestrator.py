@@ -507,4 +507,4 @@ def _get_known_agents() -> list[ConversableAgent]:
         bool
             True if logging should be skipped, False otherwise.
         """
-        return self.config.is_waat
+        return self.config.skip_logging

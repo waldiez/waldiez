@@ -118,7 +118,9 @@ class WaldiezBaseRunner(
         self._skip_deps = (
             str(kwargs.get("skip_deps", waldiez.skip_deps)).lower() == "true"
         )
-        self._is_waat = str(kwargs.get("is_waat", "False")).lower() == "true"
+        self._skip_logging = (
+            str(kwargs.get("skip_logging", "False")).lower() == "true"
+        )
 
     @staticmethod
     def _init_output_dir(output_path: str | Path | None) -> Path:
@@ -279,7 +281,7 @@ class WaldiezBaseRunner(
                 uploads_root=uploads_root,
                 message=message,
                 structured_io=self._structured_io,
-                is_waat=self._is_waat,
+                skip_logging=self._skip_logging,
                 force=True,
             )
             if self.dot_env_path and self.dot_env_path.is_file():
@@ -595,8 +597,9 @@ class WaldiezBaseRunner(
                 self._dot_env_path = resolved
         if structured_io is not None:
             self._structured_io = structured_io
-        self._is_waat = (
-            str(kwargs.get("is_waat", self._is_waat)).lower() == "true"
+        self._skip_logging = (
+            str(kwargs.get("skip_logging", self._skip_logging)).lower()
+            == "true"
         )
         if self.is_running():
             raise RuntimeError("Workflow already running")
@@ -759,8 +762,9 @@ class WaldiezBaseRunner(
                 self._dot_env_path = resolved
         if structured_io is not None:
             self._structured_io = structured_io
-        self._is_waat = (
-            str(kwargs.get("is_waat", self._is_waat)).lower() == "true"
+        self._skip_logging = (
+            str(kwargs.get("skip_logging", self._skip_logging)).lower()
+            == "true"
         )
         if self.is_running():
             raise RuntimeError("Workflow already running")

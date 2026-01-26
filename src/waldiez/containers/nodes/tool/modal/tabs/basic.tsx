@@ -144,7 +144,7 @@ export const WaldiezToolBasicTab = memo((props: WaldiezNodeToolModalProps) => {
         const rawValue = data.kwargs ? data.kwargs[kwarg.key] : undefined;
 
         if (type === "boolean") {
-            const checked = String(rawValue).toLowerCase() === "true";
+            const checked = String(rawValue || kwarg.default).toLowerCase() === "true";
             if (kwarg.info) {
                 return (
                     <div className="margin-bottom-10">

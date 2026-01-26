@@ -10,6 +10,7 @@ export type PredefinedKwargConfig = {
     type?: PredefinedKwargType; // default to "string" if omitted
     multi?: boolean; // if true, use a textarea
     optional?: boolean; // if true, allow empty/not-set
+    default?: any;
     info?: string; // if set, add additional info icon/message
     options?: {
         // is set, render a 'select' view
@@ -86,9 +87,18 @@ export const PREDEFINED_TOOL_REQUIRED_KWARGS: Record<string, PredefinedKwargConf
         { label: "Tool name", key: "name", type: "string" },
         { label: "Tool description", key: "description", type: "string", multi: true },
         {
+            label: "Skip internal flow runtime logging",
+            key: "skip_logging",
+            type: "boolean",
+            optional: true,
+            default: true,
+        },
+        {
             label: "Skip installing flow's dependencies",
             key: "skip_deps",
             type: "boolean",
+            optional: true,
+            default: false,
         },
         {
             label: "Return type",

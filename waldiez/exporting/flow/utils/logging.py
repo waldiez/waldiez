@@ -327,7 +327,7 @@ def get_stop_logging(is_async: bool, tabs: int = 0) -> str:
         content += "async "
     content += "def stop_logging() -> None:\n"
     content += f'{tab}    """Stop logging."""\n'
-    content += "    if not __IS_WAAT__:\n"
+    content += "    if not __SKIP_LOGGING__:\n"
     if is_async:
         content += (
             f"{tab}        await asyncio.to_thread(runtime_logging.stop)\n"

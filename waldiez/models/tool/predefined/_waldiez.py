@@ -27,6 +27,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
         "skip_deps": bool,
     }
     _kwargs: dict[str, Any] = {
+        "skip_logging": True,
         "skip_deps": False,
         "return_option": "all",
         "dot_env": None,
@@ -214,6 +215,9 @@ class WaldiezFlowToolImpl(PredefinedTool):
         )
         structured_io = str(use_structured_io).lower() == "true"
         skip_deps = str(self.kwargs.get("skip_deps", "False")).lower() == "true"
+        skip_logging = (
+            str(self.kwargs.get("skip_logging", "True")).lower() != "false"
+        )
         dot_env: str | None = self.kwargs.get("dot_env", None)
         if (
             not dot_env
@@ -245,6 +249,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
     from urllib.request import urlopen
     from waldiez import WaldiezRunner
     skip_deps = {skip_deps}
+    skip_logging = {skip_logging}
     flow = "{self.kwargs.get("flow")}"
     if isinstance(flow, Path):
         flow_str = str(flow)
@@ -286,7 +291,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_mmd=True,
                 skip_timeline=True,
                 skip_symlinks=True,
-                is_waat=True,
+                skip_logging=skip_logging,
                 message=message,
             )
         else:
@@ -296,7 +301,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_mmd=True,
                 skip_timeline=True,
                 skip_symlinks=True,
-                is_waat=True,
+                skip_logging=skip_logging,
                 message=message,
             )
 """
@@ -310,7 +315,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_timeline=True,
                 skip_symlinks=True,
                 message=message,
-                is_waat=True,
+                skip_logging=skip_logging,
             )
         else:
             result = runner.run(
@@ -319,7 +324,7 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_mmd=True,
                 skip_timeline=True,
                 skip_symlinks=True,
-                is_waat=True,
+                skip_logging=skip_logging,
             )
 """
         content += self._get_reply_result()

@@ -122,7 +122,9 @@ class FileGenerator(ContentGenerator):
                 "\n".join([entry.content for entry in imports_section])
             )
         everything.append(
-            FileGenerator._get_globals(self.cache_seed, self.config.is_waat)
+            FileGenerator._get_globals(
+                self.cache_seed, self.config.skip_logging
+            )
         )
         if tools_section:
             comment = get_comment(
@@ -163,7 +165,7 @@ class FileGenerator(ContentGenerator):
         return "\n".join(everything)
 
     @staticmethod
-    def _get_globals(cache_seed: int | None, is_waat: bool) -> str:
+    def _get_globals(cache_seed: int | None, skip_logging: bool) -> str:
         """Get global definitions and initializations."""
         return f'''
 
@@ -178,7 +180,7 @@ __AGENTS__: dict[str, ConversableAgent] = {{}}
 
 __CACHE_SEED__: int | None = {cache_seed}
 
-__IS_WAAT__: bool = {is_waat}
+__SKIP_LOGGING__: bool = {skip_logging}
 
 '''
 

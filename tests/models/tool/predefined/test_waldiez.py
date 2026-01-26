@@ -40,10 +40,12 @@ class TestWaldiezFlowToolImpl:
             "description": str,
             "skip_deps": bool,
         }
+        assert tool._kwargs["skip_logging"] is True
 
     def test_default_kwargs(self) -> None:
         """Test default kwargs values."""
         tool = WaldiezFlowToolImpl()
+        assert tool.kwargs["skip_logging"] is True
         assert tool.kwargs["skip_deps"] is False
         assert tool.kwargs["return_option"] == "all"
         assert tool.kwargs["dot_env"] is None
@@ -75,6 +77,7 @@ class TestWaldiezFlowToolImpl:
                     "name": "test_flow",
                     "description": "A test flow",
                     "skip_deps": True,
+                    "skip_logging": True,
                 }
             )
             assert not missing
@@ -94,6 +97,7 @@ class TestWaldiezFlowToolImpl:
                 "name": "remote_flow",
                 "description": "A remote flow",
                 "skip_deps": False,
+                "skip_logging": False,
             }
         )
         assert not missing
