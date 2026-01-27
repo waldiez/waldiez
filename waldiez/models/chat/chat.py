@@ -224,11 +224,12 @@ class WaldiezChat(WaldiezBase):
         )
         if is_method:
             return False
-        if isinstance(self.data.message, str):
-            if self.data.message and self.data.message_content:
-                return True
-            return False
-        return False
+        return True
+        # if isinstance(self.data.message, str):
+        #     if self.data.message and self.data.message_content:
+        #         return True
+        #     return False
+        # return False
 
     def as_handoff(
         self,
