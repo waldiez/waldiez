@@ -208,6 +208,28 @@ class WaldiezChat(WaldiezBase):
             self.target = self.data.real_target
         return self
 
+    def can_be_used_on_group_pattern(self) -> bool:
+        """Check if the message can be used in a pattern-based group chat.
+
+        Returns
+        -------
+        bool
+            True if it can.
+        """
+        if not self.data.message:
+            return False
+        is_method = (
+            not isinstance(self.data.message, str)
+            and self.data.message.is_method()
+        )
+        if is_method:
+            return False
+        if isinstance(self.data.message, str):
+            if self.data.message and self.data.message_content:
+                return True
+            return False
+        return False
+
     def as_handoff(
         self,
     ) -> WaldiezHandoff:

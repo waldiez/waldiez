@@ -117,11 +117,12 @@ class ChatsProcessor:
         if len(self._chats.main) == 0 and self._root_group_manager is not None:
             return True
         if len(self._chats.main) == 1:
-            main_chat = self._chats.main[0]
-            sender = main_chat["source"]
-            recipient = main_chat["target"]
-            if recipient.is_group_manager or sender.is_group_member:
-                return True
+            connection = self._chats.main[0]
+            return connection["chat"].can_be_used_on_group_pattern()
+            # sender = main_chat["source"]
+            # recipient = main_chat["target"]
+            # if recipient.is_group_manager or sender.is_group_member:
+            #     return True
         return False
 
     def process(self) -> None:
@@ -162,7 +163,7 @@ class ChatsProcessor:
             recipient = main_chat["target"]
             if (
                 isinstance(recipient, WaldiezGroupManager)
-                and not chat.message.is_method()
+                and chat.can_be_used_on_group_pattern()
             ):
                 chat_massage_string: str | None = None
                 before_chat = f'{message_var} = ""'

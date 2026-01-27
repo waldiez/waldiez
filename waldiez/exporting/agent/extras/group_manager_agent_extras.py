@@ -131,10 +131,9 @@ class GroupManagerProcessor:
             return True
 
         first_chat = initial_chats[0]["chat"]
-        return (
-            isinstance(first_chat.data.message, str)
-            or not first_chat.data.message.is_method()
-        )
+        if not first_chat:
+            return True
+        return first_chat.can_be_used_on_group_pattern()
 
     def _determine_strategy(self) -> GroupManagerStrategy:
         """Determine which strategy to use for this group manager."""

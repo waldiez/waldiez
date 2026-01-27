@@ -279,10 +279,7 @@ class Waldiez:
             return True
 
         first_chat = self.initial_chats[0]["chat"]
-        return (
-            isinstance(first_chat.data.message, str)
-            or not first_chat.data.message.is_method()
-        )
+        return first_chat.can_be_used_on_group_pattern()
 
     @property
     def agents(self) -> Iterator[WaldiezAgent]:
