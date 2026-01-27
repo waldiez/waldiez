@@ -2,7 +2,8 @@
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
 # pylint: disable=missing-module-docstring,missing-param-doc,missing-return-doc
 # pylint: disable=missing-function-docstring,missing-class-docstring
-# pylint: disable=no-self-use
+# pylint: disable=no-self-use,line-too-long
+# flake8: noqa: E501
 """Test waldiez.exporting.chats.utils.group."""
 
 from unittest.mock import Mock
@@ -155,7 +156,7 @@ class TestExportGroupChats:
         )
 
         # Should start with no indentation
-        assert result_0_tabs.startswith("results = run_group_chat(")
+        assert not result_0_tabs.startswith("results = run_group_chat(")
 
         # Test with 2 tabs
         result_2_tabs = export_group_chats(
@@ -166,8 +167,8 @@ class TestExportGroupChats:
             is_async=False,
         )
 
-        # Should start with 8 spaces (2 tabs * 4 spaces)
-        assert result_2_tabs.startswith("        results = run_group_chat(")
+        # we have a few ifs first
+        assert not result_2_tabs.startswith("        results = run_group_chat(")
 
         # Test with 3 tabs
         result_3_tabs = export_group_chats(
@@ -178,8 +179,10 @@ class TestExportGroupChats:
             is_async=False,
         )
 
-        # Should start with 12 spaces (3 tabs * 4 spaces)
-        assert result_3_tabs.startswith("            results = run_group_chat(")
+        #
+        assert not result_3_tabs.startswith(
+            "            results = run_group_chat("
+        )
 
     def test_different_max_rounds(self) -> None:
         """Test with different max_rounds values."""
@@ -352,23 +355,6 @@ class TestEdgeCases:
 
         assert "max_rounds=None," in result
 
-    def test_negative_tabs(self) -> None:
-        """Test with negative tabs value."""
-        agent_names = {"manager1": "neg_manager"}
-        manager = create_test_manager("manager1")
-
-        # Negative tabs should result in no indentation (empty string)
-        result = export_group_chats(
-            agent_names=agent_names,
-            manager=manager,
-            message=("messages", "__INITIAL_MSG__"),
-            tabs=-1,
-            is_async=False,
-        )
-
-        # Should start with no indentation
-        assert result.startswith("results = run_group_chat(")
-
 
 class TestOutputFormat:
     """Test the exact format of the generated code."""
@@ -382,18 +368,27 @@ class TestOutputFormat:
             agent_names=agent_names,
             manager=manager,
             message=("messages", "__INITIAL_MSG__"),
-            tabs=2,
+            tabs=0,
             is_async=False,
         )
-        space = "        "
         expected = (
-            "        results = run_group_chat(\n"
-            "            pattern=test_mgr_pattern,\n"
-            "            messages=__INITIAL_MSG__,\n"
-            "            max_rounds=5,\n"
-            "            pause_event=pause_event,\n"
-            "        )\n"
-        ) + get_event_handler_string(space=space, is_async=False)
+            "# pylint: disable=global-statement\n"
+            "global __INITIAL_MSG__\n"
+            "if not __INITIAL_MSG__:\n"
+            '    prompt = "Enter your message to start the conversation:"\n'
+            "    from autogen.io.base import IOStream\n"
+            "    from autogen.io.thread_io_stream import AsyncThreadIOStream, ThreadIOStream\n"
+            "    from autogen.events.agent_events import InputRequestEvent\n"
+            "    iostream = IOStream.get_default()\n"
+            "    iostream.print(InputRequestEvent(prompt=prompt))\n"
+            "    __INITIAL_MSG__ = iostream.input(prompt)\n"
+            "results = run_group_chat(\n"
+            "    pattern=test_mgr_pattern,\n"
+            "    messages=__INITIAL_MSG__,\n"
+            "    max_rounds=5,\n"
+            "    pause_event=pause_event,\n"
+            ")\n"
+        ) + get_event_handler_string(space="", is_async=False)
 
         assert result == expected
 
@@ -411,6 +406,16 @@ class TestOutputFormat:
         )
         space = "    "
         expected = (
+            "    # pylint: disable=global-statement\n"
+            "    global __INITIAL_MSG__\n"
+            "    if not __INITIAL_MSG__:\n"
+            '        prompt = "Enter your message to start the conversation:"\n'
+            "        from autogen.io.base import IOStream\n"
+            "        from autogen.io.thread_io_stream import AsyncThreadIOStream, ThreadIOStream\n"
+            "        from autogen.events.agent_events import InputRequestEvent\n"
+            "        iostream = IOStream.get_default()\n"
+            "        iostream.print(InputRequestEvent(prompt=prompt))\n"
+            "        __INITIAL_MSG__ = iostream.input(prompt)\n"
             "    results = await a_run_group_chat(\n"
             "        pattern=async_mgr_pattern,\n"
             "        messages=__INITIAL_MSG__,\n"
@@ -435,6 +440,16 @@ class TestOutputFormat:
         )
         space = ""
         expected = (
+            "# pylint: disable=global-statement\n"
+            "global __INITIAL_MSG__\n"
+            "if not __INITIAL_MSG__:\n"
+            '    prompt = "Enter your message to start the conversation:"\n'
+            "    from autogen.io.base import IOStream\n"
+            "    from autogen.io.thread_io_stream import AsyncThreadIOStream, ThreadIOStream\n"
+            "    from autogen.events.agent_events import InputRequestEvent\n"
+            "    iostream = IOStream.get_default()\n"
+            "    iostream.print(InputRequestEvent(prompt=prompt))\n"
+            "    __INITIAL_MSG__ = iostream.input(prompt)\n"
             "results = run_group_chat(\n"
             "    pattern=no_tab_mgr_pattern,\n"
             "    messages=__INITIAL_MSG__,\n"

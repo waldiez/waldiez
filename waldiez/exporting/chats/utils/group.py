@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
 
+# flake8: noqa: E501
+
 """Exporting group chat utils.
 
 Using the group patterns (no group manager agent)
@@ -44,7 +46,22 @@ def export_group_chats(
         run_group_chat = "await a_run_group_chat"
     manager_name = agent_names[manager.id]
     pattern_name = f"{manager_name}_pattern"
-    content: str = f"{space}results = {run_group_chat}(" + "\n"
+    content: str = ""
+    if message:
+        in_space = f"{space}    "
+        # fmt: off
+        # pylint: disable=line-too-long
+        content += f"{space}# pylint: disable=global-statement\n"
+        content += f"{space}global {message[1]}\n"
+        content += f"{space}if not {message[1]}:\n"
+        content += f'{in_space}prompt = "Enter your message to start the conversation:"\n'
+        content += f"{in_space}from autogen.io.base import IOStream\n"
+        content += f"{in_space}from autogen.io.thread_io_stream import AsyncThreadIOStream, ThreadIOStream\n"
+        content += f"{in_space}from autogen.events.agent_events import InputRequestEvent\n"
+        content += f"{in_space}iostream = IOStream.get_default()\n"
+        content += f"{in_space}iostream.print(InputRequestEvent(prompt=prompt))\n"
+        content += f"{in_space}{message[1]} = iostream.input(prompt)\n"
+    content += f"{space}results = {run_group_chat}(" + "\n"
     content += f"{space}    pattern={pattern_name}," + "\n"
     if message:
         content += f"{space}    {message[0]}={message[1]},\n"

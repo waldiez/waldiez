@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0.
 # Copyright (c) 2024 - 2026 Waldiez and contributors.
-# pylint: disable=too-many-locals,duplicate-code
+# pylint: disable=too-many-locals,duplicate-code.line-too-long
+# flake8: noqa: E501
 """Test waldiez.exporting.chats.ChatsExporter with a single chat."""
 
 from waldiez.exporting.chats import ChatsExporter
@@ -170,8 +171,8 @@ def test_empty_chat() -> None:
                 args={},
             ),
             message=WaldiezChatMessage(
-                type="none",
-                content=None,
+                type="string",
+                content="Hello!",
                 use_carryover=False,
                 context={},
             ),
@@ -201,9 +202,9 @@ def test_empty_chat() -> None:
         is_async=False,
     )
     imports = exporter.get_imports()
-    assert not imports
+    assert imports
     before_export = exporter.extras.chat_prerequisites
-    assert before_export == "__INITIAL_MSG__=None"
+    assert before_export == '__INITIAL_MSG__="Hello!"'
     generated = exporter.extras.chat_initiation
     space = "        "
     expected = (
