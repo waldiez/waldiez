@@ -35,13 +35,13 @@ dependencies = [
   "numpy>2",
   "nest_asyncio==1.6.0",
   "graphviz<=0.21",
-  "pandas>2",
+  "pandas>2,<3",
   "pillow",
   "pip>=25.1",
   "jupytext",
   "packaging==26.0",
   "parso==0.8.5",
-  "psutil==7.2.1",
+  "psutil==7.2.2",
   "rpds-py==0.30.0",
   "platformdirs==4.5.1",
   "pydantic>=2.10,<3",
@@ -392,6 +392,7 @@ override-dependencies = [
   "waldiez-studio",
   "waldiez-runner; python_version >= '3.11'",
   "jupyterlab==4.5.3",
+  "psutil==7.2.2",
 ]
 
 # pip-tools

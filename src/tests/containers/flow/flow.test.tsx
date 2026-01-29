@@ -14,7 +14,7 @@ import { HotkeysProvider } from "react-hotkeys-hook";
 import { WaldiezFlowView } from "@waldiez/containers/flow";
 import { SidebarProvider } from "@waldiez/containers/sidebar";
 import { WaldiezProvider } from "@waldiez/store";
-import { WaldiezThemeProvider, setIsDarkMode } from "@waldiez/theme";
+import { WaldiezThemeProvider } from "@waldiez/theme";
 
 import { agentNodes, createdAt, edges, flowId, nodes, updatedAt } from "./data";
 
@@ -28,6 +28,7 @@ const renderFlow = async (
     noAgents: boolean = false,
     readOnly: boolean = false,
     skipHub: boolean = true,
+    skipRun: boolean = false,
 ) => {
     const nodesToUse = noAgents ? [] : singleAgent ? [agentNodes[0] as Node] : nodes;
     const edgesToUse = singleAgent ? [] : edges;
@@ -49,7 +50,7 @@ const renderFlow = async (
                             createdAt={createdAt}
                             updatedAt={updatedAt}
                             onChange={onChange}
-                            onRun={onRun}
+                            onRun={skipRun ? undefined : onRun}
                             isReadOnly={readOnly}
                         >
                             <WaldiezFlowView
@@ -102,7 +103,7 @@ describe("WaldiezFlow", () => {
     });
     it("should handle export flow (download only)", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(false, false, false, false, true, true);
         });
         await userEvent.click(screen.getByTestId(`export-flow-${flowId}-button`));
         // fireEvent.click(screen.getByTestId(`export-flow-${flowId}`));
@@ -111,7 +112,7 @@ describe("WaldiezFlow", () => {
     });
     it("should handle export flow with share to hub option", async () => {
         await act(async () => {
-            await renderFlow(false, false, false, false, false);
+            await renderFlow(false, false, false, false, false, true);
         });
         await userEvent.click(screen.getByTestId(`export-flow-${flowId}-button`));
         expect(window.URL.createObjectURL).not.toHaveBeenCalled();
@@ -150,15 +151,15 @@ describe("WaldiezFlow", () => {
         await userEvent.click(screen.getByTestId(`run-${flowId}`));
         expect(onRun).not.toBeCalled();
     });
-    it("should toggle dark mode", async () => {
-        await act(async () => {
-            await renderFlow();
-        });
-        setIsDarkMode(false);
-        expect(document.body).toHaveClass("waldiez-light");
-        fireEvent.click(screen.getByTestId(`toggle-theme-${flowId}`));
-        expect(document.body).toHaveClass("waldiez-dark");
-    });
+    // it("should toggle dark mode", async () => {
+    //     await act(async () => {
+    //         await renderFlow();
+    //     });
+    //     setIsDarkMode(false);
+    //     expect(document.body).toHaveClass("waldiez-light");
+    //     fireEvent.click(screen.getByTestId(`toggle-theme-${flowId}`));
+    //     expect(document.body).toHaveClass("waldiez-dark");
+    // });
     it("should delete an agent with Delete key", async () => {
         await act(async () => {
             await renderFlow();

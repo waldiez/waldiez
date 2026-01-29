@@ -28,10 +28,12 @@ export const renderFlow = async (
         onUserInput?: (userInput: WaldiezChatUserInput) => void;
         request_id?: string;
         previousMessages?: WaldiezChatMessage[];
+        skipRun?: boolean;
     } = {
         onUserInput: undefined,
         request_id: "request_id",
         previousMessages: [],
+        skipRun: false,
     },
 ) => {
     const nodesToUse = noAgents ? [] : singleAgent ? [agentNodes[0] as Node] : nodes;
@@ -67,7 +69,7 @@ export const renderFlow = async (
                                 createdAt={createdAt}
                                 updatedAt={updatedAt}
                                 onChange={onChange}
-                                onRun={onRun}
+                                onRun={options.skipRun ? undefined : onRun}
                             >
                                 <WaldiezFlowView
                                     flowId={flowId}

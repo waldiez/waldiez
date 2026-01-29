@@ -65,15 +65,17 @@ export const renderFlow = async (
     options: {
         withLinkedModels?: boolean;
         withLinkedTools?: boolean;
+        skipRun?: boolean;
     } = {
         withLinkedModels: false,
         withLinkedTools: false,
+        skipRun: false,
     },
 ) => {
     // const container = document.createElement("div");
     // document.body.appendChild(container);
     // const root = createRoot(container);
-    const { withLinkedModels, withLinkedTools } = options;
+    const { withLinkedModels, withLinkedTools, skipRun } = options;
     let nodesToUse = [...nodes];
     if (withLinkedModels) {
         nodesToUse = nodes.map(node => {
@@ -141,7 +143,7 @@ export const renderFlow = async (
                             createdAt={createdAt}
                             updatedAt={updatedAt}
                             onChange={onChange}
-                            onRun={onRun}
+                            onRun={skipRun ? undefined : onRun}
                             onConvert={onConvert}
                             onSave={onSave}
                         >

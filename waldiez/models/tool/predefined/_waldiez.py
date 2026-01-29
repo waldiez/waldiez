@@ -291,8 +291,8 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_mmd=True,
                 skip_timeline=True,
                 skip_symlinks=True,
-                skip_logging=skip_logging,
                 message=message,
+                skip_logging=skip_logging,
             )
         else:
             result = await runner.a_run(
@@ -301,10 +301,21 @@ class WaldiezFlowToolImpl(PredefinedTool):
                 skip_mmd=True,
                 skip_timeline=True,
                 skip_symlinks=True,
-                skip_logging=skip_logging,
                 message=message,
+                skip_logging=skip_logging,
             )
 """
+
+        # output_path: str | Path | None = None,
+        # uploads_root: str | Path | None = None,
+        # structured_io: bool | None = None,
+        # message: str | None = None,
+        # skip_mmd: bool = False,
+        # skip_timeline: bool = False,
+        # skip_symlinks: bool = False,
+        # skip_deps: bool | None = None,
+        # dot_env: str | Path | None = None,
+        # **kwargs: Any,
         else:
             content += f"""
         if message:

@@ -37,7 +37,7 @@ describe("Import flow modal load step", () => {
     // noinspection DuplicatedCode
     it("should open and close the modal", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
         const modalTestId = `import-flow-modal-${flowId}`;
@@ -49,13 +49,13 @@ describe("Import flow modal load step", () => {
     });
     it("should load a flow from a file", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         await loadFlow();
     });
     it("should clear the loaded flow data", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         await loadFlow();
         const clearButton = screen.getByTestId("clear-loaded-flow-data");
@@ -65,7 +65,7 @@ describe("Import flow modal load step", () => {
     });
     it("should close with the back button", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         await loadFlow();
         let backButton = screen.getByTestId("wizard-back-btn");
@@ -115,7 +115,7 @@ describe("Import flow modal search flow", () => {
 
     it("should display the search collapsible expanded by default", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
         const searchCollapsible = screen.getByTestId(`import-flow-modal-collapsible-search-${flowId}`);
@@ -127,7 +127,7 @@ describe("Import flow modal search flow", () => {
 
     it("should show warning when submitting empty search", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
         const searchSubmitButton = screen.getByTestId(`import-flow-modal-search-submit-${flowId}`);
@@ -141,7 +141,7 @@ describe("Import flow modal search flow", () => {
 
     it("should search and display results", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
 
@@ -172,7 +172,7 @@ describe("Import flow modal search flow", () => {
 
     it("should search on Enter key press", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
 
@@ -196,7 +196,7 @@ describe("Import flow modal search flow", () => {
 
     it("should display tags in search results", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
 
@@ -236,7 +236,7 @@ describe("Import flow modal search flow", () => {
             );
 
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
 
@@ -283,7 +283,7 @@ describe("Import flow modal search flow", () => {
         const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
 
@@ -312,7 +312,7 @@ describe("Import flow modal search flow", () => {
         const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
 
@@ -354,7 +354,7 @@ describe("Import flow modal search flow", () => {
         const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
 
@@ -399,7 +399,7 @@ describe("Import flow modal URL loading", () => {
 
     it("should have URL input disabled until valid https URL is entered", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
 
@@ -434,7 +434,7 @@ describe("Import flow modal URL loading", () => {
         );
 
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
 
@@ -477,7 +477,7 @@ describe("Import flow modal URL loading", () => {
         const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
 
@@ -507,7 +507,7 @@ describe("Import flow modal URL loading", () => {
 
     it("should display warning about untrusted sources", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
 

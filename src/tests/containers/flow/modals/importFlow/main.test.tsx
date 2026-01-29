@@ -18,7 +18,7 @@ describe("Sidebar Import flow modal", () => {
     // noinspection DuplicatedCode
     it("should open and close the modal", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
         const modalTestId = `import-flow-modal-${flowId}`;
@@ -30,7 +30,7 @@ describe("Sidebar Import flow modal", () => {
     });
     it("should not display the preview step if the flow data is not loaded", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         fireEvent.click(screen.getByTestId(`import-flow-${flowId}-button`));
         const modalTestId = `import-flow-modal-${flowId}`;

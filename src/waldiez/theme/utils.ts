@@ -12,20 +12,31 @@ export const isInitiallyDark = () => {
     if (typeof window === "undefined") {
         return false;
     }
-    if ("localStorage" in window) {
-        if (localStorage.getItem("waldiez-theme") === "dark") {
-            return true;
-        }
-        if (localStorage.getItem("waldiez-theme") === "light") {
-            return false;
+
+    const ls = window.localStorage as unknown;
+
+    if (ls && typeof (ls as Storage).getItem === "function") {
+        // In some environments accessing localStorage can throw (privacy mode / disabled)
+        try {
+            const stored = (ls as Storage).getItem("waldiez-theme");
+            if (stored === "dark") {
+                return true;
+            }
+            if (stored === "light") {
+                return false;
+            }
+        } catch {
+            // ignore storage failures
         }
     }
+
     if (document.body.classList.contains("waldiez-dark")) {
         return true;
     }
     if (document.body.classList.contains("waldiez-light")) {
         return false;
     }
+
     const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
     return darkQuery.matches;
 };
@@ -67,7 +78,18 @@ const setDocumentClass = (isDark: boolean) => {
  * @param isDark - boolean - True for dark mode, false for light mode.
  */
 const setStorageTheme = (isDark: boolean) => {
-    if (typeof window !== "undefined" && "localStorage" in window) {
-        localStorage.setItem("waldiez-theme", isDark ? "dark" : "light");
+    /* c8 ignore next 3 -- @preserve */
+    if (typeof window === "undefined") {
+        return;
+    }
+
+    const ls = window.localStorage as unknown;
+
+    if (ls && typeof (ls as Storage).setItem === "function") {
+        try {
+            (ls as Storage).setItem("waldiez-theme", isDark ? "dark" : "light");
+        } catch {
+            // ignore storage failures (disabled, quota, privacy mode)
+        }
     }
 };

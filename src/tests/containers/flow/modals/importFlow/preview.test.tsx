@@ -15,7 +15,7 @@ afterEach(() => {
 describe("Sidebar Import flow modal preview step", () => {
     it("should display loaded flow data", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         await loadFlow();
         const importEverythingCheckbox = screen.getByTestId(`import-flow-modal-everything-${flowId}`);
@@ -29,7 +29,7 @@ describe("Sidebar Import flow modal preview step", () => {
     // we probably want to test the rest of the view (selecting what to import/override)
     it("should submit the flow data", async () => {
         await act(async () => {
-            await renderFlow();
+            await renderFlow(undefined, undefined, undefined, { skipRun: true });
         });
         await loadFlow();
         const submitButton = screen.getByTestId("wizard-next-btn");

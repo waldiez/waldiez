@@ -53,14 +53,29 @@ const renderToolNode = (skipStoredNodes = false, includeSecrets = false, goToAdv
         fireEvent.click(advancedTab);
     }
 };
-
-const getItemSpy = vi.spyOn(Storage.prototype, "getItem");
-const setItemSpy = vi.spyOn(Storage.prototype, "setItem");
+let getItemSpy: any;
+let setItemSpy: any;
 
 describe("WaldiezNodeTool", () => {
     beforeEach(() => {
-        getItemSpy.mockClear();
-        setItemSpy.mockClear();
+        Object.defineProperty(window, "localStorage", {
+            value: {
+                getItem: vi.fn(() => null),
+                setItem: vi.fn(),
+                removeItem: vi.fn(),
+                clear: vi.fn(),
+            },
+            writable: true,
+            configurable: true,
+        });
+
+        getItemSpy = vi.spyOn(window.localStorage, "getItem");
+        setItemSpy = vi.spyOn(window.localStorage, "setItem");
+    });
+
+    afterEach(() => {
+        getItemSpy.mockRestore();
+        setItemSpy.mockRestore();
     });
     it("should render", () => {
         renderToolNode();
@@ -132,7 +147,7 @@ describe("WaldiezNodeTool", () => {
         const openButton = screen.getByTestId(`open-tool-node-modal-${toolId}`);
         fireEvent.click(openButton);
         const editor = screen.getByTestId("mocked-monaco-editor");
-        expect(editor).toHaveClass("vs-light");
+        expect(editor).toHaveClass("light");
         getItemSpy.mockReset();
     });
 });

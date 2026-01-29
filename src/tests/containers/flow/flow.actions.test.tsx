@@ -68,7 +68,9 @@ describe("Flow Convert", () => {
     it("should convert the flow to python", async () => {
         onConvert.mockClear();
         await act(async () => {
-            await renderFlow();
+            await renderFlow({
+                skipRun: true,
+            });
         });
         fireEvent.click(screen.getByTestId("show-agents"));
         const convertToPyButton = screen.getByTestId(`convert-${flowId}-to-py`);
@@ -81,7 +83,9 @@ describe("Flow Convert", () => {
     it("should convert the flow to ipynb", async () => {
         onConvert.mockClear();
         await act(async () => {
-            await renderFlow();
+            await renderFlow({
+                skipRun: true,
+            });
         });
         fireEvent.click(screen.getByTestId("show-agents"));
         const convertToIpynbButton = screen.getByTestId(`convert-${flowId}-to-ipynb`);

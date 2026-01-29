@@ -13,7 +13,7 @@ export const CodeEditor: FC<{
 }> = (props: { value: string; onChange: (value: string | undefined) => void; darkMode: boolean }) => {
     const { value, onChange, darkMode } = props;
 
-    const theme = darkMode ? "vs-dark" : "vs-light";
+    const theme = darkMode ? "vs-dark" : "light";
 
     return (
         <div className="code-editor">

@@ -1,0 +1,73 @@
+/* stylelint-disable-next-line selector-class-pattern */
+.editor-nav-actions--compact {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  /* Make it feel less “floating” on Retina */
+  padding: 6px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--background) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+}
+
+/* stylelint-disable-next-line selector-class-pattern */
+.editor-nav-action--primary {
+  /* your call: slightly larger, or same size but higher contrast */
+  transform: scale(1.02);
+}
+
+.editor-nav-menu {
+  position: relative;
+}
+
+.editor-nav-menu__popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  border-radius: 12px;
+  padding: 6px;
+  background: var(--background);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 35%);
+  z-index: 10;
+}
+
+.editor-nav-menu__item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+.editor-nav-menu__item:hover {
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+
+.editor-nav-menu__sep {
+  height: 1px;
+  margin: 6px 4px;
+  background: color-mix(in srgb, var(--border) 80%, transparent);
+}
+
+.editor-nav-menu__icon {
+  width: 20px;
+  display: grid;
+  place-items: center;
+}
+
+.editor-nav-menu__label {
+  flex: 1;
+  text-align: left;
+  font-size: 13px;
+}
