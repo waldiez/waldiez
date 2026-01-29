@@ -27,14 +27,16 @@ export const WaldiezWrapper: FC<WaldiezWrapperProps> = ({
     const onError = useCallback((error: any) => {
         showSnackbar({ message: "Workflow Error", details: error, level: "error", withCloseButton: true });
     }, []);
-    const { chat, stepByStep, onRun, onStepRun, onConvert, onSave, checkpoints } = useWaldiezWrapper({
-        flowId: waldiezProps.flowId,
-        wsUrl,
-        protocols,
-        onError,
-    });
+    const { chat, stepByStep, onBenchmark, onRun, onStepRun, onConvert, onSave, checkpoints } =
+        useWaldiezWrapper({
+            flowId: waldiezProps.flowId,
+            wsUrl,
+            protocols,
+            onError,
+        });
     const completeProps: WaldiezProps = {
         ...waldiezProps,
+        onBenchmark,
         onRun,
         onStepRun,
         onSave,

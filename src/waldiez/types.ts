@@ -100,6 +100,7 @@ export type WaldiezProps = WaldiezFlowProps & {
         path?: string | null,
     ) => void;
     onConvert?: (flow: string, to: "py" | "ipynb", path?: string | null) => void;
+    onBenchmark?: ((flow: string, path?: string | null) => void | Promise<void>) | null;
     onSave?: (flow: string, path?: string | null) => void;
     checkpoints?: {
         get: (flowName: string) => Promise<Record<string, any> | null>;

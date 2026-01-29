@@ -33,6 +33,7 @@ import type { WaldiezProviderProps, WaldiezStore } from "@waldiez/store/types";
  * @param props.onRun - Callback for run events.
  * @param props.onStepRun - Callback for step run events.
  * @param props.onConvert - Callback for convert events.
+ * @param props.onBenchmark: - Callback for benchmarking the flow.
  * @param props.rfInstance - The React Flow instance.
  * @param props.isAsync - Whether the flow is asynchronous.
  * @param props.cacheSeed - Seed for caching purposes.
@@ -56,6 +57,7 @@ export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
     const onRun = props.onRun ?? null;
     const onStepRun = props.onStepRun ?? null;
     const onConvert = props.onConvert ?? null;
+    const onBenchmark = props.onBenchmark ?? null;
     const checkpoints = props.checkpoints ?? null;
     const rfInstance = props.rfInstance;
     const isReadOnly = typeof props.isReadOnly === "boolean" ? props.isReadOnly : false;
@@ -85,6 +87,7 @@ export function WaldiezProvider({ children, ...props }: WaldiezProviderProps) {
             onRun,
             onStepRun,
             onConvert,
+            onBenchmark,
             checkpoints,
         });
         return storeRef.current;

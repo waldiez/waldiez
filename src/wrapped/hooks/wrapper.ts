@@ -37,6 +37,7 @@ export const useWaldiezWrapper = ({
         path?: string | null,
     ) => void;
     onSave: (flowJson: string, path?: string | null) => void;
+    onBenchmark: ((flow: string, path?: string | null) => void | Promise<void>) | null;
     onConvert: (flowJson: string, to: "py" | "ipynb", path?: string | null) => void;
     sendMessage: (message: unknown) => boolean | void;
     checkpoints?: {
@@ -154,6 +155,10 @@ export const useWaldiezWrapper = ({
         messageSender.current?.({ type: "stop", session_id: sid, force: true });
         stepDispatchRef.current?.({ type: "RESET" });
     }, [getSessionId]);
+    const onBenchmark = useCallback(() => {
+        const sid = getSessionId() ?? "<unknown>";
+        console.debug("Benchmark for ", sid);
+    }, [getSessionId]);
     const {
         send: sendMessage,
         chat,
@@ -237,6 +242,7 @@ export const useWaldiezWrapper = ({
         onRun,
         onStepRun,
         onSave,
+        onBenchmark,
         reset,
         checkpoints: {
             get: onGetCheckpoints,

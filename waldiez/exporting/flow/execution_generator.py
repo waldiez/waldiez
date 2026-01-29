@@ -466,9 +466,11 @@ async def _prepare_resume(state_json: str | Path | None = None) -> None:
         else:
             flow_content += "        _prepare_resume(state_json)\n"
         if not is_async:
-            flow_content += "    results: list[RunResponseProtocol] | RunResponseProtocol = []\n"
+            flow_content += (
+                "    results: list[RunIterResponse] | RunIterResponse = []\n"
+            )
         else:
-            flow_content += "    results: list[AsyncRunResponseProtocol] | AsyncRunResponseProtocol = []\n"
+            flow_content += "    results: list[AsyncRunIterResponse] | AsyncRunIterResponse = []\n"
         flow_content += "    result_dicts: list[dict[str, Any]] = []\n"
         flow_content += "    a_pause_event = asyncio.Event()\n"
         flow_content += "    a_pause_event.set()\n"

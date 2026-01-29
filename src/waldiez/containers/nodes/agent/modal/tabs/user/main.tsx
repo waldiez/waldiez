@@ -7,7 +7,7 @@ import { type ChangeEvent, type FC, memo, useCallback } from "react";
 import { NumberInput, TabItem, TabItems, TextInput, TextareaInput } from "@waldiez/components";
 import { WaldiezAgentCodeExecution } from "@waldiez/containers/nodes/agent/modal/tabs/codeExecution";
 import { WaldiezAgentNestedChats } from "@waldiez/containers/nodes/agent/modal/tabs/nested";
-import { WaldiezAgentTools } from "@waldiez/containers/nodes/agent/modal/tabs/tools";
+import { WaldiezAgentTermination } from "@waldiez/containers/nodes/agent/modal/tabs/termination";
 import type {
     WaldiezAgentConnections,
     WaldiezNodeAgent,
@@ -27,7 +27,7 @@ export const WaldiezAgentUserTabs: FC<{
     showNestedChatsTab: boolean;
     agentConnections: WaldiezAgentConnections;
 }> = memo(props => {
-    const { id, flowId, data, tools, showNestedChatsTab, onDataChange, agentConnections, agents } = props;
+    const { id, flowId, data, tools, showNestedChatsTab, onDataChange, agentConnections } = props;
 
     const onNameChange = useCallback(
         (event: ChangeEvent<HTMLInputElement>) => {
@@ -96,6 +96,11 @@ export const WaldiezAgentUserTabs: FC<{
                         />
                     </div>
                 </TabItem>
+                <TabItem label="Termination" id={`wf-${flowId}-wa-${id}-termination`}>
+                    <div className="modal-tab-body">
+                        <WaldiezAgentTermination id={id} data={data} onDataChange={onDataChange} />
+                    </div>
+                </TabItem>
                 {/* Code Execution Tab */}
                 <TabItem label="Code Execution" id={`wf-${flowId}-wa-${id}-codeExecution`}>
                     <div className="modal-tab-body">
@@ -107,7 +112,7 @@ export const WaldiezAgentUserTabs: FC<{
                         />
                     </div>
                 </TabItem>
-                <TabItem label="Tools" id={`wf-${flowId}-wa-${id}-tools`}>
+                {/* <TabItem label="Tools" id={`wf-${flowId}-wa-${id}-tools`}>
                     <div className="modal-tab-body">
                         <WaldiezAgentTools
                             id={id}
@@ -118,7 +123,7 @@ export const WaldiezAgentUserTabs: FC<{
                             onDataChange={onDataChange}
                         />
                     </div>
-                </TabItem>
+                </TabItem> */}
                 {showNestedChatsTab && (
                     <TabItem label="Nested chat" id={`wf-${flowId}-wa-${id}-nested`}>
                         <div className="modal-tab-body">

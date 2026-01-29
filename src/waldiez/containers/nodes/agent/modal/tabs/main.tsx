@@ -93,13 +93,13 @@ export const WaldiezNodeAgentModalTabs = memo(
             agentTypeInfo;
         const isRemoteAndServerIsEnabled =
             isRemote && (data as WaldiezNodeAgentRemoteData).server.enabled === true;
-        let includeTools = !(isDocAgent && isGroupMember);
+        let includeTools = !(isDocAgent || isGroupMember);
         if (includeTools && isRemote && !INCLUDE_SERVER_OPTIONS) {
             // if remote and server is included
             includeTools = isRemoteAndServerIsEnabled;
         }
         const includeModelsTab = !isRemote || (isRemote && INCLUDE_SERVER_OPTIONS);
-        const includeCodeExecution = !isRemote || (isRemote && INCLUDE_SERVER_OPTIONS);
+        const includeCodeExecution = (!isRemote || (isRemote && INCLUDE_SERVER_OPTIONS)) && !isDocAgent;
         // Compute derived data
         const derivedData = useMemo(() => {
             // Get necessary data from store

@@ -63,6 +63,7 @@ PYLINT_RULES = [
 # including basedpyright specific (not pyright only) rules
 PYRIGHT_RULES = [
     "reportArgumentType",
+    "reportAssignmentType",
     "reportAttributeAccessIssue",
     "reportCallInDefaultInitializer",
     "reportConstantRedefinition",

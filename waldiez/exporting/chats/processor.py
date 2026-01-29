@@ -241,9 +241,13 @@ class ChatsProcessor:
         """
         if self.is_group_patterned():
             if self._is_async:
-                import_string = "from autogen.agentchat import a_run_group_chat"
+                import_string = (
+                    "from autogen.agentchat import a_run_group_chat_iter"
+                )
             else:
-                import_string = "from autogen.agentchat import run_group_chat"
+                import_string = (
+                    "from autogen.agentchat import run_group_chat_iter"
+                )
             self._extras.add_import(
                 ImportStatement(
                     statement=import_string, position=ImportPosition.THIRD_PARTY

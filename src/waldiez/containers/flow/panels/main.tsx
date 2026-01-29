@@ -61,6 +61,7 @@ export const WaldiezFlowPanels: FC<WaldiezFlowPanelsProps> = props => {
     const runner = useWaldiez(s => s.onRun);
     const stepRunner = useWaldiez(s => s.onStepRun);
     const onConvert = useWaldiez(s => s.onConvert);
+    const benchmarker = useWaldiez(s => s.onBenchmark);
 
     const isReadOnly = typeof readOnly === "boolean" ? readOnly : false;
 
@@ -70,7 +71,8 @@ export const WaldiezFlowPanels: FC<WaldiezFlowPanelsProps> = props => {
     const includeRun = !isReadOnly && typeof runner === "function";
     const includeStep = !isReadOnly && typeof stepRunner === "function";
     const includeConvert = !isReadOnly && typeof onConvert === "function";
-    const includeBenchmark = !isReadOnly && typeof onBenchmark === "function";
+    const includeBenchmark =
+        !isReadOnly && typeof benchmarker === "function" && typeof onBenchmark === "function";
 
     const { isDark, toggleTheme } = useWaldiezTheme();
 

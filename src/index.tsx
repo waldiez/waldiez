@@ -67,6 +67,10 @@ const devHandlers = {
     onConvert: (_flowString: string, to: "py" | "ipynb", _path?: string | null) => {
         console.info("[DEV] Converting flow to", to);
     },
+    // Handle benchmarking
+    onBenchmark: (_flowString: string, _path?: string | null) => {
+        console.info("[DEV] Benchmarking flow.");
+    },
 
     // Simulate file uploads with random success/failure
     onUpload: (files: File[]) => {
@@ -142,6 +146,7 @@ const defaultWaldiezProps: Partial<WaldiezProps> = {
               onRun: undefined,
               onStepRun: undefined,
               onConvert: undefined,
+              onBenchmark: undefined,
               onUpload: undefined,
               checkpoints: undefined,
           }

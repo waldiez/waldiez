@@ -201,7 +201,7 @@ def nested_chat_message(recipient, messages, sender, config):
     )
     exporter.export()
     expected = """
-        results = agent1.run(
+        results = agent1.run_iter(
             agent2,
             cache=cache,
             summary_method="last_msg",

@@ -48,7 +48,7 @@ class TestExportGroupChats:
         )
 
         expected_lines = [
-            "    results = run_group_chat(",
+            "    results = run_group_chat_iter(",
             "        pattern=chat_manager_pattern,",
             "        messages=__INITIAL_MSG__,",
             "        max_rounds=10,",
@@ -60,8 +60,8 @@ class TestExportGroupChats:
             assert line in result
 
         # Should not contain async function name
-        assert "a_run_group_chat" not in result
-        assert "run_group_chat(" in result
+        assert "a_run_group_chat_iter(" not in result
+        assert "run_group_chat_iter(" in result
 
     def test_basic_async_group_chat_no_initial_chat(self) -> None:
         """Test basic asynchronous group chat without initial chat."""
@@ -77,7 +77,7 @@ class TestExportGroupChats:
         )
 
         expected_lines = [
-            "    results = await a_run_group_chat(",
+            "    results = await a_run_group_chat_iter(",
             "        pattern=chat_manager_pattern,",
             "        messages=__INITIAL_MSG__,",
             "        max_rounds=5,",
@@ -88,8 +88,8 @@ class TestExportGroupChats:
         for line in expected_lines:
             assert line in result
 
-        assert "a_run_group_chat(" in result
-        assert " run_group_chat(" not in result
+        assert "a_run_group_chat_iter(" in result
+        assert " run_group_chat_iter(" not in result
 
     def test_sync_group_chat_with_initial_chat(self) -> None:
         """Test synchronous group chat with initial chat message."""
@@ -105,7 +105,7 @@ class TestExportGroupChats:
         )
 
         expected_lines = [
-            "    results = run_group_chat(",
+            "    results = run_group_chat_iter(",
             "        pattern=group_manager_pattern,",
             "        messages=__INITIAL_MSG__",
             "        max_rounds=15,",
@@ -130,7 +130,7 @@ class TestExportGroupChats:
         )
 
         expected_lines = [
-            "    results = await a_run_group_chat(",
+            "    results = await a_run_group_chat_iter(",
             "        pattern=async_manager_pattern,",
             "        messages=__INITIAL_MSG__,",
             "        max_rounds=20,",
@@ -156,7 +156,7 @@ class TestExportGroupChats:
         )
 
         # Should start with no indentation
-        assert not result_0_tabs.startswith("results = run_group_chat(")
+        assert not result_0_tabs.startswith("results = run_group_chat_iter(")
 
         # Test with 2 tabs
         result_2_tabs = export_group_chats(
@@ -168,7 +168,9 @@ class TestExportGroupChats:
         )
 
         # we have a few ifs first
-        assert not result_2_tabs.startswith("        results = run_group_chat(")
+        assert not result_2_tabs.startswith(
+            "        results = run_group_chat_iter("
+        )
 
         # Test with 3 tabs
         result_3_tabs = export_group_chats(
@@ -181,7 +183,7 @@ class TestExportGroupChats:
 
         #
         assert not result_3_tabs.startswith(
-            "            results = run_group_chat("
+            "            results = run_group_chat_iter("
         )
 
     def test_different_max_rounds(self) -> None:
@@ -382,7 +384,7 @@ class TestOutputFormat:
             "    iostream = IOStream.get_default()\n"
             "    iostream.print(InputRequestEvent(prompt=prompt))\n"
             "    __INITIAL_MSG__ = iostream.input(prompt)\n"
-            "results = run_group_chat(\n"
+            "results = run_group_chat_iter(\n"
             "    pattern=test_mgr_pattern,\n"
             "    messages=__INITIAL_MSG__,\n"
             "    max_rounds=5,\n"
@@ -416,7 +418,7 @@ class TestOutputFormat:
             "        iostream = IOStream.get_default()\n"
             "        iostream.print(InputRequestEvent(prompt=prompt))\n"
             "        __INITIAL_MSG__ = iostream.input(prompt)\n"
-            "    results = await a_run_group_chat(\n"
+            "    results = await a_run_group_chat_iter(\n"
             "        pattern=async_mgr_pattern,\n"
             "        messages=__INITIAL_MSG__,\n"
             "        max_rounds=3,\n"
@@ -450,7 +452,7 @@ class TestOutputFormat:
             "    iostream = IOStream.get_default()\n"
             "    iostream.print(InputRequestEvent(prompt=prompt))\n"
             "    __INITIAL_MSG__ = iostream.input(prompt)\n"
-            "results = run_group_chat(\n"
+            "results = run_group_chat_iter(\n"
             "    pattern=no_tab_mgr_pattern,\n"
             "    messages=__INITIAL_MSG__,\n"
             "    max_rounds=1,\n"

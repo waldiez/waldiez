@@ -4531,6 +4531,7 @@ export declare type WaldiezProps = WaldiezFlowProps & {
     onRun?: (flow: string, path?: string | null) => void;
     onStepRun?: (flow: string, breakpoints?: (string | WaldiezBreakpoint)[], checkpoint?: string | null, path?: string | null) => void;
     onConvert?: (flow: string, to: "py" | "ipynb", path?: string | null) => void;
+    onBenchmark?: ((flow: string, path?: string | null) => void | Promise<void>) | null;
     onSave?: (flow: string, path?: string | null) => void;
     checkpoints?: {
         get: (flowName: string) => Promise<Record<string, any> | null>;
@@ -5023,6 +5024,7 @@ export declare type WaldiezStoreProps = {
     previousViewport?: Viewport;
     onRun?: ((flow: string, path?: string | null) => void | Promise<void>) | null;
     onStepRun?: ((flow: string, breakpoints?: (string | WaldiezBreakpoint)[], checkpoint?: string | null, path?: string | null) => void | Promise<void>) | null;
+    onBenchmark?: ((flow: string, path?: string | null) => void | Promise<void>) | null;
     onConvert?: ((flow: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>) | null;
     onUpload?: ((files: File[], path?: string | null) => string[] | Promise<string[]>) | null;
     onChange?: ((content: string, path?: string | null) => void | Promise<void>) | null;

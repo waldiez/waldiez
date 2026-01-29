@@ -77,6 +77,7 @@ export type WaldiezStoreProps = {
               path?: string | null,
           ) => void | Promise<void>)
         | null; // handler for running the flow in step-by-step mode (send to backend)
+    onBenchmark?: ((flow: string, path?: string | null) => void | Promise<void>) | null; // handler for benchmarking a flow (send to backend)
     onConvert?: ((flow: string, to: "py" | "ipynb", path?: string | null) => void | Promise<void>) | null; // handler for converting the flow (send to backend)
     onUpload?: ((files: File[], path?: string | null) => string[] | Promise<string[]>) | null; // handler for file uploads (send to backend)
     onChange?: ((content: string, path?: string | null) => void | Promise<void>) | null; // handler for changes in the flow (send to backend)

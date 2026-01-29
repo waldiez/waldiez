@@ -48,6 +48,8 @@ COMMON_AUTOGEN_IMPORTS = [
     "from autogen.agentchat.group.patterns.pattern import Pattern",
     "from autogen.io.run_response import RunResponseProtocol",
     "from autogen.io.run_response import AsyncRunResponseProtocol",
+    "from autogen.io.run_response import RunIterResponse",
+    "from autogen.io.run_response import AsyncRunIterResponse",
 ]
 
 

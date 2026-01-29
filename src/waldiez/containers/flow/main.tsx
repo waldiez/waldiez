@@ -15,6 +15,7 @@ import {
 } from "react";
 
 // import { StepByStepView } from "@waldiez/components";
+import { showSnackbar } from "@waldiez/components";
 import type { WaldiezStepByStep } from "@waldiez/components/types";
 import { useDnD, useFlowEvents, useKeys } from "@waldiez/containers/flow/hooks";
 import {
@@ -255,6 +256,18 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
         [onSetCheckpoint],
     );
 
+    const handleBenchmark = useCallback(
+        async (_?: string | null) => {
+            showSnackbar({
+                flowId,
+                message: "Not yet :(",
+                level: "warning",
+                duration: 5000,
+            });
+        },
+        [flowId],
+    );
+
     // Get drag and drop handlers
     const { onDragOver, onDrop, onNodeDrag, onNodeDragStop } = useDnD(onNewAgent);
 
@@ -320,6 +333,7 @@ export const WaldiezFlowView = memo<WaldiezFlowViewProps>((props: WaldiezFlowVie
                             onConvertToIpynb={convertToIpynb}
                             onOpenImportModal={onOpenImportModal}
                             onExport={handleExport}
+                            onBenchmark={handleBenchmark}
                         />
                         <div className="hidden" data-testid={`drop-area-${flowId}`} />
                         <Background variant={BackgroundVariant.Dots} />

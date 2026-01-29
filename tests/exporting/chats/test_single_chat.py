@@ -112,7 +112,7 @@ def callable_message(sender, recipient, context):
     assert not after_export
     generated = exporter.extras.chat_initiation
     expected = """
-        results = agent1.run(
+        results = agent1.run_iter(
             agent2,
             cache=cache,
             summary_method="reflection_with_llm",
@@ -208,7 +208,7 @@ def test_empty_chat() -> None:
     generated = exporter.extras.chat_initiation
     space = "        "
     expected = (
-        f"\n{space}results = agent1.run("
+        f"\n{space}results = agent1.run_iter("
         f"\n{space}    agent2,"
         f"\n{space}    cache=cache,"
         f"\n{space}    clear_history=True,"
@@ -312,7 +312,7 @@ def test_chat_with_rag_and_carryover() -> None:
     space = tab * 2
     expected = (
         "\n"
-        f"{space}results = {agent1_name}.run("
+        f"{space}results = {agent1_name}.run_iter("
         "\n"
         f"{space}{tab}{agent2_name},"
         "\n"
@@ -414,7 +414,7 @@ def test_chat_with_rag_no_carryover() -> None:
     space = tab * 2
     expected = (
         "\n"
-        f"{space}results = {agent1_name}.run("
+        f"{space}results = {agent1_name}.run_iter("
         "\n"
         f"{space}{tab}{agent2_name},"
         "\n"

@@ -73,6 +73,7 @@ describe("Groups tab", () => {
         const joinGroupButton = screen.getByTestId(`join-group-button-agent-${agentId}`);
         expect(joinGroupButton).toBeInTheDocument();
         fireEvent.click(joinGroupButton);
+        goToGroupsTab();
         await waitFor(() => {
             // Check if the group is displayed
             const currentGroup = screen.getByTestId(`group-label-agent-${agentId}`);
@@ -92,6 +93,7 @@ describe("Groups tab", () => {
         const leaveGroupButton = screen.getByTestId(`leave-group-button-agent-${agentId}`);
         expect(leaveGroupButton).toBeInTheDocument();
         fireEvent.click(leaveGroupButton);
+        goToGroupsTab();
         await waitFor(() => {
             // select the group to join
             expect(screen.getByLabelText("Group:")).toBeInTheDocument();
@@ -114,6 +116,7 @@ describe("Groups tab", () => {
         expect(joinGroupButton).toBeInTheDocument();
         fireEvent.click(joinGroupButton);
         // Check if the group is displayed
+        goToGroupsTab();
         await waitFor(() => {
             expect(screen.queryByTestId(`leave-group-button-agent-${agentId}`)).toBeInTheDocument();
         });
