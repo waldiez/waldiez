@@ -1,14 +1,23 @@
 ---
 nav:
   - Home: index.md
-  - Getting Started:
+#  - Quick Start: quickstart/index.md
+  - User Guide:
       - Getting Started: usage/index.md
       - Models: usage/models.md
       - Tools: usage/tools.md
-      - Agents: usage/agents.md
       - Flow: usage/flow.md
       - Running and Troubleshooting: usage/run.md
       - Convert: usage/convert.md
+  - Agents:
+      - Agent Overview: agents/index.md
+      - User Agent: agents/user_agent.md
+      - Assistant Agent: agents/assistant_agent.md
+      - Docs Agent: agents/docs_agent.md
+      - Reasoning Agent: agents/reasoning_agent.md
+      - Captain Agent: agents/captain_agent.md
+      - Group Manager: agents/group_manager.md
+      - Remote Agent: agents/remote_agent.md
   - Examples:
       - Examples: examples/index.md
       - Standup Comedians: examples/1.md
@@ -25,6 +34,6 @@ nav:
       - React: reference/react/
   - Get Involved:
       - Contribute: contribute/index.md
-  - Blog:
-      - Blog: blog/index.md
+#  - Blog:
+#      - Blog: blog/index.md
   - "Playground 🛝": https://waldiez.github.io

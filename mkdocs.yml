@@ -46,6 +46,11 @@ theme:
   extra:
     homepage: https://docs.waldiez.io
 
+  font:
+    text: Roboto
+    code: JetBrains Mono
+
+
 markdown_extensions:
   - toc:
       permalink: true
@@ -82,7 +87,9 @@ plugins:
   - awesome-nav
   - minify_html
   - open-in-new-tab
-  - macros
+  - macros:
+      modules: 
+        - docs.macros.waldiez
   - autorefs
   - privacy
   - offline
@@ -130,11 +137,20 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/waldiez/waldiez
-    - icon: fontawesome/brands/x-twitter
-      link: https://x.com/Waldiez_io
+      name: GitHub
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/company/waldiez
+      name: LinkedIn
     - icon: fontawesome/brands/youtube
       link: https://www.youtube.com/@waldiez
-    - icon: fontawesome/brands/instagram
-      link: https://www.instagram.com/waldiez
+      name: YouTube
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/Waldiez_io
+      name: X
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/9t8he3Er3a
+      name: Discord
+    - icon: material/web
+      link: https://waldiez.io
+      name: Official website
+
