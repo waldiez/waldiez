@@ -50,7 +50,6 @@ theme:
     text: Roboto
     code: JetBrains Mono
 
-
 markdown_extensions:
   - toc:
       permalink: true
@@ -88,7 +87,7 @@ plugins:
   - minify_html
   - open-in-new-tab
   - macros:
-      modules: 
+      modules:
         - docs.macros.waldiez
   - autorefs
   - privacy
@@ -153,4 +152,3 @@ extra:
     - icon: material/web
       link: https://waldiez.io
       name: Official website
-
