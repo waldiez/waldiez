@@ -179,14 +179,14 @@
 
 /* Sentence line */
 .wz-display-title:not(.wz-brand-title) {
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
   opacity: 0.65;
   margin-bottom: 6px;
 }
 
 /* Waldiez line */
 .wz-brand-title {
-  font-size: clamp(3.8rem, 7.5vw, 5.6rem);
+  font-size: clamp(1.5rem, 4.5vw, 3rem);
   line-height: 0.9;
   letter-spacing: -0.04em;
   margin-top: -0.15em;
