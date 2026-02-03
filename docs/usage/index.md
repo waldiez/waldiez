@@ -1,16 +1,17 @@
 
-## 🚀 Getting Started with Waldiez
+# 🚀 Getting Started with Waldiez
 
 You can use Waldiez in one of the following ways — pick the one that works best for you:
 
-1. 🌐 Use the [Playground](https://waldiez.github.io) – no installation required
-2. 🐍 Install from [PyPI](https://pypi.org/project/waldiez/) – for full control and customization
-3. 🐳 Use [Docker](https://hub.docker.com/u/waldiez) – no setup, great for reproducibility
-4. 📦 Use the [JupyterLab](https://github.com/waldiez/jupyter.git) extension – for interactive notebooks
-5. 🖥️ Use the Visual Studio Code [extension](https://marketplace.visualstudio.com/items?itemName=Waldiez.waldiez-vscode) – for a familiar IDE experience
-6. 🎬 Use Waldiez [Studio](https://github.com/waldiez/studio) – for a FastAPI-based web UI
+1. 🌐 **[Use the Playground](#playground)** — no installation required  
+2. 🐍 **[Install from PyPI](#pypi-install)** — for full control and customization  
+3. 🐳 **[Use Docker](#docker)** — no setup, great for reproducibility  
+4. 📦 **[Use the JupyterLab Extension](#jupyterlab)** — for interactive notebooks  
+5. 🖥️ **[Use the Visual Studio Code Extension](#vscode)** — for a familiar IDE experience  
+6. 🎬 **[Use Waldiez Studio](#studio)** — for a FastAPI-based web UI  
 
-### 🌐 1. Use the Playground (No Installation Required)
+
+## 🌐 1. Use the Playground (No Installation Required) <a id="playground"></a>
 
 You can visit the Playground at: <https://waldiez.github.io>
 
@@ -29,7 +30,7 @@ You can:
     - You **cannot run** or **export** flows from the Playground.
     - To convert flows to Python code or run them, use the PyPI or Docker options below.
 
-### 🐍 2. Install from PyPI (Recommended for Full Functionality)
+## 🐍 2. Install from PyPI (Recommended for Full Functionality) <a id="pypi-install"></a>
 
 If you want to create, convert, and run Waldiez flows locally — with full flexibility — install Waldiez using pip.
 
@@ -77,7 +78,7 @@ pip install waldiez[studio,jupyter]
     - Python >= 3.10, < 3.13
     - Optional: Docker/Podman if using containers later
 
-### 🐳 3. Use Docker (No Setup Required)
+## 🐳 3. Use Docker (No Setup Required) <a id="docker"></a>
 
 If you don’t want to install Python or manage dependencies, you can use Waldiez directly from prebuilt container images.
 
@@ -174,7 +175,7 @@ $CONTAINER_COMMAND run --rm -it \
         ```
     * 💬 If you run into any issues, feel free to open an issue on [Github](https://github.com/waldiez/waldiez/issues). We’re happy to help!
 
-### 📦 4. Use the JupyterLab Extension (for Interactive Notebooks)
+## 📦 4. Use the JupyterLab Extension (for Interactive Notebooks) <a id="jupyterlab"></a>
 
 If you're already working in JupyterLab or prefer a notebook-based environment, you can use the official Waldiez extension.
 
@@ -244,7 +245,7 @@ jupyter labextension list
     runner.run(output_path="output.py")
     ```
 
-### 🖥️ 5. Use the Visual Studio Code Extension (Familiar IDE Experience)
+## 🖥️ 5. Use the Visual Studio Code Extension (Familiar IDE Experience) <a id="vscode"></a>
 
 If you’re a VS Code user, you can work with Waldiez flows right inside your IDE using the official extension.
 
@@ -268,7 +269,7 @@ Marketplace link:
 Source code repo:  
 🔧 <https://github.com/waldiez/vscode>
 
-### 🎬 6. Use Waldiez Studio (FastAPI-based Web UI)
+## 🎬 6. Use Waldiez Studio (FastAPI-based Web UI) <a id="studio"></a>
 
 Waldiez Studio is a lightweight local web application that allows you to:
 
