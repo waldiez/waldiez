@@ -1,14 +1,18 @@
 """MkDocs macros for Waldiez documentation."""
 
+# pylint: skip-file
+
+from typing import Any
+
 import requests
 from requests.exceptions import RequestException
 
 
-def define_env(env):
+def define_env(env: Any) -> None:
     """Register custom MkDocs macros."""
 
-    @env.macro
-    def waldiez_version():
+    @env.macro  # type: ignore[untyped-decorator]
+    def waldiez_version() -> str:
         """Return the latest Waldiez release version from GitHub."""
         try:
             response = requests.get(
