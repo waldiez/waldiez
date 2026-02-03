@@ -87,8 +87,7 @@ plugins:
   - minify_html
   - open-in-new-tab
   - macros:
-      modules:
-        - docs.macros.waldiez
+      module_name: docs/macros/waldiez
   - autorefs
   - privacy
   - offline
