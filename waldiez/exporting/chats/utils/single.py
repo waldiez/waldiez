@@ -153,7 +153,7 @@ def get_simple_chat_string(
     if is_async:
         sender_name = f"await {sender_name}"
         initiate = "a_run"
-    initiate += "_iter"
+    initiate += ""
     recipient_name = agent_names[recipient.id]
     chat_string = "\n" + f"{tab}results = {sender_name}.{initiate}(" + "\n"
     chat_string += f"{tab}    {recipient_name},"
@@ -240,7 +240,7 @@ def get_empty_simple_chat_string(
     if is_async:
         sender_name = f"await {sender_name}"
     recipient_name = agent_names[recipient.id]
-    initiate = "a_run_iter" if is_async else "run_iter"
+    initiate = "a_run" if is_async else "run"
     content = "\n" + f"{tab}results = {sender_name}.{initiate}(" + "\n"
     content += f"{tab}    {recipient_name}," + "\n"
     if not skip_cache:
