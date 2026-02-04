@@ -1,5 +1,5 @@
 -r main.txt
-ag2[redis]==0.10.4
+ag2[redis]==0.10.5
 autoflake==2.3.1
 bandit==1.9.3
 basedpyright==1.37.2
@@ -14,7 +14,7 @@ jupyter_server==2.17.0
 jupyterlab==4.5.3
 mypy-extensions>=1.1.0
 mypy==1.19.1
-nbclient>=0.10.4
+nbclient>=0.10.3
 nbconvert>=7.16.6
 nbformat>=5.10.4
 nodeenv>=1.10.0

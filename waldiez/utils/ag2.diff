@@ -142,7 +142,7 @@ index 5ed5e6bc2a..d84d7ff2e9 100644
  
      def get_chat_results(self, chat_index: int | None = None) -> list[ChatResult] | ChatResult:
 diff --git a/autogen/agentchat/group/multi_agent_chat.py b/autogen/agentchat/group/multi_agent_chat.py
-index b1486c25ad..c1440d6240 100644
+index b1486c25ad..817a590370 100644
 --- a/autogen/agentchat/group/multi_agent_chat.py
 +++ b/autogen/agentchat/group/multi_agent_chat.py
 @@ -48,6 +48,7 @@ def initiate_group_chat(
@@ -289,8 +289,87 @@ index b1486c25ad..c1440d6240 100644
                  )
  
                  iostream.send(
+@@ -364,6 +391,7 @@ def run_group_chat_iter(
+     safeguard_llm_config: LLMConfig | None = None,
+     mask_llm_config: LLMConfig | None = None,
+     yield_on: Sequence[type["BaseEvent"]] | None = None,
++    pause_event: threading.Event | None = None,
+ ) -> RunIterResponse:
+     """Run a group chat with iterator-based stepped execution.
+ 
+@@ -386,6 +414,9 @@ def run_group_chat_iter(
+     Returns:
+         RunIterResponse: An iterator that yields events as they occur.
+     """
++    if pause_event is None:
++        pause_event = threading.Event()
++        pause_event.set()
+     all_agents = pattern.agents + ([pattern.user_agent] if pattern.user_agent else [])
+ 
+     def create_thread(iostream: ThreadIOStream) -> threading.Thread:
+@@ -399,6 +430,7 @@ def _initiate_group_chat() -> None:
+                         safeguard_policy=safeguard_policy,
+                         safeguard_llm_config=safeguard_llm_config,
+                         mask_llm_config=mask_llm_config,
++                        pause_event=pause_event,
+                     )
+ 
+                     IOStream.get_default().send(
+@@ -415,11 +447,13 @@ def _initiate_group_chat() -> None:
+ 
+         return threading.Thread(target=_initiate_group_chat, daemon=True)
+ 
+-    return RunIterResponse(
++    response = RunIterResponse(
+         start_thread_func=create_thread,
+         yield_on=yield_on,
+         agents=all_agents,
+     )
++    response.pause_event = pause_event
++    return response
+ 
+ 
+ @export_module("autogen.agentchat")
+@@ -431,6 +465,7 @@ def a_run_group_chat_iter(
+     safeguard_llm_config: LLMConfig | None = None,
+     mask_llm_config: LLMConfig | None = None,
+     yield_on: Sequence[type["BaseEvent"]] | None = None,
++    a_pause_event: asyncio.Event | None = None,
+ ) -> AsyncRunIterResponse:
+     """Async version of run_group_chat_iter for async contexts.
+ 
+@@ -453,6 +488,9 @@ def a_run_group_chat_iter(
+     Returns:
+         AsyncRunIterResponse: An async iterator that yields events as they occur.
+     """
++    if a_pause_event is None:
++        a_pause_event = asyncio.Event()
++        a_pause_event.set()
+     all_agents = pattern.agents + ([pattern.user_agent] if pattern.user_agent else [])
+ 
+     def create_thread(iostream: ThreadIOStream) -> threading.Thread:
+@@ -464,6 +502,7 @@ async def _async_initiate_group_chat() -> None:
+                 safeguard_policy=safeguard_policy,
+                 safeguard_llm_config=safeguard_llm_config,
+                 mask_llm_config=mask_llm_config,
++                a_pause_event=a_pause_event,
+             )
+ 
+             iostream.send(
+@@ -485,8 +524,10 @@ def _run_in_thread() -> None:
+ 
+         return threading.Thread(target=_run_in_thread, daemon=True)
+ 
+-    return AsyncRunIterResponse(
++    reponse = AsyncRunIterResponse(
+         start_thread_func=create_thread,
+         yield_on=yield_on,
+         agents=all_agents,
+     )
++    response.a_pause_event = a_pause_event
++    return response
 diff --git a/autogen/agentchat/groupchat.py b/autogen/agentchat/groupchat.py
-index d8520fbce0..9a803ea6e2 100644
+index 538a2d456b..fd68920860 100644
 --- a/autogen/agentchat/groupchat.py
 +++ b/autogen/agentchat/groupchat.py
 @@ -4,12 +4,15 @@
@@ -309,7 +388,7 @@ index d8520fbce0..9a803ea6e2 100644
  from collections.abc import Callable
  from dataclasses import dataclass, field
  from typing import Any, Literal
-@@ -1085,6 +1088,8 @@ def __init__(
+@@ -1091,6 +1094,8 @@ def __init__(
          human_input_mode: Literal["ALWAYS", "NEVER", "TERMINATE"] = "NEVER",
          system_message: str | list | None = "Group chat manager.",
          silent: bool = False,
@@ -318,7 +397,7 @@ index d8520fbce0..9a803ea6e2 100644
          **kwargs: Any,
      ):
          if (
-@@ -1110,6 +1115,8 @@ def __init__(
+@@ -1116,6 +1121,8 @@ def __init__(
  
          self._last_speaker = None
          self._silent = silent
@@ -327,7 +406,7 @@ index d8520fbce0..9a803ea6e2 100644
  
          # Order of register_reply is important.
          # Allow sync chat if initiated using initiate_chat
-@@ -1222,6 +1229,10 @@ def run_chat(
+@@ -1228,6 +1235,10 @@ def run_chat(
                  a.previous_cache = a.client_cache
                  a.client_cache = self.client_cache
          for i in range(groupchat.max_round):
@@ -338,7 +417,7 @@ index d8520fbce0..9a803ea6e2 100644
              self._last_speaker = speaker
              groupchat.append(message, speaker)
              # broadcast the message to all agents except the speaker
-@@ -1355,6 +1366,9 @@ async def a_run_chat(
+@@ -1361,6 +1372,9 @@ async def a_run_chat(
                  a.previous_cache = a.client_cache
                  a.client_cache = self.client_cache
          for i in range(groupchat.max_round):
