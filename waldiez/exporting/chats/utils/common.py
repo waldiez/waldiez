@@ -90,7 +90,7 @@ def get_event_handler_string(
     await_str = "await " if is_async else ""
     if is_async:
         content += (
-            f"{space}{tab}{tab}async for event in result:\n{_add_event_dump(space, tab)}"
+            f"{space}{tab}{tab}async for event in result.events:\n{_add_event_dump(space, tab)}"
             f"{space}{tab}{tab}{tab}if not got_agents:\n"
             f"{space}{tab}{tab}{tab}{tab}known_agents = _get_known_agents()\n"
             f"{space}{tab}{tab}{tab}{tab}got_agents = True\n"
@@ -106,7 +106,7 @@ def get_event_handler_string(
         )
     else:
         content += (
-            f"{space}{tab}{tab}for event in result:\n{_add_event_dump(space, tab)}"
+            f"{space}{tab}{tab}for event in result.events:\n{_add_event_dump(space, tab)}"
             f"{space}{tab}{tab}{tab}if not got_agents:\n"
             f"{space}{tab}{tab}{tab}{tab}known_agents = _get_known_agents()\n"
             f"{space}{tab}{tab}{tab}{tab}got_agents = True\n"
@@ -133,9 +133,15 @@ def get_event_handler_string(
         f"{space}{tab}{tab}result_events = []\n"
     )
     if is_async:
-        content += f"{space}{tab}{tab}async for event in result:\n"
+        content += (
+            f"{space}{tab}{tab}# await result.process()\n"
+            f"{space}{tab}{tab}async for event in result.events:\n"
+        )
     else:
-        content += f"{space}{tab}{tab}for event in result:\n"
+        content += (
+            f"{space}{tab}{tab}# result.process()\n"
+            f"{space}{tab}{tab}for event in result.events:\n"
+        )
     content += _add_event_dump(space, tab)
     content += get_result_dicts_string(space, is_async)
     return content
