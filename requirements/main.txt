@@ -1,4 +1,4 @@
-ag2[openai,a2a]==0.10.5
+ag2[openai,a2a]==0.11.4
 aiocsv==1.4.0
 aiofiles==25.1.0
 aiosqlite==0.22.1
@@ -10,10 +10,10 @@ nest_asyncio==1.6.0
 numpy>2
 packaging==26.0
 pandas>2,<3
-parso==0.8.5
+parso==0.8.6
 pillow
 pip>=25.1
-platformdirs==4.5.1
+platformdirs==4.9.2
 psutil==7.2.2
 pydantic>=2.10,<3
 rpds-py==0.30.0
