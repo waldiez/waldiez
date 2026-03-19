@@ -20,7 +20,7 @@ nbformat>=5.10.4
 nodeenv>=1.10.0
 notebook-shim>=0.2.4
 paho-mqtt>=2.1.0,<3.0
-pandas-stubs>=3
+pandas-stubs>2
 prek==0.3.3
 pydocstyle==6.3.0
 pylint==4.0.5
