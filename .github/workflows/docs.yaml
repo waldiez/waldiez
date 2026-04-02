@@ -6,6 +6,8 @@ on:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
   workflow_dispatch:
+  repositoy_dispatch:
+    types: [wactorz-docs-updated]
 
 permissions:
   contents: read
@@ -48,6 +50,13 @@ jobs:
           bun run docs
           cp CONTRIBUTING.md docs/contribute/index.md
           mkdocs build --config-file mkdocs.yml
+
+      - name: Fetch wactorz docs
+        run: |
+          mkdir -p site/wactorz
+          curl -L https://github.com/waldiez/wactorz/archive/refs/heads/gh-pages.tar.gz \
+            | tar -xz --strip-components=1 -C site/wactorz
+
 
       - name: Setup Pages
         uses: actions/configure-pages@v5.0.0
