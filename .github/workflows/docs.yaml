@@ -5,6 +5,11 @@ on:
   push:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
+    branches:
+      - main
+    paths:
+      - "docs/**"
+      - "mkdocs.yml"
   workflow_dispatch:
   repository_dispatch:
     types: [wactorz-docs-updated]
