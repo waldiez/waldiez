@@ -6,7 +6,7 @@ on:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
   workflow_dispatch:
-  repositoy_dispatch:
+  repository_dispatch:
     types: [wactorz-docs-updated]
 
 permissions:
@@ -49,13 +49,26 @@ jobs:
         run: |
           bun run docs
           cp CONTRIBUTING.md docs/contribute/index.md
-          mkdocs build --config-file mkdocs.yml
+          mkdocs build --config-file mkdocs.yml --site-dir site/canvas
 
       - name: Fetch wactorz docs
         run: |
           mkdir -p site/wactorz
           curl -L https://github.com/waldiez/wactorz/archive/refs/heads/gh-pages.tar.gz \
             | tar -xz --strip-components=1 -C site/wactorz
+
+      - name: Add root files
+        run: |
+          echo "docs.waldiez.io" > site/CNAME
+          cat > site/index.html <<'EOF'
+          <!DOCTYPE html>
+          <html><head><meta charset="utf-8">
+          <meta http-equiv="refresh" content="0; url=/canvas/">
+          <link rel="canonical" href="/canvas/" />
+          </head><body>
+          <p>Redirecting to <a href="/canvas/">docs</a>...</p>
+          </body></html>
+          EOF
 
 
       - name: Setup Pages
