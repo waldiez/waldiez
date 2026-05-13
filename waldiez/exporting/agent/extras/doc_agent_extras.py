@@ -135,6 +135,39 @@ class DocAgentProcessor:
                 self.agent.data.get_collection_name(),
             )
 
+    def get_default_embedding_model_setup(self, before: str) -> str:
+        """Get default LlamaIndex embedding setup for vector query engines.
+
+        LlamaIndex falls back to OpenAIEmbedding when no embedding model is
+        configured. Use a local HuggingFace embedding by default so Doc Agents
+        can work with non-OpenAI LLMs.
+        """
+        if "Settings.embed_model" in before:
+            return before
+        self.extras.add_import(
+            ImportStatement(
+                statement="from llama_index.core import Settings",
+                position=ImportPosition.THIRD_PARTY,
+            )
+        )
+        self.extras.add_import(
+            ImportStatement(
+                statement=(
+                    "from llama_index.embeddings.huggingface "
+                    "import HuggingFaceEmbedding"
+                ),
+                position=ImportPosition.THIRD_PARTY,
+            )
+        )
+        setup = (
+            "Settings.embed_model = HuggingFaceEmbedding(\n"
+            '    model_name="sentence-transformers/all-MiniLM-L6-v2",\n'
+            ")"
+        )
+        if before.strip():
+            return f"{before.rstrip()}\n{setup}\n"
+        return f"{setup}\n"
+
     def get_in_memory_query_engine_extras(self) -> None:
         """Get the in-memory query engine extras."""
         # InMemoryQueryEngine(llm_config=llm_config)
@@ -185,6 +218,7 @@ class DocAgentProcessor:
             )
         )
         llm_arg, before = self.get_llm_arg()
+        before = self.get_default_embedding_model_setup(before)
         db_path = self.get_db_path()
         self.extras.before_agent = before + "\n"
         q_engine_init = (
@@ -228,6 +262,7 @@ class DocAgentProcessor:
         )
         db_path = self.get_db_path()
         llm_arg, before = self.get_llm_arg()
+        before = self.get_default_embedding_model_setup(before)
         self.extras.before_agent = before + "\n"
         q_engine_init = (
             f"{self.agent_name}_query_engine = "
