@@ -103,9 +103,7 @@ def test_models_exporter(tmp_path: Path) -> None:
     agent_llm = models_exporter.get_agent_llm_config_arg(agent)
     assert agent_llm == (
         "    llm_config=autogen.LLMConfig(\n"
-        "        config_list=[\n"
-        f"            {model1_name}_llm_config,"
-        "\n        ],\n"
+        f"        {model1_name}_llm_config,\n"
         "        cache_seed=42,\n"
         "    ),\n"
     )

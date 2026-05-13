@@ -49,4 +49,5 @@ docs/reference/react/assets
 uv.lock
 .hatch
 .tox
+.claude/
 !**/.env.example

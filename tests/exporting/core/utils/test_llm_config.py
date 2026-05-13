@@ -200,9 +200,7 @@ class TestArgFormat:
 
         expected_lines = [
             "    llm_config=autogen.LLMConfig(",
-            "        config_list=[",
-            "            gpt4_llm_config,",
-            "        ],",
+            "        gpt4_llm_config,",
             "        cache_seed=42,",
             "        temperature=0.7,",
             "    ),",
@@ -332,9 +330,7 @@ class TestDictFormat:
 
         expected_lines = [
             '"llm_config": autogen.LLMConfig(',
-            "    config_list=[",
-            "        gpt4_llm_config,",
-            "    ],",
+            "    gpt4_llm_config,",
             "    cache_seed=42,",
             "    temperature=0.7,",
             "),",

@@ -158,17 +158,17 @@ class ModelsExporter(Exporter[ModelExtras]):
         if not model_configs:
             return f"{tab}llm_config=False,\n"
 
-        config_list = f",\n{tab}{tab}{tab}".join(model_configs)
+        config_entries = "".join(
+            f"{tab}{tab}{model_config},\n" for model_config in model_configs
+        )
         llm_config = f"""{tab}llm_config=autogen.LLMConfig(
-        config_list=[
-            {config_list},
-        ]"""
+{config_entries.rstrip()}"""
         #
         # Add cache seed if provided
         if self.cache_seed is not None:
-            llm_config += f",\n{tab}{tab}cache_seed={self.cache_seed},\n"
+            llm_config += f"\n{tab}{tab}cache_seed={self.cache_seed},\n"
         else:
-            llm_config += f",\n{tab}{tab}cache_seed=None,\n"
+            llm_config += f"\n{tab}{tab}cache_seed=None,\n"
         llm_config += f"{tab}),\n"
 
         return llm_config

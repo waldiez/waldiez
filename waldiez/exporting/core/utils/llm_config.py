@@ -66,7 +66,6 @@ def _get_agent_llm_config_arg_as_arg(
     if not agent.data.model_ids:
         return f"{tab}llm_config=False," + "\n"
     content = f"{tab}llm_config=autogen.LLMConfig(" + "\n"
-    content += f"{tab}    config_list=["
     got_at_least_one_model = False
     temperature: float | None = None
     for model_id in agent.data.model_ids:
@@ -74,11 +73,10 @@ def _get_agent_llm_config_arg_as_arg(
         if model is not None:
             temperature = model.data.temperature
             model_name = model_names[model_id]
-            content += "\n" + f"{tab}        {model_name}_llm_config,"
+            content += f"{tab}    {model_name}_llm_config,\n"
             got_at_least_one_model = True
     if not got_at_least_one_model:  # pragma: no cover
         return f"{tab}llm_config=False," + "\n"
-    content += "\n" + f"{tab}    ]," + "\n"
     content += f"{tab}    cache_seed={cache_seed}," + "\n"
     if temperature is not None:
         content += f"{tab}    temperature={temperature}," + "\n"
@@ -99,7 +97,6 @@ def _get_agent_llm_config_arg_as_dict(
     if not agent.data.model_ids:
         return f'{tab}"llm_config": False,' + "\n"
     content = f'{tab}"llm_config": autogen.LLMConfig(' + "\n"
-    content += f"{tab}    config_list=["
     got_at_least_one_model = False
     temperature: float | None = None
     for model_id in agent.data.model_ids:
@@ -107,11 +104,10 @@ def _get_agent_llm_config_arg_as_dict(
         if model is not None:  # pragma: no branch
             temperature = model.data.temperature
             model_name = model_names[model_id]
-            content += "\n" + f"{tab}        {model_name}_llm_config,"
+            content += f"{tab}    {model_name}_llm_config,\n"
             got_at_least_one_model = True
     if not got_at_least_one_model:  # pragma: no cover
         return f'{tab}"llm_config": False,' + "\n"
-    content += "\n" + f"{tab}    ]," + "\n"
     content += f"{tab}    cache_seed={cache_seed}," + "\n"
     if temperature is not None:
         content += f"{tab}    temperature={temperature}," + "\n"
