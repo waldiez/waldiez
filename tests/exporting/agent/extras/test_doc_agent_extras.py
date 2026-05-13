@@ -19,6 +19,7 @@ def test_export_doc_agent(tmp_path: Path) -> None:
         Temporary path for the output directory.
     """
     agent, tools, models = create_agent(1, "doc_agent")
+    agent.data.model_ids = [models[0].id]
     output_dir = tmp_path / "test_doc_agent_exporter"
     output_dir.mkdir(exist_ok=True)
     models_and_names = (models, {model.id: model.name for model in models})
@@ -36,6 +37,22 @@ def test_export_doc_agent(tmp_path: Path) -> None:
     assert result
     assert result.main_content
     assert "query_engine=" in result.main_content
+    assert any(
+        import_statement.statement
+        == (
+            "from llama_index.embeddings.huggingface "
+            "import HuggingFaceEmbedding"
+        )
+        for import_statement in result.imports
+    )
+    content = "\n".join(
+        item.content for item in result.positioned_content
+    )
+    assert "Settings.embed_model = HuggingFaceEmbedding(" in content
+    assert (
+        content.index("Settings.embed_model = HuggingFaceEmbedding(")
+        < content.index("VectorChromaQueryEngine(")
+    )
 
     exporter = create_agent_exporter(
         agent=agent,
@@ -52,3 +69,7 @@ def test_export_doc_agent(tmp_path: Path) -> None:
     assert result
     assert result.main_content
     assert "query_engine=" in result.main_content
+    content = "\n".join(
+        item.content for item in result.positioned_content
+    )
+    assert "Settings.embed_model = HuggingFaceEmbedding(" in content
