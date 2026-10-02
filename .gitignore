@@ -50,3 +50,4 @@ uv.lock
 .hatch
 .tox
 !**/.env.example
+.claude
